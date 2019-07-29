@@ -73,10 +73,17 @@ var hibachi =
 
 "use strict";
 
+<<<<<<< HEAD
 var root_1 = __webpack_require__(13);
 var toSubscriber_1 = __webpack_require__(668);
 var observable_1 = __webpack_require__(46);
 var pipe_1 = __webpack_require__(69);
+=======
+var root_1 = __webpack_require__(11);
+var toSubscriber_1 = __webpack_require__(613);
+var observable_1 = __webpack_require__(37);
+var pipe_1 = __webpack_require__(61);
+>>>>>>> origin/develop-team
 /**
  * A representation of any set of values over any amount of time. This is the most basic building block
  * of RxJS.
@@ -2234,7 +2241,11 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
+<<<<<<< HEAD
                 __webpack_require__(373)("./" + name);
+=======
+                __webpack_require__(319)("./" + name);
+>>>>>>> origin/develop-team
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4985,7 +4996,11 @@ exports.Observable = Observable;
 
 })));
 
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(979)(module)))
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(309)(module)))
+>>>>>>> origin/develop-team
 
 /***/ }),
 /* 2 */
@@ -4998,10 +5013,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var isFunction_1 = __webpack_require__(51);
 var Subscription_1 = __webpack_require__(9);
 var Observer_1 = __webpack_require__(210);
 var rxSubscriber_1 = __webpack_require__(47);
+=======
+var isFunction_1 = __webpack_require__(42);
+var Subscription_1 = __webpack_require__(7);
+var Observer_1 = __webpack_require__(195);
+var rxSubscriber_1 = __webpack_require__(38);
+>>>>>>> origin/develop-team
 /**
  * Implements the {@link Observer} interface and extends the
  * {@link Subscription} class. While the {@link Observer} is the public API for
@@ -5306,6 +5328,7 @@ exports.OuterSubscriber = OuterSubscriber;
 
 "use strict";
 
+<<<<<<< HEAD
 var root_1 = __webpack_require__(13);
 var isArrayLike_1 = __webpack_require__(307);
 var isPromise_1 = __webpack_require__(309);
@@ -5314,6 +5337,16 @@ var Observable_1 = __webpack_require__(0);
 var iterator_1 = __webpack_require__(34);
 var InnerSubscriber_1 = __webpack_require__(375);
 var observable_1 = __webpack_require__(46);
+=======
+var root_1 = __webpack_require__(11);
+var isArrayLike_1 = __webpack_require__(292);
+var isPromise_1 = __webpack_require__(294);
+var isObject_1 = __webpack_require__(293);
+var Observable_1 = __webpack_require__(0);
+var iterator_1 = __webpack_require__(26);
+var InnerSubscriber_1 = __webpack_require__(320);
+var observable_1 = __webpack_require__(37);
+>>>>>>> origin/develop-team
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
     var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
     if (destination.closed) {
@@ -5479,6 +5512,7 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var hibachiinterceptor_1 = __webpack_require__(879);
 //constant
 var hibachipathbuilder_1 = __webpack_require__(880);
@@ -5566,6 +5600,95 @@ var swsortable_1 = __webpack_require__(839);
 var sworderbycontrols_1 = __webpack_require__(834);
 var alert_module_1 = __webpack_require__(316);
 var dialog_module_1 = __webpack_require__(320);
+=======
+var hibachiinterceptor_1 = __webpack_require__(823);
+//constant
+var hibachipathbuilder_1 = __webpack_require__(824);
+//services
+var cacheservice_1 = __webpack_require__(815);
+var publicservice_1 = __webpack_require__(835);
+var accountservice_1 = __webpack_require__(814);
+var accountaddressservice_1 = __webpack_require__(813);
+var cartservice_1 = __webpack_require__(816);
+var draggableservice_1 = __webpack_require__(817);
+var utilityservice_1 = __webpack_require__(842);
+var selectionservice_1 = __webpack_require__(839);
+var observerservice_1 = __webpack_require__(832);
+var orderservice_1 = __webpack_require__(834);
+var orderpaymentservice_1 = __webpack_require__(833);
+var formservice_1 = __webpack_require__(821);
+var filterservice_1 = __webpack_require__(820);
+var expandableservice_1 = __webpack_require__(819);
+var hibachiauthenticationservice_1 = __webpack_require__(822);
+var metadataservice_1 = __webpack_require__(831);
+var rbkeyservice_1 = __webpack_require__(836);
+var typeaheadservice_1 = __webpack_require__(841);
+var hibachiservice_1 = __webpack_require__(826);
+var historyservice_1 = __webpack_require__(829);
+var localstorageservice_1 = __webpack_require__(830);
+var hibachiservicedecorator_1 = __webpack_require__(827);
+var hibachiscope_1 = __webpack_require__(825);
+var requestservice_1 = __webpack_require__(837);
+var scopeservice_1 = __webpack_require__(838);
+var skuservice_1 = __webpack_require__(840);
+var hibachivalidationservice_1 = __webpack_require__(828);
+var entityservice_1 = __webpack_require__(818);
+//controllers
+var globalsearch_1 = __webpack_require__(792);
+//filters
+var percentage_1 = __webpack_require__(796);
+var entityrbkey_1 = __webpack_require__(795);
+var swcurrency_1 = __webpack_require__(797);
+var swtrim_1 = __webpack_require__(798);
+var swunique_1 = __webpack_require__(799);
+var datefilter_1 = __webpack_require__(793);
+var datereporting_1 = __webpack_require__(794);
+//directives
+//  components
+var swactioncaller_1 = __webpack_require__(751);
+var swtypeaheadsearch_1 = __webpack_require__(790);
+var swtypeaheadinputfield_1 = __webpack_require__(787);
+var swtypeaheadmultiselect_1 = __webpack_require__(788);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(791);
+var swtypeaheadremoveselection_1 = __webpack_require__(789);
+var swcollectionconfig_1 = __webpack_require__(755);
+var swcollectionfilter_1 = __webpack_require__(756);
+var swcollectionorderby_1 = __webpack_require__(757);
+var swcollectioncolumn_1 = __webpack_require__(754);
+var swcurrencyformatter_1 = __webpack_require__(760);
+var swactioncallerdropdown_1 = __webpack_require__(752);
+var swcolumnsorter_1 = __webpack_require__(758);
+var swconfirm_1 = __webpack_require__(759);
+var swdatepicker_1 = __webpack_require__(761);
+var swdraggable_1 = __webpack_require__(763);
+var swdraggablecontainer_1 = __webpack_require__(764);
+var swentityactionbar_1 = __webpack_require__(765);
+var swentityactionbarbuttongroup_1 = __webpack_require__(766);
+var swexpandablerecord_1 = __webpack_require__(767);
+var swexpiringsessionnotifier_1 = __webpack_require__(768);
+var swgravatar_1 = __webpack_require__(770);
+var swlogin_1 = __webpack_require__(773);
+var swmodallauncher_1 = __webpack_require__(774);
+var swmodalwindow_1 = __webpack_require__(775);
+var swnumbersonly_1 = __webpack_require__(776);
+var swloading_1 = __webpack_require__(772);
+var swscrolltrigger_1 = __webpack_require__(781);
+var swtabgroup_1 = __webpack_require__(785);
+var swtabcontent_1 = __webpack_require__(784);
+var swtooltip_1 = __webpack_require__(786);
+var swrbkey_1 = __webpack_require__(780);
+var swoptions_1 = __webpack_require__(777);
+var swselection_1 = __webpack_require__(782);
+var swclickoutside_1 = __webpack_require__(753);
+var swdirective_1 = __webpack_require__(762);
+var swexportaction_1 = __webpack_require__(769);
+var swhref_1 = __webpack_require__(771);
+var swprocesscaller_1 = __webpack_require__(779);
+var swsortable_1 = __webpack_require__(783);
+var sworderbycontrols_1 = __webpack_require__(778);
+var alert_module_1 = __webpack_require__(300);
+var dialog_module_1 = __webpack_require__(304);
+>>>>>>> origin/develop-team
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
     'ngAnimate',
@@ -5760,12 +5883,21 @@ exports.coremodule = coremodule;
 
 "use strict";
 
+<<<<<<< HEAD
 var isArray_1 = __webpack_require__(16);
 var isObject_1 = __webpack_require__(308);
 var isFunction_1 = __webpack_require__(51);
 var tryCatch_1 = __webpack_require__(12);
 var errorObject_1 = __webpack_require__(11);
 var UnsubscriptionError_1 = __webpack_require__(304);
+=======
+var isArray_1 = __webpack_require__(13);
+var isObject_1 = __webpack_require__(293);
+var isFunction_1 = __webpack_require__(42);
+var tryCatch_1 = __webpack_require__(10);
+var errorObject_1 = __webpack_require__(9);
+var UnsubscriptionError_1 = __webpack_require__(289);
+>>>>>>> origin/develop-team
 /**
  * Represents a disposable resource, such as the execution of an Observable. A
  * Subscription has one important method, `unsubscribe`, that takes no argument
@@ -5966,10 +6098,17 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
+<<<<<<< HEAD
 var Subscription_1 = __webpack_require__(9);
 var ObjectUnsubscribedError_1 = __webpack_require__(49);
 var SubjectSubscription_1 = __webpack_require__(211);
 var rxSubscriber_1 = __webpack_require__(47);
+=======
+var Subscription_1 = __webpack_require__(7);
+var ObjectUnsubscribedError_1 = __webpack_require__(40);
+var SubjectSubscription_1 = __webpack_require__(196);
+var rxSubscriber_1 = __webpack_require__(38);
+>>>>>>> origin/develop-team
 /**
  * @class SubjectSubscriber<T>
  */
@@ -6186,7 +6325,11 @@ exports.root = _root;
     }
 })();
 //# sourceMappingURL=root.js.map
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(73)))
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)))
+>>>>>>> origin/develop-team
 
 /***/ }),
 /* 14 */
@@ -6353,9 +6496,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var baseobject_1 = __webpack_require__(318);
 var Entities = __webpack_require__(860);
 var Processes = __webpack_require__(866);
+=======
+var baseobject_1 = __webpack_require__(302);
+var Entities = __webpack_require__(804);
+var Processes = __webpack_require__(810);
+>>>>>>> origin/develop-team
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6501,9 +6650,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ScalarObservable_1 = __webpack_require__(53);
 var EmptyObservable_1 = __webpack_require__(21);
 var isScheduler_1 = __webpack_require__(14);
+=======
+var ScalarObservable_1 = __webpack_require__(45);
+var EmptyObservable_1 = __webpack_require__(16);
+var isScheduler_1 = __webpack_require__(12);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -6710,7 +6865,11 @@ exports.EmptyObservable = EmptyObservable;
 
 "use strict";
 
+<<<<<<< HEAD
 var ConnectableObservable_1 = __webpack_require__(212);
+=======
+var ConnectableObservable_1 = __webpack_require__(197);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the results of invoking a specified selector on items
@@ -6791,7 +6950,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var basetransient_1 = __webpack_require__(70);
+=======
+var basetransient_1 = __webpack_require__(62);
+>>>>>>> origin/develop-team
 var BaseEntity = /** @class */ (function (_super) {
     __extends(BaseEntity, _super);
     function BaseEntity($injector) {
@@ -6834,6 +6997,14 @@ function sortByWeight(array, reverse) {
 	});
 }
 
+<<<<<<< HEAD
+=======
+var isScheduler_1 = __webpack_require__(12);
+var of_1 = __webpack_require__(202);
+var from_1 = __webpack_require__(201);
+var concatAll_1 = __webpack_require__(48);
+/* tslint:enable:max-line-length */
+>>>>>>> origin/develop-team
 /**
  * @interface ILayoutItem
  * @prop {String} position - The position of the item in the chart layout. Possible values are
@@ -7234,16 +7405,235 @@ module.exports = {
 
 "use strict";
 
+<<<<<<< HEAD
+=======
+var scan_1 = __webpack_require__(56);
+var takeLast_1 = __webpack_require__(58);
+var defaultIfEmpty_1 = __webpack_require__(50);
+var pipe_1 = __webpack_require__(61);
+/* tslint:enable:max-line-length */
+/**
+ * Applies an accumulator function over the source Observable, and returns the
+ * accumulated result when the source completes, given an optional seed value.
+ *
+ * <span class="informal">Combines together all values emitted on the source,
+ * using an accumulator function that knows how to join a new source value into
+ * the accumulation from the past.</span>
+ *
+ * <img src="./img/reduce.png" width="100%">
+ *
+ * Like
+ * [Array.prototype.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce),
+ * `reduce` applies an `accumulator` function against an accumulation and each
+ * value of the source Observable (from the past) to reduce it to a single
+ * value, emitted on the output Observable. Note that `reduce` will only emit
+ * one value, only when the source Observable completes. It is equivalent to
+ * applying operator {@link scan} followed by operator {@link last}.
+ *
+ * Returns an Observable that applies a specified `accumulator` function to each
+ * item emitted by the source Observable. If a `seed` value is specified, then
+ * that value will be used as the initial value for the accumulator. If no seed
+ * value is specified, the first item of the source is used as the seed.
+ *
+ * @example <caption>Count the number of click events that happened in 5 seconds</caption>
+ * var clicksInFiveSeconds = Rx.Observable.fromEvent(document, 'click')
+ *   .takeUntil(Rx.Observable.interval(5000));
+ * var ones = clicksInFiveSeconds.mapTo(1);
+ * var seed = 0;
+ * var count = ones.reduce((acc, one) => acc + one, seed);
+ * count.subscribe(x => console.log(x));
+ *
+ * @see {@link count}
+ * @see {@link expand}
+ * @see {@link mergeScan}
+ * @see {@link scan}
+ *
+ * @param {function(acc: R, value: T, index: number): R} accumulator The accumulator function
+ * called on each source value.
+ * @param {R} [seed] The initial accumulation value.
+ * @return {Observable<R>} An Observable that emits a single value that is the
+ * result of accumulating the values emitted by the source Observable.
+ * @method reduce
+ * @owner Observable
+ */
+function reduce(accumulator, seed) {
+    // providing a seed of `undefined` *should* be valid and trigger
+    // hasSeed! so don't use `seed !== undefined` checks!
+    // For this reason, we have to check it here at the original call site
+    // otherwise inside Operator/Subscriber we won't know if `undefined`
+    // means they didn't provide anything or if they literally provided `undefined`
+    if (arguments.length >= 2) {
+        return function reduceOperatorFunctionWithSeed(source) {
+            return pipe_1.pipe(scan_1.scan(accumulator, seed), takeLast_1.takeLast(1), defaultIfEmpty_1.defaultIfEmpty(seed))(source);
+        };
+    }
+    return function reduceOperatorFunction(source) {
+        return pipe_1.pipe(scan_1.scan(function (acc, value, index) {
+            return accumulator(acc, value, index + 1);
+        }), takeLast_1.takeLast(1))(source);
+    };
+}
+exports.reduce = reduce;
+//# sourceMappingURL=reduce.js.map
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 var defaults = __webpack_require__(6);
 var Element = __webpack_require__(15);
 var helpers = __webpack_require__(5);
 var Ticks = __webpack_require__(26);
 
+<<<<<<< HEAD
 defaults._set('scale', {
 	display: true,
 	position: 'left',
 	offset: false,
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var root_1 = __webpack_require__(11);
+var Action_1 = __webpack_require__(594);
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var AsyncAction = (function (_super) {
+    __extends(AsyncAction, _super);
+    function AsyncAction(scheduler, work) {
+        _super.call(this, scheduler, work);
+        this.scheduler = scheduler;
+        this.pending = false;
+        this.work = work;
+    }
+    AsyncAction.prototype.schedule = function (state, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (this.closed) {
+            return this;
+        }
+        // Always replace the current state with the new state.
+        this.state = state;
+        // Set the pending flag indicating that this action has been scheduled, or
+        // has recursively rescheduled itself.
+        this.pending = true;
+        var id = this.id;
+        var scheduler = this.scheduler;
+        //
+        // Important implementation note:
+        //
+        // Actions only execute once by default, unless rescheduled from within the
+        // scheduled callback. This allows us to implement single and repeat
+        // actions via the same code path, without adding API surface area, as well
+        // as mimic traditional recursion but across asynchronous boundaries.
+        //
+        // However, JS runtimes and timers distinguish between intervals achieved by
+        // serial `setTimeout` calls vs. a single `setInterval` call. An interval of
+        // serial `setTimeout` calls can be individually delayed, which delays
+        // scheduling the next `setTimeout`, and so on. `setInterval` attempts to
+        // guarantee the interval callback will be invoked more precisely to the
+        // interval period, regardless of load.
+        //
+        // Therefore, we use `setInterval` to schedule single and repeat actions.
+        // If the action reschedules itself with the same delay, the interval is not
+        // canceled. If the action doesn't reschedule, or reschedules with a
+        // different delay, the interval will be canceled after scheduled callback
+        // execution.
+        //
+        if (id != null) {
+            this.id = this.recycleAsyncId(scheduler, id, delay);
+        }
+        this.delay = delay;
+        // If this action has already an async Id, don't request a new one.
+        this.id = this.id || this.requestAsyncId(scheduler, this.id, delay);
+        return this;
+    };
+    AsyncAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        return root_1.root.setInterval(scheduler.flush.bind(scheduler, this), delay);
+    };
+    AsyncAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        // If this action is rescheduled with the same delay time, don't clear the interval id.
+        if (delay !== null && this.delay === delay && this.pending === false) {
+            return id;
+        }
+        // Otherwise, if the action's delay time is different from the current delay,
+        // or the action has been rescheduled before it's executed, clear the interval id
+        return root_1.root.clearInterval(id) && undefined || undefined;
+    };
+    /**
+     * Immediately executes this action and the `work` it contains.
+     * @return {any}
+     */
+    AsyncAction.prototype.execute = function (state, delay) {
+        if (this.closed) {
+            return new Error('executing a cancelled action');
+        }
+        this.pending = false;
+        var error = this._execute(state, delay);
+        if (error) {
+            return error;
+        }
+        else if (this.pending === false && this.id != null) {
+            // Dequeue if the action didn't reschedule itself. Don't call
+            // unsubscribe(), because the action could reschedule later.
+            // For example:
+            // ```
+            // scheduler.schedule(function doWork(counter) {
+            //   /* ... I'm a busy worker bee ... */
+            //   var originalAction = this;
+            //   /* wait 100ms before rescheduling the action */
+            //   setTimeout(function () {
+            //     originalAction.schedule(counter + 1);
+            //   }, 100);
+            // }, 1000);
+            // ```
+            this.id = this.recycleAsyncId(this.scheduler, this.id, null);
+        }
+    };
+    AsyncAction.prototype._execute = function (state, delay) {
+        var errored = false;
+        var errorValue = undefined;
+        try {
+            this.work(state);
+        }
+        catch (e) {
+            errored = true;
+            errorValue = !!e && e || new Error(e);
+        }
+        if (errored) {
+            this.unsubscribe();
+            return errorValue;
+        }
+    };
+    /** @deprecated internal use only */ AsyncAction.prototype._unsubscribe = function () {
+        var id = this.id;
+        var scheduler = this.scheduler;
+        var actions = scheduler.actions;
+        var index = actions.indexOf(this);
+        this.work = null;
+        this.state = null;
+        this.pending = false;
+        this.scheduler = null;
+        if (index !== -1) {
+            actions.splice(index, 1);
+        }
+        if (id != null) {
+            this.id = this.recycleAsyncId(scheduler, id, null);
+        }
+        this.delay = null;
+    };
+    return AsyncAction;
+}(Action_1.Action));
+exports.AsyncAction = AsyncAction;
+//# sourceMappingURL=AsyncAction.js.map
+>>>>>>> origin/develop-team
 
 	// grid line settings
 	gridLines: {
@@ -7268,8 +7658,61 @@ defaults._set('scale', {
 		// display property
 		display: false,
 
+<<<<<<< HEAD
 		// actual label
 		labelString: '',
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Scheduler_1 = __webpack_require__(322);
+var AsyncScheduler = (function (_super) {
+    __extends(AsyncScheduler, _super);
+    function AsyncScheduler() {
+        _super.apply(this, arguments);
+        this.actions = [];
+        /**
+         * A flag to indicate whether the Scheduler is currently executing a batch of
+         * queued actions.
+         * @type {boolean}
+         */
+        this.active = false;
+        /**
+         * An internal ID used to track the latest asynchronous task such as those
+         * coming from `setTimeout`, `setInterval`, `requestAnimationFrame`, and
+         * others.
+         * @type {any}
+         */
+        this.scheduled = undefined;
+    }
+    AsyncScheduler.prototype.flush = function (action) {
+        var actions = this.actions;
+        if (this.active) {
+            actions.push(action);
+            return;
+        }
+        var error;
+        this.active = true;
+        do {
+            if (error = action.execute(action.state, action.delay)) {
+                break;
+            }
+        } while (action = actions.shift()); // exhaust the scheduler queue
+        this.active = false;
+        if (error) {
+            while (action = actions.shift()) {
+                action.unsubscribe();
+            }
+            throw error;
+        }
+    };
+    return AsyncScheduler;
+}(Scheduler_1.Scheduler));
+exports.AsyncScheduler = AsyncScheduler;
+//# sourceMappingURL=AsyncScheduler.js.map
+>>>>>>> origin/develop-team
 
 		// line height
 		lineHeight: 1.2,
@@ -7376,9 +7819,113 @@ module.exports = Element.extend({
 		return this._ticks;
 	},
 
+<<<<<<< HEAD
 	// These methods are ordered by lifecyle. Utilities then follow.
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subject_1 = __webpack_require__(8);
+var queue_1 = __webpack_require__(285);
+var Subscription_1 = __webpack_require__(7);
+var observeOn_1 = __webpack_require__(34);
+var ObjectUnsubscribedError_1 = __webpack_require__(40);
+var SubjectSubscription_1 = __webpack_require__(196);
+/**
+ * @class ReplaySubject<T>
+ */
+var ReplaySubject = (function (_super) {
+    __extends(ReplaySubject, _super);
+    function ReplaySubject(bufferSize, windowTime, scheduler) {
+        if (bufferSize === void 0) { bufferSize = Number.POSITIVE_INFINITY; }
+        if (windowTime === void 0) { windowTime = Number.POSITIVE_INFINITY; }
+        _super.call(this);
+        this.scheduler = scheduler;
+        this._events = [];
+        this._bufferSize = bufferSize < 1 ? 1 : bufferSize;
+        this._windowTime = windowTime < 1 ? 1 : windowTime;
+    }
+    ReplaySubject.prototype.next = function (value) {
+        var now = this._getNow();
+        this._events.push(new ReplayEvent(now, value));
+        this._trimBufferThenGetEvents();
+        _super.prototype.next.call(this, value);
+    };
+    /** @deprecated internal use only */ ReplaySubject.prototype._subscribe = function (subscriber) {
+        var _events = this._trimBufferThenGetEvents();
+        var scheduler = this.scheduler;
+        var subscription;
+        if (this.closed) {
+            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+        }
+        else if (this.hasError) {
+            subscription = Subscription_1.Subscription.EMPTY;
+        }
+        else if (this.isStopped) {
+            subscription = Subscription_1.Subscription.EMPTY;
+        }
+        else {
+            this.observers.push(subscriber);
+            subscription = new SubjectSubscription_1.SubjectSubscription(this, subscriber);
+        }
+        if (scheduler) {
+            subscriber.add(subscriber = new observeOn_1.ObserveOnSubscriber(subscriber, scheduler));
+        }
+        var len = _events.length;
+        for (var i = 0; i < len && !subscriber.closed; i++) {
+            subscriber.next(_events[i].value);
+        }
+        if (this.hasError) {
+            subscriber.error(this.thrownError);
+        }
+        else if (this.isStopped) {
+            subscriber.complete();
+        }
+        return subscription;
+    };
+    ReplaySubject.prototype._getNow = function () {
+        return (this.scheduler || queue_1.queue).now();
+    };
+    ReplaySubject.prototype._trimBufferThenGetEvents = function () {
+        var now = this._getNow();
+        var _bufferSize = this._bufferSize;
+        var _windowTime = this._windowTime;
+        var _events = this._events;
+        var eventsCount = _events.length;
+        var spliceCount = 0;
+        // Trim events that fall out of the time window.
+        // Start at the front of the list. Break early once
+        // we encounter an event that falls within the window.
+        while (spliceCount < eventsCount) {
+            if ((now - _events[spliceCount].time) < _windowTime) {
+                break;
+            }
+            spliceCount++;
+        }
+        if (eventsCount > _bufferSize) {
+            spliceCount = Math.max(spliceCount, eventsCount - _bufferSize);
+        }
+        if (spliceCount > 0) {
+            _events.splice(0, spliceCount);
+        }
+        return _events;
+    };
+    return ReplaySubject;
+}(Subject_1.Subject));
+exports.ReplaySubject = ReplaySubject;
+var ReplayEvent = (function () {
+    function ReplayEvent(time, value) {
+        this.time = time;
+        this.value = value;
+    }
+    return ReplayEvent;
+}());
+//# sourceMappingURL=ReplaySubject.js.map
+>>>>>>> origin/develop-team
 
 	mergeTicksOptions: function() {
 		var ticks = this.options.ticks;
@@ -7444,9 +7991,64 @@ module.exports = Element.extend({
 
 		me.beforeBuildTicks();
 
+<<<<<<< HEAD
 		// New implementations should return an array of objects but for BACKWARD COMPAT,
 		// we still support no return (`this.ticks` internally set by calling this method).
 		ticks = me.buildTicks() || [];
+=======
+var mergeMap_1 = __webpack_require__(22);
+var identity_1 = __webpack_require__(291);
+/**
+ * Converts a higher-order Observable into a first-order Observable which
+ * concurrently delivers all values that are emitted on the inner Observables.
+ *
+ * <span class="informal">Flattens an Observable-of-Observables.</span>
+ *
+ * <img src="./img/mergeAll.png" width="100%">
+ *
+ * `mergeAll` subscribes to an Observable that emits Observables, also known as
+ * a higher-order Observable. Each time it observes one of these emitted inner
+ * Observables, it subscribes to that and delivers all the values from the
+ * inner Observable on the output Observable. The output Observable only
+ * completes once all inner Observables have completed. Any error delivered by
+ * a inner Observable will be immediately emitted on the output Observable.
+ *
+ * @example <caption>Spawn a new interval Observable for each click event, and blend their outputs as one Observable</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000));
+ * var firstOrder = higherOrder.mergeAll();
+ * firstOrder.subscribe(x => console.log(x));
+ *
+ * @example <caption>Count from 0 to 9 every second for each click, but only allow 2 concurrent timers</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000).take(10));
+ * var firstOrder = higherOrder.mergeAll(2);
+ * firstOrder.subscribe(x => console.log(x));
+ *
+ * @see {@link combineAll}
+ * @see {@link concatAll}
+ * @see {@link exhaust}
+ * @see {@link merge}
+ * @see {@link mergeMap}
+ * @see {@link mergeMapTo}
+ * @see {@link mergeScan}
+ * @see {@link switch}
+ * @see {@link zipAll}
+ *
+ * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of inner
+ * Observables being subscribed to concurrently.
+ * @return {Observable} An Observable that emits values coming from all the
+ * inner Observables emitted by the source Observable.
+ * @method mergeAll
+ * @owner Observable
+ */
+function mergeAll(concurrent) {
+    if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
+    return mergeMap_1.mergeMap(identity_1.identity, null, concurrent);
+}
+exports.mergeAll = mergeAll;
+//# sourceMappingURL=mergeAll.js.map
+>>>>>>> origin/develop-team
 
 		me.afterBuildTicks();
 
@@ -7602,6 +8204,7 @@ module.exports = Element.extend({
 			}
 		}
 
+<<<<<<< HEAD
 		me.labelRotation = labelRotation;
 	},
 	afterCalculateTickRotation: function() {
@@ -7609,6 +8212,199 @@ module.exports = Element.extend({
 	},
 
 	//
+=======
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(){
+  var crypt = __webpack_require__(313),
+      utf8 = __webpack_require__(66).utf8,
+      isBuffer = __webpack_require__(318),
+      bin = __webpack_require__(66).bin,
+
+  // The core
+  md5 = function (message, options) {
+    // Convert to byte array
+    if (message.constructor == String)
+      if (options && options.encoding === 'binary')
+        message = bin.stringToBytes(message);
+      else
+        message = utf8.stringToBytes(message);
+    else if (isBuffer(message))
+      message = Array.prototype.slice.call(message, 0);
+    else if (!Array.isArray(message))
+      message = message.toString();
+    // else, assume byte array already
+
+    var m = crypt.bytesToWords(message),
+        l = message.length * 8,
+        a =  1732584193,
+        b = -271733879,
+        c = -1732584194,
+        d =  271733878;
+
+    // Swap endian
+    for (var i = 0; i < m.length; i++) {
+      m[i] = ((m[i] <<  8) | (m[i] >>> 24)) & 0x00FF00FF |
+             ((m[i] << 24) | (m[i] >>>  8)) & 0xFF00FF00;
+    }
+
+    // Padding
+    m[l >>> 5] |= 0x80 << (l % 32);
+    m[(((l + 64) >>> 9) << 4) + 14] = l;
+
+    // Method shortcuts
+    var FF = md5._ff,
+        GG = md5._gg,
+        HH = md5._hh,
+        II = md5._ii;
+
+    for (var i = 0; i < m.length; i += 16) {
+
+      var aa = a,
+          bb = b,
+          cc = c,
+          dd = d;
+
+      a = FF(a, b, c, d, m[i+ 0],  7, -680876936);
+      d = FF(d, a, b, c, m[i+ 1], 12, -389564586);
+      c = FF(c, d, a, b, m[i+ 2], 17,  606105819);
+      b = FF(b, c, d, a, m[i+ 3], 22, -1044525330);
+      a = FF(a, b, c, d, m[i+ 4],  7, -176418897);
+      d = FF(d, a, b, c, m[i+ 5], 12,  1200080426);
+      c = FF(c, d, a, b, m[i+ 6], 17, -1473231341);
+      b = FF(b, c, d, a, m[i+ 7], 22, -45705983);
+      a = FF(a, b, c, d, m[i+ 8],  7,  1770035416);
+      d = FF(d, a, b, c, m[i+ 9], 12, -1958414417);
+      c = FF(c, d, a, b, m[i+10], 17, -42063);
+      b = FF(b, c, d, a, m[i+11], 22, -1990404162);
+      a = FF(a, b, c, d, m[i+12],  7,  1804603682);
+      d = FF(d, a, b, c, m[i+13], 12, -40341101);
+      c = FF(c, d, a, b, m[i+14], 17, -1502002290);
+      b = FF(b, c, d, a, m[i+15], 22,  1236535329);
+
+      a = GG(a, b, c, d, m[i+ 1],  5, -165796510);
+      d = GG(d, a, b, c, m[i+ 6],  9, -1069501632);
+      c = GG(c, d, a, b, m[i+11], 14,  643717713);
+      b = GG(b, c, d, a, m[i+ 0], 20, -373897302);
+      a = GG(a, b, c, d, m[i+ 5],  5, -701558691);
+      d = GG(d, a, b, c, m[i+10],  9,  38016083);
+      c = GG(c, d, a, b, m[i+15], 14, -660478335);
+      b = GG(b, c, d, a, m[i+ 4], 20, -405537848);
+      a = GG(a, b, c, d, m[i+ 9],  5,  568446438);
+      d = GG(d, a, b, c, m[i+14],  9, -1019803690);
+      c = GG(c, d, a, b, m[i+ 3], 14, -187363961);
+      b = GG(b, c, d, a, m[i+ 8], 20,  1163531501);
+      a = GG(a, b, c, d, m[i+13],  5, -1444681467);
+      d = GG(d, a, b, c, m[i+ 2],  9, -51403784);
+      c = GG(c, d, a, b, m[i+ 7], 14,  1735328473);
+      b = GG(b, c, d, a, m[i+12], 20, -1926607734);
+
+      a = HH(a, b, c, d, m[i+ 5],  4, -378558);
+      d = HH(d, a, b, c, m[i+ 8], 11, -2022574463);
+      c = HH(c, d, a, b, m[i+11], 16,  1839030562);
+      b = HH(b, c, d, a, m[i+14], 23, -35309556);
+      a = HH(a, b, c, d, m[i+ 1],  4, -1530992060);
+      d = HH(d, a, b, c, m[i+ 4], 11,  1272893353);
+      c = HH(c, d, a, b, m[i+ 7], 16, -155497632);
+      b = HH(b, c, d, a, m[i+10], 23, -1094730640);
+      a = HH(a, b, c, d, m[i+13],  4,  681279174);
+      d = HH(d, a, b, c, m[i+ 0], 11, -358537222);
+      c = HH(c, d, a, b, m[i+ 3], 16, -722521979);
+      b = HH(b, c, d, a, m[i+ 6], 23,  76029189);
+      a = HH(a, b, c, d, m[i+ 9],  4, -640364487);
+      d = HH(d, a, b, c, m[i+12], 11, -421815835);
+      c = HH(c, d, a, b, m[i+15], 16,  530742520);
+      b = HH(b, c, d, a, m[i+ 2], 23, -995338651);
+
+      a = II(a, b, c, d, m[i+ 0],  6, -198630844);
+      d = II(d, a, b, c, m[i+ 7], 10,  1126891415);
+      c = II(c, d, a, b, m[i+14], 15, -1416354905);
+      b = II(b, c, d, a, m[i+ 5], 21, -57434055);
+      a = II(a, b, c, d, m[i+12],  6,  1700485571);
+      d = II(d, a, b, c, m[i+ 3], 10, -1894986606);
+      c = II(c, d, a, b, m[i+10], 15, -1051523);
+      b = II(b, c, d, a, m[i+ 1], 21, -2054922799);
+      a = II(a, b, c, d, m[i+ 8],  6,  1873313359);
+      d = II(d, a, b, c, m[i+15], 10, -30611744);
+      c = II(c, d, a, b, m[i+ 6], 15, -1560198380);
+      b = II(b, c, d, a, m[i+13], 21,  1309151649);
+      a = II(a, b, c, d, m[i+ 4],  6, -145523070);
+      d = II(d, a, b, c, m[i+11], 10, -1120210379);
+      c = II(c, d, a, b, m[i+ 2], 15,  718787259);
+      b = II(b, c, d, a, m[i+ 9], 21, -343485551);
+
+      a = (a + aa) >>> 0;
+      b = (b + bb) >>> 0;
+      c = (c + cc) >>> 0;
+      d = (d + dd) >>> 0;
+    }
+
+    return crypt.endian([a, b, c, d]);
+  };
+
+  // Auxiliary functions
+  md5._ff  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & c | ~b & d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._gg  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & d | c & ~d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._hh  = function (a, b, c, d, x, s, t) {
+    var n = a + (b ^ c ^ d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._ii  = function (a, b, c, d, x, s, t) {
+    var n = a + (c ^ (b | ~d)) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+
+  // Package private blocksize
+  md5._blocksize = 16;
+  md5._digestsize = 16;
+
+  module.exports = function (message, options) {
+    if (message === undefined || message === null)
+      throw new Error('Illegal argument ' + message);
+
+    var digestbytes = crypt.wordsToBytes(md5(message, options));
+    return options && options.asBytes ? digestbytes :
+        options && options.asString ? bin.bytesToString(digestbytes) :
+        crypt.bytesToHex(digestbytes);
+  };
+
+})();
+>>>>>>> origin/develop-team
 
 	beforeFit: function() {
 		helpers.callback(this.options.beforeFit, [this]);
@@ -7621,7 +8417,13 @@ module.exports = Element.extend({
 			height: 0
 		};
 
+<<<<<<< HEAD
 		var labels = labelsFromTicks(me._ticks);
+=======
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		var opts = me.options;
 		var tickOpts = opts.ticks;
@@ -7633,6 +8435,7 @@ module.exports = Element.extend({
 		var tickFont = parseFontOptions(tickOpts);
 		var tickMarkLength = opts.gridLines.tickMarkLength;
 
+<<<<<<< HEAD
 		// Width
 		if (isHorizontal) {
 			// subtract the margins to line up with the chartArea if we are a full width scale
@@ -7640,6 +8443,11 @@ module.exports = Element.extend({
 		} else {
 			minSize.width = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
 		}
+=======
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		// height
 		if (isHorizontal) {
@@ -7654,12 +8462,18 @@ module.exports = Element.extend({
 			var scaleLabelPadding = helpers.options.toPadding(scaleLabelOpts.padding);
 			var deltaHeight = scaleLabelLineHeight + scaleLabelPadding.height;
 
+<<<<<<< HEAD
 			if (isHorizontal) {
 				minSize.height += deltaHeight;
 			} else {
 				minSize.width += deltaHeight;
 			}
 		}
+=======
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		// Don't bother fitting the ticks if we are not showing them
 		if (tickOpts.display && display) {
@@ -7672,9 +8486,15 @@ module.exports = Element.extend({
 				// A horizontal axis is more constrained by the height.
 				me.longestLabelWidth = largestTextWidth;
 
+<<<<<<< HEAD
 				var angleRadians = helpers.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
 				var sinRotation = Math.sin(angleRadians);
+=======
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 				// TODO - improve this calculation
 				var labelHeight = (sinRotation * largestTextWidth)
@@ -7684,9 +8504,15 @@ module.exports = Element.extend({
 
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
+<<<<<<< HEAD
 				me.ctx.font = tickFont.font;
 				var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.font);
 				var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.font);
+=======
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
@@ -7710,10 +8536,16 @@ module.exports = Element.extend({
 
 				minSize.width = Math.min(me.maxWidth, minSize.width + largestTextWidth);
 
+<<<<<<< HEAD
 				me.paddingTop = tickFont.size / 2;
 				me.paddingBottom = tickFont.size / 2;
 			}
 		}
+=======
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		me.handleMargins();
 
@@ -7721,6 +8553,7 @@ module.exports = Element.extend({
 		me.height = minSize.height;
 	},
 
+<<<<<<< HEAD
 	/**
 	 * Handle margins and padding interactions
 	 * @private
@@ -7734,6 +8567,11 @@ module.exports = Element.extend({
 			me.paddingBottom = Math.max(me.paddingBottom - me.margins.bottom, 0);
 		}
 	},
+=======
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	afterFit: function() {
 		helpers.callback(this.options.afterFit, [this]);
@@ -7747,6 +8585,7 @@ module.exports = Element.extend({
 		return (this.options.fullWidth);
 	},
 
+<<<<<<< HEAD
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
 		// Null and undefined values first
@@ -8171,6 +9010,10 @@ module.exports = Element.extend({
 
 /***/ }),
 /* 26 */
+=======
+/***/ }),
+/* 52 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8253,7 +9096,11 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 27 */
+=======
+/* 53 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8386,15 +9233,31 @@ exports.Notification = Notification;
 //# sourceMappingURL=Notification.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 28 */
+=======
+/* 54 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var isScheduler_1 = __webpack_require__(14);
 var of_1 = __webpack_require__(217);
 var from_1 = __webpack_require__(216);
 var concatAll_1 = __webpack_require__(56);
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var FromObservable_1 = __webpack_require__(198);
+var isArray_1 = __webpack_require__(13);
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which sequentially emits all values from given
@@ -8503,7 +9366,11 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 29 */
+=======
+/* 55 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8598,7 +9465,11 @@ var MapSubscriber = (function (_super) {
 //# sourceMappingURL=map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 30 */
+=======
+/* 56 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8618,7 +9489,139 @@ var OuterSubscriber_1 = __webpack_require__(3);
  * <span class="informal">Maps each value to an Observable, then flattens all of
  * these inner Observables using {@link mergeAll}.</span>
  *
+<<<<<<< HEAD
  * <img src="./img/mergeMap.png" width="100%">
+=======
+ * <img src="./img/scan.png" width="100%">
+ *
+ * Combines together all values emitted on the source, using an accumulator
+ * function that knows how to join a new source value into the accumulation from
+ * the past. Is similar to {@link reduce}, but emits the intermediate
+ * accumulations.
+ *
+ * Returns an Observable that applies a specified `accumulator` function to each
+ * item emitted by the source Observable. If a `seed` value is specified, then
+ * that value will be used as the initial value for the accumulator. If no seed
+ * value is specified, the first item of the source is used as the seed.
+ *
+ * @example <caption>Count the number of click events</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var ones = clicks.mapTo(1);
+ * var seed = 0;
+ * var count = ones.scan((acc, one) => acc + one, seed);
+ * count.subscribe(x => console.log(x));
+ *
+ * @see {@link expand}
+ * @see {@link mergeScan}
+ * @see {@link reduce}
+ *
+ * @param {function(acc: R, value: T, index: number): R} accumulator
+ * The accumulator function called on each source value.
+ * @param {T|R} [seed] The initial accumulation value.
+ * @return {Observable<R>} An observable of the accumulated values.
+ * @method scan
+ * @owner Observable
+ */
+function scan(accumulator, seed) {
+    var hasSeed = false;
+    // providing a seed of `undefined` *should* be valid and trigger
+    // hasSeed! so don't use `seed !== undefined` checks!
+    // For this reason, we have to check it here at the original call site
+    // otherwise inside Operator/Subscriber we won't know if `undefined`
+    // means they didn't provide anything or if they literally provided `undefined`
+    if (arguments.length >= 2) {
+        hasSeed = true;
+    }
+    return function scanOperatorFunction(source) {
+        return source.lift(new ScanOperator(accumulator, seed, hasSeed));
+    };
+}
+exports.scan = scan;
+var ScanOperator = (function () {
+    function ScanOperator(accumulator, seed, hasSeed) {
+        if (hasSeed === void 0) { hasSeed = false; }
+        this.accumulator = accumulator;
+        this.seed = seed;
+        this.hasSeed = hasSeed;
+    }
+    ScanOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new ScanSubscriber(subscriber, this.accumulator, this.seed, this.hasSeed));
+    };
+    return ScanOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var ScanSubscriber = (function (_super) {
+    __extends(ScanSubscriber, _super);
+    function ScanSubscriber(destination, accumulator, _seed, hasSeed) {
+        _super.call(this, destination);
+        this.accumulator = accumulator;
+        this._seed = _seed;
+        this.hasSeed = hasSeed;
+        this.index = 0;
+    }
+    Object.defineProperty(ScanSubscriber.prototype, "seed", {
+        get: function () {
+            return this._seed;
+        },
+        set: function (value) {
+            this.hasSeed = true;
+            this._seed = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ScanSubscriber.prototype._next = function (value) {
+        if (!this.hasSeed) {
+            this.seed = value;
+            this.destination.next(value);
+        }
+        else {
+            return this._tryNext(value);
+        }
+    };
+    ScanSubscriber.prototype._tryNext = function (value) {
+        var index = this.index++;
+        var result;
+        try {
+            result = this.accumulator(this.seed, value, index);
+        }
+        catch (err) {
+            this.destination.error(err);
+        }
+        this.seed = result;
+        this.destination.next(result);
+    };
+    return ScanSubscriber;
+}(Subscriber_1.Subscriber));
+//# sourceMappingURL=scan.js.map
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+/* tslint:enable:max-line-length */
+/**
+ * Projects each source value to an Observable which is merged in the output
+ * Observable, emitting values only from the most recently projected Observable.
+ *
+ * <span class="informal">Maps each value to an Observable, then flattens all of
+ * these inner Observables using {@link switch}.</span>
+ *
+ * <img src="./img/switchMap.png" width="100%">
+>>>>>>> origin/develop-team
  *
  * Returns an Observable that emits items based on applying a function that you
  * supply to each item emitted by the source Observable, where that function
@@ -8777,7 +9780,11 @@ exports.MergeMapSubscriber = MergeMapSubscriber;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 31 */
+=======
+/* 58 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8932,6 +9939,7 @@ var AsyncAction = (function (_super) {
         // or the action has been rescheduled before it's executed, clear the interval id
         return root_1.root.clearInterval(id) && undefined || undefined;
     };
+<<<<<<< HEAD
     /**
      * Immediately executes this action and the `work` it contains.
      * @return {any}
@@ -9001,10 +10009,61 @@ exports.AsyncAction = AsyncAction;
 
 /***/ }),
 /* 33 */
+=======
+    return TakeLastSubscriber;
+}(Subscriber_1.Subscriber));
+//# sourceMappingURL=takeLast.js.map
+
+/***/ }),
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var async_1 = __webpack_require__(5);
+var map_1 = __webpack_require__(21);
+/**
+ * @param scheduler
+ * @return {Observable<Timestamp<any>>|WebSocketSubject<T>|Observable<T>}
+ * @method timestamp
+ * @owner Observable
+ */
+function timestamp(scheduler) {
+    if (scheduler === void 0) { scheduler = async_1.async; }
+    return map_1.map(function (value) { return new Timestamp(value, scheduler.now()); });
+    // return (source: Observable<T>) => source.lift(new TimestampOperator(scheduler));
+}
+exports.timestamp = timestamp;
+var Timestamp = (function () {
+    function Timestamp(value, timestamp) {
+        this.value = value;
+        this.timestamp = timestamp;
+    }
+    return Timestamp;
+}());
+exports.Timestamp = Timestamp;
+;
+//# sourceMappingURL=timestamp.js.map
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* tslint:disable:no-empty */
+function noop() { }
+exports.noop = noop;
+//# sourceMappingURL=noop.js.map
+
+/***/ }),
+/* 61 */
+>>>>>>> origin/develop-team
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+<<<<<<< HEAD
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -9029,6 +10088,25 @@ var AsyncScheduler = (function (_super) {
          * @type {any}
          */
         this.scheduled = undefined;
+=======
+var noop_1 = __webpack_require__(60);
+/* tslint:enable:max-line-length */
+function pipe() {
+    var fns = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        fns[_i - 0] = arguments[_i];
+    }
+    return pipeFromArray(fns);
+}
+exports.pipe = pipe;
+/* @internal */
+function pipeFromArray(fns) {
+    if (!fns) {
+        return noop_1.noop;
+    }
+    if (fns.length === 1) {
+        return fns[0];
+>>>>>>> origin/develop-team
     }
     AsyncScheduler.prototype.flush = function (action) {
         var actions = this.actions;
@@ -9057,7 +10135,11 @@ exports.AsyncScheduler = AsyncScheduler;
 //# sourceMappingURL=AsyncScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 34 */
+=======
+/* 62 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9101,11 +10183,16 @@ exports.$$iterator = exports.iterator;
 //# sourceMappingURL=iterator.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 35 */
+=======
+/* 63 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -9128,6 +10215,27 @@ var ArgumentOutOfRangeError = (function (_super) {
         this.name = err.name = 'ArgumentOutOfRangeError';
         this.stack = err.stack;
         this.message = err.message;
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+var rxjs_1 = __webpack_require__(321);
+var IStore = /** @class */ (function () {
+    //@ngInject
+    function IStore(initialState, reducer, middleware) {
+        var _this = this;
+        this.initialState = initialState;
+        this.reducer = reducer;
+        this.middleware = middleware;
+        this.dispatch = function (action) { return _this.actionStream$.next((action)); };
+        this.getInstance = function () {
+            return _this.store$;
+        };
+        this.actionStream$ = new rxjs_1.Subject();
+        this.store$ = this.actionStream$.startWith(initialState).scan(reducer);
+        if (middleware) {
+            this.store$;
+        }
+        return this;
+>>>>>>> origin/develop-team
     }
     return ArgumentOutOfRangeError;
 }(Error));
@@ -9135,11 +10243,16 @@ exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError;
 //# sourceMappingURL=ArgumentOutOfRangeError.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 36 */
+=======
+/* 64 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var isArray_1 = __webpack_require__(16);
 function isNumeric(val) {
     // parseFloat NaNs numeric-cast false positives (null|true|false|"")
@@ -9155,6 +10268,92 @@ exports.isNumeric = isNumeric;
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
+=======
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseService = /** @class */ (function () {
+    function BaseService() {
+    }
+    return BaseService;
+}());
+exports.BaseService = BaseService;
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(311);
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)))
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports) {
+>>>>>>> origin/develop-team
 
 "use strict";
 
@@ -9200,6 +10399,7 @@ var helpers = {
 		return Object.prototype.toString.call(value) === '[object Array]';
 	},
 
+<<<<<<< HEAD
 	/**
 	 * Returns true if `value` is an object (excluding null), else returns false.
 	 * @param {*} value - The value to test.
@@ -9209,6 +10409,11 @@ var helpers = {
 	isObject: function(value) {
 		return value !== null && Object.prototype.toString.call(value) === '[object Object]';
 	},
+=======
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	/**
 	 * Returns `value` if defined, else returns `defaultValue`.
@@ -9294,6 +10499,7 @@ var helpers = {
 			v0 = a0[i];
 			v1 = a1[i];
 
+<<<<<<< HEAD
 			if (v0 instanceof Array && v1 instanceof Array) {
 				if (!helpers.arrayEquals(v0, v1)) {
 					return false;
@@ -9303,6 +10509,11 @@ var helpers = {
 				return false;
 			}
 		}
+=======
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		return true;
 	},
@@ -9342,12 +10553,18 @@ var helpers = {
 		var tval = target[key];
 		var sval = source[key];
 
+<<<<<<< HEAD
 		if (helpers.isObject(tval) && helpers.isObject(sval)) {
 			helpers.merge(tval, sval, options);
 		} else {
 			target[key] = helpers.clone(sval);
 		}
 	},
+=======
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	/**
 	 * Merges source[key] in target[key] only if target[key] is undefined.
@@ -9397,8 +10614,14 @@ var helpers = {
 			}
 		}
 
+<<<<<<< HEAD
 		return target;
 	},
+=======
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	/**
 	 * Recursively deep copies `source` properties into `target` *only* if not defined in target.
@@ -9456,7 +10679,13 @@ var helpers = {
 
 module.exports = helpers;
 
+<<<<<<< HEAD
 // DEPRECATIONS
+=======
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 /**
  * Provided for backward compatibility, use Chart.helpers.callback instead.
@@ -9499,7 +10728,11 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 38 */
+=======
+/* 72 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9558,7 +10791,11 @@ exports.AsyncSubject = AsyncSubject;
 //# sourceMappingURL=AsyncSubject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 39 */
+=======
+/* 73 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9762,7 +10999,11 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 41 */
+=======
+/* 74 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9978,7 +11219,11 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 43 */
+=======
+/* 75 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10099,7 +11344,11 @@ exports.ObserveOnMessage = ObserveOnMessage;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 44 */
+=======
+/* 76 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10193,6 +11442,7 @@ var ThrottleSubscriber = (function (_super) {
                 this._trailingValue = value;
             }
         }
+<<<<<<< HEAD
         else {
             var duration = this.tryDurationSelector(value);
             if (duration) {
@@ -10203,13 +11453,129 @@ var ThrottleSubscriber = (function (_super) {
                 if (this._trailing) {
                     this._hasTrailingValue = true;
                     this._trailingValue = value;
+=======
+    });
+
+    return be;
+
+})));
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    var bg = moment.defineLocale('bg', {
+        months : 'януари_февруари_март_април_май_юни_юли_август_септември_октомври_ноември_декември'.split('_'),
+        monthsShort : 'янр_фев_мар_апр_май_юни_юли_авг_сеп_окт_ное_дек'.split('_'),
+        weekdays : 'неделя_понеделник_вторник_сряда_четвъртък_петък_събота'.split('_'),
+        weekdaysShort : 'нед_пон_вто_сря_чет_пет_съб'.split('_'),
+        weekdaysMin : 'нд_пн_вт_ср_чт_пт_сб'.split('_'),
+        longDateFormat : {
+            LT : 'H:mm',
+            LTS : 'H:mm:ss',
+            L : 'D.MM.YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY H:mm',
+            LLLL : 'dddd, D MMMM YYYY H:mm'
+        },
+        calendar : {
+            sameDay : '[Днес в] LT',
+            nextDay : '[Утре в] LT',
+            nextWeek : 'dddd [в] LT',
+            lastDay : '[Вчера в] LT',
+            lastWeek : function () {
+                switch (this.day()) {
+                    case 0:
+                    case 3:
+                    case 6:
+                        return '[В изминалата] dddd [в] LT';
+                    case 1:
+                    case 2:
+                    case 4:
+                    case 5:
+                        return '[В изминалия] dddd [в] LT';
+>>>>>>> origin/develop-team
                 }
             }
         }
+<<<<<<< HEAD
     };
     ThrottleSubscriber.prototype.tryDurationSelector = function (value) {
         try {
             return this.durationSelector(value);
+=======
+    });
+
+    return bg;
+
+})));
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    var bm = moment.defineLocale('bm', {
+        months : 'Zanwuyekalo_Fewuruyekalo_Marisikalo_Awirilikalo_Mɛkalo_Zuwɛnkalo_Zuluyekalo_Utikalo_Sɛtanburukalo_ɔkutɔburukalo_Nowanburukalo_Desanburukalo'.split('_'),
+        monthsShort : 'Zan_Few_Mar_Awi_Mɛ_Zuw_Zul_Uti_Sɛt_ɔku_Now_Des'.split('_'),
+        weekdays : 'Kari_Ntɛnɛn_Tarata_Araba_Alamisa_Juma_Sibiri'.split('_'),
+        weekdaysShort : 'Kar_Ntɛ_Tar_Ara_Ala_Jum_Sib'.split('_'),
+        weekdaysMin : 'Ka_Nt_Ta_Ar_Al_Ju_Si'.split('_'),
+        longDateFormat : {
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'DD/MM/YYYY',
+            LL : 'MMMM [tile] D [san] YYYY',
+            LLL : 'MMMM [tile] D [san] YYYY [lɛrɛ] HH:mm',
+            LLLL : 'dddd MMMM [tile] D [san] YYYY [lɛrɛ] HH:mm'
+        },
+        calendar : {
+            sameDay : '[Bi lɛrɛ] LT',
+            nextDay : '[Sini lɛrɛ] LT',
+            nextWeek : 'dddd [don lɛrɛ] LT',
+            lastDay : '[Kunu lɛrɛ] LT',
+            lastWeek : 'dddd [tɛmɛnen lɛrɛ] LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : '%s kɔnɔ',
+            past : 'a bɛ %s bɔ',
+            s : 'sanga dama dama',
+            ss : 'sekondi %d',
+            m : 'miniti kelen',
+            mm : 'miniti %d',
+            h : 'lɛrɛ kelen',
+            hh : 'lɛrɛ %d',
+            d : 'tile kelen',
+            dd : 'tile %d',
+            M : 'kalo kelen',
+            MM : 'kalo %d',
+            y : 'san kelen',
+            yy : 'san %d'
+        },
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+>>>>>>> origin/develop-team
         }
         catch (err) {
             this.destination.error(err);
@@ -10247,7 +11613,11 @@ var ThrottleSubscriber = (function (_super) {
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 45 */
+=======
+/* 79 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10566,7 +11936,11 @@ exports.$$observable = exports.observable;
 //# sourceMappingURL=observable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 47 */
+=======
+/* 80 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10649,7 +12023,11 @@ exports.ObjectUnsubscribedError = ObjectUnsubscribedError;
 //# sourceMappingURL=ObjectUnsubscribedError.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 50 */
+=======
+/* 81 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10839,7 +12217,11 @@ exports.isFunction = isFunction;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 53 */
+=======
+/* 82 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10903,7 +12285,11 @@ exports.ScalarObservable = ScalarObservable;
 //# sourceMappingURL=ScalarObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 54 */
+=======
+/* 83 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10998,7 +12384,11 @@ exports.RaceSubscriber = RaceSubscriber;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 55 */
+=======
+/* 84 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11122,7 +12512,11 @@ var AuditSubscriber = (function (_super) {
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 56 */
+=======
+/* 85 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11183,7 +12577,11 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 57 */
+=======
+/* 86 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11256,7 +12654,11 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 58 */
+=======
+/* 87 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11339,7 +12741,11 @@ var DefaultIfEmptySubscriber = (function (_super) {
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 59 */
+=======
+/* 88 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11453,7 +12859,11 @@ var DistinctUntilChangedSubscriber = (function (_super) {
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 60 */
+=======
+/* 89 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11659,7 +13069,11 @@ exports.FindValueSubscriber = FindValueSubscriber;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 62 */
+=======
+/* 90 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11893,7 +13307,11 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=refCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 64 */
+=======
+/* 91 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12314,7 +13732,11 @@ exports.Timestamp = Timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 68 */
+=======
+/* 92 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12543,7 +13965,11 @@ exports.BaseTransient = BaseTransient;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 71 */
+=======
+/* 93 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12591,8 +14017,13 @@ exports.BaseService = BaseService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 73 */
 /***/ (function(module, exports) {
+=======
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 var g;
 
@@ -12657,7 +14088,11 @@ module.exports = charenc;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 75 */
+=======
+/* 95 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12672,9 +14107,15 @@ var exports = module.exports = Element.extend({
 	easing: '', // the easing to use for this animation
 	render: null, // render function used by the animation service
 
+<<<<<<< HEAD
 	onAnimationProgress: null, // user specified callback to fire on each step of the animation
 	onAnimationComplete: null, // user specified callback to fire when the animation finishes
 });
+=======
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 // DEPRECATIONS
 
@@ -12714,8 +14155,14 @@ Object.defineProperty(exports.prototype, 'chartInstance', {
 /* global window: false */
 
 
+<<<<<<< HEAD
 var defaults = __webpack_require__(6);
 var helpers = __webpack_require__(5);
+=======
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 defaults._set('global', {
 	animation: {
@@ -12757,11 +14204,17 @@ module.exports = {
 
 		animations.push(animation);
 
+<<<<<<< HEAD
 		// If there are no animations queued, manually kickstart a digest, for lack of a better word
 		if (animations.length === 1) {
 			this.requestAnimationFrame();
 		}
 	},
+=======
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	cancelAnimation: function(chart) {
 		var index = helpers.findIndex(this.animations, function(animation) {
@@ -12804,7 +14257,13 @@ module.exports = {
 
 		var endTime = Date.now();
 
+<<<<<<< HEAD
 		me.dropFrames += (endTime - startTime) / me.frameDuration;
+=======
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		// Do we have more stuff to animate?
 		if (me.animations.length > 0) {
@@ -12843,7 +14302,11 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 77 */
+=======
+/* 100 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12877,10 +14340,16 @@ function parseVisibleItems(chart, handler) {
 	var datasets = chart.data.datasets;
 	var meta, i, j, ilen, jlen;
 
+<<<<<<< HEAD
 	for (i = 0, ilen = datasets.length; i < ilen; ++i) {
 		if (!chart.isDatasetVisible(i)) {
 			continue;
 		}
+=======
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		meta = chart.getDatasetMeta(i);
 		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
@@ -12942,6 +14411,7 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 	return nearestItems;
 }
 
+<<<<<<< HEAD
 /**
  * Get a distance metric function for two points based on the
  * axis mode setting
@@ -12950,6 +14420,11 @@ function getNearestItems(chart, position, intersect, distanceMetric) {
 function getDistanceMetricForAxis(axis) {
 	var useX = axis.indexOf('x') !== -1;
 	var useY = axis.indexOf('y') !== -1;
+=======
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	return function(pt1, pt2) {
 		var deltaX = useX ? Math.abs(pt1.x - pt2.x) : 0;
@@ -13015,6 +14490,7 @@ module.exports = {
 			return elements.slice(0, 1);
 		},
 
+<<<<<<< HEAD
 		/**
 		 * @function Chart.Interaction.modes.label
 		 * @deprecated since version 2.4.0
@@ -13022,6 +14498,11 @@ module.exports = {
 		 * @private
 		 */
 		label: indexMode,
+=======
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		/**
 		 * Returns items at the same index. If the options.intersect parameter is true, we only return items if we intersect something
@@ -13180,7 +14661,11 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 78 */
+=======
+/* 104 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13193,6 +14678,7 @@ defaults._set('global', {
 	plugins: {}
 });
 
+<<<<<<< HEAD
 /**
  * The plugin service singleton
  * @namespace Chart.plugins
@@ -13204,6 +14690,123 @@ module.exports = {
 	 * @private
 	 */
 	_plugins: [],
+=======
+    var et = moment.defineLocale('et', {
+        months        : 'jaanuar_veebruar_märts_aprill_mai_juuni_juuli_august_september_oktoober_november_detsember'.split('_'),
+        monthsShort   : 'jaan_veebr_märts_apr_mai_juuni_juuli_aug_sept_okt_nov_dets'.split('_'),
+        weekdays      : 'pühapäev_esmaspäev_teisipäev_kolmapäev_neljapäev_reede_laupäev'.split('_'),
+        weekdaysShort : 'P_E_T_K_N_R_L'.split('_'),
+        weekdaysMin   : 'P_E_T_K_N_R_L'.split('_'),
+        longDateFormat : {
+            LT   : 'H:mm',
+            LTS : 'H:mm:ss',
+            L    : 'DD.MM.YYYY',
+            LL   : 'D. MMMM YYYY',
+            LLL  : 'D. MMMM YYYY H:mm',
+            LLLL : 'dddd, D. MMMM YYYY H:mm'
+        },
+        calendar : {
+            sameDay  : '[Täna,] LT',
+            nextDay  : '[Homme,] LT',
+            nextWeek : '[Järgmine] dddd LT',
+            lastDay  : '[Eile,] LT',
+            lastWeek : '[Eelmine] dddd LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : '%s pärast',
+            past   : '%s tagasi',
+            s      : processRelativeTime,
+            ss     : processRelativeTime,
+            m      : processRelativeTime,
+            mm     : processRelativeTime,
+            h      : processRelativeTime,
+            hh     : processRelativeTime,
+            d      : processRelativeTime,
+            dd     : '%d päeva',
+            M      : processRelativeTime,
+            MM     : processRelativeTime,
+            y      : processRelativeTime,
+            yy     : processRelativeTime
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return et;
+
+})));
+
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    var eu = moment.defineLocale('eu', {
+        months : 'urtarrila_otsaila_martxoa_apirila_maiatza_ekaina_uztaila_abuztua_iraila_urria_azaroa_abendua'.split('_'),
+        monthsShort : 'urt._ots._mar._api._mai._eka._uzt._abu._ira._urr._aza._abe.'.split('_'),
+        monthsParseExact : true,
+        weekdays : 'igandea_astelehena_asteartea_asteazkena_osteguna_ostirala_larunbata'.split('_'),
+        weekdaysShort : 'ig._al._ar._az._og._ol._lr.'.split('_'),
+        weekdaysMin : 'ig_al_ar_az_og_ol_lr'.split('_'),
+        weekdaysParseExact : true,
+        longDateFormat : {
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'YYYY-MM-DD',
+            LL : 'YYYY[ko] MMMM[ren] D[a]',
+            LLL : 'YYYY[ko] MMMM[ren] D[a] HH:mm',
+            LLLL : 'dddd, YYYY[ko] MMMM[ren] D[a] HH:mm',
+            l : 'YYYY-M-D',
+            ll : 'YYYY[ko] MMM D[a]',
+            lll : 'YYYY[ko] MMM D[a] HH:mm',
+            llll : 'ddd, YYYY[ko] MMM D[a] HH:mm'
+        },
+        calendar : {
+            sameDay : '[gaur] LT[etan]',
+            nextDay : '[bihar] LT[etan]',
+            nextWeek : 'dddd LT[etan]',
+            lastDay : '[atzo] LT[etan]',
+            lastWeek : '[aurreko] dddd LT[etan]',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : '%s barru',
+            past : 'duela %s',
+            s : 'segundo batzuk',
+            ss : '%d segundo',
+            m : 'minutu bat',
+            mm : '%d minutu',
+            h : 'ordu bat',
+            hh : '%d ordu',
+            d : 'egun bat',
+            dd : '%d egun',
+            M : 'hilabete bat',
+            MM : '%d hilabete',
+            y : 'urte bat',
+            yy : '%d urte'
+        },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
+        }
+    });
+>>>>>>> origin/develop-team
 
 	/**
 	 * This identifier is used to invalidate the descriptors cache attached to each chart
@@ -13228,6 +14831,7 @@ module.exports = {
 		this._cacheId++;
 	},
 
+<<<<<<< HEAD
 	/**
 	 * Unregisters the given plugin(s) only if registered.
 	 * @param {Array|Object} plugins plugin instance(s).
@@ -13240,6 +14844,11 @@ module.exports = {
 				p.splice(idx, 1);
 			}
 		});
+=======
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		this._cacheId++;
 	},
@@ -13312,10 +14921,16 @@ module.exports = {
 			return cache.descriptors;
 		}
 
+<<<<<<< HEAD
 		var plugins = [];
 		var descriptors = [];
 		var config = (chart && chart.config) || {};
 		var options = (config.options && config.options.plugins) || {};
+=======
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		this._plugins.concat(config.plugins || []).forEach(function(plugin) {
 			var idx = plugins.indexOf(plugin);
@@ -13569,7 +15184,11 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 79 */
+=======
+/* 108 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13632,8 +15251,14 @@ defaults._set('global', {
 			},
 			afterTitle: helpers.noop,
 
+<<<<<<< HEAD
 			// Args are: (tooltipItems, data)
 			beforeBody: helpers.noop,
+=======
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 			// Args are: (tooltipItem, data)
 			beforeLabel: helpers.noop,
@@ -13704,6 +15329,7 @@ var positioners = {
 		};
 	},
 
+<<<<<<< HEAD
 	/**
 	 * Gets the tooltip position nearest of the item nearest to the event position
 	 * @function Chart.Tooltip.positioners.nearest
@@ -13716,6 +15342,11 @@ var positioners = {
 		var y = eventPosition.y;
 		var minDistance = Number.POSITIVE_INFINITY;
 		var i, len, nearestElement;
+=======
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		for (i = 0, len = elements.length; i < len; ++i) {
 			var el = elements[i];
@@ -13778,6 +15409,12 @@ function splitNewlines(str) {
 	return str;
 }
 
+<<<<<<< HEAD
+=======
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 // Private helper to create a tooltip item model
 // @param element : the chart element (point, arc, bar) to create the tooltip item for
@@ -13857,8 +15494,14 @@ function getBaseModel(tooltipOpts) {
 function getTooltipSize(tooltip, model) {
 	var ctx = tooltip._chart.ctx;
 
+<<<<<<< HEAD
 	var height = model.yPadding * 2; // Tooltip Padding
 	var width = 0;
+=======
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	// Count of all lines in the body
 	var body = model.body;
@@ -13906,9 +15549,15 @@ function getTooltipSize(tooltip, model) {
 	// Reset back to 0
 	widthPadding = 0;
 
+<<<<<<< HEAD
 	// Footer width
 	ctx.font = helpers.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
 	helpers.each(model.footer, maxLineWidth);
+=======
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	// Add padding
 	width += 2 * model.xPadding;
@@ -14008,6 +15657,7 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 	var paddingAndSize = caretSize + caretPadding;
 	var radiusAndPadding = cornerRadius + caretPadding;
 
+<<<<<<< HEAD
 	if (xAlign === 'right') {
 		x -= size.width;
 	} else if (xAlign === 'center') {
@@ -14019,6 +15669,11 @@ function getBackgroundPoint(vm, size, alignment, chart) {
 			x = 0;
 		}
 	}
+=======
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	if (yAlign === 'top') {
 		y += paddingAndSize;
@@ -14099,8 +15754,14 @@ var exports = module.exports = Element.extend({
 			pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data));
 			pushOrConcat(bodyItem.after, splitNewlines(callbacks.afterLabel.call(me, tooltipItem, data)));
 
+<<<<<<< HEAD
 			bodyItems.push(bodyItem);
 		});
+=======
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		return bodyItems;
 	},
@@ -14132,12 +15793,18 @@ var exports = module.exports = Element.extend({
 		var me = this;
 		var opts = me._options;
 
+<<<<<<< HEAD
 		// Need to regenerate the model because its faster than using extend and it is necessary due to the optimization in Chart.Element.transition
 		// that does _view = _model if ease === 1. This causes the 2nd tooltip update to set properties in both the view and model at the same time
 		// which breaks any animations.
 		var existingModel = me._model;
 		var model = me._model = getBaseModel(opts);
 		var active = me._active;
+=======
+/***/ }),
+/* 116 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		var data = me._data;
 
@@ -14187,11 +15854,17 @@ var exports = module.exports = Element.extend({
 				});
 			}
 
+<<<<<<< HEAD
 			// Determine colors for boxes
 			helpers.each(tooltipItems, function(tooltipItem) {
 				labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
 				labelTextColors.push(opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
 			});
+=======
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
 			// Build the Text Lines
@@ -14233,9 +15906,15 @@ var exports = module.exports = Element.extend({
 
 		me._model = model;
 
+<<<<<<< HEAD
 		if (changed && opts.custom) {
 			opts.custom.call(me, model);
 		}
+=======
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		return me;
 	},
@@ -14309,8 +15988,14 @@ var exports = module.exports = Element.extend({
 		return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
 	},
 
+<<<<<<< HEAD
 	drawTitle: function(pt, vm, ctx, opacity) {
 		var title = vm.title;
+=======
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		if (title.length) {
 			ctx.textAlign = vm._titleAlign;
@@ -14350,9 +16035,15 @@ var exports = module.exports = Element.extend({
 			pt.y += bodyFontSize + bodySpacing;
 		};
 
+<<<<<<< HEAD
 		// Before body lines
 		ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
 		helpers.each(vm.beforeBody, fillLineOfText);
+=======
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		var drawColorBoxes = vm.displayColors;
 		xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
@@ -14390,10 +16081,16 @@ var exports = module.exports = Element.extend({
 		// Reset back to 0 for after body
 		xLinePadding = 0;
 
+<<<<<<< HEAD
 		// After body lines
 		helpers.each(vm.afterBody, fillLineOfText);
 		pt.y -= bodySpacing; // Remove last body spacing
 	},
+=======
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	drawFooter: function(pt, vm, ctx, opacity) {
 		var footer = vm.footer;
@@ -14452,10 +16149,16 @@ var exports = module.exports = Element.extend({
 
 		ctx.fill();
 
+<<<<<<< HEAD
 		if (vm.borderWidth > 0) {
 			ctx.stroke();
 		}
 	},
+=======
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	draw: function() {
 		var ctx = this._chart.ctx;
@@ -14488,8 +16191,14 @@ var exports = module.exports = Element.extend({
 			pt.x += vm.xPadding;
 			pt.y += vm.yPadding;
 
+<<<<<<< HEAD
 			// Titles
 			this.drawTitle(pt, vm, ctx, opacity);
+=======
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 			// Body
 			this.drawBody(pt, vm, ctx, opacity);
@@ -14512,12 +16221,18 @@ var exports = module.exports = Element.extend({
 
 		me._lastActive = me._lastActive || [];
 
+<<<<<<< HEAD
 		// Find Active Elements for tooltips
 		if (e.type === 'mouseout') {
 			me._active = [];
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
 		}
+=======
+/***/ }),
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		// Remember Last Actives
 		changed = !helpers.arrayEquals(me._active, me._lastActive);
@@ -14549,7 +16264,11 @@ exports.positioners = positioners;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 80 */
+=======
+/* 125 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14573,6 +16292,7 @@ module.exports = helpers.extend({
 	 */
 	initialize: function() {},
 
+<<<<<<< HEAD
 	/**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
@@ -14581,6 +16301,11 @@ module.exports = helpers.extend({
 	 * @returns {CanvasRenderingContext2D} context2d instance
 	 */
 	acquireContext: function() {},
+=======
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	/**
 	 * Called at chart destruction time, releases any resources associated to the context
@@ -14630,7 +16355,11 @@ module.exports = helpers.extend({
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 81 */
+=======
+/* 127 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
@@ -14682,6 +16411,7 @@ var Color = function (obj) {
 	}
 };
 
+<<<<<<< HEAD
 Color.prototype = {
 	isValid: function () {
 		return this.valid;
@@ -14701,6 +16431,16 @@ Color.prototype = {
 	cmyk: function () {
 		return this.setSpace('cmyk', arguments);
 	},
+=======
+})));
+
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+>>>>>>> origin/develop-team
 
 	rgbArray: function () {
 		return this.values.rgb;
@@ -14835,11 +16575,17 @@ Color.prototype = {
 		return (lum2 + 0.05) / (lum1 + 0.05);
 	},
 
+<<<<<<< HEAD
 	level: function (color2) {
 		var contrastRatio = this.contrast(color2);
 		if (contrastRatio >= 7.1) {
 			return 'AAA';
 		}
+=======
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		return (contrastRatio >= 4.5) ? 'AA' : '';
 	},
@@ -14885,12 +16631,18 @@ Color.prototype = {
 		return this;
 	},
 
+<<<<<<< HEAD
 	desaturate: function (ratio) {
 		var hsl = this.values.hsl;
 		hsl[1] -= hsl[1] * ratio;
 		this.setValues('hsl', hsl);
 		return this;
 	},
+=======
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 	whiten: function (ratio) {
 		var hwb = this.values.hwb;
@@ -14946,8 +16698,14 @@ Color.prototype = {
 		var w = 2 * p - 1;
 		var a = color1.alpha() - color2.alpha();
 
+<<<<<<< HEAD
 		var w1 = (((w * a === -1) ? w : (w + a) / (1 + w * a)) + 1) / 2.0;
 		var w2 = 1 - w1;
+=======
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 		return this
 			.rgb(
@@ -15121,7 +16879,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 82 */
+=======
+/* 132 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15198,7 +16960,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 83 */
+=======
+/* 133 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15261,7 +17027,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 84 */
+=======
+/* 134 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15324,7 +17094,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 85 */
+=======
+/* 135 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15450,7 +17224,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 86 */
+=======
+/* 136 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15513,7 +17291,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 87 */
+=======
+/* 137 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15621,7 +17403,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 88 */
+=======
+/* 138 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15684,7 +17470,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 89 */
+=======
+/* 139 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15823,7 +17613,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 90 */
+=======
+/* 140 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15932,7 +17726,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 91 */
+=======
+/* 141 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16068,7 +17866,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 92 */
+=======
+/* 142 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16162,7 +17964,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 93 */
+=======
+/* 143 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16224,7 +18030,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 94 */
+=======
+/* 144 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16347,7 +18157,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 95 */
+=======
+/* 145 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16470,7 +18284,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 96 */
+=======
+/* 146 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16582,7 +18400,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 97 */
+=======
+/* 147 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16737,7 +18559,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 98 */
+=======
+/* 148 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16829,7 +18655,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 99 */
+=======
+/* 149 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17005,7 +18835,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 100 */
+=======
+/* 150 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17072,7 +18906,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 101 */
+=======
+/* 151 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17156,7 +18994,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 102 */
+=======
+/* 152 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17220,7 +19062,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 103 */
+=======
+/* 153 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17380,7 +19226,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 105 */
+=======
+/* 154 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17460,7 +19310,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 106 */
+=======
+/* 155 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17563,7 +19417,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 107 */
+=======
+/* 156 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17667,7 +19525,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 108 */
+=======
+/* 157 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17738,7 +19600,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 109 */
+=======
+/* 158 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17809,7 +19675,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 110 */
+=======
+/* 159 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17876,7 +19746,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 111 */
+=======
+/* 160 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18018,7 +19892,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 113 */
+=======
+/* 161 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18155,7 +20033,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 115 */
+=======
+/* 162 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18230,7 +20112,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 116 */
+=======
+/* 163 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18326,7 +20212,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 117 */
+=======
+/* 164 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18518,7 +20408,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 119 */
+=======
+/* 165 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18602,7 +20496,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 120 */
+=======
+/* 166 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18672,7 +20570,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 121 */
+=======
+/* 167 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18782,7 +20684,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 122 */
+=======
+/* 168 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18895,7 +20801,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 123 */
+=======
+/* 169 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18959,7 +20869,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 124 */
+=======
+/* 170 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19037,7 +20951,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 125 */
+=======
+/* 171 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19119,7 +21037,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 126 */
+=======
+/* 172 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19206,7 +21128,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 127 */
+=======
+/* 173 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19285,7 +21211,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 128 */
+=======
+/* 174 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19366,7 +21296,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 129 */
+=======
+/* 175 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19446,7 +21380,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 130 */
+=======
+/* 176 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19527,7 +21465,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 131 */
+=======
+/* 177 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19654,7 +21596,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 132 */
+=======
+/* 178 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19782,7 +21728,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 133 */
+=======
+/* 179 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19858,7 +21808,51 @@ module.exports = Color;
                 return number + ' שנים';
             }
         },
+<<<<<<< HEAD
         meridiemParse: /אחה"צ|לפנה"צ|אחרי הצהריים|לפני הצהריים|לפנות בוקר|בבוקר|בערב/i,
+=======
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
+        }
+    });
+
+    return tr;
+
+})));
+
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    // After the year there should be a slash and the amount of years since December 26, 1979 in Roman numerals.
+    // This is currently too difficult (maybe even impossible) to add.
+    var tzl = moment.defineLocale('tzl', {
+        months : 'Januar_Fevraglh_Març_Avrïu_Mai_Gün_Julia_Guscht_Setemvar_Listopäts_Noemvar_Zecemvar'.split('_'),
+        monthsShort : 'Jan_Fev_Mar_Avr_Mai_Gün_Jul_Gus_Set_Lis_Noe_Zec'.split('_'),
+        weekdays : 'Súladi_Lúneçi_Maitzi_Márcuri_Xhúadi_Viénerçi_Sáturi'.split('_'),
+        weekdaysShort : 'Súl_Lún_Mai_Már_Xhú_Vié_Sát'.split('_'),
+        weekdaysMin : 'Sú_Lú_Ma_Má_Xh_Vi_Sá'.split('_'),
+        longDateFormat : {
+            LT : 'HH.mm',
+            LTS : 'HH.mm.ss',
+            L : 'DD.MM.YYYY',
+            LL : 'D. MMMM [dallas] YYYY',
+            LLL : 'D. MMMM [dallas] YYYY HH.mm',
+            LLLL : 'dddd, [li] D. MMMM [dallas] YYYY HH.mm'
+        },
+        meridiemParse: /d\'o|d\'a/i,
+>>>>>>> origin/develop-team
         isPM : function (input) {
             return /^(אחה"צ|אחרי הצהריים|בערב)$/.test(input);
         },
@@ -19883,7 +21877,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 134 */
+=======
+/* 181 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20011,7 +22009,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 135 */
+=======
+/* 182 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20169,7 +22171,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 136 */
+=======
+/* 183 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20283,7 +22289,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 137 */
+=======
+/* 184 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20382,7 +22392,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 138 */
+=======
+/* 185 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20468,7 +22482,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 139 */
+=======
+/* 186 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20486,6 +22504,7 @@ module.exports = Color;
         } else if (n % 10 === 1) {
             return false;
         }
+<<<<<<< HEAD
         return true;
     }
     function translate(number, withoutSuffix, key, isFuture) {
@@ -20551,6 +22570,27 @@ module.exports = Color;
                 return result + (withoutSuffix || isFuture ? 'ár' : 'ári');
         }
     }
+=======
+    });
+
+    return uzLatn;
+
+})));
+
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+>>>>>>> origin/develop-team
 
     var is = moment.defineLocale('is', {
         months : 'janúar_febrúar_mars_apríl_maí_júní_júlí_ágúst_september_október_nóvember_desember'.split('_'),
@@ -20604,7 +22644,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 140 */
+=======
+/* 188 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20677,7 +22721,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 141 */
+=======
+/* 189 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20744,13 +22792,85 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return it;
+=======
+    return xPseudo;
 
 })));
 
 
 /***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//! moment.js locale configuration
+
+;(function (global, factory) {
+    true ? factory(__webpack_require__(1)) :
+   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+   factory(global.moment)
+}(this, (function (moment) { 'use strict';
+
+
+    var yo = moment.defineLocale('yo', {
+        months : 'Sẹ́rẹ́_Èrèlè_Ẹrẹ̀nà_Ìgbé_Èbibi_Òkùdu_Agẹmo_Ògún_Owewe_Ọ̀wàrà_Bélú_Ọ̀pẹ̀̀'.split('_'),
+        monthsShort : 'Sẹ́r_Èrl_Ẹrn_Ìgb_Èbi_Òkù_Agẹ_Ògú_Owe_Ọ̀wà_Bél_Ọ̀pẹ̀̀'.split('_'),
+        weekdays : 'Àìkú_Ajé_Ìsẹ́gun_Ọjọ́rú_Ọjọ́bọ_Ẹtì_Àbámẹ́ta'.split('_'),
+        weekdaysShort : 'Àìk_Ajé_Ìsẹ́_Ọjr_Ọjb_Ẹtì_Àbá'.split('_'),
+        weekdaysMin : 'Àì_Aj_Ìs_Ọr_Ọb_Ẹt_Àb'.split('_'),
+        longDateFormat : {
+            LT : 'h:mm A',
+            LTS : 'h:mm:ss A',
+            L : 'DD/MM/YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY h:mm A',
+            LLLL : 'dddd, D MMMM YYYY h:mm A'
+        },
+        calendar : {
+            sameDay : '[Ònì ni] LT',
+            nextDay : '[Ọ̀la ni] LT',
+            nextWeek : 'dddd [Ọsẹ̀ tón\'bọ] [ni] LT',
+            lastDay : '[Àna ni] LT',
+            lastWeek : 'dddd [Ọsẹ̀ tólọ́] [ni] LT',
+            sameElse : 'L'
+        },
+        relativeTime : {
+            future : 'ní %s',
+            past : '%s kọjá',
+            s : 'ìsẹjú aayá die',
+            ss :'aayá %d',
+            m : 'ìsẹjú kan',
+            mm : 'ìsẹjú %d',
+            h : 'wákati kan',
+            hh : 'wákati %d',
+            d : 'ọjọ́ kan',
+            dd : 'ọjọ́ %d',
+            M : 'osù kan',
+            MM : 'osù %d',
+            y : 'ọdún kan',
+            yy : 'ọdún %d'
+        },
+        dayOfMonthOrdinalParse : /ọjọ́\s\d{1,2}/,
+        ordinal : 'ọjọ́ %d',
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4 // The week that contains Jan 4th is the first week of the year.
+        }
+    });
+
+    return yo;
+>>>>>>> origin/develop-team
+
+})));
+
+
+/***/ }),
+<<<<<<< HEAD
 /* 142 */
+=======
+/* 191 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20846,7 +22966,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 143 */
+=======
+/* 192 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20932,7 +23056,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 144 */
+=======
+/* 193 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21025,7 +23153,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 145 */
+=======
+/* 194 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21110,24 +23242,41 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return kk;
+=======
+/***/ }),
+/* 195 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 146 */
+=======
+/* 196 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/***/ }),
+/* 197 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
+<<<<<<< HEAD
     var symbolMap = {
         '1': '១',
         '2': '២',
@@ -21150,6 +23299,60 @@ module.exports = Color;
         '៨': '8',
         '៩': '9',
         '០': '0'
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subject_1 = __webpack_require__(8);
+var Observable_1 = __webpack_require__(0);
+var Subscriber_1 = __webpack_require__(2);
+var Subscription_1 = __webpack_require__(7);
+var refCount_1 = __webpack_require__(55);
+/**
+ * @class ConnectableObservable<T>
+ */
+var ConnectableObservable = (function (_super) {
+    __extends(ConnectableObservable, _super);
+    function ConnectableObservable(/** @deprecated internal use only */ source, 
+        /** @deprecated internal use only */ subjectFactory) {
+        _super.call(this);
+        this.source = source;
+        this.subjectFactory = subjectFactory;
+        /** @deprecated internal use only */ this._refCount = 0;
+        this._isComplete = false;
+    }
+    /** @deprecated internal use only */ ConnectableObservable.prototype._subscribe = function (subscriber) {
+        return this.getSubject().subscribe(subscriber);
+    };
+    /** @deprecated internal use only */ ConnectableObservable.prototype.getSubject = function () {
+        var subject = this._subject;
+        if (!subject || subject.isStopped) {
+            this._subject = this.subjectFactory();
+        }
+        return this._subject;
+    };
+    ConnectableObservable.prototype.connect = function () {
+        var connection = this._connection;
+        if (!connection) {
+            this._isComplete = false;
+            connection = this._connection = new Subscription_1.Subscription();
+            connection.add(this.source
+                .subscribe(new ConnectableSubscriber(this.getSubject(), this)));
+            if (connection.closed) {
+                this._connection = null;
+                connection = Subscription_1.Subscription.EMPTY;
+            }
+            else {
+                this._connection = connection;
+            }
+        }
+        return connection;
+    };
+    ConnectableObservable.prototype.refCount = function () {
+        return refCount_1.refCount()(this);
+>>>>>>> origin/develop-team
     };
 
     var km = moment.defineLocale('km', {
@@ -21230,11 +23433,16 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 147 */
+=======
+/* 198 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
@@ -21320,6 +23528,105 @@ module.exports = Color;
         meridiemHour : function (hour, meridiem) {
             if (hour === 12) {
                 hour = 0;
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var isArray_1 = __webpack_require__(13);
+var isArrayLike_1 = __webpack_require__(292);
+var isPromise_1 = __webpack_require__(294);
+var PromiseObservable_1 = __webpack_require__(199);
+var IteratorObservable_1 = __webpack_require__(463);
+var ArrayObservable_1 = __webpack_require__(15);
+var ArrayLikeObservable_1 = __webpack_require__(452);
+var iterator_1 = __webpack_require__(26);
+var Observable_1 = __webpack_require__(0);
+var observeOn_1 = __webpack_require__(34);
+var observable_1 = __webpack_require__(37);
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @extends {Ignored}
+ * @hide true
+ */
+var FromObservable = (function (_super) {
+    __extends(FromObservable, _super);
+    function FromObservable(ish, scheduler) {
+        _super.call(this, null);
+        this.ish = ish;
+        this.scheduler = scheduler;
+    }
+    /**
+     * Creates an Observable from an Array, an array-like object, a Promise, an
+     * iterable object, or an Observable-like object.
+     *
+     * <span class="informal">Converts almost anything to an Observable.</span>
+     *
+     * <img src="./img/from.png" width="100%">
+     *
+     * Convert various other objects and data types into Observables. `from`
+     * converts a Promise or an array-like or an
+     * [iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#iterable)
+     * object into an Observable that emits the items in that promise or array or
+     * iterable. A String, in this context, is treated as an array of characters.
+     * Observable-like objects (contains a function named with the ES2015 Symbol
+     * for Observable) can also be converted through this operator.
+     *
+     * @example <caption>Converts an array to an Observable</caption>
+     * var array = [10, 20, 30];
+     * var result = Rx.Observable.from(array);
+     * result.subscribe(x => console.log(x));
+     *
+     * // Results in the following:
+     * // 10 20 30
+     *
+     * @example <caption>Convert an infinite iterable (from a generator) to an Observable</caption>
+     * function* generateDoubles(seed) {
+     *   var i = seed;
+     *   while (true) {
+     *     yield i;
+     *     i = 2 * i; // double it
+     *   }
+     * }
+     *
+     * var iterator = generateDoubles(3);
+     * var result = Rx.Observable.from(iterator).take(10);
+     * result.subscribe(x => console.log(x));
+     *
+     * // Results in the following:
+     * // 3 6 12 24 48 96 192 384 768 1536
+     *
+     * @see {@link create}
+     * @see {@link fromEvent}
+     * @see {@link fromEventPattern}
+     * @see {@link fromPromise}
+     *
+     * @param {ObservableInput<T>} ish A subscribable object, a Promise, an
+     * Observable-like, an Array, an iterable or an array-like object to be
+     * converted.
+     * @param {Scheduler} [scheduler] The scheduler on which to schedule the
+     * emissions of values.
+     * @return {Observable<T>} The Observable whose values are originally from the
+     * input object that was converted.
+     * @static true
+     * @name from
+     * @owner Observable
+     */
+    FromObservable.create = function (ish, scheduler) {
+        if (ish != null) {
+            if (typeof ish[observable_1.observable] === 'function') {
+                if (ish instanceof Observable_1.Observable && !scheduler) {
+                    return ish;
+                }
+                return new FromObservable(ish, scheduler);
+            }
+            else if (isArray_1.isArray(ish)) {
+                return new ArrayObservable_1.ArrayObservable(ish, scheduler);
+            }
+            else if (isPromise_1.isPromise(ish)) {
+                return new PromiseObservable_1.PromiseObservable(ish, scheduler);
+>>>>>>> origin/develop-team
             }
             if (meridiem === 'ರಾತ್ರಿ') {
                 return hour < 4 ? hour : hour + 12;
@@ -21445,7 +23752,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 149 */
+=======
+/* 199 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21659,7 +23970,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 151 */
+=======
+/* 200 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21793,24 +24108,46 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return lb;
+=======
+/***/ }),
+/* 201 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
+<<<<<<< HEAD
 
 /***/ }),
 /* 152 */
+=======
+var FromObservable_1 = __webpack_require__(198);
+exports.from = FromObservable_1.FromObservable.create;
+//# sourceMappingURL=from.js.map
+
+/***/ }),
+/* 202 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
+<<<<<<< HEAD
     var lo = moment.defineLocale('lo', {
         months : 'ມັງກອນ_ກຸມພາ_ມີນາ_ເມສາ_ພຶດສະພາ_ມິຖຸນາ_ກໍລະກົດ_ສິງຫາ_ກັນຍາ_ຕຸລາ_ພະຈິກ_ທັນວາ'.split('_'),
         monthsShort : 'ມັງກອນ_ກຸມພາ_ມີນາ_ເມສາ_ພຶດສະພາ_ມິຖຸນາ_ກໍລະກົດ_ສິງຫາ_ກັນຍາ_ຕຸລາ_ພະຈິກ_ທັນວາ'.split('_'),
@@ -21868,9 +24205,19 @@ module.exports = Color;
     });
 
     return lo;
+=======
+var TimerObservable_1 = __webpack_require__(468);
+exports.timer = TimerObservable_1.TimerObservable.create;
+//# sourceMappingURL=timer.js.map
+
+/***/ }),
+/* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
+<<<<<<< HEAD
 
 /***/ }),
 /* 153 */
@@ -21883,6 +24230,85 @@ module.exports = Color;
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+var async_1 = __webpack_require__(5);
+var timeInterval_1 = __webpack_require__(272);
+exports.TimeInterval = timeInterval_1.TimeInterval;
+/**
+ * @param scheduler
+ * @return {Observable<TimeInterval<any>>|WebSocketSubject<T>|Observable<T>}
+ * @method timeInterval
+ * @owner Observable
+ */
+function timeInterval(scheduler) {
+    if (scheduler === void 0) { scheduler = async_1.async; }
+    return timeInterval_1.timeInterval(scheduler)(this);
+}
+exports.timeInterval = timeInterval;
+//# sourceMappingURL=timeInterval.js.map
+
+/***/ }),
+/* 205 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var async_1 = __webpack_require__(5);
+var audit_1 = __webpack_require__(47);
+var timer_1 = __webpack_require__(203);
+/**
+ * Ignores source values for `duration` milliseconds, then emits the most recent
+ * value from the source Observable, then repeats this process.
+ *
+ * <span class="informal">When it sees a source values, it ignores that plus
+ * the next ones for `duration` milliseconds, and then it emits the most recent
+ * value from the source.</span>
+ *
+ * <img src="./img/auditTime.png" width="100%">
+ *
+ * `auditTime` is similar to `throttleTime`, but emits the last value from the
+ * silenced time window, instead of the first value. `auditTime` emits the most
+ * recent value from the source Observable on the output Observable as soon as
+ * its internal timer becomes disabled, and ignores source values while the
+ * timer is enabled. Initially, the timer is disabled. As soon as the first
+ * source value arrives, the timer is enabled. After `duration` milliseconds (or
+ * the time unit determined internally by the optional `scheduler`) has passed,
+ * the timer is disabled, then the most recent source value is emitted on the
+ * output Observable, and this process repeats for the next source value.
+ * Optionally takes a {@link IScheduler} for managing timers.
+ *
+ * @example <caption>Emit clicks at a rate of at most one click per second</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var result = clicks.auditTime(1000);
+ * result.subscribe(x => console.log(x));
+ *
+ * @see {@link audit}
+ * @see {@link debounceTime}
+ * @see {@link delay}
+ * @see {@link sampleTime}
+ * @see {@link throttleTime}
+ *
+ * @param {number} duration Time to wait before emitting the most recent source
+ * value, measured in milliseconds or the time unit determined internally
+ * by the optional `scheduler`.
+ * @param {Scheduler} [scheduler=async] The {@link IScheduler} to use for
+ * managing the timers that handle the rate-limiting behavior.
+ * @return {Observable<T>} An Observable that performs rate-limiting of
+ * emissions from the source Observable.
+ * @method auditTime
+ * @owner Observable
+ */
+function auditTime(duration, scheduler) {
+    if (scheduler === void 0) { scheduler = async_1.async; }
+    return audit_1.audit(function () { return timer_1.timer(duration, scheduler); });
+}
+exports.auditTime = auditTime;
+//# sourceMappingURL=auditTime.js.map
+
+/***/ }),
+/* 206 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var units = {
@@ -21995,7 +24421,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 154 */
+=======
+/* 207 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22212,7 +24642,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 156 */
+=======
+/* 208 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22280,7 +24714,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 157 */
+=======
+/* 209 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22374,7 +24812,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 158 */
+=======
+/* 210 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22459,7 +24901,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 159 */
+=======
+/* 211 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22561,13 +25007,23 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return mn;
+=======
+/***/ }),
+/* 212 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 160 */
+=======
+/* 213 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22578,6 +25034,12 @@ module.exports = Color;
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
 
+<<<<<<< HEAD
+=======
+/***/ }),
+/* 214 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
     var symbolMap = {
         '1': '१',
@@ -22604,6 +25066,7 @@ module.exports = Color;
         '०': '0'
     };
 
+<<<<<<< HEAD
     function relativeTimeMr(number, withoutSuffix, string, isFuture)
     {
         var output = '';
@@ -22622,6 +25085,163 @@ module.exports = Color;
                 case 'y': output = 'एक वर्ष'; break;
                 case 'yy': output = '%d वर्षे'; break;
             }
+=======
+var concatMap_1 = __webpack_require__(49);
+/* tslint:enable:max-line-length */
+/**
+ * Projects each source value to the same Observable which is merged multiple
+ * times in a serialized fashion on the output Observable.
+ *
+ * <span class="informal">It's like {@link concatMap}, but maps each value
+ * always to the same inner Observable.</span>
+ *
+ * <img src="./img/concatMapTo.png" width="100%">
+ *
+ * Maps each source value to the given Observable `innerObservable` regardless
+ * of the source value, and then flattens those resulting Observables into one
+ * single Observable, which is the output Observable. Each new `innerObservable`
+ * instance emitted on the output Observable is concatenated with the previous
+ * `innerObservable` instance.
+ *
+ * __Warning:__ if source values arrive endlessly and faster than their
+ * corresponding inner Observables can complete, it will result in memory issues
+ * as inner Observables amass in an unbounded buffer waiting for their turn to
+ * be subscribed to.
+ *
+ * Note: `concatMapTo` is equivalent to `mergeMapTo` with concurrency parameter
+ * set to `1`.
+ *
+ * @example <caption>For each click event, tick every second from 0 to 3, with no concurrency</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var result = clicks.concatMapTo(Rx.Observable.interval(1000).take(4));
+ * result.subscribe(x => console.log(x));
+ *
+ * // Results in the following:
+ * // (results are not concurrent)
+ * // For every click on the "document" it will emit values 0 to 3 spaced
+ * // on a 1000ms interval
+ * // one click = 1000ms-> 0 -1000ms-> 1 -1000ms-> 2 -1000ms-> 3
+ *
+ * @see {@link concat}
+ * @see {@link concatAll}
+ * @see {@link concatMap}
+ * @see {@link mergeMapTo}
+ * @see {@link switchMapTo}
+ *
+ * @param {ObservableInput} innerObservable An Observable to replace each value from
+ * the source Observable.
+ * @param {function(outerValue: T, innerValue: I, outerIndex: number, innerIndex: number): any} [resultSelector]
+ * A function to produce the value on the output Observable based on the values
+ * and the indices of the source (outer) emission and the inner Observable
+ * emission. The arguments passed to this function are:
+ * - `outerValue`: the value that came from the source
+ * - `innerValue`: the value that came from the projected Observable
+ * - `outerIndex`: the "index" of the value that came from the source
+ * - `innerIndex`: the "index" of the value from the projected Observable
+ * @return {Observable} An observable of values merged together by joining the
+ * passed observable with itself, one after the other, for each value emitted
+ * from the source.
+ * @method concatMapTo
+ * @owner Observable
+ */
+function concatMapTo(innerObservable, resultSelector) {
+    return concatMap_1.concatMap(function () { return innerObservable; }, resultSelector);
+}
+exports.concatMapTo = concatMapTo;
+//# sourceMappingURL=concatMapTo.js.map
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscriber_1 = __webpack_require__(2);
+/**
+ * Counts the number of emissions on the source and emits that number when the
+ * source completes.
+ *
+ * <span class="informal">Tells how many values were emitted, when the source
+ * completes.</span>
+ *
+ * <img src="./img/count.png" width="100%">
+ *
+ * `count` transforms an Observable that emits values into an Observable that
+ * emits a single value that represents the number of values emitted by the
+ * source Observable. If the source Observable terminates with an error, `count`
+ * will pass this error notification along without emitting a value first. If
+ * the source Observable does not terminate at all, `count` will neither emit
+ * a value nor terminate. This operator takes an optional `predicate` function
+ * as argument, in which case the output emission will represent the number of
+ * source values that matched `true` with the `predicate`.
+ *
+ * @example <caption>Counts how many seconds have passed before the first click happened</caption>
+ * var seconds = Rx.Observable.interval(1000);
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var secondsBeforeClick = seconds.takeUntil(clicks);
+ * var result = secondsBeforeClick.count();
+ * result.subscribe(x => console.log(x));
+ *
+ * @example <caption>Counts how many odd numbers are there between 1 and 7</caption>
+ * var numbers = Rx.Observable.range(1, 7);
+ * var result = numbers.count(i => i % 2 === 1);
+ * result.subscribe(x => console.log(x));
+ *
+ * // Results in:
+ * // 4
+ *
+ * @see {@link max}
+ * @see {@link min}
+ * @see {@link reduce}
+ *
+ * @param {function(value: T, i: number, source: Observable<T>): boolean} [predicate] A
+ * boolean function to select what values are to be counted. It is provided with
+ * arguments of:
+ * - `value`: the value from the source Observable.
+ * - `index`: the (zero-based) "index" of the value from the source Observable.
+ * - `source`: the source Observable instance itself.
+ * @return {Observable} An Observable of one number that represents the count as
+ * described above.
+ * @method count
+ * @owner Observable
+ */
+function count(predicate) {
+    return function (source) { return source.lift(new CountOperator(predicate, source)); };
+}
+exports.count = count;
+var CountOperator = (function () {
+    function CountOperator(predicate, source) {
+        this.predicate = predicate;
+        this.source = source;
+    }
+    CountOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new CountSubscriber(subscriber, this.predicate, this.source));
+    };
+    return CountOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var CountSubscriber = (function (_super) {
+    __extends(CountSubscriber, _super);
+    function CountSubscriber(destination, predicate, source) {
+        _super.call(this, destination);
+        this.predicate = predicate;
+        this.source = source;
+        this.count = 0;
+        this.index = 0;
+    }
+    CountSubscriber.prototype._next = function (value) {
+        if (this.predicate) {
+            this._tryPredicate(value);
+>>>>>>> origin/develop-team
         }
         else {
             switch (string) {
@@ -22731,7 +25351,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 161 */
+=======
+/* 216 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22817,7 +25441,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 162 */
+=======
+/* 217 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22903,7 +25531,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 163 */
+=======
+/* 218 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23130,7 +25762,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 166 */
+=======
+/* 219 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23251,27 +25887,164 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return ne;
+=======
+/***/ }),
+/* 220 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 167 */
+=======
+/* 221 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
 
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+var Set_1 = __webpack_require__(610);
+/**
+ * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
+ *
+ * If a keySelector function is provided, then it will project each value from the source observable into a new value that it will
+ * check for equality with previously projected values. If a keySelector function is not provided, it will use each value from the
+ * source observable directly with an equality check against previous values.
+ *
+ * In JavaScript runtimes that support `Set`, this operator will use a `Set` to improve performance of the distinct value checking.
+ *
+ * In other runtimes, this operator will use a minimal implementation of `Set` that relies on an `Array` and `indexOf` under the
+ * hood, so performance will degrade as more values are checked for distinction. Even in newer browsers, a long-running `distinct`
+ * use might result in memory leaks. To help alleviate this in some scenarios, an optional `flushes` parameter is also provided so
+ * that the internal `Set` can be "flushed", basically clearing it of values.
+ *
+ * @example <caption>A simple example with numbers</caption>
+ * Observable.of(1, 1, 2, 2, 2, 1, 2, 3, 4, 3, 2, 1)
+ *   .distinct()
+ *   .subscribe(x => console.log(x)); // 1, 2, 3, 4
+ *
+ * @example <caption>An example using a keySelector function</caption>
+ * interface Person {
+ *    age: number,
+ *    name: string
+ * }
+ *
+ * Observable.of<Person>(
+ *     { age: 4, name: 'Foo'},
+ *     { age: 7, name: 'Bar'},
+ *     { age: 5, name: 'Foo'})
+ *     .distinct((p: Person) => p.name)
+ *     .subscribe(x => console.log(x));
+ *
+ * // displays:
+ * // { age: 4, name: 'Foo' }
+ * // { age: 7, name: 'Bar' }
+ *
+ * @see {@link distinctUntilChanged}
+ * @see {@link distinctUntilKeyChanged}
+ *
+ * @param {function} [keySelector] Optional function to select which value you want to check as distinct.
+ * @param {Observable} [flushes] Optional Observable for flushing the internal HashSet of the operator.
+ * @return {Observable} An Observable that emits items from the source Observable with distinct values.
+ * @method distinct
+ * @owner Observable
+ */
+function distinct(keySelector, flushes) {
+    return function (source) { return source.lift(new DistinctOperator(keySelector, flushes)); };
+}
+exports.distinct = distinct;
+var DistinctOperator = (function () {
+    function DistinctOperator(keySelector, flushes) {
+        this.keySelector = keySelector;
+        this.flushes = flushes;
+    }
+    DistinctOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new DistinctSubscriber(subscriber, this.keySelector, this.flushes));
+    };
+    return DistinctOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var DistinctSubscriber = (function (_super) {
+    __extends(DistinctSubscriber, _super);
+    function DistinctSubscriber(destination, keySelector, flushes) {
+        _super.call(this, destination);
+        this.keySelector = keySelector;
+        this.values = new Set_1.Set();
+        if (flushes) {
+            this.add(subscribeToResult_1.subscribeToResult(this, flushes));
+        }
+    }
+    DistinctSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        this.values.clear();
+    };
+    DistinctSubscriber.prototype.notifyError = function (error, innerSub) {
+        this._error(error);
+    };
+    DistinctSubscriber.prototype._next = function (value) {
+        if (this.keySelector) {
+            this._useKeySelector(value);
+        }
+        else {
+            this._finalizeNext(value, value);
+        }
+    };
+    DistinctSubscriber.prototype._useKeySelector = function (value) {
+        var key;
+        var destination = this.destination;
+        try {
+            key = this.keySelector(value);
+        }
+        catch (err) {
+            destination.error(err);
+            return;
+        }
+        this._finalizeNext(key, value);
+    };
+    DistinctSubscriber.prototype._finalizeNext = function (key, value) {
+        var values = this.values;
+        if (!values.has(key)) {
+            values.add(key);
+            this.destination.next(value);
+        }
+    };
+    return DistinctSubscriber;
+}(OuterSubscriber_1.OuterSubscriber));
+exports.DistinctSubscriber = DistinctSubscriber;
+//# sourceMappingURL=distinct.js.map
+
+/***/ }),
+/* 222 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
     var monthsShortWithDots = 'jan._feb._mrt._apr._mei_jun._jul._aug._sep._okt._nov._dec.'.split('_'),
         monthsShortWithoutDots = 'jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec'.split('_');
 
+<<<<<<< HEAD
     var monthsParse = [/^jan/i, /^feb/i, /^maart|mrt.?$/i, /^apr/i, /^mei$/i, /^jun[i.]?$/i, /^jul[i.]?$/i, /^aug/i, /^sep/i, /^okt/i, /^nov/i, /^dec/i];
     var monthsRegex = /^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;
 
@@ -23286,6 +26059,76 @@ module.exports = Color;
                 return monthsShortWithDots[m.month()];
             }
         },
+=======
+var distinctUntilChanged_1 = __webpack_require__(51);
+/* tslint:enable:max-line-length */
+/**
+ * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
+ * using a property accessed by using the key provided to check if the two items are distinct.
+ *
+ * If a comparator function is provided, then it will be called for each item to test for whether or not that value should be emitted.
+ *
+ * If a comparator function is not provided, an equality check is used by default.
+ *
+ * @example <caption>An example comparing the name of persons</caption>
+ *
+ *  interface Person {
+ *     age: number,
+ *     name: string
+ *  }
+ *
+ * Observable.of<Person>(
+ *     { age: 4, name: 'Foo'},
+ *     { age: 7, name: 'Bar'},
+ *     { age: 5, name: 'Foo'},
+ *     { age: 6, name: 'Foo'})
+ *     .distinctUntilKeyChanged('name')
+ *     .subscribe(x => console.log(x));
+ *
+ * // displays:
+ * // { age: 4, name: 'Foo' }
+ * // { age: 7, name: 'Bar' }
+ * // { age: 5, name: 'Foo' }
+ *
+ * @example <caption>An example comparing the first letters of the name</caption>
+ *
+ * interface Person {
+ *     age: number,
+ *     name: string
+ *  }
+ *
+ * Observable.of<Person>(
+ *     { age: 4, name: 'Foo1'},
+ *     { age: 7, name: 'Bar'},
+ *     { age: 5, name: 'Foo2'},
+ *     { age: 6, name: 'Foo3'})
+ *     .distinctUntilKeyChanged('name', (x: string, y: string) => x.substring(0, 3) === y.substring(0, 3))
+ *     .subscribe(x => console.log(x));
+ *
+ * // displays:
+ * // { age: 4, name: 'Foo1' }
+ * // { age: 7, name: 'Bar' }
+ * // { age: 5, name: 'Foo2' }
+ *
+ * @see {@link distinct}
+ * @see {@link distinctUntilChanged}
+ *
+ * @param {string} key String key for object property lookup on each item.
+ * @param {function} [compare] Optional comparison function called to test if an item is distinct from the previous item in the source.
+ * @return {Observable} An Observable that emits items from the source Observable with distinct values based on the key specified.
+ * @method distinctUntilKeyChanged
+ * @owner Observable
+ */
+function distinctUntilKeyChanged(key, compare) {
+    return distinctUntilChanged_1.distinctUntilChanged(function (x, y) { return compare ? compare(x[key], y[key]) : x[key] === y[key]; });
+}
+exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
+//# sourceMappingURL=distinctUntilKeyChanged.js.map
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
         monthsRegex: monthsRegex,
         monthsShortRegex: monthsRegex,
@@ -23342,13 +26185,23 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return nlBe;
+=======
+/***/ }),
+/* 224 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 168 */
+=======
+/* 225 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23439,7 +26292,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 169 */
+=======
+/* 226 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23503,7 +26360,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 170 */
+=======
+/* 227 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23625,22 +26486,79 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return paIn;
+=======
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 171 */
+=======
+/* 229 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+var find_1 = __webpack_require__(53);
+/**
+ * Emits only the index of the first value emitted by the source Observable that
+ * meets some condition.
+ *
+ * <span class="informal">It's like {@link find}, but emits the index of the
+ * found value, not the value itself.</span>
+ *
+ * <img src="./img/findIndex.png" width="100%">
+ *
+ * `findIndex` searches for the first item in the source Observable that matches
+ * the specified condition embodied by the `predicate`, and returns the
+ * (zero-based) index of the first occurrence in the source. Unlike
+ * {@link first}, the `predicate` is required in `findIndex`, and does not emit
+ * an error if a valid value is not found.
+ *
+ * @example <caption>Emit the index of first click that happens on a DIV element</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var result = clicks.findIndex(ev => ev.target.tagName === 'DIV');
+ * result.subscribe(x => console.log(x));
+ *
+ * @see {@link filter}
+ * @see {@link find}
+ * @see {@link first}
+ * @see {@link take}
+ *
+ * @param {function(value: T, index: number, source: Observable<T>): boolean} predicate
+ * A function called with each item to test for condition matching.
+ * @param {any} [thisArg] An optional argument to determine the value of `this`
+ * in the `predicate` function.
+ * @return {Observable} An Observable of the index of the first item that
+ * matches the condition.
+ * @method find
+ * @owner Observable
+ */
+function findIndex(predicate, thisArg) {
+    return function (source) { return source.lift(new find_1.FindValueOperator(predicate, source, true, thisArg)); };
+}
+exports.findIndex = findIndex;
+//# sourceMappingURL=findIndex.js.map
+
+/***/ }),
+/* 230 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var monthsNominative = 'styczeń_luty_marzec_kwiecień_maj_czerwiec_lipiec_sierpień_wrzesień_październik_listopad_grudzień'.split('_'),
@@ -23974,11 +26892,16 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 175 */
+=======
+/* 231 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
@@ -23989,6 +26912,121 @@ module.exports = Color;
     function plural(word, num) {
         var forms = word.split('_');
         return num % 10 === 1 && num % 100 !== 11 ? forms[0] : (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20) ? forms[1] : forms[2]);
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscriber_1 = __webpack_require__(2);
+var Subscription_1 = __webpack_require__(7);
+var Observable_1 = __webpack_require__(0);
+var Subject_1 = __webpack_require__(8);
+var Map_1 = __webpack_require__(608);
+var FastMap_1 = __webpack_require__(606);
+/* tslint:enable:max-line-length */
+/**
+ * Groups the items emitted by an Observable according to a specified criterion,
+ * and emits these grouped items as `GroupedObservables`, one
+ * {@link GroupedObservable} per group.
+ *
+ * <img src="./img/groupBy.png" width="100%">
+ *
+ * @example <caption>Group objects by id and return as array</caption>
+ * Observable.of<Obj>({id: 1, name: 'aze1'},
+ *                    {id: 2, name: 'sf2'},
+ *                    {id: 2, name: 'dg2'},
+ *                    {id: 1, name: 'erg1'},
+ *                    {id: 1, name: 'df1'},
+ *                    {id: 2, name: 'sfqfb2'},
+ *                    {id: 3, name: 'qfs3'},
+ *                    {id: 2, name: 'qsgqsfg2'}
+ *     )
+ *     .groupBy(p => p.id)
+ *     .flatMap( (group$) => group$.reduce((acc, cur) => [...acc, cur], []))
+ *     .subscribe(p => console.log(p));
+ *
+ * // displays:
+ * // [ { id: 1, name: 'aze1' },
+ * //   { id: 1, name: 'erg1' },
+ * //   { id: 1, name: 'df1' } ]
+ * //
+ * // [ { id: 2, name: 'sf2' },
+ * //   { id: 2, name: 'dg2' },
+ * //   { id: 2, name: 'sfqfb2' },
+ * //   { id: 2, name: 'qsgqsfg2' } ]
+ * //
+ * // [ { id: 3, name: 'qfs3' } ]
+ *
+ * @example <caption>Pivot data on the id field</caption>
+ * Observable.of<Obj>({id: 1, name: 'aze1'},
+ *                    {id: 2, name: 'sf2'},
+ *                    {id: 2, name: 'dg2'},
+ *                    {id: 1, name: 'erg1'},
+ *                    {id: 1, name: 'df1'},
+ *                    {id: 2, name: 'sfqfb2'},
+ *                    {id: 3, name: 'qfs1'},
+ *                    {id: 2, name: 'qsgqsfg2'}
+ *                   )
+ *     .groupBy(p => p.id, p => p.name)
+ *     .flatMap( (group$) => group$.reduce((acc, cur) => [...acc, cur], ["" + group$.key]))
+ *     .map(arr => ({'id': parseInt(arr[0]), 'values': arr.slice(1)}))
+ *     .subscribe(p => console.log(p));
+ *
+ * // displays:
+ * // { id: 1, values: [ 'aze1', 'erg1', 'df1' ] }
+ * // { id: 2, values: [ 'sf2', 'dg2', 'sfqfb2', 'qsgqsfg2' ] }
+ * // { id: 3, values: [ 'qfs1' ] }
+ *
+ * @param {function(value: T): K} keySelector A function that extracts the key
+ * for each item.
+ * @param {function(value: T): R} [elementSelector] A function that extracts the
+ * return element for each item.
+ * @param {function(grouped: GroupedObservable<K,R>): Observable<any>} [durationSelector]
+ * A function that returns an Observable to determine how long each group should
+ * exist.
+ * @return {Observable<GroupedObservable<K,R>>} An Observable that emits
+ * GroupedObservables, each of which corresponds to a unique key value and each
+ * of which emits those items from the source Observable that share that key
+ * value.
+ * @method groupBy
+ * @owner Observable
+ */
+function groupBy(keySelector, elementSelector, durationSelector, subjectSelector) {
+    return function (source) {
+        return source.lift(new GroupByOperator(keySelector, elementSelector, durationSelector, subjectSelector));
+    };
+}
+exports.groupBy = groupBy;
+var GroupByOperator = (function () {
+    function GroupByOperator(keySelector, elementSelector, durationSelector, subjectSelector) {
+        this.keySelector = keySelector;
+        this.elementSelector = elementSelector;
+        this.durationSelector = durationSelector;
+        this.subjectSelector = subjectSelector;
+    }
+    GroupByOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new GroupBySubscriber(subscriber, this.keySelector, this.elementSelector, this.durationSelector, this.subjectSelector));
+    };
+    return GroupByOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var GroupBySubscriber = (function (_super) {
+    __extends(GroupBySubscriber, _super);
+    function GroupBySubscriber(destination, keySelector, elementSelector, durationSelector, subjectSelector) {
+        _super.call(this, destination);
+        this.keySelector = keySelector;
+        this.elementSelector = elementSelector;
+        this.durationSelector = durationSelector;
+        this.subjectSelector = subjectSelector;
+        this.groups = null;
+        this.attemptedToUnsubscribe = false;
+        this.count = 0;
+>>>>>>> origin/develop-team
     }
     function relativeTimeWithPlural(number, withoutSuffix, key) {
         var format = {
@@ -24154,22 +27192,87 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return ru;
+=======
+/***/ }),
+/* 232 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
+<<<<<<< HEAD
 
 /***/ }),
 /* 176 */
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscriber_1 = __webpack_require__(2);
+var noop_1 = __webpack_require__(60);
+/**
+ * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
+ *
+ * <img src="./img/ignoreElements.png" width="100%">
+ *
+ * @return {Observable} An empty Observable that only calls `complete`
+ * or `error`, based on which one is called by the source Observable.
+ * @method ignoreElements
+ * @owner Observable
+ */
+function ignoreElements() {
+    return function ignoreElementsOperatorFunction(source) {
+        return source.lift(new IgnoreElementsOperator());
+    };
+}
+exports.ignoreElements = ignoreElements;
+var IgnoreElementsOperator = (function () {
+    function IgnoreElementsOperator() {
+    }
+    IgnoreElementsOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new IgnoreElementsSubscriber(subscriber));
+    };
+    return IgnoreElementsOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var IgnoreElementsSubscriber = (function (_super) {
+    __extends(IgnoreElementsSubscriber, _super);
+    function IgnoreElementsSubscriber() {
+        _super.apply(this, arguments);
+    }
+    IgnoreElementsSubscriber.prototype._next = function (unused) {
+        noop_1.noop();
+    };
+    return IgnoreElementsSubscriber;
+}(Subscriber_1.Subscriber));
+//# sourceMappingURL=ignoreElements.js.map
+
+/***/ }),
+/* 233 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/***/ }),
+/* 234 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var months = [
@@ -24256,22 +27359,38 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return sd;
+=======
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 177 */
+=======
+/* 236 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var se = moment.defineLocale('se', {
@@ -24320,22 +27439,193 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return se;
+=======
+/***/ }),
+/* 238 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 178 */
+=======
+/* 239 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+/* tslint:enable:max-line-length */
+/**
+ * Projects each source value to the same Observable which is merged multiple
+ * times in the output Observable.
+ *
+ * <span class="informal">It's like {@link mergeMap}, but maps each value always
+ * to the same inner Observable.</span>
+ *
+ * <img src="./img/mergeMapTo.png" width="100%">
+ *
+ * Maps each source value to the given Observable `innerObservable` regardless
+ * of the source value, and then merges those resulting Observables into one
+ * single Observable, which is the output Observable.
+ *
+ * @example <caption>For each click event, start an interval Observable ticking every 1 second</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var result = clicks.mergeMapTo(Rx.Observable.interval(1000));
+ * result.subscribe(x => console.log(x));
+ *
+ * @see {@link concatMapTo}
+ * @see {@link merge}
+ * @see {@link mergeAll}
+ * @see {@link mergeMap}
+ * @see {@link mergeScan}
+ * @see {@link switchMapTo}
+ *
+ * @param {ObservableInput} innerObservable An Observable to replace each value from
+ * the source Observable.
+ * @param {function(outerValue: T, innerValue: I, outerIndex: number, innerIndex: number): any} [resultSelector]
+ * A function to produce the value on the output Observable based on the values
+ * and the indices of the source (outer) emission and the inner Observable
+ * emission. The arguments passed to this function are:
+ * - `outerValue`: the value that came from the source
+ * - `innerValue`: the value that came from the projected Observable
+ * - `outerIndex`: the "index" of the value that came from the source
+ * - `innerIndex`: the "index" of the value from the projected Observable
+ * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
+ * Observables being subscribed to concurrently.
+ * @return {Observable} An Observable that emits items from the given
+ * `innerObservable` (and optionally transformed through `resultSelector`) every
+ * time a value is emitted on the source Observable.
+ * @method mergeMapTo
+ * @owner Observable
+ */
+function mergeMapTo(innerObservable, resultSelector, concurrent) {
+    if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
+    if (typeof resultSelector === 'number') {
+        concurrent = resultSelector;
+        resultSelector = null;
+    }
+    return function (source) { return source.lift(new MergeMapToOperator(innerObservable, resultSelector, concurrent)); };
+}
+exports.mergeMapTo = mergeMapTo;
+// TODO: Figure out correct signature here: an Operator<Observable<T>, R>
+//       needs to implement call(observer: Subscriber<R>): Subscriber<Observable<T>>
+var MergeMapToOperator = (function () {
+    function MergeMapToOperator(ish, resultSelector, concurrent) {
+        if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
+        this.ish = ish;
+        this.resultSelector = resultSelector;
+        this.concurrent = concurrent;
+    }
+    MergeMapToOperator.prototype.call = function (observer, source) {
+        return source.subscribe(new MergeMapToSubscriber(observer, this.ish, this.resultSelector, this.concurrent));
+    };
+    return MergeMapToOperator;
+}());
+exports.MergeMapToOperator = MergeMapToOperator;
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var MergeMapToSubscriber = (function (_super) {
+    __extends(MergeMapToSubscriber, _super);
+    function MergeMapToSubscriber(destination, ish, resultSelector, concurrent) {
+        if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
+        _super.call(this, destination);
+        this.ish = ish;
+        this.resultSelector = resultSelector;
+        this.concurrent = concurrent;
+        this.hasCompleted = false;
+        this.buffer = [];
+        this.active = 0;
+        this.index = 0;
+    }
+    MergeMapToSubscriber.prototype._next = function (value) {
+        if (this.active < this.concurrent) {
+            var resultSelector = this.resultSelector;
+            var index = this.index++;
+            var ish = this.ish;
+            var destination = this.destination;
+            this.active++;
+            this._innerSub(ish, destination, resultSelector, value, index);
+        }
+        else {
+            this.buffer.push(value);
+        }
+    };
+    MergeMapToSubscriber.prototype._innerSub = function (ish, destination, resultSelector, value, index) {
+        this.add(subscribeToResult_1.subscribeToResult(this, ish, value, index));
+    };
+    MergeMapToSubscriber.prototype._complete = function () {
+        this.hasCompleted = true;
+        if (this.active === 0 && this.buffer.length === 0) {
+            this.destination.complete();
+        }
+    };
+    MergeMapToSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        var _a = this, resultSelector = _a.resultSelector, destination = _a.destination;
+        if (resultSelector) {
+            this.trySelectResult(outerValue, innerValue, outerIndex, innerIndex);
+        }
+        else {
+            destination.next(innerValue);
+        }
+    };
+    MergeMapToSubscriber.prototype.trySelectResult = function (outerValue, innerValue, outerIndex, innerIndex) {
+        var _a = this, resultSelector = _a.resultSelector, destination = _a.destination;
+        var result;
+        try {
+            result = resultSelector(outerValue, innerValue, outerIndex, innerIndex);
+        }
+        catch (err) {
+            destination.error(err);
+            return;
+        }
+        destination.next(result);
+    };
+    MergeMapToSubscriber.prototype.notifyError = function (err) {
+        this.destination.error(err);
+    };
+    MergeMapToSubscriber.prototype.notifyComplete = function (innerSub) {
+        var buffer = this.buffer;
+        this.remove(innerSub);
+        this.active--;
+        if (buffer.length > 0) {
+            this._next(buffer.shift());
+        }
+        else if (this.active === 0 && this.hasCompleted) {
+            this.destination.complete();
+        }
+    };
+    return MergeMapToSubscriber;
+}(OuterSubscriber_1.OuterSubscriber));
+exports.MergeMapToSubscriber = MergeMapToSubscriber;
+//# sourceMappingURL=mergeMapTo.js.map
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     /*jshint -W100*/
@@ -24395,24 +27685,41 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return si;
+=======
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 179 */
+=======
+/* 242 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/***/ }),
+/* 243 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
+<<<<<<< HEAD
     var months = 'január_február_marec_apríl_máj_jún_júl_august_september_október_november_december'.split('_'),
         monthsShort = 'jan_feb_mar_apr_máj_jún_júl_aug_sep_okt_nov_dec'.split('_');
     function plural(n) {
@@ -24562,6 +27869,62 @@ module.exports = Color;
 
 /***/ }),
 /* 180 */
+=======
+var not_1 = __webpack_require__(612);
+var filter_1 = __webpack_require__(52);
+/**
+ * Splits the source Observable into two, one with values that satisfy a
+ * predicate, and another with values that don't satisfy the predicate.
+ *
+ * <span class="informal">It's like {@link filter}, but returns two Observables:
+ * one like the output of {@link filter}, and the other with values that did not
+ * pass the condition.</span>
+ *
+ * <img src="./img/partition.png" width="100%">
+ *
+ * `partition` outputs an array with two Observables that partition the values
+ * from the source Observable through the given `predicate` function. The first
+ * Observable in that array emits source values for which the predicate argument
+ * returns true. The second Observable emits source values for which the
+ * predicate returns false. The first behaves like {@link filter} and the second
+ * behaves like {@link filter} with the predicate negated.
+ *
+ * @example <caption>Partition click events into those on DIV elements and those elsewhere</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var parts = clicks.partition(ev => ev.target.tagName === 'DIV');
+ * var clicksOnDivs = parts[0];
+ * var clicksElsewhere = parts[1];
+ * clicksOnDivs.subscribe(x => console.log('DIV clicked: ', x));
+ * clicksElsewhere.subscribe(x => console.log('Other clicked: ', x));
+ *
+ * @see {@link filter}
+ *
+ * @param {function(value: T, index: number): boolean} predicate A function that
+ * evaluates each value emitted by the source Observable. If it returns `true`,
+ * the value is emitted on the first Observable in the returned array, if
+ * `false` the value is emitted on the second Observable in the array. The
+ * `index` parameter is the number `i` for the i-th source emission that has
+ * happened since the subscription, starting from the number `0`.
+ * @param {any} [thisArg] An optional argument to determine the value of `this`
+ * in the `predicate` function.
+ * @return {[Observable<T>, Observable<T>]} An array with two Observables: one
+ * with values that passed the predicate, and another with values that did not
+ * pass the predicate.
+ * @method partition
+ * @owner Observable
+ */
+function partition(predicate, thisArg) {
+    return function (source) { return [
+        filter_1.filter(predicate, thisArg)(source),
+        filter_1.filter(not_1.not(predicate, thisArg))(source)
+    ]; };
+}
+exports.partition = partition;
+//# sourceMappingURL=partition.js.map
+
+/***/ }),
+/* 244 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24732,12 +28095,19 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return sl;
+=======
+/***/ }),
+/* 245 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -24748,6 +28118,30 @@ module.exports = Color;
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var BehaviorSubject_1 = __webpack_require__(194);
+var multicast_1 = __webpack_require__(17);
+/**
+ * @param value
+ * @return {ConnectableObservable<T>}
+ * @method publishBehavior
+ * @owner Observable
+ */
+function publishBehavior(value) {
+    return function (source) { return multicast_1.multicast(new BehaviorSubject_1.BehaviorSubject(value))(source); };
+}
+exports.publishBehavior = publishBehavior;
+//# sourceMappingURL=publishBehavior.js.map
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var sq = moment.defineLocale('sq', {
@@ -24804,17 +28198,28 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return sq;
+=======
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 182 */
+=======
+/* 249 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
@@ -24843,6 +28248,29 @@ module.exports = Color;
             } else {
                 return number + ' ' + translator.correctGrammaticalCase(number, wordKey);
             }
+=======
+var isArray_1 = __webpack_require__(13);
+var race_1 = __webpack_require__(46);
+/* tslint:enable:max-line-length */
+/**
+ * Returns an Observable that mirrors the first source Observable to emit an item
+ * from the combination of this Observable and supplied Observables.
+ * @param {...Observables} ...observables Sources used to race for which Observable emits first.
+ * @return {Observable} An Observable that mirrors the output of the first Observable to emit an item.
+ * @method race
+ * @owner Observable
+ */
+function race() {
+    var observables = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        observables[_i - 0] = arguments[_i];
+    }
+    return function raceOperatorFunction(source) {
+        // if the only argument is an array, it was most likely called with
+        // `pair([obs1, obs2, ...])`
+        if (observables.length === 1 && isArray_1.isArray(observables[0])) {
+            observables = observables[0];
+>>>>>>> origin/develop-team
         }
     };
 
@@ -24925,7 +28353,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 183 */
+=======
+/* 250 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25040,7 +28472,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 184 */
+=======
+/* 251 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25132,7 +28568,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 185 */
+=======
+/* 252 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25205,7 +28645,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 186 */
+=======
+/* 253 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25268,7 +28712,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 187 */
+=======
+/* 254 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25401,16 +28849,117 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 188 */
+=======
+/* 255 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscriber_1 = __webpack_require__(2);
+var async_1 = __webpack_require__(5);
+/**
+ * Emits the most recently emitted value from the source Observable within
+ * periodic time intervals.
+ *
+ * <span class="informal">Samples the source Observable at periodic time
+ * intervals, emitting what it samples.</span>
+ *
+ * <img src="./img/sampleTime.png" width="100%">
+ *
+ * `sampleTime` periodically looks at the source Observable and emits whichever
+ * value it has most recently emitted since the previous sampling, unless the
+ * source has not emitted anything since the previous sampling. The sampling
+ * happens periodically in time every `period` milliseconds (or the time unit
+ * defined by the optional `scheduler` argument). The sampling starts as soon as
+ * the output Observable is subscribed.
+ *
+ * @example <caption>Every second, emit the most recent click at most once</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var result = clicks.sampleTime(1000);
+ * result.subscribe(x => console.log(x));
+ *
+ * @see {@link auditTime}
+ * @see {@link debounceTime}
+ * @see {@link delay}
+ * @see {@link sample}
+ * @see {@link throttleTime}
+ *
+ * @param {number} period The sampling period expressed in milliseconds or the
+ * time unit determined internally by the optional `scheduler`.
+ * @param {Scheduler} [scheduler=async] The {@link IScheduler} to use for
+ * managing the timers that handle the sampling.
+ * @return {Observable<T>} An Observable that emits the results of sampling the
+ * values emitted by the source Observable at the specified time interval.
+ * @method sampleTime
+ * @owner Observable
+ */
+function sampleTime(period, scheduler) {
+    if (scheduler === void 0) { scheduler = async_1.async; }
+    return function (source) { return source.lift(new SampleTimeOperator(period, scheduler)); };
+}
+exports.sampleTime = sampleTime;
+var SampleTimeOperator = (function () {
+    function SampleTimeOperator(period, scheduler) {
+        this.period = period;
+        this.scheduler = scheduler;
+    }
+    SampleTimeOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new SampleTimeSubscriber(subscriber, this.period, this.scheduler));
+    };
+    return SampleTimeOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var SampleTimeSubscriber = (function (_super) {
+    __extends(SampleTimeSubscriber, _super);
+    function SampleTimeSubscriber(destination, period, scheduler) {
+        _super.call(this, destination);
+        this.period = period;
+        this.scheduler = scheduler;
+        this.hasValue = false;
+        this.add(scheduler.schedule(dispatchNotification, period, { subscriber: this, period: period }));
+    }
+    SampleTimeSubscriber.prototype._next = function (value) {
+        this.lastValue = value;
+        this.hasValue = true;
+    };
+    SampleTimeSubscriber.prototype.notifyNext = function () {
+        if (this.hasValue) {
+            this.hasValue = false;
+            this.destination.next(this.lastValue);
+        }
+    };
+    return SampleTimeSubscriber;
+}(Subscriber_1.Subscriber));
+function dispatchNotification(state) {
+    var subscriber = state.subscriber, period = state.period;
+    subscriber.notifyNext();
+    this.schedule(state, period);
+}
+//# sourceMappingURL=sampleTime.js.map
+
+/***/ }),
+/* 256 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 
     var te = moment.defineLocale('te', {
@@ -25488,13 +29037,49 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return te;
+=======
+/***/ }),
+/* 257 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
+<<<<<<< HEAD
 
 /***/ }),
 /* 189 */
+=======
+var multicast_1 = __webpack_require__(17);
+var refCount_1 = __webpack_require__(55);
+var Subject_1 = __webpack_require__(8);
+function shareSubjectFactory() {
+    return new Subject_1.Subject();
+}
+/**
+ * Returns a new Observable that multicasts (shares) the original Observable. As long as there is at least one
+ * Subscriber this Observable will be subscribed and emitting data. When all subscribers have unsubscribed it will
+ * unsubscribe from the source Observable. Because the Observable is multicasting it makes the stream `hot`.
+ * This is an alias for .multicast(() => new Subject()).refCount().
+ *
+ * <img src="./img/share.png" width="100%">
+ *
+ * @return {Observable<T>} An Observable that upon connection causes the source Observable to emit items to its Observers.
+ * @method share
+ * @owner Observable
+ */
+function share() {
+    return function (source) { return refCount_1.refCount()(multicast_1.multicast(shareSubjectFactory)(source)); };
+}
+exports.share = share;
+;
+//# sourceMappingURL=share.js.map
+
+/***/ }),
+/* 258 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25565,7 +29150,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 190 */
+=======
+/* 259 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25756,7 +29345,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 192 */
+=======
+/* 260 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25822,7 +29415,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 193 */
+=======
+/* 261 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25948,7 +29545,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 194 */
+=======
+/* 262 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -26046,7 +29647,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 195 */
+=======
+/* 263 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26141,11 +29746,16 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 196 */
+=======
+/* 264 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
@@ -26194,6 +29804,50 @@ module.exports = Color;
         week : {
             dow : 6, // Saturday is the first day of the week.
             doy : 12  // The week that contains Jan 12th is the first week of the year.
+=======
+var ArrayObservable_1 = __webpack_require__(15);
+var ScalarObservable_1 = __webpack_require__(45);
+var EmptyObservable_1 = __webpack_require__(16);
+var concat_1 = __webpack_require__(20);
+var isScheduler_1 = __webpack_require__(12);
+/* tslint:enable:max-line-length */
+/**
+ * Returns an Observable that emits the items you specify as arguments before it begins to emit
+ * items emitted by the source Observable.
+ *
+ * <img src="./img/startWith.png" width="100%">
+ *
+ * @param {...T} values - Items you want the modified Observable to emit first.
+ * @param {Scheduler} [scheduler] - A {@link IScheduler} to use for scheduling
+ * the emissions of the `next` notifications.
+ * @return {Observable} An Observable that emits the items in the specified Iterable and then emits the items
+ * emitted by the source Observable.
+ * @method startWith
+ * @owner Observable
+ */
+function startWith() {
+    var array = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        array[_i - 0] = arguments[_i];
+    }
+    return function (source) {
+        var scheduler = array[array.length - 1];
+        if (isScheduler_1.isScheduler(scheduler)) {
+            array.pop();
+        }
+        else {
+            scheduler = null;
+        }
+        var len = array.length;
+        if (len === 1) {
+            return concat_1.concat(new ScalarObservable_1.ScalarObservable(array[0], scheduler), source);
+        }
+        else if (len > 1) {
+            return concat_1.concat(new ArrayObservable_1.ArrayObservable(array, scheduler), source);
+        }
+        else {
+            return concat_1.concat(new EmptyObservable_1.EmptyObservable(scheduler), source);
+>>>>>>> origin/develop-team
         }
     });
 
@@ -26203,7 +29857,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 197 */
+=======
+/* 265 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26263,9 +29921,22 @@ module.exports = Color;
 
 })));
 
+<<<<<<< HEAD
 
 /***/ }),
 /* 198 */
+=======
+var switchMap_1 = __webpack_require__(57);
+var identity_1 = __webpack_require__(291);
+function switchAll() {
+    return switchMap_1.switchMap(identity_1.identity);
+}
+exports.switchAll = switchAll;
+//# sourceMappingURL=switchAll.js.map
+
+/***/ }),
+/* 266 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -26388,7 +30059,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 199 */
+=======
+/* 267 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26540,13 +30215,23 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return uk;
+=======
+/***/ }),
+/* 268 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 200 */
+=======
+/* 269 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26557,6 +30242,12 @@ module.exports = Color;
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
 
+<<<<<<< HEAD
+=======
+/***/ }),
+/* 270 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
     var months = [
         'جنوری',
@@ -26648,7 +30339,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 201 */
+=======
+/* 271 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26710,7 +30405,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 202 */
+=======
+/* 272 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26772,11 +30471,16 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 203 */
+=======
+/* 273 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
 
+<<<<<<< HEAD
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
@@ -26846,6 +30550,137 @@ module.exports = Color;
         week : {
             dow : 1, // Monday is the first day of the week.
             doy : 4  // The week that contains Jan 4th is the first week of the year.
+=======
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var async_1 = __webpack_require__(5);
+var isDate_1 = __webpack_require__(41);
+var Subscriber_1 = __webpack_require__(2);
+var TimeoutError_1 = __webpack_require__(288);
+/**
+ *
+ * Errors if Observable does not emit a value in given time span.
+ *
+ * <span class="informal">Timeouts on Observable that doesn't emit values fast enough.</span>
+ *
+ * <img src="./img/timeout.png" width="100%">
+ *
+ * `timeout` operator accepts as an argument either a number or a Date.
+ *
+ * If number was provided, it returns an Observable that behaves like a source
+ * Observable, unless there is a period of time where there is no value emitted.
+ * So if you provide `100` as argument and first value comes after 50ms from
+ * the moment of subscription, this value will be simply re-emitted by the resulting
+ * Observable. If however after that 100ms passes without a second value being emitted,
+ * stream will end with an error and source Observable will be unsubscribed.
+ * These checks are performed throughout whole lifecycle of Observable - from the moment
+ * it was subscribed to, until it completes or errors itself. Thus every value must be
+ * emitted within specified period since previous value.
+ *
+ * If provided argument was Date, returned Observable behaves differently. It throws
+ * if Observable did not complete before provided Date. This means that periods between
+ * emission of particular values do not matter in this case. If Observable did not complete
+ * before provided Date, source Observable will be unsubscribed. Other than that, resulting
+ * stream behaves just as source Observable.
+ *
+ * `timeout` accepts also a Scheduler as a second parameter. It is used to schedule moment (or moments)
+ * when returned Observable will check if source stream emitted value or completed.
+ *
+ * @example <caption>Check if ticks are emitted within certain timespan</caption>
+ * const seconds = Rx.Observable.interval(1000);
+ *
+ * seconds.timeout(1100) // Let's use bigger timespan to be safe,
+ *                       // since `interval` might fire a bit later then scheduled.
+ * .subscribe(
+ *     value => console.log(value), // Will emit numbers just as regular `interval` would.
+ *     err => console.log(err) // Will never be called.
+ * );
+ *
+ * seconds.timeout(900).subscribe(
+ *     value => console.log(value), // Will never be called.
+ *     err => console.log(err) // Will emit error before even first value is emitted,
+ *                             // since it did not arrive within 900ms period.
+ * );
+ *
+ * @example <caption>Use Date to check if Observable completed</caption>
+ * const seconds = Rx.Observable.interval(1000);
+ *
+ * seconds.timeout(new Date("December 17, 2020 03:24:00"))
+ * .subscribe(
+ *     value => console.log(value), // Will emit values as regular `interval` would
+ *                                  // until December 17, 2020 at 03:24:00.
+ *     err => console.log(err) // On December 17, 2020 at 03:24:00 it will emit an error,
+ *                             // since Observable did not complete by then.
+ * );
+ *
+ * @see {@link timeoutWith}
+ *
+ * @param {number|Date} due Number specifying period within which Observable must emit values
+ *                          or Date specifying before when Observable should complete
+ * @param {Scheduler} [scheduler] Scheduler controlling when timeout checks occur.
+ * @return {Observable<T>} Observable that mirrors behaviour of source, unless timeout checks fail.
+ * @method timeout
+ * @owner Observable
+ */
+function timeout(due, scheduler) {
+    if (scheduler === void 0) { scheduler = async_1.async; }
+    var absoluteTimeout = isDate_1.isDate(due);
+    var waitFor = absoluteTimeout ? (+due - scheduler.now()) : Math.abs(due);
+    return function (source) { return source.lift(new TimeoutOperator(waitFor, absoluteTimeout, scheduler, new TimeoutError_1.TimeoutError())); };
+}
+exports.timeout = timeout;
+var TimeoutOperator = (function () {
+    function TimeoutOperator(waitFor, absoluteTimeout, scheduler, errorInstance) {
+        this.waitFor = waitFor;
+        this.absoluteTimeout = absoluteTimeout;
+        this.scheduler = scheduler;
+        this.errorInstance = errorInstance;
+    }
+    TimeoutOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new TimeoutSubscriber(subscriber, this.absoluteTimeout, this.waitFor, this.scheduler, this.errorInstance));
+    };
+    return TimeoutOperator;
+}());
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var TimeoutSubscriber = (function (_super) {
+    __extends(TimeoutSubscriber, _super);
+    function TimeoutSubscriber(destination, absoluteTimeout, waitFor, scheduler, errorInstance) {
+        _super.call(this, destination);
+        this.absoluteTimeout = absoluteTimeout;
+        this.waitFor = waitFor;
+        this.scheduler = scheduler;
+        this.errorInstance = errorInstance;
+        this.action = null;
+        this.scheduleTimeout();
+    }
+    TimeoutSubscriber.dispatchTimeout = function (subscriber) {
+        subscriber.error(subscriber.errorInstance);
+    };
+    TimeoutSubscriber.prototype.scheduleTimeout = function () {
+        var action = this.action;
+        if (action) {
+            // Recycle the action if we've already scheduled one. All the production
+            // Scheduler Actions mutate their state/delay time and return themeselves.
+            // VirtualActions are immutable, so they create and return a clone. In this
+            // case, we need to set the action reference to the most recent VirtualAction,
+            // to ensure that's the one we clone from next time.
+            this.action = action.schedule(this, this.waitFor);
+        }
+        else {
+            this.add(this.action = this.scheduler.schedule(TimeoutSubscriber.dispatchTimeout, this.waitFor, this));
+        }
+    };
+    TimeoutSubscriber.prototype._next = function (value) {
+        if (!this.absoluteTimeout) {
+            this.scheduleTimeout();
+>>>>>>> origin/develop-team
         }
     });
 
@@ -26855,7 +30690,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 204 */
+=======
+/* 274 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26921,13 +30760,23 @@ module.exports = Color;
         }
     });
 
+<<<<<<< HEAD
     return xPseudo;
+=======
+/***/ }),
+/* 275 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> origin/develop-team
 
 })));
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 205 */
+=======
+/* 276 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26991,7 +30840,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 206 */
+=======
+/* 277 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27105,7 +30958,11 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 207 */
+=======
+/* 278 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27212,6 +31069,7 @@ module.exports = Color;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27320,6 +31178,9 @@ module.exports = Color;
 
 /***/ }),
 /* 209 */
+=======
+/* 279 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27374,6 +31235,7 @@ exports.BehaviorSubject = BehaviorSubject;
 //# sourceMappingURL=BehaviorSubject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27389,6 +31251,9 @@ exports.empty = {
 
 /***/ }),
 /* 211 */
+=======
+/* 280 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27434,7 +31299,11 @@ exports.SubjectSubscription = SubjectSubscription;
 //# sourceMappingURL=SubjectSubscription.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 212 */
+=======
+/* 281 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27606,12 +31475,34 @@ var RefCountSubscriber = (function (_super) {
             sharedConnection.unsubscribe();
         }
     };
+<<<<<<< HEAD
     return RefCountSubscriber;
 }(Subscriber_1.Subscriber));
 //# sourceMappingURL=ConnectableObservable.js.map
 
 /***/ }),
 /* 213 */
+=======
+    return WithLatestFromSubscriber;
+}(OuterSubscriber_1.OuterSubscriber));
+//# sourceMappingURL=withLatestFrom.js.map
+
+/***/ }),
+/* 282 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var zip_1 = __webpack_require__(36);
+function zipAll(project) {
+    return function (source) { return source.lift(new zip_1.ZipOperator(project)); };
+}
+exports.zipAll = zipAll;
+//# sourceMappingURL=zipAll.js.map
+
+/***/ }),
+/* 283 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27739,11 +31630,16 @@ exports.FromObservable = FromObservable;
 //# sourceMappingURL=FromObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 214 */
+=======
+/* 284 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -27762,6 +31658,146 @@ var PromiseObservable = (function (_super) {
         _super.call(this);
         this.promise = promise;
         this.scheduler = scheduler;
+=======
+var AsapAction_1 = __webpack_require__(597);
+var AsapScheduler_1 = __webpack_require__(598);
+/**
+ *
+ * Asap Scheduler
+ *
+ * <span class="informal">Perform task as fast as it can be performed asynchronously</span>
+ *
+ * `asap` scheduler behaves the same as {@link async} scheduler when you use it to delay task
+ * in time. If however you set delay to `0`, `asap` will wait for current synchronously executing
+ * code to end and then it will try to execute given task as fast as possible.
+ *
+ * `asap` scheduler will do its best to minimize time between end of currently executing code
+ * and start of scheduled task. This makes it best candidate for performing so called "deferring".
+ * Traditionally this was achieved by calling `setTimeout(deferredTask, 0)`, but that technique involves
+ * some (although minimal) unwanted delay.
+ *
+ * Note that using `asap` scheduler does not necessarily mean that your task will be first to process
+ * after currently executing code. In particular, if some task was also scheduled with `asap` before,
+ * that task will execute first. That being said, if you need to schedule task asynchronously, but
+ * as soon as possible, `asap` scheduler is your best bet.
+ *
+ * @example <caption>Compare async and asap scheduler</caption>
+ *
+ * Rx.Scheduler.async.schedule(() => console.log('async')); // scheduling 'async' first...
+ * Rx.Scheduler.asap.schedule(() => console.log('asap'));
+ *
+ * // Logs:
+ * // "asap"
+ * // "async"
+ * // ... but 'asap' goes first!
+ *
+ * @static true
+ * @name asap
+ * @owner Scheduler
+ */
+exports.asap = new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
+//# sourceMappingURL=asap.js.map
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var QueueAction_1 = __webpack_require__(599);
+var QueueScheduler_1 = __webpack_require__(600);
+/**
+ *
+ * Queue Scheduler
+ *
+ * <span class="informal">Put every next task on a queue, instead of executing it immediately</span>
+ *
+ * `queue` scheduler, when used with delay, behaves the same as {@link async} scheduler.
+ *
+ * When used without delay, it schedules given task synchronously - executes it right when
+ * it is scheduled. However when called recursively, that is when inside the scheduled task,
+ * another task is scheduled with queue scheduler, instead of executing immediately as well,
+ * that task will be put on a queue and wait for current one to finish.
+ *
+ * This means that when you execute task with `queue` scheduler, you are sure it will end
+ * before any other task scheduled with that scheduler will start.
+ *
+ * @examples <caption>Schedule recursively first, then do something</caption>
+ *
+ * Rx.Scheduler.queue.schedule(() => {
+ *   Rx.Scheduler.queue.schedule(() => console.log('second')); // will not happen now, but will be put on a queue
+ *
+ *   console.log('first');
+ * });
+ *
+ * // Logs:
+ * // "first"
+ * // "second"
+ *
+ *
+ * @example <caption>Reschedule itself recursively</caption>
+ *
+ * Rx.Scheduler.queue.schedule(function(state) {
+ *   if (state !== 0) {
+ *     console.log('before', state);
+ *     this.schedule(state - 1); // `this` references currently executing Action,
+ *                               // which we reschedule with new state
+ *     console.log('after', state);
+ *   }
+ * }, 0, 3);
+ *
+ * // In scheduler that runs recursively, you would expect:
+ * // "before", 3
+ * // "before", 2
+ * // "before", 1
+ * // "after", 1
+ * // "after", 2
+ * // "after", 3
+ *
+ * // But with queue it logs:
+ * // "before", 3
+ * // "after", 3
+ * // "before", 2
+ * // "after", 2
+ * // "before", 1
+ * // "after", 1
+ *
+ *
+ * @static true
+ * @name queue
+ * @owner Scheduler
+ */
+exports.queue = new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
+//# sourceMappingURL=queue.js.map
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var SubscriptionLog = (function () {
+    function SubscriptionLog(subscribedFrame, unsubscribedFrame) {
+        if (unsubscribedFrame === void 0) { unsubscribedFrame = Number.POSITIVE_INFINITY; }
+        this.subscribedFrame = subscribedFrame;
+        this.unsubscribedFrame = unsubscribedFrame;
+    }
+    return SubscriptionLog;
+}());
+exports.SubscriptionLog = SubscriptionLog;
+//# sourceMappingURL=SubscriptionLog.js.map
+
+/***/ }),
+/* 287 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var SubscriptionLog_1 = __webpack_require__(286);
+var SubscriptionLoggable = (function () {
+    function SubscriptionLoggable() {
+        this.subscriptions = [];
+>>>>>>> origin/develop-team
     }
     /**
      * Converts a Promise to an Observable.
@@ -27847,6 +31883,7 @@ var PromiseObservable = (function (_super) {
             }
         }
     };
+<<<<<<< HEAD
     return PromiseObservable;
 }(Observable_1.Observable));
 exports.PromiseObservable = PromiseObservable;
@@ -27855,6 +31892,38 @@ function dispatchNext(arg) {
     if (!subscriber.closed) {
         subscriber.next(value);
         subscriber.complete();
+=======
+    return SubscriptionLoggable;
+}());
+exports.SubscriptionLoggable = SubscriptionLoggable;
+//# sourceMappingURL=SubscriptionLoggable.js.map
+
+/***/ }),
+/* 288 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * An error thrown when duetime elapses.
+ *
+ * @see {@link timeout}
+ *
+ * @class TimeoutError
+ */
+var TimeoutError = (function (_super) {
+    __extends(TimeoutError, _super);
+    function TimeoutError() {
+        var err = _super.call(this, 'Timeout has occurred');
+        this.name = err.name = 'TimeoutError';
+        this.stack = err.stack;
+        this.message = err.message;
+>>>>>>> origin/develop-team
     }
 }
 function dispatchError(arg) {
@@ -27866,7 +31935,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=PromiseObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 215 */
+=======
+/* 289 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27886,6 +31959,7 @@ function getCORSRequest() {
     if (root_1.root.XMLHttpRequest) {
         return new root_1.root.XMLHttpRequest();
     }
+<<<<<<< HEAD
     else if (!!root_1.root.XDomainRequest) {
         return new root_1.root.XDomainRequest();
     }
@@ -27955,6 +32029,83 @@ function ajaxGetJSON(url, headers) {
 }
 exports.ajaxGetJSON = ajaxGetJSON;
 ;
+=======
+    return UnsubscriptionError;
+}(Error));
+exports.UnsubscriptionError = UnsubscriptionError;
+//# sourceMappingURL=UnsubscriptionError.js.map
+
+/***/ }),
+/* 290 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function applyMixins(derivedCtor, baseCtors) {
+    for (var i = 0, len = baseCtors.length; i < len; i++) {
+        var baseCtor = baseCtors[i];
+        var propertyKeys = Object.getOwnPropertyNames(baseCtor.prototype);
+        for (var j = 0, len2 = propertyKeys.length; j < len2; j++) {
+            var name_1 = propertyKeys[j];
+            derivedCtor.prototype[name_1] = baseCtor.prototype[name_1];
+        }
+    }
+}
+exports.applyMixins = applyMixins;
+//# sourceMappingURL=applyMixins.js.map
+
+/***/ }),
+/* 291 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function identity(x) {
+    return x;
+}
+exports.identity = identity;
+//# sourceMappingURL=identity.js.map
+
+/***/ }),
+/* 292 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
+//# sourceMappingURL=isArrayLike.js.map
+
+/***/ }),
+/* 293 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function isObject(x) {
+    return x != null && typeof x === 'object';
+}
+exports.isObject = isObject;
+//# sourceMappingURL=isObject.js.map
+
+/***/ }),
+/* 294 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function isPromise(value) {
+    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
+}
+exports.isPromise = isPromise;
+//# sourceMappingURL=isPromise.js.map
+
+/***/ }),
+/* 295 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -28313,6 +32464,7 @@ exports.from = FromObservable_1.FromObservable.create;
 
 "use strict";
 
+<<<<<<< HEAD
 var ArrayObservable_1 = __webpack_require__(20);
 exports.of = ArrayObservable_1.ArrayObservable.of;
 //# sourceMappingURL=of.js.map
@@ -28336,6 +32488,25 @@ exports.timer = TimerObservable_1.TimerObservable.create;
 var async_1 = __webpack_require__(7);
 var timeInterval_1 = __webpack_require__(287);
 exports.TimeInterval = timeInterval_1.TimeInterval;
+=======
+/// <reference path="../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var FluxStore = __webpack_require__(63);
+var actions = __webpack_require__(295);
+>>>>>>> origin/develop-team
 /**
  * @param scheduler
  * @return {Observable<TimeInterval<any>>|WebSocketSubject<T>|Observable<T>}
@@ -29012,6 +33183,7 @@ var BufferToggleSubscriber = (function (_super) {
 
 "use strict";
 
+<<<<<<< HEAD
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -29064,6 +33236,167 @@ exports.bufferWhen = bufferWhen;
 var BufferWhenOperator = (function () {
     function BufferWhenOperator(closingSelector) {
         this.closingSelector = closingSelector;
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swEditSkuPriceModalLauncherHTML = __webpack_require__(315);
+var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
+    //@ngInject
+    function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.initData = function (pageRecord) {
+            _this.pageRecord = pageRecord;
+            if (angular.isDefined(pageRecord)) {
+                var skuPriceData = {
+                    skuPriceID: pageRecord.skuPriceID,
+                    minQuantity: pageRecord.minQuantity,
+                    maxQuantity: pageRecord.maxQuantity,
+                    currencyCode: pageRecord.currencyCode,
+                    price: pageRecord.price
+                };
+                var skuData = {
+                    skuID: pageRecord["sku_skuID"],
+                    skuCode: pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+                };
+                var priceGroupData = {
+                    priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                    priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+                };
+                //reference to form is being wiped
+                if (_this.skuPrice) {
+                    var skuPriceForms = _this.skuPrice.forms;
+                }
+                _this.skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+                if (skuPriceForms) {
+                    _this.skuPrice.forms = skuPriceForms;
+                }
+                if (_this.sku) {
+                    var skuForms = _this.sku.forms;
+                }
+                _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+                if (skuForms) {
+                    _this.skuPrice.forms = skuForms;
+                }
+                if (_this.priceGroup) {
+                    var priceGroupForms = _this.priceGroup.forms;
+                }
+                _this.priceGroup = _this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+                if (priceGroupForms) {
+                    _this.priceGroup.forms = priceGroupForms;
+                }
+                _this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                    _this.priceGroupOptions = response.records;
+                    _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+                }).finally(function () {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                        if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                            _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        }
+                    }
+                    if (!_this.selectedPriceGroup['priceGroupID']) {
+                        _this.priceGroupEditable = true;
+                    }
+                });
+                _this.skuPriceService.getCurrencyOptions().then(function (response) {
+                    if (response.records.length) {
+                        _this.currencyCodeOptions = [];
+                        for (var i = 0; i < response.records.length; i++) {
+                            _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                        }
+                        _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                        for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                            if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                                _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                            }
+                        }
+                    }
+                });
+                _this.skuPrice.$$setPriceGroup(_this.priceGroup);
+                _this.skuPrice.$$setSku(_this.sku);
+            }
+            else {
+                return;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.$onDestroy = function () {
+            console.log("$onDestroy called");
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        this.save = function () {
+            _this.observerService.notify("updateBindings");
+            var firstSkuPriceForSku = !_this.skuPriceService.hasSkuPrices(_this.sku.data.skuID);
+            if (_this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                var form = _this.formService.getForm(_this.formName);
+                _this.formService.resetForm(form);
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(_this.formService.getForm(_this.formName));
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+>>>>>>> origin/develop-team
     }
     BufferWhenOperator.prototype.call = function (subscriber, source) {
         return source.subscribe(new BufferWhenSubscriber(subscriber, this.closingSelector));
@@ -29142,6 +33475,7 @@ var BufferWhenSubscriber = (function (_super) {
 
 "use strict";
 
+<<<<<<< HEAD
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -29217,6 +33551,34 @@ exports.catchError = catchError;
 var CatchOperator = (function () {
     function CatchOperator(selector) {
         this.selector = selector;
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swPricingManagerHTML = __webpack_require__(316);
+var SWPricingManagerController = /** @class */ (function () {
+    //@ngInject
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = this;
+        this.collectionConfigService = collectionConfigService;
+        this.productCollectionConfig = this.collectionConfigService.newCollectionConfig("Product");
+        this.productCollectionConfig.addFilter("productID", this.productId, "=", 'AND', true);
+        this.productCollectionConfig.addDisplayProperty("productID,defaultSku.currencyCode");
+        this.productCollectionConfig.getEntity().then(function (response) {
+            _this.product = response.pageRecords[0];
+        }, function (reason) {
+        });
+        this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
+        this.skuPriceCollectionConfig.addDisplayProperty("price", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
+        this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
+        this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
+>>>>>>> origin/develop-team
     }
     CatchOperator.prototype.call = function (subscriber, source) {
         return source.subscribe(new CatchSubscriber(subscriber, this.selector, this.caught));
@@ -29277,6 +33639,7 @@ exports.combineAll = combineAll;
 
 "use strict";
 
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(28);
 var concat_2 = __webpack_require__(28);
 exports.concatStatic = concat_2.concat;
@@ -29339,6 +33702,392 @@ function concat() {
 }
 exports.concat = concat;
 //# sourceMappingURL=concat.js.map
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var swSkuPriceModalHTML = __webpack_require__(317);
+var SWSkuPriceModalController = /** @class */ (function () {
+    //@ngInject
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.formService = formService;
+        this.listingService = listingService;
+        this.observerService = observerService;
+        this.skuPriceService = skuPriceService;
+        this.utilityService = utilityService;
+        this.collectionConfigService = collectionConfigService;
+        this.scopeService = scopeService;
+        this.$scope = $scope;
+        this.$timeout = $timeout;
+        this.requestService = requestService;
+        this.baseName = "j-add-sku-item-";
+        this.currencyCodeEditable = false;
+        this.priceGroupEditable = false;
+        this.currencyCodeOptions = [];
+        this.saveSuccess = true;
+        this.updateCurrencyCodeSelector = function (args) {
+            if (args != 'All') {
+                _this.skuPrice.data.currencyCode = args;
+                _this.currencyCodeEditable = false;
+            }
+            else {
+                _this.currencyCodeEditable = true;
+            }
+            _this.observerService.notify("pullBindings");
+        };
+        this.inlineSave = function (pageRecord) {
+            _this.initData(pageRecord);
+            var formDataToPost = {
+                entityName: 'SkuPrice',
+                entityID: pageRecord['skuPriceID'],
+                context: 'save',
+                propertyIdentifiersList: ''
+            };
+            for (var key in pageRecord) {
+                if (key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1) {
+                    continue;
+                }
+                else if (key.indexOf("_") > -1) {
+                    if (key.indexOf("ID") == -1) {
+                        continue;
+                    }
+                    var property = key.split("_");
+                    formDataToPost[property[0]] = {};
+                    formDataToPost[property[0]][property[1]] = pageRecord[key];
+                }
+                else {
+                    formDataToPost[key] = pageRecord[key];
+                }
+            }
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise.then(function (response) {
+                _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                _this.observerService.notifyById("rowSaved", _this.pageRecord.$$hashKey, _this.pageRecord);
+            });
+        };
+        this.setSelectedPriceGroup = function (priceGroupData) {
+            if (!priceGroupData.priceGroupID) {
+                _this.submittedPriceGroup = {};
+                return;
+            }
+            _this.submittedPriceGroup = { priceGroupID: priceGroupData['priceGroupID'] };
+        };
+        this.setSelectedSku = function (skuData) {
+            if (!angular.isDefined(skuData['skuID'])) {
+                return;
+            }
+            _this.selectedSku = { skuCode: skuData['skuCode'], skuID: skuData['skuID'] };
+            _this.sku = _this.$hibachi.populateEntity('Sku', skuData);
+            _this.submittedSku = { skuID: skuData['skuID'] };
+        };
+        this.isDefaultSkuPrice = function () {
+            if (_this.pageRecord) {
+                if ((_this.skuPrice.sku.currencyCode == _this.skuPrice.currencyCode) &&
+                    !_this.skuPrice.minQuantity.trim() &&
+                    !_this.skuPrice.maxQuantity.trim() &&
+                    (!_this.skuPrice.priceGroup.priceGroupID || !_this.skuPrice.priceGroup.priceGroupID.trim()) &&
+                    _this.skuPrice.price) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        this.$onDestroy = function () {
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+            _this.observerService.detachByEvent('SAVE_SKUPRICE');
+        };
+        this.deleteSkuPrice = function (pageRecord) {
+            var skuPriceData = {
+                skuPriceID: pageRecord.skuPriceID,
+                minQuantity: pageRecord.minQuantity,
+                maxQuantity: pageRecord.maxQuantity,
+                currencyCode: pageRecord.currencyCode,
+                price: pageRecord.price
+            };
+            var skuPrice = _this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            var deletePromise = skuPrice.$$delete();
+            deletePromise.then(function (resolve) {
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+            }, function (reason) {
+                console.log("Could not delete Sku Price Because: ", reason);
+            });
+            return deletePromise;
+        };
+        this.save = function () {
+            _this.observerService.notify("updateBindings");
+            if (_this.pageRecord && _this.submittedPriceGroup) {
+                _this.priceGroup.priceGroupID = _this.submittedPriceGroup.priceGroupID;
+                _this.priceGroup.priceGroupCode = _this.submittedPriceGroup.priceGroupCode;
+            }
+            var form = _this.formService.getForm(_this.formName);
+            var savePromise = _this.skuPrice.$$save();
+            savePromise.then(function (response) {
+                _this.saveSuccess = true;
+                _this.observerService.notify('skuPricesUpdate', { skuID: _this.sku.data.skuID, refresh: true });
+                //hack, for whatever reason is not responding to getCollection event
+                _this.observerService.notifyById('swPaginationAction', _this.listingID, { type: 'setCurrentPage', payload: 1 });
+                _this.formService.resetForm(form);
+            }, function (reason) {
+                //error callback
+                console.log("validation failed because: ", reason);
+                _this.saveSuccess = false;
+            }).finally(function () {
+                if (_this.saveSuccess) {
+                    for (var key in _this.skuPrice.data) {
+                        if (key != 'sku' && key != 'currencyCode') {
+                            _this.skuPrice.data[key] = null;
+                        }
+                    }
+                    _this.formService.resetForm(form);
+                    _this.listingService.getCollection(_this.listingID);
+                    _this.listingService.notifyListingPageRecordsUpdate(_this.listingID);
+                }
+            });
+            return savePromise;
+        };
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
+        this.formName = "skuPriceForm" + this.utilityService.createID(16);
+        if (angular.isDefined(this.productId)) {
+            this.skuCollectionConfig = this.skuPriceService.getSkuCollectionConfig(this.productId);
+        }
+        else if (angular.isDefined(this.promotionRewardId)) {
+            var collectionConfigStruct = angular.fromJson(this.skuCollectionConfig);
+            $timeout(function () {
+                _this.skuCollectionConfig = _this.collectionConfigService.newCollectionConfig().loadJson(collectionConfigStruct);
+            });
+        }
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+        this.observerService.attach(this.initData, "EDIT_SKUPRICE");
+        this.observerService.attach(this.inlineSave, "SAVE_SKUPRICE");
+        this.observerService.attach(this.deleteSkuPrice, "DELETE_SKUPRICE");
+    }
+    SWSkuPriceModalController.prototype.initData = function (pageRecord) {
+        var _this = this;
+        this.pageRecord = pageRecord;
+        if (pageRecord) {
+            var skuPriceData = {
+                skuPriceID: pageRecord.skuPriceID,
+                minQuantity: pageRecord.minQuantity,
+                maxQuantity: pageRecord.maxQuantity,
+                currencyCode: pageRecord.currencyCode,
+                price: pageRecord.price
+            };
+            var skuData = {
+                skuID: pageRecord["sku_skuID"],
+                skuCode: pageRecord["sku_skuCode"],
+                calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"]
+            };
+            var promotionRewardData = {
+                promotionRewardID: pageRecord['promotionRewardID']
+            };
+            var priceGroupData = {
+                priceGroupID: pageRecord["priceGroup_priceGroupID"],
+                priceGroupCode: pageRecord["priceGroup_priceGroupCode"]
+            };
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.sku) {
+                var skuForms = this.sku.forms;
+            }
+            this.sku = this.$hibachi.populateEntity('Sku', skuData);
+            if (skuForms) {
+                this.skuPrice.forms = skuForms;
+            }
+            if (this.promotionReward) {
+                var promotionRewardForms = this.promotionReward.forms;
+            }
+            this.promotionReward = this.$hibachi.populateEntity('PromotionReward', promotionRewardData);
+            if (promotionRewardForms) {
+                this.promotionReward.forms = promotionRewardForms;
+            }
+            if (this.priceGroup) {
+                var priceGroupForms = this.priceGroup.forms;
+            }
+            this.priceGroup = this.$hibachi.populateEntity('PriceGroup', priceGroupData);
+            if (priceGroupForms) {
+                this.priceGroup.forms = priceGroupForms;
+            }
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                for (var i = 0; i < _this.priceGroupOptions.length; i++) {
+                    if (_this.pageRecord['priceGroup_priceGroupID'] == _this.priceGroupOptions[i].priceGroupID) {
+                        _this.selectedPriceGroup = _this.priceGroupOptions[i];
+                        console.log(_this.selectedPriceGroup);
+                    }
+                }
+                _this.priceGroupEditable = false;
+                if (!_this.selectedPriceGroup['priceGroupID']) {
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                    for (var i = 0; i < _this.currencyCodeOptions.length; i++) {
+                        if (_this.pageRecord['currencyCode'] == _this.currencyCodeOptions[i]) {
+                            _this.selectedCurrencyCode = _this.currencyCodeOptions[i];
+                        }
+                    }
+                }
+            });
+            this.skuPrice.$$setPriceGroup(this.priceGroup);
+            this.skuPrice.$$setSku(this.sku);
+            this.skuPrice.$$setPromotionReward(this.promotionReward);
+        }
+        else {
+            //reference to form is being wiped
+            if (this.skuPrice) {
+                var skuPriceForms = this.skuPrice.forms;
+            }
+            this.skuPrice = this.skuPriceService.newSkuPrice();
+            if (skuPriceForms) {
+                this.skuPrice.forms = skuPriceForms;
+            }
+            if (this.promotionRewardId) {
+                if (this.promotionReward) {
+                    var promotionRewardForms = this.promotionReward.forms;
+                }
+                this.promotionReward = this.$hibachi.populateEntity('PromotionReward', { promotionRewardID: this.promotionRewardId });
+                if (promotionRewardForms) {
+                    this.promotionReward.forms = promotionRewardForms;
+                }
+                this.skuPrice.$$setPromotionReward(this.promotionReward);
+            }
+            this.skuPriceService.getSkuOptions(this.productId).then(function (response) {
+                _this.skuOptions = [];
+                for (var i = 0; i < response.records.length; i++) {
+                    _this.skuOptions.push({ skuCode: response.records[i]['skuCode'], skuID: response.records[i]['skuID'] });
+                }
+            }).finally(function () {
+                if (angular.isDefined(_this.skuOptions) && _this.skuOptions.length == 1) {
+                    _this.setSelectedSku(_this.skuOptions[0]);
+                }
+            });
+            this.skuPriceService.getPriceGroupOptions().then(function (response) {
+                _this.priceGroupOptions = response.records;
+                _this.priceGroupOptions.unshift({ priceGroupName: "- Select Price Group -", priceGroupID: "" });
+            }).finally(function () {
+                if (angular.isDefined(_this.priceGroupOptions) && _this.priceGroupOptions.length) {
+                    _this.selectedPriceGroup = _this.priceGroupOptions[0];
+                    _this.priceGroupEditable = true;
+                }
+            });
+            this.skuPriceService.getCurrencyOptions().then(function (response) {
+                if (response.records.length) {
+                    _this.currencyCodeOptions = [];
+                    for (var i = 0; i < response.records.length; i++) {
+                        _this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                    }
+                    _this.currencyCodeOptions.unshift("- Select Currency Code -");
+                    _this.selectedCurrencyCode = _this.currencyCodeOptions[0];
+                }
+            });
+        }
+    };
+    return SWSkuPriceModalController;
+}());
+exports.SWSkuPriceModalController = SWSkuPriceModalController;
+var SWSkuPriceModal = /** @class */ (function () {
+    function SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
+        this.$hibachi = $hibachi;
+        this.entityService = entityService;
+        this.observerService = observerService;
+        this.scopeService = scopeService;
+        this.collectionConfigService = collectionConfigService;
+        this.skuPartialsPath = skuPartialsPath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.restrict = 'EA';
+        this.require = {
+            ngForm: '?ngForm'
+        };
+        this.scope = {};
+        this.skuData = {};
+        this.transclude = true;
+        this.bindToController = {
+            sku: "=?",
+            pageRecord: "=?",
+            productId: "@?",
+            promotionRewardId: "@?",
+            minQuantity: "@?",
+            maxQuantity: "@?",
+            priceGroupId: "@?",
+            currencyCode: "@?",
+            eligibleCurrencyCodeList: "@?",
+            defaultCurrencyOnly: "=?",
+            skuCollectionConfig: "@?",
+            disableAllFieldsButPrice: "=?"
+        };
+        this.controller = SWSkuPriceModalController;
+        this.controllerAs = "swSkuPriceModal";
+        this.compile = function (element, attrs) {
+            return {
+                pre: function ($scope, element, attrs) {
+                },
+                post: function ($scope, element, attrs) {
+                }
+            };
+        };
+        this.template = swSkuPriceModalHTML;
+    }
+    SWSkuPriceModal.Factory = function () {
+        var directive = function ($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPriceModal($hibachi, entityService, observerService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
+        directive.$inject = [
+            '$hibachi',
+            'entityService',
+            'observerService',
+            'scopeService',
+            'collectionConfigService',
+            'skuPartialsPath',
+            'slatwallPathBuilder'
+        ];
+        return directive;
+    };
+    return SWSkuPriceModal;
+}());
+exports.SWSkuPriceModal = SWSkuPriceModal;
+
+
+/***/ }),
+/* 300 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//controllers
+var alertcontroller_1 = __webpack_require__(710);
+//services
+var alertservice_1 = __webpack_require__(712);
+var alertmodule = angular.module('hibachi.alert', [])
+    //controllers
+    .controller('alertController', alertcontroller_1.AlertController)
+    //services
+    .service('alertService', alertservice_1.AlertService);
+exports.alertmodule = alertmodule;
+
+>>>>>>> origin/develop-team
 
 /***/ }),
 /* 229 */
@@ -29346,6 +34095,7 @@ exports.concat = concat;
 
 "use strict";
 
+<<<<<<< HEAD
 var concatMap_1 = __webpack_require__(57);
 /* tslint:enable:max-line-length */
 /**
@@ -29409,6 +34159,87 @@ function concatMapTo(innerObservable, resultSelector) {
 }
 exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//modules
+var core_module_1 = __webpack_require__(6);
+//services
+var collectionconfigservice_1 = __webpack_require__(749);
+var collectionservice_1 = __webpack_require__(750);
+//controllers
+var collections_1 = __webpack_require__(744);
+var createcollection_1 = __webpack_require__(746);
+var confirmationcontroller_1 = __webpack_require__(745);
+var entity_createcollection_1 = __webpack_require__(747);
+//directives
+var swcollection_1 = __webpack_require__(723);
+var swaddfilterbuttons_1 = __webpack_require__(722);
+var swdisplayoptions_1 = __webpack_require__(738);
+var swdisplayitem_1 = __webpack_require__(736);
+var swdisplayitemaggregate_1 = __webpack_require__(737);
+var swcollectiontable_1 = __webpack_require__(724);
+var swcolumnitem_1 = __webpack_require__(725);
+var swconditioncriteria_1 = __webpack_require__(726);
+var swcriteria_1 = __webpack_require__(727);
+var swcriteriaboolean_1 = __webpack_require__(728);
+var swcriteriadate_1 = __webpack_require__(729);
+var swcriteriamanytomany_1 = __webpack_require__(730);
+var swcriteriamanytoone_1 = __webpack_require__(731);
+var swcriterianumber_1 = __webpack_require__(732);
+var swcriteriaonetomany_1 = __webpack_require__(733);
+var swcriteriarelatedobject_1 = __webpack_require__(734);
+var swcriteriastring_1 = __webpack_require__(735);
+var sweditfilteritem_1 = __webpack_require__(739);
+var swfiltergroups_1 = __webpack_require__(741);
+var swfilteritem_1 = __webpack_require__(742);
+var swfiltergroupitem_1 = __webpack_require__(740);
+var swrestrictionconfig_1 = __webpack_require__(743);
+//filters
+var aggregatefilter_1 = __webpack_require__(748);
+var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+    .config([function () {
+    }]).run([function () {
+    }])
+    //constants
+    .constant('collectionPartialsPath', 'collection/components/')
+    //controllers
+    .controller('collections', collections_1.CollectionController)
+    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+    .controller('createCollection', createcollection_1.CreateCollection)
+    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
+    //services
+    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
+    .service('collectionService', collectionservice_1.CollectionService)
+    //directives
+    .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
+    .directive('swCollection', swcollection_1.SWCollection.Factory())
+    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
+    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
+    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
+    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
+    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
+    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
+    //filters
+    .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
+exports.collectionmodule = collectionmodule;
+
+>>>>>>> origin/develop-team
 
 /***/ }),
 /* 230 */
@@ -29593,6 +34424,7 @@ var DebounceOperator = (function () {
     DebounceOperator.prototype.call = function (subscriber, source) {
         return source.subscribe(new DebounceSubscriber(subscriber, this.durationSelector));
     };
+<<<<<<< HEAD
     return DebounceOperator;
 }());
 /**
@@ -29613,6 +34445,98 @@ var DebounceSubscriber = (function (_super) {
             var result = this.durationSelector.call(this, value);
             if (result) {
                 this._tryNext(value, result);
+=======
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+var basetransient_1 = __webpack_require__(62);
+var Request = /** @class */ (function (_super) {
+    __extends(Request, _super);
+    function Request(url, data, method, headers, $injector) {
+        var _this = _super.call(this, $injector) || this;
+        _this.loading = true;
+        _this.errors = {};
+        _this.processResponse = function (response) {
+            _this.loading = false;
+            if (response.errors) {
+                _this.errors = response.errors;
+            }
+            if (response.messages) {
+                _this.messages = response.messages;
+            }
+        };
+        //returns hibachiAction value from url and data;
+        _this.getAction = function () {
+            var config = _this.getAppConfig();
+            //typically hibachiAction
+            var actionName = config.action;
+            var params = _this.utilityService.getQueryParamsFromUrl(_this.url);
+            if (params[actionName]) {
+                return params[actionName];
+            }
+            if (_this.data && _this.data[actionName]) {
+                return _this.data[actionName];
+            }
+            if (_this.url.indexOf('api/scope/') > 0) {
+                return _this.extractPublicAction(_this.url);
+            }
+        };
+        _this.extractPublicAction = function (url) {
+            //get in between api/scope and / or ? or end of word
+            var regex = /\api\/scope\/(.*?)(?=\/|\?|$)/;
+            var arr = regex.exec(url);
+            return arr[1];
+        };
+        _this.processSuccess = function (response) {
+            _this.processResponse(response);
+        };
+        _this.processError = function (response) {
+            _this.processResponse(response);
+        };
+        /** used to turn data into a correct format for the post */
+        _this.toFormParams = function (data) {
+            if (data) {
+                return $.param(data);
+            }
+            else {
+                return "";
+            }
+            //return data = this.serializeData(data) || "";
+        };
+        _this.serializeData = function (data) {
+            // If this is not an object, defer to native stringification.
+            if (!angular.isObject(data)) {
+                return ((data == null) ? "" : data.toString());
+            }
+            var buffer = [];
+            // Serialize each key in the object.
+            for (var name in data) {
+                if (!data.hasOwnProperty(name)) {
+                    continue;
+                }
+                var value = data[name];
+                buffer.push(encodeURIComponent(name) + "=" + encodeURIComponent((value == null) ? "" : value));
+            }
+            // Serialize the buffer and clean it up for transportation.
+            var source = buffer.join("&").replace(/%20/g, "+");
+            return (source);
+        };
+        _this.headers = headers;
+        _this.$q = _this.getService('$q');
+        _this.$http = _this.getService('$http');
+        _this.$window = _this.getService('$window');
+        _this.url = url;
+        _this.data = data;
+        _this.method = method;
+        _this.utilityService = _this.getService('utilityService');
+        if (!method) {
+            if (data == undefined) {
+                method = "get";
+            }
+            else {
+                method = "post";
+>>>>>>> origin/develop-team
             }
         }
         catch (err) {
@@ -29631,9 +34555,79 @@ var DebounceSubscriber = (function (_super) {
             subscription.unsubscribe();
             this.remove(subscription);
         }
+<<<<<<< HEAD
         subscription = subscribeToResult_1.subscribeToResult(this, duration);
         if (!subscription.closed) {
             this.add(this.durationSubscription = subscription);
+=======
+        return _this;
+    }
+    return Request;
+}(basetransient_1.BaseTransient));
+exports.Request = Request;
+
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+//services
+var dialogservice_1 = __webpack_require__(844);
+//controllers
+var pagedialog_1 = __webpack_require__(843);
+var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
+})
+    //services
+    .service('dialogService', dialogservice_1.DialogService)
+    //controllers
+    .controller('pageDialog', pagedialog_1.PageDialogController)
+    //filters
+    //constants
+    .constant('dialogPartials', 'dialog/components/');
+exports.dialogmodule = dialogmodule;
+
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//services
+// import {AccountService} from "./services/accountservice";
+// import {CartService} from "./services/cartservice";
+// import {UtilityService} from "./services/utilityservice";
+// import {SelectionService} from "./services/selectionservice";
+// import {ObserverService} from "./services/observerservice";
+// import {FormService} from "./services/formservice";
+// import {MetaDataService} from "./services/metadataservice";
+//controllers
+var otherwisecontroller_1 = __webpack_require__(848);
+var routercontroller_1 = __webpack_require__(849);
+//directives
+var swdetailtabs_1 = __webpack_require__(846);
+var swdetail_1 = __webpack_require__(845);
+var swlist_1 = __webpack_require__(847);
+var core_module_1 = __webpack_require__(6);
+var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
+    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
+    function ($routeProvider, $injector, $locationProvider, appConfig) {
+        //detect if we are in hashbang mode
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        if (vars.ng) {
+            $locationProvider.html5Mode(false).hashPrefix('!');
+>>>>>>> origin/develop-team
         }
     };
     DebounceSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
@@ -29755,9 +34749,79 @@ var DebounceTimeSubscriber = (function (_super) {
         this.hasValue = true;
         this.add(this.debouncedSubscription = this.scheduler.schedule(dispatchNext, this.dueTime, this));
     };
+<<<<<<< HEAD
     DebounceTimeSubscriber.prototype._complete = function () {
         this.debouncedNext();
         this.destination.complete();
+=======
+    SWPropertyDisplay.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+    return SWPropertyDisplay;
+}());
+exports.SWPropertyDisplay = SWPropertyDisplay;
+
+
+/***/ }),
+/* 307 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//services
+var workflowconditionservice_1 = __webpack_require__(922);
+var scheduleservice_1 = __webpack_require__(921);
+//directives
+var swadmincreatesuperuser_1 = __webpack_require__(909);
+var swworkflowbasic_1 = __webpack_require__(911);
+var swworkflowcondition_1 = __webpack_require__(912);
+var swworkflowconditiongroupitem_1 = __webpack_require__(913);
+var swworkflowconditiongroups_1 = __webpack_require__(914);
+var swworkflowtask_1 = __webpack_require__(915);
+var swworkflowtaskactions_1 = __webpack_require__(916);
+var swworkflowtasks_1 = __webpack_require__(917);
+var swworkflowtrigger_1 = __webpack_require__(918);
+var swworkflowtriggers_1 = __webpack_require__(920);
+var swworkflowtriggerhistory_1 = __webpack_require__(919);
+var swschedulepreview_1 = __webpack_require__(910);
+//filters
+var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
+})
+    //constants
+    .constant('workflowPartialsPath', 'workflow/components/')
+    //services
+    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
+    .service('scheduleService', scheduleservice_1.ScheduleService)
+    //directives
+    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
+    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
+    .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
+    .directive('swWorkflowConditionGroupItem', swworkflowconditiongroupitem_1.SWWorkflowConditionGroupItem.Factory())
+    .directive('swWorkflowConditionGroups', swworkflowconditiongroups_1.SWWorkflowConditionGroups.Factory())
+    .directive('swWorkflowTask', swworkflowtask_1.SWWorkflowTask.Factory())
+    .directive('swWorkflowTaskActions', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
+    .directive('swWorkflowTasks', swworkflowtasks_1.SWWorkflowTasks.Factory())
+    .directive('swWorkflowTrigger', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
+    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory())
+    .directive('swWorkflowTriggerHistory', swworkflowtriggerhistory_1.SWWorkflowTriggerHistory.Factory())
+    .directive('swSchedulePreview', swschedulepreview_1.SWSchedulePreview.Factory());
+exports.workflowmodule = workflowmodule;
+
+
+/***/ }),
+/* 308 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+>>>>>>> origin/develop-team
     };
     DebounceTimeSubscriber.prototype.debouncedNext = function () {
         this.clearDebounce();
@@ -29767,6 +34831,7 @@ var DebounceTimeSubscriber = (function (_super) {
             this.hasValue = false;
         }
     };
+<<<<<<< HEAD
     DebounceTimeSubscriber.prototype.clearDebounce = function () {
         var debouncedSubscription = this.debouncedSubscription;
         if (debouncedSubscription !== null) {
@@ -29784,6 +34849,439 @@ function dispatchNext(subscriber) {
 
 /***/ }),
 /* 233 */
+=======
+})();
+/*jshint browser:true */
+var basebootstrap_1 = __webpack_require__(713);
+var monatadmin_module_1 = __webpack_require__(706);
+//custom bootstrapper
+var bootstrapper = /** @class */ (function (_super) {
+    __extends(bootstrapper, _super);
+    function bootstrapper() {
+        var _this = this;
+        var angular = _this = _super.call(this, monatadmin_module_1.monatadminmodule.name) || this;
+        angular.bootstrap();
+        return _this;
+    }
+    return bootstrapper;
+}(basebootstrap_1.BaseBootStrapper));
+module.exports = new bootstrapper();
+
+
+/***/ }),
+/* 309 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 310 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43), __webpack_require__(310)))
+
+/***/ }),
+/* 312 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49095,7 +54593,11 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 367 */
+=======
+/* 313 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 (function() {
@@ -49197,31 +54699,51 @@ module.exports = {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 368 */
+=======
+/* 314 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-modal-name=\"{{swAddSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swAddSkuPriceModalLauncher.save\">\n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swAddSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swAddSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swAddSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swAddSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swAddSkuPriceModalLauncher.sku.data\" data-sku-data=\"swAddSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swAddSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swAddSkuPriceModalLauncher.skuCollectionConfig\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swAddSkuPriceModalLauncher.selectedSku['skuCode']\"\n                                                        data-add-function=\"swAddSkuPriceModalLauncher.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swAddSkuPriceModalLauncher.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swAddSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swAddSkuPriceModalLauncher.setSelectedPriceGroup(swAddSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swAddSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
+<<<<<<< HEAD
 /* 369 */
+=======
+/* 315 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 \n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"text\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
+<<<<<<< HEAD
 /* 370 */
+=======
+/* 316 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true,\n                                'display' : false,\n                                'eventListeners' : {\n                                    'cellModified' : 'setDisplayTrue',\n                                    'rowSaved' : 'setDisplayFalse'\n                                },\n                                'useEventListenerId' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n                \n                <sw-delete-sku-price-modal-launcher></sw-delete-sku-price-modal-launcher>\n                \n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
+module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true,\n                                'display' : false,\n                                'eventListeners' : {\n                                    'cellModified' : 'setDisplayTrue',\n                                    'rowSaved' : 'setDisplayFalse'\n                                },\n                                'useEventListenerId' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
+<<<<<<< HEAD
 /* 371 */
+=======
+/* 317 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swSkuPriceModal.uniqueName}}\" \n                   data-title=\"Sku Price - Detail\" \n                   data-save-action=\"swSkuPriceModal.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swSkuPriceModal.skuPrice\"\n                 name=\"{{swSkuPriceModal.formName}}\" \n                 data-object=\"swSkuPriceModal.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swSkuPriceModal.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swSkuPriceModal.sku.data\" data-sku-data=\"swSkuPriceModal.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swSkuPriceModal.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swSkuPriceModal.currencyCodeOptions track by item\"\n                                            ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.minQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.maxQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swSkuPriceModal.skuCollectionConfig\"\n                                                        data-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swSkuPriceModal.selectedSku['skuCode']\"\n                                                        data-add-function=\"swSkuPriceModal.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swSkuPriceModal.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swSkuPriceModal.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swSkuPriceModal.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            \n                            <div class=\"col-xs-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.activeFlag'\">\n                                </label>\n                                <div class=\"s-ladel-options\">\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"active\" type=\"radio\" name=\"activeFlag\" value=\"1\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"active\">Yes</label>\n                                    </div>\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"inactive\" type=\"radio\" name=\"activeFlag\" value=\"0\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"inactive\">No</label>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
+<<<<<<< HEAD
 /* 372 */
+=======
+/* 318 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 /*!
@@ -49248,6 +54770,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49506,6 +55029,266 @@ var map = {
 	"./zh-hk.js": 207,
 	"./zh-tw": 208,
 	"./zh-tw.js": 208
+=======
+/* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": 67,
+	"./af.js": 67,
+	"./ar": 74,
+	"./ar-dz": 68,
+	"./ar-dz.js": 68,
+	"./ar-kw": 69,
+	"./ar-kw.js": 69,
+	"./ar-ly": 70,
+	"./ar-ly.js": 70,
+	"./ar-ma": 71,
+	"./ar-ma.js": 71,
+	"./ar-sa": 72,
+	"./ar-sa.js": 72,
+	"./ar-tn": 73,
+	"./ar-tn.js": 73,
+	"./ar.js": 74,
+	"./az": 75,
+	"./az.js": 75,
+	"./be": 76,
+	"./be.js": 76,
+	"./bg": 77,
+	"./bg.js": 77,
+	"./bm": 78,
+	"./bm.js": 78,
+	"./bn": 79,
+	"./bn.js": 79,
+	"./bo": 80,
+	"./bo.js": 80,
+	"./br": 81,
+	"./br.js": 81,
+	"./bs": 82,
+	"./bs.js": 82,
+	"./ca": 83,
+	"./ca.js": 83,
+	"./cs": 84,
+	"./cs.js": 84,
+	"./cv": 85,
+	"./cv.js": 85,
+	"./cy": 86,
+	"./cy.js": 86,
+	"./da": 87,
+	"./da.js": 87,
+	"./de": 90,
+	"./de-at": 88,
+	"./de-at.js": 88,
+	"./de-ch": 89,
+	"./de-ch.js": 89,
+	"./de.js": 90,
+	"./dv": 91,
+	"./dv.js": 91,
+	"./el": 92,
+	"./el.js": 92,
+	"./en-SG": 93,
+	"./en-SG.js": 93,
+	"./en-au": 94,
+	"./en-au.js": 94,
+	"./en-ca": 95,
+	"./en-ca.js": 95,
+	"./en-gb": 96,
+	"./en-gb.js": 96,
+	"./en-ie": 97,
+	"./en-ie.js": 97,
+	"./en-il": 98,
+	"./en-il.js": 98,
+	"./en-nz": 99,
+	"./en-nz.js": 99,
+	"./eo": 100,
+	"./eo.js": 100,
+	"./es": 103,
+	"./es-do": 101,
+	"./es-do.js": 101,
+	"./es-us": 102,
+	"./es-us.js": 102,
+	"./es.js": 103,
+	"./et": 104,
+	"./et.js": 104,
+	"./eu": 105,
+	"./eu.js": 105,
+	"./fa": 106,
+	"./fa.js": 106,
+	"./fi": 107,
+	"./fi.js": 107,
+	"./fo": 108,
+	"./fo.js": 108,
+	"./fr": 111,
+	"./fr-ca": 109,
+	"./fr-ca.js": 109,
+	"./fr-ch": 110,
+	"./fr-ch.js": 110,
+	"./fr.js": 111,
+	"./fy": 112,
+	"./fy.js": 112,
+	"./ga": 113,
+	"./ga.js": 113,
+	"./gd": 114,
+	"./gd.js": 114,
+	"./gl": 115,
+	"./gl.js": 115,
+	"./gom-latn": 116,
+	"./gom-latn.js": 116,
+	"./gu": 117,
+	"./gu.js": 117,
+	"./he": 118,
+	"./he.js": 118,
+	"./hi": 119,
+	"./hi.js": 119,
+	"./hr": 120,
+	"./hr.js": 120,
+	"./hu": 121,
+	"./hu.js": 121,
+	"./hy-am": 122,
+	"./hy-am.js": 122,
+	"./id": 123,
+	"./id.js": 123,
+	"./is": 124,
+	"./is.js": 124,
+	"./it": 126,
+	"./it-ch": 125,
+	"./it-ch.js": 125,
+	"./it.js": 126,
+	"./ja": 127,
+	"./ja.js": 127,
+	"./jv": 128,
+	"./jv.js": 128,
+	"./ka": 129,
+	"./ka.js": 129,
+	"./kk": 130,
+	"./kk.js": 130,
+	"./km": 131,
+	"./km.js": 131,
+	"./kn": 132,
+	"./kn.js": 132,
+	"./ko": 133,
+	"./ko.js": 133,
+	"./ku": 134,
+	"./ku.js": 134,
+	"./ky": 135,
+	"./ky.js": 135,
+	"./lb": 136,
+	"./lb.js": 136,
+	"./lo": 137,
+	"./lo.js": 137,
+	"./lt": 138,
+	"./lt.js": 138,
+	"./lv": 139,
+	"./lv.js": 139,
+	"./me": 140,
+	"./me.js": 140,
+	"./mi": 141,
+	"./mi.js": 141,
+	"./mk": 142,
+	"./mk.js": 142,
+	"./ml": 143,
+	"./ml.js": 143,
+	"./mn": 144,
+	"./mn.js": 144,
+	"./mr": 145,
+	"./mr.js": 145,
+	"./ms": 147,
+	"./ms-my": 146,
+	"./ms-my.js": 146,
+	"./ms.js": 147,
+	"./mt": 148,
+	"./mt.js": 148,
+	"./my": 149,
+	"./my.js": 149,
+	"./nb": 150,
+	"./nb.js": 150,
+	"./ne": 151,
+	"./ne.js": 151,
+	"./nl": 153,
+	"./nl-be": 152,
+	"./nl-be.js": 152,
+	"./nl.js": 153,
+	"./nn": 154,
+	"./nn.js": 154,
+	"./pa-in": 155,
+	"./pa-in.js": 155,
+	"./pl": 156,
+	"./pl.js": 156,
+	"./pt": 158,
+	"./pt-br": 157,
+	"./pt-br.js": 157,
+	"./pt.js": 158,
+	"./ro": 159,
+	"./ro.js": 159,
+	"./ru": 160,
+	"./ru.js": 160,
+	"./sd": 161,
+	"./sd.js": 161,
+	"./se": 162,
+	"./se.js": 162,
+	"./si": 163,
+	"./si.js": 163,
+	"./sk": 164,
+	"./sk.js": 164,
+	"./sl": 165,
+	"./sl.js": 165,
+	"./sq": 166,
+	"./sq.js": 166,
+	"./sr": 168,
+	"./sr-cyrl": 167,
+	"./sr-cyrl.js": 167,
+	"./sr.js": 168,
+	"./ss": 169,
+	"./ss.js": 169,
+	"./sv": 170,
+	"./sv.js": 170,
+	"./sw": 171,
+	"./sw.js": 171,
+	"./ta": 172,
+	"./ta.js": 172,
+	"./te": 173,
+	"./te.js": 173,
+	"./tet": 174,
+	"./tet.js": 174,
+	"./tg": 175,
+	"./tg.js": 175,
+	"./th": 176,
+	"./th.js": 176,
+	"./tl-ph": 177,
+	"./tl-ph.js": 177,
+	"./tlh": 178,
+	"./tlh.js": 178,
+	"./tr": 179,
+	"./tr.js": 179,
+	"./tzl": 180,
+	"./tzl.js": 180,
+	"./tzm": 182,
+	"./tzm-latn": 181,
+	"./tzm-latn.js": 181,
+	"./tzm.js": 182,
+	"./ug-cn": 183,
+	"./ug-cn.js": 183,
+	"./uk": 184,
+	"./uk.js": 184,
+	"./ur": 185,
+	"./ur.js": 185,
+	"./uz": 187,
+	"./uz-latn": 186,
+	"./uz-latn.js": 186,
+	"./uz.js": 187,
+	"./vi": 188,
+	"./vi.js": 188,
+	"./x-pseudo": 189,
+	"./x-pseudo.js": 189,
+	"./yo": 190,
+	"./yo.js": 190,
+	"./zh-cn": 191,
+	"./zh-cn.js": 191,
+	"./zh-hk": 192,
+	"./zh-hk.js": 192,
+	"./zh-tw": 193,
+	"./zh-tw.js": 193
+>>>>>>> origin/develop-team
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -49521,6 +55304,7 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
+<<<<<<< HEAD
 webpackContext.id = 373;
 
 /***/ }),
@@ -49715,6 +55499,12 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 375 */
+=======
+webpackContext.id = 319;
+
+/***/ }),
+/* 320 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49756,7 +55546,11 @@ exports.InnerSubscriber = InnerSubscriber;
 //# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 376 */
+=======
+/* 321 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49773,16 +55567,79 @@ var Observable_1 = __webpack_require__(0);
 exports.Observable = Observable_1.Observable;
 // statics
 /* tslint:disable:no-use-before-declare */
+<<<<<<< HEAD
+=======
+__webpack_require__(323);
+__webpack_require__(324);
+__webpack_require__(325);
+__webpack_require__(326);
+__webpack_require__(327);
+__webpack_require__(330);
+__webpack_require__(331);
+__webpack_require__(332);
+__webpack_require__(333);
+__webpack_require__(334);
+__webpack_require__(335);
+__webpack_require__(336);
+__webpack_require__(337);
+__webpack_require__(338);
+__webpack_require__(339);
+__webpack_require__(344);
+__webpack_require__(340);
+__webpack_require__(341);
+__webpack_require__(342);
+__webpack_require__(343);
+__webpack_require__(345);
+__webpack_require__(348);
+__webpack_require__(346);
+__webpack_require__(347);
+__webpack_require__(349);
+//dom
+__webpack_require__(328);
+__webpack_require__(329);
+//operators
+__webpack_require__(352);
+__webpack_require__(353);
+__webpack_require__(354);
+__webpack_require__(355);
+__webpack_require__(356);
+__webpack_require__(357);
+__webpack_require__(358);
+__webpack_require__(359);
+__webpack_require__(360);
+__webpack_require__(361);
+__webpack_require__(362);
+__webpack_require__(363);
+__webpack_require__(364);
+__webpack_require__(370);
+__webpack_require__(365);
+__webpack_require__(366);
+__webpack_require__(367);
+__webpack_require__(368);
+__webpack_require__(369);
+__webpack_require__(371);
+__webpack_require__(372);
+__webpack_require__(373);
+__webpack_require__(374);
+__webpack_require__(377);
+>>>>>>> origin/develop-team
 __webpack_require__(378);
 __webpack_require__(379);
+__webpack_require__(375);
 __webpack_require__(380);
 __webpack_require__(381);
 __webpack_require__(382);
 __webpack_require__(385);
 __webpack_require__(386);
 __webpack_require__(387);
+<<<<<<< HEAD
+=======
+__webpack_require__(350);
+__webpack_require__(351);
+>>>>>>> origin/develop-team
 __webpack_require__(388);
 __webpack_require__(389);
+__webpack_require__(376);
 __webpack_require__(390);
 __webpack_require__(391);
 __webpack_require__(392);
@@ -49798,13 +55655,20 @@ __webpack_require__(403);
 __webpack_require__(401);
 __webpack_require__(402);
 __webpack_require__(404);
+<<<<<<< HEAD
 //dom
 __webpack_require__(383);
 __webpack_require__(384);
 //operators
 __webpack_require__(407);
 __webpack_require__(408);
+=======
+__webpack_require__(405);
+__webpack_require__(406);
+__webpack_require__(407);
+>>>>>>> origin/develop-team
 __webpack_require__(409);
+__webpack_require__(408);
 __webpack_require__(410);
 __webpack_require__(411);
 __webpack_require__(412);
@@ -49849,6 +55713,7 @@ __webpack_require__(448);
 __webpack_require__(449);
 __webpack_require__(450);
 __webpack_require__(451);
+<<<<<<< HEAD
 __webpack_require__(452);
 __webpack_require__(453);
 __webpack_require__(454);
@@ -49904,6 +55769,8 @@ __webpack_require__(503);
 __webpack_require__(504);
 __webpack_require__(505);
 __webpack_require__(506);
+=======
+>>>>>>> origin/develop-team
 /* tslint:disable:no-unused-variable */
 var Subscription_1 = __webpack_require__(9);
 exports.Subscription = Subscription_1.Subscription;
@@ -49913,9 +55780,15 @@ var AsyncSubject_1 = __webpack_require__(38);
 exports.AsyncSubject = AsyncSubject_1.AsyncSubject;
 var ReplaySubject_1 = __webpack_require__(39);
 exports.ReplaySubject = ReplaySubject_1.ReplaySubject;
+<<<<<<< HEAD
 var BehaviorSubject_1 = __webpack_require__(209);
 exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
 var ConnectableObservable_1 = __webpack_require__(212);
+=======
+var BehaviorSubject_1 = __webpack_require__(194);
+exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
+var ConnectableObservable_1 = __webpack_require__(197);
+>>>>>>> origin/develop-team
 exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
 var Notification_1 = __webpack_require__(27);
 exports.Notification = Notification_1.Notification;
@@ -49925,6 +55798,7 @@ var ArgumentOutOfRangeError_1 = __webpack_require__(35);
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var ObjectUnsubscribedError_1 = __webpack_require__(49);
 exports.ObjectUnsubscribedError = ObjectUnsubscribedError_1.ObjectUnsubscribedError;
+<<<<<<< HEAD
 var TimeoutError_1 = __webpack_require__(303);
 exports.TimeoutError = TimeoutError_1.TimeoutError;
 var UnsubscriptionError_1 = __webpack_require__(304);
@@ -49951,6 +55825,34 @@ var rxSubscriber_1 = __webpack_require__(47);
 var iterator_1 = __webpack_require__(34);
 var observable_1 = __webpack_require__(46);
 var _operators = __webpack_require__(647);
+=======
+var TimeoutError_1 = __webpack_require__(288);
+exports.TimeoutError = TimeoutError_1.TimeoutError;
+var UnsubscriptionError_1 = __webpack_require__(289);
+exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
+var timeInterval_1 = __webpack_require__(204);
+exports.TimeInterval = timeInterval_1.TimeInterval;
+var timestamp_1 = __webpack_require__(59);
+exports.Timestamp = timestamp_1.Timestamp;
+var TestScheduler_1 = __webpack_require__(604);
+exports.TestScheduler = TestScheduler_1.TestScheduler;
+var VirtualTimeScheduler_1 = __webpack_require__(283);
+exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
+var AjaxObservable_1 = __webpack_require__(200);
+exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
+exports.AjaxError = AjaxObservable_1.AjaxError;
+exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
+var pipe_1 = __webpack_require__(61);
+exports.pipe = pipe_1.pipe;
+var asap_1 = __webpack_require__(284);
+var async_1 = __webpack_require__(5);
+var queue_1 = __webpack_require__(285);
+var animationFrame_1 = __webpack_require__(601);
+var rxSubscriber_1 = __webpack_require__(38);
+var iterator_1 = __webpack_require__(26);
+var observable_1 = __webpack_require__(37);
+var _operators = __webpack_require__(592);
+>>>>>>> origin/develop-team
 exports.operators = _operators;
 /* tslint:enable:no-unused-variable */
 /**
@@ -49995,7 +55897,11 @@ exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 377 */
+=======
+/* 322 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50050,40 +55956,68 @@ exports.Scheduler = Scheduler;
 //# sourceMappingURL=Scheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 378 */
+=======
+/* 323 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bindCallback_1 = __webpack_require__(525);
+=======
+var bindCallback_1 = __webpack_require__(470);
+>>>>>>> origin/develop-team
 Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 379 */
+=======
+/* 324 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bindNodeCallback_1 = __webpack_require__(526);
+=======
+var bindNodeCallback_1 = __webpack_require__(471);
+>>>>>>> origin/develop-team
 Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 380 */
+=======
+/* 325 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(527);
+=======
+var combineLatest_1 = __webpack_require__(472);
+>>>>>>> origin/develop-team
 Observable_1.Observable.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 381 */
+=======
+/* 326 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50094,139 +56028,239 @@ Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 382 */
+=======
+/* 327 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var defer_1 = __webpack_require__(528);
+=======
+var defer_1 = __webpack_require__(473);
+>>>>>>> origin/develop-team
 Observable_1.Observable.defer = defer_1.defer;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 383 */
+=======
+/* 328 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ajax_1 = __webpack_require__(530);
+=======
+var ajax_1 = __webpack_require__(475);
+>>>>>>> origin/develop-team
 Observable_1.Observable.ajax = ajax_1.ajax;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 384 */
+=======
+/* 329 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var webSocket_1 = __webpack_require__(531);
+=======
+var webSocket_1 = __webpack_require__(476);
+>>>>>>> origin/develop-team
 Observable_1.Observable.webSocket = webSocket_1.webSocket;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 385 */
+=======
+/* 330 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var empty_1 = __webpack_require__(532);
+=======
+var empty_1 = __webpack_require__(477);
+>>>>>>> origin/develop-team
 Observable_1.Observable.empty = empty_1.empty;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 386 */
+=======
+/* 331 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var forkJoin_1 = __webpack_require__(533);
+=======
+var forkJoin_1 = __webpack_require__(478);
+>>>>>>> origin/develop-team
 Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 387 */
+=======
+/* 332 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var from_1 = __webpack_require__(216);
+=======
+var from_1 = __webpack_require__(201);
+>>>>>>> origin/develop-team
 Observable_1.Observable.from = from_1.from;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 388 */
+=======
+/* 333 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromEvent_1 = __webpack_require__(534);
+=======
+var fromEvent_1 = __webpack_require__(479);
+>>>>>>> origin/develop-team
 Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 389 */
+=======
+/* 334 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromEventPattern_1 = __webpack_require__(535);
+=======
+var fromEventPattern_1 = __webpack_require__(480);
+>>>>>>> origin/develop-team
 Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 390 */
+=======
+/* 335 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var fromPromise_1 = __webpack_require__(536);
+=======
+var fromPromise_1 = __webpack_require__(481);
+>>>>>>> origin/develop-team
 Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 391 */
+=======
+/* 336 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var generate_1 = __webpack_require__(537);
+=======
+var generate_1 = __webpack_require__(482);
+>>>>>>> origin/develop-team
 Observable_1.Observable.generate = generate_1.generate;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 392 */
+=======
+/* 337 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var if_1 = __webpack_require__(538);
+=======
+var if_1 = __webpack_require__(483);
+>>>>>>> origin/develop-team
 Observable_1.Observable.if = if_1._if;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 393 */
+=======
+/* 338 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var interval_1 = __webpack_require__(539);
+=======
+var interval_1 = __webpack_require__(484);
+>>>>>>> origin/develop-team
 Observable_1.Observable.interval = interval_1.interval;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 394 */
+=======
+/* 339 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50237,1147 +56271,1975 @@ Observable_1.Observable.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 395 */
+=======
+/* 340 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var never_1 = __webpack_require__(540);
+=======
+var never_1 = __webpack_require__(485);
+>>>>>>> origin/develop-team
 Observable_1.Observable.never = never_1.never;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 396 */
+=======
+/* 341 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var of_1 = __webpack_require__(217);
+=======
+var of_1 = __webpack_require__(202);
+>>>>>>> origin/develop-team
 Observable_1.Observable.of = of_1.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 397 */
+=======
+/* 342 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(541);
+=======
+var onErrorResumeNext_1 = __webpack_require__(486);
+>>>>>>> origin/develop-team
 Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 398 */
+=======
+/* 343 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pairs_1 = __webpack_require__(542);
+=======
+var pairs_1 = __webpack_require__(487);
+>>>>>>> origin/develop-team
 Observable_1.Observable.pairs = pairs_1.pairs;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 399 */
+=======
+/* 344 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var race_1 = __webpack_require__(54);
+=======
+var race_1 = __webpack_require__(46);
+>>>>>>> origin/develop-team
 Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 400 */
+=======
+/* 345 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var range_1 = __webpack_require__(543);
+=======
+var range_1 = __webpack_require__(488);
+>>>>>>> origin/develop-team
 Observable_1.Observable.range = range_1.range;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 401 */
+=======
+/* 346 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throw_1 = __webpack_require__(544);
+=======
+var throw_1 = __webpack_require__(489);
+>>>>>>> origin/develop-team
 Observable_1.Observable.throw = throw_1._throw;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 402 */
+=======
+/* 347 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timer_1 = __webpack_require__(218);
+=======
+var timer_1 = __webpack_require__(203);
+>>>>>>> origin/develop-team
 Observable_1.Observable.timer = timer_1.timer;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 403 */
+=======
+/* 348 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var using_1 = __webpack_require__(545);
+=======
+var using_1 = __webpack_require__(490);
+>>>>>>> origin/develop-team
 Observable_1.Observable.using = using_1.using;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 404 */
+=======
+/* 349 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zip_1 = __webpack_require__(546);
+=======
+var zip_1 = __webpack_require__(491);
+>>>>>>> origin/develop-team
 Observable_1.Observable.zip = zip_1.zip;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 405 */
+=======
+/* 350 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var audit_1 = __webpack_require__(547);
+=======
+var audit_1 = __webpack_require__(492);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.audit = audit_1.audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 406 */
+=======
+/* 351 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var auditTime_1 = __webpack_require__(548);
+=======
+var auditTime_1 = __webpack_require__(493);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 407 */
+=======
+/* 352 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var buffer_1 = __webpack_require__(549);
+=======
+var buffer_1 = __webpack_require__(494);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.buffer = buffer_1.buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 408 */
+=======
+/* 353 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(550);
+=======
+var bufferCount_1 = __webpack_require__(495);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 409 */
+=======
+/* 354 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferTime_1 = __webpack_require__(551);
+=======
+var bufferTime_1 = __webpack_require__(496);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 410 */
+=======
+/* 355 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(552);
+=======
+var bufferToggle_1 = __webpack_require__(497);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 411 */
+=======
+/* 356 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(553);
+=======
+var bufferWhen_1 = __webpack_require__(498);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 412 */
+=======
+/* 357 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var catch_1 = __webpack_require__(554);
+=======
+var catch_1 = __webpack_require__(499);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.catch = catch_1._catch;
 Observable_1.Observable.prototype._catch = catch_1._catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 413 */
+=======
+/* 358 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(555);
+=======
+var combineAll_1 = __webpack_require__(500);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 414 */
+=======
+/* 359 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var combineLatest_1 = __webpack_require__(556);
+=======
+var combineLatest_1 = __webpack_require__(501);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 415 */
+=======
+/* 360 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(557);
+=======
+var concat_1 = __webpack_require__(502);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 416 */
+=======
+/* 361 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatAll_1 = __webpack_require__(558);
+=======
+var concatAll_1 = __webpack_require__(503);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 417 */
+=======
+/* 362 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatMap_1 = __webpack_require__(559);
+=======
+var concatMap_1 = __webpack_require__(504);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 418 */
+=======
+/* 363 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(560);
+=======
+var concatMapTo_1 = __webpack_require__(505);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 419 */
+=======
+/* 364 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var count_1 = __webpack_require__(561);
+=======
+var count_1 = __webpack_require__(506);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.count = count_1.count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 420 */
+=======
+/* 365 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var debounce_1 = __webpack_require__(562);
+=======
+var debounce_1 = __webpack_require__(507);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.debounce = debounce_1.debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 421 */
+=======
+/* 366 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var debounceTime_1 = __webpack_require__(563);
+=======
+var debounceTime_1 = __webpack_require__(508);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 422 */
+=======
+/* 367 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var defaultIfEmpty_1 = __webpack_require__(564);
+=======
+var defaultIfEmpty_1 = __webpack_require__(509);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 423 */
+=======
+/* 368 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var delay_1 = __webpack_require__(565);
+=======
+var delay_1 = __webpack_require__(510);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.delay = delay_1.delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 424 */
+=======
+/* 369 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(566);
+=======
+var delayWhen_1 = __webpack_require__(511);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 425 */
+=======
+/* 370 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(567);
+=======
+var dematerialize_1 = __webpack_require__(512);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 426 */
+=======
+/* 371 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinct_1 = __webpack_require__(568);
+=======
+var distinct_1 = __webpack_require__(513);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.distinct = distinct_1.distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 427 */
+=======
+/* 372 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinctUntilChanged_1 = __webpack_require__(569);
+=======
+var distinctUntilChanged_1 = __webpack_require__(514);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 428 */
+=======
+/* 373 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(570);
+=======
+var distinctUntilKeyChanged_1 = __webpack_require__(515);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 429 */
+=======
+/* 374 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var do_1 = __webpack_require__(571);
+=======
+var do_1 = __webpack_require__(516);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.do = do_1._do;
 Observable_1.Observable.prototype._do = do_1._do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 430 */
+=======
+/* 375 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(572);
+=======
+var elementAt_1 = __webpack_require__(517);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 431 */
+=======
+/* 376 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var every_1 = __webpack_require__(573);
+=======
+var every_1 = __webpack_require__(518);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.every = every_1.every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 432 */
+=======
+/* 377 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(574);
+=======
+var exhaust_1 = __webpack_require__(519);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 433 */
+=======
+/* 378 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(575);
+=======
+var exhaustMap_1 = __webpack_require__(520);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 434 */
+=======
+/* 379 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var expand_1 = __webpack_require__(576);
+=======
+var expand_1 = __webpack_require__(521);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.expand = expand_1.expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 435 */
+=======
+/* 380 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var filter_1 = __webpack_require__(577);
+=======
+var filter_1 = __webpack_require__(522);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.filter = filter_1.filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 436 */
+=======
+/* 381 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var finally_1 = __webpack_require__(578);
+=======
+var finally_1 = __webpack_require__(523);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.finally = finally_1._finally;
 Observable_1.Observable.prototype._finally = finally_1._finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 437 */
+=======
+/* 382 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var find_1 = __webpack_require__(579);
+=======
+var find_1 = __webpack_require__(524);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.find = find_1.find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 438 */
+=======
+/* 383 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(580);
+=======
+var findIndex_1 = __webpack_require__(525);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 439 */
+=======
+/* 384 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var first_1 = __webpack_require__(581);
+=======
+var first_1 = __webpack_require__(526);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.first = first_1.first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 440 */
+=======
+/* 385 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(582);
+=======
+var groupBy_1 = __webpack_require__(527);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 441 */
+=======
+/* 386 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(583);
+=======
+var ignoreElements_1 = __webpack_require__(528);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 442 */
+=======
+/* 387 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(584);
+=======
+var isEmpty_1 = __webpack_require__(529);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 443 */
+=======
+/* 388 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var last_1 = __webpack_require__(585);
+=======
+var last_1 = __webpack_require__(530);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.last = last_1.last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 444 */
+=======
+/* 389 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var let_1 = __webpack_require__(586);
+=======
+var let_1 = __webpack_require__(531);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.let = let_1.letProto;
 Observable_1.Observable.prototype.letBind = let_1.letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 445 */
+=======
+/* 390 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var map_1 = __webpack_require__(587);
+=======
+var map_1 = __webpack_require__(532);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.map = map_1.map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 446 */
+=======
+/* 391 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(588);
+=======
+var mapTo_1 = __webpack_require__(533);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 447 */
+=======
+/* 392 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var materialize_1 = __webpack_require__(589);
+=======
+var materialize_1 = __webpack_require__(534);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.materialize = materialize_1.materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 448 */
+=======
+/* 393 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var max_1 = __webpack_require__(590);
+=======
+var max_1 = __webpack_require__(535);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.max = max_1.max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 449 */
+=======
+/* 394 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var merge_1 = __webpack_require__(591);
+=======
+var merge_1 = __webpack_require__(536);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 450 */
+=======
+/* 395 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeAll_1 = __webpack_require__(592);
+=======
+var mergeAll_1 = __webpack_require__(537);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 451 */
+=======
+/* 396 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeMap_1 = __webpack_require__(593);
+=======
+var mergeMap_1 = __webpack_require__(538);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
 Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 452 */
+=======
+/* 397 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(594);
+=======
+var mergeMapTo_1 = __webpack_require__(539);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
 Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 453 */
+=======
+/* 398 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(595);
+=======
+var mergeScan_1 = __webpack_require__(540);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 454 */
+=======
+/* 399 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var min_1 = __webpack_require__(596);
+=======
+var min_1 = __webpack_require__(541);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.min = min_1.min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 455 */
+=======
+/* 400 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var multicast_1 = __webpack_require__(597);
+=======
+var multicast_1 = __webpack_require__(542);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 456 */
+=======
+/* 401 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var observeOn_1 = __webpack_require__(598);
+=======
+var observeOn_1 = __webpack_require__(543);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 457 */
+=======
+/* 402 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(599);
+=======
+var onErrorResumeNext_1 = __webpack_require__(544);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 458 */
+=======
+/* 403 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(600);
+=======
+var pairwise_1 = __webpack_require__(545);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 459 */
+=======
+/* 404 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var partition_1 = __webpack_require__(601);
+=======
+var partition_1 = __webpack_require__(546);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.partition = partition_1.partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 460 */
+=======
+/* 405 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var pluck_1 = __webpack_require__(602);
+=======
+var pluck_1 = __webpack_require__(547);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.pluck = pluck_1.pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 461 */
+=======
+/* 406 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publish_1 = __webpack_require__(603);
+=======
+var publish_1 = __webpack_require__(548);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.publish = publish_1.publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 462 */
+=======
+/* 407 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(604);
+=======
+var publishBehavior_1 = __webpack_require__(549);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 463 */
+=======
+/* 408 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(605);
+=======
+var publishLast_1 = __webpack_require__(550);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 464 */
+=======
+/* 409 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(606);
+=======
+var publishReplay_1 = __webpack_require__(551);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 465 */
+=======
+/* 410 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var race_1 = __webpack_require__(607);
+=======
+var race_1 = __webpack_require__(552);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 466 */
+=======
+/* 411 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var reduce_1 = __webpack_require__(608);
+=======
+var reduce_1 = __webpack_require__(553);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 467 */
+=======
+/* 412 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var repeat_1 = __webpack_require__(609);
+=======
+var repeat_1 = __webpack_require__(554);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.repeat = repeat_1.repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 468 */
+=======
+/* 413 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(610);
+=======
+var repeatWhen_1 = __webpack_require__(555);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 469 */
+=======
+/* 414 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var retry_1 = __webpack_require__(611);
+=======
+var retry_1 = __webpack_require__(556);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.retry = retry_1.retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 470 */
+=======
+/* 415 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(612);
+=======
+var retryWhen_1 = __webpack_require__(557);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 471 */
+=======
+/* 416 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sample_1 = __webpack_require__(613);
+=======
+var sample_1 = __webpack_require__(558);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.sample = sample_1.sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 472 */
+=======
+/* 417 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sampleTime_1 = __webpack_require__(614);
+=======
+var sampleTime_1 = __webpack_require__(559);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 473 */
+=======
+/* 418 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var scan_1 = __webpack_require__(615);
+=======
+var scan_1 = __webpack_require__(560);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.scan = scan_1.scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 474 */
+=======
+/* 419 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(616);
+=======
+var sequenceEqual_1 = __webpack_require__(561);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 475 */
+=======
+/* 420 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var share_1 = __webpack_require__(617);
+=======
+var share_1 = __webpack_require__(562);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.share = share_1.share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 476 */
+=======
+/* 421 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(618);
+=======
+var shareReplay_1 = __webpack_require__(563);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 477 */
+=======
+/* 422 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var single_1 = __webpack_require__(619);
+=======
+var single_1 = __webpack_require__(564);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.single = single_1.single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 478 */
+=======
+/* 423 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skip_1 = __webpack_require__(620);
+=======
+var skip_1 = __webpack_require__(565);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.skip = skip_1.skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 479 */
+=======
+/* 424 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(621);
+=======
+var skipLast_1 = __webpack_require__(566);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 480 */
+=======
+/* 425 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(622);
+=======
+var skipUntil_1 = __webpack_require__(567);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 481 */
+=======
+/* 426 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(623);
+=======
+var skipWhile_1 = __webpack_require__(568);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 482 */
+=======
+/* 427 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var startWith_1 = __webpack_require__(624);
+=======
+var startWith_1 = __webpack_require__(569);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.startWith = startWith_1.startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 483 */
+=======
+/* 428 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(625);
+=======
+var subscribeOn_1 = __webpack_require__(570);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 484 */
+=======
+/* 429 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switch_1 = __webpack_require__(626);
+=======
+var switch_1 = __webpack_require__(571);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.switch = switch_1._switch;
 Observable_1.Observable.prototype._switch = switch_1._switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 485 */
+=======
+/* 430 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switchMap_1 = __webpack_require__(627);
+=======
+var switchMap_1 = __webpack_require__(572);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 486 */
+=======
+/* 431 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(628);
+=======
+var switchMapTo_1 = __webpack_require__(573);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 487 */
+=======
+/* 432 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var take_1 = __webpack_require__(629);
+=======
+var take_1 = __webpack_require__(574);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.take = take_1.take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 488 */
+=======
+/* 433 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeLast_1 = __webpack_require__(630);
+=======
+var takeLast_1 = __webpack_require__(575);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 489 */
+=======
+/* 434 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(631);
+=======
+var takeUntil_1 = __webpack_require__(576);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 490 */
+=======
+/* 435 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(632);
+=======
+var takeWhile_1 = __webpack_require__(577);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 491 */
+=======
+/* 436 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throttle_1 = __webpack_require__(633);
+=======
+var throttle_1 = __webpack_require__(578);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.throttle = throttle_1.throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 492 */
+=======
+/* 437 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(634);
+=======
+var throttleTime_1 = __webpack_require__(579);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 493 */
+=======
+/* 438 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeInterval_1 = __webpack_require__(219);
+=======
+var timeInterval_1 = __webpack_require__(204);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 494 */
+=======
+/* 439 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeout_1 = __webpack_require__(635);
+=======
+var timeout_1 = __webpack_require__(580);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.timeout = timeout_1.timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 495 */
+=======
+/* 440 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timeoutWith_1 = __webpack_require__(636);
+=======
+var timeoutWith_1 = __webpack_require__(581);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 496 */
+=======
+/* 441 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var timestamp_1 = __webpack_require__(637);
+=======
+var timestamp_1 = __webpack_require__(582);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 497 */
+=======
+/* 442 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var toArray_1 = __webpack_require__(638);
+=======
+var toArray_1 = __webpack_require__(583);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 498 */
+=======
+/* 443 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports) {
 
 // HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
@@ -51385,95 +58247,163 @@ Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 //# sourceMappingURL=toPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 499 */
+=======
+/* 444 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var window_1 = __webpack_require__(639);
+=======
+var window_1 = __webpack_require__(584);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.window = window_1.window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 500 */
+=======
+/* 445 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(640);
+=======
+var windowCount_1 = __webpack_require__(585);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 501 */
+=======
+/* 446 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowTime_1 = __webpack_require__(641);
+=======
+var windowTime_1 = __webpack_require__(586);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 502 */
+=======
+/* 447 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(642);
+=======
+var windowToggle_1 = __webpack_require__(587);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 503 */
+=======
+/* 448 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(643);
+=======
+var windowWhen_1 = __webpack_require__(588);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 504 */
+=======
+/* 449 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(644);
+=======
+var withLatestFrom_1 = __webpack_require__(589);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 505 */
+=======
+/* 450 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zip_1 = __webpack_require__(645);
+=======
+var zip_1 = __webpack_require__(590);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.zip = zip_1.zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 506 */
+=======
+/* 451 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(646);
+=======
+var zipAll_1 = __webpack_require__(591);
+>>>>>>> origin/develop-team
 Observable_1.Observable.prototype.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 507 */
+=======
+/* 452 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51484,8 +58414,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var ScalarObservable_1 = __webpack_require__(53);
 var EmptyObservable_1 = __webpack_require__(21);
+=======
+var ScalarObservable_1 = __webpack_require__(45);
+var EmptyObservable_1 = __webpack_require__(16);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -51549,7 +58484,11 @@ exports.ArrayLikeObservable = ArrayLikeObservable;
 //# sourceMappingURL=ArrayLikeObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 508 */
+=======
+/* 453 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51819,7 +58758,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundCallbackObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 509 */
+=======
+/* 454 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52088,7 +59031,11 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundNodeCallbackObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 510 */
+=======
+/* 455 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52193,7 +59140,11 @@ var DeferSubscriber = (function (_super) {
 //# sourceMappingURL=DeferObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 511 */
+=======
+/* 456 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52282,7 +59233,11 @@ exports.ErrorObservable = ErrorObservable;
 //# sourceMappingURL=ErrorObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 512 */
+=======
+/* 457 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52490,7 +59445,11 @@ var ForkJoinSubscriber = (function (_super) {
 //# sourceMappingURL=ForkJoinObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 513 */
+=======
+/* 458 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52712,7 +59671,11 @@ exports.FromEventObservable = FromEventObservable;
 //# sourceMappingURL=FromEventObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 514 */
+=======
+/* 459 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52831,7 +59794,11 @@ exports.FromEventPatternObservable = FromEventPatternObservable;
 //# sourceMappingURL=FromEventPatternObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 515 */
+=======
+/* 460 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52972,7 +59939,11 @@ exports.GenerateObservable = GenerateObservable;
 //# sourceMappingURL=GenerateObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 516 */
+=======
+/* 461 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53039,7 +60010,11 @@ var IfSubscriber = (function (_super) {
 //# sourceMappingURL=IfObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 517 */
+=======
+/* 462 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53133,7 +60108,11 @@ exports.IntervalObservable = IntervalObservable;
 //# sourceMappingURL=IntervalObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 518 */
+=======
+/* 463 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53302,7 +60281,11 @@ function sign(value) {
 //# sourceMappingURL=IteratorObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 519 */
+=======
+/* 464 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53313,7 +60296,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var noop_1 = __webpack_require__(68);
+=======
+var noop_1 = __webpack_require__(60);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -53367,7 +60354,11 @@ exports.NeverObservable = NeverObservable;
 //# sourceMappingURL=NeverObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 520 */
+=======
+/* 465 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53458,7 +60449,11 @@ exports.PairsObservable = PairsObservable;
 //# sourceMappingURL=PairsObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 521 */
+=======
+/* 466 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53560,7 +60555,11 @@ exports.RangeObservable = RangeObservable;
 //# sourceMappingURL=RangeObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 522 */
+=======
+/* 467 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53571,8 +60570,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var asap_1 = __webpack_require__(299);
 var isNumeric_1 = __webpack_require__(36);
+=======
+var asap_1 = __webpack_require__(284);
+var isNumeric_1 = __webpack_require__(28);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -53617,7 +60621,11 @@ exports.SubscribeOnObservable = SubscribeOnObservable;
 //# sourceMappingURL=SubscribeOnObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 523 */
+=======
+/* 468 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53730,7 +60738,11 @@ exports.TimerObservable = TimerObservable;
 //# sourceMappingURL=TimerObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 524 */
+=======
+/* 469 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53797,27 +60809,47 @@ var UsingSubscriber = (function (_super) {
 //# sourceMappingURL=UsingObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 525 */
+=======
+/* 470 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var BoundCallbackObservable_1 = __webpack_require__(508);
+=======
+var BoundCallbackObservable_1 = __webpack_require__(453);
+>>>>>>> origin/develop-team
 exports.bindCallback = BoundCallbackObservable_1.BoundCallbackObservable.create;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 526 */
+=======
+/* 471 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var BoundNodeCallbackObservable_1 = __webpack_require__(509);
+=======
+var BoundNodeCallbackObservable_1 = __webpack_require__(454);
+>>>>>>> origin/develop-team
 exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObservable.create;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 527 */
+=======
+/* 472 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53959,17 +60991,29 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 528 */
+=======
+/* 473 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var DeferObservable_1 = __webpack_require__(510);
+=======
+var DeferObservable_1 = __webpack_require__(455);
+>>>>>>> origin/develop-team
 exports.defer = DeferObservable_1.DeferObservable.create;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 529 */
+=======
+/* 474 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53982,12 +61026,21 @@ var __extends = (this && this.__extends) || function (d, b) {
 var Subject_1 = __webpack_require__(10);
 var Subscriber_1 = __webpack_require__(2);
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var Subscription_1 = __webpack_require__(9);
 var root_1 = __webpack_require__(13);
 var ReplaySubject_1 = __webpack_require__(39);
 var tryCatch_1 = __webpack_require__(12);
 var errorObject_1 = __webpack_require__(11);
 var assign_1 = __webpack_require__(666);
+=======
+var Subscription_1 = __webpack_require__(7);
+var root_1 = __webpack_require__(11);
+var ReplaySubject_1 = __webpack_require__(30);
+var tryCatch_1 = __webpack_require__(10);
+var errorObject_1 = __webpack_require__(9);
+var assign_1 = __webpack_require__(611);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -54225,27 +61278,47 @@ exports.WebSocketSubject = WebSocketSubject;
 //# sourceMappingURL=WebSocketSubject.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 530 */
+=======
+/* 475 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var AjaxObservable_1 = __webpack_require__(215);
+=======
+var AjaxObservable_1 = __webpack_require__(200);
+>>>>>>> origin/develop-team
 exports.ajax = AjaxObservable_1.AjaxObservable.create;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 531 */
+=======
+/* 476 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var WebSocketSubject_1 = __webpack_require__(529);
+=======
+var WebSocketSubject_1 = __webpack_require__(474);
+>>>>>>> origin/develop-team
 exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 532 */
+=======
+/* 477 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54255,137 +61328,245 @@ exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 533 */
+=======
+/* 478 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ForkJoinObservable_1 = __webpack_require__(512);
+=======
+var ForkJoinObservable_1 = __webpack_require__(457);
+>>>>>>> origin/develop-team
 exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 534 */
+=======
+/* 479 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var FromEventObservable_1 = __webpack_require__(513);
+=======
+var FromEventObservable_1 = __webpack_require__(458);
+>>>>>>> origin/develop-team
 exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
 //# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 535 */
+=======
+/* 480 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var FromEventPatternObservable_1 = __webpack_require__(514);
+=======
+var FromEventPatternObservable_1 = __webpack_require__(459);
+>>>>>>> origin/develop-team
 exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 536 */
+=======
+/* 481 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var PromiseObservable_1 = __webpack_require__(214);
+=======
+var PromiseObservable_1 = __webpack_require__(199);
+>>>>>>> origin/develop-team
 exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 537 */
+=======
+/* 482 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var GenerateObservable_1 = __webpack_require__(515);
+=======
+var GenerateObservable_1 = __webpack_require__(460);
+>>>>>>> origin/develop-team
 exports.generate = GenerateObservable_1.GenerateObservable.create;
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 538 */
+=======
+/* 483 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var IfObservable_1 = __webpack_require__(516);
+=======
+var IfObservable_1 = __webpack_require__(461);
+>>>>>>> origin/develop-team
 exports._if = IfObservable_1.IfObservable.create;
 //# sourceMappingURL=if.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 539 */
+=======
+/* 484 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var IntervalObservable_1 = __webpack_require__(517);
+=======
+var IntervalObservable_1 = __webpack_require__(462);
+>>>>>>> origin/develop-team
 exports.interval = IntervalObservable_1.IntervalObservable.create;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 540 */
+=======
+/* 485 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var NeverObservable_1 = __webpack_require__(519);
+=======
+var NeverObservable_1 = __webpack_require__(464);
+>>>>>>> origin/develop-team
 exports.never = NeverObservable_1.NeverObservable.create;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 541 */
+=======
+/* 486 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(62);
+=======
+var onErrorResumeNext_1 = __webpack_require__(54);
+>>>>>>> origin/develop-team
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 542 */
+=======
+/* 487 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var PairsObservable_1 = __webpack_require__(520);
+=======
+var PairsObservable_1 = __webpack_require__(465);
+>>>>>>> origin/develop-team
 exports.pairs = PairsObservable_1.PairsObservable.create;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 543 */
+=======
+/* 488 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var RangeObservable_1 = __webpack_require__(521);
+=======
+var RangeObservable_1 = __webpack_require__(466);
+>>>>>>> origin/develop-team
 exports.range = RangeObservable_1.RangeObservable.create;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 544 */
+=======
+/* 489 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ErrorObservable_1 = __webpack_require__(511);
+=======
+var ErrorObservable_1 = __webpack_require__(456);
+>>>>>>> origin/develop-team
 exports._throw = ErrorObservable_1.ErrorObservable.create;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 545 */
+=======
+/* 490 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var UsingObservable_1 = __webpack_require__(524);
+=======
+var UsingObservable_1 = __webpack_require__(469);
+>>>>>>> origin/develop-team
 exports.using = UsingObservable_1.UsingObservable.create;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 546 */
+=======
+/* 491 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54395,12 +61576,20 @@ exports.zip = zip_1.zipStatic;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 547 */
+=======
+/* 492 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var audit_1 = __webpack_require__(55);
+=======
+var audit_1 = __webpack_require__(47);
+>>>>>>> origin/develop-team
 /**
  * Ignores source values for a duration determined by another Observable, then
  * emits the most recent value from the source Observable, then repeats this
@@ -54448,13 +61637,22 @@ exports.audit = audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 548 */
+=======
+/* 493 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var auditTime_1 = __webpack_require__(220);
+=======
+var async_1 = __webpack_require__(5);
+var auditTime_1 = __webpack_require__(205);
+>>>>>>> origin/develop-team
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -54505,12 +61703,20 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 549 */
+=======
+/* 494 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var buffer_1 = __webpack_require__(221);
+=======
+var buffer_1 = __webpack_require__(206);
+>>>>>>> origin/develop-team
 /**
  * Buffers the source Observable values until `closingNotifier` emits.
  *
@@ -54550,12 +61756,20 @@ exports.buffer = buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 550 */
+=======
+/* 495 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferCount_1 = __webpack_require__(222);
+=======
+var bufferCount_1 = __webpack_require__(207);
+>>>>>>> origin/develop-team
 /**
  * Buffers the source Observable values until the size hits the maximum
  * `bufferSize` given.
@@ -54605,14 +61819,24 @@ exports.bufferCount = bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 551 */
+=======
+/* 496 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var isScheduler_1 = __webpack_require__(14);
 var bufferTime_1 = __webpack_require__(223);
+=======
+var async_1 = __webpack_require__(5);
+var isScheduler_1 = __webpack_require__(12);
+var bufferTime_1 = __webpack_require__(208);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Buffers the source Observable values for a specific time period.
@@ -54678,12 +61902,20 @@ exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 552 */
+=======
+/* 497 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferToggle_1 = __webpack_require__(224);
+=======
+var bufferToggle_1 = __webpack_require__(209);
+>>>>>>> origin/develop-team
 /**
  * Buffers the source Observable values starting from an emission from
  * `openings` and ending when the output of `closingSelector` emits.
@@ -54729,12 +61961,20 @@ exports.bufferToggle = bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 553 */
+=======
+/* 498 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var bufferWhen_1 = __webpack_require__(225);
+=======
+var bufferWhen_1 = __webpack_require__(210);
+>>>>>>> origin/develop-team
 /**
  * Buffers the source Observable values, using a factory function of closing
  * Observables to determine when to close, emit, and reset the buffer.
@@ -54775,12 +62015,20 @@ exports.bufferWhen = bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 554 */
+=======
+/* 499 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var catchError_1 = __webpack_require__(226);
+=======
+var catchError_1 = __webpack_require__(211);
+>>>>>>> origin/develop-team
 /**
  * Catches errors on the observable to be handled by returning a new observable or throwing an error.
  *
@@ -54847,12 +62095,20 @@ exports._catch = _catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 555 */
+=======
+/* 500 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var combineAll_1 = __webpack_require__(227);
+=======
+var combineAll_1 = __webpack_require__(212);
+>>>>>>> origin/develop-team
 /**
  * Converts a higher-order Observable into a first-order Observable by waiting
  * for the outer Observable to complete, then applying {@link combineLatest}.
@@ -54900,7 +62156,11 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 556 */
+=======
+/* 501 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54961,13 +62221,22 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 557 */
+=======
+/* 502 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(228);
 var concat_2 = __webpack_require__(28);
+=======
+var concat_1 = __webpack_require__(213);
+var concat_2 = __webpack_require__(20);
+>>>>>>> origin/develop-team
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
 /**
@@ -55030,12 +62299,20 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 558 */
+=======
+/* 503 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concatAll_1 = __webpack_require__(56);
+=======
+var concatAll_1 = __webpack_require__(48);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Converts a higher-order Observable into a first-order Observable by
@@ -55092,12 +62369,20 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 559 */
+=======
+/* 504 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concatMap_1 = __webpack_require__(57);
+=======
+var concatMap_1 = __webpack_require__(49);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -55165,12 +62450,20 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 560 */
+=======
+/* 505 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var concatMapTo_1 = __webpack_require__(229);
+=======
+var concatMapTo_1 = __webpack_require__(214);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -55235,12 +62528,20 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 561 */
+=======
+/* 506 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var count_1 = __webpack_require__(230);
+=======
+var count_1 = __webpack_require__(215);
+>>>>>>> origin/develop-team
 /**
  * Counts the number of emissions on the source and emits that number when the
  * source completes.
@@ -55296,12 +62597,20 @@ exports.count = count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 562 */
+=======
+/* 507 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var debounce_1 = __webpack_require__(231);
+=======
+var debounce_1 = __webpack_require__(216);
+>>>>>>> origin/develop-team
 /**
  * Emits a value from the source Observable only after a particular time span
  * determined by another Observable has passed without another source emission.
@@ -55351,13 +62660,22 @@ exports.debounce = debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 563 */
+=======
+/* 508 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var debounceTime_1 = __webpack_require__(232);
+=======
+var async_1 = __webpack_require__(5);
+var debounceTime_1 = __webpack_require__(217);
+>>>>>>> origin/develop-team
 /**
  * Emits a value from the source Observable only after a particular time span
  * has passed without another source emission.
@@ -55412,12 +62730,20 @@ exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 564 */
+=======
+/* 509 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var defaultIfEmpty_1 = __webpack_require__(58);
+=======
+var defaultIfEmpty_1 = __webpack_require__(50);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Emits a given value if the source Observable completes without emitting any
@@ -55457,13 +62783,22 @@ exports.defaultIfEmpty = defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 565 */
+=======
+/* 510 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var delay_1 = __webpack_require__(233);
+=======
+var async_1 = __webpack_require__(5);
+var delay_1 = __webpack_require__(218);
+>>>>>>> origin/develop-team
 /**
  * Delays the emission of items from the source Observable by a given timeout or
  * until a given Date.
@@ -55511,12 +62846,20 @@ exports.delay = delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 566 */
+=======
+/* 511 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var delayWhen_1 = __webpack_require__(234);
+=======
+var delayWhen_1 = __webpack_require__(219);
+>>>>>>> origin/develop-team
 /**
  * Delays the emission of items from the source Observable by a given time span
  * determined by the emissions of another Observable.
@@ -55569,12 +62912,20 @@ exports.delayWhen = delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 567 */
+=======
+/* 512 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var dematerialize_1 = __webpack_require__(235);
+=======
+var dematerialize_1 = __webpack_require__(220);
+>>>>>>> origin/develop-team
 /**
  * Converts an Observable of {@link Notification} objects into the emissions
  * that they represent.
@@ -55622,12 +62973,20 @@ exports.dematerialize = dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 568 */
+=======
+/* 513 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var distinct_1 = __webpack_require__(236);
+=======
+var distinct_1 = __webpack_require__(221);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -55680,12 +63039,20 @@ exports.distinct = distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 569 */
+=======
+/* 514 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var distinctUntilChanged_1 = __webpack_require__(59);
+=======
+var distinctUntilChanged_1 = __webpack_require__(51);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item.
@@ -55733,12 +63100,20 @@ exports.distinctUntilChanged = distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 570 */
+=======
+/* 515 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var distinctUntilKeyChanged_1 = __webpack_require__(237);
+=======
+var distinctUntilKeyChanged_1 = __webpack_require__(222);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -55804,12 +63179,20 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 571 */
+=======
+/* 516 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var tap_1 = __webpack_require__(285);
+=======
+var tap_1 = __webpack_require__(270);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Perform a side effect for every emission on the source Observable, but return
@@ -55861,12 +63244,20 @@ exports._do = _do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 572 */
+=======
+/* 517 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var elementAt_1 = __webpack_require__(238);
+=======
+var elementAt_1 = __webpack_require__(223);
+>>>>>>> origin/develop-team
 /**
  * Emits the single value at the specified `index` in a sequence of emissions
  * from the source Observable.
@@ -55916,12 +63307,20 @@ exports.elementAt = elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 573 */
+=======
+/* 518 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var every_1 = __webpack_require__(239);
+=======
+var every_1 = __webpack_require__(224);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that emits whether or not every item of the source satisfies the condition specified.
  *
@@ -55943,12 +63342,20 @@ exports.every = every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 574 */
+=======
+/* 519 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var exhaust_1 = __webpack_require__(240);
+=======
+var exhaust_1 = __webpack_require__(225);
+>>>>>>> origin/develop-team
 /**
  * Converts a higher-order Observable into a first-order Observable by dropping
  * inner Observables while the previous inner Observable has not yet completed.
@@ -55991,12 +63398,20 @@ exports.exhaust = exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 575 */
+=======
+/* 520 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var exhaustMap_1 = __webpack_require__(241);
+=======
+var exhaustMap_1 = __webpack_require__(226);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -56050,12 +63465,20 @@ exports.exhaustMap = exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 576 */
+=======
+/* 521 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var expand_1 = __webpack_require__(242);
+=======
+var expand_1 = __webpack_require__(227);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Recursively projects each source value to an Observable which is merged in
@@ -56112,12 +63535,20 @@ exports.expand = expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 577 */
+=======
+/* 522 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var filter_1 = __webpack_require__(60);
+=======
+var filter_1 = __webpack_require__(52);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Filter items emitted by the source Observable by only emitting those that
@@ -56165,12 +63596,20 @@ exports.filter = filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 578 */
+=======
+/* 523 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var finalize_1 = __webpack_require__(243);
+=======
+var finalize_1 = __webpack_require__(228);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that mirrors the source Observable, but will call a specified function when
  * the source terminates on complete or error.
@@ -56186,12 +63625,20 @@ exports._finally = _finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 579 */
+=======
+/* 524 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var find_1 = __webpack_require__(61);
+=======
+var find_1 = __webpack_require__(53);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Emits only the first value emitted by the source Observable that meets some
@@ -56233,12 +63680,20 @@ exports.find = find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 580 */
+=======
+/* 525 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var findIndex_1 = __webpack_require__(244);
+=======
+var findIndex_1 = __webpack_require__(229);
+>>>>>>> origin/develop-team
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -56280,12 +63735,20 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 581 */
+=======
+/* 526 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var first_1 = __webpack_require__(245);
+=======
+var first_1 = __webpack_require__(230);
+>>>>>>> origin/develop-team
 /**
  * Emits only the first value (or the first value that meets some condition)
  * emitted by the source Observable.
@@ -56342,12 +63805,20 @@ exports.first = first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 582 */
+=======
+/* 527 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var groupBy_1 = __webpack_require__(246);
+=======
+var groupBy_1 = __webpack_require__(231);
+>>>>>>> origin/develop-team
 exports.GroupedObservable = groupBy_1.GroupedObservable;
 /* tslint:enable:max-line-length */
 /**
@@ -56424,12 +63895,20 @@ exports.groupBy = groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 583 */
+=======
+/* 528 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var ignoreElements_1 = __webpack_require__(247);
+=======
+var ignoreElements_1 = __webpack_require__(232);
+>>>>>>> origin/develop-team
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -56448,12 +63927,20 @@ exports.ignoreElements = ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 584 */
+=======
+/* 529 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var isEmpty_1 = __webpack_require__(248);
+=======
+var isEmpty_1 = __webpack_require__(233);
+>>>>>>> origin/develop-team
 /**
  * If the source Observable is empty it returns an Observable that emits true, otherwise it emits false.
  *
@@ -56470,12 +63957,20 @@ exports.isEmpty = isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 585 */
+=======
+/* 530 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var last_1 = __webpack_require__(249);
+=======
+var last_1 = __webpack_require__(234);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits only the last item emitted by the source Observable.
@@ -56501,7 +63996,11 @@ exports.last = last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 586 */
+=======
+/* 531 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56519,7 +64018,11 @@ exports.letProto = letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 587 */
+=======
+/* 532 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56565,12 +64068,20 @@ exports.map = map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 588 */
+=======
+/* 533 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(250);
+=======
+var mapTo_1 = __webpack_require__(235);
+>>>>>>> origin/develop-team
 /**
  * Emits the given constant value on the output Observable every time the source
  * Observable emits a value.
@@ -56604,12 +64115,20 @@ exports.mapTo = mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 589 */
+=======
+/* 534 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var materialize_1 = __webpack_require__(251);
+=======
+var materialize_1 = __webpack_require__(236);
+>>>>>>> origin/develop-team
 /**
  * Represents all of the notifications from the source Observable as `next`
  * emissions marked with their original types within {@link Notification}
@@ -56661,12 +64180,20 @@ exports.materialize = materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 590 */
+=======
+/* 535 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var max_1 = __webpack_require__(252);
+=======
+var max_1 = __webpack_require__(237);
+>>>>>>> origin/develop-team
 /**
  * The Max operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the largest value.
@@ -56705,13 +64232,22 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 591 */
+=======
+/* 536 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var merge_1 = __webpack_require__(253);
 var merge_2 = __webpack_require__(40);
+=======
+var merge_1 = __webpack_require__(238);
+var merge_2 = __webpack_require__(31);
+>>>>>>> origin/develop-team
 exports.mergeStatic = merge_2.merge;
 /* tslint:enable:max-line-length */
 /**
@@ -56771,7 +64307,11 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 592 */
+=======
+/* 537 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56829,7 +64369,11 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 593 */
+=======
+/* 538 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56902,12 +64446,20 @@ exports.mergeMap = mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 594 */
+=======
+/* 539 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(254);
+=======
+var mergeMapTo_1 = __webpack_require__(239);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -56960,12 +64512,20 @@ exports.mergeMapTo = mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 595 */
+=======
+/* 540 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var mergeScan_1 = __webpack_require__(255);
+=======
+var mergeScan_1 = __webpack_require__(240);
+>>>>>>> origin/develop-team
 /**
  * Applies an accumulator function over the source Observable where the
  * accumulator function itself returns an Observable, then each intermediate
@@ -57005,12 +64565,20 @@ exports.mergeScan = mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 596 */
+=======
+/* 541 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var min_1 = __webpack_require__(256);
+=======
+var min_1 = __webpack_require__(241);
+>>>>>>> origin/develop-team
 /**
  * The Min operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the smallest value.
@@ -57049,7 +64617,11 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 597 */
+=======
+/* 542 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57157,7 +64729,11 @@ exports.multicast = multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 598 */
+=======
+/* 543 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57217,12 +64793,20 @@ exports.observeOn = observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 599 */
+=======
+/* 544 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(62);
+=======
+var onErrorResumeNext_1 = __webpack_require__(54);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * When any of the provided Observable emits an complete or error notification, it immediately subscribes to the next one
@@ -57296,12 +64880,20 @@ exports.onErrorResumeNext = onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 600 */
+=======
+/* 545 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var pairwise_1 = __webpack_require__(257);
+=======
+var pairwise_1 = __webpack_require__(242);
+>>>>>>> origin/develop-team
 /**
  * Groups pairs of consecutive emissions together and emits them as an array of
  * two values.
@@ -57344,12 +64936,20 @@ exports.pairwise = pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 601 */
+=======
+/* 546 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var partition_1 = __webpack_require__(258);
+=======
+var partition_1 = __webpack_require__(243);
+>>>>>>> origin/develop-team
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -57398,12 +64998,20 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 602 */
+=======
+/* 547 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var pluck_1 = __webpack_require__(259);
+=======
+var pluck_1 = __webpack_require__(244);
+>>>>>>> origin/develop-team
 /**
  * Maps each source value (an object) to its specified nested property.
  *
@@ -57441,12 +65049,20 @@ exports.pluck = pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 603 */
+=======
+/* 548 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publish_1 = __webpack_require__(260);
+=======
+var publish_1 = __webpack_require__(245);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -57468,12 +65084,20 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 604 */
+=======
+/* 549 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishBehavior_1 = __webpack_require__(261);
+=======
+var publishBehavior_1 = __webpack_require__(246);
+>>>>>>> origin/develop-team
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -57487,12 +65111,20 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 605 */
+=======
+/* 550 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishLast_1 = __webpack_require__(262);
+=======
+var publishLast_1 = __webpack_require__(247);
+>>>>>>> origin/develop-team
 /**
  * @return {ConnectableObservable<T>}
  * @method publishLast
@@ -57506,12 +65138,20 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 606 */
+=======
+/* 551 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var publishReplay_1 = __webpack_require__(263);
+=======
+var publishReplay_1 = __webpack_require__(248);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * @param bufferSize
@@ -57529,14 +65169,24 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 607 */
+=======
+/* 552 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var race_1 = __webpack_require__(264);
 // NOTE: to support backwards compatability with 5.4.* and lower
 var race_2 = __webpack_require__(54);
+=======
+var race_1 = __webpack_require__(249);
+// NOTE: to support backwards compatability with 5.4.* and lower
+var race_2 = __webpack_require__(46);
+>>>>>>> origin/develop-team
 exports.raceStatic = race_2.race;
 /* tslint:enable:max-line-length */
 /**
@@ -57558,7 +65208,11 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 608 */
+=======
+/* 553 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57624,12 +65278,20 @@ exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 609 */
+=======
+/* 554 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var repeat_1 = __webpack_require__(265);
+=======
+var repeat_1 = __webpack_require__(250);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times.
  *
@@ -57650,12 +65312,20 @@ exports.repeat = repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 610 */
+=======
+/* 555 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var repeatWhen_1 = __webpack_require__(266);
+=======
+var repeatWhen_1 = __webpack_require__(251);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that mirrors the source Observable with the exception of a `complete`. If the source
  * Observable calls `complete`, this method will emit to the Observable returned from `notifier`. If that Observable
@@ -57677,12 +65347,20 @@ exports.repeatWhen = repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 611 */
+=======
+/* 556 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var retry_1 = __webpack_require__(267);
+=======
+var retry_1 = __webpack_require__(252);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will resubscribe to the source Observable for a maximum of `count` resubscriptions (given
@@ -57707,12 +65385,20 @@ exports.retry = retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 612 */
+=======
+/* 557 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var retryWhen_1 = __webpack_require__(268);
+=======
+var retryWhen_1 = __webpack_require__(253);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will emit the Throwable that caused the error to the Observable returned from `notifier`.
@@ -57734,12 +65420,20 @@ exports.retryWhen = retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 613 */
+=======
+/* 558 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var sample_1 = __webpack_require__(269);
+=======
+var sample_1 = __webpack_require__(254);
+>>>>>>> origin/develop-team
 /**
  * Emits the most recently emitted value from the source Observable whenever
  * another Observable, the `notifier`, emits.
@@ -57781,13 +65475,22 @@ exports.sample = sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 614 */
+=======
+/* 559 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var sampleTime_1 = __webpack_require__(270);
+=======
+var async_1 = __webpack_require__(5);
+var sampleTime_1 = __webpack_require__(255);
+>>>>>>> origin/develop-team
 /**
  * Emits the most recently emitted value from the source Observable within
  * periodic time intervals.
@@ -57832,12 +65535,20 @@ exports.sampleTime = sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 615 */
+=======
+/* 560 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var scan_1 = __webpack_require__(64);
+=======
+var scan_1 = __webpack_require__(56);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns each
@@ -57886,12 +65597,20 @@ exports.scan = scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 616 */
+=======
+/* 561 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var sequenceEqual_1 = __webpack_require__(271);
+=======
+var sequenceEqual_1 = __webpack_require__(256);
+>>>>>>> origin/develop-team
 /**
  * Compares all values of two observables in sequence using an optional comparor function
  * and returns an observable of a single boolean value representing whether or not the two sequences
@@ -57951,12 +65670,20 @@ exports.sequenceEqual = sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 617 */
+=======
+/* 562 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var share_1 = __webpack_require__(272);
+=======
+var share_1 = __webpack_require__(257);
+>>>>>>> origin/develop-team
 /**
  * Returns a new Observable that multicasts (shares) the original Observable. As long as there is at least one
  * Subscriber this Observable will be subscribed and emitting data. When all subscribers have unsubscribed it will
@@ -57981,12 +65708,20 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 618 */
+=======
+/* 563 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var shareReplay_1 = __webpack_require__(273);
+=======
+var shareReplay_1 = __webpack_require__(258);
+>>>>>>> origin/develop-team
 /**
  * @method shareReplay
  * @owner Observable
@@ -57999,12 +65734,20 @@ exports.shareReplay = shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 619 */
+=======
+/* 564 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var single_1 = __webpack_require__(274);
+=======
+var single_1 = __webpack_require__(259);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
  * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
@@ -58028,12 +65771,20 @@ exports.single = single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 620 */
+=======
+/* 565 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skip_1 = __webpack_require__(275);
+=======
+var skip_1 = __webpack_require__(260);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that skips the first `count` items emitted by the source Observable.
  *
@@ -58052,12 +65803,20 @@ exports.skip = skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 621 */
+=======
+/* 566 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipLast_1 = __webpack_require__(276);
+=======
+var skipLast_1 = __webpack_require__(261);
+>>>>>>> origin/develop-team
 /**
  * Skip the last `count` values emitted by the source Observable.
  *
@@ -58097,12 +65856,20 @@ exports.skipLast = skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 622 */
+=======
+/* 567 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipUntil_1 = __webpack_require__(277);
+=======
+var skipUntil_1 = __webpack_require__(262);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that skips items emitted by the source Observable until a second Observable emits an item.
  *
@@ -58122,12 +65889,20 @@ exports.skipUntil = skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 623 */
+=======
+/* 568 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var skipWhile_1 = __webpack_require__(278);
+=======
+var skipWhile_1 = __webpack_require__(263);
+>>>>>>> origin/develop-team
 /**
  * Returns an Observable that skips all items emitted by the source Observable as long as a specified condition holds
  * true, but emits all further source items as soon as the condition becomes false.
@@ -58147,12 +65922,20 @@ exports.skipWhile = skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 624 */
+=======
+/* 569 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var startWith_1 = __webpack_require__(279);
+=======
+var startWith_1 = __webpack_require__(264);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the items you specify as arguments before it begins to emit
@@ -58179,12 +65962,20 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 625 */
+=======
+/* 570 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var subscribeOn_1 = __webpack_require__(648);
+=======
+var subscribeOn_1 = __webpack_require__(593);
+>>>>>>> origin/develop-team
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -58204,12 +65995,20 @@ exports.subscribeOn = subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 626 */
+=======
+/* 571 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(280);
+=======
+var switchAll_1 = __webpack_require__(265);
+>>>>>>> origin/develop-team
 /**
  * Converts a higher-order Observable into a first-order Observable by
  * subscribing to only the most recently emitted of those inner Observables.
@@ -58259,12 +66058,20 @@ exports._switch = _switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 627 */
+=======
+/* 572 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var switchMap_1 = __webpack_require__(65);
+=======
+var switchMap_1 = __webpack_require__(57);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -58320,12 +66127,20 @@ exports.switchMap = switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 628 */
+=======
+/* 573 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var switchMapTo_1 = __webpack_require__(281);
+=======
+var switchMapTo_1 = __webpack_require__(266);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is flattened multiple
@@ -58376,12 +66191,20 @@ exports.switchMapTo = switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 629 */
+=======
+/* 574 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var take_1 = __webpack_require__(282);
+=======
+var take_1 = __webpack_require__(267);
+>>>>>>> origin/develop-team
 /**
  * Emits only the first `count` values emitted by the source Observable.
  *
@@ -58422,12 +66245,20 @@ exports.take = take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 630 */
+=======
+/* 575 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var takeLast_1 = __webpack_require__(66);
+=======
+var takeLast_1 = __webpack_require__(58);
+>>>>>>> origin/develop-team
 /**
  * Emits only the last `count` values emitted by the source Observable.
  *
@@ -58471,12 +66302,20 @@ exports.takeLast = takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 631 */
+=======
+/* 576 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var takeUntil_1 = __webpack_require__(283);
+=======
+var takeUntil_1 = __webpack_require__(268);
+>>>>>>> origin/develop-team
 /**
  * Emits the values emitted by the source Observable until a `notifier`
  * Observable emits a value.
@@ -58517,12 +66356,20 @@ exports.takeUntil = takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 632 */
+=======
+/* 577 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var takeWhile_1 = __webpack_require__(284);
+=======
+var takeWhile_1 = __webpack_require__(269);
+>>>>>>> origin/develop-team
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
  * the given `predicate`, and then completes as soon as this `predicate` is not
@@ -58566,7 +66413,11 @@ exports.takeWhile = takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 633 */
+=======
+/* 578 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58620,14 +66471,24 @@ exports.throttle = throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 634 */
+=======
+/* 579 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var throttle_1 = __webpack_require__(44);
 var throttleTime_1 = __webpack_require__(286);
+=======
+var async_1 = __webpack_require__(5);
+var throttle_1 = __webpack_require__(35);
+var throttleTime_1 = __webpack_require__(271);
+>>>>>>> origin/develop-team
 /**
  * Emits a value from the source Observable, then ignores subsequent source
  * values for `duration` milliseconds, then repeats this process.
@@ -58676,13 +66537,22 @@ exports.throttleTime = throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 635 */
+=======
+/* 580 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var timeout_1 = __webpack_require__(288);
+=======
+var async_1 = __webpack_require__(5);
+var timeout_1 = __webpack_require__(273);
+>>>>>>> origin/develop-team
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -58756,13 +66626,22 @@ exports.timeout = timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 636 */
+=======
+/* 581 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var timeoutWith_1 = __webpack_require__(289);
+=======
+var async_1 = __webpack_require__(5);
+var timeoutWith_1 = __webpack_require__(274);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  *
@@ -58819,13 +66698,22 @@ exports.timeoutWith = timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 637 */
+=======
+/* 582 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var timestamp_1 = __webpack_require__(67);
+=======
+var async_1 = __webpack_require__(5);
+var timestamp_1 = __webpack_require__(59);
+>>>>>>> origin/develop-team
 /**
  * @param scheduler
  * @return {Observable<Timestamp<any>>|WebSocketSubject<T>|Observable<T>}
@@ -58840,12 +66728,20 @@ exports.timestamp = timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 638 */
+=======
+/* 583 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var toArray_1 = __webpack_require__(290);
+=======
+var toArray_1 = __webpack_require__(275);
+>>>>>>> origin/develop-team
 /**
  * Collects all source emissions and emits them as an array when the source completes.
  *
@@ -58876,12 +66772,20 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 639 */
+=======
+/* 584 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var window_1 = __webpack_require__(291);
+=======
+var window_1 = __webpack_require__(276);
+>>>>>>> origin/develop-team
 /**
  * Branch out the source Observable values as a nested Observable whenever
  * `windowBoundaries` emits.
@@ -58925,12 +66829,20 @@ exports.window = window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 640 */
+=======
+/* 585 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowCount_1 = __webpack_require__(292);
+=======
+var windowCount_1 = __webpack_require__(277);
+>>>>>>> origin/develop-team
 /**
  * Branch out the source Observable values as a nested Observable with each
  * nested Observable emitting at most `windowSize` values.
@@ -58987,15 +66899,26 @@ exports.windowCount = windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 641 */
+=======
+/* 586 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var async_1 = __webpack_require__(7);
 var isNumeric_1 = __webpack_require__(36);
 var isScheduler_1 = __webpack_require__(14);
 var windowTime_1 = __webpack_require__(293);
+=======
+var async_1 = __webpack_require__(5);
+var isNumeric_1 = __webpack_require__(28);
+var isScheduler_1 = __webpack_require__(12);
+var windowTime_1 = __webpack_require__(278);
+>>>>>>> origin/develop-team
 function windowTime(windowTimeSpan) {
     var scheduler = async_1.async;
     var windowCreationInterval = null;
@@ -59021,12 +66944,20 @@ exports.windowTime = windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 642 */
+=======
+/* 587 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowToggle_1 = __webpack_require__(294);
+=======
+var windowToggle_1 = __webpack_require__(279);
+>>>>>>> origin/develop-team
 /**
  * Branch out the source Observable values as a nested Observable starting from
  * an emission from `openings` and ending when the output of `closingSelector`
@@ -59075,12 +67006,20 @@ exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 643 */
+=======
+/* 588 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var windowWhen_1 = __webpack_require__(295);
+=======
+var windowWhen_1 = __webpack_require__(280);
+>>>>>>> origin/develop-team
 /**
  * Branch out the source Observable values as a nested Observable using a
  * factory function of closing Observables to determine when to start a new
@@ -59126,12 +67065,20 @@ exports.windowWhen = windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 644 */
+=======
+/* 589 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var withLatestFrom_1 = __webpack_require__(296);
+=======
+var withLatestFrom_1 = __webpack_require__(281);
+>>>>>>> origin/develop-team
 /* tslint:enable:max-line-length */
 /**
  * Combines the source Observable with other Observables to create an Observable
@@ -59182,7 +67129,11 @@ exports.withLatestFrom = withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 645 */
+=======
+/* 590 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59206,12 +67157,20 @@ exports.zipProto = zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 646 */
+=======
+/* 591 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(297);
+=======
+var zipAll_1 = __webpack_require__(282);
+>>>>>>> origin/develop-team
 /**
  * @param project
  * @return {Observable<R>|WebSocketSubject<T>|Observable<T>}
@@ -59225,11 +67184,16 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 647 */
+=======
+/* 592 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var audit_1 = __webpack_require__(55);
 exports.audit = audit_1.audit;
 var auditTime_1 = __webpack_require__(220);
@@ -59247,9 +67211,29 @@ exports.bufferWhen = bufferWhen_1.bufferWhen;
 var catchError_1 = __webpack_require__(226);
 exports.catchError = catchError_1.catchError;
 var combineAll_1 = __webpack_require__(227);
+=======
+var audit_1 = __webpack_require__(47);
+exports.audit = audit_1.audit;
+var auditTime_1 = __webpack_require__(205);
+exports.auditTime = auditTime_1.auditTime;
+var buffer_1 = __webpack_require__(206);
+exports.buffer = buffer_1.buffer;
+var bufferCount_1 = __webpack_require__(207);
+exports.bufferCount = bufferCount_1.bufferCount;
+var bufferTime_1 = __webpack_require__(208);
+exports.bufferTime = bufferTime_1.bufferTime;
+var bufferToggle_1 = __webpack_require__(209);
+exports.bufferToggle = bufferToggle_1.bufferToggle;
+var bufferWhen_1 = __webpack_require__(210);
+exports.bufferWhen = bufferWhen_1.bufferWhen;
+var catchError_1 = __webpack_require__(211);
+exports.catchError = catchError_1.catchError;
+var combineAll_1 = __webpack_require__(212);
+>>>>>>> origin/develop-team
 exports.combineAll = combineAll_1.combineAll;
 var combineLatest_1 = __webpack_require__(41);
 exports.combineLatest = combineLatest_1.combineLatest;
+<<<<<<< HEAD
 var concat_1 = __webpack_require__(228);
 exports.concat = concat_1.concat;
 var concatAll_1 = __webpack_require__(56);
@@ -59305,9 +67289,67 @@ exports.ignoreElements = ignoreElements_1.ignoreElements;
 var isEmpty_1 = __webpack_require__(248);
 exports.isEmpty = isEmpty_1.isEmpty;
 var last_1 = __webpack_require__(249);
+=======
+var concat_1 = __webpack_require__(213);
+exports.concat = concat_1.concat;
+var concatAll_1 = __webpack_require__(48);
+exports.concatAll = concatAll_1.concatAll;
+var concatMap_1 = __webpack_require__(49);
+exports.concatMap = concatMap_1.concatMap;
+var concatMapTo_1 = __webpack_require__(214);
+exports.concatMapTo = concatMapTo_1.concatMapTo;
+var count_1 = __webpack_require__(215);
+exports.count = count_1.count;
+var debounce_1 = __webpack_require__(216);
+exports.debounce = debounce_1.debounce;
+var debounceTime_1 = __webpack_require__(217);
+exports.debounceTime = debounceTime_1.debounceTime;
+var defaultIfEmpty_1 = __webpack_require__(50);
+exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
+var delay_1 = __webpack_require__(218);
+exports.delay = delay_1.delay;
+var delayWhen_1 = __webpack_require__(219);
+exports.delayWhen = delayWhen_1.delayWhen;
+var dematerialize_1 = __webpack_require__(220);
+exports.dematerialize = dematerialize_1.dematerialize;
+var distinct_1 = __webpack_require__(221);
+exports.distinct = distinct_1.distinct;
+var distinctUntilChanged_1 = __webpack_require__(51);
+exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
+var distinctUntilKeyChanged_1 = __webpack_require__(222);
+exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
+var elementAt_1 = __webpack_require__(223);
+exports.elementAt = elementAt_1.elementAt;
+var every_1 = __webpack_require__(224);
+exports.every = every_1.every;
+var exhaust_1 = __webpack_require__(225);
+exports.exhaust = exhaust_1.exhaust;
+var exhaustMap_1 = __webpack_require__(226);
+exports.exhaustMap = exhaustMap_1.exhaustMap;
+var expand_1 = __webpack_require__(227);
+exports.expand = expand_1.expand;
+var filter_1 = __webpack_require__(52);
+exports.filter = filter_1.filter;
+var finalize_1 = __webpack_require__(228);
+exports.finalize = finalize_1.finalize;
+var find_1 = __webpack_require__(53);
+exports.find = find_1.find;
+var findIndex_1 = __webpack_require__(229);
+exports.findIndex = findIndex_1.findIndex;
+var first_1 = __webpack_require__(230);
+exports.first = first_1.first;
+var groupBy_1 = __webpack_require__(231);
+exports.groupBy = groupBy_1.groupBy;
+var ignoreElements_1 = __webpack_require__(232);
+exports.ignoreElements = ignoreElements_1.ignoreElements;
+var isEmpty_1 = __webpack_require__(233);
+exports.isEmpty = isEmpty_1.isEmpty;
+var last_1 = __webpack_require__(234);
+>>>>>>> origin/develop-team
 exports.last = last_1.last;
 var map_1 = __webpack_require__(29);
 exports.map = map_1.map;
+<<<<<<< HEAD
 var mapTo_1 = __webpack_require__(250);
 exports.mapTo = mapTo_1.mapTo;
 var materialize_1 = __webpack_require__(251);
@@ -59315,6 +67357,15 @@ exports.materialize = materialize_1.materialize;
 var max_1 = __webpack_require__(252);
 exports.max = max_1.max;
 var merge_1 = __webpack_require__(253);
+=======
+var mapTo_1 = __webpack_require__(235);
+exports.mapTo = mapTo_1.mapTo;
+var materialize_1 = __webpack_require__(236);
+exports.materialize = materialize_1.materialize;
+var max_1 = __webpack_require__(237);
+exports.max = max_1.max;
+var merge_1 = __webpack_require__(238);
+>>>>>>> origin/develop-team
 exports.merge = merge_1.merge;
 var mergeAll_1 = __webpack_require__(42);
 exports.mergeAll = mergeAll_1.mergeAll;
@@ -59322,16 +67373,25 @@ var mergeMap_1 = __webpack_require__(30);
 exports.mergeMap = mergeMap_1.mergeMap;
 var mergeMap_2 = __webpack_require__(30);
 exports.flatMap = mergeMap_2.mergeMap;
+<<<<<<< HEAD
 var mergeMapTo_1 = __webpack_require__(254);
 exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
 var mergeScan_1 = __webpack_require__(255);
 exports.mergeScan = mergeScan_1.mergeScan;
 var min_1 = __webpack_require__(256);
+=======
+var mergeMapTo_1 = __webpack_require__(239);
+exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
+var mergeScan_1 = __webpack_require__(240);
+exports.mergeScan = mergeScan_1.mergeScan;
+var min_1 = __webpack_require__(241);
+>>>>>>> origin/develop-team
 exports.min = min_1.min;
 var multicast_1 = __webpack_require__(22);
 exports.multicast = multicast_1.multicast;
 var observeOn_1 = __webpack_require__(43);
 exports.observeOn = observeOn_1.observeOn;
+<<<<<<< HEAD
 var onErrorResumeNext_1 = __webpack_require__(62);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 var pairwise_1 = __webpack_require__(257);
@@ -59349,9 +67409,29 @@ exports.publishLast = publishLast_1.publishLast;
 var publishReplay_1 = __webpack_require__(263);
 exports.publishReplay = publishReplay_1.publishReplay;
 var race_1 = __webpack_require__(264);
+=======
+var onErrorResumeNext_1 = __webpack_require__(54);
+exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+var pairwise_1 = __webpack_require__(242);
+exports.pairwise = pairwise_1.pairwise;
+var partition_1 = __webpack_require__(243);
+exports.partition = partition_1.partition;
+var pluck_1 = __webpack_require__(244);
+exports.pluck = pluck_1.pluck;
+var publish_1 = __webpack_require__(245);
+exports.publish = publish_1.publish;
+var publishBehavior_1 = __webpack_require__(246);
+exports.publishBehavior = publishBehavior_1.publishBehavior;
+var publishLast_1 = __webpack_require__(247);
+exports.publishLast = publishLast_1.publishLast;
+var publishReplay_1 = __webpack_require__(248);
+exports.publishReplay = publishReplay_1.publishReplay;
+var race_1 = __webpack_require__(249);
+>>>>>>> origin/develop-team
 exports.race = race_1.race;
 var reduce_1 = __webpack_require__(31);
 exports.reduce = reduce_1.reduce;
+<<<<<<< HEAD
 var repeat_1 = __webpack_require__(265);
 exports.repeat = repeat_1.repeat;
 var repeatWhen_1 = __webpack_require__(266);
@@ -59385,6 +67465,41 @@ exports.skipUntil = skipUntil_1.skipUntil;
 var skipWhile_1 = __webpack_require__(278);
 exports.skipWhile = skipWhile_1.skipWhile;
 var startWith_1 = __webpack_require__(279);
+=======
+var repeat_1 = __webpack_require__(250);
+exports.repeat = repeat_1.repeat;
+var repeatWhen_1 = __webpack_require__(251);
+exports.repeatWhen = repeatWhen_1.repeatWhen;
+var retry_1 = __webpack_require__(252);
+exports.retry = retry_1.retry;
+var retryWhen_1 = __webpack_require__(253);
+exports.retryWhen = retryWhen_1.retryWhen;
+var refCount_1 = __webpack_require__(55);
+exports.refCount = refCount_1.refCount;
+var sample_1 = __webpack_require__(254);
+exports.sample = sample_1.sample;
+var sampleTime_1 = __webpack_require__(255);
+exports.sampleTime = sampleTime_1.sampleTime;
+var scan_1 = __webpack_require__(56);
+exports.scan = scan_1.scan;
+var sequenceEqual_1 = __webpack_require__(256);
+exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
+var share_1 = __webpack_require__(257);
+exports.share = share_1.share;
+var shareReplay_1 = __webpack_require__(258);
+exports.shareReplay = shareReplay_1.shareReplay;
+var single_1 = __webpack_require__(259);
+exports.single = single_1.single;
+var skip_1 = __webpack_require__(260);
+exports.skip = skip_1.skip;
+var skipLast_1 = __webpack_require__(261);
+exports.skipLast = skipLast_1.skipLast;
+var skipUntil_1 = __webpack_require__(262);
+exports.skipUntil = skipUntil_1.skipUntil;
+var skipWhile_1 = __webpack_require__(263);
+exports.skipWhile = skipWhile_1.skipWhile;
+var startWith_1 = __webpack_require__(264);
+>>>>>>> origin/develop-team
 exports.startWith = startWith_1.startWith;
 /**
  * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
@@ -59393,6 +67508,7 @@ exports.startWith = startWith_1.startWith;
  * Immediate, root, and other supporting code.
  */
 // export { subscribeOn } from './operators/subscribeOn';
+<<<<<<< HEAD
 var switchAll_1 = __webpack_require__(280);
 exports.switchAll = switchAll_1.switchAll;
 var switchMap_1 = __webpack_require__(65);
@@ -59408,9 +67524,27 @@ exports.takeUntil = takeUntil_1.takeUntil;
 var takeWhile_1 = __webpack_require__(284);
 exports.takeWhile = takeWhile_1.takeWhile;
 var tap_1 = __webpack_require__(285);
+=======
+var switchAll_1 = __webpack_require__(265);
+exports.switchAll = switchAll_1.switchAll;
+var switchMap_1 = __webpack_require__(57);
+exports.switchMap = switchMap_1.switchMap;
+var switchMapTo_1 = __webpack_require__(266);
+exports.switchMapTo = switchMapTo_1.switchMapTo;
+var take_1 = __webpack_require__(267);
+exports.take = take_1.take;
+var takeLast_1 = __webpack_require__(58);
+exports.takeLast = takeLast_1.takeLast;
+var takeUntil_1 = __webpack_require__(268);
+exports.takeUntil = takeUntil_1.takeUntil;
+var takeWhile_1 = __webpack_require__(269);
+exports.takeWhile = takeWhile_1.takeWhile;
+var tap_1 = __webpack_require__(270);
+>>>>>>> origin/develop-team
 exports.tap = tap_1.tap;
 var throttle_1 = __webpack_require__(44);
 exports.throttle = throttle_1.throttle;
+<<<<<<< HEAD
 var throttleTime_1 = __webpack_require__(286);
 exports.throttleTime = throttleTime_1.throttleTime;
 var timeInterval_1 = __webpack_require__(287);
@@ -59434,20 +67568,57 @@ exports.windowToggle = windowToggle_1.windowToggle;
 var windowWhen_1 = __webpack_require__(295);
 exports.windowWhen = windowWhen_1.windowWhen;
 var withLatestFrom_1 = __webpack_require__(296);
+=======
+var throttleTime_1 = __webpack_require__(271);
+exports.throttleTime = throttleTime_1.throttleTime;
+var timeInterval_1 = __webpack_require__(272);
+exports.timeInterval = timeInterval_1.timeInterval;
+var timeout_1 = __webpack_require__(273);
+exports.timeout = timeout_1.timeout;
+var timeoutWith_1 = __webpack_require__(274);
+exports.timeoutWith = timeoutWith_1.timeoutWith;
+var timestamp_1 = __webpack_require__(59);
+exports.timestamp = timestamp_1.timestamp;
+var toArray_1 = __webpack_require__(275);
+exports.toArray = toArray_1.toArray;
+var window_1 = __webpack_require__(276);
+exports.window = window_1.window;
+var windowCount_1 = __webpack_require__(277);
+exports.windowCount = windowCount_1.windowCount;
+var windowTime_1 = __webpack_require__(278);
+exports.windowTime = windowTime_1.windowTime;
+var windowToggle_1 = __webpack_require__(279);
+exports.windowToggle = windowToggle_1.windowToggle;
+var windowWhen_1 = __webpack_require__(280);
+exports.windowWhen = windowWhen_1.windowWhen;
+var withLatestFrom_1 = __webpack_require__(281);
+>>>>>>> origin/develop-team
 exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
 var zip_1 = __webpack_require__(45);
 exports.zip = zip_1.zip;
+<<<<<<< HEAD
 var zipAll_1 = __webpack_require__(297);
+=======
+var zipAll_1 = __webpack_require__(282);
+>>>>>>> origin/develop-team
 exports.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=operators.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 648 */
+=======
+/* 593 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var SubscribeOnObservable_1 = __webpack_require__(522);
+=======
+var SubscribeOnObservable_1 = __webpack_require__(467);
+>>>>>>> origin/develop-team
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -59479,7 +67650,11 @@ var SubscribeOnOperator = (function () {
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 649 */
+=======
+/* 594 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59529,7 +67704,11 @@ exports.Action = Action;
 //# sourceMappingURL=Action.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 650 */
+=======
+/* 595 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59539,8 +67718,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var AsyncAction_1 = __webpack_require__(32);
 var AnimationFrame_1 = __webpack_require__(660);
+=======
+var AsyncAction_1 = __webpack_require__(24);
+var AnimationFrame_1 = __webpack_require__(605);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -59590,7 +67774,11 @@ exports.AnimationFrameAction = AnimationFrameAction;
 //# sourceMappingURL=AnimationFrameAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 651 */
+=======
+/* 596 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59633,7 +67821,11 @@ exports.AnimationFrameScheduler = AnimationFrameScheduler;
 //# sourceMappingURL=AnimationFrameScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 652 */
+=======
+/* 597 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59643,8 +67835,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var Immediate_1 = __webpack_require__(662);
 var AsyncAction_1 = __webpack_require__(32);
+=======
+var Immediate_1 = __webpack_require__(607);
+var AsyncAction_1 = __webpack_require__(24);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -59694,7 +67891,11 @@ exports.AsapAction = AsapAction;
 //# sourceMappingURL=AsapAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 653 */
+=======
+/* 598 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59737,7 +67938,11 @@ exports.AsapScheduler = AsapScheduler;
 //# sourceMappingURL=AsapScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 654 */
+=======
+/* 599 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59792,7 +67997,11 @@ exports.QueueAction = QueueAction;
 //# sourceMappingURL=QueueAction.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 655 */
+=======
+/* 600 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59814,13 +68023,22 @@ exports.QueueScheduler = QueueScheduler;
 //# sourceMappingURL=QueueScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 656 */
+=======
+/* 601 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var AnimationFrameAction_1 = __webpack_require__(650);
 var AnimationFrameScheduler_1 = __webpack_require__(651);
+=======
+var AnimationFrameAction_1 = __webpack_require__(595);
+var AnimationFrameScheduler_1 = __webpack_require__(596);
+>>>>>>> origin/develop-team
 /**
  *
  * Animation Frame Scheduler
@@ -59855,7 +68073,11 @@ exports.animationFrame = new AnimationFrameScheduler_1.AnimationFrameScheduler(A
 //# sourceMappingURL=animationFrame.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 657 */
+=======
+/* 602 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59866,9 +68088,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var Subscription_1 = __webpack_require__(9);
 var SubscriptionLoggable_1 = __webpack_require__(302);
 var applyMixins_1 = __webpack_require__(305);
+=======
+var Subscription_1 = __webpack_require__(7);
+var SubscriptionLoggable_1 = __webpack_require__(287);
+var applyMixins_1 = __webpack_require__(290);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -59907,7 +68135,11 @@ applyMixins_1.applyMixins(ColdObservable, [SubscriptionLoggable_1.SubscriptionLo
 //# sourceMappingURL=ColdObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 658 */
+=======
+/* 603 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59917,10 +68149,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+<<<<<<< HEAD
 var Subject_1 = __webpack_require__(10);
 var Subscription_1 = __webpack_require__(9);
 var SubscriptionLoggable_1 = __webpack_require__(302);
 var applyMixins_1 = __webpack_require__(305);
+=======
+var Subject_1 = __webpack_require__(8);
+var Subscription_1 = __webpack_require__(7);
+var SubscriptionLoggable_1 = __webpack_require__(287);
+var applyMixins_1 = __webpack_require__(290);
+>>>>>>> origin/develop-team
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -59961,7 +68200,11 @@ applyMixins_1.applyMixins(HotObservable, [SubscriptionLoggable_1.SubscriptionLog
 //# sourceMappingURL=HotObservable.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 659 */
+=======
+/* 604 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59972,11 +68215,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
+<<<<<<< HEAD
 var Notification_1 = __webpack_require__(27);
 var ColdObservable_1 = __webpack_require__(657);
 var HotObservable_1 = __webpack_require__(658);
 var SubscriptionLog_1 = __webpack_require__(301);
 var VirtualTimeScheduler_1 = __webpack_require__(298);
+=======
+var Notification_1 = __webpack_require__(19);
+var ColdObservable_1 = __webpack_require__(602);
+var HotObservable_1 = __webpack_require__(603);
+var SubscriptionLog_1 = __webpack_require__(286);
+var VirtualTimeScheduler_1 = __webpack_require__(283);
+>>>>>>> origin/develop-team
 var defaultMaxFrame = 750;
 var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
@@ -60190,7 +68441,11 @@ exports.TestScheduler = TestScheduler;
 //# sourceMappingURL=TestScheduler.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 660 */
+=======
+/* 605 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60230,7 +68485,11 @@ exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 //# sourceMappingURL=AnimationFrame.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 661 */
+=======
+/* 606 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60267,7 +68526,11 @@ exports.FastMap = FastMap;
 //# sourceMappingURL=FastMap.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 662 */
+=======
+/* 607 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60480,21 +68743,37 @@ var ImmediateDefinition = (function () {
 exports.ImmediateDefinition = ImmediateDefinition;
 exports.Immediate = new ImmediateDefinition(root_1.root);
 //# sourceMappingURL=Immediate.js.map
+<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(310).clearImmediate, __webpack_require__(310).setImmediate))
 
 /***/ }),
 /* 663 */
+=======
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(65).clearImmediate, __webpack_require__(65).setImmediate))
+
+/***/ }),
+/* 608 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+<<<<<<< HEAD
 var root_1 = __webpack_require__(13);
 var MapPolyfill_1 = __webpack_require__(664);
+=======
+var root_1 = __webpack_require__(11);
+var MapPolyfill_1 = __webpack_require__(609);
+>>>>>>> origin/develop-team
 exports.Map = root_1.root.Map || (function () { return MapPolyfill_1.MapPolyfill; })();
 //# sourceMappingURL=Map.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 664 */
+=======
+/* 609 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60547,7 +68826,11 @@ exports.MapPolyfill = MapPolyfill;
 //# sourceMappingURL=MapPolyfill.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 665 */
+=======
+/* 610 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60586,7 +68869,11 @@ exports.Set = root_1.root.Set || minimalSetImpl();
 //# sourceMappingURL=Set.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 666 */
+=======
+/* 611 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60618,7 +68905,11 @@ exports.assign = getAssign(root_1.root);
 //# sourceMappingURL=assign.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 667 */
+=======
+/* 612 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60635,14 +68926,23 @@ exports.not = not;
 //# sourceMappingURL=not.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 668 */
+=======
+/* 613 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Subscriber_1 = __webpack_require__(2);
+<<<<<<< HEAD
 var rxSubscriber_1 = __webpack_require__(47);
 var Observer_1 = __webpack_require__(210);
+=======
+var rxSubscriber_1 = __webpack_require__(38);
+var Observer_1 = __webpack_require__(195);
+>>>>>>> origin/develop-team
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -60661,6 +68961,7 @@ exports.toSubscriber = toSubscriber;
 //# sourceMappingURL=toSubscriber.js.map
 
 /***/ }),
+<<<<<<< HEAD
 /* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -60855,6 +69156,9 @@ exports.toSubscriber = toSubscriber;
 
 /***/ }),
 /* 670 */
+=======
+/* 614 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60863,8 +69167,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
+<<<<<<< HEAD
 var core_module_1 = __webpack_require__(8);
 var swcustomeraccountcard_1 = __webpack_require__(671);
+=======
+var core_module_1 = __webpack_require__(6);
+var swcustomeraccountcard_1 = __webpack_require__(615);
+>>>>>>> origin/develop-team
 var accountmodule = angular.module('account', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -60877,7 +69186,11 @@ exports.accountmodule = accountmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 671 */
+=======
+/* 615 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60945,7 +69258,11 @@ exports.SWCustomerAccountCard = SWCustomerAccountCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 672 */
+=======
+/* 616 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60954,9 +69271,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
+<<<<<<< HEAD
 var core_module_1 = __webpack_require__(8);
 var swaddressformpartial_1 = __webpack_require__(673);
 var addressservice_1 = __webpack_require__(674);
+=======
+var core_module_1 = __webpack_require__(6);
+var swaddressformpartial_1 = __webpack_require__(617);
+var addressservice_1 = __webpack_require__(618);
+>>>>>>> origin/develop-team
 var addressmodule = angular.module('address', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -60971,7 +69294,11 @@ exports.addressmodule = addressmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 673 */
+=======
+/* 617 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61052,7 +69379,11 @@ exports.SWAddressFormPartial = SWAddressFormPartial;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 674 */
+=======
+/* 618 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61081,7 +69412,11 @@ exports.AddressService = AddressService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 675 */
+=======
+/* 619 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61143,7 +69478,11 @@ exports.SWAssignedProducts = SWAssignedProducts;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 676 */
+=======
+/* 620 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61220,7 +69559,11 @@ exports.SWContentBasic = SWContentBasic;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 677 */
+=======
+/* 621 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61281,7 +69624,11 @@ exports.SWContentEditor = SWContentEditor;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 678 */
+=======
+/* 622 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61521,7 +69868,11 @@ exports.SWContentList = SWContentList;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 679 */
+=======
+/* 623 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61664,7 +70015,11 @@ exports.SWContentNode = SWContentNode;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 680 */
+=======
+/* 624 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61806,7 +70161,11 @@ exports.SWSiteSelector = SWSiteSelector;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 681 */
+=======
+/* 625 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61819,12 +70178,21 @@ var core_module_1 = __webpack_require__(8);
 //services
 //filters
 //directives
+<<<<<<< HEAD
 var swcontentbasic_1 = __webpack_require__(676);
 var swcontenteditor_1 = __webpack_require__(677);
 var swcontentlist_1 = __webpack_require__(678);
 var swcontentnode_1 = __webpack_require__(679);
 var swassignedproducts_1 = __webpack_require__(675);
 var swsiteselector_1 = __webpack_require__(680);
+=======
+var swcontentbasic_1 = __webpack_require__(620);
+var swcontenteditor_1 = __webpack_require__(621);
+var swcontentlist_1 = __webpack_require__(622);
+var swcontentnode_1 = __webpack_require__(623);
+var swassignedproducts_1 = __webpack_require__(619);
+var swsiteselector_1 = __webpack_require__(624);
+>>>>>>> origin/develop-team
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
@@ -61841,7 +70209,11 @@ exports.contentmodule = contentmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 682 */
+=======
+/* 626 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61945,7 +70317,11 @@ exports.SWFormResponseListing = SWFormResponseListing;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 683 */
+=======
+/* 627 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61957,7 +70333,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(8);
 //controllers
 //directives
+<<<<<<< HEAD
 var swformresponselisting_1 = __webpack_require__(682);
+=======
+var swformresponselisting_1 = __webpack_require__(626);
+>>>>>>> origin/develop-team
 //models
 var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
     .config([function () {
@@ -61972,7 +70352,11 @@ exports.formbuildermodule = formbuildermodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 684 */
+=======
+/* 628 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62205,7 +70589,11 @@ exports.SWFulfillmentBatchDetail = SWFulfillmentBatchDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 685 */
+=======
+/* 629 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62219,7 +70607,11 @@ var core_module_1 = __webpack_require__(8);
 var orderfulfillmentservice_1 = __webpack_require__(312);
 //controllers
 //directives
+<<<<<<< HEAD
 var swfulfillmentbatchdetail_1 = __webpack_require__(684);
+=======
+var swfulfillmentbatchdetail_1 = __webpack_require__(628);
+>>>>>>> origin/develop-team
 //models 
 var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
     .config([function () {
@@ -62236,7 +70628,11 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 686 */
+=======
+/* 630 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62244,7 +70640,11 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var giftrecipient_1 = __webpack_require__(696);
+=======
+var giftrecipient_1 = __webpack_require__(640);
+>>>>>>> origin/develop-team
 var SWAddOrderItemRecipientController = /** @class */ (function () {
     //@ngInject
     function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -62403,7 +70803,11 @@ exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 687 */
+=======
+/* 631 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62482,7 +70886,11 @@ exports.SWGiftCardBalance = SWGiftCardBalance;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 688 */
+=======
+/* 632 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62541,7 +70949,11 @@ exports.SWGiftCardDetail = SWGiftCardDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 689 */
+=======
+/* 633 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62558,7 +70970,7 @@ var SWGiftCardHistoryController = /** @class */ (function () {
         var initialBalance = 0;
         var totalDebit = 0;
         var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime,reasonForAdjustment", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime,reasonForAdjustment");
         transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
         transactionConfig.setAllRecords(true);
         transactionConfig.setOrderBy("createdDateTime|DESC");
@@ -62671,7 +71083,11 @@ exports.SWGiftCardHistory = SWGiftCardHistory;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 690 */
+=======
+/* 634 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62731,7 +71147,11 @@ exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 691 */
+=======
+/* 635 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62772,7 +71192,11 @@ exports.SWGiftCardOverview = SWGiftCardOverview;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 692 */
+=======
+/* 636 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62818,7 +71242,11 @@ exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 693 */
+=======
+/* 637 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62926,7 +71354,11 @@ exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 694 */
+=======
+/* 638 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62972,7 +71404,11 @@ exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 695 */
+=======
+/* 639 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62983,6 +71419,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(8);
 //controllers
+<<<<<<< HEAD
 var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(694);
 //directives
 var swaddorderitemgiftrecipient_1 = __webpack_require__(686);
@@ -62993,6 +71430,18 @@ var swgiftcardoverview_1 = __webpack_require__(691);
 var swgiftcardorderinfo_1 = __webpack_require__(690);
 var swgiftcardrecipientinfo_1 = __webpack_require__(692);
 var sworderitemgiftrecipientrow_1 = __webpack_require__(693);
+=======
+var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(638);
+//directives
+var swaddorderitemgiftrecipient_1 = __webpack_require__(630);
+var swgiftcardbalance_1 = __webpack_require__(631);
+var swgiftcarddetail_1 = __webpack_require__(632);
+var swgiftcardhistory_1 = __webpack_require__(633);
+var swgiftcardoverview_1 = __webpack_require__(635);
+var swgiftcardorderinfo_1 = __webpack_require__(634);
+var swgiftcardrecipientinfo_1 = __webpack_require__(636);
+var sworderitemgiftrecipientrow_1 = __webpack_require__(637);
+>>>>>>> origin/develop-team
 var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63014,7 +71463,11 @@ exports.giftcardmodule = giftcardmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 696 */
+=======
+/* 640 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63043,7 +71496,11 @@ exports.GiftRecipient = GiftRecipient;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 697 */
+=======
+/* 641 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63051,7 +71508,11 @@ exports.GiftRecipient = GiftRecipient;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var md5 = __webpack_require__(52);
+=======
+var md5 = __webpack_require__(44);
+>>>>>>> origin/develop-team
 var optionWithGroup = /** @class */ (function () {
     function optionWithGroup(optionID, optionGroupID, match) {
         var _this = this;
@@ -63215,7 +71676,11 @@ exports.SWAddOptionGroup = SWAddOptionGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 698 */
+=======
+/* 642 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63291,7 +71756,11 @@ exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 699 */
+=======
+/* 643 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63303,8 +71772,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(8);
 //controllers
 //directives
+<<<<<<< HEAD
 var swaddoptiongroup_1 = __webpack_require__(697);
 var swoptionsforoptiongroup_1 = __webpack_require__(698);
+=======
+var swaddoptiongroup_1 = __webpack_require__(641);
+var swoptionsforoptiongroup_1 = __webpack_require__(642);
+>>>>>>> origin/develop-team
 var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63319,7 +71793,11 @@ exports.optiongroupmodule = optiongroupmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 700 */
+=======
+/* 644 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63492,7 +71970,11 @@ exports.SWAccountPaymentMethodModal = SWAccountPaymentMethodModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 701 */
+=======
+/* 645 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63576,7 +72058,11 @@ exports.SWAccountShippingAddressCard = SWAccountShippingAddressCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 702 */
+=======
+/* 646 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63694,7 +72180,11 @@ exports.SWAccountShippingMethodModal = SWAccountShippingMethodModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 703 */
+=======
+/* 647 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63805,7 +72295,11 @@ exports.SWCustomerAccountPaymentMethodCard = SWCustomerAccountPaymentMethodCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 704 */
+=======
+/* 648 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63902,7 +72396,11 @@ exports.SWOrderTemplateAddGiftCardModal = SWOrderTemplateAddGiftCardModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 705 */
+=======
+/* 649 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63978,7 +72476,11 @@ exports.SWOrderTemplateAddPromotionModal = SWOrderTemplateAddPromotionModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 706 */
+=======
+/* 650 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64039,7 +72541,11 @@ exports.SWOrderTemplateFrequencyCard = SWOrderTemplateFrequencyCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 707 */
+=======
+/* 651 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64128,7 +72634,11 @@ exports.SWOrderTemplateFrequencyModal = SWOrderTemplateFrequencyModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 708 */
+=======
+/* 652 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64188,7 +72698,11 @@ exports.SWOrderTemplateGiftCards = SWOrderTemplateGiftCards;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 709 */
+=======
+/* 653 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64205,6 +72719,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
+            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
             var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
@@ -64291,7 +72806,11 @@ exports.SWOrderTemplateItems = SWOrderTemplateItems;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 710 */
+=======
+/* 654 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64348,7 +72867,11 @@ exports.SWOrderTemplatePromotions = SWOrderTemplatePromotions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 711 */
+=======
+/* 655 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64403,7 +72926,11 @@ exports.SWOrderTemplateTotal = SWOrderTemplateTotal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 712 */
+=======
+/* 656 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64495,7 +73022,11 @@ exports.SWOrderTemplateUpcomingOrdersCard = SWOrderTemplateUpcomingOrdersCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 713 */
+=======
+/* 657 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64518,7 +73049,6 @@ var SWOrderTemplateUpdateScheduleModalController = /** @class */ (function () {
         //rb key properties
         this.title = "Update Schedule";
         this.$onInit = function () {
-            _this.orderTemplateService.setOrderTemplateID(_this.orderTemplate.orderTemplateID);
             if (_this.scheduleOrderNextPlaceDateTimeString != null) {
                 var date = Date.parse(_this.scheduleOrderNextPlaceDateTimeString);
                 _this.scheduleOrderNextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
@@ -64587,7 +73117,11 @@ exports.SWOrderTemplateUpdateScheduleModal = SWOrderTemplateUpdateScheduleModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 714 */
+=======
+/* 658 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64598,6 +73132,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(8);
 //services
+<<<<<<< HEAD
 var ordertemplateservice_1 = __webpack_require__(715);
 //components
 var swaccountpaymentmethodmodal_1 = __webpack_require__(700);
@@ -64614,6 +73149,24 @@ var swordertemplatepromotions_1 = __webpack_require__(710);
 var swordertemplatetotal_1 = __webpack_require__(711);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(712);
 var swordertemplateupdateschedulemodal_1 = __webpack_require__(713);
+=======
+var ordertemplateservice_1 = __webpack_require__(659);
+//components
+var swaccountpaymentmethodmodal_1 = __webpack_require__(644);
+var swaccountshippingaddresscard_1 = __webpack_require__(645);
+var swaccountshippingmethodmodal_1 = __webpack_require__(646);
+var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(647);
+var swordertemplateaddpromotionmodal_1 = __webpack_require__(649);
+var swordertemplateaddgiftcardmodal_1 = __webpack_require__(648);
+var swordertemplatefrequencycard_1 = __webpack_require__(650);
+var swordertemplatefrequencymodal_1 = __webpack_require__(651);
+var swordertemplategiftcards_1 = __webpack_require__(652);
+var swordertemplateitems_1 = __webpack_require__(653);
+var swordertemplatepromotions_1 = __webpack_require__(654);
+var swordertemplatetotal_1 = __webpack_require__(655);
+var swordertemplateupcomingorderscard_1 = __webpack_require__(656);
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(657);
+>>>>>>> origin/develop-team
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -64641,7 +73194,11 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 715 */
+=======
+/* 659 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64766,7 +73323,11 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 716 */
+=======
+/* 660 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64983,7 +73544,11 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 717 */
+=======
+/* 661 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64997,7 +73562,11 @@ var core_module_1 = __webpack_require__(8);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
+<<<<<<< HEAD
 var sworderdeliverydetail_1 = __webpack_require__(716);
+=======
+var sworderdeliverydetail_1 = __webpack_require__(660);
+>>>>>>> origin/develop-team
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -65012,7 +73581,11 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 718 */
+=======
+/* 662 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65673,7 +74246,11 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 719 */
+=======
+/* 663 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65687,7 +74264,11 @@ var core_module_1 = __webpack_require__(8);
 var orderfulfillmentservice_1 = __webpack_require__(312);
 //controllers
 //directives
+<<<<<<< HEAD
 var sworderfulfillmentlist_1 = __webpack_require__(718);
+=======
+var sworderfulfillmentlist_1 = __webpack_require__(662);
+>>>>>>> origin/develop-team
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -65704,7 +74285,11 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 720 */
+=======
+/* 664 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65995,7 +74580,11 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 721 */
+=======
+/* 665 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66039,7 +74628,11 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 722 */
+=======
+/* 666 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66527,7 +75120,11 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 723 */
+=======
+/* 667 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66641,7 +75238,11 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 724 */
+=======
+/* 668 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66795,7 +75396,11 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 725 */
+=======
+/* 669 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66838,7 +75443,11 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 726 */
+=======
+/* 670 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66848,12 +75457,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(8);
 //directives
+<<<<<<< HEAD
 var swchildorderitem_1 = __webpack_require__(720);
 var sworderitem_1 = __webpack_require__(722);
 var swoishippinglabelstamp_1 = __webpack_require__(721);
 var sworderitemdetailstamp_1 = __webpack_require__(723);
 var sworderitems_1 = __webpack_require__(724);
 var swresizedimage_1 = __webpack_require__(725);
+=======
+var swchildorderitem_1 = __webpack_require__(664);
+var sworderitem_1 = __webpack_require__(666);
+var swoishippinglabelstamp_1 = __webpack_require__(665);
+var sworderitemdetailstamp_1 = __webpack_require__(667);
+var sworderitems_1 = __webpack_require__(668);
+var swresizedimage_1 = __webpack_require__(669);
+>>>>>>> origin/develop-team
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -66873,7 +75491,11 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 727 */
+=======
+/* 671 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66977,7 +75599,11 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 728 */
+=======
+/* 672 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67039,7 +75665,11 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 729 */
+=======
+/* 673 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67102,7 +75732,11 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 730 */
+=======
+/* 674 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67206,7 +75840,11 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 731 */
+=======
+/* 675 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67218,12 +75856,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(8);
 //services
 //controllers
+<<<<<<< HEAD
 var preprocessproduct_create_1 = __webpack_require__(730);
 //filters
 //directives
 var swproductlistingpages_1 = __webpack_require__(728);
 var swrelatedproducts_1 = __webpack_require__(729);
 var swproductdeliveryscheduledates_1 = __webpack_require__(727);
+=======
+var preprocessproduct_create_1 = __webpack_require__(674);
+//filters
+//directives
+var swproductlistingpages_1 = __webpack_require__(672);
+var swrelatedproducts_1 = __webpack_require__(673);
+var swproductdeliveryscheduledates_1 = __webpack_require__(671);
+>>>>>>> origin/develop-team
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -67239,7 +75886,11 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 732 */
+=======
+/* 676 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67584,7 +76235,11 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 733 */
+=======
+/* 677 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67770,7 +76425,11 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 734 */
+=======
+/* 678 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67857,7 +76516,11 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 735 */
+=======
+/* 679 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68032,7 +76695,11 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 736 */
+=======
+/* 680 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68133,7 +76800,11 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 737 */
+=======
+/* 681 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68144,6 +76815,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(8);
 //services
+<<<<<<< HEAD
 var productbundleservice_1 = __webpack_require__(738);
 //controllers
 var create_bundle_controller_1 = __webpack_require__(736);
@@ -68152,6 +76824,16 @@ var swproductbundlegrouptype_1 = __webpack_require__(735);
 var swproductbundlegroups_1 = __webpack_require__(734);
 var swproductbundlegroup_1 = __webpack_require__(733);
 var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(732);
+=======
+var productbundleservice_1 = __webpack_require__(682);
+//controllers
+var create_bundle_controller_1 = __webpack_require__(680);
+//directives
+var swproductbundlegrouptype_1 = __webpack_require__(679);
+var swproductbundlegroups_1 = __webpack_require__(678);
+var swproductbundlegroup_1 = __webpack_require__(677);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(676);
+>>>>>>> origin/develop-team
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -68170,7 +76852,11 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 738 */
+=======
+/* 682 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68256,7 +76942,11 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 739 */
+=======
+/* 683 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68264,7 +76954,11 @@ exports.ProductBundleService = ProductBundleService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var skuPriceModalLauncherHTML = __webpack_require__(368);
+=======
+var skuPriceModalLauncherHTML = __webpack_require__(314);
+>>>>>>> origin/develop-team
 var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, $timeout) {
@@ -68427,7 +77121,11 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 740 */
+=======
+/* 684 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68506,7 +77204,11 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 741 */
+=======
+/* 685 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68593,7 +77295,11 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 742 */
+=======
+/* 686 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68730,7 +77436,11 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 743 */
+=======
+/* 687 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68839,7 +77549,11 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 744 */
+=======
+/* 688 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68915,7 +77629,11 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 745 */
+=======
+/* 689 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68977,7 +77695,11 @@ exports.SWSkuImage = SWSkuImage;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 746 */
+=======
+/* 690 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69166,7 +77888,11 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 747 */
+=======
+/* 691 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69309,7 +78035,11 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 748 */
+=======
+/* 692 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69440,7 +78170,11 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 749 */
+=======
+/* 693 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69607,7 +78341,11 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 750 */
+=======
+/* 694 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69666,7 +78404,11 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 751 */
+=======
+/* 695 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69717,7 +78459,11 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 752 */
+=======
+/* 696 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70088,7 +78834,11 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 753 */
+=======
+/* 697 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70099,6 +78849,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(8);
 //services
+<<<<<<< HEAD
 var defaultskuservice_1 = __webpack_require__(751);
 var skupriceservice_1 = __webpack_require__(752);
 //controllers
@@ -70118,6 +78869,27 @@ var swskucodeedit_1 = __webpack_require__(743);
 var swskupricesedit_1 = __webpack_require__(748);
 var swskupricequantityedit_1 = __webpack_require__(747);
 var swskuthumbnail_1 = __webpack_require__(750);
+=======
+var defaultskuservice_1 = __webpack_require__(695);
+var skupriceservice_1 = __webpack_require__(696);
+//controllers
+//directives
+var swpricingmanager_1 = __webpack_require__(708);
+var swimagedetailmodallauncher_1 = __webpack_require__(686);
+var swaddskupricemodallauncher_1 = __webpack_require__(683);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(685);
+var sweditskupricemodallauncher_1 = __webpack_require__(707);
+var swskupricemodal_1 = __webpack_require__(709);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(693);
+var swdefaultskuradio_1 = __webpack_require__(684);
+var swskuimage_1 = __webpack_require__(689);
+var swskucurrencyselector_1 = __webpack_require__(688);
+var swskupriceedit_1 = __webpack_require__(690);
+var swskucodeedit_1 = __webpack_require__(687);
+var swskupricesedit_1 = __webpack_require__(692);
+var swskupricequantityedit_1 = __webpack_require__(691);
+var swskuthumbnail_1 = __webpack_require__(694);
+>>>>>>> origin/develop-team
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -70147,7 +78919,11 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 754 */
+=======
+/* 698 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70181,7 +78957,11 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 755 */
+=======
+/* 699 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70189,6 +78969,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
+<<<<<<< HEAD
 var hibachi_module_1 = __webpack_require__(926);
 var workflow_module_1 = __webpack_require__(323);
 var entity_module_1 = __webpack_require__(321);
@@ -70210,6 +78991,29 @@ var subscriptionusage_module_1 = __webpack_require__(757);
 var term_module_1 = __webpack_require__(760);
 //constant
 var slatwallpathbuilder_1 = __webpack_require__(754);
+=======
+var hibachi_module_1 = __webpack_require__(870);
+var workflow_module_1 = __webpack_require__(307);
+var entity_module_1 = __webpack_require__(305);
+var account_module_1 = __webpack_require__(614);
+var address_module_1 = __webpack_require__(616);
+var content_module_1 = __webpack_require__(625);
+var formbuilder_module_1 = __webpack_require__(627);
+var giftcard_module_1 = __webpack_require__(639);
+var optiongroup_module_1 = __webpack_require__(643);
+var orderitem_module_1 = __webpack_require__(670);
+var orderfulfillment_module_1 = __webpack_require__(663);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(629);
+var orderdeliverydetail_module_1 = __webpack_require__(661);
+var order_module_1 = __webpack_require__(658);
+var product_module_1 = __webpack_require__(675);
+var productbundle_module_1 = __webpack_require__(681);
+var sku_module_1 = __webpack_require__(697);
+var subscriptionusage_module_1 = __webpack_require__(701);
+var term_module_1 = __webpack_require__(704);
+//constant
+var slatwallpathbuilder_1 = __webpack_require__(698);
+>>>>>>> origin/develop-team
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
     hibachi_module_1.hibachimodule.name,
@@ -70426,7 +79230,11 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 756 */
+=======
+/* 700 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70519,7 +79327,11 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 757 */
+=======
+/* 701 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70533,7 +79345,11 @@ var core_module_1 = __webpack_require__(8);
 //controllers
 //filters
 //directives
+<<<<<<< HEAD
 var swscheduleddeliveriescard_1 = __webpack_require__(756);
+=======
+var swscheduleddeliveriescard_1 = __webpack_require__(700);
+>>>>>>> origin/develop-team
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -70546,7 +79362,11 @@ exports.subscriptionusagemodule = subscriptionusagemodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 758 */
+=======
+/* 702 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70597,7 +79417,11 @@ exports.SWTermScheduleTable = SWTermScheduleTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 759 */
+=======
+/* 703 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70648,7 +79472,11 @@ exports.TermService = TermService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 760 */
+=======
+/* 704 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70657,9 +79485,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
+<<<<<<< HEAD
 var core_module_1 = __webpack_require__(8);
 var swtermscheduletable_1 = __webpack_require__(758);
 var termservice_1 = __webpack_require__(759);
+=======
+var core_module_1 = __webpack_require__(6);
+var swtermscheduletable_1 = __webpack_require__(702);
+var termservice_1 = __webpack_require__(703);
+>>>>>>> origin/develop-team
 var termmodule = angular.module('term', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -70673,7 +79507,11 @@ exports.termmodule = termmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 761 */
+=======
+/* 705 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70742,15 +79580,25 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 762 */
+=======
+/* 706 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var slatwalladmin_module_1 = __webpack_require__(755);
 //directives
 var swflexshipsurveymodal_1 = __webpack_require__(761);
+=======
+var slatwalladmin_module_1 = __webpack_require__(699);
+//directives
+var swflexshipsurveymodal_1 = __webpack_require__(705);
+>>>>>>> origin/develop-team
 var monatadminmodule = angular.module('monatadmin', [
     slatwalladmin_module_1.slatwalladminmodule.name
 ])
@@ -70762,7 +79610,11 @@ exports.monatadminmodule = monatadminmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 763 */
+=======
+/* 707 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70856,7 +79708,11 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 764 */
+=======
+/* 708 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70920,7 +79776,11 @@ exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 765 */
+=======
+/* 709 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71015,7 +79875,11 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 766 */
+=======
+/* 710 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71035,7 +79899,11 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 767 */
+=======
+/* 711 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71059,7 +79927,11 @@ exports.Alert = Alert;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 768 */
+=======
+/* 712 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71068,7 +79940,11 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
+<<<<<<< HEAD
 var alert_1 = __webpack_require__(767);
+=======
+var alert_1 = __webpack_require__(711);
+>>>>>>> origin/develop-team
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -71138,7 +80014,11 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 769 */
+=======
+/* 713 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71146,8 +80026,13 @@ exports.AlertService = AlertService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var core_module_1 = __webpack_require__(8);
 var md5 = __webpack_require__(52);
+=======
+var core_module_1 = __webpack_require__(6);
+var md5 = __webpack_require__(44);
+>>>>>>> origin/develop-team
 //generic bootstrapper
 var BaseBootStrapper = /** @class */ (function () {
     function BaseBootStrapper(myApplication) {
@@ -71411,7 +80296,11 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 770 */
+=======
+/* 714 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71423,6 +80312,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(8);
 //services
 //components
+<<<<<<< HEAD
 var swcardlayout_1 = __webpack_require__(774);
 var swcardview_1 = __webpack_require__(777);
 var swcardheader_1 = __webpack_require__(772);
@@ -71430,6 +80320,15 @@ var swcardbody_1 = __webpack_require__(771);
 var swcardicon_1 = __webpack_require__(773);
 var swcardprogressbar_1 = __webpack_require__(776);
 var swcardlistitem_1 = __webpack_require__(775);
+=======
+var swcardlayout_1 = __webpack_require__(718);
+var swcardview_1 = __webpack_require__(721);
+var swcardheader_1 = __webpack_require__(716);
+var swcardbody_1 = __webpack_require__(715);
+var swcardicon_1 = __webpack_require__(717);
+var swcardprogressbar_1 = __webpack_require__(720);
+var swcardlistitem_1 = __webpack_require__(719);
+>>>>>>> origin/develop-team
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -71448,7 +80347,11 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 771 */
+=======
+/* 715 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71495,7 +80398,11 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 772 */
+=======
+/* 716 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71544,7 +80451,11 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 773 */
+=======
+/* 717 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71595,7 +80506,11 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 774 */
+=======
+/* 718 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71646,7 +80561,11 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 775 */
+=======
+/* 719 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71700,7 +80619,11 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 776 */
+=======
+/* 720 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71753,7 +80676,11 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 777 */
+=======
+/* 721 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71805,7 +80732,11 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 778 */
+=======
+/* 722 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71850,7 +80781,11 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 779 */
+=======
+/* 723 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71893,7 +80828,11 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 780 */
+=======
+/* 724 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71987,7 +80926,11 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 781 */
+=======
+/* 725 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72223,7 +81166,11 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 782 */
+=======
+/* 726 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73121,7 +82068,11 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 783 */
+=======
+/* 727 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73160,7 +82111,11 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 784 */
+=======
+/* 728 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73256,7 +82211,11 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 785 */
+=======
+/* 729 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73771,7 +82730,11 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 786 */
+=======
+/* 730 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73912,7 +82875,11 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 787 */
+=======
+/* 731 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74074,7 +83041,11 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 788 */
+=======
+/* 732 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74302,7 +83273,11 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 789 */
+=======
+/* 733 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74450,7 +83425,11 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 790 */
+=======
+/* 734 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74547,7 +83526,11 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 791 */
+=======
+/* 735 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74725,7 +83708,11 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 792 */
+=======
+/* 736 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74789,7 +83776,11 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 793 */
+=======
+/* 737 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74875,7 +83866,11 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 794 */
+=======
+/* 738 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75159,7 +84154,11 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 795 */
+=======
+/* 739 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75551,7 +84550,11 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 796 */
+=======
+/* 740 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75624,7 +84627,11 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 797 */
+=======
+/* 741 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75724,7 +84731,11 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 798 */
+=======
+/* 742 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75792,7 +84803,11 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 799 */
+=======
+/* 743 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75853,7 +84868,11 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 800 */
+=======
+/* 744 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75909,7 +84928,11 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 801 */
+=======
+/* 745 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75948,7 +84971,11 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 802 */
+=======
+/* 746 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76156,7 +85183,11 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 803 */
+=======
+/* 747 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76195,7 +85226,11 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 804 */
+=======
+/* 748 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76226,7 +85261,11 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 805 */
+=======
+/* 749 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77142,7 +86181,11 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 806 */
+=======
+/* 750 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77364,7 +86407,11 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 807 */
+=======
+/* 751 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77692,7 +86739,11 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 808 */
+=======
+/* 752 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77743,7 +86794,11 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 809 */
+=======
+/* 753 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77794,7 +86849,11 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 810 */
+=======
+/* 754 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77886,7 +86945,11 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 811 */
+=======
+/* 755 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78054,7 +87117,11 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 812 */
+=======
+/* 756 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78117,7 +87184,11 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 813 */
+=======
+/* 757 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78168,7 +87239,11 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 814 */
+=======
+/* 758 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78215,7 +87290,11 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 815 */
+=======
+/* 759 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78369,7 +87448,11 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 816 */
+=======
+/* 760 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78432,7 +87515,11 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 817 */
+=======
+/* 761 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78501,7 +87588,11 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 818 */
+=======
+/* 762 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78560,7 +87651,11 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 819 */
+=======
+/* 763 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78643,7 +87738,11 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 820 */
+=======
+/* 764 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78778,7 +87877,11 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 821 */
+=======
+/* 765 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78918,7 +88021,11 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 822 */
+=======
+/* 766 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78957,7 +88064,11 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 823 */
+=======
+/* 767 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79165,7 +88276,11 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 824 */
+=======
+/* 768 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79235,7 +88350,11 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 825 */
+=======
+/* 769 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79269,7 +88388,11 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 826 */
+=======
+/* 770 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79277,7 +88400,11 @@ exports.SWExportAction = SWExportAction;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var md5 = __webpack_require__(52);
+=======
+var md5 = __webpack_require__(44);
+>>>>>>> origin/develop-team
 var SWGravatarController = /** @class */ (function () {
     // @ngInject
     function SWGravatarController() {
@@ -79313,7 +88440,11 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 827 */
+=======
+/* 771 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79347,7 +88478,11 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 828 */
+=======
+/* 772 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79383,7 +88518,11 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 829 */
+=======
+/* 773 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79459,7 +88598,11 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 830 */
+=======
+/* 774 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79600,7 +88743,11 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 831 */
+=======
+/* 775 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79681,7 +88828,11 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 832 */
+=======
+/* 776 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79740,7 +88891,11 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 833 */
+=======
+/* 777 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79811,7 +88966,11 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 834 */
+=======
+/* 778 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79963,7 +89122,11 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 835 */
+=======
+/* 779 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80048,7 +89211,11 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 836 */
+=======
+/* 780 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80092,7 +89259,11 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 837 */
+=======
+/* 781 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80184,7 +89355,11 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 838 */
+=======
+/* 782 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80281,7 +89456,11 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 839 */
+=======
+/* 783 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80338,7 +89517,11 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 840 */
+=======
+/* 784 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80426,7 +89609,11 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 841 */
+=======
+/* 785 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80537,7 +89724,11 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 842 */
+=======
+/* 786 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80620,7 +89811,11 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 843 */
+=======
+/* 787 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80747,7 +89942,11 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 844 */
+=======
+/* 788 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80903,7 +90102,11 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 845 */
+=======
+/* 789 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80979,7 +90182,11 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 846 */
+=======
+/* 790 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81362,7 +90569,11 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 847 */
+=======
+/* 791 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81423,7 +90634,11 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 848 */
+=======
+/* 792 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81573,7 +90788,11 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 849 */
+=======
+/* 793 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81599,7 +90818,11 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 850 */
+=======
+/* 794 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81640,7 +90863,11 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 851 */
+=======
+/* 795 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81667,7 +90894,11 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 852 */
+=======
+/* 796 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81694,7 +90925,11 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 853 */
+=======
+/* 797 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81758,7 +90993,11 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 854 */
+=======
+/* 798 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81800,7 +91039,11 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 855 */
+=======
+/* 799 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81850,7 +91093,11 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 856 */
+=======
+/* 800 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81891,7 +91138,11 @@ exports.Account = Account;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 857 */
+=======
+/* 801 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81934,7 +91185,11 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 858 */
+=======
+/* 802 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81967,7 +91222,11 @@ exports.Address = Address;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 859 */
+=======
+/* 803 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82028,7 +91287,11 @@ exports.Cart = Cart;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 860 */
+=======
+/* 804 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82036,6 +91299,7 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var account_1 = __webpack_require__(856);
 exports.Account = account_1.Account;
 var address_1 = __webpack_require__(858);
@@ -82049,11 +91313,30 @@ exports.OrderPayment = orderpayment_1.OrderPayment;
 var sku_1 = __webpack_require__(863);
 exports.Sku = sku_1.Sku;
 var accountaddress_1 = __webpack_require__(857);
+=======
+var account_1 = __webpack_require__(800);
+exports.Account = account_1.Account;
+var address_1 = __webpack_require__(802);
+exports.Address = address_1.Address;
+var cart_1 = __webpack_require__(803);
+exports.Cart = cart_1.Cart;
+var orderitem_1 = __webpack_require__(805);
+exports.OrderItem = orderitem_1.OrderItem;
+var orderpayment_1 = __webpack_require__(806);
+exports.OrderPayment = orderpayment_1.OrderPayment;
+var sku_1 = __webpack_require__(807);
+exports.Sku = sku_1.Sku;
+var accountaddress_1 = __webpack_require__(801);
+>>>>>>> origin/develop-team
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 861 */
+=======
+/* 805 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82086,7 +91369,11 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 862 */
+=======
+/* 806 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82103,7 +91390,11 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 863 */
+=======
+/* 807 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82143,7 +91434,11 @@ exports.Sku = Sku;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 864 */
+=======
+/* 808 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82164,7 +91459,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var basetransient_1 = __webpack_require__(70);
+=======
+var basetransient_1 = __webpack_require__(62);
+>>>>>>> origin/develop-team
 var BaseProcess = /** @class */ (function (_super) {
     __extends(BaseProcess, _super);
     function BaseProcess($injector) {
@@ -82176,7 +91475,11 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 865 */
+=======
+/* 809 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82197,7 +91500,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var baseprocess_1 = __webpack_require__(864);
+=======
+var baseprocess_1 = __webpack_require__(808);
+>>>>>>> origin/develop-team
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -82211,7 +91518,11 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 866 */
+=======
+/* 810 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82219,12 +91530,20 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var order_addorderpayment_1 = __webpack_require__(865);
+=======
+var order_addorderpayment_1 = __webpack_require__(809);
+>>>>>>> origin/develop-team
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 867 */
+=======
+/* 811 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82276,7 +91595,11 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 868 */
+=======
+/* 812 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82336,7 +91659,11 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 869 */
+=======
+/* 813 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82372,7 +91699,11 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 870 */
+=======
+/* 814 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82408,7 +91739,11 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 871 */
+=======
+/* 815 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82494,7 +91829,11 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 872 */
+=======
+/* 816 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82531,7 +91870,11 @@ exports.CartService = CartService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 873 */
+=======
+/* 817 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82561,7 +91904,11 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 874 */
+=======
+/* 818 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82599,7 +91946,11 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 875 */
+=======
+/* 819 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82645,7 +91996,11 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 876 */
+=======
+/* 820 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82707,7 +92062,11 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 877 */
+=======
+/* 821 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82800,7 +92159,11 @@ exports.FormService = FormService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 878 */
+=======
+/* 822 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83223,7 +92586,11 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 879 */
+=======
+/* 823 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83440,7 +92807,11 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 880 */
+=======
+/* 824 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83477,7 +92848,11 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 881 */
+=======
+/* 825 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83510,7 +92885,11 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 882 */
+=======
+/* 826 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84048,7 +93427,11 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 883 */
+=======
+/* 827 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84833,7 +94216,11 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 884 */
+=======
+/* 828 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85122,7 +94509,11 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 885 */
+=======
+/* 829 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85158,7 +94549,11 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 886 */
+=======
+/* 830 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85216,7 +94611,11 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 887 */
+=======
+/* 831 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85367,7 +94766,11 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 888 */
+=======
+/* 832 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85396,7 +94799,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var baseservice_1 = __webpack_require__(72);
+=======
+var baseservice_1 = __webpack_require__(64);
+>>>>>>> origin/develop-team
 var ObserverService = /** @class */ (function (_super) {
     __extends(ObserverService, _super);
     //@ngInject
@@ -85537,7 +94944,11 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 889 */
+=======
+/* 833 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85575,7 +94986,11 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 890 */
+=======
+/* 834 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85616,7 +95031,11 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 891 */
+=======
+/* 835 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87048,7 +96467,11 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 892 */
+=======
+/* 836 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87160,7 +96583,11 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 893 */
+=======
+/* 837 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87168,8 +96595,13 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var adminrequest_1 = __webpack_require__(867);
 var publicrequest_1 = __webpack_require__(868);
+=======
+var adminrequest_1 = __webpack_require__(811);
+var publicrequest_1 = __webpack_require__(812);
+>>>>>>> origin/develop-team
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -87199,7 +96631,11 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 894 */
+=======
+/* 838 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87236,7 +96672,11 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 895 */
+=======
+/* 839 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87258,7 +96698,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var baseservice_1 = __webpack_require__(72);
+=======
+var baseservice_1 = __webpack_require__(64);
+>>>>>>> origin/develop-team
 var SelectionService = /** @class */ (function (_super) {
     __extends(SelectionService, _super);
     //@ngInject
@@ -87362,7 +96806,11 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 896 */
+=======
+/* 840 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87400,7 +96848,11 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 897 */
+=======
+/* 841 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87420,7 +96872,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var TypeaheadStore = __webpack_require__(71);
+=======
+var TypeaheadStore = __webpack_require__(63);
+>>>>>>> origin/develop-team
 var TypeaheadService = /** @class */ (function () {
     //@ngInject
     function TypeaheadService($timeout, observerService) {
@@ -87646,7 +97102,11 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 898 */
+=======
+/* 842 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87668,7 +97128,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
+<<<<<<< HEAD
 var baseservice_1 = __webpack_require__(72);
+=======
+var baseservice_1 = __webpack_require__(64);
+>>>>>>> origin/develop-team
 var UtilityService = /** @class */ (function (_super) {
     __extends(UtilityService, _super);
     //@ngInject
@@ -88119,7 +97583,11 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 899 */
+=======
+/* 843 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88145,7 +97613,11 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 900 */
+=======
+/* 844 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88189,7 +97661,11 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 901 */
+=======
+/* 845 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88264,7 +97740,11 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 902 */
+=======
+/* 846 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88295,7 +97775,11 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 903 */
+=======
+/* 847 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88342,7 +97826,11 @@ exports.SWList = SWList;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 904 */
+=======
+/* 848 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88361,7 +97849,11 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 905 */
+=======
+/* 849 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88393,7 +97885,11 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 906 */
+=======
+/* 850 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88562,7 +98058,11 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 907 */
+=======
+/* 851 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88619,7 +98119,11 @@ exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 908 */
+=======
+/* 852 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88703,7 +98207,11 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 909 */
+=======
+/* 853 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88743,7 +98251,11 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 910 */
+=======
+/* 854 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88937,7 +98449,11 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 911 */
+=======
+/* 855 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89039,7 +98555,11 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 912 */
+=======
+/* 856 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89362,7 +98882,11 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 913 */
+=======
+/* 857 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89642,7 +99166,11 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 914 */
+=======
+/* 858 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89690,7 +99218,11 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 915 */
+=======
+/* 859 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89733,7 +99265,11 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 916 */
+=======
+/* 860 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89853,7 +99389,11 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 917 */
+=======
+/* 861 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89921,7 +99461,11 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 918 */
+=======
+/* 862 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90011,7 +99555,11 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 919 */
+=======
+/* 863 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90072,7 +99620,11 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 920 */
+=======
+/* 864 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90437,7 +99989,11 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 921 */
+=======
+/* 865 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90493,7 +100049,11 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 922 */
+=======
+/* 866 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90588,7 +100148,11 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 923 */
+=======
+/* 867 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90599,6 +100163,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(8);
 //services
+<<<<<<< HEAD
 var fileservice_1 = __webpack_require__(924);
 //directives
 //  components
@@ -90621,6 +100186,30 @@ var swfpropertydisplay_1 = __webpack_require__(919);
 var swformsubscriber_1 = __webpack_require__(918);
 var swverifyaddressdialog_1 = __webpack_require__(922);
 var swcollectionconfigasproperty_1 = __webpack_require__(907);
+=======
+var fileservice_1 = __webpack_require__(868);
+//directives
+//  components
+//form
+var swinput_1 = __webpack_require__(864);
+var swfformfield_1 = __webpack_require__(855);
+var swform_1 = __webpack_require__(856);
+var swfform_1 = __webpack_require__(854);
+var swffileinput_1 = __webpack_require__(853);
+var swformfield_1 = __webpack_require__(857);
+var swformfieldfile_1 = __webpack_require__(858);
+var swformfieldjson_1 = __webpack_require__(859);
+var swformfieldsearchselect_1 = __webpack_require__(860);
+var swformregistrar_1 = __webpack_require__(861);
+var swerrordisplay_1 = __webpack_require__(852);
+var swaddressform_1 = __webpack_require__(850);
+var swisolatechildform_1 = __webpack_require__(865);
+var swpropertydisplay_1 = __webpack_require__(306);
+var swfpropertydisplay_1 = __webpack_require__(863);
+var swformsubscriber_1 = __webpack_require__(862);
+var swverifyaddressdialog_1 = __webpack_require__(866);
+var swcollectionconfigasproperty_1 = __webpack_require__(851);
+>>>>>>> origin/develop-team
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -90648,7 +100237,11 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 924 */
+=======
+/* 868 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90695,7 +100288,11 @@ exports.FileService = FileService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 925 */
+=======
+/* 869 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90805,7 +100402,11 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 926 */
+=======
+/* 870 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90814,6 +100415,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
+<<<<<<< HEAD
 var alert_module_1 = __webpack_require__(316);
 var card_module_1 = __webpack_require__(770);
 var collection_module_1 = __webpack_require__(317);
@@ -90826,6 +100428,20 @@ var validation_module_1 = __webpack_require__(964);
 var workflow_module_1 = __webpack_require__(323);
 //directives
 var swsaveandfinish_1 = __webpack_require__(925);
+=======
+var alert_module_1 = __webpack_require__(300);
+var card_module_1 = __webpack_require__(714);
+var collection_module_1 = __webpack_require__(301);
+var listing_module_1 = __webpack_require__(886);
+var dialog_module_1 = __webpack_require__(304);
+var entity_module_1 = __webpack_require__(305);
+var pagination_module_1 = __webpack_require__(889);
+var form_module_1 = __webpack_require__(867);
+var validation_module_1 = __webpack_require__(908);
+var workflow_module_1 = __webpack_require__(307);
+//directives
+var swsaveandfinish_1 = __webpack_require__(869);
+>>>>>>> origin/develop-team
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -90867,7 +100483,11 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 927 */
+=======
+/* 871 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90916,7 +100536,11 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 928 */
+=======
+/* 872 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90975,7 +100599,11 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 929 */
+=======
+/* 873 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91135,7 +100763,11 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 930 */
+=======
+/* 874 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91317,7 +100949,11 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 931 */
+=======
+/* 875 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91380,7 +101016,11 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 932 */
+=======
+/* 876 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92137,7 +101777,11 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 933 */
+=======
+/* 877 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92281,7 +101925,11 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 934 */
+=======
+/* 878 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92358,7 +102006,11 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 935 */
+=======
+/* 879 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92417,7 +102069,11 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 936 */
+=======
+/* 880 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92456,7 +102112,11 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 937 */
+=======
+/* 881 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92513,7 +102173,11 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 938 */
+=======
+/* 882 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92561,7 +102225,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 939 */
+=======
+/* 883 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92569,7 +102237,11 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 var chart_js_1 = __webpack_require__(325);
+=======
+var chart_js_1 = __webpack_require__(312);
+>>>>>>> origin/develop-team
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -93083,7 +102755,11 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 940 */
+=======
+/* 884 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93147,7 +102823,11 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 941 */
+=======
+/* 885 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93374,7 +103054,11 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 942 */
+=======
+/* 886 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93385,6 +103069,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(317);
 //services
+<<<<<<< HEAD
 var listingservice_1 = __webpack_require__(943);
 //directives
 var swlistingdisplay_1 = __webpack_require__(932);
@@ -93402,6 +103087,25 @@ var swlistingorderby_1 = __webpack_require__(938);
 var swlistingrowsave_1 = __webpack_require__(940);
 var swlistingsearch_1 = __webpack_require__(941);
 var swlistingglobalsearch_1 = __webpack_require__(937);
+=======
+var listingservice_1 = __webpack_require__(887);
+//directives
+var swlistingdisplay_1 = __webpack_require__(876);
+var swlistingreport_1 = __webpack_require__(883);
+var swlistingdisplaycell_1 = __webpack_require__(877);
+var swlistingcontrols_1 = __webpack_require__(874);
+var swlistingaggregate_1 = __webpack_require__(871);
+var swlistingcolorfilter_1 = __webpack_require__(872);
+var swlistingcolumn_1 = __webpack_require__(873);
+var swlistingdisablerule_1 = __webpack_require__(875);
+var swlistingexpandablerule_1 = __webpack_require__(878);
+var swlistingfilter_1 = __webpack_require__(879);
+var swlistingfiltergroup_1 = __webpack_require__(880);
+var swlistingorderby_1 = __webpack_require__(882);
+var swlistingrowsave_1 = __webpack_require__(884);
+var swlistingsearch_1 = __webpack_require__(885);
+var swlistingglobalsearch_1 = __webpack_require__(881);
+>>>>>>> origin/develop-team
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -93429,7 +103133,11 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 943 */
+=======
+/* 887 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93448,7 +103156,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 var Store = __webpack_require__(71);
+=======
+var Store = __webpack_require__(63);
+>>>>>>> origin/develop-team
 var ListingService = /** @class */ (function () {
     //@ngInject
     function ListingService($timeout, $q, collectionConfigService, filterService, historyService, observerService, rbkeyService, selectionService, utilityService, $hibachi, localStorageService) {
@@ -94401,7 +104113,11 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 944 */
+=======
+/* 888 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94447,7 +104163,11 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 945 */
+=======
+/* 889 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94456,9 +104176,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
+<<<<<<< HEAD
 var paginationservice_1 = __webpack_require__(946);
 var swpaginationbar_1 = __webpack_require__(944);
 var core_module_1 = __webpack_require__(8);
+=======
+var paginationservice_1 = __webpack_require__(890);
+var swpaginationbar_1 = __webpack_require__(888);
+var core_module_1 = __webpack_require__(6);
+>>>>>>> origin/develop-team
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -94474,7 +104200,11 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 946 */
+=======
+/* 890 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94672,7 +104402,11 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 947 */
+=======
+/* 891 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95061,7 +104795,11 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 948 */
+=======
+/* 892 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95093,7 +104831,11 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 949 */
+=======
+/* 893 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95126,7 +104868,11 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 950 */
+=======
+/* 894 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95190,7 +104936,11 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 951 */
+=======
+/* 895 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95220,7 +104970,11 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 952 */
+=======
+/* 896 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95250,7 +105004,11 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 953 */
+=======
+/* 897 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95284,7 +105042,11 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 954 */
+=======
+/* 898 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95317,7 +105079,11 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 955 */
+=======
+/* 899 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95351,7 +105117,11 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 956 */
+=======
+/* 900 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95384,7 +105154,11 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 957 */
+=======
+/* 901 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95414,7 +105188,11 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 958 */
+=======
+/* 902 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95444,7 +105222,11 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 959 */
+=======
+/* 903 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95475,7 +105257,11 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 960 */
+=======
+/* 904 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95512,7 +105298,11 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 961 */
+=======
+/* 905 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95545,7 +105335,11 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 962 */
+=======
+/* 906 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95582,7 +105376,11 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 963 */
+=======
+/* 907 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95739,7 +105537,11 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 964 */
+=======
+/* 908 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95748,6 +105550,7 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
+<<<<<<< HEAD
 var swvalidate_1 = __webpack_require__(947);
 var swvalidationminlength_1 = __webpack_require__(955);
 var swvalidationdatatype_1 = __webpack_require__(948);
@@ -95767,6 +105570,27 @@ var swvalidationuniqueornull_1 = __webpack_require__(962);
 //services
 var validationservice_1 = __webpack_require__(963);
 var core_module_1 = __webpack_require__(8);
+=======
+var swvalidate_1 = __webpack_require__(891);
+var swvalidationminlength_1 = __webpack_require__(899);
+var swvalidationdatatype_1 = __webpack_require__(892);
+var swvalidationeq_1 = __webpack_require__(893);
+var swvalidationeqproperty_1 = __webpack_require__(894);
+var swvalidationgte_1 = __webpack_require__(895);
+var swvalidationlte_1 = __webpack_require__(896);
+var swvalidationmaxlength_1 = __webpack_require__(897);
+var swvalidationmaxvalue_1 = __webpack_require__(898);
+var swvalidationminvalue_1 = __webpack_require__(900);
+var swvalidationneq_1 = __webpack_require__(901);
+var swvalidationnumeric_1 = __webpack_require__(902);
+var swvalidationregex_1 = __webpack_require__(903);
+var swvalidationrequired_1 = __webpack_require__(904);
+var swvalidationunique_1 = __webpack_require__(905);
+var swvalidationuniqueornull_1 = __webpack_require__(906);
+//services
+var validationservice_1 = __webpack_require__(907);
+var core_module_1 = __webpack_require__(6);
+>>>>>>> origin/develop-team
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
     }])
@@ -95793,7 +105617,11 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 965 */
+=======
+/* 909 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95827,7 +105655,11 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 966 */
+=======
+/* 910 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95865,7 +105697,11 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 967 */
+=======
+/* 911 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95899,7 +105735,11 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 968 */
+=======
+/* 912 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96020,7 +105860,11 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 969 */
+=======
+/* 913 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96051,7 +105895,11 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 970 */
+=======
+/* 914 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96101,7 +105949,11 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 971 */
+=======
+/* 915 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96148,7 +106000,11 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 972 */
+=======
+/* 916 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96420,7 +106276,11 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 973 */
+=======
+/* 917 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96620,7 +106480,11 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 974 */
+=======
+/* 918 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96722,7 +106586,11 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 975 */
+=======
+/* 919 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96768,7 +106636,11 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 976 */
+=======
+/* 920 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97057,7 +106929,11 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 977 */
+=======
+/* 921 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97169,7 +107045,11 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 978 */
+=======
+/* 922 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97227,6 +107107,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 979 */
 /***/ (function(module, exports) {
 
@@ -97256,6 +107137,9 @@ module.exports = function(module) {
 
 /***/ }),
 /* 980 */
+=======
+/* 923 */
+>>>>>>> origin/develop-team
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(324);

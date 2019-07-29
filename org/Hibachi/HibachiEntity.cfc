@@ -10,14 +10,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
 	property name="dataCacheProperties" type="array" persistent="false";
+	property name="disableRecordLevelPermissions" persistent="false"; 
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if( !getHibachiScope().setting("globalDisableRecordLevelPermissions")
-			&& !this.getNewFlag() 
+		
+		if(this.getDisableRecordLevelPermissions()){
+			return; 
+		}
+
+		if( !this.getNewFlag() 
 			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
@@ -39,7 +44,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
  			}
 		}
 	}
-	
+
+	public any function getDisableRecordLevelPermissions(){
+		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
+			variables.disableRecordLevelPermissions = this.setting(settingName="globalDisableRecordLevelPermissions");	
+		}	
+		return variables.disableRecordLevelPermissions; 
+	}	
+
 	private void function throwNoAccess(){
 		var context = getPageContext();
 		status = 403;
@@ -75,6 +87,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 
 		return super.init();
+	}
+
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+
+		var settingService = getService('settingService'); 
+
+		if( !settingService.isGlobalSetting(arguments.settingName)){
+			arguments.object = this;  
+		} else {
+			arguments.object = settingService;	
+		} 
+
+		var cacheArguments = {
+			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
+			fallbackObject = settingService, 
+			fallbackFunction = "getSettingValue", 
+			fallbackArguments = arguments	
+		};
+
+		//delegate everything to setting service
+		var cachedSettingValue = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
+
+		//we must have this setting value if we don't maybe we should throw an error
+		if(!isNull(cachedSettingValue)){
+			return cachedSettingValue;
+		} 
 	}
 
 	public any function getEntityService(){ 
@@ -882,6 +921,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
+	
 		// hasUniqueOrNullXXX() 		Where XXX is a property to check if that property value is currenly unique in the DB
 		if( left(arguments.missingMethodName, 15) == "hasUniqueOrNull") {
 

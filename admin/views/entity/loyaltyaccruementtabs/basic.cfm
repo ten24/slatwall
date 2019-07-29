@@ -15,22 +15,22 @@
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="false">
 
 			<!--- TYPE - POINTS --->
-			<cfif rc.loyaltyAccruement.getAccruementType() == 'points' >
+			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'points' >
 				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="false" >
 				
-				<cfif rc.loyaltyAccruement.getPointType() == 'fixed' >
+				<cfif rc.loyaltyAccruement.getPointType() EQ 'fixed' >
 					<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="false">
 				</cfif>	
 				
 			</cfif>
 			
 			<!--- TYPE - GIFT CARD --->
-			<cfif rc.loyaltyAccruement.getAccruementType() == 'giftCard' >
+			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'giftCard' >
 				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement.getGiftCardSku()#" property="skuCode" edit="false" />
 			</cfif>
 			
 			<!--- TYPE - PROMOTION --->
-			<cfif rc.loyaltyAccruement.getAccruementType() == 'promotion' >
+			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'promotion' >
 				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement.getPromotion()#" property="promotionName" edit="false" />
 			</cfif>
 			

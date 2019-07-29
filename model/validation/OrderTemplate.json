@@ -5,7 +5,10 @@
 		},
 		"scheduleOrderTemplate": {
 			"typeCode": { "eq":"ottSchedule" }
-		}	
+		},
+		"isWishList": {
+			"typeCode": { "eq":"ottWishList" }
+		}
 	},
 	"properties":{
 		"account":							[{"contexts":"save","required":true}],
@@ -13,6 +16,7 @@
 		"canPlaceFutureScheduleOrderFlag":  [{"contexts":"createAndPlaceOrder","eq":true }],	
 		"orderTemplateType":				[{"contexts":"save","required":true}],
 		"statusCode":						[{"contexts":"createAndPlaceOrder","eq":"otstActive"}],
-		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}]
+		"frequencyTerm":					[{"contexts":"save","conditions":"activeOrderTemplate", "required":true}],
+		"typeCode":							[{"contexts":"delete","eq":"ottWishList"}]
 	}
 }

@@ -6,8 +6,6 @@
 <cfparam name="attributes.tabLocation" type="string" default="left" />
 <cfparam name="attributes.createOrModalFlag" type="boolean" default="false" />
 
-
-
 <cfif (isObject(attributes.object) && attributes.object.isNew())|| (structKeyExists(request.context, "modal") and request.context.modal)>
 	<cfset attributes.createOrModalFlag = true />
 </cfif>
@@ -191,19 +189,18 @@
 												<cfif attributes.object.hasProperty('createdDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('createdByAccount')>
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+												<cfif attributes.object.hasProperty('createdByAccount') && !isNull(attributes.object.getCreatedByAccount())>
+													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.createdByAccount')#" object="#attributes.object.getCreatedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 												<cfif attributes.object.hasProperty('modifiedDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('modifiedByAccount')>
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+												<cfif attributes.object.hasProperty('modifiedByAccount') && !isNull(attributes.object.getModifiedByAccount())>
+													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.modifiedByAccount')#" object="#attributes.object.getModifiedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 											</hb:HibachiPropertyList>
 
 											<hb:HibachiTimeline object="#attributes.object#" />
-
 									</div>
 								</cfoutput>
 							</content><!--- s-body-box --->
