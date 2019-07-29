@@ -134,7 +134,7 @@ Notes:
 	<cfset shoppingCartSessionCollectionList.addDisplayAggregate('orders.calculatedTotal','SUM','totalCartSessions') />
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
-	<cfset shoppingCartSessionCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced','!=') />
+	<cfset shoppingCartSessionCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced','=') />
 	<cfif shoppingCartSessionCollectionList.getRecords()[1]['totalCartSessions'] EQ " ">
 	<cfset shoppingCartDay="0" />
 	<cfelse>
