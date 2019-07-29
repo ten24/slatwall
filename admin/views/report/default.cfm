@@ -129,12 +129,12 @@ Notes:
 	<!---this block deals with sales current day--->
 	
 	<!---this block deals with shopping cart session--->
-	<cfset shoppingCartSessionCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList() />
+	<cfset shoppingCartSessionCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset shoppingCartSessionCollectionList.setDisplayProperties('') />
-	<cfset shoppingCartSessionCollectionList.addDisplayAggregate('orders.calculatedTotal','SUM','totalCartSessions') />
+	<cfset shoppingCartSessionCollectionList.addDisplayAggregate('orderID','COUNT','totalCartSessions') />
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
-	<cfset shoppingCartSessionCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced','=') />
+	<cfset shoppingCartSessionCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','=') />
 	<cfif shoppingCartSessionCollectionList.getRecords()[1]['totalCartSessions'] EQ " ">
 	<cfset shoppingCartDay="0" />
 	<cfelse>
