@@ -64,20 +64,20 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		var qualifiers = getQualifiers();
 		
-		if( !structKeyExists(qualifiers, event) ){
+		if( !structKeyExists(qualifiers, arguments.event) ){
 			return false;
 		}
 		
-		if( !structKeyExists(qualifiers[event], 'filters') ){
+		if( !structKeyExists(qualifiers[arguments.event], 'filters') ){
 			return true;
 		}
 		
 		var filters = [];
 		
-		if( isSimpleValue( qualifiers[event]['filters'] ) && structKeyExists( qualifiers['filters'], qualifiers[event]['filters'] ) ){
-			filters = qualifiers['filters'][qualifiers[event]['filters']];
-		}else if( isArray( qualifiers[event]['filters'] ) ){
-			filters = qualifiers[event]['filters'];
+		if( isSimpleValue( qualifiers[arguments.event]['filters'] ) && structKeyExists( qualifiers['filters'], qualifiers[arguments.event]['filters'] ) ){
+			filters = qualifiers['filters'][qualifiers[arguments.event]['filters']];
+		}else if( isArray( qualifiers[arguments.event]['filters'] ) ){
+			filters = qualifiers[arguments.event]['filters'];
 		}
 		
 		if(!arrayLen(filters)){
@@ -85,6 +85,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		var entityCollectionList = invokeMethod('get#arguments.entityName#CollectionList');
+		entityCollectionList.setDisplayProperties('#primaryIDPropertyName#')
 		entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		
 		//TODO: Support filter groups
@@ -165,7 +166,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return reReplace(arguments.value, '[^\d]', '', 'ALL');
 	}
 	
-	private boolean function isFirstOrder(required any order){
+	private string function isFirstOrder(required any order){
 		var orderCollection = arguments.order.getAccount().getOrdersCollectionList();
 		orderCollection.setDisplayProperties('orderID');
 		orderCollection.addFilter('orderNumber', 'not null', 'is');
@@ -182,9 +183,20 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return cityStateZipcode;
 	}
 	
+	public any function getAmount(required any order, required string fieldName){
+		var amount = order.invokeMethod('get#arguments.fieldName#');
+		
+		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder'){
+			amount = amount * -1;
+		}
+		
+		return amount;
+	}
+	
 
 	
 	public any function convertSwAccountToIceDistributor(required any account){
+		
 		var distributorData = { 
 			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
@@ -217,6 +229,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	
 	public any function convertSwOrderToIceTransaction(required any order){
+		
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
 			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
@@ -226,10 +239,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
 			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
 			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
-			'salesVolume'       = arguments.order.getPersonalVolumeTotal(),//Total Sales Volume of the order(999999999.99)
-			'qualifyingVolume'  = arguments.order.getPersonalVolumeTotal(),//Total Qualifying Volume of the order
-			'taxableVolume'     = arguments.order.getTaxableAmountTotal(),//Total Taxable Volume of the order
-			'commissionVolume'  = arguments.order.getCommissionableVolumeTotal(),//Total Commissionable Volume of the order
+			'salesVolume'       = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Sales Volume of the order(999999999.99)
+			'qualifyingVolume'  = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Qualifying Volume of the order
+			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
+			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
 			'volume5'           = 0,
 			'volume6'           = 0,//PRODUCT PACK?
@@ -294,7 +307,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
-				
 				break;
 				
 			case 'Order':

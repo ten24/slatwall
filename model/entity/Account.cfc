@@ -172,10 +172,9 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
- property name="spouseDriverLicense" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="governmentIDNumber" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
@@ -859,10 +858,10 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 	
 	// Account Phone Numbers (one-to-many)
-	public void function addGovernmentIdentification(required any governmentIdentification) {
+	public void function addAccountGovernmentIdentification(required any governmentIdentification) {
 		arguments.accountGovernmentIdentification.setAccount( this );
 	}
-	public void function removeGovernmentIdentification(required any governmentIdentification) {
+	public void function removeAccountGovernmentIdentification(required any governmentIdentification) {
 		arguments.accountGovernmentIdentification.removeAccount( this );
 	}
 

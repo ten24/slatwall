@@ -16,7 +16,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				return;
 			}
 	
-			if(!getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), eventName)){
+			if(!getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName)){
 				return;
 			}
 			
@@ -24,7 +24,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'push',
-				entityQueueData = { 'event' = eventName },
+				entityQueueData = { 'event' = arguments.eventName },
 				integrationID   = getIntegration().getIntegrationID()
 			);
 		// }catch( any e){

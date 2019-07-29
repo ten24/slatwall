@@ -31,17 +31,17 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			if ( isSimpleValue( idOrFilter ) && len( idOrFilter ) ) {
-				var entity = entityLoadByPK( entityName, idOrFilter );
-			} else if ( isStruct( idOrFilter ) ){
-				var entity = entityLoad( entityName, idOrFilter, true );
+			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
+				var entity = entityLoadByPK( entityName, arguments.idOrFilter );
+			} else if ( isStruct( arguments.idOrFilter ) ){
+				var entity = entityLoad( entityName, arguments.idOrFilter, true );
 			}
 
 			if ( !isNull( entity ) ) {
 				return entity;
 			}
 
-			if ( isReturnNewOnNotFound ) {
+			if ( arguments.isReturnNewOnNotFound ) {
 				return new( entityName );
 			}
 		}

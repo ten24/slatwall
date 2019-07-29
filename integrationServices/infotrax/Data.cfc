@@ -139,8 +139,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderProcess_placeorderSuccess':
+			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
-				if(isNull(arguments.order.getLastSyncedDateTime())){
+				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createTransaction(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateTransaction(arguments.data.DTSArguments);
@@ -153,7 +154,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderTemplateProcess_activateSuccess':
 			case 'afterOrderTemplateSaveSuccess':
-				if(isNull(arguments.orderTemplate.getLastSyncedDateTime())){
+				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createAutoship(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateAutoship(arguments.data.DTSArguments);
