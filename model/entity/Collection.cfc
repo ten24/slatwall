@@ -1068,7 +1068,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							continue; //alternatively we could throw
 						}
 
-						columnStruct['propertyIdentifier'] &= '.' & defaultProperty.name
+						columnStruct['propertyIdentifier'] &= '.' & defaultProperty.name;
 	
 						columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 						//if propertyKey is a primary id, hide it and make it so it can't be deleted
