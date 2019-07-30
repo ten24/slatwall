@@ -92,10 +92,11 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="price" persistent="false";
 
 	public any function getOrder(){
+		if(structKeyExists(variables,"order")){
+			return variables.order;
+		}
 		if(!isNull(this.getOriginalOrderItem())){
 			return this.getOriginalOrderItem().getOrder();
-		} else {
-			return false;
 		}
 	}
 	
