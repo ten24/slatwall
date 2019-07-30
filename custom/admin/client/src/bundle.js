@@ -62502,7 +62502,7 @@ var SWGiftCardDetailController = /** @class */ (function () {
         this.collectionConfigService = collectionConfigService;
         this.init = function () {
             var giftCardConfig = _this.collectionConfigService.newCollectionConfig('GiftCard');
-            giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, calculatedBalanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage, ownerAccount.accountID, ownerAccount.firstName, ownerAccount.lastName");
+            giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, calculatedBalanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID,order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage, ownerAccount.accountID, ownerAccount.firstName, ownerAccount.lastName");
             giftCardConfig.addFilter('giftCardID', _this.giftCardId);
             giftCardConfig.setAllRecords(true);
             giftCardConfig.getEntity().then(function (response) {
@@ -62693,7 +62693,7 @@ var SWGiftCardOrderInfoController = /** @class */ (function () {
         this.init = function () {
             var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
             orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, orderOrigin.orderOriginName, account.firstName, account.lastName");
-            orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
+            orderConfig.addFilter('orderID', _this.giftCard.order_orderID);
             orderConfig.setAllRecords(true);
             orderConfig.getEntity().then(function (response) {
                 _this.order = response.records[0];

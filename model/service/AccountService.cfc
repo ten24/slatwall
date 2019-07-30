@@ -1381,7 +1381,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
 			
 			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account,currencyCode);
-			
+
 			if(isNull(giftCard)){
 
 				giftCard = getService("GiftCardService").newGiftCard();
@@ -1397,7 +1397,19 @@ component extends="HibachiService" accessors="true" output="false" {
 				createGiftCardProcessObject.setOwnerEmailAddress(arguments.data.account.getEmailAddress()); 
 
 				createGiftCardProcessObject.setCreditGiftCardFlag(false);
-		
+				
+				if(structKeyExists(arguments.data,'orderItem')){
+					createGiftCardProcessObject.setOriginalOrderItem(arguments.data.orderItem);
+				}
+						
+				if(structKeyExists(arguments.data,'orderFulfillment')){
+					createGiftCardProcessObject.setOrder(arguments.data.orderFulfillment.getOrder());
+				}
+				
+				if(structKeyExists(arguments.data,'order')){
+					createGiftCardProcessObject.setOrder(arguments.data.order);
+				}
+				
 				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
 				
 			}
