@@ -63519,7 +63519,7 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             _this.orderTemplateService.setOrderTemplate(_this.orderTemplate);
-            _this.orderTemplateService.setSkuPropertiesToDisplay(_this.skuPropertiesToDisplay);
+            _this.orderTemplateService.setAdditionalSkuPropertiesToDisplay(_this.skuPropertiesToDisplay);
             _this.orderTemplateService.setSkuPropertyColumnConfigs(_this.skuPropertyColumnConfigs);
             if (_this.additionalOrderTemplateItemPropertiesToDisplay != null) {
                 _this.orderTemplateService.setAdditionalOrderTemplateItemPropertiesToDisplay(_this.additionalOrderTemplateItemPropertiesToDisplay);
@@ -64175,8 +64175,13 @@ var OrderTemplateService = /** @class */ (function () {
                 'accountID': orderTemplate.account_accountID
             };
         };
-        this.setSkuPropertiesToDisplay = function (skuPropertiesToDisplay) {
-            _this.skuPropertiesToDisplay = skuPropertiesToDisplay;
+        this.setAdditionalSkuPropertiesToDisplay = function (skuPropertiesToDisplay) {
+            _this.additionalSkuPropertiesToDisplay = skuPropertiesToDisplay;
+            var properties = _this.additionalSkuPropertiesToDisplay.split(',');
+            for (var i = 0; i < properties.length; i++) {
+                _this.orderTemplateDisplayProperties.push("sku." + properties[i]);
+                _this.skuDisplayProperties.push(properties[i]);
+            }
         };
         this.setSkuPropertyColumnConfigs = function (skuPropertyColumnConfigs) {
             _this.skuPropertyColumnConfigs = skuPropertyColumnConfigs;
@@ -64315,13 +64320,6 @@ var OrderTemplateService = /** @class */ (function () {
         this.skuDisplayProperties = ['skuCode', 'skuDefinition', 'product.productName', 'priceByCurrencyCode'];
         this.originalOrderTemplatePropertyLength = this.orderTemplateDisplayProperties.length;
         this.originalSkuDisplayPropertyLength = this.skuDisplayProperties.length;
-        if (this.skuPropertiesToDisplay != null) {
-            var properties = this.skuPropertiesToDisplay.split(',');
-            for (var i = 0; i < properties.length; i++) {
-                this.orderTemplateDisplayProperties.push("sku." + properties[i]);
-                this.skuDisplayProperties.push(properties[i]);
-            }
-        }
         this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
         this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');

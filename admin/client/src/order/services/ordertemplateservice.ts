@@ -18,7 +18,7 @@ export class OrderTemplateService {
     public viewAndEditOrderTemplateItemsInitialized=false;
     public addSkuIntialized;
 
-	public skuPropertiesToDisplay;
+	public additionalSkuPropertiesToDisplay;
 	public skuPropertyColumnConfigs;
 
 	public defaultColumnConfig = {
@@ -92,15 +92,6 @@ export class OrderTemplateService {
 		
 		this.originalOrderTemplatePropertyLength = this.orderTemplateDisplayProperties.length;
 		this.originalSkuDisplayPropertyLength = this.skuDisplayProperties.length;
-		
-		
-		if(this.skuPropertiesToDisplay != null){
-			var properties = this.skuPropertiesToDisplay.split(',');
-			for(var i=0; i<properties.length; i++){
-				this.orderTemplateDisplayProperties.push("sku." + properties[i]);
-				this.skuDisplayProperties.push(properties[i]);
-			}
-		}
 		
 		this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
         this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
@@ -211,8 +202,13 @@ export class OrderTemplateService {
 		};
     }
     
-    public setSkuPropertiesToDisplay = (skuPropertiesToDisplay) =>{
-    	this.skuPropertiesToDisplay = skuPropertiesToDisplay;
+    public setAdditionalSkuPropertiesToDisplay = (skuPropertiesToDisplay) =>{
+    	this.additionalSkuPropertiesToDisplay = skuPropertiesToDisplay;
+    	var properties = this.additionalSkuPropertiesToDisplay.split(',');
+		for(var i=0; i<properties.length; i++){
+			this.orderTemplateDisplayProperties.push("sku." + properties[i]);
+			this.skuDisplayProperties.push(properties[i]);
+		}
     }
     
     public setSkuPropertyColumnConfigs = (skuPropertyColumnConfigs) =>{

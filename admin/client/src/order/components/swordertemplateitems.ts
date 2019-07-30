@@ -35,7 +35,7 @@ class SWOrderTemplateItemsController{
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 		
 		this.orderTemplateService.setOrderTemplate(this.orderTemplate);
-		this.orderTemplateService.setSkuPropertiesToDisplay(this.skuPropertiesToDisplay);
+		this.orderTemplateService.setAdditionalSkuPropertiesToDisplay(this.skuPropertiesToDisplay);
 		this.orderTemplateService.setSkuPropertyColumnConfigs(this.skuPropertyColumnConfigs);
 		
 		if(this.additionalOrderTemplateItemPropertiesToDisplay != null){
