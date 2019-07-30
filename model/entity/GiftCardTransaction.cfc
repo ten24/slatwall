@@ -57,6 +57,7 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 	// Related Object Properties (many-to-one)
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
+	property name="adjustedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="adjustedByAccountID";
 
 	// Related Object Properties (one-to-many)
 	property name="orderItems" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="giftCardTransactionID" inverse="true" cascade="all-delete-orphan";

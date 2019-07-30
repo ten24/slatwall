@@ -16,8 +16,8 @@ class SWGiftCardHistoryController{
         var totalDebit:number = 0; 
         
         var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-        
-        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime,reasonForAdjustment", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime,reasonForAdjustment");
+        debugger;
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime,reasonForAdjustment,adjustedByAccount.calculatedFullName", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime,reasonForAdjustment,adjustedBy");
         transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
         transactionConfig.setAllRecords(true);
         transactionConfig.setOrderBy("createdDateTime|DESC");

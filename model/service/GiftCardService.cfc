@@ -131,6 +131,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getReasonForAdjustment())){
 			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
 		}
+		
+		giftCardCreditTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
 
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
@@ -150,6 +152,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getReasonForAdjustment())){
 			giftCardDebitTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
 		}
+		
+		giftCardDebitTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
 		
 		if(!giftCardDebitTransaction.hasErrors()){
 			if(arguments.giftCard.getBalanceAmount() == 0){
