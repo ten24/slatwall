@@ -290,7 +290,8 @@ class HibachiAuthenticationService{
 		
 		// Check for entity specific values
 		if(
-		    permissions.entity.entities[entityName] 
+			permissions.entity.entities
+		    && permissions.entity.entities[entityName] 
 		    && permissions.entity.entities[entityName]["permission"] 
 		    && permissions.entity.entities[entityName].permission["allow"+crudType+"Flag"]
 		) {

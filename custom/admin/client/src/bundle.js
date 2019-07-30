@@ -76309,6 +76309,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76321,7 +76322,6 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -83054,7 +83054,8 @@ var HibachiAuthenticationService = /** @class */ (function () {
             var permissions = permissionGroup;
             var permissionDetails = _this.getEntityPermissionDetails();
             // Check for entity specific values
-            if (permissions.entity.entities[entityName]
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
                 && permissions.entity.entities[entityName]["permission"]
                 && permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
                 if (permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
