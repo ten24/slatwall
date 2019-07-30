@@ -1345,7 +1345,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			var promo = arguments.data.loyaltyAccruement.getPromotion();
 			var promoCode = getService("PromotionService").NewPromotionCode();
-			promoCode.setPromotionCode( getService("HibachiUtilityService").generateRandomID(6) );
+			promoCode.setPromotionCode( getService("HibachiUtilityService").createUniqueCode(tableName="swPromotionCode",column="promotionCode",size=6) );
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
 			promoCode.setMaximumAccountUseCount(1);
