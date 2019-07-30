@@ -294,8 +294,10 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		if(isNull(variables.excludedSkuIDs)){
 			variables.excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
 		}
-		
-		skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
+	
+		if(len(variables.excludedSkuIDs)){	
+			skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
+		}
 		return skuCollection;
 	}
 

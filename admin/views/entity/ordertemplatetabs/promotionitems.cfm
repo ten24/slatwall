@@ -50,7 +50,7 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<order-template-promotion-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+	<sw-order-template-promotion-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 									data-sku-collection-config="#rc.orderTemplate.getEncodedPromotionalRewardSkuCollectionConfig()#">
-	</order-template-promotion-items> 
+	</sw-order-template-promotion-items> 
 </cfoutput> 

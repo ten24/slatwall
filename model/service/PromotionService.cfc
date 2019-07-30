@@ -1154,7 +1154,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
 		var masterSkuCollection = getSkuService().getSkuCollectionList(); 
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
-		
+	
+		var filterGroupIndex = 1; 
+	
 		for(var promotionReward in qualifiedPromotionRewards){
 			if(isNull(promotionReward.getSkuCollection())){
 				continue; 
@@ -1162,10 +1164,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
 			
-			var filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
+			if(filterGroupIndex > 1){
+				filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
+			}
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
+				this.logHibachi('inner filter #serializeJson(innerFilterOrFilterGroup)#',true);
 				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
 			} 
 		} 
