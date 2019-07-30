@@ -6,14 +6,47 @@ class HibachiAuthenticationService{
     constructor(
        public $rootScope:any,
        public $q,
+       public $window,
        public appConfig,
        public $injector,
-       public utilityService
+       public utilityService,
+       public token
     ){
         
     }
     
+    public getJWTDataFromToken =(str)=>{
+    	// Going backwards: from bytestream, to percent-encoding, to original string.
+	    str = str.split('.')[1];
+	    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	    }).join(''));
+
+	    var jwtData = angular.fromJson(decodedString);
+		var now = +new Date();
+		var nowString = now.toString().substr(0,jwtData.exp.toString().length);
+		now = +nowString;
+		if(jwtData.issuer && jwtData.issuer == this.$window.location.hostname && jwtData.exp > now){
+		    if(!this.$rootScope.slatwall.account){
+		    	this.$rootScope.slatwall.account = {};
+		    }
+		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+		    //important to check to prevent recursion between $http and hibachinterceptor
+		    if(!this.$rootScope.slatwall.role){
+	    		this.$rootScope.slatwall.role=jwtData.role;
+	    		this.getRoleBasedData(jwtData);
+	    		if(jwtData.permissionGroups){
+	    			this.$rootScope.slatwall.permissionGroups=jwtData.permissionGroups;
+	    		}
+
+		    }
+    	}
+    }
+    
     public isSuperUser=()=>{
+    	if(!this.$rootScope.slatwall.authInfo){
+    		this.getJWTDataFromToken(this.token);
+    	}
         return this.$rootScope.slatwall.role == 'superUser';
     }
     
@@ -348,6 +381,7 @@ class HibachiAuthenticationService{
     public authenticateEntityPropertyByPermissionGroup=(crudType:string, entityName:string, propertyName:string, permissionGroup:any)=> {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = permissionGroup;
+		console.log(permissionGroup);
 		entityName=entityName.toLowerCase();
 		propertyName=propertyName.toLowerCase();
 		if( 
@@ -383,7 +417,6 @@ class HibachiAuthenticationService{
 		) {
 			return false;
 		}
-		console.log('testss');
 		return this.authenticateEntityByPermissionGroup(crudType, entityName, permissionGroup);
 	}
 	
