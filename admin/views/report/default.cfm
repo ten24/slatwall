@@ -109,7 +109,7 @@ Notes:
 	<cfset salesRevenueWeekCollectionList.addFilter('createdDateTime', weekMinDateTime,'>=')/>
 	<cfset salesRevenueWeekCollectionList.addFilter('createdDateTime', weekMaxDateTime,'<=')/>
 	<cfset salesRevenueWeekCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=') />
-	<cfset salesWeekRevenue = "#NumberFormat(salesRevenueWeekCollectionList.getRecords()[1]['totalOrders'],'$9')#" />
+	<cfset salesWeekRevenue = "#$.slatwall.formatValue(salesRevenueWeekCollectionList.getRecords()[1]['totalOrders'], 'currency')#" />
 	<!---this block deals with sales this week--->
 	
 	<!---this block deals with sales current day--->
@@ -124,7 +124,7 @@ Notes:
 	<cfif salesRevenueDayCollectionList.getRecords()[1]['dayTotalOrders'] EQ " ">
 	<cfset salesDayRevenue="$0" />
 	<cfelse>
-	<cfset salesDayRevenue = "#NumberFormat(salesRevenueDayCollectionList.getRecords()[1]['dayTotalOrders'],'$9')#" />
+	<cfset salesDayRevenue = "#$.slatwall.formatValue(salesRevenueDayCollectionList.getRecords()[1]['dayTotalOrders'], 'currency')#" />
 	</cfif>
 	<!---this block deals with sales current day--->
 	
@@ -138,7 +138,7 @@ Notes:
 	<cfif shoppingCartSessionCollectionList.getRecords()[1]['totalCartSessions'] EQ " ">
 	<cfset shoppingCartDay="0" />
 	<cfelse>
-	<cfset shoppingCartDay = "#NumberFormat(shoppingCartSessionCollectionList.getRecords()[1]['totalCartSessions'],'9')#" />
+	<cfset shoppingCartDay = "#shoppingCartSessionCollectionList.getRecords()[1]['totalCartSessions']#" />
 	</cfif>
 	<!---this block deals with shopping cart session--->
 	
@@ -153,7 +153,7 @@ Notes:
 	<cfif averageDayOrdersCollectionList.getRecords()[1]['dayAvergeOrders'] EQ " ">
 	<cfset averageSalesDayRevenue="$0" />
 	<cfelse>
-	<cfset averageSalesDayRevenue = "#NumberFormat(averageDayOrdersCollectionList.getRecords()[1]['dayAvergeOrders'],'$9')#" />
+	<cfset averageSalesDayRevenue = "#$.slatwall.formatValue(averageDayOrdersCollectionList.getRecords()[1]['dayAvergeOrders'], 'currency')#" />
 	</cfif>
 	
 	<!---this block deals with average order current day--->
