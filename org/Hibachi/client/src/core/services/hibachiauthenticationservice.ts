@@ -229,6 +229,27 @@ class HibachiAuthenticationService{
 		return false;
     }
     
+    public authenticateEntityPropertyCrudByAccount=(crudType:string, entityName:string, propertyName:string)=> {
+		// Check if the user is a super admin, if true no need to worry about security
+		if( this.isSuperUser() ) {
+			return true;
+		}
+		
+		// Loop over each permission group for this account, and ckeck if it has access
+		var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
+		
+		for(var i in accountPermissionGroups){
+			console.log('test');
+			var pgOK = this.authenticateEntityPropertyByPermissionGroup(crudType, entityName, propertyName, accountPermissionGroups[i]);
+			if(pgOK) {
+				return true;
+			}
+		}
+		
+		// If for some reason not of the above were meet then just return false
+		return false;
+	}
+    
     public authenticateEntityCrudByAccount=(crudType:string,entityName:string):boolean=>{
         crudType = this.utilityService.toCamelCase(crudType);
         entityName = entityName.toLowerCase();
@@ -324,6 +345,48 @@ class HibachiAuthenticationService{
 		return false;
     }
     
+    public authenticateEntityPropertyByPermissionGroup=(crudType:string, entityName:string, propertyName:string, permissionGroup:any)=> {
+		// Pull the permissions detail struct out of the permission group
+		var permissions = permissionGroup;
+		entityName=entityName.toLowerCase();
+		propertyName=propertyName.toLowerCase();
+		if( 
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName]  
+			&& propertyName == entityName+'ID'
+		){
+			return true;
+		}
+		
+		// Check first to see if this entity was defined
+		if(
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName] 
+			&& permissions.entity.entities[entityName].properties[propertyName] 
+			&& permissions.entity.entities[ entityName ].properties[ propertyName ]['allow'+crudType+'Flag']
+		) {
+			if( 
+				permissions.entity.entities
+				&& permissions.entity.entities[ entityName ].properties[ propertyName ]['allow'+crudType+'Flag'] 
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		// If there was an entity defined, and special property values have been defined then we need to return false
+		if (
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName]
+			&& Object.keys(permissions.entity.entities[entityName].properties).length
+		) {
+			return false;
+		}
+		console.log('testss');
+		return this.authenticateEntityByPermissionGroup(crudType, entityName, permissionGroup);
+	}
+	
     public authenticateSubsystemSectionItemActionByPermissionGroup=(subsystem:string,section:string,item:string,permissionGroup:any):boolean=>{
         // Pull the permissions detail struct out of the permission group
 		var permissions = permissionGroup;

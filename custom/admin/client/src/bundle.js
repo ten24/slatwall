@@ -33996,13 +33996,14 @@ exports.entitymodule = entitymodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWPropertyDisplayController = /** @class */ (function () {
     //@ngInject
-    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, listingService) {
+    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, hibachiAuthenticationService, listingService) {
         var _this = this;
         this.$filter = $filter;
         this.utilityService = utilityService;
         this.$injector = $injector;
         this.metadataService = metadataService;
         this.observerService = observerService;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.listingService = listingService;
         this.saved = false;
         this.$onInit = function () {
@@ -34121,6 +34122,9 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 (angular.isDefined(_this.swForm) && angular.isDefined(_this.name))) {
                 _this.swInputOnChangeEvent = _this.swForm.name + _this.name + 'change';
                 _this.observerService.attach(_this.onChange, _this.swInputOnChangeEvent);
+            }
+            if (_this.object && _this.propertyIdentifier) {
+                //this.readAccess=this.hibachiAuthenticationService.authenticateEntityPropertyByPermissionGroup(this.object,this.propertyIdentifier);
             }
         };
         this.onChange = function (result) {
@@ -83010,6 +83014,23 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }
             return false;
         };
+        this.authenticateEntityPropertyCrudByAccount = function (crudType, entityName, propertyName) {
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+            for (var i in accountPermissionGroups) {
+                console.log('test');
+                var pgOK = _this.authenticateEntityPropertyByPermissionGroup(crudType, entityName, propertyName, accountPermissionGroups[i]);
+                if (pgOK) {
+                    return true;
+                }
+            }
+            // If for some reason not of the above were meet then just return false
+            return false;
+        };
         this.authenticateEntityCrudByAccount = function (crudType, entityName) {
             crudType = _this.utilityService.toCamelCase(crudType);
             entityName = entityName.toLowerCase();
@@ -83077,6 +83098,38 @@ var HibachiAuthenticationService = /** @class */ (function () {
                 return true;
             }
             return false;
+        };
+        this.authenticateEntityPropertyByPermissionGroup = function (crudType, entityName, propertyName, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            entityName = entityName.toLowerCase();
+            propertyName = propertyName.toLowerCase();
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && propertyName == entityName + 'ID') {
+                return true;
+            }
+            // Check first to see if this entity was defined
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && permissions.entity.entities[entityName].properties[propertyName]
+                && permissions.entity.entities[entityName].properties[propertyName]['allow' + crudType + 'Flag']) {
+                if (permissions.entity.entities
+                    && permissions.entity.entities[entityName].properties[propertyName]['allow' + crudType + 'Flag']) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            // If there was an entity defined, and special property values have been defined then we need to return false
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && Object.keys(permissions.entity.entities[entityName].properties).length) {
+                return false;
+            }
+            console.log('testss');
+            return _this.authenticateEntityByPermissionGroup(crudType, entityName, permissionGroup);
         };
         this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
             // Pull the permissions detail struct out of the permission group
@@ -87032,6 +87085,9 @@ var PublicService = /** @class */ (function () {
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
+    PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
+        return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
+    };
     PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
         return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
     };
