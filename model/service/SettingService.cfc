@@ -854,6 +854,25 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingDetails.settingValueFormatted;
 	}
 
+	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[]){
+		// Build out the cached key (handles sites)
+		var cacheKey = "setting_#arguments.settingName#";
+
+		if(this.isGlobalSetting(arguments.settingName)){
+			return cacheKey; 
+		} 
+
+		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
+		}
+		if(structKeyExists(arguments, "filterEntities")) {
+			for(var entity in arguments.filterEntities) {
+				cacheKey &= "_#entity.getPrimaryIDValue()#";
+			}
+		}
+		return cacheKey; 
+	} 
+
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
 		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
@@ -872,19 +891,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		// Build out the cached key (handles sites)
-		var cacheKey = "setting_#arguments.settingName#";
-		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
-		}
-		if(structKeyExists(arguments, "filterEntities")) {
-			for(var entity in arguments.filterEntities) {
-				cacheKey &= "_#entity.getPrimaryIDValue()#";
-			}
-		}
-
 		// Get the setting details using the cacheKey to try and get it from cache first
-		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
+		return getHibachiCacheService().getOrCacheFunctionValue(this.getSettingCacheKey(argumentCollection=arguments), this, "getSettingDetailsFromDatabase", arguments);  
 	}
 
 	public string function getSettingPrefix(required string settingName){

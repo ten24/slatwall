@@ -72,6 +72,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             
             if(!isNull(promotionCode)){
                 promotionCode.setEndDateTime(now());
+                promotionCode.setMaximumUseCount(0);
+                promotionCode.setMaximumAccountUseCount(0);
                 getService("promotionService").savePromotionCode(promotionCode);
 			    getService("HibachiEventService").announceEvent("ReferAFriend_PromotionCodeRevoked", promotionCode);
             }
