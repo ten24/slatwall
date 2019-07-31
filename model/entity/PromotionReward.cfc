@@ -117,22 +117,14 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
-<<<<<<< Updated upstream
 property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-=======
-	property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
->>>>>>> Stashed changes
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     
-<<<<<<< Updated upstream
    //CUSTOM PROPERTIES END
-=======
-   	//CUSTOM PROPERTIES END
->>>>>>> Stashed changes
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -636,7 +628,8 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	
 	// =================  END: Deprecated Methods   ========================	
 		//CUSTOM FUNCTIONS BEGIN
-	public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
+
+public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmount(argumentCollection=arguments);
     }
@@ -736,7 +729,6 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		if(structKeyExists(arguments,'account')){
 			amountParams['account'] = arguments.account;
 		}
-
 		if(arguments.currencyCode != getCurrencyCode() and getAmountType() == 'amountOff'){
 		    //Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){

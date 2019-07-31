@@ -1863,7 +1863,6 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public boolean function getVipEnrollmentOrderFlag(){
-
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
