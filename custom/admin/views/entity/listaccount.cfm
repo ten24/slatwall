@@ -77,8 +77,8 @@ Notes:
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='accountID',
 	columnConfig={
-		isVisible=true,
-		isSearchable=true,
+		isVisible=false,
+		isSearchable=false,
 		isDeletable=false
 	})/>
 	
