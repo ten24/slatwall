@@ -18,7 +18,7 @@ component {
     property name="retailCommissionTotal" persistent="false";
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
-    property name="VipEnrollmentOrderFlag" persistent="false";
+    property name="vipEnrollmentOrderFlag" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal";
@@ -171,7 +171,7 @@ component {
 	}
 	
 	public boolean function getVipEnrollmentOrderFlag(){
-	    orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
