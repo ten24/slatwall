@@ -854,7 +854,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingDetails.settingValueFormatted;
 	}
 
-	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[], string suffix){
+	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[]){
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
 
@@ -869,9 +869,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			for(var entity in arguments.filterEntities) {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
-		}
-		if(structKeyExists(arguments, 'suffix')){
-			cacheKey &= "_#arguments.suffix#"; 
 		}
 
 		return cacheKey; 
@@ -894,8 +891,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
 			}
 		}
-
-		arguments.suffix = 'details';
 
 		// Get the setting details using the cacheKey to try and get it from cache first
 		return getHibachiCacheService().getOrCacheFunctionValue(this.getSettingCacheKey(argumentCollection=arguments), this, "getSettingDetailsFromDatabase", arguments);  
