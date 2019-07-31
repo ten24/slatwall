@@ -117,14 +117,22 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
+<<<<<<< Updated upstream
 property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+=======
+	property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+>>>>>>> Stashed changes
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     
+<<<<<<< Updated upstream
    //CUSTOM PROPERTIES END
+=======
+   	//CUSTOM PROPERTIES END
+>>>>>>> Stashed changes
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -628,8 +636,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	
 	// =================  END: Deprecated Methods   ========================	
 		//CUSTOM FUNCTIONS BEGIN
-
-public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
+	public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmount(argumentCollection=arguments);
     }
@@ -689,37 +696,37 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         return getCustomAmountFormatted(argumentCollection=arguments);
     }
     
-    public numeric function getPersonalVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getPersonalVolumeAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getTaxableAmountAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getTaxableAmountAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'taxableAmount';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getCommissionableVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getCommissionableVolumeAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'commissionableVolume';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getRetailCommissionAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getRetailCommissionAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'retailCommission';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getProductPackVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getProductPackVolumeAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'productPackVolume';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getRetailValueVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+    public numeric function getRetailValueVolumeAmountByCurrencyCode(r==uired string currencyCode, any sku){
         arguments['customPriceField'] = 'retailValueVolume';
         return getCustomAmountByCurrencyCode(argumentCollection=arguments);
     }
     
-    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity, any account){
+    public numeric function getCustomAmountByCurrencyCode(r==uired string customPriceField, r==uired string currencyCode, any sku, numeric quantity, any account){
 		var amountParams = {
 		    'customPriceField':arguments.customPriceField
 		};
@@ -729,10 +736,11 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 		if(structKeyExists(arguments,'account')){
 			amountParams['account'] = arguments.account;
 		}
-		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+
+		if(arguments.currencyCode != getCurrencyCode() and getAmountType() == 'amountOff'){
 		    //Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
-				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() == arguments.currencyCode){
 					return variables.promotionRewardCurrencies[i].invokeMethod('get#customPriceField#Amount');
 				}
 			}
@@ -749,7 +757,7 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 		return getCustomAmount(argumentCollection=amountParams);
 	}
 	
-	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity, any account){
+	public numeric function getCustomAmount(r==uired string customPriceField, any sku, string currencyCode, numeric quantity, any account){
 
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
@@ -768,7 +776,7 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 		return variables['#customPriceField#Amount'];
 	}
 	
-    public string function getCustomAmountFormatted( required string customPriceField ) {
+    public string function getCustomAmountFormatted( r==uired string customPriceField ) {
 		if(getAmountType() == "percentageOff") {
 			return formatValue(this.invokeMethod('get#customPriceField#Amount'), "percentage");
 		}
