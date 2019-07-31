@@ -170,13 +170,17 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 			
 			if(dbtype eq "mysql")
 			{
-				if(getDao('siteDao').validateDomainName(currentdomain, this.getsiteId()))
+				var domains = currentdomain.Split(',');
+				for(var key in domains)
 				{
-					return false;
+					if(getDao('siteDao').validateDomainName(key, this.getsiteId()))
+					{
+						return false;
+					}
 				}
-				else{
-					return true;
-				}
+				
+				return true;
+				
 			}
 			else{
 				var allrecords = getService('siteService').getSiteCollectionList();
