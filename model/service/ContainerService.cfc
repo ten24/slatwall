@@ -104,8 +104,7 @@ component extends="HibachiService" output="false" accessors="true"  {
     		try{
     			var itemArray = packageEntity.invokeMethod('get#itemArrayName#');
     		}catch(any e){
-    			writeDump(var=arguments.entity,top=3);
-    			writeDump(e);abort;
+    			rethrow;
     		}
     	}
     	
@@ -318,8 +317,7 @@ component extends="HibachiService" output="false" accessors="true"  {
 		try{
 		    this.saveContainerItem(containerItem);
 		}catch(any e){
-		    writeDump(var=containerItem,top=3);
-		    writeDump(e);abort;
+		    rethrow;
 		}
 		if(containerItem.hasErrors()){
 		    arguments.container.addErrors(containerItem.getErrors());

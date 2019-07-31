@@ -6,7 +6,6 @@
 
 <cfoutput>
 	<sw-order-template-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
-							 data-sku-properties-to-display="personalVolume"
 	></sw-order-template-items>
 </cfoutput>	
 

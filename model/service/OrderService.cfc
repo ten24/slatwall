@@ -219,7 +219,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 
-
 	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
 
 		var data = {
@@ -1291,7 +1290,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.transientOrderFulfillment; 
 	}
 
-
 	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
 		
 		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
@@ -1358,13 +1356,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('create', account.getErrors());
 		} else {
 			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setOrderTemplateType( getTypeService().getType( processObject.getOrderTemplateTypeID() ) );
-			arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-			arguments.orderTemplate.setSite( getSiteService().getSite( processObject.getSiteID()));
+			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
+			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
+			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+			arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTermID()));
+			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		}
 
+		return arguments.orderTemplate;
+	}
+	
+	public any function processOrderTemplate_createWishList(required any orderTemplate, required any processObject, required struct data={}) {
+
+		if(arguments.processObject.getNewAccountFlag()) {
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} else {
+			var account = getAccountService().getAccount(processObject.getAccountID());
+		}
+
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.orderTemplate.setAccount(account);
+			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
+			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
+			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		}
 
@@ -1541,7 +1560,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
 
-	
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
@@ -2453,8 +2471,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	
-	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
@@ -2889,8 +2905,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return amountToBeCaptured;
 	}
-
-
 
 	public any function addOrderFulfillmentItemsToOrderDelivery(required any orderDelivery, required any processObject){
 		// Gift card OrderItems that are not eligible for auto-fulfillment
@@ -3978,7 +3992,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
 					arguments.order.clearHibachiErrors(); 
 					orderPayment.clearHibachiErrors();
-					getHibachiScope().setORMHasErrors(false)	
+					getHibachiScope().setORMHasErrors(false);	
  
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
@@ -4470,6 +4484,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Delete Overrides ==========================
 
+	public any function deleteOrderTemplate( required any orderTemplate ) {
+		
+		if(arguments.orderTemplate.getTypeCode() eq 'ottWishList') {
+			return delete( arguments.orderTemplate );
+		}
+	}
+	
 	public any function deleteOrder( required any order ) {
 
 		// Check delete validation

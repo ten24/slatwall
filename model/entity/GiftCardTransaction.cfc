@@ -65,7 +65,7 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
-
+	property name="reasonForAdjustment" ormtype="string";
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
