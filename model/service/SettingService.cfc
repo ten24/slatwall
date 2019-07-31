@@ -897,10 +897,8 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		arguments.suffix = 'details';
 
-		var cacheKey = this.getSettingCacheKey(argumentCollection=arguments);   
-
 		// Get the setting details using the cacheKey to try and get it from cache first
-		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);  
+		return getHibachiCacheService().getOrCacheFunctionValue(this.getSettingCacheKey(argumentCollection=arguments), this, "getSettingDetailsFromDatabase", arguments);  
 	}
 
 	public string function getSettingPrefix(required string settingName){
