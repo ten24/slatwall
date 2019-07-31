@@ -3995,7 +3995,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
 					arguments.order.clearHibachiErrors(); 
 					orderPayment.clearHibachiErrors();
-					getHibachiScope().setORMHasErrors(false)	
+					getHibachiScope().setORMHasErrors(false);	
  
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
