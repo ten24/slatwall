@@ -228,7 +228,6 @@ class SWPropertyDisplayController {
         if(this.object && this.propertyIdentifier){
             if(this.object.$$isPersisted()){
                 this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
-                console.log('here',this.editing);
             }
         }
 
