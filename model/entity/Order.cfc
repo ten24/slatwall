@@ -1867,6 +1867,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}//CUSTOM FUNCTIONS END
 }
