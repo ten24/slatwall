@@ -283,6 +283,16 @@
 			return returnTitle;
 		}
 		
+		public string function createUniqueCode(required string tableName, required string column, string prefix = '', numeric size = 7) {
+			var isUnique = false;
+			var uniqueCode = "";
+			while(!isUnique) {
+				uniqueCode = prefix & getHibachiUtilityService().generateRandomID(size);
+				isUnique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.column, value=uniqueCode);
+			}
+			return uniqueCode;
+		}
+		
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 

@@ -50,6 +50,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 property name="transactionTypeOptions";
      property name="amount";
      property name="giftCardBalanceAmount"; 
+	 property name="reasonForAdjustment" ormtype="string";
+
 
 	 public any function getTransactionTypeOptions(){
         if(!structKeyExists(variables, "transactionTypeOptions")){

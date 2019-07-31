@@ -245,6 +245,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalGiftCardAllowNegativeBalance = {fieldType="yesno", defaultValue=0},
 			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
@@ -853,6 +854,26 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingDetails.settingValueFormatted;
 	}
 
+	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[]){
+		// Build out the cached key (handles sites)
+		var cacheKey = "setting_#arguments.settingName#";
+
+		if(this.isGlobalSetting(arguments.settingName)){
+			return cacheKey; 
+		} 
+
+		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
+		}
+		if(structKeyExists(arguments, "filterEntities")) {
+			for(var entity in arguments.filterEntities) {
+				cacheKey &= "_#entity.getPrimaryIDValue()#";
+			}
+		}
+
+		return cacheKey; 
+	} 
+
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
 		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
@@ -871,19 +892,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		// Build out the cached key (handles sites)
-		var cacheKey = "setting_#arguments.settingName#";
-		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
-		}
-		if(structKeyExists(arguments, "filterEntities")) {
-			for(var entity in arguments.filterEntities) {
-				cacheKey &= "_#entity.getPrimaryIDValue()#";
-			}
-		}
-
 		// Get the setting details using the cacheKey to try and get it from cache first
-		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
+		return getHibachiCacheService().getOrCacheFunctionValue(this.getSettingCacheKey(argumentCollection=arguments), this, "getSettingDetailsFromDatabase", arguments);  
 	}
 
 	public string function getSettingPrefix(required string settingName){
