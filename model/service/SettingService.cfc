@@ -873,6 +873,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
+
 		return cacheKey; 
 	} 
 
