@@ -272,7 +272,6 @@ class HibachiAuthenticationService{
 		var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
 		
 		for(var i in accountPermissionGroups){
-			console.log('test');
 			var pgOK = this.authenticateEntityPropertyByPermissionGroup(crudType, entityName, propertyName, accountPermissionGroups[i]);
 			if(pgOK) {
 				return true;
@@ -381,7 +380,6 @@ class HibachiAuthenticationService{
     public authenticateEntityPropertyByPermissionGroup=(crudType:string, entityName:string, propertyName:string, permissionGroup:any)=> {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = permissionGroup;
-		console.log(permissionGroup);
 		entityName=entityName.toLowerCase();
 		propertyName=propertyName.toLowerCase();
 		if( 
