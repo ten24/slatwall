@@ -37,7 +37,7 @@ component {
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 		}
-		
+
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
@@ -53,7 +53,7 @@ component {
 				);
 				variables[cacheKey]= skuPriceResults[1];
 			} 
-
+			
 			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
 				return variables[cacheKey][customPriceField];
 			}

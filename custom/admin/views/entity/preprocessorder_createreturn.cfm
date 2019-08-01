@@ -62,7 +62,8 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList divclass="col-md-6">
 				<!--- Order Type --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
+				<input type="hidden" name="orderTypeCode" value="#rc.processObject.getOrderTypeCode()#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeName"  edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnReasonType" edit="true" />
 				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
@@ -158,7 +159,7 @@ Notes:
 				<hr />
 				
 				<!--- Items Selector --->
-				<table class="table table-bordered table-hover">
+				<table class="table table-bordered table-hover" sw-return-order-items>
 					<tr>
 						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
 						<th>#$.slatwall.rbKey('entity.product.title')#</th>
@@ -175,11 +176,12 @@ Notes:
 						<th>Unit Price</th>
 						<th>Refund Unit Price</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
+						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
+						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedCommissionableVolumeAfterDiscount')#</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
-						<tr class="orderItem">
-							<cfset orderItemIndex++ />
+						<tr class="orderItem" ng-init="swReturnOrderItems.orderItems[#orderItemIndex#] = {refundTotal:0,refundPVTotal:0,refundCVTotal:0};orderItem = swReturnOrderItems.orderItems[#orderItemIndex#]">
 							
 							<input type="hidden" name="orderItems[#orderItemIndex#].orderItemID" value="" />
 							<input type="hidden" name="orderItems[#orderItemIndex#].referencedOrderItem.orderItemID" value="#orderItem.getOrderItemID()#" />
@@ -187,18 +189,26 @@ Notes:
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
-							<td>#orderItem.getQuantity()#</td>
-							<td class="returnQuantityMaximum">#orderItem.getQuantityDelivered()#</td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number returnQuantity" /></td>
+							<td ng-init="orderItem.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
+							<td class="returnQuantityMaximum" ng-init="orderItem.quantityDelivered = #orderItem.getQuantityDelivered()#">#orderItem.getQuantityDelivered()#</td>
+							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number returnQuantity" /></td>
 							
 							<td>#orderItem.getDiscountAmount()#</td>
-							<td>#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
-							<td>#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
-							<td>#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
+							<td ng-init="orderItem.total = #orderItem.getExtendedPriceAfterDiscount()#">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
+							<td ng-init="orderItem.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterDiscount()#">#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
+							<td ng-init="orderItem.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterDiscount()#">#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
 							
 							<td>#getHibachiScope().getService("hibachiUtilityService").formatValue(value=orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity(), formatType='currency', formatDetails={currency=rc.order.getCurrencyCode()})#</td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
-							<td class="refundTotal">$#numberFormat(0, '0.00')#</td>
+							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" name="orderItems[#orderItemIndex#].price" ng-model="orderItem.refundUnitPrice" ng-init="orderItem.refundUnitPrice = #numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
+							<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+								<span ng-bind="orderItem.refundTotal.toFixed(2)"></span>
+							</td>
+							<td class="refundTotal">
+								<span ng-bind="orderItem.refundPVTotal.toFixed(2)"></span>
+							</td>
+							<td class="refundTotal">
+								<span ng-bind="orderItem.refundCVTotal.toFixed(2)"></span>
+							</td>
 							<!--- IF THIS IS AN EVENT ORDER ITEM
 								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
 								
@@ -213,6 +223,7 @@ Notes:
 								// payment methods and amount allocation
 							--->
 						</tr>
+						<cfset orderItemIndex++ />
 					</cfloop>
 					
 					<tr>
@@ -229,5 +240,3 @@ Notes:
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
-
-<script src="/Slatwall/custom/assets/js/rma.js"></script>

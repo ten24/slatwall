@@ -1,21 +1,28 @@
 component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     
     // Lazy / Injected Objects
-    
+
     // New Properties
     
     // Data Properties (ID's)
     
     // Data Properties (Inputs)
-    
+
     // Data Properties (Related Entity Populate)
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID";
     
     // Option Properties
     
     // Helper Properties
-    
+    property name="orderTypeName";
     // ======================== START: Defaults ============================
+    
+    public any function getOrderTypeName(){
+        var type= getService('TypeService').getTypeBySystemCode(getOrderTypeCode());
+        if(!isNull(type)){
+            return type.getTypeName();
+        }
+    }
     
     // ========================  END: Defaults =============================
     

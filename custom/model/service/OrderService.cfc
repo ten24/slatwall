@@ -4,10 +4,14 @@ component extends="Slatwall.model.service.OrderService" {
         super.addNewOrderItemSetup(argumentCollection=arguments);
         
         var sku = arguments.newOrderItem.getSku();
+        var account = arguments.newOrderItem.getOrder().getAccount();
+        if(isNull(account)){
+            account = getService('AccountService').newAccount();
+        }
         var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
         for(var priceField in customPriceFields){
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-                arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.newOrderItem.getOrder().getCurrencyCode() )});
+                arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.newOrderItem.getQuantity(), account)});
             }
         }
         
