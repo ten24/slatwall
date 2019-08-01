@@ -17,61 +17,82 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory.setSuccessFlag(arguments.success);
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
-	
-	public any function processEntityQueue_processQueue( required any entityQueue, any processObject ={} ) {
-		
-		if(!entityQueue.getNewFlag()){
-			//Process a single QUEUE item:
-			
-			var entityService = getServiceByEntityName( entityName=arguments.entityQueue.getBaseObject() );
-			var entity = entityService.invokeMethod( "get#arguments.entityQueue.getBaseObject()#", arguments.entityQueue.getBaseID() );
-			var processContext = arguments.entityQueue.getProcessMethod();
-			if(isNull(entity)){
-				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
-				return arguments.entityQueue;
-			}
-			
-			var processContextIndex = '2';
-			var processData = {'1'=entity};
-			
-			if(isJSON(entityQueue.getEntityQueueData())){
-				processData['2'] = deserializeJSON(entityQueue.getEntityQueueData());
-				processContextIndex = '3';
-			}
-	
-			if(len(processContext) && entity.hasProcessObject(processContext)){
-				processData[processContextIndex] = entity.getProcessObject(processContext);
-			}
-			
-			try{
-				entityService.invokeMethod("#arguments.entityQueue.getProcessMethod()#", processData);
-				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
-			}catch(any e){
-				if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
-					addQueueHistory(entityQueue, false);
-				}
-				arguments.entityQueue.setModifiedDateTime(now());
-				this.saveEntityQueue(arguments.entityQueue);
-			}
-		}else if(structKeyExists(arguments, 'processObject') && structKeyExists(arguments.processObject,'collectionData')){
-			//Process a collection of QUEUE
-			processEntityQueueArray(arguments.processObject.collectionData);
-		}else{
-			//Build a queue collection list 
-			var entityQueueCollection = getEntityQueueCollectionList();
-			entityQueueCollection.setDisplayProperties('entityQueueID,baseObject,baseID,entityQueueData,processMethod');
-			entityQueueCollection.setPageRecordsShow(20);
-			entityQueueCollection.addOrderBy('modifiedDateTime|DESC');
-			var entityQueuItems = entityQueueCollection.getPageRecords(formatRecords=false);
-			
-			return this.processEntityQueue_processQueue( this.newEntityQueue(), { 'collectionData' = entityQueuItems } );
-		}
-	
-		return entityQueue;
+
+	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
+	//entry point will always be from workflow which should pass collectionData  
+	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.processEntityQueueArray(arguments.data.collectionData); 
+		} else if(!entityQueue.getNewFlag()){
+			var entityQueueArray = [ arguments.entityQueue.getStructRepresentation() ];
+			this.processEntityQueueArray(entityQueueArray); 
+		} 
+		return arguments.entityQueue;
 	}
-	
-	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
+
+	//attempts to find integration service otherwise gets service by entity name	
+	private any function getServiceForEntityQueue(required struct entityQueue){ 
+		
+		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
+		var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])) 			
+
+		if(hasIntegration || hasIntegrationPackageService){
 			
+			if(!hasIntegrationPackageService) { 
+				var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integrationID']);
+				entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
+			}  				
+			
+			return getService("#entityQueue['integration_integrationPackage']#Service")
+		}	
+	
+		return getServiceByEntityName( entityName=entityQueue['baseObject'] ); 
+	} 
+
+	//handles process method case & validates for context otherwise calls method on service returns true if method was invoked
+	private boolean function invokeMethodOrProcessOnService(required struct entityQueue, required any entity, required any service){
+		
+		var entityValidToInvoke = true; //it may not be a processContext
+
+		//not necessarily a processMethod
+		var method = entityQueue['processMethod']; 
+		
+		var hasEntityQueueData = structKeyExists(entityQueue, 'entityQueueData') && isJSON(entityQueue['entityQueueData']); 
+		var entityQueueData = {};
+		if(hasEntityQueueData){
+			entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
+		}
+
+		var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
+		var processContext = ''; 
+
+		if(hasProcessContext){
+			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
+			
+			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
+			entityValidToInvoke = !hibachiErrors.hasErrors();
+			//set validation errors on entity queue for tracking purposes? 	
+			
+			if(entityValidToInvoke){
+				arguments.entity = 	arguments.service.process(arguments.entity, entityQueueData, processContext); 	
+				entityValidToInvoke = !arguments.entity.hasErrors();
+				if(!entityValidToInvoke){
+					this.logHibachi('entity queue encountered errors after invoking process #serializeJson(arguments.entity.getErrors())#',true);
+				} 
+			}   
+		} else if(entityValidToInvoke) {
+			var methodData = { '1'=entity };
+			if(hasEntityQueueData){
+				methodData['2'] = entityQueueData;
+			}	
+			arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
+		}
+		
+		return entityValidToInvoke;
+	} 
+ 
+
+	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
 		}
@@ -83,44 +104,43 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
-			var entityQueueIDsToBeUpdated = '';
 			
 			for(var entityQueue in arguments.entityQueueArray){
-			
-				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
-				var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
-				if(isNull(entity)){
-					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-					continue;
-				}
-				var processContextIndex = '2';
-				var processData = { '1'=entity };
-				
-				if(isJSON(entityQueue['entityQueueData'])){
-					processData['2'] = deserializeJSON(entityQueue['entityQueueData']);
-					processContextIndex = '3';
-				}
-	
-				if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
-					processData[processContextIndex] = entity.getProcessObject(entityQueue['processMethod']);
-				}
-				
+
 				try{
-					entityService.invokeMethod("#entityQueue['processMethod']#", processData);
+					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
+									isNull(entityQueue['processMethod']) || 
+								    !len(entityQueue['processMethod']);  
+
+					if(noMethod) { 
+						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+						continue;
+					}
+				
+					var entityService = getServiceForEntityQueue(entityQueue);
+
+					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
+					
+					if(isNull(entity)){
+						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+						continue;
+					}
+
+					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
+					
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-					ormflush();
+				
+					if(entityMethodInvoked){
+						ormflush();
+					} 
 				}catch(any e){
-					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
 				}
 			}
 			if(listLen(entityQueueIDsToBeDeleted)){
 				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
 			}
-			if(listLen(entityQueueIDsToBeUpdated)){
-				updateModifiedDateTime(entityQueueIDsToBeUpdated);
-			}
-			
-			
+
 		}
 	}
 	

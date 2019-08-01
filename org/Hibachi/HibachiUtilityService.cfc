@@ -75,10 +75,10 @@
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
 
-		public string function arrayOfStructsToList(required array structs, required string structKeyForList){
+		public string function arrayOfStructsToList(required array structs, required string structKeyForList, string delimiter=','){
 			var listToReturn = "";
 			for(var record in arguments.structs){
-				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList]);
+				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList], arguments.delimiter );
 			} 
 			return listToReturn; 
 		}

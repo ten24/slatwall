@@ -46,7 +46,7 @@
 						</div>
 						<div class="col-xs-6 s-value" 
 							 ng-if="property === 'fulfillmentTotal' || property === 'subtotal' || property === 'total'"
-						     ng-bind="swCustomerAccountPaymentMethodCard.baseEntity[property] | swcurrency:baseEntity['currencyCode']">
+						     ng-bind-html="swCustomerAccountPaymentMethodCard.baseEntity[property] | swcurrency:swCustomerAccountPaymentMethodCard.baseEntity['currencyCode']">
 						</div>
 						<div class="col-xs-6 s-value" 
 							 ng-if="property !== 'fulfillmentTotal' && property !== 'subtotal' && property !== 'total'"
