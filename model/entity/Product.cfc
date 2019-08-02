@@ -70,7 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
 
 	// Related Object Properties (many-to-one)
-	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_formFieldType="typeahead" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
@@ -152,10 +152,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-		//CUSTOM PROPERTIES BEGIN
-	
- property name="extensionColor" ormtype="string" hb_formFieldType="select";
- property name="pantsStyle" ormtype="string" hb_formFieldType="select";	//CUSTOM PROPERTIES END
+		
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -437,37 +434,35 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
-			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
-				ArrayAppend(filenames, skuData['imageFile']);
-				
-				var thisImage = {};
-				thisImage.originalFilename = skuData['imageFile'];
-				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-				thisImage.type = "skuDefaultImage";
-				thisImage.productID = getProductID();
-				thisImage.name = getTitle();
-				thisImage.description = getProductDescription();
-				thisImage.resizedImagePaths = [];
-				thisImage.modifiedDateTime = getModifiedDateTime();
 
-				var resizeSizesCount = arrayLen(arguments.resizeSizes);
-				for(var s=1; s<=resizeSizesCount; s++) {
+			ArrayAppend(filenames, skuData['imageFile']);
 
-					var resizeImageData = arguments.resizeSizes[s];
-					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-					resizeImageData.missingImagePath = missingImagePath;
-					arrayAppend(
-						thisImage.resizedImagePaths, 
-						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
-					);
-				}
-				//let's make sure the default sku image always comes first
-				if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
-					arrayPrepend(imageGalleryArray, thisImage);
-				} else {
-					arrayAppend(imageGalleryArray, thisImage);
-				}
+			var thisImage = {};
+			thisImage.originalFilename = skuData['imageFile'];
+			thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+			thisImage.type = "skuDefaultImage";
+			thisImage.productID = getProductID();
+			thisImage.name = getTitle();
+			thisImage.description = getProductDescription();
+			thisImage.resizedImagePaths = [];
+			var resizeSizesCount = arrayLen(arguments.resizeSizes);
+			for(var s=1; s<=resizeSizesCount; s++) {
+
+				var resizeImageData = arguments.resizeSizes[s];
+				resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+				resizeImageData.missingImagePath = missingImagePath;
+				arrayAppend(
+					thisImage.resizedImagePaths, 
+					getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+				);
 			}
+			//let's make sure the default sku image always comes first
+			if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
+				arrayPrepend(imageGalleryArray, thisImage);
+			} else {
+				arrayAppend(imageGalleryArray, thisImage);
+			}
+			
 		}
 
 		// Add all alternate image paths
