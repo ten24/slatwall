@@ -25,8 +25,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.tax.
 			setDiscountAmount(arguments.orderItem.getDiscountAmount(forceCalculationFlag=true));
 		}
 
-		if(!isNull(arguments.orderItem.getExtendedTaxAmountAfterDiscount())) {
-			setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedTaxAmountAfterDiscount());
+		if(!isNull(arguments.orderItem.getExtendedTaxableAmountAfterDiscount())) {
+			setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedTaxableAmountAfterDiscount());
 		}
 	}
 }
