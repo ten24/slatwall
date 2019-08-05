@@ -1349,6 +1349,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
 			promoCode.setMaximumAccountUseCount(1);
+			promoCode.setMaximumUseCount(1);
 			promoCode = getService("PromotionService").savePromotionCode(promoCode);
 			promoCode.setStartDateTime(Now());
 			promo = getService("PromotionService").savePromotion(promo);
