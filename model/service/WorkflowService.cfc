@@ -66,7 +66,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			var successFlag = false;
 			if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
-				continue;
+				return; 
 			}
 	
 			if(arguments.workflowTrigger.getSaveTriggerHistoryFlag() == true) {
@@ -263,7 +263,6 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(structKeyExists(evaluate(currentThreadName), 'error')){
 								writedump(evaluate(currentThreadName).error);
 								throw(evaluate(currentThreadName).error.message);
-								break;
 							}
 						}
 					}
