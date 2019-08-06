@@ -175,10 +175,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productIngredient3" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient3ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient4" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient4ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient5" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient5ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
- property name="productBenefits" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productIngredients" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productWeSayNoTo" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="productDirections" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="hairConcernType" ormtype="string";//CUSTOM PROPERTIES END
 
 	//CUSTOM PROPERTIES BEGIN

@@ -161,6 +161,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 property name="enrollmentDate" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
+	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 
@@ -168,6 +169,7 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
+ property name="memberCode" ormtype="string";
  property name="userName" ormtype="string";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
@@ -187,7 +189,9 @@ property name="enrollmentDate" ormtype="timestamp";
  property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
- property name="accountNumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="accountNumber" ormtype="string";
+ property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);

@@ -1858,16 +1858,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Setup the details
 					orderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
 					orderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
-					orderItem.setPrice( orderItemStruct.price );
-					orderItem.setSkuPrice( originalOrderItem.getSku().getPrice() );
-					orderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
-					orderItem.setQuantity( orderItemStruct.quantity );
-					orderItem.setSku( originalOrderItem.getSku() );
+					
 
 					// Add needed references
 					orderItem.setReferencedOrderItem( originalOrderItem );
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
+					orderItem = addReturnOrderItemSetup(orderItem,originalOrderItem,orderItemStruct);
 
 					if(originalOrderItem.getSku().getBaseProductType() == "event") {
 						// If necessary, initiate the registration cancellation process.
@@ -1903,15 +1900,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var returnOrderPayment = this.newOrderPayment();
 		var placeOrderData = {};
 
+		// Multiple refunds
+		if(!isNull(arguments.processObject.getOrderPayments()) && arrayLen(arguments.processObject.getOrderPayments())){
+			for(var orderPaymentStruct in arguments.processObject.getOrderPayments()){
+				if(structKeyExists(orderPaymentStruct,'originalOrderPaymentID') && len(orderPaymentStruct['originalOrderPaymentID'])){
+					var originalOrderPayment = this.getOrderPayment(orderPaymentStruct['originalOrderPaymentID']);
+					if(isObject(originalOrderPayment)){
+						var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder, orderPaymentStruct);
+					}
+				}
+			}
+		}else{
+			writeDump(var=arguments.processObject.getOrderPayments(),top=4);
+			writeDump(var=arguments.processObject.getOrderItems(),top=4);
+			writeDump(var=arguments.processObject,top=4,label="What kind of clown shit is this, B");abort;
+		}	
+			
+		//Test delete later
+		if(true){
 		// Referencing original order payment
-		if (isObject(originalOrderPayment)) {
-			var returnOrderPayment = this.newOrderPayment();
-				returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
-				returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
-				returnOrderPayment.setOrder( returnOrder );
-				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
-				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
+		}else if (isObject(originalOrderPayment)) {
+			var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder);
 
 		// New return order payment, provided order payment information is not related to any previous order payments
 		} else {
@@ -1993,6 +2002,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
+	}
+	
+	public any function addReturnOrderItemSetup(required any returnOrderItem, required any originalOrderItem, required struct orderItemStruct){
+		arguments.returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+		arguments.returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		arguments.returnOrderItem.setSku( originalOrderItem.getSku() );
+		arguments.returnOrderItem.setPrice( arguments.orderItemStruct.price );
+		arguments.returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
+		return arguments.returnOrderItem;
+	}
+	
+	public any function setupReturnOrderPayment(required any originalOrderPayment, required any returnOrder, struct orderPaymentStruct){
+		var returnOrderPayment = this.newOrderPayment();
+		returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
+		returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
+		returnOrderPayment.setOrder( returnOrder );
+		returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
+		returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
+		if(isNull(arguments.orderPaymentStruct) || !structKeyExists(arguments.orderPaymentStruct, 'amount')){
+			returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
+		}else{
+			returnOrderPayment.setAmount(arguments.orderPaymentStruct.amount);
+		}
+		return returnOrderPayment;
 	}
 
 	public any function processOrder_duplicateOrder (required any order, struct data={}) {

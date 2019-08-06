@@ -1,5 +1,9 @@
 class SWReturnOrderItemsController{
     public orderItems:Array<Object> = [];
+    public orderPayments:Array<Object> = [];
+    public refundTotal:number=0;
+    public refundPVTotal:number=0;
+    public refundCVTotal:number=0;
     
     constructor(
         public $hibachi
@@ -9,10 +13,13 @@ class SWReturnOrderItemsController{
     public updateOrderItem = (orderItem) => {
        
        orderItem = this.setValuesWithinConstraints(orderItem);
-    //   debugger;
+
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
        orderItem.refundPVTotal = orderItem.refundTotal * orderItem.personalVolumeTotal / orderItem.total;
+       orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
        orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
+       orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+       this.updateTotals();
    }
    
    private setValuesWithinConstraints = (orderItem)=>{
@@ -31,6 +38,49 @@ class SWReturnOrderItemsController{
        }
        return orderItem;
    } 
+   
+   private updateTotals = () =>{
+       this.updateOrderItemTotals();
+       this.updatePaymentTotals();
+   }
+   
+   private updateOrderItemTotals = () =>{
+       let refundTotal = 0;
+       let refundPVTotal = 0;
+       let refundCVTotal = 0;
+       
+       this.orderItems.forEach((item:any)=>{
+           refundTotal += item.refundTotal;
+           refundPVTotal += item.refundPVTotal;
+           refundCVTotal += item.refundCVTotal;
+       })
+       
+       this.refundTotal = refundTotal;
+       this.refundPVTotal = refundPVTotal;
+       this.refundCVTotal = refundCVTotal;
+   }
+   
+   private updatePaymentTotals = ()=>{
+       for(let i = this.orderPayments.length - 1; i >= 0; i--){
+            this.validateAmount(this.orderPayments[i]);
+       }
+   }
+   
+   public validateAmount = (orderPayment)=>{
+       console.log('yo dawg');
+       const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
+           return (payment == orderPayment) ?  total : total += payment.amount;
+       },0);
+       console.log('payment total?',paymentTotal);
+       const maxRefund = Math.min(orderPayment.amountReceived,this.refundTotal - paymentTotal);
+       console.log(orderPayment.amountReceived,this.refundTotal-paymentTotal);
+       if(orderPayment.amount == undefined){
+           orderPayment.amount = 0;
+       }
+       if(orderPayment.amount > maxRefund){
+           orderPayment.amount = Math.max(maxRefund,0);
+       }
+   }
 }
 
 class SWReturnOrderItems {

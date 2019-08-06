@@ -7,7 +7,7 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     // Data Properties (ID's)
     
     // Data Properties (Inputs)
-
+    property name="orderPayments" type="array" hb_populateArray="true";
     // Data Properties (Related Entity Populate)
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID";
     
@@ -16,6 +16,7 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     // Helper Properties
     property name="orderTypeName";
     // ======================== START: Defaults ============================
+    variables.orderPayments = [];
     
     public any function getOrderTypeName(){
         var type= getService('TypeService').getTypeBySystemCode(getOrderTypeCode());

@@ -14,9 +14,14 @@ $(document).ready(function() {
    function updateOrderItem(elem) {
        var returnQuantity = $(elem).find('.returnQuantity').val();
        var refundUnitPrice = $(elem).find('.refundUnitPrice').val();
+       var returnQuantityMaximum = $(elem).find('.returnQuantityMaximum').val();
        
        if (returnQuantity == null || returnQuantity == undefined) {
            returnQuantity = 0;
+       }
+       
+       if(returnQuantity > returnQuantityMaximum){
+           returnQuantity = returnQuantityMaximum;
        }
        
        if (refundUnitPrice == null || refundUnitPrice == undefined) {

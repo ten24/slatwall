@@ -70,14 +70,6 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
-				
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
-				
-				<hb:HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
-					<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
-					<cfset rc.addOrderPaymentProcessObject.setOrderTypeCode('otReturnOrder') />
-					<cfinclude template="../../../../admin/views/entity/preprocessorder_include/addorderpayment.cfm" />
-				</hb:HibachiDisplayToggle>
 
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
 				<hb:HibachiDisplayToggle selector="input[name='receiveItemsFlag']" showValues="1" loadVisable="#rc.processObject.getReceiveItemsFlag()#">
@@ -179,35 +171,35 @@ Notes:
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedCommissionableVolumeAfterDiscount')#</th>
 					</tr>
-					<cfset orderItemIndex = 0 />
+					<cfset orderItemIndex = 1 />
 					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
-						<tr class="orderItem" ng-init="swReturnOrderItems.orderItems[#orderItemIndex#] = {refundTotal:0,refundPVTotal:0,refundCVTotal:0};orderItem = swReturnOrderItems.orderItems[#orderItemIndex#]">
+						<tr class="orderItem" ng-init="swReturnOrderItems.orderItems[#orderItemIndex#] = {refundTotal:0,refundPVTotal:0,refundCVTotal:0};orderItem#orderItemIndex# = swReturnOrderItems.orderItems[#orderItemIndex#]">
 							
-							<input type="hidden" name="orderItems[#orderItemIndex#].orderItemID" value="" />
-							<input type="hidden" name="orderItems[#orderItemIndex#].referencedOrderItem.orderItemID" value="#orderItem.getOrderItemID()#" />
+							<input type="hidden" name="orderItems[#orderItemIndex + 1#].orderItemID" value="" />
+							<input type="hidden" name="orderItems[#orderItemIndex + 1#].referencedOrderItem.orderItemID" value="#orderItem.getOrderItemID()#" />
 							
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
 							<td ng-init="orderItem.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
-							<td class="returnQuantityMaximum" ng-init="orderItem.quantityDelivered = #orderItem.getQuantityDelivered()#">#orderItem.getQuantityDelivered()#</td>
-							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number returnQuantity" /></td>
+							<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.quantityDelivered = #orderItem.getQuantityDelivered()#">#orderItem.getQuantityDelivered()#</td>
+							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" ng-model="orderItem#orderItemIndex#.returnQuantity" name="orderItems[#orderItemIndex + 1#].quantity" value="" class="span1 number returnQuantity" /></td>
 							
 							<td>#orderItem.getDiscountAmount()#</td>
-							<td ng-init="orderItem.total = #orderItem.getExtendedPriceAfterDiscount()#">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
-							<td ng-init="orderItem.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterDiscount()#">#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
-							<td ng-init="orderItem.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterDiscount()#">#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
+							<td ng-init="orderItem#orderItemIndex#.total = #orderItem.getExtendedPriceAfterDiscount()#">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
+							<td ng-init="orderItem#orderItemIndex#.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterDiscount()#">#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
+							<td ng-init="orderItem#orderItemIndex#.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterDiscount()#">#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
 							
 							<td>#getHibachiScope().getService("hibachiUtilityService").formatValue(value=orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity(), formatType='currency', formatDetails={currency=rc.order.getCurrencyCode()})#</td>
-							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" name="orderItems[#orderItemIndex#].price" ng-model="orderItem.refundUnitPrice" ng-init="orderItem.refundUnitPrice = #numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
+							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" name="orderItems[#orderItemIndex + 1#].price" ng-model="orderItem#orderItemIndex#.refundUnitPrice" ng-init="orderItem#orderItemIndex#.refundUnitPrice = #numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() - orderItem.getAllocatedOrderDiscountAmount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
 							<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
-								<span ng-bind="orderItem.refundTotal.toFixed(2)"></span>
+								<span ng-bind="orderItem#orderItemIndex#.refundTotal.toFixed(2)"></span>
 							</td>
 							<td class="refundTotal">
-								<span ng-bind="orderItem.refundPVTotal.toFixed(2)"></span>
+								<span ng-bind="orderItem#orderItemIndex#.refundPVTotal.toFixed(2)"></span>
 							</td>
 							<td class="refundTotal">
-								<span ng-bind="orderItem.refundCVTotal.toFixed(2)"></span>
+								<span ng-bind="orderItem#orderItemIndex#.refundCVTotal.toFixed(2)"></span>
 							</td>
 							<!--- IF THIS IS AN EVENT ORDER ITEM
 								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
@@ -227,12 +219,30 @@ Notes:
 					</cfloop>
 					
 					<tr>
-					<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">
-						<td colspan="11"></td>
-						<td>#op.name#</td>
-						<td class="total">$0.00</td>
-					</cfloop>
+						<td colspan="12"></td>
+						<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+							<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)"></span>
+						</td>
+						<td class="refundTotal">
+								<span ng-bind="swReturnOrderItems.refundPVTotal.toFixed(2)"></span>
+						</td>
+						<td class="refundTotal">
+							<span ng-bind="swReturnOrderItems.refundCVTotal.toFixed(2)"></span>
+						</td>
 					</tr>
+					<cfset paymentIndex = 0 />
+					<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">
+						<tr ng-init="swReturnOrderItems.orderPayments[#paymentIndex#] = {amount:0};orderPayment#paymentIndex#=swReturnOrderItems.orderPayments[#paymentIndex#]">
+							<td colspan="11" ng-init="orderPayment#paymentIndex#.amountReceived = #op.amountReceived#"></td>
+							<td>#op.name#</td>
+							<td class="total">
+								<input type="hidden" name="orderPayments[#paymentIndex + 1#].orderPaymentID" value="">
+								<input type="hidden" name="orderPayments[#paymentIndex + 1#].originalOrderPaymentID" value="#op.value#">
+								<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment#paymentIndex#)" name="orderPayments[#paymentIndex + 1#].amount" ng-model="orderPayment#paymentIndex#.amount" class="span1 number" />
+							</td>
+						</tr>
+						<cfset paymentIndex++ />
+					</cfloop>
 				</table>
 				
 			</hb:HibachiPropertyList>

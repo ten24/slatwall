@@ -1243,7 +1243,11 @@ public any function getPersonalVolume(){
     }
     
     private numeric function getCustomPriceFieldAmount(required string priceField){
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+        var account = this.getOrder().getAccount();
+        if(isNull(account)){
+            account = getService('accountService').newAccount();
+        }
+        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode(),this.getQuantity(),account.getPriceGroups());
         if(isNull(amount)){
             amount = 0;
         }

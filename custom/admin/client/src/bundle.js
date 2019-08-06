@@ -70577,12 +70577,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         var _this = this;
         this.$hibachi = $hibachi;
         this.orderItems = [];
+        this.orderPayments = [];
+        this.refundTotal = 0;
+        this.refundPVTotal = 0;
+        this.refundCVTotal = 0;
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
-            //   debugger;
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
             orderItem.refundPVTotal = orderItem.refundTotal * orderItem.personalVolumeTotal / orderItem.total;
+            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
+            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            _this.updateTotals();
         };
         this.setValuesWithinConstraints = function (orderItem) {
             var returnQuantityMaximum = orderItem.quantityDelivered;
@@ -70596,6 +70602,43 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderItem.refundUnitPrice = 0;
             }
             return orderItem;
+        };
+        this.updateTotals = function () {
+            _this.updateOrderItemTotals();
+            _this.updatePaymentTotals();
+        };
+        this.updateOrderItemTotals = function () {
+            var refundTotal = 0;
+            var refundPVTotal = 0;
+            var refundCVTotal = 0;
+            _this.orderItems.forEach(function (item) {
+                refundTotal += item.refundTotal;
+                refundPVTotal += item.refundPVTotal;
+                refundCVTotal += item.refundCVTotal;
+            });
+            _this.refundTotal = refundTotal;
+            _this.refundPVTotal = refundPVTotal;
+            _this.refundCVTotal = refundCVTotal;
+        };
+        this.updatePaymentTotals = function () {
+            for (var i = _this.orderPayments.length - 1; i >= 0; i--) {
+                _this.validateAmount(_this.orderPayments[i]);
+            }
+        };
+        this.validateAmount = function (orderPayment) {
+            console.log('yo dawg');
+            var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
+                return (payment == orderPayment) ? total : total += payment.amount;
+            }, 0);
+            console.log('payment total?', paymentTotal);
+            var maxRefund = Math.min(orderPayment.amountReceived, _this.refundTotal - paymentTotal);
+            console.log(orderPayment.amountReceived, _this.refundTotal - paymentTotal);
+            if (orderPayment.amount == undefined) {
+                orderPayment.amount = 0;
+            }
+            if (orderPayment.amount > maxRefund) {
+                orderPayment.amount = Math.max(maxRefund, 0);
+            }
         };
     }
     return SWReturnOrderItemsController;

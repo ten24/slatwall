@@ -808,16 +808,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 
-	public any function getSimpleRepresentation() {
+	public any function getSimpleRepresentation(boolean includeAmount=true) {
 		if(this.isNew()) {
 			return rbKey('define.new') & ' ' & rbKey('entity.orderPayment');
 		}
 
 		if(getPaymentMethodType() == "creditCard") {
-			return getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour() & ' - ' & getFormattedValue('amount');
+			var simpleRepresentation = getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour();
+		}else{
+			var simpleRepresentation = getPaymentMethod().getPaymentMethodName();
 		}
-
-		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
+		
+		if(arguments.includeAmount){
+			simpleRepresentation &=  ' - ' & getFormattedValue('amount');
+		}
+		return simpleRepresentation;
+		
 	}
 
 	public any function setBillingAccountAddress( any accountAddress ) {

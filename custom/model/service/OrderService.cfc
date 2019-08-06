@@ -17,6 +17,25 @@ component extends="Slatwall.model.service.OrderService" {
         
         return arguments.newOrderItem;
     }
+    
+    public any function addReturnOrderItemSetup(required any returnOrderItem, required any originalOrderItem, required struct orderItemStruct){
+        arguments.returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
+        var sku = arguments.returnOrderItem.getSku();
+        var account = arguments.returnOrderItem.getOrder().getAccount();
+        if(isNull(account)){
+            account = getService('AccountService').newAccount();
+        }
+        
+        var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
+        for(var priceField in customPriceFields){
+            var price = arguments.originalOrderItem.invokeMethod('get#priceField#');
+            if(!isNull(price)){
+                price = price * arguments.returnOrderItem.getPrice() / arguments.originalOrderItem.getPrice();
+                arguments.returnOrderItem.invokeMethod('set#priceField#',{1=price});
+            }
+        }
+        return arguments.returnOrderItem;
+    }
 
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
