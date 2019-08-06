@@ -19,6 +19,6 @@ component {
 			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
 		} 
 		return variables.successfulFlexshipOrdersThisYearCount; 
-	}  
+	}
 
 } 
