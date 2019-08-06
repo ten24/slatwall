@@ -7,24 +7,29 @@ class SWCurrency{
     //@ngInject
     public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false;
-        function realFilter(value,decimalPlace,returnStringFlag=true) {
+        
+        function realFilter(value,currencyCode,decimalPlace,returnStringFlag=true) {
+
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if(!angular.isDefined(data)){
-                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-                data="$";
+            var currencySymbol = "$";
+            if(angular.isDefined(data)){
+                currencySymbol=data[currencyCode];
+            } else {
+                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
             }
+            
             if(!value || value.toString().trim() == ''){
                 value = 0;
             }
-            if(angular.isDefined(value)){
-                if(angular.isDefined(decimalPlace)){
-                    value = $filter('number')(value.toString(), decimalPlace);
-                } else {
-                    value = $filter('number')(value.toString(), 2);
-                }
+            
+            if(angular.isDefined(value) && angular.isDefined(decimalPlace)){
+                value = $filter('number')(value.toString(), decimalPlace);
+            } else {
+                value = $filter('number')(value.toString(), 2);
             }
+        
             if(returnStringFlag){
-                return data + value;
+                return currencySymbol + value;
             } else { 
                 return value;
             }   
@@ -32,18 +37,17 @@ class SWCurrency{
 
         var filterStub:any;
         filterStub = function(value,currencyCode,decimalPlace,returnStringFlag=true) {
-
-            if( data === null && returnStringFlag) {
+                        
+            if( data == null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
-                        $hibachi.getCurrencies().then((currencies)=>{
-                        var result = currencies.data;
-                        data = result[currencyCode];
+                    $hibachi.getCurrencies().then((currencies)=>{
+                        data = currencies.data;
                     });
                 }
                 return "-";
             }
-            else return realFilter(value,decimalPlace,returnStringFlag);
+            else return realFilter(value,currencyCode,decimalPlace,returnStringFlag);
         }
 
         filterStub.$stateful = true;

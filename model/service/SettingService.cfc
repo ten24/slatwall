@@ -314,7 +314,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="Term"
 			},		
-
+			orderTemplateEligibleShippingMethods = {
+				fieldType="listingMultiselect",
+				listingMultiselectEntityName="ShippingMethod"
+			},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
@@ -870,15 +873,17 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
+
 		return cacheKey; 
 	} 
 
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
-		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
+		if (!isNull(getHibachiScope().getCurrentRequestSite()) && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 
 			// Make sure a site entity does not already exist in the filterEntities, we do not want to unecessarily add the additional site combo that can't exist
 			var siteFound = false;
+			
 			for(var entity in arguments.filterEntities) {
 				if (entity.getClassName() == 'Site') {
 					siteFound = true;
@@ -912,7 +917,6 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-		
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";

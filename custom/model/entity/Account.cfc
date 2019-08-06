@@ -1,5 +1,6 @@
 component {
-	propery name="distributorID" ormtype="string";
+	property name="accountType" ormtype="string" hb_formFieldType="select";
+	property name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
@@ -19,6 +20,6 @@ component {
 			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
 		} 
 		return variables.successfulFlexshipOrdersThisYearCount; 
-	}  
+	}
 
 } 

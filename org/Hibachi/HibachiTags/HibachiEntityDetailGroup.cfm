@@ -189,13 +189,13 @@
 												<cfif attributes.object.hasProperty('createdDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('createdByAccount') && !isNull(attributes.object.getCreatedByAccount())>
+												<cfif attributes.object.hasProperty('createdByAccount') AND not isNull(attributes.object.getCreatedByAccount())>
 													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.createdByAccount')#" object="#attributes.object.getCreatedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 												<cfif attributes.object.hasProperty('modifiedDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('modifiedByAccount') && !isNull(attributes.object.getModifiedByAccount())>
+												<cfif attributes.object.hasProperty('modifiedByAccount') AND not isNull(attributes.object.getModifiedByAccount())>
 													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.modifiedByAccount')#" object="#attributes.object.getModifiedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 											</hb:HibachiPropertyList>

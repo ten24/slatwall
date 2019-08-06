@@ -1165,8 +1165,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
-		local.ormSession = ormGetSessionFactory().openSession();
-	    local.tx = local.ormSession.beginTransaction();
+		var ormSession = ormGetSessionFactory().openSession();
+	    var tx = ormSession.beginTransaction();
 
 		try{
 			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
@@ -1174,11 +1174,60 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//if we have any error we probably don't have the required data for returning the total
 			var fulfillmentCharge = 0; 
 		} finally { 
-			local.tx.commit();
-			local.ormSession.close();
+			tx.commit();
+			ormSession.close();
 		} 
 
 		return fulfillmentCharge; 
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		
+		//return a sku collection that will never have records if this process fails
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID','null','is'); 
+		var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
+		
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+	
+		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
+		 * because this object contains unpersisted changes that this method seeks to validate. 
+		 */
+		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
+	
+		
+		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
+		 * unvalidated changes in the order template.
+		 */
+		thread name="#threadName#"
+			   orderTemplateSoftReference="#orderTemplateSoftReference#"
+			   action="run" 
+		{	
+
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+			transientOrder = this.saveOrder(transientOrder);
+			
+			ormFlush();
+ 
+			thread.promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
+
+			ormFlush();	
+		}
+		
+		threadJoin(threadName);
+	
+		if(!structKeyExists(evaluate(threadName), "ERROR")){
+			promotionalRewardSkuCollectionConfig = evaluate(threadName).promotionalRewardSkuCollectionConfig; 
+		} else {
+			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		}
+		return promotionalRewardSkuCollectionConfig; 
+
 	}
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
@@ -1241,7 +1290,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount()); 
+		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount(),true); 
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -1361,7 +1410,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-			arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTermID()));
+			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		}
 
@@ -1390,7 +1439,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
-	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, required any processObject, required struct data={}){
+	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 
 		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
 
@@ -1408,9 +1457,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//do we need location
 	
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
-	
+		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating and placing order', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate; 
 		} 
@@ -1450,7 +1499,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
-		} 		
+		} 	
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1493,9 +1542,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}
 
+		ormFlush();//flush so that the order exists
+
 		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
 		newOrder = this.processOrder_placeOrder(newOrder);
-	
+
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
 			arguments.orderTemplate.clearHibachiErrors();
@@ -1540,9 +1591,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} 
 			}
 		}
-
+		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
-
 		newOrder = this.saveOrder(newOrder); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
@@ -1554,6 +1604,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
+
 
 		return arguments.orderTemplate; 
 	}
@@ -1580,6 +1631,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
+
 
 		return arguments.orderTemplate; 	
 	} 
@@ -1755,6 +1807,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return arguments.orderTemplate; 	
+	}
+	
+	public any function processOrderTemplate_removeAppliedGiftCard (required any orderTemplate, any processObject, struct data={}){
+		
+		arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(arguments.processObject.getOrderTemplateAppliedGiftCard()); 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
+		return arguments.orderTemplate;
 	}
 
 	public any function processOrderTemplate_removeAppliedGiftCards (required any orderTemplate, any processObject, struct data={}){

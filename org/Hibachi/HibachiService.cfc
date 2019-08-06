@@ -143,6 +143,7 @@
 			
 			// Create the invoke arguments struct
 			var invokeArguments = {};
+			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method
 			invokeArguments[ "data" ] = arguments.data;
 			invokeArguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			invokeArguments.entity = arguments.entity;
