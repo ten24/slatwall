@@ -102,7 +102,6 @@ Notes:
 	<cfset emptySiteCollectionList = getHibachiScope().getService('siteService').getSiteCollectionList() />
 	<cfset emptySiteCollectionList.setDisplayProperties('siteID',{isVisible=true}) />
 	<cfset emptySiteCollectionList.addFilter('siteID','NULL','IS') />
-	<cfif emptySiteCollectionList.getRecordsCount() NEQ 0 >
 		<!---NULL SITE--->
 		<!--- DASHBOARD_WIDGETS --->
 			<!---this block deals with sales this week--->
@@ -111,6 +110,7 @@ Notes:
 	<cfset salesRevenueWeekCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset salesRevenueWeekCollectionList.setDisplayProperties('') />
 	<cfset salesRevenueWeekCollectionList.addDisplayAggregate('calculatedTotal','SUM','totalOrders') />
+	<cfset salesRevenueWeekCollectionList.addFilter('orderCreatedSite.siteID', 'NULL','IS')/>
 	<cfset salesRevenueWeekCollectionList.addFilter('createdDateTime', weekMinDateTime,'>=')/>
 	<cfset salesRevenueWeekCollectionList.addFilter('createdDateTime', weekMaxDateTime,'<=')/>
 	<cfset salesRevenueWeekCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=') />
@@ -128,6 +128,7 @@ Notes:
 	<cfset salesRevenueDayCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset salesRevenueDayCollectionList.setDisplayProperties('') />
 	<cfset salesRevenueDayCollectionList.addDisplayAggregate('calculatedTotal','SUM','dayTotalOrders') />
+	<cfset salesRevenueDayCollectionList.addFilter('orderCreatedSite.siteID', 'NULL','IS')/>
 	<cfset salesRevenueDayCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
 	<cfset salesRevenueDayCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
 	<cfset salesRevenueDayCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=') />
@@ -142,6 +143,7 @@ Notes:
 	<cfset shoppingCartSessionCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset shoppingCartSessionCollectionList.setDisplayProperties('') />
 	<cfset shoppingCartSessionCollectionList.addDisplayAggregate('orderID','COUNT','totalCartSessions') />
+	<cfset shoppingCartSessionCollectionList.addFilter('orderCreatedSite.siteID', 'NULL','IS')/>
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
 	<cfset shoppingCartSessionCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
 	<cfset shoppingCartSessionCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','=') />
@@ -157,6 +159,7 @@ Notes:
 	<cfset averageDayOrdersCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset averageDayOrdersCollectionList.setDisplayProperties('') />
 	<cfset averageDayOrdersCollectionList.addDisplayAggregate('calculatedTotal','AVG','dayAvergeOrders') />
+	<cfset averageDayOrdersCollectionList.addFilter('orderCreatedSite.siteID', 'NULL','IS')/>
 	<cfset averageDayOrdersCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
 	<cfset averageDayOrdersCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
 	<cfset averageDayOrdersCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=') />
@@ -220,7 +223,6 @@ Notes:
 			
 			<!--- DASHBOARD_WIDGETS --->
 		<!---NULL SITE--->
-		<cfelse>
 		<!---Non-NULL SITE--->
 		<cfset siteCollectionList = getHibachiScope().getService('siteService').getSiteCollectionList() />
 	<cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
@@ -356,7 +358,6 @@ Notes:
 	<!--- SITES --->
 		
 		<!---Non-NULL SITE--->
-	</cfif>
 	
 			
 	
