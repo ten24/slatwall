@@ -145,11 +145,6 @@
                 </div><!-- end of .col -->
                 
 
-                <div class="col save-callout">
-                    <div class ="Malert alert alert-warning">
-                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
-                    </div>
-                </div>
 
                 
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
@@ -193,8 +188,10 @@
         <button type="button" class="close" aria-label="Close" ng-click="swListingReport.removeInfoWIndow($event);" >
           <span aria-hidden="true">&times;</span>
         </button>
-        <div class="text">
-            <h2>Create Your Orders Report</h2>
+        <div class="text" ng-init="title=swListingReport.collectionConfig.baseEntityName">
+            
+            {{title | limitTo:1:4 }}
+            <h2>Create Your {{title}} Report</h2>
             <ol>
                 <li>Select your <em>Report Dimensions</em>.</li>
                 <li>Use the <em>Display Options</em> to customize the date in your report and graph.</li>
