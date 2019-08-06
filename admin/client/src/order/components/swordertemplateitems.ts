@@ -10,9 +10,13 @@ class SWOrderTemplateItemsController{
     
     public orderTemplate;
     
+    public viewOrderTemplateColumns;
+    public editOrderTemplateColumns;
     public skuColumns; 
     
     public skuPropertiesToDisplay:string;
+    public skuPropertyColumnConfigs:any[];
+    
     public additionalOrderTemplateItemPropertiesToDisplay:string;
 
 	constructor(public $hibachi,
@@ -27,46 +31,25 @@ class SWOrderTemplateItemsController{
 	}
 	
 	public $onInit = () =>{
-		this.orderTemplateService.setOrderTemplateID(this.orderTemplate.orderTemplateID);
+				
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
-	    
-		var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
-		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
 		
-		if(this.skuPropertiesToDisplay != null){
-			var properties = this.skuPropertiesToDisplay.split(',');
-			for(var i=0; i<properties.length; i++){
-				orderTemplateDisplayProperties += ",sku." + properties[i]; 
-				skuDisplayProperties += ',' + properties[i];
-			}
-		}
+		this.orderTemplateService.setOrderTemplate(this.orderTemplate);
+		this.orderTemplateService.setAdditionalSkuPropertiesToDisplay(this.skuPropertiesToDisplay);
+		this.orderTemplateService.setSkuPropertyColumnConfigs(this.skuPropertyColumnConfigs);
 		
 		if(this.additionalOrderTemplateItemPropertiesToDisplay != null){
-			orderTemplateDisplayProperties += "," + this.additionalOrderTemplateItemPropertiesToDisplay;
+			this.orderTemplateService.setAdditionalOrderTemplateItemPropertiesToDisplay(this.additionalOrderTemplateItemPropertiesToDisplay)
 		}
+		
+		this.viewOrderTemplateItemsCollection = this.orderTemplateService.getViewOrderTemplateItemCollection();
+		this.editOrderTemplateItemsCollection = this.orderTemplateService.getEditOrderTemplateItemCollection();
+		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(); 
 	    
-        this.viewOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.viewOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties + ',quantity','',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.viewOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.viewOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        
-        this.editOrderTemplateItemsCollection = this.collectionConfigService.newCollectionConfig('OrderTemplateItem');
-        this.editOrderTemplateItemsCollection.setDisplayProperties(orderTemplateDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('orderTemplateItemID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.editOrderTemplateItemsCollection.addDisplayProperty('quantity',this.rbkeyService.rbKey('entity.OrderTemplateItem.quantity'),{isVisible:true,isSearchable:false,isDeletable:false,isEditable:true});
-        this.editOrderTemplateItemsCollection.addFilter('orderTemplate.orderTemplateID', this.orderTemplate.orderTemplateID,'=',undefined,true);
-        
-        this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
-        this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
-        this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
-
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
-	    
+	    this.editOrderTemplateColumns = angular.copy( this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
+	    this.viewOrderTemplateColumns = angular.copy( this.editOrderTemplateItemsCollection.getCollectionConfig().columns); 
+
 	    this.skuColumns.push(
 	        {
 	            'title': this.rbkeyService.rbKey('define.quantity'),
@@ -77,7 +60,7 @@ class SWOrderTemplateItemsController{
             	'isEditable':true,
             	'isVisible':true
 	        }    
-	    )
+	    );
 	}
 	
 	public setEdit = (payload)=>{
@@ -94,6 +77,7 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public bindToController = {
         orderTemplate: '<?', 
         skuPropertiesToDisplay: '@?',
+        skuPropertyColumnConfigs: '<?',//array of column configs
         additionalOrderTemplateItemPropertiesToDisplay: '@?',
         edit:"=?"
 	};

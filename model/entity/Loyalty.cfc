@@ -67,7 +67,10 @@ component displayname="Loyalty" entityname="SlatwallLoyalty" table="SwLoyalty" p
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Loyalty Program Accruements (one-to-many)
+	// Loyalty Program Accruements (one-to-many)	//CUSTOM PROPERTIES BEGIN
+property name="referAFriendFlag" ormtype="boolean" default="0";
+
+//CUSTOM PROPERTIES END
 	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
 		arguments.loyaltyAccruement.setLoyalty( this );
 	}
@@ -123,5 +126,13 @@ component displayname="Loyalty" entityname="SlatwallLoyalty" table="SwLoyalty" p
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public boolean function getReferAFriendFlag(){
+	    if(!structKeyExists(variables,"referAFriendFlag")){
+	        variables.referAFriendFlag = false;
+	    }
+	    return variables.referAFriendFlag;
+	}
+//CUSTOM FUNCTIONS END
 }

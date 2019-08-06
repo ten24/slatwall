@@ -633,7 +633,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				}
 			}
 		}catch(any e){
-			writedump(e);abort;
+			rethrow;
 		}
 	}
 

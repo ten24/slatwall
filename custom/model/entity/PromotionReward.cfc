@@ -107,10 +107,10 @@ component {
 		if(structKeyExists(arguments,'account')){
 			amountParams['account'] = arguments.account;
 		}
-		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
+		if(arguments.currencyCode != getCurrencyCode() and getAmountType() == 'amountOff'){
 		    //Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
-				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() == arguments.currencyCode){
 					return variables.promotionRewardCurrencies[i].invokeMethod('get#customPriceField#Amount');
 				}
 			}

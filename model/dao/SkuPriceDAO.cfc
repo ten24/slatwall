@@ -139,7 +139,11 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		if(len(priceGroupString)){
 			var priceGroupIDs = [];
 			for(var priceGroup in arguments.priceGroups){
-				arrayAppend(priceGroupIDs,priceGroup.getPriceGroupID());
+				if(structKeyExists(priceGroup, 'getPriceGroupID')){
+					arrayAppend(priceGroupIDs,priceGroup.getPriceGroupID());
+				} else {
+					arrayAppend(priceGroupIDs,priceGroup['priceGroupID']);
+				}
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}

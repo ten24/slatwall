@@ -55,6 +55,7 @@ Notes:
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateID",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=true} ) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="orderTemplateStatusType.typeName",title="#getHibachiScope().rbkey('entity.orderTemplate.orderTemplateStatusType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="currencyCode",columnConfig={isVisible=false,isSearchable=false,isDeletable=true} ) />
 <!--- ottSchedule, using ID to improve performance --->
 <cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.typeID', '2c948084697d51bd01697d5725650006') />
 <cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|asc')/>

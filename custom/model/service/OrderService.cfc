@@ -1,4 +1,8 @@
 component extends="Slatwall.model.service.OrderService" {
+
+    public string function getCustomAvailableProperties() {
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
+    }
     
     public any function processOrder_addOrderItem(required any order, required any processObject){
         var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';

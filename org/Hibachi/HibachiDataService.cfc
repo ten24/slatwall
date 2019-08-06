@@ -284,8 +284,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			try{
 				getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
 			}catch(any e){
-				writedump(xmlData.table.xmlAttributes.tableName);
-				writedump(e);abort;
+				rethrow;
 			}
 			if(!keyFound){
 				variables.insertedData = listAppend(variables.insertedData, idKey);
@@ -547,7 +546,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						//Throw error if not caused by missing column
 						if(listIndex == 0){
 							writeOutput("Missing Column was: "&missingColumn);
-							writeDump(e);abort;
+							rethrow;
 						}
 
 						arrayAppend(tables[tableName]["missingColumns"], missingColumn);
@@ -769,7 +768,9 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 				}
 			}
-		}catch(any e){writeDump(e);abort;}
+		}catch(any e){
+			rethrow;
+		}
 
 	}
 
