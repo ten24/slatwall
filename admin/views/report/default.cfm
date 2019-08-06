@@ -99,9 +99,6 @@ Notes:
 		<div class="col-md-10">
 			
 			<!--- SITES --->
-	<cfset emptySiteCollectionList = getHibachiScope().getService('siteService').getSiteCollectionList() />
-	<cfset emptySiteCollectionList.setDisplayProperties('siteID',{isVisible=true}) />
-	<cfset emptySiteCollectionList.addFilter('siteID','NULL','IS') />
 		<!---NULL SITE--->
 		<!--- DASHBOARD_WIDGETS --->
 			<!---this block deals with sales this week--->
