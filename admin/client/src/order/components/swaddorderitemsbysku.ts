@@ -37,7 +37,7 @@ class SWAddOrderItemsBySkuController{
 	}
 	
 	public $onInit = () =>{
-			    
+		    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
 		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
@@ -61,13 +61,15 @@ class SWAddOrderItemsBySkuController{
         if (this.skuPropertiesToDisplayWithConfig){
         	// this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
         	var skuPropertiesToDisplayWithConfig = this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
-        
+        		
         	//now we can parse into a json array
-        	skuPropertiesToDisplayWithConfig = JSON.parse(this.skuPropertiesToDisplayWithConfig);
+        	var skuPropertiesToDisplayWithConfigObject:any = JSON.parse(skuPropertiesToDisplayWithConfig);
         	
         	//now we can iterate and add the display properties defined on this attribute..
-        	for (let property of skuPropertiesToDisplayWithConfig)
-        	this.addSkuCollection.addDisplayProperty(skuPropertiesToDisplayWithConfig[property].name, skuPropertiesToDisplayWithConfig[property].rbKey, skuPropertiesToDisplayWithConfig[property].config);
+        	for (let property of skuPropertiesToDisplayWithConfigObject){
+        		console.log(property);
+        		this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
+        	}
         }
         
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
@@ -216,6 +218,7 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         simpleRepresentation: '<?',
         returnOrderId: '<?',
         skuPropertiesToDisplay: '@?',
+        skuPropertiesToDisplayWithConfig: '@?',
         edit:"=?",
         exchangeOrderFlag:"=?"
 	};
