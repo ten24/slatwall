@@ -24,7 +24,7 @@ class SWAddOrderItemsBySkuController{
     
     public skuPropertiesToDisplay:string;
     
-    public skuPropertiesToDisplayWithConfig: Array<any>;
+    public skuPropertiesToDisplayWithConfig: string;
 	
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -41,7 +41,6 @@ class SWAddOrderItemsBySkuController{
 			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
-		//var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
 		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
 		
 		if(this.skuPropertiesToDisplay != null){
@@ -55,17 +54,22 @@ class SWAddOrderItemsBySkuController{
 	    
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('product.productType.productTypeName','Product Type',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
         this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
         
-        // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
         if (this.skuPropertiesToDisplayWithConfig){
-        	for (let config of this.skuPropertiesToDisplayWithConfig)
-        	this.addSkuCollection.addDisplayProperty(property.name,property.rbKey,property.config);
-        }
+        	// this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+        	var skuPropertiesToDisplayWithConfig = this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
         
-        //now add all the passed in configs.
+        	//now we can parse into a json array
+        	skuPropertiesToDisplayWithConfig = JSON.parse(this.skuPropertiesToDisplayWithConfig);
+        	
+        	//now we can iterate and add the display properties defined on this attribute..
+        	for (let property of skuPropertiesToDisplayWithConfig)
+        	this.addSkuCollection.addDisplayProperty(skuPropertiesToDisplayWithConfig[property].name, skuPropertiesToDisplayWithConfig[property].rbKey, skuPropertiesToDisplayWithConfig[property].config);
+        }
         
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
