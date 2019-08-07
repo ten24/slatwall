@@ -70951,7 +70951,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-            _this.updateTotals();
+            if (orderItem.refundTotal > orderItem.total) {
+                orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
+                _this.updateOrderItem(orderItem);
+            }
+            else {
+                _this.updateTotals();
+            }
         };
         this.setValuesWithinConstraints = function (orderItem) {
             var returnQuantityMaximum = orderItem.quantityDelivered;
@@ -70989,13 +70995,10 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             }
         };
         this.validateAmount = function (orderPayment) {
-            console.log('yo dawg');
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 return (payment == orderPayment) ? total : total += payment.amount;
             }, 0);
-            console.log('payment total?', paymentTotal);
             var maxRefund = Math.min(orderPayment.amountReceived, _this.refundTotal - paymentTotal);
-            console.log(orderPayment.amountReceived, _this.refundTotal - paymentTotal);
             if (orderPayment.amount == undefined) {
                 orderPayment.amount = 0;
             }

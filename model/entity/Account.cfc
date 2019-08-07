@@ -156,7 +156,43 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+	//CUSTOM PROPERTIES BEGIN
+property name="accountType" ormtype="string" hb_formFieldType="select";
+	property name="distributorID" ormtype="string";
+	property name="enrollmentDate" ormtype="timestamp";
+	property name="sponsorIDNumber" ormtype="string";
+	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
+	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 
+	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
+
+
+ property name="hyperWalletAcct" ormtype="string";
+ property name="allowCorporateEmails" ormtype="boolean";
+ property name="allowUplineEmails" ormtype="boolean";
+ property name="memberCode" ormtype="string";
+ property name="userName" ormtype="string";
+ property name="subscriptionType" ormtype="string" hb_formFieldType="select";
+ property name="renewalDate" ormtype="timestamp" hb_formatType="date";
+ property name="spouseName" ormtype="string";
+ property name="spouseDriverLicense" ormtype="string";
+ property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="productPack" ormtype="string";
+ property name="gender" ormtype="string" hb_formFieldType="select";
+ property name="businessAcc" ormtype="boolean";
+ property name="isFlagged" ormtype="boolean";
+ property name="dob" ormtype="string";
+ property name="lastRenewDate" ormtype="string";
+ property name="nextRenewDate" ormtype="string";
+ property name="lastStatusDate" ormtype="string";
+ property name="pickupCenter" ormtype="string";
+ property name="carProgram" ormtype="string";
+ property name="holdEarningsToAR" ormtype="string";
+ property name="commStatusUser" ormtype="string";
+ property name="accountNumber" ormtype="string";
+ property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -1141,5 +1177,20 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
+	//CUSTOM FUNCTIONS BEGIN
 
+public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+			var orderCollection = getService('OrderService').getOrderCollectionList(); 
+			orderCollection.addFilter('account.accountID', getAccountID());
+			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');
+			//not cancelled, using ID because it's a faster query than systemCode
+			orderCollection.addFilter('orderStatusType.typeID','444df2b90f62f72711eb5b3c90848e7e','!=');
+			orderCollection.addFilter('orderOpenDateTime','1/1/' & year(now()),'>='); 
+			orderCollection.addFilter('orderOpenDateTime','12/31/' & year(now()),'<=');
+			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
+		} 
+		return variables.successfulFlexshipOrdersThisYearCount; 
+	}
+//CUSTOM FUNCTIONS END
 }

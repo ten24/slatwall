@@ -166,6 +166,7 @@ Notes:
 						<th>#$.slatwall.rbKey('entity.orderItem.extendedCommissionableVolumeAfterDiscount')#</th>
 						
 						<th>Unit Price</th>
+						<th>Unit Price after Order Discounts</th>
 						<th>Refund Unit Price</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
@@ -185,13 +186,14 @@ Notes:
 							<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.quantityDelivered = #orderItem.getQuantityDelivered()#">#orderItem.getQuantityDelivered()#</td>
 							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" ng-model="orderItem#orderItemIndex#.returnQuantity" name="orderItems[#orderItemIndex + 1#].quantity" value="" class="span1 number returnQuantity" /></td>
 							
-							<td>#orderItem.getDiscountAmount()#</td>
-							<td ng-init="orderItem#orderItemIndex#.total = #orderItem.getExtendedPriceAfterDiscount()#">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
-							<td ng-init="orderItem#orderItemIndex#.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterDiscount()#">#orderItem.getExtendedPersonalVolumeAfterDiscount()#</td>
-							<td ng-init="orderItem#orderItemIndex#.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterDiscount()#">#orderItem.getExtendedCommissionableVolumeAfterDiscount()#</td>
+							<td>#orderItem.getDiscountAmount() + orderItem.getAllocatedOrderDiscountAmount()#</td>
+							<td ng-init="orderItem#orderItemIndex#.total = #orderItem.getExtendedPriceAfterAllDiscounts()#">#orderItem.getFormattedValue('extendedPriceAfterAllDiscounts')#</td>
+							<td ng-init="orderItem#orderItemIndex#.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterAllDiscounts()#">#orderItem.getExtendedPersonalVolumeAfterAllDiscounts()#</td>
+							<td ng-init="orderItem#orderItemIndex#.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterAllDiscounts()#">#orderItem.getExtendedCommissionableVolumeAfterAllDiscounts()#</td>
 							
-							<td>#getHibachiScope().getService("hibachiUtilityService").formatValue(value=orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity(), formatType='currency', formatDetails={currency=rc.order.getCurrencyCode()})#</td>
-							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" name="orderItems[#orderItemIndex + 1#].price" ng-model="orderItem#orderItemIndex#.refundUnitPrice" ng-init="orderItem#orderItemIndex#.refundUnitPrice = #numberFormat(getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() - orderItem.getAllocatedOrderDiscountAmount() / orderItem.getQuantity()), '0.00')#" class="span1 number refundUnitPrice" /></td>
+							<td>#orderItem.getFormattedValue('extendedUnitPriceAfterDiscount')#</td>
+							<td>#orderItem.getFormattedValue('extendedUnitPriceAfterAllDiscounts')#</td>
+							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" name="orderItems[#orderItemIndex + 1#].price" ng-model="orderItem#orderItemIndex#.refundUnitPrice" ng-init="orderItem#orderItemIndex#.refundUnitPrice = #numberFormat(orderItem.getExtendedUnitPriceAfterAllDiscounts(), '0.00')#" class="span1 number refundUnitPrice" /></td>
 							<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
 								<span ng-bind="orderItem#orderItemIndex#.refundTotal.toFixed(2)"></span>
 							</td>
@@ -219,7 +221,7 @@ Notes:
 					</cfloop>
 					
 					<tr>
-						<td colspan="12"></td>
+						<td colspan="13"></td>
 						<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
 							<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)"></span>
 						</td>

@@ -32,6 +32,12 @@ component {
     property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
+    property name="extendedPersonalVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedTaxableAmountAfterAllDiscounts" persistent="false";
+    property name="extendedCommissionableVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedRetailCommissionAfterAllDiscounts" persistent="false";
+    property name="extendedProductPackVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedRetailValueVolumeAfterAllDiscounts" persistent="false";
     
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
@@ -160,6 +166,30 @@ component {
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
+    public any function getExtendedPersonalVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('personalVolume');
+    }
+    
+    public any function getExtendedTaxableAmountAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('taxableAmount');
+    }
+    
+    public any function getExtendedCommissionableVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('commissionableVolume');
+    }
+    
+    public any function getExtendedRetailCommissionAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailCommission');
+    }
+    
+    public any function getExtendedProductPackVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('productPackVolume');
+    }
+    
+    public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
     private numeric function getCustomPriceFieldAmount(required string priceField){
         var account = this.getOrder().getAccount();
         if(isNull(account)){
@@ -187,7 +217,6 @@ component {
 		
 		return discountAmount;
 	}
-
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
@@ -205,7 +234,15 @@ component {
 		return variables['extended#priceField#'];
 	}
 	
+	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){
+	    return this.invokeMethod('getAllocatedOrder#arguments.priceField#DiscountAmount')
+	}
+	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
+	}
+	
+	public numeric function getCustomExtendedPriceAfterAllDiscounts(required string priceField, boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments) - getAllocatedOrderCustomPriceFieldDiscountAmount(arguments.priceField));
 	}
 }

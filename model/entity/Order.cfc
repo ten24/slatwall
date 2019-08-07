@@ -198,7 +198,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 				//CUSTOM PROPERTIES BEGIN
-	property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
     property name="commissionPeriodEndDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID"; // Intended to be used by Ops accounts
     
@@ -246,7 +246,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
- property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";	//CUSTOM PROPERTIES END
+ property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1763,7 +1763,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// ===================  END:  ORM Event Hooks  =========================
 	//CUSTOM FUNCTIONS BEGIN
-	public numeric function getPersonalVolumeSubtotal(){
+
+public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
     public numeric function getTaxableAmountSubtotal(){
@@ -1899,6 +1900,5 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }

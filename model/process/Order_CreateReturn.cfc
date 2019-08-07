@@ -185,7 +185,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.orderTypeCode;
 	}
 	
-	public boolean function orderItemsWithinOrginalQuantity(){
+	public boolean function orderItemsWithinOriginalQuantity(){
 		
 		if ( !isnull(this.getOrderItems()) ){
 			

@@ -59,7 +59,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedPriceAfterAllDiscounts" column="calcExtdPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedUnitPriceAfterAllDiscount" column="calcExtdUnitPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
@@ -114,7 +116,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedPriceAfterAllDiscounts" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedUnitPriceAfterAllDiscounts" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
@@ -167,6 +171,12 @@ property name="personalVolume" ormtype="big_decimal";
     property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
+    property name="extendedPersonalVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedTaxableAmountAfterAllDiscounts" persistent="false";
+    property name="extendedCommissionableVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedRetailCommissionAfterAllDiscounts" persistent="false";
+    property name="extendedProductPackVolumeAfterAllDiscounts" persistent="false";
+    property name="extendedRetailValueVolumeAfterAllDiscounts" persistent="false";
     
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
@@ -596,6 +606,10 @@ property name="personalVolume" ormtype="big_decimal";
 	public numeric function getExtendedPriceAfterDiscount(boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
 	}
+	
+	public numeric function getExtendedPriceAfterAllDiscounts(boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments) - getAllocatedOrderDiscountAmount());
+	}
 
 	public numeric function getExtendedUnitPrice() {
 		if(!isNull(getQuantity()) && getQuantity() > 0){
@@ -613,6 +627,14 @@ property name="personalVolume" ormtype="big_decimal";
 			return 0;
 		}
 		
+	}
+	
+	public numeric function getExtendedUnitPriceAfterAllDiscounts() {
+		if(!isNull(getQuantity()) && getQuantity() > 0){
+			return val(precisionEvaluate(getExtendedPriceAfterAllDiscounts() / getQuantity()));
+		}else{
+			return 0;
+		}
 	}
 
 	public any function getActiveEventRegistrations() {
@@ -1249,6 +1271,30 @@ public any function getPersonalVolume(){
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
+    public any function getExtendedPersonalVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('personalVolume');
+    }
+    
+    public any function getExtendedTaxableAmountAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('taxableAmount');
+    }
+    
+    public any function getExtendedCommissionableVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('commissionableVolume');
+    }
+    
+    public any function getExtendedRetailCommissionAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailCommission');
+    }
+    
+    public any function getExtendedProductPackVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('productPackVolume');
+    }
+    
+    public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
     private numeric function getCustomPriceFieldAmount(required string priceField){
         var account = this.getOrder().getAccount();
         if(isNull(account)){
@@ -1276,7 +1322,6 @@ public any function getPersonalVolume(){
 		
 		return discountAmount;
 	}
-
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
@@ -1294,7 +1339,15 @@ public any function getPersonalVolume(){
 		return variables['extended#priceField#'];
 	}
 	
+	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){
+	    return this.invokeMethod('getAllocatedOrder#arguments.priceField#DiscountAmount')
+	}
+	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
+	}
+	
+	public numeric function getCustomExtendedPriceAfterAllDiscounts(required string priceField, boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments) - getAllocatedOrderCustomPriceFieldDiscountAmount(arguments.priceField));
 	}//CUSTOM FUNCTIONS END
 }

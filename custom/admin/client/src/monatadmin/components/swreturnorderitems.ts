@@ -19,7 +19,13 @@ class SWReturnOrderItemsController{
        orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
        orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
        orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-       this.updateTotals();
+       
+       if(orderItem.refundTotal > orderItem.total){
+           orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
+           this.updateOrderItem(orderItem);
+       }else{
+            this.updateTotals();
+       }
    }
    
    private setValuesWithinConstraints = (orderItem)=>{
@@ -67,13 +73,13 @@ class SWReturnOrderItemsController{
    }
    
    public validateAmount = (orderPayment)=>{
-       console.log('yo dawg');
+
        const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
            return (payment == orderPayment) ?  total : total += payment.amount;
        },0);
-       console.log('payment total?',paymentTotal);
+       
        const maxRefund = Math.min(orderPayment.amountReceived,this.refundTotal - paymentTotal);
-       console.log(orderPayment.amountReceived,this.refundTotal-paymentTotal);
+
        if(orderPayment.amount == undefined){
            orderPayment.amount = 0;
        }

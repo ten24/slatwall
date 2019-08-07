@@ -1971,14 +1971,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-		}else{
-			writeDump(var=arguments.processObject.getOrderPayments(),top=4);
-			writeDump(var=arguments.processObject.getOrderItems(),top=4);
-			writeDump(var=arguments.processObject,top=4,label="What kind of clown shit is this, B");abort;
-		}	
-			
-		//Test delete later
-		if(true){
 		// Referencing original order payment
 		}else if (isObject(originalOrderPayment)) {
 			var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder);
