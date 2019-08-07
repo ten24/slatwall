@@ -172,7 +172,7 @@ Notes:
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedCommissionableVolumeAfterDiscount')#</th>
 					</tr>
-					<cfset orderItemIndex = 1 />
+					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
 						<tr class="orderItem" ng-init="swReturnOrderItems.orderItems[#orderItemIndex#] = {refundTotal:0,refundPVTotal:0,refundCVTotal:0};orderItem#orderItemIndex# = swReturnOrderItems.orderItems[#orderItemIndex#]">
 							
@@ -183,7 +183,7 @@ Notes:
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
 							<td ng-init="orderItem.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
-							<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.quantityDelivered = #orderItem.getQuantityDelivered()#">#orderItem.getQuantityDelivered()#</td>
+							<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.returnQuantityMaximum = #orderItem.getQuantityDeliveredMinusReturns()#">#orderItem.getQuantityDeliveredMinusReturns()#</td>
 							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" ng-model="orderItem#orderItemIndex#.returnQuantity" name="orderItems[#orderItemIndex + 1#].quantity" value="" class="span1 number returnQuantity" /></td>
 							
 							<td>#orderItem.getDiscountAmount() + orderItem.getAllocatedOrderDiscountAmount()#</td>

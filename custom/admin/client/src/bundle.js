@@ -70960,7 +70960,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             }
         };
         this.setValuesWithinConstraints = function (orderItem) {
-            var returnQuantityMaximum = orderItem.quantityDelivered;
+            var returnQuantityMaximum = orderItem.returnQuantityMaximum;
             if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
                 orderItem.returnQuantity = 0;
             }

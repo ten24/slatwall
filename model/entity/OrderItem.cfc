@@ -732,6 +732,28 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return quantityDelivered;
 	}
+	
+	public numeric function getQuantityDeliveredMinusReturns(){
+		return getQuantityDelivered() - getQuantityOnReturnOrders();
+	}
+	
+	public numeric function getQuantityOnReturnOrders(){
+		
+		var quantity = 0;
+		
+		var referencingOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		referencingOrderItemCollectionList.setDisplayProperties('quantity');
+		referencingOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
+		referencingOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = referencingOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity += item['quantity'];
+			}
+		}
+		
+		return quantity;
+	}
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;

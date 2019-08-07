@@ -29,7 +29,7 @@ class SWReturnOrderItemsController{
    }
    
    private setValuesWithinConstraints = (orderItem)=>{
-       var returnQuantityMaximum = orderItem.quantityDelivered;
+       var returnQuantityMaximum = orderItem.returnQuantityMaximum;
        
        if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
            orderItem.returnQuantity = 0;

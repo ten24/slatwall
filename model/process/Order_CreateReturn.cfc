@@ -191,8 +191,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 			for (var orderItem in this.getOrderItems()){
 
-				var orginalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
-				if (orderItem.quantity > orginalItem.getQuantityDelivered()){
+				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
+				if (orderItem.quantity > originalItem.getQuantityDelivered()){
 					return false;
 				}
 			}			
