@@ -51,6 +51,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	// Persistent Properties
 	property name="permissionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="permissionGroupName" ormtype="string";
+	property name="permissionGroupCode" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	
