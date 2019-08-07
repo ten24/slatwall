@@ -68,6 +68,9 @@ Notes:
 		</cfloop>
 	</cfif>
 	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#rc.order.getAccount().getAccountID()#'" data-currency-code="'#rc.order.getCurrencyCode()#'"></sw-add-order-items-by-sku>
+	<cfset currencyCode = "#rc.order.getCurrencyCode()#">
+	<cfset accountID = "#rc.order.getAccount().getAccountID()#">
+	
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'" data-sku-properties-to-display-with-config="[{'name': 'personalVolumeByCurrencyCode','rbkey': 'Personal Volume','config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}},{'name': 'commissionableVolumeByCurrencyCode','rbkey': 'Commissionable Volume', 'config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}}]"></sw-add-order-items-by-sku>
 	
 </cfoutput>

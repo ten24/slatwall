@@ -23,6 +23,8 @@ class SWAddOrderItemsBySkuController{
     public skuColumns; 
     
     public skuPropertiesToDisplay:string;
+    
+    public skuPropertiesToDisplayWithConfig: Array<any>;
 	
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -33,7 +35,8 @@ class SWAddOrderItemsBySkuController{
 			this.edit = false;
 		}
 	}
-	
+	//[{name: 'personalVolumeByCurrencyCode',rbkey: 'Personal Volume',config: {isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}}},
+	// {name: 'commissionableVolumeByCurrencyCode',rbeky: 'Commissionable Volume', config: {isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}}}]
 	public $onInit = () =>{
 			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
@@ -55,8 +58,15 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
         this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('personalVolumeByCurrencyCode','Personal Volume',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}});
-        this.addSkuCollection.addDisplayProperty('commissionableVolumeByCurrencyCode','Commissionable Volume',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}});
+        
+        // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+        if (this.skuPropertiesToDisplayWithConfig){
+        	for (let config of this.skuPropertiesToDisplayWithConfig)
+        	this.addSkuCollection.addDisplayProperty(property.name,property.rbKey,property.config);
+        }
+        
+        //now add all the passed in configs.
+        
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
