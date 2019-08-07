@@ -13,6 +13,13 @@ component {
     property name="manualProductPackVolume" ormtype="big_decimal";
     property name="manualRetailValueVolume" ormtype="big_decimal";
     
+    property name="allocatedOrderPersonalVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderTaxableAmountDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderCommissionableVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailCommissionDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderProductPackVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailValueVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";

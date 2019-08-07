@@ -2900,7 +2900,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// hint: Distributes the order-level discount amount total proportionally to all order items and if necessary handle any remainder due to uneven division
-	private void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
+	public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
 		
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
 		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
@@ -2920,7 +2920,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Approximate amount to allocate (rounded to nearest penny)
 		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
 		    
-		    var actualAllocatedAmountTotaUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    var actualAllocatedAmountTotalUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
 		    
 		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
 		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.order.getOrderDiscountAmountTotal();
@@ -2928,7 +2928,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
 			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
 			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
-		    var currentDiscrepancyAmount =  actualAllocatedAmountTotaUnadjusted - expectedAllocatedAmountTotal;
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotalUnadjusted - expectedAllocatedAmountTotal;
 		    
 		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
 		    if (abs(currentDiscrepancyAmount) >= .005) {
@@ -2956,7 +2956,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
 		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
 		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotaUnadjusted']: #actualAllocatedAmountTotaUnadjusted#");
+		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotalUnadjusted']: #actualAllocatedAmountTotalUnadjusted#");
 		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
 		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
 		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
