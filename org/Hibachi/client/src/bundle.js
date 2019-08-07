@@ -78257,12 +78257,34 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$injector = $injector;
         this.observerService = observerService;
+        this.formattedFlag = false;
         this.$onInit = function () {
-            console.log(_this.object, _this.property, _this.title);
+            // unescape this string
+            _this.object = _this.object.replace(/'/g, '"');
             // get the value from the object
+            _this.object = JSON.parse(_this.object);
             _this.value = _this.object[_this.property];
+            //sets a default if there is no value and we have one...
+            if (!_this.value && _this.default) {
+                _this.value = _this.default;
+            }
+            //sets a default width for the value 
+            if (!_this.displayWidth) {
+                _this.displayWidth = "110";
+            }
+            //attach the refresh listener.
+            if (_this.refreshEvent) {
+                _this.observerService.attach(_this.refresh, _this.refreshEvent);
+            }
         };
-        console.log("Simple Property Display");
+        this.refresh = function (payload) {
+            console.log("Refrsh Called on Simple");
+            console.log(payload);
+            _this.object = payload;
+            _this.value = _this.object[_this.property];
+            _this.formattedFlag = true; //this tells the view to not apply the currency filter because its already applied...
+            console.log(_this.value);
+        };
     }
     return SWSimplePropertyDisplayController;
 }());
@@ -78281,8 +78303,12 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             edit: "@?",
             property: "@?",
             title: "@?",
-            object: "=?",
-            displayType: "@?"
+            object: "@?",
+            displayType: "@?",
+            currencyFlag: "@?",
+            refreshEvent: "@?",
+            displayWidth: "@?",
+            default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
         this.controllerAs = "swSimplePropertyDisplay";
