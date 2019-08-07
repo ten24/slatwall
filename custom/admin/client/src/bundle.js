@@ -63650,7 +63650,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            //var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
             var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
             if (_this.skuPropertiesToDisplay != null) {
                 var properties = _this.skuPropertiesToDisplay.split(',');
@@ -63660,11 +63659,22 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             }
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('personalVolumeByCurrencyCode', 'Personal Volume', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, persistent: false, arguments: { 'currencyCode': _this.currencyCode, 'accountID': _this.accountId } });
-            _this.addSkuCollection.addDisplayProperty('commissionableVolumeByCurrencyCode', 'Commissionable Volume', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, persistent: false, arguments: { 'currencyCode': _this.currencyCode, 'accountID': _this.accountId } });
+            if (_this.skuPropertiesToDisplayWithConfig) {
+                // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+                var skuPropertiesToDisplayWithConfig = _this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
+                //now we can parse into a json array
+                var skuPropertiesToDisplayWithConfigObject = JSON.parse(skuPropertiesToDisplayWithConfig);
+                //now we can iterate and add the display properties defined on this attribute..
+                for (var _i = 0, skuPropertiesToDisplayWithConfigObject_1 = skuPropertiesToDisplayWithConfigObject; _i < skuPropertiesToDisplayWithConfigObject_1.length; _i++) {
+                    var property = skuPropertiesToDisplayWithConfigObject_1[_i];
+                    console.log(property);
+                    _this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
+                }
+            }
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
@@ -63796,6 +63806,7 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
             simpleRepresentation: '<?',
             returnOrderId: '<?',
             skuPropertiesToDisplay: '@?',
+            skuPropertiesToDisplayWithConfig: '@?',
             edit: "=?",
             exchangeOrderFlag: "=?"
         };
