@@ -35,8 +35,7 @@ class SWAddOrderItemsBySkuController{
 			this.edit = false;
 		}
 	}
-	//[{name: 'personalVolumeByCurrencyCode',rbkey: 'Personal Volume',config: {isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}}},
-	// {name: 'commissionableVolumeByCurrencyCode',rbeky: 'Commissionable Volume', config: {isVisible:true,isSearchable:false,isDeletable:false,isEditable:false,persistent:false,arguments:{'currencyCode':this.currencyCode, 'accountID': this.accountId}}}]
+	
 	public $onInit = () =>{
 			    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
