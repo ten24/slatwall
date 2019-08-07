@@ -63652,7 +63652,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            //var orderTemplateDisplayProperties = "sku.skuCode,sku.skuDefinition,sku.product.productName,sku.price,total";
             var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
             if (_this.skuPropertiesToDisplay != null) {
                 var properties = _this.skuPropertiesToDisplay.split(',');
@@ -63662,9 +63661,23 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             }
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
-            _this.addSkuCollection.addDisplayProperty('calculatedQATS', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            if (_this.skuPropertiesToDisplayWithConfig) {
+                // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+                var skuPropertiesToDisplayWithConfig = _this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
+                console.log("Sku Props: ", skuPropertiesToDisplayWithConfig);
+                //now we can parse into a json array
+                skuPropertiesToDisplayWithConfig = JSON.parse(_this.skuPropertiesToDisplayWithConfig);
+                //now we can iterate and add the display properties defined on this attribute..
+                for (var _i = 0, skuPropertiesToDisplayWithConfig_1 = skuPropertiesToDisplayWithConfig; _i < skuPropertiesToDisplayWithConfig_1.length; _i++) {
+                    var property = skuPropertiesToDisplayWithConfig_1[_i];
+                    console.log(property);
+                    _this.addSkuCollection.addDisplayProperty(skuPropertiesToDisplayWithConfig[property].name, skuPropertiesToDisplayWithConfig[property].rbKey, skuPropertiesToDisplayWithConfig[property].config);
+                }
+            }
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
@@ -63742,7 +63755,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                 }
                 else {
                     //notify the orderitem listing that it needs to refresh itself...
+                    //get the new persisted values...
                     _this.observerService.notify("refreshOrderItemListing", {});
+                    //now get the order values because we updated them and pass along to anything listening...
+                    _this.$hibachi.getEntity("Order", _this.order).then(function (data) {
+                        _this.observerService.notify("refreshOrder" + _this.order, data);
+                    });
                     //(window as any).location.reload();
                 }
             }) // JSON-string from `response.json()` call
@@ -63786,9 +63804,12 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.bindToController = {
             order: '<?',
             orderFulfillmentId: '<?',
+            accountId: '<?',
+            currencyCode: '<?',
             simpleRepresentation: '<?',
             returnOrderId: '<?',
             skuPropertiesToDisplay: '@?',
+            skuPropertiesToDisplayWithConfig: '@?',
             edit: "=?",
             exchangeOrderFlag: "=?"
         };
@@ -66792,8 +66813,7 @@ var SWOrderItems = /** @class */ (function () {
                         scope.pageShow = 50;
                     }
                     var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
-                    console.log("Getting orderitem collection");
-                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
+                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
                         .addFilter('order.orderID', scope.orderId)
                         .addFilter('parentOrderItem', 'null', 'IS')
                         .setKeywords(scope.keywords)
@@ -90292,12 +90312,34 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$injector = $injector;
         this.observerService = observerService;
+        this.formattedFlag = false;
         this.$onInit = function () {
-            console.log(_this.object, _this.property, _this.title);
+            // unescape this string
+            _this.object = _this.object.replace(/'/g, '"');
             // get the value from the object
+            _this.object = JSON.parse(_this.object);
             _this.value = _this.object[_this.property];
+            //sets a default if there is no value and we have one...
+            if (!_this.value && _this.default) {
+                _this.value = _this.default;
+            }
+            //sets a default width for the value 
+            if (!_this.displayWidth) {
+                _this.displayWidth = "110";
+            }
+            //attach the refresh listener.
+            if (_this.refreshEvent) {
+                _this.observerService.attach(_this.refresh, _this.refreshEvent);
+            }
         };
-        console.log("Simple Property Display");
+        this.refresh = function (payload) {
+            console.log("Refrsh Called on Simple");
+            console.log(payload);
+            _this.object = payload;
+            _this.value = _this.object[_this.property];
+            _this.formattedFlag = true; //this tells the view to not apply the currency filter because its already applied...
+            console.log(_this.value);
+        };
     }
     return SWSimplePropertyDisplayController;
 }());
@@ -90316,8 +90358,12 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             edit: "@?",
             property: "@?",
             title: "@?",
-            object: "=?",
-            displayType: "@?"
+            object: "@?",
+            displayType: "@?",
+            currencyFlag: "@?",
+            refreshEvent: "@?",
+            displayWidth: "@?",
+            default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
         this.controllerAs = "swSimplePropertyDisplay";
