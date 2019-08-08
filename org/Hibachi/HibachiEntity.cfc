@@ -618,10 +618,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 
 	// @hint returns a collection list or records that can be used as options for a many-to-one property
-	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+	public any function getPropertyOptionsCollectionList( required string propertyName, refresh=false ) {
 		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
 
-		if(!structKeyExists(variables, cacheKey)) {
+		if(!structKeyExists(variables, cacheKey) || arguments.refresh) {
 
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
@@ -928,7 +928,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertySmartList( propertyName=propertyName );
 				}
 			}
-			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
+			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
+				return getPropertyOptionsCollectionList(propertyName,true);
+			}
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
