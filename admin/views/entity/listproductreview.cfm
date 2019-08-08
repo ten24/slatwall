@@ -49,20 +49,37 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
-	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
-	
-	<cfset productReviewCollectionList = getHibachiScope().getService('emailService').getProductReviewCollectionList()>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" >
+  
+	<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createProductReview" entity="productReview" class="btn btn-primary" icon="plus icon-white" modal="false" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+  <cfset productReviewCollectionList = getHibachiScope().getService('emailService').getProductReviewCollectionList()>
 	<cfset serchableDisplayProperties = "reviewTitle,reviewerName,rating,product.productName,product.defaultSku.price,createdDateTime"/>
 	<cfset productReviewCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
-	
-	<cfset productReviewCollectionList.addDisplayProperty(displayProperty='productReviewID', columnConfig={
+
+	<cfset productReviewCollectionList.addDisplayProperty(
+  displayProperty='productReviewsStatus.typeName',
+  title="#getHibachiScope().rbKey('entity.ProductReview.productReviewsStatus')#",
+  columnConfig={
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+  
+	<cfset productReviewCollectionList.addDisplayProperty(displayProperty='productReviewID',
+  columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false

@@ -174,6 +174,12 @@
 		<Record typeID="b453ca526f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b453ca526f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Open" systemCode="ccbstOpen" sortOrder="1" />
 		<Record typeID="b9f3b9626f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b9f3b9626f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Closed" systemCode="ccbstClosed" sortOrder="2" />
 		
+		<Record typeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc" parentTypeID="NULL" typeName="Product Reviews Status Type" systemCode="productReviewsStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="f0558da55e9f48f7bbd0eb4c95d6b378" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,f0558da55e9f48f7bbd0eb4c95d6b378" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Unapproved" systemCode="prstUnapproved" sortOrder="1" />
+		<Record typeID="9c60366a4091434582f5085f90d81bad" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,9c60366a4091434582f5085f90d81bad" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Approved" systemCode="prstApproved" sortOrder="2" />
+		<Record typeID="8bab6083921f4df4bff254e3a06d35a7" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,8bab6083921f4df4bff254e3a06d35a7" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Disapprove" systemCode="prstDisapprove" sortOrder="3" />
+
+
 	</Records>
 </Table>
 

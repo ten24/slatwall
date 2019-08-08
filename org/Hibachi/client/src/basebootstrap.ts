@@ -180,8 +180,7 @@ export class BaseBootStrapper{
             promises[invalidCacheName] = this['get'+functionName+'Data']();
 
         }
-        var authInfoPromise = this.getAuthInfo();
-        promises['authInfo']=authInfoPromise;
+        
         return this.$q.all(promises);
     };
 
@@ -251,7 +250,9 @@ export class BaseBootStrapper{
                 }
             }catch(e){}
             this.appConfig = appConfig;
-            return this.getResourceBundles();
+            return this.getAuthInfo().then(()=>{
+                return this.getResourceBundles();    
+            });
         });
 
     };

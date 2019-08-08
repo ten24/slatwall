@@ -216,7 +216,9 @@ Notes:
 			var QOO = getQOO(productID=arguments.productID);
 			
 			for(var item in QOO){ 
-				skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
+				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
+					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
+				}
 			}
 			
 			for(var QOOData in QOO){
