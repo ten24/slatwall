@@ -15,6 +15,7 @@ class SWSkuPriceModalController{
     public skuCollectionConfig:any;
     public priceGroup:any;
     public skuId:string; 
+    public compoundSkuName:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
     public formName:string; 
@@ -136,7 +137,8 @@ class SWSkuPriceModalController{
             let skuData = {
                 skuID : pageRecord["sku_skuID"],
                 skuCode : pageRecord["sku_skuCode"],
-                calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"]
+                calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"],
+                skuName : pageRecord["sku_skuName"]
             }
             
             let promotionRewardData = {
@@ -163,6 +165,8 @@ class SWSkuPriceModalController{
             if(skuForms){
                 this.skuPrice.forms=skuForms;
             }
+            
+            this.setCoumpoundSkuName(skuData);
             
             if(this.promotionReward){
                 var promotionRewardForms = this.promotionReward.forms;
@@ -249,8 +253,9 @@ class SWSkuPriceModalController{
             this.skuPriceService.getSkuOptions(this.productId).then(
                 (response)=>{
                      this.skuOptions = [];
+                     console.log("response", response);
                     for(var i=0; i<response.records.length; i++){
-                         this.skuOptions.push({skuCode : response.records[i]['skuCode'], skuID : response.records[i]['skuID']});
+                         this.skuOptions.push({skuName : response.records[i]['skuName'], skuCode : response.records[i]['skuCode'], skuID : response.records[i]['skuID']});
                     }
                 }
             ).finally(()=>{ 
@@ -301,10 +306,26 @@ class SWSkuPriceModalController{
         if(!angular.isDefined(skuData['skuID'])){
             return;
         }
-       
-        this.selectedSku = { skuCode : skuData['skuCode'], skuID : skuData['skuID'] };
+        
+        this.selectedSku = { skuName : skuData['skuName'], skuCode : skuData['skuCode'], skuID : skuData['skuID'] };
         this.sku = this.$hibachi.populateEntity('Sku', skuData);
         this.submittedSku = { skuID : skuData['skuID'] };
+        this.setCoumpoundSkuName(skuData);
+    }
+    
+    public setCoumpoundSkuName = (skuData:any) =>{
+        this.compoundSkuName = "";
+        if(skuData['skuName']){
+            this.compoundSkuName += skuData['skuName'];
+        }
+        
+        if(this.compoundSkuName.length){
+            this.compoundSkuName += " - ";
+        }
+        
+        if(skuData['skuCode']){
+            this.compoundSkuName += skuData['skuCode'];
+        }
     }
     
     public isDefaultSkuPrice = ():boolean =>{
