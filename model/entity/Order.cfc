@@ -161,6 +161,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
 	property name="rootOrderItems" persistent="false";
 	property name="saleItemSmartList" persistent="false";
 	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
@@ -1005,6 +1006,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 
 		return totalReferencingPaymentsCredited;
+	}
+	
+	public numeric function getTotalAmountCreditedIncludingReferencingPayments(){
+		return getPaymentAmountCreditedTotal() + getReferencingPaymentAmountCreditedTotal();
 	}
 
 	public any function getPaymentMethodOptionsSmartList() {

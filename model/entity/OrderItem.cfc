@@ -131,6 +131,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="itemTotalAfterOrderDiscounts" persistent="false" hb_formatType="currency";
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
@@ -777,6 +778,10 @@ property name="personalVolume" ormtype="big_decimal";
 
 	public numeric function getItemTotal() {
 		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
+	}
+	
+	public numeric function getItemTotalAfterOrderDiscounts() {
+		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterAllDiscounts()));
 	}
 
 	public any function getSalePrice() {

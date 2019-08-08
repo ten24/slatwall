@@ -70973,10 +70973,10 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             return orderItem;
         };
         this.updateTotals = function () {
-            _this.updateOrderItemTotals();
+            _this.updateRefundTotals();
             _this.updatePaymentTotals();
         };
-        this.updateOrderItemTotals = function () {
+        this.updateRefundTotals = function () {
             var refundTotal = 0;
             var refundPVTotal = 0;
             var refundCVTotal = 0;
@@ -70985,14 +70985,20 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 refundPVTotal += item.refundPVTotal;
                 refundCVTotal += item.refundCVTotal;
             });
-            _this.refundTotal = refundTotal;
-            _this.refundPVTotal = refundPVTotal;
-            _this.refundCVTotal = refundCVTotal;
+            _this.refundTotal = Number((refundTotal + _this.fulfillmentRefundAmount).toFixed(2));
+            _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
+            _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
         this.updatePaymentTotals = function () {
             for (var i = _this.orderPayments.length - 1; i >= 0; i--) {
                 _this.validateAmount(_this.orderPayments[i]);
             }
+        };
+        this.validateFulfillmentRefundAmount = function () {
+            if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
+                _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
+            }
+            _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {

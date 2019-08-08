@@ -4,6 +4,8 @@ class SWReturnOrderItemsController{
     public refundTotal:number=0;
     public refundPVTotal:number=0;
     public refundCVTotal:number=0;
+    public fulfillmentRefundAmount:number;
+    public maxFulfillmentRefundAmount:number;
     
     constructor(
         public $hibachi
@@ -46,11 +48,11 @@ class SWReturnOrderItemsController{
    } 
    
    private updateTotals = () =>{
-       this.updateOrderItemTotals();
+       this.updateRefundTotals();
        this.updatePaymentTotals();
    }
    
-   private updateOrderItemTotals = () =>{
+   private updateRefundTotals = () =>{
        let refundTotal = 0;
        let refundPVTotal = 0;
        let refundCVTotal = 0;
@@ -60,16 +62,22 @@ class SWReturnOrderItemsController{
            refundPVTotal += item.refundPVTotal;
            refundCVTotal += item.refundCVTotal;
        })
-       
-       this.refundTotal = refundTotal;
-       this.refundPVTotal = refundPVTotal;
-       this.refundCVTotal = refundCVTotal;
+       this.refundTotal = Number((refundTotal + this.fulfillmentRefundAmount).toFixed(2));
+       this.refundPVTotal = Number(refundPVTotal.toFixed(2));
+       this.refundCVTotal = Number(refundCVTotal.toFixed(2));
    }
    
    private updatePaymentTotals = ()=>{
        for(let i = this.orderPayments.length - 1; i >= 0; i--){
             this.validateAmount(this.orderPayments[i]);
        }
+   }
+   
+   public validateFulfillmentRefundAmount = ()=>{
+       if(this.fulfillmentRefundAmount > this.maxFulfillmentRefundAmount){
+           this.fulfillmentRefundAmount = this.maxFulfillmentRefundAmount;
+       }
+       this.updateRefundTotals();
    }
    
    public validateAmount = (orderPayment)=>{

@@ -192,14 +192,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for (var orderItem in this.getOrderItems()){
 
 				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
-				if (orderItem.quantity > originalItem.getQuantityDelivered()){
+				if (orderItem.quantity > originalItem.getQuantityDeliveredMinusReturns()){
 					return false;
 				}
 			}			
 		}
 		
 		return true;
+	}
+	
+	public boolean function paymentAmountsWithinAllowedAmount(){
+		var amount = 0;
+		if(!isNull(this.getOrderPayments())){
+			for( var orderPayment in this.getOrderPayments() ){
+				
+				amount += orderPayment.amount;
+				
+			}
+		}
 		
-		
+		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
+		return amount < maxRefundAmount;
 	}
 }

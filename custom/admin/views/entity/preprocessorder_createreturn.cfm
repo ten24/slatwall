@@ -69,7 +69,6 @@ Notes:
 				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
 				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
 
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
 				<hb:HibachiDisplayToggle selector="input[name='receiveItemsFlag']" showValues="1" loadVisable="#rc.processObject.getReceiveItemsFlag()#">
@@ -157,7 +156,7 @@ Notes:
 						<th>#$.slatwall.rbKey('entity.product.title')#</th>
 						<th>#$.slatwall.rbKey('entity.sku.skuDefinition')#</th>
 						<th>#$.slatwall.rbKey('entity.orderItem.quantity')# Ordered</th>
-						<th>#$.slatwall.rbKey('entity.orderItem.quantityDelivered')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantityDeliveredMinusReturns')#</th>
 						<th>Return #$.slatwall.rbKey('entity.orderItem.quantity')#</th>
 						
 						<th>#$.slatwall.rbKey('entity.orderItem.discountAmount')#</th>
@@ -221,9 +220,12 @@ Notes:
 					</cfloop>
 					
 					<tr>
-						<td colspan="13"></td>
+						<td colspan="10"></td>
+						<td colspan="3"><strong>Fulfillment Refund:</strong> #getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+							<input name="fulfillmentRefundAmount" type="number" ng-model="swReturnOrderItems.fulfillmentRefundAmount" ng-change="swReturnOrderItems.validateFulfillmentRefundAmount()" ng-init="swReturnOrderItems.fulfillmentRefundAmount = #rc.processObject.getFulfillmentRefundAmount()#;swReturnOrderItems.maxFulfillmentRefundAmount = swReturnOrderItems.fulfillmentRefundAmount">
+						</td>
 						<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
-							<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)"></span>
+							<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)" ng-init="swReturnOrderItems.updateRefundTotals()"></span>
 						</td>
 						<td class="refundTotal">
 								<span ng-bind="swReturnOrderItems.refundPVTotal.toFixed(2)"></span>

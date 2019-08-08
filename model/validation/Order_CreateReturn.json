@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"fulfillmentRefundAmount":	[{"dataType":"numeric","minValue":0}],
-		"orderItems":				[{"method":"orderItemsWithinOriginalQuantity"}]
+		"orderItems":				[{"method":"orderItemsWithinOriginalQuantity"}],
+		"orderPayments":			[{"method":"paymentAmountsWithinAllowedAmount"}]
 	}
 }
