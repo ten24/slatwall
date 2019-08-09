@@ -252,7 +252,10 @@ export class BaseBootStrapper{
             this.appConfig = appConfig;
             return this.getAuthInfo().then(()=>{
                 return this.getResourceBundles();    
-            });
+			},
+			()=>{
+                return this.getResourceBundles();    
+			});
         });
 
     };
@@ -285,11 +288,17 @@ export class BaseBootStrapper{
     };
     
     getAuthInfo=()=>{
-        return this.$http.get(this.appConfig.baseURL+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:any)=>{
-            if(loginResponse.status === 200){
-                coremodule.value('token',loginResponse.data.token);
-            }
-        });
+		return this.$http.get(this.appConfig.baseURL+'?'+this.appConfig.action+'=api:main.login').then(  
+			
+			(loginResponse:any)=>{
+				if(loginResponse.status === 200){
+					coremodule.value('token',loginResponse.data.token);
+				}
+			},
+
+			(reason)=>{
+			}
+		);
     }
 
     getResourceBundles= () => {
