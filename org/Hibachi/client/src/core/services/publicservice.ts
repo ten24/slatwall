@@ -497,10 +497,6 @@ class PublicService {
     public authenticateActionByAccount = (action:string,processContext:string)=>{
         return this.hibachiAuthenticationService.authenticateActionByAccount(action,processContext);
     }
-    
-    public authenticateEntityProperty( crudType:string, entityName:string, propertyName:string ) {
-		return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount( crudType, entityName, propertyName );
-	}
 
     public removeInvalidOrderPayments = (cart) =>{
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);

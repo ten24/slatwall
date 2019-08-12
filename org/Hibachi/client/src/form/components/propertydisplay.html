@@ -1,4 +1,4 @@
-<div data-ng-if="swPropertyDisplay.object" class="form-group" ng-hide="swPropertyDisplay.isHidden" ng-init="swPropertyDisplay.editing=swPropertyDisplay.updateAuthInfo">
+<div data-ng-if="swPropertyDisplay.object" class="form-group" ng-hide="swPropertyDisplay.isHidden" >
 
     <label class="control-label" data-ng-if="swPropertyDisplay.showLabel">
 
@@ -40,7 +40,7 @@
         <!-- Display -->
         <p  class="form-control-static"
             ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"
-            data-ng-bind="swPropertyDisplay.applyFilter(swPropertyDisplay.object.data[swPropertyDisplay.property||swPropertyDisplay.propertyIdentifier], swPropertyDisplay.object.metaData[swPropertyDisplay.property].hb_formattype)"
+            data-ng-bind="swPropertyDisplay.applyFilter(swPropertyDisplay.object.data[swPropertyDisplay.property], swPropertyDisplay.object.metaData[swPropertyDisplay.property].hb_formattype)"
             data-ng-show="!swPropertyDisplay.editing">
             <!-- property value -->
         </p>
