@@ -291,12 +291,12 @@ export class BaseBootStrapper{
 				if(loginResponse.status === 200){
 					coremodule.value('token',loginResponse.data.token);
 				} else {
-				    coremodule.value('token','');
+				    coremodule.value('token','invalidToken');
 				}
 			},
 
 			(reason)=>{
-			    coremodule.value('token','');
+			    coremodule.value('token','invalidToken');
 			}
 		);
     }

@@ -59673,10 +59673,10 @@ var BaseBootStrapper = /** @class */ (function () {
                     core_module_1.coremodule.value('token', loginResponse.data.token);
                 }
                 else {
-                    core_module_1.coremodule.value('token', '');
+                    core_module_1.coremodule.value('token', 'invalidToken');
                 }
             }, function (reason) {
-                core_module_1.coremodule.value('token', '');
+                core_module_1.coremodule.value('token', 'invalidToken');
             });
         };
         this.getResourceBundles = function () { return __awaiter(_this, void 0, void 0, function () {
