@@ -71198,15 +71198,29 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.utilityService = utilityService;
         this.token = token;
         this.getJWTDataFromToken = function (str) {
-            // Going backwards: from bytestream, to percent-encoding, to original string.
-            str = str.split('.')[1];
-            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            var jwtData = angular.fromJson(decodedString);
-            var now = +new Date();
-            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
-            now = +nowString;
+            if (str !== "invalidToken") {
+                // Going backwards: from bytestream, to percent-encoding, to original string.
+                str = str.split('.')[1];
+                var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                var jwtData = angular.fromJson(decodedString);
+                var now = +new Date();
+                var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+                now = +nowString;
+            }
+            else {
+                var jwtData = {
+                    role: 'public'
+                };
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                }
+            }
             if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
                 if (!_this.$rootScope.slatwall.account) {
                     _this.$rootScope.slatwall.account = {};
