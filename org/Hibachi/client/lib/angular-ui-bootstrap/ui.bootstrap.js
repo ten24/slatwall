@@ -3067,8 +3067,8 @@ angular.module('ui.bootstrap.tabs', [])
  */
 .directive('tab', ['$parse', function($parse) {
   return {
-    require: 'tabset',
-    restrict: 'E',
+    require: '^tabset',
+    restrict: 'EA',
     replace: true,
     templateUrl: 'template/tabs/tab.html',
     transclude: true,
