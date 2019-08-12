@@ -2,6 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class HibachiAuthenticationService{
     
+    public token:string;
+    
     //@ngInject
     constructor(
        public $rootScope:any,
@@ -9,8 +11,7 @@ class HibachiAuthenticationService{
        public $window,
        public appConfig,
        public $injector,
-       public utilityService,
-       public token
+       public utilityService
     ){
         
     }

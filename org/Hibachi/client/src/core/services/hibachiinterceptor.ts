@@ -46,7 +46,6 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig:string,
-			token:string,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -62,7 +61,6 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig,
-			token,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -79,7 +77,6 @@ class HibachiInterceptor implements IInterceptor{
 			'localStorageService',
 			'alertService',
 			'appConfig',
-			'token',
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder',
@@ -95,6 +92,9 @@ class HibachiInterceptor implements IInterceptor{
     public baseUrl:string;
     public loginResponse=null;
     public authPromise=null;
+    
+    public token:string;
+    
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
@@ -106,7 +106,6 @@ class HibachiInterceptor implements IInterceptor{
 		public localStorageService,
 		public alertService,
 		public appConfig:any,
-		public token:string,
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder,
@@ -123,7 +122,6 @@ class HibachiInterceptor implements IInterceptor{
 		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
-		this.token = token;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
