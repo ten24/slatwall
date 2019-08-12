@@ -202,6 +202,7 @@ export class BaseBootStrapper{
 
         return this.$http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
         .then( (resp:any)=> {
+            console.log('gettingAttributeCacheKey');
             coremodule.constant('attributeMetaData',resp.data.data);
             //for safari private mode which has no localStorage
             try{
@@ -250,10 +251,7 @@ export class BaseBootStrapper{
                 }
             }catch(e){}
             this.appConfig = appConfig;
-            return this.getAuthInfo().then(()=>{
-                return this.getResourceBundles();    
-			},
-			()=>{
+            return this.getAuthInfo().finally(()=>{
                 return this.getResourceBundles();    
 			});
         });
@@ -301,7 +299,8 @@ export class BaseBootStrapper{
 		);
     }
 
-    getResourceBundles= () => {
+    getResourceBundles= async () => {
+        console.log('gettingResourceBundles');
         var rbLocale = this.appConfig.rbLocale;
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
@@ -318,12 +317,14 @@ export class BaseBootStrapper{
             this.getResourceBundle('en');
         }
         
-        return this.$q.all(rbPromises).then((data) => {
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        },(error) =>{
+        try {
+            const data = await this.$q.all(rbPromises);
+            coremodule.constant('resourceBundles', this._resourceBundle);
+        }
+        catch (error) {
             //can enter here due to 404
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        });
+            coremodule.constant('resourceBundles', this._resourceBundle);
+        }
         
 
     }
