@@ -7,6 +7,7 @@ class SWListingDisplayCellController{
     public pageRecord:any;
     public pageRecordKey:string;
     public column:any;
+    public currencyCode:string;
     public popover:any;
     public value:any;
     public templateUrl:any;
@@ -114,6 +115,21 @@ class SWListingDisplayCellController{
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
+                
+                if(this.pageRecord['currencyCode'] != null &&
+                   this.pageRecord['currencyCode'].trim().length
+                ){
+                    
+                    this.currencyCode = this.pageRecord['currencyCode'];
+                    
+                } else if(this.column.arguments != null &&
+                          this.column.arguments.currencyCode
+                ){
+                    this.currencyCode = this.column.arguments.currencyCode;
+                } else {
+                    this.currencyCode = 'USD';
+                }
+                
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
             }else if([
                 "double", 

@@ -279,7 +279,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public array function getActivePaymentMethodOptions() {
 		var paymentMethodCollection =  this.getPaymentMethodCollectionList();
-		paymentMethodCollection.setDisplayProperties('paymentMethodName|name,paymentMethodID|value')
+		paymentMethodCollection.setDisplayProperties('paymentMethodName|name,paymentMethodID|value');
 		paymentMethodCollection.addFilter('activeFlag', true);
 		return paymentMethodCollection.getRecords();
 	} 

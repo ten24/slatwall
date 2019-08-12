@@ -49,6 +49,10 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<!--- Default to ottSchedule --->
+<cfset rc.processObject.setOrderTemplateTypeID('2c948084697d51bd01697d5725650006') />
+<cfset rc.typeaheadID = 'otAccount' & createUUID() />
+
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editordertemplate">
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
@@ -74,19 +78,25 @@ Notes:
 			</hb:HibachiDisplayToggle>
 			
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<swa:SlatwallAccountTypeahead /> 	
+				<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" /> 	
 			</hb:HibachiDisplayToggle>
 
-			<hr> 
+			<hr>
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
+			<!--- Always use schedule order template type for flexship ---> 
+			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />	
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
+
+			<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#"
+										 data-account-typeahead-id='#rc.typeaheadID#'>
+			</sw-site-and-currency-select> 
+
 
 			<hr>
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
 			
+
 			<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="scheduleOrderNextPlaceDateTime" 
@@ -98,7 +108,11 @@ Notes:
 														data-end-date=""endDate""
 														autocomplete=""off""">
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="frequencyTermID" fieldtype="select" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+										property="frequencyTermID" 
+										fieldtype="select" 
+										edit="#rc.edit#">
+			
 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

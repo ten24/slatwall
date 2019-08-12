@@ -16,6 +16,7 @@ import {orderdeliverydetailmodule} from "../orderdelivery/orderdeliverydetail.mo
 import {ordermodule} from "../order/order.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
+import {sitemodule} from "../site/site.module";
 import {skumodule} from "../sku/sku.module";
 import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
 import {termmodule} from "../term/term.module"; 
@@ -45,6 +46,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   ordermodule.name,
   productmodule.name,
   productbundlemodule.name,
+  sitemodule.name,
   skumodule.name,
   subscriptionusagemodule.name,
   termmodule.name,

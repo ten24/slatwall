@@ -149,6 +149,12 @@ class HibachiService{
 		return entityName;
 
 	};
+	
+	getLastPropertyNameInPropertyIdentifier = (propertyIdentifier) => {
+		var propertyIdentifierParts = propertyIdentifier.split('.');
+		return propertyIdentifierParts[propertyIdentifierParts.length-1];
+	};
+	
 	//helper method to inflate a new entity with data
 	populateEntity = (entityName, data)=>{
 		var newEntity = this.newEntity(entityName);
@@ -475,11 +481,8 @@ class HibachiService{
 			propertyIdentifier = propertyIdentifier.replace('_','.');
 		}
 		
-		var lastEntityName = this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier)
-	
-		var propertyIdentfierParts = propertyIdentifier.split('.');
-		
-		var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length-1];
+		var lastEntityName = this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
+		var lastProperty = this.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
 		
 		return 'entity.' + lastEntityName + '.' + lastProperty;
 	}

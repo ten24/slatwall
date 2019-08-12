@@ -75,10 +75,10 @@
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
 
-		public string function arrayOfStructsToList(required array structs, required string structKeyForList){
+		public string function arrayOfStructsToList(required array structs, required string structKeyForList, string delimiter=','){
 			var listToReturn = "";
 			for(var record in arguments.structs){
-				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList]);
+				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList], arguments.delimiter );
 			} 
 			return listToReturn; 
 		}
@@ -281,6 +281,16 @@
 			}
 
 			return returnTitle;
+		}
+		
+		public string function createUniqueCode(required string tableName, required string column, string prefix = '', numeric size = 7) {
+			var isUnique = false;
+			var uniqueCode = "";
+			while(!isUnique) {
+				uniqueCode = prefix & getHibachiUtilityService().generateRandomID(size);
+				isUnique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.column, value=uniqueCode);
+			}
+			return uniqueCode;
 		}
 		
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){

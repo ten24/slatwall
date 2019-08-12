@@ -91,10 +91,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return typeCollection.getRecords();
 	}
 
+	public string function getEncodedSiteAndCurrencyOptions(){ 
+		return getHibachiScope().hibachiHTMLEditFormat(serializeJson(getSiteIDOptions()));
+	}  
+
 	public array function getSiteIDOptions(){
 		var siteCollection = getService('SiteService').getSiteCollectionList();
 		siteCollection.setDisplayProperties('siteID|value,siteName|name');
-		return siteCollection.getRecords(); 
+		var siteOptions = siteCollection.getRecords();
+		var siteAndCurrencyOptions = [];
+
+		for(var siteOption in siteOptions){ 
+			var site = getService('SiteService').getSite(siteOption['value']); 
+			siteOption['currencyCode'] = site.setting('skuCurrency'); 
+			siteOption['eligibleCurrencyCodes'] = site.setting('skuEligibleCurrencies');
+			arrayAppend(siteAndCurrencyOptions, siteOption);
+		}
+		
+		var pleaseSelectOption = {
+			'name': '-- ' & rbKey('define.pleaseSelect') & ' ' & rbKey('entity.site'),
+			'value':''
+		};
+
+		arrayPrepend(siteAndCurrencyOptions, pleaseSelectOption); 
+	
+		return siteAndCurrencyOptions;  
 	} 	
 	
 	public boolean function getNewAccountFlag() {

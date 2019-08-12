@@ -102,11 +102,15 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
+	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
+	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
+	
 	//CUSTOM PROPERTIES BEGIN
 property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
@@ -134,14 +138,22 @@ property name="customerCanCreateFlag" persistent="false";
 			return getOrderTemplateStatusType().getSystemCode();
 		}
 	}
-	
+
+	public any function getShippingMethodOptions(){
+		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
+		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
+		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
+		return shippingMethodCollection.getRecords();
+	}
+
 	public string function getTypeCode() {
-		if(!isNull(getOrderTemplateType())){
-			if(!isNull(getOrderTemplateType().getTypeCode()) && !len(trim(getOrderTemplateType().getTypeCode()))){
-				return getOrderTemplateType().getSystemCode();
-			}else{
-				return getOrderTemplateType().getTypeCode();
-			}
+		if(!isNull(getOrderTemplateType()) 
+		&& isNull(getOrderTemplateType().getTypeCode())
+		&& !len(trim(getOrderTemplateType().getTypeCode()))
+		){
+			return getOrderTemplateType().getSystemCode();
+		}else{
+			return getOrderTemplateType().getTypeCode();
 		}
 	}
 	
@@ -150,6 +162,21 @@ property name="customerCanCreateFlag" persistent="false";
 			variables.canPlaceOrderFlag = getService('OrderService').getOrderTemplateCanBePlaced(this);
 		} 
 		return variables.canPlaceOrderFlag;
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
+			variables.promotionalRewardSkuCollectionConfig = getService('OrderService').getPromotionalRewardSkuCollectionConfigForOrderTemplate(this);	
+		} 
+		return variables.promotionalRewardSkuCollectionConfig; 	
+	}
+
+	public string function getEncodedPromotionalRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'encodedPromotionalRewardSkuCollectionConfig')){
+			variables.encodedPromotionalRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalRewardSkuCollectionConfig()));  
+		} 
+		return variables.encodedPromotionalRewardSkuCollectionConfig; 	
+		
 	}
 	
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
@@ -184,7 +211,7 @@ property name="customerCanCreateFlag" persistent="false";
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
-				variables.subtotal += sku.getLivePriceByCurrencyCode(this.getCurrencyCode())*orderTemplateItem['quantity']; 	
+				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
 			} 
 		}
 		return variables.subtotal; 
@@ -194,7 +221,7 @@ property name="customerCanCreateFlag" persistent="false";
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
@@ -325,7 +352,7 @@ public boolean function getCustomerCanCreateFlag(){
 			var orderTemplateItems = this.getOrderTemplateItems();
 
 			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal();
+				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
 			}
 		}	
 		return variables.personalVolumeTotal; 	
@@ -338,7 +365,7 @@ public boolean function getCustomerCanCreateFlag(){
 			var orderTemplateItems = this.getOrderTemplateItems();
 
 			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal();
+				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
 			}
 		}	
 		return variables.commissionableVolumeTotal;

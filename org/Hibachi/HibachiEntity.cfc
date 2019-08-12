@@ -103,16 +103,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheArguments = {
 			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
 			fallbackObject = settingService, 
-			fallbackFunction = "getSettingValue", 
+			fallbackFunction = "getSettingDetails", 
 			fallbackArguments = arguments	
 		};
 
 		//delegate everything to setting service
-		var cachedSettingValue = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
+		var cachedSettingDetails = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
 
 		//we must have this setting value if we don't maybe we should throw an error
-		if(!isNull(cachedSettingValue)){
-			return cachedSettingValue;
+		if(!isNull(cachedSettingDetails) && structKeyExists(cachedSettingDetails, 'settingValue')){
+			return cachedSettingDetails.settingValue;
 		} 
 	}
 

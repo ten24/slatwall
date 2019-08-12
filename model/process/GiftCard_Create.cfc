@@ -62,6 +62,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerEmailAddress";
 	property name="creditGiftCardFlag" type="boolean";
 	property name="sku" cfc="Sku";
+	property name="order" cfc="Order" fieldtype="many-to-one";
+
 
 	//Overridden Getters
 	public string function getGiftCardCode(){

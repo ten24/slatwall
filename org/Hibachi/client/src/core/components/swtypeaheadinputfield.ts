@@ -23,6 +23,7 @@ class SWTypeaheadInputFieldController {
     public eventListeners;
     public variables;
     public titleText;
+    public typeaheadDataKey;
     private collectionConfig;
     private $root;
     
@@ -133,7 +134,8 @@ class SWTypeaheadInputField implements ng.IDirective{
         eventListeners:'=?',
         placeholderText:'@?',
         searchEndpoint:'@?',
-        titleText:'@?'
+        titleText:'@?',
+        typeaheadDataKey:'@?'
     };
     public controller=SWTypeaheadInputFieldController;
     public controllerAs="swTypeaheadInputField";

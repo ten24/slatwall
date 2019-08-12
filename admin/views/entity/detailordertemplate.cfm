@@ -143,6 +143,7 @@
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.orderTemplate')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" open="true" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/promotionitems" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/promotions" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/giftcard" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/orderhistory" open="false" />

@@ -575,7 +575,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
-	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
+	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false, any args) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
 		
@@ -583,7 +583,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			if(arguments.formatValue) {
 				return object.getFormattedValue( propertyName );
 			}
-			var rawValue = object.invokeMethod("get#propertyName#");
+			
+			if (structKeyExists(arguments, "args")){
+				var rawValue = object.invokeMethod("get#propertyName#", args);
+			}else{
+				var rawValue = object.invokeMethod("get#propertyName#");
+			}
+			
 			if(!isNull(rawValue)) {
 				return rawValue;
 			}

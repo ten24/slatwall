@@ -829,13 +829,19 @@ component output="false" accessors="true" extends="HibachiController" {
 					arguments.rc.apiResponse.content['data'] = {};
 					var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
 					for(var propertyIdentifier in propertyIdentifiersArray){
-						var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
-						if(isObject(value)){
-							value = value.getStructRepresentation();
+						try{	
+							var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+							if(isObject(value)){
+								value = value.getStructRepresentation();
+							}
+							arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
+						} catch (any e) {
+							this.logHibachi('Could not add property identifier #propertyIdentifier# to api response for entity #entity.getClassName()#',true);
 						}
-						arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
 					}
 				}
+
+
 	            // Setup success response message
 	            var replaceValues = {
 	                entityName = rbKey('entity.#entity.getClassName()#')
