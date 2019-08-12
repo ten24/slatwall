@@ -421,15 +421,15 @@ class HibachiAuthenticationService{
     public authenticateSubsystemSectionItemActionByPermissionGroup=(subsystem:string,section:string,item:string,permissionGroup:any):boolean=>{
         // Pull the permissions detail struct out of the permission group
 		var permissions = permissionGroup;
+		var actionSubsystem = permissions.action.subsystems[subsystem];
 		
-		if(
-		    permissions.action.subsystems[subsystem]
-		    && permissions.action.subsystems[subsystem].sections[section] 
-		    && permissions.action.subsystems[subsystem].sections[section].items[item] 
+		if( actionSubsystem
+		    
+		    && actionSubsystem.sections[section] 
+		    && actionSubsystem.sections[section].items[item] 
 		) {
-			return
-			    permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag 
-			    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
+			return actionSubsystem.sections[section].items[item].allowActionFlag 
+			    && actionSubsystem.sections[section].items[item].allowActionFlag
 			;
 		}
 		

@@ -71544,12 +71544,12 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
             // Pull the permissions detail struct out of the permission group
             var permissions = permissionGroup;
-            if (permissions.action.subsystems[subsystem]
-                && permissions.action.subsystems[subsystem].sections[section]
-                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
-                return;
-                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
-                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            var actionSubsystem = permissions.action.subsystems[subsystem];
+            if (actionSubsystem
+                && actionSubsystem.sections[section]
+                && actionSubsystem.sections[section].items[item]) {
+                return actionSubsystem.sections[section].items[item].allowActionFlag
+                    && actionSubsystem.sections[section].items[item].allowActionFlag;
             }
             return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
         };
