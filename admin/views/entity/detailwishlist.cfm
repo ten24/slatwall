@@ -59,8 +59,8 @@
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
-
-		<sw-entity-action-bar data-base-query-string="orderTemplateID=#rc.orderTemplate.getOrderTemplateID()#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.ordertemplate#" edit="#rc.edit#" pageTitle="#rc.orderTemplate.getSimpleRepresentation()#"></hb:HibachiEntityActionBar>
+		<!---<sw-entity-action-bar data-base-query-string="orderTemplateID=#rc.orderTemplate.getOrderTemplateID()#"
 							  data-messages="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(request.context.messages))#"
 							  data-entity-action-details="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.entityActionDetails))#" 
 							  data-page-title="#rc.orderTemplate.getSimpleRepresentation()#" 
@@ -73,7 +73,7 @@
 							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
 							  data-type="detail" 
 							  data-edit="#rc.edit#">
-		</sw-entity-action-bar>
+		</sw-entity-action-bar>--->
 
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-3">

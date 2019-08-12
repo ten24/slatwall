@@ -1,10 +1,10 @@
 <cfoutput>
 
 <!-- Set Color Variables Here -->
-<cfset colorAccent = "##f1842f" />
+<cfset colorAccent = "##1c1932" />
 <cfset colorBackground = "##2e2b4a" />
 <cfset colorContainer = "##ffffff" />
-<cfset colorContainerAccent = "##fafafa" />
+<cfset colorContainerAccent = "##ececec" />
 <cfset colorHeaderText = "##3e484d" />
 <cfset colorText = "##616161" />
 <cfset colorLighterText = "##a7b1b6" />
