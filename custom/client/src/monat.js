@@ -59593,7 +59593,6 @@ var BaseBootStrapper = /** @class */ (function () {
             }
             return _this.$http.get(urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
                 .then(function (resp) {
-                console.log('gettingAttributeCacheKey');
                 core_module_1.coremodule.constant('attributeMetaData', resp.data.data);
                 //for safari private mode which has no localStorage
                 try {
@@ -59681,41 +59680,30 @@ var BaseBootStrapper = /** @class */ (function () {
             });
         };
         this.getResourceBundles = function () { return __awaiter(_this, void 0, void 0, function () {
-            var rbLocale, localeListArray, rbPromises, rbPromise, data, error_1;
+            var rbLocale, localeListArray, rbPromises, rbPromise;
+            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log('gettingResourceBundles');
-                        rbLocale = this.appConfig.rbLocale;
-                        if (rbLocale == 'en_us') {
-                            rbLocale = 'en';
-                        }
-                        localeListArray = rbLocale.split('_');
-                        rbPromises = [];
-                        rbPromise = this.getResourceBundle(rbLocale);
-                        rbPromises.push(rbPromise);
-                        if (localeListArray.length === 2) {
-                            rbPromise = this.getResourceBundle(localeListArray[0]);
-                            rbPromises.push(rbPromise);
-                        }
-                        if (localeListArray[0] !== 'en') {
-                            this.getResourceBundle('en');
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.$q.all(rbPromises)];
-                    case 2:
-                        data = _a.sent();
-                        core_module_1.coremodule.constant('resourceBundles', this._resourceBundle);
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _a.sent();
-                        //can enter here due to 404
-                        core_module_1.coremodule.constant('resourceBundles', this._resourceBundle);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                rbLocale = this.appConfig.rbLocale;
+                if (rbLocale == 'en_us') {
+                    rbLocale = 'en';
                 }
+                localeListArray = rbLocale.split('_');
+                rbPromises = [];
+                rbPromise = this.getResourceBundle(rbLocale);
+                rbPromises.push(rbPromise);
+                if (localeListArray.length === 2) {
+                    rbPromise = this.getResourceBundle(localeListArray[0]);
+                    rbPromises.push(rbPromise);
+                }
+                if (localeListArray[0] !== 'en') {
+                    this.getResourceBundle('en');
+                }
+                return [2 /*return*/, this.$q.all(rbPromises).then(function (data) {
+                        core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                    }, function (error) {
+                        //can enter here due to 404
+                        core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                    })];
             });
         }); };
         this.myApplication = myApplication;
