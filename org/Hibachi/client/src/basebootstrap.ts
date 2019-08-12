@@ -29,7 +29,7 @@ export class BaseBootStrapper{
             if(baseURL.length && baseURL.slice(-1) !== '/'){
                 baseURL += '/';
             }
-
+                
            return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
                 this.instantiationKey = instantiationKey;
                 var invalidCache = [];
@@ -168,7 +168,7 @@ export class BaseBootStrapper{
                 this.$http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').then((resp:any) => resolve(resp.data.data.instantiationKey));
 
             }
-        });
+        })
     };
 
 
@@ -180,6 +180,7 @@ export class BaseBootStrapper{
             promises[invalidCacheName] = this['get'+functionName+'Data']();
 
         }
+        
         return this.$q.all(promises);
     };
 
@@ -250,8 +251,9 @@ export class BaseBootStrapper{
                 }
             }catch(e){}
             this.appConfig = appConfig;
-
-            return this.getResourceBundles();
+            return this.getAuthInfo().finally(()=>{
+                return this.getResourceBundles();    
+			});
         });
 
     };
@@ -314,13 +316,16 @@ export class BaseBootStrapper{
         if(localeListArray[0] !== 'en') {
             this.getResourceBundle('en');
         }
-
-        return this.$q.all(rbPromises).then((data) => {
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        },(error) =>{
+        
+        try {
+            const data = await this.$q.all(rbPromises);
+            coremodule.constant('resourceBundles', this._resourceBundle);
+        }
+        catch (error) {
             //can enter here due to 404
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        });
+            coremodule.constant('resourceBundles', this._resourceBundle);
+        }
+        
 
     }
 }
