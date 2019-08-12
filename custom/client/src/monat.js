@@ -59673,7 +59673,11 @@ var BaseBootStrapper = /** @class */ (function () {
                 if (loginResponse.status === 200) {
                     core_module_1.coremodule.value('token', loginResponse.data.token);
                 }
+                else {
+                    core_module_1.coremodule.value('token', '');
+                }
             }, function (reason) {
+                core_module_1.coremodule.value('token', '');
             });
         };
         this.getResourceBundles = function () { return __awaiter(_this, void 0, void 0, function () {
