@@ -215,7 +215,9 @@ property name="personalVolumeSubtotal" persistent="false";
     property name="retailCommissionTotal" persistent="false";
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
+    property name="vipEnrollmentOrderFlag" persistent="false";
     
+    property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal";
     property name="calculatedTaxableAmountSubtotal" ormtype="big_decimal";
     property name="calculatedCommissionableVolumeSubtotal" ormtype="big_decimal";
@@ -1861,5 +1863,13 @@ public numeric function getPersonalVolumeSubtotal(){
 	public boolean function isNotPaid() {
 		return getPaymentAmountDue() > 0;
 	}
-//CUSTOM FUNCTIONS END
+	
+	public boolean function getVipEnrollmentOrderFlag(){
+	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+	    //Product code for the VIP registration fee
+	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.setDisplayProperties("orderItemID");
+	    return orderItemCollectionList.getRecordsCount() > 0;
+	}//CUSTOM FUNCTIONS END
 }

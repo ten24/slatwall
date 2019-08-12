@@ -66,7 +66,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			var successFlag = false;
 			if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
-				continue;
+				return; 
 			}
 	
 			if(arguments.workflowTrigger.getSaveTriggerHistoryFlag() == true) {
@@ -263,7 +263,6 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(structKeyExists(evaluate(currentThreadName), 'error')){
 								writedump(evaluate(currentThreadName).error);
 								throw(evaluate(currentThreadName).error.message);
-								break;
 							}
 						}
 					}
@@ -380,19 +379,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
-					var processData = {
-						'1'=arguments.entity,
-						
-					};
-					if(arguments.entity.hasProcessObject(processContext)){
-						processData['2'] = arguments.entity.getProcessObject(processContext);
-						processData['3'] = arguments.data
-					}else{
-						processData['2'] = arguments.data	
-					}
-					var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
+
+					//process will determine whether we need to inflate a process object or pass data directly
+					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
 					
-					if(!processMethod.hasErrors()) {
+					if(!arguments.entity.hasErrors()) {
 						actionSuccess = true;
 					}
 				}else{
@@ -410,7 +401,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			case 'processByQueue' :
 				if(structKeyExists(arguments.data, 'collectionData')){
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
-					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName); 
+					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
 					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
 					actionSucess = true; 
 				} else { 

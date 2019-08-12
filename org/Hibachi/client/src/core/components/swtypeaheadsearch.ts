@@ -72,7 +72,9 @@ class SWTypeaheadSearchController {
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
 
-        if( angular.isUndefined(this.typeaheadDataKey)){
+        if( this.typeaheadDataKey == null || 
+            this.typeaheadDataKey.trim().length === 0
+        ){
             this.typeaheadDataKey = this.utilityService.createID(32); 
         }
 
@@ -301,7 +303,7 @@ class SWTypeaheadSearchController {
     }
 
     public addOrRemoveItem = (item)=>{
-        var remove = item.selected || false; 
+        var remove = item.selected || false;
 
         if(!this.hideSearch && !this.multiselectMode){
             this.hideSearch = true;
@@ -320,10 +322,12 @@ class SWTypeaheadSearchController {
         }
 
         if(!remove && angular.isDefined(this.addFunction)){
+            this.observerService.notifyById('typeahead_add_item', this.typeaheadDataKey, item);
             this.addFunction()(item);
         }
 
         if(remove && angular.isDefined(this.removeFunction)){
+            this.observerService.notifyById('typeahead_remove_item', this.typeaheadDataKey, item);
             this.removeFunction()(item.selectedIndex); 
             item.selected = false; 
             item.selectedIndex = undefined;

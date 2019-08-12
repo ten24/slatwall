@@ -17,7 +17,9 @@ component extends="Slatwall.model.service.HibachiService" {
         var languageMap = {
             'en'='English',
             'fr'='French',
-            'es'='Spanish'
+            'es'='Spanish',
+            'pl'='Polish',
+            'ga'='Gaelic'
         };
         var sites = getService('siteService').getSiteSmartList().getRecords();
         for(var site in sites){

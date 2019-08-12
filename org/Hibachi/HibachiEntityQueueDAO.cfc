@@ -87,7 +87,11 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		sql &= "'#accountID#' as modifiedByAccountID ";
 
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
-		sql &= "WHERE #primaryIDPropertyName# in (:primaryIDList)";
+		sql &= "WHERE #primaryIDPropertyName# in ('";
+
+		//not paramatizing because cf query param has in list limit this allows us to do 10000+ insertions
+		//because user can't control IDs this is safe
+		sql &= replaceNoCase(arguments.primaryIDList, ",","','","all")  & "')";
 
 		if(arguments.unique){
 			sql &= " AND #primaryIDPropertyName# not in (";
@@ -97,7 +101,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		} 
 	
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
-		queryService.addParam(name='primaryIDList', value=arguments.primaryIDList, CFSQLTYPE="CF_SQL_VARCHAR");
+
 		queryService.execute(sql=sql);
 	} 
 	
@@ -133,6 +137,16 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
 		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
 
+<<<<<<< HEAD
+=======
+	public void function updateModifiedDateTimeAndMostRecentError(required string entityQueueID, required string errorMessage){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP", list="true");
+		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage WHERE entityQueueID = :entityQueueID";
+
+>>>>>>> origin/develop-team
 		queryService.execute(sql=sql);
 	}
 	

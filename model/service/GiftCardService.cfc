@@ -77,6 +77,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
 		}
 		
+		if(!isNull(arguments.processObject.getOrder())){
+			arguments.giftCard.setOrder(arguments.processObject.getOrder());
+		}
+		
 		if( !isNull(arguments.processObject.getSku()) ){
 			arguments.giftCard.setSku(arguments.processObject.getSku());
 		}
@@ -130,8 +134,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(!isNull(arguments.processObject.getReasonForAdjustment())){
 			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
+			giftCardCreditTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
 		}
-
+		
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
@@ -149,8 +154,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		if(!isNull(arguments.processObject.getReasonForAdjustment())){
 			giftCardDebitTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
+			giftCardDebitTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
 		}
-		
+			
 		if(!giftCardDebitTransaction.hasErrors()){
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved

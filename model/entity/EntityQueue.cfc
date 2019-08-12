@@ -78,6 +78,9 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	public any function getDefaultCollectionProperties(string includesList = "entityQueueID,baseObject,baseID,processMethod,entityQueueDateTime,entityQueueData,logHistoryFlag,mostRecentError,tryCount,integration.integrationID", string excludesList=""){
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
