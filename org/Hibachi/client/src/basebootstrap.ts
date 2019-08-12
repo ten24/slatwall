@@ -301,7 +301,7 @@ export class BaseBootStrapper{
 		);
     }
 
-    getResourceBundles= async () => {
+    getResourceBundles= () => {
         var rbLocale = this.appConfig.rbLocale;
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
