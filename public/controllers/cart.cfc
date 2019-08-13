@@ -94,12 +94,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	// Change
 	public void function change( required struct rc ){
 		param name="arguments.rc.orderID" default="";
-
+		param name="arguments.rc.orderTemplateID" default="";
+		
 		var order = getOrderService().getOrder( arguments.rc.orderID );
+		var orderTemplate = getOrderService().getOrderTemplate( arguments.rc.orderID );
+		
+		// writedump(var="getHibachiScope().getSession().setOrder() = ");
+		// writedump(var=getHibachiScope().getSession().setOrder(orderTemplate) , top=2, abort=true);
+		
+		
 		if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
 			getHibachiScope().getSession().setOrder( order );
 			getHibachiScope().addActionResult( "public:cart.change", false );
-		} else {
+		}else if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+			getHibachiScope().getSession().setOrder( orderTemplate );
+			getHibachiScope().addActionResult( "public:cart.change", false );
+		}else {
 			getHibachiScope().addActionResult( "public:cart.change", true );
 		}
 	}
