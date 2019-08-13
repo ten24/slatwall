@@ -116,6 +116,9 @@
 									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
 										
 										<!------- ORDER ITEM LOOP ------->
+										<cfset skuCodeArray = []>
+										<cfset skuIDArray = []>
+										
 										<cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
 											<!-- col-6 -->
 											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; border-top: 1px solid #colorRule#; padding:16px 0;">
@@ -129,6 +132,8 @@
 																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 0;">
 																	<p class="mb_0 mt_xs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 15px;line-height: 22px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
 																		#local.orderTemplateItem.getSku().getSkuCode()#
+																		<cfset ArrayAppend(skuCodeArray,local.orderTemplateItem.getSku().getSkuCode())>
+																		<cfset ArrayAppend(skuIDArray,local.orderTemplateItem.getSku().getSkuID())>
 																	</p>
 																</td>
 															</tr>
@@ -151,6 +156,8 @@
 												</div>
 											</div>
 										</cfloop>
+										<cfset skuCodeList = skuCodeArray.toList()>
+										<cfset skuIDList = skuIDArray.toList()>
 									</td>
 								</tr>
 							</tbody>
@@ -184,7 +191,7 @@
 															 <table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="10" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
 																	<tbody>
 																		<tr>
-																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="http://monat:8906/shopping-cart/?slataction=public:cart.change&amp;orderId=#orderTemplate.getOrderTemplateId()#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add to Cart</a></td>
+																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="http://monat:8906/shopping-cart/?slataction=public:cart.addOrderItems&amp;skuCodes=#skuCodeList#&amp;skuIds=#skuIDList#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add to Cart</a></td>
 																		</tr>
 																	</tbody>
 																</table>

@@ -7,7 +7,7 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<cfif getHibachiScope().getURL() DOES NOT CONTAIN "detailwishlist">
+			<cfif getHibachiScope().getURL() DOES NOT CONTAIN "detailwishlist" AND getHibachiScope().getURL() DOES NOT CONTAIN "editwishlist">
 				<div class="col-md-2">
 					<label class="control-label">#getHibachiScope().rbKey('entity.orderTemplate.createdDateTime')#</label>
 					<p class="form-control-static">#DateFormat(rc.orderTemplate.getCreatedDateTime(),'mm/dd/yyyy')#</p>
