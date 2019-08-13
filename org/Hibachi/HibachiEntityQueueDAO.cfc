@@ -137,16 +137,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
 		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
 
-<<<<<<< HEAD
-=======
-	public void function updateModifiedDateTimeAndMostRecentError(required string entityQueueID, required string errorMessage){
-		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP", list="true");
-		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage WHERE entityQueueID = :entityQueueID";
 
->>>>>>> origin/develop-team
 		queryService.execute(sql=sql);
 	}
 	
