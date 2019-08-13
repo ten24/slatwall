@@ -191,7 +191,7 @@
 															 <table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="10" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
 																	<tbody>
 																		<tr>
-																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="http://monat:8906/shopping-cart/?slataction=public:cart.addOrderItems&amp;skuCodes=#skuCodeList#&amp;skuIds=#skuIDList#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add to Cart</a></td>
+																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="#siteLink#/shopping-cart/?slataction=public:cart.addOrderItems&amp;skuIds=#skuIDList#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add to Cart</a></td>
 																		</tr>
 																	</tbody>
 																</table>
