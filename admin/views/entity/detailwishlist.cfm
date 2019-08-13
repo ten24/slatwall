@@ -55,25 +55,11 @@
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
 <cfset rc.processCallers = [] />
-
+<cfset deleteQueryString = "redirectAction=admin:entity.listwishlist" />
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.ordertemplate#" edit="#rc.edit#" pageTitle="#rc.orderTemplate.getSimpleRepresentation()#"></hb:HibachiEntityActionBar>
-		<!---<sw-entity-action-bar data-base-query-string="orderTemplateID=#rc.orderTemplate.getOrderTemplateID()#"
-							  data-messages="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(request.context.messages))#"
-							  data-entity-action-details="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.entityActionDetails))#" 
-							  data-page-title="#rc.orderTemplate.getSimpleRepresentation()#" 
-							  data-cancel-action="saveOrderTemplate" 
-							  data-cancel-event="cancelEditOrderTemplate"
-							  data-save-action="saveOrderTemplate" 
-							  data-save-event="saveOrderTemplate"
-							  data-edit-action="editOrderTemplate"
-							  data-edit-event="editOrderTemplate"
-							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
-							  data-type="detail" 
-							  data-edit="#rc.edit#">
-		</sw-entity-action-bar>--->
+		<hb:HibachiEntityActionBar type="detail" object="#rc.ordertemplate#" edit="#rc.edit#" pageTitle="#rc.orderTemplate.getSimpleRepresentation()#" deleteQueryString="#deleteQueryString#"></hb:HibachiEntityActionBar>
 
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-3">
