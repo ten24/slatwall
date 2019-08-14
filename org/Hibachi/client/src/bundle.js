@@ -32138,13 +32138,14 @@ exports.dialogmodule = dialogmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWPropertyDisplayController = /** @class */ (function () {
     //@ngInject
-    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, listingService) {
+    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, publicService, listingService) {
         var _this = this;
         this.$filter = $filter;
         this.utilityService = utilityService;
         this.$injector = $injector;
         this.metadataService = metadataService;
         this.observerService = observerService;
+        this.publicService = publicService;
         this.listingService = listingService;
         this.saved = false;
         this.$onInit = function () {
@@ -32263,6 +32264,11 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 (angular.isDefined(_this.swForm) && angular.isDefined(_this.name))) {
                 _this.swInputOnChangeEvent = _this.swForm.name + _this.name + 'change';
                 _this.observerService.attach(_this.onChange, _this.swInputOnChangeEvent);
+            }
+            if (_this.object && _this.propertyIdentifier) {
+                if (_this.object.$$isPersisted()) {
+                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
+                }
             }
         };
         this.onChange = function (result) {
@@ -59041,6 +59047,41 @@ exports.AlertService = AlertService;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
@@ -59174,7 +59215,9 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
                 catch (e) { }
                 _this.appConfig = appConfig;
-                return _this.getResourceBundles();
+                return _this.getAuthInfo().finally(function () {
+                    return _this.getResourceBundles();
+                });
             });
         };
         this.getResourceBundle = function (locale) {
@@ -59201,29 +59244,45 @@ var BaseBootStrapper = /** @class */ (function () {
             });
             return deferred.promise;
         };
-        this.getResourceBundles = function () {
-            var rbLocale = _this.appConfig.rbLocale;
-            if (rbLocale == 'en_us') {
-                rbLocale = 'en';
-            }
-            var localeListArray = rbLocale.split('_');
-            var rbPromises = [];
-            var rbPromise = _this.getResourceBundle(rbLocale);
-            rbPromises.push(rbPromise);
-            if (localeListArray.length === 2) {
-                rbPromise = _this.getResourceBundle(localeListArray[0]);
-                rbPromises.push(rbPromise);
-            }
-            if (localeListArray[0] !== 'en') {
-                _this.getResourceBundle('en');
-            }
-            return _this.$q.all(rbPromises).then(function (data) {
-                core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
-            }, function (error) {
-                //can enter here due to 404
-                core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+        this.getAuthInfo = function () {
+            return _this.$http.get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
+                if (loginResponse.status === 200) {
+                    core_module_1.coremodule.value('token', loginResponse.data.token);
+                }
+                else {
+                    core_module_1.coremodule.value('token', 'invalidToken');
+                }
+            }, function (reason) {
+                core_module_1.coremodule.value('token', 'invalidToken');
             });
         };
+        this.getResourceBundles = function () { return __awaiter(_this, void 0, void 0, function () {
+            var rbLocale, localeListArray, rbPromises, rbPromise;
+            var _this = this;
+            return __generator(this, function (_a) {
+                rbLocale = this.appConfig.rbLocale;
+                if (rbLocale == 'en_us') {
+                    rbLocale = 'en';
+                }
+                localeListArray = rbLocale.split('_');
+                rbPromises = [];
+                rbPromise = this.getResourceBundle(rbLocale);
+                rbPromises.push(rbPromise);
+                if (localeListArray.length === 2) {
+                    rbPromise = this.getResourceBundle(localeListArray[0]);
+                    rbPromises.push(rbPromise);
+                }
+                if (localeListArray[0] !== 'en') {
+                    this.getResourceBundle('en');
+                }
+                return [2 /*return*/, this.$q.all(rbPromises).then(function (data) {
+                        core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                    }, function (error) {
+                        //can enter here due to 404
+                        core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                    })];
+            });
+        }); };
         this.myApplication = myApplication;
         return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
@@ -64201,7 +64260,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -64214,6 +64272,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -68622,7 +68681,8 @@ var SWTypeaheadInputField = /** @class */ (function () {
             eventListeners: '=?',
             placeholderText: '@?',
             searchEndpoint: '@?',
-            titleText: '@?'
+            titleText: '@?',
+            typeaheadDataKey: '@?'
         };
         this.controller = SWTypeaheadInputFieldController;
         this.controllerAs = "swTypeaheadInputField";
@@ -69009,9 +69069,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 }
             }
             if (!remove && angular.isDefined(_this.addFunction)) {
+                _this.observerService.notifyById('typeahead_add_item', _this.typeaheadDataKey, item);
                 _this.addFunction()(item);
             }
             if (remove && angular.isDefined(_this.removeFunction)) {
+                _this.observerService.notifyById('typeahead_remove_item', _this.typeaheadDataKey, item);
                 _this.removeFunction()(item.selectedIndex);
                 item.selected = false;
                 item.selectedIndex = undefined;
@@ -69046,7 +69108,8 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.$transclude($scope, function () { });
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
-        if (angular.isUndefined(this.typeaheadDataKey)) {
+        if (this.typeaheadDataKey == null ||
+            this.typeaheadDataKey.trim().length === 0) {
             this.typeaheadDataKey = this.utilityService.createID(32);
         }
         if (angular.isUndefined(this.disabled)) {
@@ -69600,26 +69663,27 @@ var SWCurrency = /** @class */ (function () {
     //@ngInject
     SWCurrency.Factory = function ($sce, $log, $hibachi, $filter) {
         var data = null, serviceInvoked = false;
-        function realFilter(value, decimalPlace, returnStringFlag) {
+        function realFilter(value, currencyCode, decimalPlace, returnStringFlag) {
             if (returnStringFlag === void 0) { returnStringFlag = true; }
             // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if (!angular.isDefined(data)) {
+            var currencySymbol = "$";
+            if (angular.isDefined(data)) {
+                currencySymbol = data[currencyCode];
+            }
+            else {
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-                data = "$";
             }
             if (!value || value.toString().trim() == '') {
                 value = 0;
             }
-            if (angular.isDefined(value)) {
-                if (angular.isDefined(decimalPlace)) {
-                    value = $filter('number')(value.toString(), decimalPlace);
-                }
-                else {
-                    value = $filter('number')(value.toString(), 2);
-                }
+            if (angular.isDefined(value) && angular.isDefined(decimalPlace)) {
+                value = $filter('number')(value.toString(), decimalPlace);
+            }
+            else {
+                value = $filter('number')(value.toString(), 2);
             }
             if (returnStringFlag) {
-                return data + value;
+                return currencySymbol + value;
             }
             else {
                 return value;
@@ -69628,18 +69692,17 @@ var SWCurrency = /** @class */ (function () {
         var filterStub;
         filterStub = function (value, currencyCode, decimalPlace, returnStringFlag) {
             if (returnStringFlag === void 0) { returnStringFlag = true; }
-            if (data === null && returnStringFlag) {
+            if (data == null && returnStringFlag) {
                 if (!serviceInvoked) {
                     serviceInvoked = true;
                     $hibachi.getCurrencies().then(function (currencies) {
-                        var result = currencies.data;
-                        data = result[currencyCode];
+                        data = currencies.data;
                     });
                 }
                 return "-";
             }
             else
-                return realFilter(value, decimalPlace, returnStringFlag);
+                return realFilter(value, currencyCode, decimalPlace, returnStringFlag);
         };
         filterStub.$stateful = true;
         return filterStub;
@@ -70702,14 +70765,58 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
+    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService, token) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
+        this.$window = $window;
         this.appConfig = appConfig;
         this.$injector = $injector;
         this.utilityService = utilityService;
+        this.token = token;
+        this.getJWTDataFromToken = function (str) {
+            if (str !== "invalidToken") {
+                // Going backwards: from bytestream, to percent-encoding, to original string.
+                str = str.split('.')[1];
+                var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                var jwtData = angular.fromJson(decodedString);
+                var now = +new Date();
+                var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+                now = +nowString;
+            }
+            else {
+                var jwtData = {
+                    role: 'public'
+                };
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                }
+            }
+            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+                //important to check to prevent recursion between $http and hibachinterceptor
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                    if (jwtData.permissionGroups) {
+                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
+                    }
+                }
+            }
+        };
         this.isSuperUser = function () {
+            if (!_this.$rootScope.slatwall.authInfo) {
+                _this.getJWTDataFromToken(_this.token);
+            }
             return _this.$rootScope.slatwall.role == 'superUser';
         };
         this.authenticateActionByAccount = function (action, processContext) {
@@ -70902,6 +71009,22 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }
             return false;
         };
+        this.authenticateEntityPropertyCrudByAccount = function (crudType, entityName, propertyName) {
+            // Check if the user is a super admin, if true no need to worry about security
+            if (_this.isSuperUser()) {
+                return true;
+            }
+            // Loop over each permission group for this account, and ckeck if it has access
+            var accountPermissionGroups = _this.$rootScope.slatwall.authInfo.permissionGroups;
+            for (var i in accountPermissionGroups) {
+                var pgOK = _this.authenticateEntityPropertyByPermissionGroup(crudType, entityName, propertyName, accountPermissionGroups[i]);
+                if (pgOK) {
+                    return true;
+                }
+            }
+            // If for some reason not of the above were meet then just return false
+            return false;
+        };
         this.authenticateEntityCrudByAccount = function (crudType, entityName) {
             crudType = _this.utilityService.toCamelCase(crudType);
             entityName = entityName.toLowerCase();
@@ -70946,7 +71069,8 @@ var HibachiAuthenticationService = /** @class */ (function () {
             var permissions = permissionGroup;
             var permissionDetails = _this.getEntityPermissionDetails();
             // Check for entity specific values
-            if (permissions.entity.entities[entityName]
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
                 && permissions.entity.entities[entityName]["permission"]
                 && permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
                 if (permissions.entity.entities[entityName].permission["allow" + crudType + "Flag"]) {
@@ -70969,15 +71093,46 @@ var HibachiAuthenticationService = /** @class */ (function () {
             }
             return false;
         };
+        this.authenticateEntityPropertyByPermissionGroup = function (crudType, entityName, propertyName, permissionGroup) {
+            // Pull the permissions detail struct out of the permission group
+            var permissions = permissionGroup;
+            entityName = entityName.toLowerCase();
+            propertyName = propertyName.toLowerCase();
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && propertyName == entityName + 'ID') {
+                return true;
+            }
+            // Check first to see if this entity was defined
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && permissions.entity.entities[entityName].properties[propertyName]
+                && permissions.entity.entities[entityName].properties[propertyName]['allow' + crudType + 'Flag']) {
+                if (permissions.entity.entities
+                    && permissions.entity.entities[entityName].properties[propertyName]['allow' + crudType + 'Flag']) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            // If there was an entity defined, and special property values have been defined then we need to return false
+            if (permissions.entity.entities
+                && permissions.entity.entities[entityName]
+                && Object.keys(permissions.entity.entities[entityName].properties).length) {
+                return false;
+            }
+            return _this.authenticateEntityByPermissionGroup(crudType, entityName, permissionGroup);
+        };
         this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
             // Pull the permissions detail struct out of the permission group
             var permissions = permissionGroup;
-            if (permissions.action.subsystems[subsystem]
-                && permissions.action.subsystems[subsystem].sections[section]
-                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
-                return;
-                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
-                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            var actionSubsystem = permissions.action.subsystems[subsystem];
+            if (actionSubsystem
+                && actionSubsystem.sections[section]
+                && actionSubsystem.sections[section].items[item]) {
+                return actionSubsystem.sections[section].items[item].allowActionFlag
+                    && actionSubsystem.sections[section].items[item].allowActionFlag;
             }
             return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
         };
@@ -71125,7 +71280,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -71136,6 +71291,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
+        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -71146,30 +71302,8 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
-        this.getJWTDataFromToken = function (str) {
-            // Going backwards: from bytestream, to percent-encoding, to original string.
-            str = str.split('.')[1];
-            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            var jwtData = angular.fromJson(decodedString);
-            var now = +new Date();
-            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
-            now = +nowString;
-            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
-                if (!_this.$rootScope.slatwall.account) {
-                    _this.$rootScope.slatwall.account = {};
-                }
-                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-                //important to check to prevent recursion between $http and hibachinterceptor
-                if (!_this.$rootScope.slatwall.role) {
-                    _this.$rootScope.slatwall.role = jwtData.role;
-                    _this.hibachiAuthenticationService.getRoleBasedData(jwtData);
-                    if (jwtData.permissionGroups) {
-                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
-                    }
-                }
-            }
+        this.getJWTDataFromToken = function () {
+            _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
         this.request = function (config) {
             _this.$log.debug('request');
@@ -71184,9 +71318,9 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.localStorageService.hasItem('token')) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.localStorageService.getItem('token');
-                _this.getJWTDataFromToken(_this.localStorageService.getItem('token'));
+            if (_this.token) {
+                config.headers['Auth-Token'] = 'Bearer ' + _this.token;
+                _this.getJWTDataFromToken();
             }
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -71222,9 +71356,6 @@ var HibachiInterceptor = /** @class */ (function () {
                 var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
                 _this.alertService.addAlerts(alerts);
             }
-            if (response.data.hasOwnProperty('token')) {
-                _this.localStorageService.setItem('token', response.data.token);
-            }
             return response;
         };
         this.responseError = function (rejection) {
@@ -71259,10 +71390,11 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
                                 _this.loginResponse = loginResponse;
                                 if (loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', loginResponse.data.token);
+                                    _this.hibachiAuthenticationService.token = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                    _this.getJWTDataFromToken(loginResponse.data.token);
+                                    _this.token = loginResponse.data.token;
+                                    _this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -71274,10 +71406,10 @@ var HibachiInterceptor = /** @class */ (function () {
                         else {
                             return _this.authPromise.then(function () {
                                 if (_this.loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', _this.loginResponse.data.token);
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
-                                    _this.getJWTDataFromToken(_this.loginResponse.data.token);
+                                    _this.token = _this.loginResponse.data.token;
+                                    _this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -71300,6 +71432,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
+        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -71307,7 +71440,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -71318,6 +71451,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'localStorageService',
             'alertService',
             'appConfig',
+            'token',
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
@@ -71512,6 +71646,10 @@ var HibachiService = /** @class */ (function () {
                 return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
             }
             return entityName;
+        };
+        this.getLastPropertyNameInPropertyIdentifier = function (propertyIdentifier) {
+            var propertyIdentifierParts = propertyIdentifier.split('.');
+            return propertyIdentifierParts[propertyIdentifierParts.length - 1];
         };
         //helper method to inflate a new entity with data
         this.populateEntity = function (entityName, data) {
@@ -71807,8 +71945,7 @@ var HibachiService = /** @class */ (function () {
                 propertyIdentifier = propertyIdentifier.replace('_', '.');
             }
             var lastEntityName = _this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
-            var propertyIdentfierParts = propertyIdentifier.split('.');
-            var lastProperty = propertyIdentfierParts[propertyIdentfierParts.length - 1];
+            var lastProperty = _this.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
             return 'entity.' + lastEntityName + '.' + lastProperty;
         };
         this.saveEntity = function (entityName, id, params, context) {
@@ -74923,6 +75060,9 @@ var PublicService = /** @class */ (function () {
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
+    PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
+        return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
+    };
     PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
         return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
     };
@@ -78008,13 +78148,14 @@ var swpropertydisplay_1 = __webpack_require__(301);
 var SWFPropertyDisplayController = /** @class */ (function (_super) {
     __extends(SWFPropertyDisplayController, _super);
     //@ngInject
-    function SWFPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService) {
-        var _this = _super.call(this, $filter, utilityService, $injector, metadataService, observerService) || this;
+    function SWFPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, publicService) {
+        var _this = _super.call(this, $filter, utilityService, $injector, metadataService, observerService, publicService) || this;
         _this.$filter = $filter;
         _this.utilityService = utilityService;
         _this.$injector = $injector;
         _this.metadataService = metadataService;
         _this.observerService = observerService;
+        _this.publicService = publicService;
         _this.edit = true;
         return _this;
     }
@@ -80155,6 +80296,17 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     if (_this.hasAggregate() && _this.pageRecord) {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
+                    }
+                    if (_this.pageRecord['currencyCode'] != null &&
+                        _this.pageRecord['currencyCode'].trim().length) {
+                        _this.currencyCode = _this.pageRecord['currencyCode'];
+                    }
+                    else if (_this.column.arguments != null &&
+                        _this.column.arguments.currencyCode) {
+                        _this.currencyCode = _this.column.arguments.currencyCode;
+                    }
+                    else {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
