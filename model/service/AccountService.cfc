@@ -95,6 +95,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
+	public boolean function verifyTwoFactorAuthenticationRequiredByUserName(required string userName) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=arguments.userName);
+		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
