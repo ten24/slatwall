@@ -299,7 +299,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.userName)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(userName=rc.userName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.userName)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
