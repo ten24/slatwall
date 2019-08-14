@@ -574,6 +574,8 @@
 			// Setup the mura scope
 			var $ = request.muraScope;
 			
+			
+			
 			// Make sure that this hasn't been run twice
 			if(!len($.event('slatwallEditTabDisplayed')) && $.getBean('permUtility').getModulePerm($.getPlugin('slatwall-mura').getModuleID(),$.event('siteid'))) {
 			
@@ -680,7 +682,11 @@
 		public void function onAfterContentSave( required any $ ) {
 			verifySlatwallRequest( $=$ );
 			
+			writedump(var=getMuraPluginConfig().getAssignedSites()); 
+			
 			var data = $.slatwall.getService("hibachiUtilityService").buildFormCollections( form , false );
+			
+			writedump(form); abort;
 			
 			var slatwallSite = $.slatwall.getService("siteService").getSiteByCMSSiteID($.event('siteID'));
 			syncMuraContent($=$, slatwallSiteID=slatwallSite.getSiteID(), muraSiteID=$.event('siteID'));
@@ -692,6 +698,7 @@
 				var muraContent = $.event('contentBean');
 				var slatwallContent = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( muraContent.getContentID(), muraContent.getSiteID() );
 				
+				writedump(var=slatwallContent, top=2); abort;
 				// Check to see if this content should have a parent
 				if(muraContent.getParentID() != "00000000000000000000000000000000END") {
 					var parentContent = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( muraContent.getParentID(), muraContent.getSiteID() );
