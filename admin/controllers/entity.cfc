@@ -410,12 +410,29 @@ private void function populateWithAddressVerification(required struct rc){
 	
 	public void function detailWishList(required struct rc) {
 		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
-		
 		param name="rc.orderTemplateID" type="string" default="";
 	
 		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
-		rc.edit = true;
+		//rc.edit = true;
 		
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function editWishList(required struct rc) {
+		genericEditMethod(entityName="OrderTemplate", rc=arguments.rc);
+		param name="rc.orderTemplateID" default="";
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function saveWishList(required struct rc) {
+		genericSaveMethod(entityName="OrderTemplate", rc=arguments.rc);
+		param name="rc.orderTemplateID" default="";
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
 		getFW().setView("admin:entity.detailwishlist");
 	}
 	

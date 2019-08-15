@@ -1,10 +1,10 @@
 <cfoutput>
 
 <!-- Set Color Variables Here -->
-<cfset colorAccent = "##f1842f" />
+<cfset colorAccent = "##1c1932" />
 <cfset colorBackground = "##2e2b4a" />
 <cfset colorContainer = "##ffffff" />
-<cfset colorContainerAccent = "##fafafa" />
+<cfset colorContainerAccent = "##ececec" />
 <cfset colorHeaderText = "##3e484d" />
 <cfset colorText = "##616161" />
 <cfset colorLighterText = "##a7b1b6" />
@@ -17,9 +17,11 @@
 <cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
 	<cfset accountLink = "http://monat.ten24dev.com/my-account" />
 	<cfset siteLink = "http://monat.ten24dev.com" />
+	<cfset storeLink = "http://monat.ten24dev.com/store" />
 <cfelse>
 	<cfset accountLink = "https://www.monat.com/my-account" />
 	<cfset siteLink = "https://www.monat.com" />
+	<cfset storeLink = "https://www.monat.com/store" />
 </cfif>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -64,7 +66,7 @@ td { vertical-align: top; }
 .col_center { display: block; margin-left: auto; margin-right: auto; }
 .email_body a, .email_body a span { text-decoration: none; color: #colorAccent#; }
 .email_body a.td, .email_body a.td span { color: #colorText#; }
-.column_cell, .column_cell td, .xlabel_c, p { font-family: Helvetica, Arial, sans-serif; }
+.column_cell, .column_cell td, .xlabel_c, p { font-family: "Miller-Banner-Roman", sans-serif; }
 .email_body .column_cell, .column_cell, .min_table td, .xlabel_c, p { font-size: 16px; line-height: 23px; color: #colorText#; mso-line-height-rule: exactly; }
 p { display: block; margin-top: 0; margin-bottom: 16px; }
 p .small { font-size: 14px; }
@@ -173,10 +175,10 @@ table.tr { margin-left: auto; margin-right: 0; }
 
 @media only screen {
   /* latin */
-  @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 400; src: local("Roboto"), local("Roboto-Regular"), url(https://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; }
+  @font-face { font-family: 'Miller-Banner-Roman', sans-serif; font-style: normal; font-weight: 400; src: local("Roboto"), local("Roboto-Regular"), url(https://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; }
   /* latin */
-  @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 700; src: local("Roboto Bold"), local("Roboto-Bold"), url(https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; }
-  .column_cell, .column_cell td, .xlabel_c, p { font-family: "Roboto", sans-serif !important; font-weight: 400; }
+  @font-face { font-family: 'Miller-Banner-Roman', sans-serif; font-style: normal; font-weight: 700; src: local("Roboto Bold"), local("Roboto-Bold"), url(https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; }
+  .column_cell, .column_cell td, .xlabel_c, p { font-family: 'Miller-Banner-Roman', sans-serif, sans-serif !important; font-weight: 400; }
   strong, b, h1, h2, h3, h4, h5 { font-weight: 700; }
   a { display: inline-block; }
   .ebtn td, .ebtn_xs td { padding: 0 !important; -webkit-transition: box-shadow 0.25s; -moz-transition: box-shadow 0.25s; -ms-transition: box-shadow 0.25s; -o-transition: box-shadow 0.25s; transition: box-shadow 0.25s; }
@@ -229,7 +231,7 @@ table.tr { margin-left: auto; margin-right: 0; }
 															
 															
 															<!------- LOGO IMAGE ------->
-															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="#siteLink#/themes/monat/assets/images/logo.svg" width="100" height="49" alt="logo" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;height: auto !important;"></td>
+															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="#siteLink#/themes/monat/assets/images/logo.svg" width="100" height="49" alt="logo" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;height: auto !important;"></td>
 														</tr>
 													</tbody>
 												</table>
