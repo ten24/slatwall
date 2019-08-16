@@ -270,13 +270,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.clearSessionValue('preservedLoginData');
 		}
 		
+		// writeDump(var="#arguments.rc#", top=2, abort=true);
 		// If emailAddressOrUserName is an email
-		if(getHibachiValidationService().validate_dataType(arguments.rc, 'emailAddressOrUserName', 'email')){
+		if(isValid('email',rc.emailAddressOrUserName)){
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddressOrUserName)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUserName=rc.emailAddressOrUserName)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddressOrUserName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUserName=rc.emailAddressOrUserName)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
@@ -299,10 +300,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// If emailAddressOrUserName is a username
 		}else{
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.emailAddressOrUserName)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(emailAddressOrUserName=rc.emailAddressOrUserName)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.emailAddressOrUserName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(emailAddressOrUserName=rc.emailAddressOrUserName)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {

@@ -68,6 +68,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="typeService" type="any";
 	property name="validationService" type="any";
 	property name="hibachiEventService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -90,13 +91,13 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddressOrUserName) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddressOrUserName);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByUserName(required string userName) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=arguments.userName);
+	public boolean function verifyTwoFactorAuthenticationRequiredByUserName(required string emailAddressOrUserName) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=arguments.emailAddressOrUserName);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
