@@ -117,8 +117,7 @@ Notes:
 						<cfif rc.twoFactorAuthenticationRequiredFlag>
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="authenticationCode" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#" fieldAttributes="autocomplete='off' placeholder='#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#' required" />
 						<cfelse>
-							<!---<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />--->
-							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="userName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.userName')#" fieldAttributes="autocomplete='off' placeholder='Username' required" />
+							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddressOrUserName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddressOrUserName')#" fieldAttributes="autocomplete='off' placeholder='Email Address or Username' required" />
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />
 							<hb:HibachiErrorDisplay object="#authorizeProcessObject#" errorName="authenticationCode" />
 							<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>

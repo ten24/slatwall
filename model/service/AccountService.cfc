@@ -682,12 +682,28 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
-		var emailAddress = arguments.processObject.getEmailAddress();;
+		// var emailAddress = arguments.processObject.getEmailAddress();
+		// var userName = arguments.processObject.getUserName();
+		var emailAddressOrUserName = arguments.processObject.getEmailAddressOrUserName();
 		var password = arguments.processObject.getPassword();
 		var authenticationCode = arguments.processObject.getAuthenticationCode();
 		
-		// Attempt to load the account authentication by emailAddress
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		var loginType = "";
+		
+		if(emailAddressOrUserName == getAccountDAO().getPrimaryEmailAddress()){
+			loginType = "emailAddress";
+			var emailAddress = arguments.processObject.getEmailAddressOrUserName();
+			
+			// Attempt to load the account authentication by emailAddress
+			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		
+		}else if(emailAddressOrUserName == getAccountDAO().getUserName()){
+			loginType = "userName";
+			var userName = arguments.processObject.getEmailAddressOrUserName();
+			
+			// Attempt to load the account authentication by userName
+			var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=userName);
+		}
 		
 		// Account exists
 		if (!isNull(accountAuthentication)) {
@@ -706,7 +722,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Invalid Password
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
-					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+					if(loginType == "emailAddress"){
+						arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+					} else if(loginType == "userName"){
+						arguments.processObject.addError('userName', rbKey('validation.account_authorizeAccount.failure'));
+					}
 				}
 				
 				// Verify two-factor authentication as long as login process has not already failed before this point
@@ -733,7 +753,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		// Invalid email, no account authentication exists
 		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			if(loginType == "emailAddress"){
+				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			} else if(loginType == "userName"){
+				arguments.processObject.addError('userName', rbKey('validation.account_authorizeAccount.failure'));
+			}
 		}
 		
 		// Login the account
@@ -743,7 +767,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 		// Login was invalid
 		} else {
-			var invalidLoginData = {emailAddress=emailAddress};
+			if(loginType == "emailAddress"){
+				var invalidLoginData = {emailAddress=emailAddress};
+			} else if(loginType == "userName"){
+				var invalidLoginData = {userName=userName};
+			}
 			
 			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();

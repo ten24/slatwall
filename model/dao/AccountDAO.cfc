@@ -52,6 +52,29 @@ Notes:
 			return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
 		}
 	</cfscript>
+	
+	<cffunction name="getPrimaryEmailAddress" returntype="string">
+		<cfargument name="emailAddress" required="true" type="string" />
+		
+		<cfquery name="local.getPrimaryEmailAddress" maxrows="1">
+			SELECT a.emailAddress FROM SwAccountEmailAddress 
+			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" />
+		</cfquery>
+
+		<cfreturn primaryEmailAddress />
+	</cffunction>
+	
+	<cffunction name="getUserName" returntype="string">
+		<cfargument name="userName" required="true" type="string" />
+		
+		<cfquery name="local.getUserName" maxrows="1">
+			SELECT a.userName FROM SwAccount
+			WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.userName#" />
+		</cfquery>
+	
+		<cfreturn userName />
+	</cffunction>
+	
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		<cfargument name="accountID" type="string" />
@@ -329,13 +352,13 @@ Notes:
 		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
 			INNER JOIN FETCH aa.account a INNER JOIN a.userName pea 
 			WHERE aa.password is not null 
-			AND #comparisonValue#=:userName 
-			AND aa.activeFlag = true "
+			AND #comparisonValue#=:userName "
 		/>
 		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
 			<cfset hql &= " AND aa.integration.integrationID is null "/> 
 		</cfif>
 		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
+		
 		<cfreturn ormExecuteQuery(hql, {userName=lcase(arguments.userName)}, true, {maxResults=1}) />
 	</cffunction>
 
