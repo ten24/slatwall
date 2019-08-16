@@ -68646,7 +68646,7 @@ var SWPricingManagerController = /** @class */ (function () {
         }, function (reason) {
         });
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
-        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuName,sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
+        this.skuPriceCollectionConfig.setDisplayProperties("sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
         this.skuPriceCollectionConfig.addDisplayProperty("price", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
@@ -71380,7 +71380,7 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
                 catch (e) { }
                 _this.appConfig = appConfig;
-                return _this.getAuthInfo().then(function () {
+                return _this.getAuthInfo().finally(function () {
                     return _this.getResourceBundles();
                 });
             });
@@ -71414,6 +71414,11 @@ var BaseBootStrapper = /** @class */ (function () {
                 if (loginResponse.status === 200) {
                     core_module_1.coremodule.value('token', loginResponse.data.token);
                 }
+                else {
+                    core_module_1.coremodule.value('token', 'invalidToken');
+                }
+            }, function (reason) {
+                core_module_1.coremodule.value('token', 'invalidToken');
             });
         };
         this.getResourceBundles = function () {
@@ -81823,7 +81828,8 @@ var SWCurrency = /** @class */ (function () {
             if (returnStringFlag === void 0) { returnStringFlag = true; }
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             var currencySymbol = "$";
-            if (angular.isDefined(data)) {
+            if (data != null &&
+                data[currencyCode] != null) {
                 currencySymbol = data[currencyCode];
             }
             else {
@@ -82931,15 +82937,29 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.utilityService = utilityService;
         this.token = token;
         this.getJWTDataFromToken = function (str) {
-            // Going backwards: from bytestream, to percent-encoding, to original string.
-            str = str.split('.')[1];
-            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            var jwtData = angular.fromJson(decodedString);
-            var now = +new Date();
-            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
-            now = +nowString;
+            if (str !== "invalidToken") {
+                // Going backwards: from bytestream, to percent-encoding, to original string.
+                str = str.split('.')[1];
+                var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                var jwtData = angular.fromJson(decodedString);
+                var now = +new Date();
+                var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+                now = +nowString;
+            }
+            else {
+                var jwtData = {
+                    role: 'public'
+                };
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                }
+            }
             if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
                 if (!_this.$rootScope.slatwall.account) {
                     _this.$rootScope.slatwall.account = {};
@@ -83269,12 +83289,12 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.authenticateSubsystemSectionItemActionByPermissionGroup = function (subsystem, section, item, permissionGroup) {
             // Pull the permissions detail struct out of the permission group
             var permissions = permissionGroup;
-            if (permissions.action.subsystems[subsystem]
-                && permissions.action.subsystems[subsystem].sections[section]
-                && permissions.action.subsystems[subsystem].sections[section].items[item]) {
-                return;
-                permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
-                    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag;
+            var actionSubsystem = permissions.action.subsystems[subsystem];
+            if (actionSubsystem
+                && actionSubsystem.sections[section]
+                && actionSubsystem.sections[section].items[item]) {
+                return actionSubsystem.sections[section].items[item].allowActionFlag
+                    && actionSubsystem.sections[section].items[item].allowActionFlag;
             }
             return _this.authenticateSubsystemSectionActionByPermissionGroup(subsystem = subsystem, section = section, permissionGroup = permissionGroup);
         };
