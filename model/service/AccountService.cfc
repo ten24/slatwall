@@ -691,7 +691,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var loginType = "";
 		
 		// If emailAddressOrUserName is an email
-		if(getHibachiValidationService.validate_dataType(arguments.processObject, 'emailAddressOrUserName', 'email')){
+		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUserName', 'email')){
 			loginType = "emailAddress";
 			var emailAddress = arguments.processObject.getEmailAddressOrUserName();
 			

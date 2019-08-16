@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	property name="hibachiSessionService" type="any";
 	property name="hibachiUtilityService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -269,16 +270,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.clearSessionValue('preservedLoginData');
 		}
 		
-		if(!isNull(rc.emailAddress)){
+		// If emailAddressOrUserName is an email
+		if(getHibachiValidationService().validate_dataType(arguments.rc, 'emailAddressOrUserName', 'email')){
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddressOrUserName)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddressOrUserName)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
-					emailAddress = rc.emailAddress,
+					emailAddress = rc.emailAddressOrUserName,
 					password = rc.password
 					};
 					
@@ -294,16 +296,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 				}
 			}
-		}else if(!isNull(rc.userName)){
+		// If emailAddressOrUserName is a username
+		}else{
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.userName)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.emailAddressOrUserName)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.userName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(userName=rc.emailAddressOrUserName)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
-					userName = rc.userName,
+					userName = rc.emailAddressOrUserName,
 					password = rc.password
 					};
 					
