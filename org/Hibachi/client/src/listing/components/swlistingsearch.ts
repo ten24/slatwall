@@ -270,11 +270,11 @@ class SWListingSearchController {
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        if(this.selectedSearchFilter.value!='All'){
+        if(this.showSearchFilterDropDown && this.selectedSearchFilter.title!='All'){
             if(angular.isUndefined(this.searchFilterPropertyIdentifier) || !this.searchFilterPropertyIdentifier.length){
                 this.searchFilterPropertyIdentifier='createdDateTime';
             }
-            console.log(this.searchFilterPropertyIdentifier)
+            
             this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
