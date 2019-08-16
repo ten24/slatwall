@@ -561,8 +561,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
 		}
-		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],cacheKey)){
-			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][cacheKey];
+		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],arguments.cacheKey)){
+			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey];
 		}
 	}
 
