@@ -52,29 +52,7 @@ Notes:
 			return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
 		}
 	</cfscript>
-	
-	<cffunction name="getPrimaryEmailAddress" returntype="string">
-		<cfargument name="emailAddress" required="true" type="string" />
-		
-		<cfquery name="local.getPrimaryEmailAddress" maxrows="1">
-			SELECT a.emailAddress FROM SwAccountEmailAddress 
-			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" />
-		</cfquery>
 
-		<cfreturn primaryEmailAddress />
-	</cffunction>
-	
-	<cffunction name="getUserName" returntype="string">
-		<cfargument name="userName" required="true" type="string" />
-		
-		<cfquery name="local.getUserName" maxrows="1">
-			SELECT a.userName FROM SwAccount
-			WHERE userName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.userName#" />
-		</cfquery>
-	
-		<cfreturn userName />
-	</cffunction>
-	
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		<cfargument name="accountID" type="string" />

@@ -690,14 +690,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		var loginType = "";
 		
-		if(emailAddressOrUserName == getAccountDAO().getPrimaryEmailAddress()){
+		// If emailAddressOrUserName is an email
+		if(getHibachiValidationService.validate_dataType(arguments.processObject, 'emailAddressOrUserName', 'email')){
 			loginType = "emailAddress";
 			var emailAddress = arguments.processObject.getEmailAddressOrUserName();
 			
 			// Attempt to load the account authentication by emailAddress
 			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
 		
-		}else if(emailAddressOrUserName == getAccountDAO().getUserName()){
+		// If emailAddressOrUserName is a username
+		}else {
 			loginType = "userName";
 			var userName = arguments.processObject.getEmailAddressOrUserName();
 			
@@ -855,8 +857,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
         return arguments.account;
     }
-
-
 
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
 
@@ -1310,7 +1310,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountLoyalty;
 	}
 	
-	
 	public void function redeemLoyaltyRedemptions(required any accountLoyalty){
 		// Loop over account loyalty redemptions
 		for(var loyaltyRedemption in arguments.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {
@@ -1327,7 +1326,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 	}
-
 
 	public any function createPointsLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
