@@ -633,7 +633,7 @@ component extends="framework.one" {
 		if(
 			(
 				hasReloadKey()
-			) || reloadByServerInstance
+			) || arguments.reloadByServerInstance
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
 		}

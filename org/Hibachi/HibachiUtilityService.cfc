@@ -95,7 +95,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -109,12 +109,9 @@
 		        var returnArray = arraynew(1);
 
 		        //grab the number of elements in the array (used in the loops)
-		        var count = arrayLen(aOfS);
+		        var count = arrayLen(arguments.aOfS);
 		        //make a variable to use in the loop
 		        var ii = 1; var j=1;
-		        //if there is a 3rd argument, set the sortOrder
-		        if(arraylen(arguments) GT 2)
-		            sortOrder = arguments[3];
 		        //if there is a 4th argument, set the sortType
 		        if(arraylen(arguments) GT 3)
 		            sortType = arguments[4];
@@ -123,12 +120,12 @@
 		            delim = arguments[5];
 		        //loop over the array of structs, building the sortArray
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            sortArray[ii] = aOfS[ii][key] & delim & ii;
+		            sortArray[ii] = arguments.aOfS[ii][arguments.key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,arguments.sortOrder2);
+		        arraySort(sortArray,sortType,arguments.sortOrder);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
+		            returnArray[ii] = arguments.aOfS[listLast(sortArray[ii],delim)];
 		        //return the array
 		        return returnArray;
 		}
@@ -157,9 +154,9 @@
 
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
-			for(var key in data){
-			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
-			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			for(var key in arguments.data){
+			  if( isSimpleValue(arguments.data[key]) && key != 'serializedJsonData'){
+			    arguments.data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
 			  }
 			}
 		}
@@ -498,7 +495,7 @@
 		}
 
 		public boolean function isStringTemplate(required string value){
-			return arraylen(getTemplateKeys(value));
+			return arraylen(getTemplateKeys(arguments.value));
 		}
 
 		//replace single brackets ${}
