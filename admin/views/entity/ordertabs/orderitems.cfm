@@ -69,13 +69,16 @@ Notes:
 		isDeletable=false
 	})/>
 	
+	<!--- The order item listing has a refreshOrderItemListing event that it will listen for to refresh
+	      this listing, notify that event  using the observer service --->
 	<hb:HibachiListingDisplay 
 		collectionList="#orderItemCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(orderItemCollectionList.getCollectionObject())#"
 		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
 		recordDeleteActionProperty="orderItemID"
-		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#">
+		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#"
+		refreshEvent="refreshOrderItemListing">
 	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
@@ -85,8 +88,8 @@ Notes:
     		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->
-    		<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />
-    		<hb:HibachiTab tabid="soiaddreturnstock" lazyLoad="true" view="admin:entity/ordertabs/addreturnstock" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.stock')#" />
+    		<!---<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />
+    		<hb:HibachiTab tabid="soiaddreturnstock" lazyLoad="true" view="admin:entity/ordertabs/addreturnstock" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.stock')#" />--->
 		</hb:HibachiTabGroup>
     </cfif>
 </cfoutput>

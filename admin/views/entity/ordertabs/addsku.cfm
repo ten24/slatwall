@@ -52,33 +52,25 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" default="oitSale"/>
-<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
+<!---<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />--->
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
-							  recordProcessAction="admin:entity.processOrder"
-							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
-							  recordProcessContext="addOrderItem"
-							  recordProcessEntity="#rc.order#"
-							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#"
-							  tableClass="addSku">
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-		<cfif NOT isNull(rc.order.getDefaultStockLocation()) >
-			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" methodIdentifier='{"METHODNAME":"getQuantity","METHODARGUMENTS":{"QUANTITYTYPE":"QATS","LOCATIONID":"#rc.order.getDefaultStockLocation().getLocationID()#"}}' />
-		<cfelse>
-			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" tdClass="calculatedQATS" />
-		</cfif>
-		<cfif NOT isNull(rc.order.getDefaultStockLocation()) AND rc.order.getDefaultStockLocation().hasChildren()>
-			<hb:HibachiListingColumn processObjectProperty="locationID" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" fieldClass="span2" />
-		</cfif>
-		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
-		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</hb:HibachiListingDisplay>
+	<cfset orderFulfillmentID = "new">
+	<cfset simpleRepresentation = "">
+	<cfif !isNull(rc.order.getOrderFulfillments())>
+		<cfset orderFulfillments = rc.order.getOrderFulfillments()>
+		<cfloop index="orderFulfillment" array="#orderFulfillments#">
+			<cfif !isNull(orderFulfillment.getOrderFulfillmentID())>
+				<cfset orderFulfillmentID = orderFulfillment.getOrderFulfillmentID()>
+				<cfset simpleRepresentation = orderFulfillment.getSimpleRepresentation()>
+				<cfbreak>
+			</cfif>
+		</cfloop>
+	</cfif>
+	
+	<cfset currencyCode = "#rc.order.getCurrencyCode()#">
+	<cfset accountID = "#rc.order.getAccount().getAccountID()#">
+	
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'" data-sku-properties-to-display-with-config="[{'name': 'personalVolumeByCurrencyCode','rbkey': 'Personal Volume','config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}},{'name': 'commissionableVolumeByCurrencyCode','rbkey': 'Commissionable Volume', 'config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}}]"></sw-add-order-items-by-sku>
+	
 </cfoutput>

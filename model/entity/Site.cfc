@@ -84,8 +84,8 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="templatesPath" persistent="false";
 	property name="assetsPath" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
-	
- property name="flagImageFilename" ormtype="string";	//CUSTOM PROPERTIES END
+
+ property name="flagImageFilename" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getAllowAdminAccessFlag() {
 		if(isNull(variables.allowAdminAccessFlag)) {
 			variables.allowAdminAccessFlag = 0;

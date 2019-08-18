@@ -12,7 +12,7 @@ component extends="Slatwall.model.service.OrderService" {
             var sku = orderItem.getSku();
             for(var priceField in customPriceFields){
                 if(isNull(orderItem.invokeMethod('get#priceField#'))){
-                    orderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.order.getCurrencyCode() )});
+                    orderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.order.getCurrencyCode(), orderItem.getQuantity(), arguments.order.getAccount().getPriceGroups() )});
                 }
             }
         }

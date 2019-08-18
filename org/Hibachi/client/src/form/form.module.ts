@@ -23,6 +23,7 @@ import {SWAddressForm} from "./components/swaddressform";
 import {SWIsolateChildForm} from "./components/swisolatechildform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
+import {SWSimplePropertyDisplay} from "./components/swsimplepropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
 import {SWVerifyAddressDialog} from "./components/swverifyaddressdialog";
 import {SWCollectionConfigAsProperty} from "./components/swcollectionconfigasproperty";
@@ -46,6 +47,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
 .directive('swfPropertyDisplay',SWFPropertyDisplay.Factory(SWFPropertyDisplay,"swfpropertydisplay.html"))
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
+.directive('swSimplePropertyDisplay',SWSimplePropertyDisplay.Factory(SWSimplePropertyDisplay,"simplepropertydisplay.html"))
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swIsolateChildForm', SWIsolateChildForm.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())

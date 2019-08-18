@@ -597,6 +597,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return "";
 	}
+	
 
 	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {		
 		return getService('HibachiService').getOrmTypeByEntityNameAndPropertyIdentifier(this.getClassName(), arguments.propertyIdentifier);

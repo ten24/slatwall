@@ -22,6 +22,7 @@
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
+	<cfparam name="attributes.refreshEvent" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
 	<!--- Admin Actions --->
@@ -180,6 +181,9 @@
 				</cfif> 
 	 			<cfif len(attributes.personalCollectionIdentifier)>
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
+ 				</cfif>
+ 				<cfif len(attributes.refreshEvent)>
+ 					data-refresh-event="#attributes.refreshEvent#" 
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
 				  data-multiselectable="true"

@@ -1,0 +1,18 @@
+	
+            <div class="container" style="padding-left: 10px; width: 100%" ng-if="swSimplePropertyDisplay.edit == 'false' && swSimplePropertyDisplay.displayType == 'table'">
+		        <div class="row">
+		            <div class="control-label col-sm-5 title" style="margin-bottom: 8px;" ng-bind="swSimplePropertyDisplay.title"></div>
+		            <div class="control-label col-sm-5 value" style="margin-bottom: 8px;padding-left:{{swSimplePropertyDisplay.displayWidth}}px" ng-if="swSimplePropertyDisplay.currencyFlag == 'true' && swSimplePropertyDisplay.formattedFlag == false">{{swSimplePropertyDisplay.value | currency}}</div>
+		            <div class="control-label col-sm-5 value" style="margin-bottom: 8px;padding-left:{{swSimplePropertyDisplay.displayWidth}}px" ng-if="swSimplePropertyDisplay.currencyFlag != 'true' || swSimplePropertyDisplay.formattedFlag == true">{{swSimplePropertyDisplay.value}}</div>
+		        </div>
+        	</div>
+        	
+        	<div class="container" style="padding-left: 10px; width: 100%" ng-if="swSimplePropertyDisplay.edit != 'false' && swSimplePropertyDisplay.displayType == 'table'">
+        	    <div class="row">
+        		    <div class="control-label col-sm-5 title" style="margin-bottom: 8px;padding-left:{{swSimplePropertyDisplay.displayWidth}}px" ng-bind="swSimplePropertyDisplay.title"></div>
+        		    <div class="control-label col-sm-5 value" style="margin-bottom: 8px;padding-left:{{swSimplePropertyDisplay.displayWidth}}px"><input type="text" name="swSimplePropertyDisplay.property" ng-model="swSimplePropertyDisplay.value"></div>
+        	    </div>
+        	</div>
+	
+	
+				

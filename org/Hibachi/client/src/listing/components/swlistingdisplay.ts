@@ -128,6 +128,9 @@ class SWListingDisplayController{
     public persistedReportCollections:any;
     public customEndpoint: string;
     public hideUnfilteredResults:boolean;
+    public refreshEvent: string;
+    
+    
     //@ngInject
     constructor(
         public $scope,
@@ -145,10 +148,28 @@ class SWListingDisplayController{
         public rbkeyService,
         public localStorageService
     ){
-        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
-        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
-        //     return;
-        // }
+       
+       this.initListingDisplay( $q, $rootScope, true );
+
+    }
+    
+    public refreshListingDisplay = () => {
+
+        this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+            this.collectionData = data;
+            this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
+        });
+    }
+    
+   /**
+    * I pulled the ctor logic into its own method so we can reinintialize the 
+    * collection on demand (refresh).
+    **/
+    public initListingDisplay = ($q, $rootScope, initial) => {
+        //setup a listener for refreshing this listing based on a refrsh event string 
+        if (this.refreshEvent && initial){
+            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
+        }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
@@ -232,20 +253,19 @@ class SWListingDisplayController{
         if(!this.reportAction && this.baseEntityName){
             this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
         }
-
     }
     
-
     public processCollection = () =>{
-
+        
         this.initializeState();
 
-        if(angular.isDefined(this.collectionPromise)){
+        if(angular.isDefined(this.collectionPromise) ){
                 this.hasCollectionPromise = true;
                 this.multipleCollectionDeffered.reject();
+                console.log("Reject");
         }
 
-        if(this.collectionConfig != null){
+        if(this.collectionConfig != null ){
             this.multipleCollectionDeffered.reject();
         }
 
@@ -927,7 +947,8 @@ class SWListingDisplay implements ng.IDirective{
             hasActionBar:"<?",
             multiSlot:"=?",
             customListingControls:"<?",
-            hideUnfilteredResults:"<?"
+            hideUnfilteredResults:"<?",
+            refreshEvent:"@?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
