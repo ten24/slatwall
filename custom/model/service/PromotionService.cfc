@@ -14,6 +14,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				var promotionReward = this.getPromotionReward(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotionRewardID);
 				
+				// If they have defined a promo without a reward, skip it.
+				if (isNull(promotionReward)){
+					continue;
+				}
+				
 				var newAppliedPromotion = this.newPromotionApplied();
 				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );

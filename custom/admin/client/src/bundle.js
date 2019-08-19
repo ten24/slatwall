@@ -63115,7 +63115,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
@@ -63152,18 +63152,10 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
     SWAddOrderItemsBySkuController.prototype.postData = function (url, data) {
         if (url === void 0) { url = ''; }
         if (data === void 0) { data = {}; }
-        return fetch(url, {
-            method: 'post',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'X-Hibachi-AJAX',
-            },
-            redirect: 'follow',
-            referrer: 'no-referrer',
-            body: JSON.stringify(data),
-        })
+        var config = {
+            'headers': { 'Content-Type': 'X-Hibachi-AJAX' }
+        };
+        return this.$hibachi.$http.post(url, data, config)
             .then(function (response) { return response.json(); }); // parses JSON response into native JavaScript objects 
     };
     ;

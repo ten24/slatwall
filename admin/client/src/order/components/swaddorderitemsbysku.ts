@@ -138,20 +138,12 @@ class SWAddOrderItemsBySkuController{
 	}
 	
 	public postData(url = '', data = {}) {
+		 
+		 var config = {
+		   'headers' : {'Content-Type': 'X-Hibachi-AJAX'}
+		 };
 		
-	    return fetch(url, {
-	        method: 'post',
-	        mode: 'cors', // no-cors, cors, *same-origin
-	        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-	        credentials: 'same-origin', // include, *same-origin, omit
-	        headers: {
-	            'Content-Type': 'X-Hibachi-AJAX',
-	            // 'Content-Type': 'application/x-www-form-urlencoded',
-	        },
-	        redirect: 'follow', // manual, *follow, error
-	        referrer: 'no-referrer', // no-referrer, *client
-	        body: JSON.stringify(data), // body data type must match "Content-Type" header
-	    })
+	     return this.$hibachi.$http.post(url, data, config)
     	.then(response => response.json()); // parses JSON response into native JavaScript objects 
 	};
 	
@@ -162,7 +154,7 @@ class SWAddOrderItemsBySkuController{
 		//need to display a modal with the add order item preprocess method.
 		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
 		var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (this.orderFulfillmentId?this.orderFulfillmentId :"new");
-		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&processContext=addorderitem&ajaxRequest=1`;
+		var url = `/Slatwall/?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&orderFulfillmentID=${orderFulfilmentID}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
 			url = url+"&preProcessDisplayedFlag=1";
