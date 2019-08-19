@@ -202,7 +202,9 @@ component {
             if ( structKeyExists( variables.getBeanCache, arguments.beanName ) ) {
                 return variables.getBeanCache[ arguments.beanName ];
             }
+
             var bean = resolveBean( arguments.beanName, arguments.constructorArgs );
+            
             if ( isSingleton( arguments.beanName ) ) variables.getBeanCache[ arguments.beanName ] = bean;
             return bean;
         } else if ( hasParent() ) {
@@ -219,24 +221,24 @@ component {
     public any function getBeanInfo( string beanName = '', boolean flatten = false,
                                      string regex = '' ) {
         discoverBeans();
-        if ( len( beanName ) ) {
+        if ( len( arguments.beanName ) ) {
             // ask about a specific bean:
-            if ( structKeyExists( variables.beanInfo, beanName ) ) {
-                return variables.beanInfo[ beanName ];
+            if ( structKeyExists( variables.beanInfo, arguments.beanName ) ) {
+                return variables.beanInfo[ arguments.beanName ];
             }
             if ( hasParent() ) {
-                return parentBeanInfo( beanName );
+                return parentBeanInfo( arguments.beanName );
             }
-            throw 'bean not found: #beanName#';
+            throw 'bean not found: #arguments.beanName#';
         } else {
             var result = { beanInfo = { } };
             if ( hasParent() ) {
                 if ( flatten || len( regex ) ) {
-                    structAppend( result.beanInfo, parentBeanInfoList( flatten ).beanInfo );
+                    structAppend( result.beanInfo, parentBeanInfoList( arguments.flatten ).beanInfo );
                     structAppend( result.beanInfo, variables.beanInfo );
                 } else {
                     result.beanInfo = variables.beanInfo;
-                    result.parent = parentBeanInfoList( flatten );
+                    result.parent = parentBeanInfoList( arguments.flatten );
                 };
             } else {
                 result.beanInfo = variables.beanInfo;

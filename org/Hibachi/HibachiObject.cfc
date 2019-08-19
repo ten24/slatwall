@@ -185,7 +185,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	//Dump & Die, shortcut
 	public any function dd(required any data, numeric top = 2){
-		writeDump(var="#data#", top=arguments.top, abort=true);
+		writeDump(var="#arguments.data#", top=arguments.top, abort=true);
 	}
 	
 	// ===========================  END:  UTILITY METHODS ===========================================

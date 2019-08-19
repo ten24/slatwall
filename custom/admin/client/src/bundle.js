@@ -81875,7 +81875,8 @@ var SWCurrency = /** @class */ (function () {
             if (returnStringFlag === void 0) { returnStringFlag = true; }
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             var currencySymbol = "$";
-            if (angular.isDefined(data)) {
+            if (data != null &&
+                data[currencyCode] != null) {
                 currencySymbol = data[currencyCode];
             }
             else {

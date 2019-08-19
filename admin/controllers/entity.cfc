@@ -103,6 +103,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'createreport');
 	this.secureMethods=listAppend(this.secureMethods,'editreport');
 	this.secureMethods=listAppend(this.secureMethods,'deletereport');
+	this.secureMethods=listAppend(this.secureMethods,'editWishList');
+	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
@@ -409,13 +411,30 @@ private void function populateWithAddressVerification(required struct rc){
 	}
 	
 	public void function detailWishList(required struct rc) {
+		param name="rc.orderTemplateID" type="string" default="";
 		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
 		
-		param name="rc.orderTemplateID" type="string" default="";
-	
 		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
-		rc.edit = true;
+		//rc.edit = true;
 		
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function editWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		genericEditMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function saveWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		genericSaveMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
 		getFW().setView("admin:entity.detailwishlist");
 	}
 	
