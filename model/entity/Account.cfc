@@ -167,18 +167,17 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 
-
+ property name="hyperWalletAcct" ormtype="string";
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
- property name="userName" ormtype="string";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
- property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="country" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
@@ -188,10 +187,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="nextRenewDate" ormtype="string";
  property name="lastStatusDate" ormtype="string";
  property name="pickupCenter" ormtype="string";
+ property name="carProgram" ormtype="string";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
- property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
