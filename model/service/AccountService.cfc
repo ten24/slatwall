@@ -91,13 +91,13 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddressOrUserName) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddressOrUserName);
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddressOrUsername) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddressOrUsername);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByUserName(required string emailAddressOrUserName) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=arguments.emailAddressOrUserName);
+	public boolean function verifyTwoFactorAuthenticationRequiredByUsername(required string emailAddressOrUsername) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=arguments.emailAddressOrUsername);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
@@ -684,28 +684,28 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_login(required any account, required any processObject) {
 		// var emailAddress = arguments.processObject.getEmailAddress();
-		// var userName = arguments.processObject.getUserName();
-		var emailAddressOrUserName = arguments.processObject.getEmailAddressOrUserName();
+		// var username = arguments.processObject.getUsername();
+		var emailAddressOrUsername = arguments.processObject.getEmailAddressOrUsername();
 		var password = arguments.processObject.getPassword();
 		var authenticationCode = arguments.processObject.getAuthenticationCode();
 		
 		var loginType = "";
 		
-		// If emailAddressOrUserName is an email
-		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUserName', 'email')){
+		// If emailAddressOrUsername is an email
+		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUsername', 'email')){
 			loginType = "emailAddress";
-			var emailAddress = arguments.processObject.getEmailAddressOrUserName();
+			var emailAddress = arguments.processObject.getEmailAddressOrUsername();
 			
 			// Attempt to load the account authentication by emailAddress
 			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
 		
-		// If emailAddressOrUserName is a username
+		// If emailAddressOrUsername is a username
 		}else {
-			loginType = "userName";
-			var userName = arguments.processObject.getEmailAddressOrUserName();
+			loginType = "username";
+			var username = arguments.processObject.getEmailAddressOrUsername();
 			
-			// Attempt to load the account authentication by userName
-			var accountAuthentication = getAccountDAO().getActivePasswordByUserName(userName=userName);
+			// Attempt to load the account authentication by username
+			var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=username);
 		}
 		
 		// Account exists
@@ -727,8 +727,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					// No password specific error message, as that would provide a malicious attacker with useful information
 					if(loginType == "emailAddress"){
 						arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
-					} else if(loginType == "userName"){
-						arguments.processObject.addError('userName', rbKey('validation.account_authorizeAccount.failure'));
+					} else if(loginType == "username"){
+						arguments.processObject.addError('username', rbKey('validation.account_authorizeAccount.failure'));
 					}
 				}
 				
@@ -758,8 +758,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		} else {
 			if(loginType == "emailAddress"){
 				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
-			} else if(loginType == "userName"){
-				arguments.processObject.addError('userName', rbKey('validation.account_authorizeAccount.failure'));
+			} else if(loginType == "username"){
+				arguments.processObject.addError('username', rbKey('validation.account_authorizeAccount.failure'));
 			}
 		}
 		
@@ -772,8 +772,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		} else {
 			if(loginType == "emailAddress"){
 				var invalidLoginData = {emailAddress=emailAddress};
-			} else if(loginType == "userName"){
-				var invalidLoginData = {userName=userName};
+			} else if(loginType == "username"){
+				var invalidLoginData = {username=username};
 			}
 			
 			if (!isNull(accountAuthentication)) {

@@ -271,17 +271,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		// writeDump(var="#arguments.rc#", top=2, abort=true);
-		// If emailAddressOrUserName is an email
-		if(isValid('email',rc.emailAddressOrUserName)){
+		// If emailAddressOrUsername is an email
+		if(isValid('email',rc.emailAddressOrUsername)){
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUserName=rc.emailAddressOrUserName)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=rc.emailAddressOrUsername)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUserName=rc.emailAddressOrUserName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=rc.emailAddressOrUsername)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
-					emailAddress = rc.emailAddressOrUserName,
+					emailAddress = rc.emailAddressOrUsername,
 					password = rc.password
 					};
 					
@@ -297,17 +297,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 				}
 			}
-		// If emailAddressOrUserName is a username
+		// If emailAddressOrUsername is a username
 		}else{
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(emailAddressOrUserName=rc.emailAddressOrUserName)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=rc.emailAddressOrUsername)) {
 				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			// Login with two-factor authentication
-			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUserName(emailAddressOrUserName=rc.emailAddressOrUserName)) {
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=rc.emailAddressOrUsername)) {
 				// Preserve login data and defer login process request
 				if (!structKeyExists(rc, "authenticationCode")) {
 					var preservedLoginData = {
-					userName = rc.emailAddressOrUserName,
+					username = rc.emailAddressOrUsername,
 					password = rc.password
 					};
 					

@@ -98,7 +98,7 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 
 	private string function getLoginNVP(){
 		var loginData = [];
-		arrayAppend(loginData,"UserName=#setting('userName')#");
+		arrayAppend(loginData,"UserName=#setting('username')#");
 		arrayAppend(loginData,"Password=#setting('password')#");
 		return arrayToList(loginData,"&");
 	}

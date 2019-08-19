@@ -114,7 +114,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 
 	private string function getLoginNVP(){
 		var loginData = [];
-		arrayAppend(loginData,"USER=#setting('userName')#");
+		arrayAppend(loginData,"USER=#setting('username')#");
 		arrayAppend(loginData,"PARTNER=#setting('partnerID')#");
 		arrayAppend(loginData,"VENDOR=#setting('vendorID')#");
 		arrayAppend(loginData,"PWD=#setting('password')#");

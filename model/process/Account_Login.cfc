@@ -55,7 +55,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="authenticationCode";
 	property name="emailAddress";
 	property name="password";
-	property name="userName";
-	property name="emailAddressOrUserName";
+	property name="username";
+	property name="emailAddressOrUsername";
+	
+	
+	public boolean function getEnforcedLoginType() {
+		if(getHibachiScope().setting('accountLoginEmailOrUsername') == "emailOrUsername"){
+			return true;
+		} 
+		return false;
+	}
 	
 }
