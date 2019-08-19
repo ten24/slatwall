@@ -51,6 +51,10 @@
 		"primaryEmailAddress":					[{"contexts":"save","conditions":"nonIntegrationAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
 		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
 		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}],
-		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}]
+		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}],
+		"userName":										[
+			{"contexts":"save","required":true},
+			{"contexts":"save","conditions":"nonIntegrationAuthenticatedAccount"}
+		]
 	}
 }
