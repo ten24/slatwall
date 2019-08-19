@@ -144,7 +144,7 @@ class SWAddOrderItemsBySkuController{
 		 };
 		
 	     return this.$hibachi.$http.post(url, data, config)
-    	.then(response => response.json()); // parses JSON response into native JavaScript objects 
+    	.then(response => response.data); // parses JSON response into native JavaScript objects 
 	};
 	
 	public addOrderItemListener = (payload)=> {

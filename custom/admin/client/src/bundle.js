@@ -63034,7 +63034,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             if (_this.skuPropertiesToDisplay != null) {
                 // join the two lists.
                 skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
-                console.log("New joined list", skuDisplayProperties);
             }
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
@@ -63050,7 +63049,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                 //now we can iterate and add the display properties defined on this attribute..
                 for (var _i = 0, skuPropertiesToDisplayWithConfigObject_1 = skuPropertiesToDisplayWithConfigObject; _i < skuPropertiesToDisplayWithConfigObject_1.length; _i++) {
                     var property = skuPropertiesToDisplayWithConfigObject_1[_i];
-                    console.log(property);
                     _this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
                 }
             }
@@ -63111,7 +63109,6 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         };
         this.addOrderItemListener = function (payload) {
             //figure out if we need to show this modal or not.
-            console.log("Add Order Item Listener Called", _this.order, payload, _this.orderFulfillmentId);
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
@@ -63156,7 +63153,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             'headers': { 'Content-Type': 'X-Hibachi-AJAX' }
         };
         return this.$hibachi.$http.post(url, data, config)
-            .then(function (response) { return response.json(); }); // parses JSON response into native JavaScript objects 
+            .then(function (response) { return response.data; }); // parses JSON response into native JavaScript objects 
     };
     ;
     return SWAddOrderItemsBySkuController;
