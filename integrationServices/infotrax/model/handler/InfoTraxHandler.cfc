@@ -10,8 +10,8 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	
 	public void function onEvent(required any eventName, required struct eventData={}){
-		//TODO: Uncomment this before going live
-		//try{
+		
+		try{
 			//Only focus on entity events
 			if(!structKeyExists(arguments,'entity')){
 				return;
@@ -28,9 +28,11 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				entityQueueData = { 'event' = arguments.eventName },
 				integrationID   = getIntegration().getIntegrationID()
 			);
-		// }catch( any e){
-		// 	//error
-		// }
+		 }catch( any e){
+		 	if(!getIntegration().setting('liveModeFlag')){
+		 		rethrow;
+		 	}
+		 }
 	}
 	
 }

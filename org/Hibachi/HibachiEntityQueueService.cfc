@@ -134,7 +134,6 @@ component accessors="true" output="false" extends="HibachiService" {
 						ormflush();
 					} 
 				}catch(any e){
-					rethrow;
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
 				}
 			}
