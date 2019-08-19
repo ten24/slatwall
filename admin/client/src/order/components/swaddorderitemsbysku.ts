@@ -45,7 +45,7 @@ class SWAddOrderItemsBySkuController{
 		if(this.skuPropertiesToDisplay != null){
 			// join the two lists.
 			skuDisplayProperties = skuDisplayProperties + "," + this.skuPropertiesToDisplay;
-			console.log("New joined list", skuDisplayProperties);
+			
 		}
 	    
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
@@ -64,7 +64,7 @@ class SWAddOrderItemsBySkuController{
         	
         	//now we can iterate and add the display properties defined on this attribute..
         	for (let property of skuPropertiesToDisplayWithConfigObject){
-        		console.log(property);
+        		
         		this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
         	}
         }
@@ -149,7 +149,6 @@ class SWAddOrderItemsBySkuController{
 	
 	public addOrderItemListener = (payload)=> {
 		//figure out if we need to show this modal or not.
-		console.log( "Add Order Item Listener Called", this.order, payload, this.orderFulfillmentId );
 		
 		//need to display a modal with the add order item preprocess method.
 		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
