@@ -63112,7 +63112,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/Slatwall/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
@@ -90896,7 +90896,6 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.observerService = observerService;
         this.formattedFlag = false;
         this.$onInit = function () {
-            console.log(_this.object);
             _this.value = _this.object[_this.property];
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
@@ -90912,12 +90911,9 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
             }
         };
         this.refresh = function (payload) {
-            console.log("Refrsh Called on Simple");
-            console.log(payload);
             _this.object = payload;
             _this.value = _this.object[_this.property];
             _this.formattedFlag = true; //this tells the view to not apply the currency filter because its already applied...
-            console.log(_this.value);
         };
     }
     return SWSimplePropertyDisplayController;
