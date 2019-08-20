@@ -24,7 +24,7 @@ class SWSimplePropertyDisplayController {
 	}
 	
 	public $onInit = () =>{ 
-	    console.log( this.object );
+	   
 	    this.value = this.object[this.property];
 	    //sets a default if there is no value and we have one...
 	    if (!this.value && this.default){
@@ -42,12 +42,11 @@ class SWSimplePropertyDisplayController {
 	}
 	
 	public refresh = (payload) => {
-	    console.log("Refrsh Called on Simple");
-	    console.log(payload);
+	   
 	    this.object = payload;
 	    this.value = this.object[this.property];
 	    this.formattedFlag = true; //this tells the view to not apply the currency filter because its already applied...
-	    console.log(this.value); 
+
 	}
 
 }
