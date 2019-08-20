@@ -24,10 +24,7 @@ class SWSimplePropertyDisplayController {
 	}
 	
 	public $onInit = () =>{ 
-	    // unescape this string
-	    this.object = this.object.replace(/'/g, '"');
-	    // get the value from the object
-	    this.object = JSON.parse( this.object );
+	    console.log( this.object );
 	    this.value = this.object[this.property];
 	    //sets a default if there is no value and we have one...
 	    if (!this.value && this.default){
@@ -67,7 +64,7 @@ class SWSimplePropertyDisplay implements ng.IDirective{
         edit: "@?",
         property:"@?",
         title:"@?",
-        object:"@?",
+        object:"<?",
         displayType:"@?",
         currencyFlag:"@?",
         refreshEvent: "@?",

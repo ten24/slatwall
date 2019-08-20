@@ -90896,10 +90896,7 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.observerService = observerService;
         this.formattedFlag = false;
         this.$onInit = function () {
-            // unescape this string
-            _this.object = _this.object.replace(/'/g, '"');
-            // get the value from the object
-            _this.object = JSON.parse(_this.object);
+            console.log(_this.object);
             _this.value = _this.object[_this.property];
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
@@ -90940,7 +90937,7 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             edit: "@?",
             property: "@?",
             title: "@?",
-            object: "@?",
+            object: "<?",
             displayType: "@?",
             currencyFlag: "@?",
             refreshEvent: "@?",

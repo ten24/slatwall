@@ -5,9 +5,7 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cfset local.jsonRepresentation = rc.order.getJsonRepresentation()>
-	<cfset local.OrderJSON = rereplace(local.jsonRepresentation,"'","\'",'all')/>
-	<cfset OrderJSON = rereplace(OrderJSON, '"',"'",'all') />
+	<cfset local.OrderJSON = rc.order.getEncodedJsonRepresentation()>
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
