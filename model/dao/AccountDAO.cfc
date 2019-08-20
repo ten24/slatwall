@@ -325,14 +325,21 @@ Notes:
 		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
 			INNER JOIN FETCH aa.account a 
 			WHERE aa.password is not null 
-			AND a.username=:username "
+			AND lower(a.username)=:username "
 		/>
+		
 		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
 			<cfset hql &= " AND aa.integration.integrationID is null "/> 
 		</cfif>
 		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
 		
-		<cfreturn ormExecuteQuery(hql, {username=lcase(arguments.username)}, true, {maxResults=1}) />
+		<cfset accounts = ormExecuteQuery(hql, {username=lcase(arguments.username)}) />
+		
+		<cfif accounts.recordsCount EQ 1>
+			<cfreturn accounts[1] />
+		<cfelse>
+			<cfreturn javacast("null","") />
+		</cfif>
 	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
