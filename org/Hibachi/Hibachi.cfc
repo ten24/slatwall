@@ -888,8 +888,15 @@ component extends="framework.one" {
 					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
 					//==================== START: JSON BUILD SETUP ========================
-
-					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
+					//skip if not application start or if config override specified
+					if(
+						structKeyExists(url,'createJson')
+						||
+						(
+							variables.framework.hibachi.isApplicationStart
+							&& !variables.framework.hibachi.skipCreateJsonOnServerStartup
+						)
+					){
 						getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
