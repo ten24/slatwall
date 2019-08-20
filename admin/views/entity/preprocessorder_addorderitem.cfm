@@ -300,9 +300,10 @@ Notes:
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-
+											<span ng-if="shippingAccountAddressID == ''">
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
 
 										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->
