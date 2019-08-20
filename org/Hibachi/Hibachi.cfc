@@ -92,6 +92,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.errorNotifyEmailAddresses = '';
 	variables.framework.hibachi.fullUpdateKey = "update";
 	variables.framework.hibachi.fullUpdatePassword = "true";
+	variables.framework.hibachi.createJsonKey = 'createJson';
+	variables.framework.hibachi.createJsonPassword = 'true';
 	variables.framework.hibachi.runDbDataKey = 'runDbData';
 	variables.framework.hibachi.loginSubsystems = "admin,public";
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
@@ -634,6 +636,14 @@ component extends="framework.one" {
 			&& url[variables.framework.reload] == variables.framework.password
 		) || !hasBeanFactory();
 	}
+	
+	public boolean function hasCreateJsonKey(){
+
+		return (
+			structKeyExists(url, variables.framework.hibachi.createJsonKey)
+			&& url[variables.framework.hibachi.createJsonKey] == variables.framework.hibachi.createJsonPassword
+		);
+	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
@@ -683,6 +693,8 @@ component extends="framework.one" {
 					applicationInitData["updateDestinationContentExclustionList"] = variables.framework.hibachi.updateDestinationContentExclustionList;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
+					applicationInitData["applicationCreateJsonKey"] = 		variables.framework.hibachi.createJsonKey;
+					applicationInitData["applicationCreateJsonPassword"] =	variables.framework.hibachi.createJsonPassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
 					applicationInitData["gzipJavascript"] = 			variables.framework.hibachi.gzipJavascript;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
@@ -888,8 +900,15 @@ component extends="framework.one" {
 					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
 					//==================== START: JSON BUILD SETUP ========================
-
-					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
+					//skip if not application start or if config override specified
+					if(
+						hasCreateJsonKey()
+						||
+						(
+							variables.framework.hibachi.isApplicationStart
+							&& !variables.framework.hibachi.skipCreateJsonOnServerStartup
+						)
+					){
 						getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
