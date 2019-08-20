@@ -636,6 +636,14 @@ component extends="framework.one" {
 			&& url[variables.framework.reload] == variables.framework.password
 		) || !hasBeanFactory();
 	}
+	
+	public boolean function hasCreateJsonKey(){
+
+		return (
+			structKeyExists(url, variables.framework.hibachi.createJsonKey)
+			&& url[variables.framework.hibachi.createJsonKey] == variables.framework.hibachi.createJsonPassword
+		);
+	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
@@ -894,7 +902,7 @@ component extends="framework.one" {
 					//==================== START: JSON BUILD SETUP ========================
 					//skip if not application start or if config override specified
 					if(
-						structKeyExists(url,'createJson')
+						hasCreateJsonKey()
 						||
 						(
 							variables.framework.hibachi.isApplicationStart
