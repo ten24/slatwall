@@ -86096,6 +86096,7 @@ var PublicService = /** @class */ (function () {
             var urlBase = _this.baseActionPath + 'getCart/';
             if (!_this.cartDataPromise || refresh) {
                 _this.cartDataPromise = _this.getData(urlBase, "cart", "");
+                console.log("Getting cart", _this.cartDataPromise);
             }
             return _this.cartDataPromise;
         };
