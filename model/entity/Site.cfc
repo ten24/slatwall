@@ -170,7 +170,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 			
 			if(dbtype eq "mysql")
 			{
-				var input_domains = currentdomain.Split(',');
+				var input_domains = ListToArray(currentdomain,",");
 				for(var domain in input_domains)
 				{
 					if(getDao('siteDao').validateDomainName(domain, this.getsiteId()))
