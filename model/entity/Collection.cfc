@@ -1648,7 +1648,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
-			if(len(filterGroupHQL)){
+			if(len(trim(filterGroupHQL))){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}else{
 				arrayDeleteAt(reverseFilterGroup,i);
@@ -3870,45 +3870,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 			//add leaf node filters as private filter group
-			if(getFilterByLeafNodesFlag()){
-				var logicalOperator = '';
-				if(len(filterHQL)){
-					logicalOperator = 'AND';
-				}else{
-					filterHQL &= ' where ';
-				}
+			if(getFilterByLeafNodesFlag()) {
 				var leafNodeHQL = getLeafNodeHQL();
-
-				if(len(leafNodeHQL)){
-					filterHQL &= " #logicalOperator# (#leafNodeHQL#)";
+				if( len( trim(leafNodeHQL) ) ) {
+					var subQueryPrefix =  len(trim(filterHQL)) ? 'where' : 'AND' ; 
+					filterHQL &= " #subQueryPrefix# (#leafNodeHQL#)";
 				}
 			}
-
+			
+			//add nonleaf node filters as private filter group
 			if(getFilterByNonLeafNodesFlag()){
-				var logicalOperator = '';
-				if(len(filterHQL)){
-					logicalOperator = 'AND';
-				}else{
-					filterHQL &= ' where ';
-				}
 				var nonLeafNodeHQL = getNonLeafNodeHQL();
-
-				if(len(nonLeafNodeHQL)){
-					filterHQL &= " #logicalOperator# (#nonLeafNodeHQL#)";
+				if( len( trim(nonLeafNodeHQL) ) ){
+					var subQueryPrefix =  len(trim(filterHQL))  ? 'where' : 'AND' ;
+					filterHQL &= " #subQueryPrefix# (#nonLeafNodeHQL#)";
 				}
 			}
 
 			addPostFiltersFromKeywords(collectionConfig);
 
 			//check if the user has applied any filters from the ui list view
-			if(arraylen(getPostFilterGroups())){
-				if(len(filterHQL) == 0){
-					postFilterHQL &= ' where ';
-					postFilterHQL &= '(' & getFilterGroupsHQL(postFilterGroups) & ')';
-				}else{
-					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
+			if(arraylen(getPostFilterGroups())) {
+				var postFilterGroupsHQL = getFilterGroupsHQL(postFilterGroups);
+				if( len( trim(postFilterGroupsHQL) ) ) {
+					var subQueryPrefix =  len(trim(filterHQL))  ? 'where' : 'AND' ;
+					postFilterHQL &= " #subQueryPrefix# (#postFilterGroupsHQL#)";
 				}
-
 			}
 
 
