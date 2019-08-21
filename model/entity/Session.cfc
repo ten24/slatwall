@@ -180,8 +180,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			return variables.rbLocale;
 		}
 		
-		if(len(getAccount().getPreferedLacale())){
-			variables.rbLocale = getAccount().getPreferedLacale();
+		if(len(getAccount().getPreferedLocale())){
+			variables.rbLocale = getAccount().getPreferedLocale();
 		}else if(structKeyExists(COOKIE, 'rbLocale')){
 			variables.rbLocale = COOKIE['rbLocale'];
 		}else{

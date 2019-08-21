@@ -205,7 +205,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public string function getPreferedLacale(){
+	public string function getPreferedLocale(){
 		//TODO: Get qualified locale based on account prefered language
 		return '';
 	}
