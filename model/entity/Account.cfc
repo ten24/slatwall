@@ -204,6 +204,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getPreferedLacale(){
+		//TODO: Get qualified locale based on account prefered language
+		return '';
+	}
+
 	public array function getOrderCurrencies(){
 		var currencyCollectionList = this.getOrdersCollectionList();
 		currencyCollectionList.setDisplayProperties('currencyCode');
