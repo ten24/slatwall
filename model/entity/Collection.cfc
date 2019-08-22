@@ -1548,6 +1548,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 	private string function getFilterGroupHQL(required array filterGroup){
+	
+	
 		var filterGroupHQL = '';
 		//reverse to preserve logicalOperator ordering when looping  by decrementing
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroup);
@@ -1555,10 +1557,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
 			
+			var removeCheck = false; // if the filter is ignored or the FilterGroup is empty array --> remove it
 			if( structKeyExists(filter, 'ignoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ignoredWhenSearch){ //XXX not considering this filter when ignoredWhenSearch is set 
-				arrayDeleteAt(reverseFilterGroup,i);
-				continue;
+				removeCheck = true;
+			}else if( StructKeyExists(filter,'filterGroup') && !ArrayLen(filter.filterGroup)){
+				removeCheck = true;
 			}
+			
+			if(removeCheck) {
+				arrayDeleteAt(reverseFilterGroup,i);
+				continue;	
+			}
+			
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -1569,6 +1579,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					logicalOperator = 'AND';
 				}
 			}
+			
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";
 			}else {
@@ -1632,10 +1643,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getFilterGroupsHQL(required array filterGroups){
+
 		var filterGroupsHQL = '';
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroups);
+	
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
+			
+			if( !ArrayLen(filterGroup.filterGroup) ) { //if the filterGroup is empty array remove it;
+				ArrayDeleteAt(reverseFilterGroup,i);
+				continue;
+			}
 			
 			var logicalOperator = '';
 			if(i != arraylen(reverseFilterGroup)){
@@ -1647,7 +1665,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			//constuct HQL to be used in filterGroup
-			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
+			var filterGroupHQL =  getFilterGroupHQL(filterGroup.filterGroup);
+			
 			if(len(trim(filterGroupHQL))){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}else{
@@ -1696,7 +1715,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
 
-		if(len(filterGroupsHQL)){
+		if(len(trim(filterGroupsHQL))){
 			filterHQL &= ' where ';
 			filterHQL &= filterGroupsHQL;
 		}
@@ -3873,7 +3892,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(getFilterByLeafNodesFlag()) {
 				var leafNodeHQL = getLeafNodeHQL();
 				if( len( trim(leafNodeHQL) ) ) {
-					var subQueryPrefix =  len(trim(filterHQL)) ? 'where' : 'AND' ; 
+					var subQueryPrefix =  len(trim(filterHQL)) ? 'AND' : 'where' ; 
 					filterHQL &= " #subQueryPrefix# (#leafNodeHQL#)";
 				}
 			}
@@ -3882,7 +3901,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(getFilterByNonLeafNodesFlag()){
 				var nonLeafNodeHQL = getNonLeafNodeHQL();
 				if( len( trim(nonLeafNodeHQL) ) ){
-					var subQueryPrefix =  len(trim(filterHQL))  ? 'where' : 'AND' ;
+					var subQueryPrefix =  len(trim(filterHQL))  ? 'AND' : 'where' ;
 					filterHQL &= " #subQueryPrefix# (#nonLeafNodeHQL#)";
 				}
 			}
@@ -3893,7 +3912,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(getPostFilterGroups())) {
 				var postFilterGroupsHQL = getFilterGroupsHQL(postFilterGroups);
 				if( len( trim(postFilterGroupsHQL) ) ) {
-					var subQueryPrefix =  len(trim(filterHQL))  ? 'where' : 'AND' ;
+					var subQueryPrefix =  len(trim(filterHQL))  ? 'AND' : 'where' ;
 					postFilterHQL &= " #subQueryPrefix# (#postFilterGroupsHQL#)";
 				}
 			}
