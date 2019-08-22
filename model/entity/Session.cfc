@@ -193,7 +193,6 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	public string function setRbLocale(required string language){
 		if(isValid('regex',language,'\w{2}(_\w{2})?')){
-			COOKIE['rbLocale'] = language;
 			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rc.rbLocale,expires='never');
 			variables.rbLocale = language;
 		}
