@@ -1,0 +1,95 @@
+{
+	"filters" : {
+		"validAccount" : [
+			{
+				"propertyIdentifier":"accountNumber",
+				"comparisonOperator":"is not",
+				"value":"null"
+			},
+			{
+				"propertyIdentifier":"ownerAccount",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null",
+			},{
+				"propertyIdentifier":"accountType",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			},{
+				"propertyIdentifier":"renewalDate",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			}
+		],
+		
+		"validOrder" : [
+			{
+				"propertyIdentifier": "orderNumber",
+				"comparisonOperator": "is not",
+				"value": "null",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderStatusType.systemCode",
+				"comparisonOperator": "<>",
+				"logicalOperator": "AND",
+				"value": "ostNotPlaced",
+				"ormtype": "string"
+			}
+		],
+		
+		"validOrderTemplate" : [
+			{
+				"propertyIdentifier": "orderTemplateStatusType.systemCode",
+				"comparisonOperator": "=",
+				"value": "otstActive",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
+	},
+	
+	"afterAccountSaveSuccess" : {
+		"filters": "validAccount"
+	},
+	"afterAccountEnrollSuccess" : {
+		"filters": "validAccount"
+	},
+	
+	"afterOrderSaveSuccess" : {
+		"filters" : "validOrder"
+	},
+	"afterOrderProcess_placeOrderSuccess" : {
+		"filters" : "validOrder"
+	},
+	"afterOrderProcess_updateOrderAmountsSuccess" : {
+		"filters" : "validOrder"
+	},
+	
+	"afterOrderTemplateProcess_activateSuccess" : {
+		"filters" : "validOrderTemplate"
+	},
+	"afterOrderTemplateSaveSuccess" : {
+		"filters" : "validOrderTemplate"
+	},
+	"afterOrderTemplateProcess_cancelSuccess" : {
+		"filters" : [
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
+	}
+	
+}

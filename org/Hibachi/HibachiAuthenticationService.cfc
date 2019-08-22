@@ -23,7 +23,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function hasPermissionRecordRestriction(required string entityName){
-		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+		return structKeyExists(variables.permissionRecordRestrictionMap,arguments.entityName);
 	}
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================

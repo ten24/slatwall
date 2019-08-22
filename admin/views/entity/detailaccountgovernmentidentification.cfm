@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,45 +45,29 @@
 
 Notes:
 
-*/
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
-	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
-		var entityQueueHistory = this.newEntityQueueHistory();
-		entityQueueHistory.setEntityQueueType(arguments.entityQueue.getEntityQueueType());
-		entityQueueHistory.setBaseObject(arguments.entityQueue.getBaseObject());
-		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
-		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
-		entityQueueHistory.setSuccessFlag(arguments.success);
-		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-		this.deleteEntityQueue(entityQueue);
-	}
+<cfparam name="rc.accountGovernmentIdentification" type="any">
+<cfparam name="rc.account" type="any" default="#rc.accountGovernmentIdentification.getAccount()#">
+<cfparam name="rc.edit" type="boolean">
 
-
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.accountGovernmentIdentification#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountGovernmentIdentification#" edit="#rc.edit#"backAction="admin:entity.detailaccount"
+								   backQueryString="accountID=#rc.account.getAccountID()#"
+								   cancelAction="admin:entity.detailaccount"
+								   cancelQueryString="accountID=#rc.account.getAccountID()#" />
+		
+		<!--- Hidden field to attach this to the account --->
+		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification#" property="governmentIdentificationNumber" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountGovernmentIdentification#" property="governmentIdentificationType" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>	
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

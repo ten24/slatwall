@@ -207,7 +207,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		}else{
 
-			if(structKeyExists(arguments.pageRecord,propertyIdentifier)){
+			if(structKeyExists(arguments.pageRecord,arguments.propertyIdentifier)){
 				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
 					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers,arguments.collectionEntity);
@@ -278,7 +278,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
 
 		var formattedPageRecords = {};
-		var paginatedCollectionOfEntities = collectionEntity.getPageRecords(formatRecords=false);
+		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords(formatRecords=false);
 		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
 			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity,paginatedCollectionOfEntities[1]['failedCollection']);
 		}else{
@@ -320,7 +320,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function getFormattedRecords(required any collectionEntity, required array propertyIdentifiers){
 
-		var collectionOfEntities = collectionEntity.getRecords(formatRecords=false);
+		var collectionOfEntities = arguments.collectionEntity.getRecords(formatRecords=false);
 
 		var formattedRecords[ "records" ] = getFormattedObjectRecords(collectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
 
@@ -332,7 +332,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		/* TODO: validate that the user is allowed to return the column*/
 
 		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
-		var defaultEntityProperties = (showNonPersistent) ? getPropertiesByEntityName(entityName) : getDefaultPropertiesByEntityName(entityName);
+		var defaultEntityProperties = (arguments.showNonPersistent) ? getPropertiesByEntityName(arguments.entityName) : getDefaultPropertiesByEntityName(arguments.entityName);
 		var propertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
 		// Turn the property identifiers into an array
 		return listToArray( propertyIdentifiersList );
@@ -804,92 +804,92 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		if(!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
-				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
+				arguments.collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
 			if(structKeyExists(collectionOptions,'pageShow') && len(collectionOptions.pageShow)){
-				collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
+				arguments.collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
 			}
 			if(structKeyExists(collectionOptions,'keywords') && len(collectionOptions.keywords)){
-				collectionEntity.setKeywords(collectionOptions.keywords);
+				arguments.collectionEntity.setKeywords(collectionOptions.keywords);
 			}
 
 			if(structKeyExists(collectionOptions,'propertyIdentifiersList') && len(collectionOptions.propertyIdentifiersList)){
 				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,collectionOptions.propertyIdentifiersList,arguments.collectionEntity.getEnforceAuthorization());
 				var collectionPropertyIdentifiers = [];
 			}else{
-				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
+				var collectionPropertyIdentifiers = getPropertyIdentifierArray(arguments.collectionEntity.getCollectionObject());
 			}
 			if(structKeyExists(collectionOptions,'filterGroupsConfig') && len(collectionOptions.filterGroupsConfig)){
-				collectionEntity.getCollectionConfigStruct()['filterGroups'] = deserializeJson(collectionOptions.filterGroupsConfig);
+				arguments.collectionEntity.getCollectionConfigStruct()['filterGroups'] = deserializeJson(collectionOptions.filterGroupsConfig);
 			}
 
 			if(structKeyExists(collectionOptions,'columnsConfig') && len(collectionOptions.columnsConfig)){
-				collectionEntity.getCollectionConfigStruct().columns = deserializeJson(collectionOptions.columnsConfig);
+				arguments.collectionEntity.getCollectionConfigStruct().columns = deserializeJson(collectionOptions.columnsConfig);
 				//look for non persistent columns
-				for(var column in collectionEntity.getCollectionConfigStruct().columns){
+				for(var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
 					if(structKeyExists(column,'persistent') && column.persistent == false){
 						//overide collectionPropertyIdentifiers
-						collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject(), true);
+						collectionPropertyIdentifiers = getPropertyIdentifierArray(arguments.collectionEntity.getCollectionObject(), true);
 						break;
 					}
 				}
 			}
 			if(structKeyExists(collectionOptions,'joinsConfig') && len(collectionOptions.joinsConfig)){
-				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
+				arguments.collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
 
-				for(var currentJoin = 1; currentJoin <= arraylen(collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
+				for(var currentJoin = 1; currentJoin <= arraylen(arguments.collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
 
-					var currentJoinParts = ListToArray(collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
+					var currentJoinParts = ListToArray(arguments.collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
 					var current_object = getService('hibachiService').getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
 
 					for (var i = 1; i <= arraylen(currentJoinParts); i++) {
 						if(structKeyExists(current_object, currentJoinParts[i]) && structKeyExists(current_object[currentJoinParts[i]], 'cfc')){
 							if(structKeyExists(current_object[currentJoinParts[i]], 'singularname')){
-								collectionEntity.setHasManyRelationFilter(true);
+								arguments.collectionEntity.setHasManyRelationFilter(true);
 								break;
 							}
 							current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[currentJoinParts[i]]['cfc']);
 						}
 					}
-					if(collectionEntity.getHasManyRelationFilter()){
+					if(arguments.collectionEntity.getHasManyRelationFilter()){
 						break;
 					}
 				}
 			}
 
 			if(structKeyExists(collectionOptions,'orderByConfig') && len(collectionOptions.orderByConfig)){
-				collectionEntity.getCollectionConfigStruct()['orderBy'] = deserializeJson(collectionOptions.orderByConfig);
+				arguments.collectionEntity.getCollectionConfigStruct()['orderBy'] = deserializeJson(collectionOptions.orderByConfig);
 			}
 			if(structKeyExists(collectionOptions,'groupBysConfig') && len(collectionOptions.groupBysConfig)){
-				collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
+				arguments.collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
 			}
 
 			if(structKeyExists(collectionOptions,'processContext') && len(collectionOptions.processContext)){
-				collectionEntity.setProcessContext(collectionOptions.processContext);
+				arguments.collectionEntity.setProcessContext(collectionOptions.processContext);
 			}
 			if(structKeyExists(collectionOptions,'isDistinct')){
-				collectionEntity.getCollectionConfigStruct()['isDistinct'] = collectionOptions.isDistinct;
+				arguments.collectionEntity.getCollectionConfigStruct()['isDistinct'] = collectionOptions.isDistinct;
 			}
 			if(structKeyExists(collectionOptions,'dirtyRead')){
-				collectionEntity.setDirtyReadFlag(collectionOptions.dirtyRead);
+				arguments.collectionEntity.setDirtyReadFlag(collectionOptions.dirtyRead);
 			}
 			if(structKeyExists(collectionOptions,'useElasticSearch')){
-				collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
+				arguments.collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
 			} 
 			if(structKeyExists(collectionOptions,'splitKeywords')){
-				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
+				arguments.collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
-				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
-				collectionEntity.setReportFlag(1);
+				arguments.collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
+				arguments.collectionEntity.setReportFlag(1);
 			}
 			
 			if(structKeyExists(collectionOptions,'enableAveragesAndSums')){
 				//XXX we're override enableAveragesAndSums  from frontnd;   By defalut the flag is "Collection.disableAveragesAndSumsFlag = true" i.e. no averages and sums
 				
-				collectionEntity.getCollectionConfigStruct()['enableAveragesAndSums'] = collectionOptions.enableAveragesAndSums;
+				arguments.collectionEntity.getCollectionConfigStruct()['enableAveragesAndSums'] = collectionOptions.enableAveragesAndSums;
 			
-				collectionEntity.setDisableAveragesAndSumsFlag(!collectionOptions.enableAveragesAndSums);
+				arguments.collectionEntity.setDisableAveragesAndSumsFlag(!collectionOptions.enableAveragesAndSums);
 			}  
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
@@ -903,9 +903,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			//get default property identifiers for the records that the collection refers to
 
 
-			if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
-				for (var column in collectionEntity.getCollectionConfigStruct().columns){
-					var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
+			if(structKeyExists(arguments.collectionEntity.getCollectionConfigStruct(),'columns')){
+				for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
+					var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),arguments.collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
 
 					if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 						ArrayAppend(collectionPropertyIdentifiers,piAlias);
@@ -1493,7 +1493,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var hibachiBaseEntity = "";
 		hibachiBaseEntity = arguments.collection.getCollectionObject();
 
-		if(!isStruct(data) && isSimpleValue(data)) {
+		if(!isStruct(arguments.data) && isSimpleValue(arguments.data)) {
 			arguments.data = getHibachiUtilityService().convertNVPStringToStruct(arguments.data);
 			filterKeyList = structKeyList(arguments.data);
 		}
@@ -1503,7 +1503,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 				applyDataForFilters(arguments.collection,arguments.data,arguments.excludesList,key);
 				//OrderByList
-				var orderBys = data[key];
+				var orderBys = arguments.data[key];
 				if (left(key,7)=='orderBy'){
 					if(len(arguments.excludesList)){ 
 						var propertiesToExclude = listToArray(arguments.excludesList);
@@ -1519,16 +1519,16 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 				//Handle pagination.
-				if(findNoCase('p:current', key) && isNumeric(data[key]) ){
-					var currentPage = data[key];
+				if(findNoCase('p:current', key) && isNumeric(arguments.data[key]) ){
+					var currentPage = arguments.data[key];
 				}
 				if (!isNull(currentPage)){
 					data['currentPageDeclaration'] = currentPage;
 					arguments.collection.setCurrentPageDeclaration(currentPage);
 				}
 
-				if(findNoCase('p:show', key) && isNumeric(data[key])){
-					var pageShow = data[key];
+				if(findNoCase('p:show', key) && isNumeric(arguments.data[key])){
+					var pageShow = arguments.data[key];
 				}
 
 				if (!isNull(pageShow)){

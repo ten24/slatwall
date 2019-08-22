@@ -69,7 +69,7 @@ component output="false" update="true" extends="HibachiService" {
 	}
 	
 	public any function getEventHandler( required string objectFullname ) {
-		return getRegisteredEventHandlers()[objectFullName];
+		return getRegisteredEventHandlers()[arguments.objectFullName];
 	}
 	
 	private any function setEventHandler( required any object ) {

@@ -65,8 +65,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
-
-	//calucluated property
+	
+	//calculated property
 	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
 	property name="calculatedGuestAccountFlag" ormtype="boolean";
@@ -96,6 +96,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
+	property name="accountGovernmentIdentifications" hb_populateEnabled="public" singularname="accountGovernmentIdentifications" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountGovernmentIdentification" cascade="all-delete-orphan" inverse="true";
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
   	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
   	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
@@ -160,6 +161,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+property name="enrollmentDate" ormtype="timestamp";
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
@@ -179,6 +182,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="country" ormtype="string" hb_formFieldType="select";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="governmentIDNumber" ormtype="string";
+ property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
@@ -905,6 +911,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public void function removeAccountPhoneNumber(required any accountPhoneNumber) {
 		arguments.accountPhoneNumber.removeAccount( this );
 	}
+	
+	// Account Phone Numbers (one-to-many)
+	public void function addAccountGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.setAccount( this );
+	}
+	public void function removeAccountGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.removeAccount( this );
+	}
 
 	// Account Promotions (one-to-many)
 	public void function addAccountPromotion(required any AccountPromotion) {
@@ -1162,6 +1176,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public string function getSimpleRepresentationPropertyName(){
 		return 'calculatedFullName';
 	}
+	
+	
 
 	// ==================  END:  Overridden Methods ========================
 

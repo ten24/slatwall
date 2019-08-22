@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,48 +39,39 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
+component accessors='true' output='false' implements='Slatwall.integrationServices.IntegrationInterface' extends='Slatwall.integrationServices.BaseIntegration' {
 	
+	property name='infoTraxService' type='any';
 	
-	// ===================== START: Logical Methods ===========================
+	public array function getEventHandlers() {
+		
+		return [ 'Slatwall.integrationServices.infotrax.model.handler.InfoTraxHandler' ];
+	}
 	
-	// =====================  END: Logical Methods ============================
+	public string function getIntegrationTypes() {
+		
+		return 'data';
+	}
 	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
-		var entityQueueHistory = this.newEntityQueueHistory();
-		entityQueueHistory.setEntityQueueType(arguments.entityQueue.getEntityQueueType());
-		entityQueueHistory.setBaseObject(arguments.entityQueue.getBaseObject());
-		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
-		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
-		entityQueueHistory.setSuccessFlag(arguments.success);
-		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
-
-		this.deleteEntityQueue(entityQueue);
+	public string function getDisplayName() {
+		
+		return 'InfoTrax';
 	}
 
-
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
+	public struct function getSettings() {
+		
+		var settings = {
+			apikey       = { fieldType = 'text' },
+			username     = { fieldType = 'text' },
+			password     = { fieldType = 'password' },
+			liveModeFlag = { fieldType = 'yesno', defaultValue = '0' },
+			liveURL      = { fieldType = 'text' },
+			testURL      = { fieldType = 'text', defaultValue = 'https://dev-monat-dts.myvoffice.com/monaticepre/index.cfm' }
+		};
+		
+		return settings;
+	}
 	
 }
