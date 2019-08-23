@@ -153,7 +153,7 @@ class SWAddOrderItemsBySkuController{
 		//need to display a modal with the add order item preprocess method.
 		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
 		var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (this.orderFulfillmentId?this.orderFulfillmentId :"new");
-		var url = `/?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&orderFulfillmentID=${orderFulfilmentID}&processContext=addorderitem&ajaxRequest=1`;
+		var url = `?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&orderFulfillmentID=${orderFulfilmentID}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
 			url = url+"&preProcessDisplayedFlag=1";
