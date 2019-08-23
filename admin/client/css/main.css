@@ -2399,6 +2399,8 @@ table .s-edit-elements a:hover {
   box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
   border: 2px solid #DCDCDC;
   border-radius: 4px;
+  max-width: 98%;
+  margin-left: 1%;
 }
 .s-add-filter-secondary-layout.s-add-filter .well {
   background: #eee;
@@ -2423,10 +2425,10 @@ table .s-edit-elements a:hover {
   font-weight: 600;
   right: -26px;
   position: absolute;
-  font-size: 30px;
-  background: #fff;
-  color: #DCDCDC;
-  padding: 0px;
+  font-size: 20px;
+  background: #f1863b;
+  color: #ffffff;
+  padding: 3px;
   z-index: 400;
   line-height: 14px;
   top: 10px;
@@ -3042,7 +3044,7 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-add-filter .s-button-select-group {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 .s-button-select-group.disabled {
   pointer-events: none;
@@ -3743,6 +3745,7 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-search-wrapper .input-group .input-group-btn.s-action .btn {
   border-radius: 2px;
+  outline: none;
 }
 .s-search-wrapper .input-group .s-search {
   border-bottom-right-radius: 2px;
@@ -6490,6 +6493,8 @@ a.disabled > i.hibachi-ui-radio-checked {
 /*-- Type Ahead Overwrites --*/
 .s-typeahead.s-select-list-wrapper {
   position: relative;
+  width: 441px;
+  margin-left: 16px;
 }
 .s-typeahead.s-select-list-wrapper input {
   border-color: #ccc;
@@ -7503,8 +7508,6 @@ sw-sku-thumbnail .thumbnail .caption {
   padding: 0 10px;
   border: 1px solid rgba(0, 0, 0, 0);
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 .s-detail-content-wrapper .s-detail-body.s-arrow {
   margin-bottom: 16px;
@@ -8824,4 +8827,24 @@ table.s-detail-content-table tbody tr.s-done {
   border-radius: 3px;
   background: #ffffff;
   margin: 2.5em 0;
+}
+.s-select-list-wrapper .input-group {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.badge {
+  color: #fff;
+  background-color: #f1863b;
+}
+#j-add-action-b #searchinput.form-control {
+  padding: 16px 10px;
+}
+.customtimeline {
+  margin-bottom: 15px !important;
+}
+.customtimeline {
+  margin-bottom: 15px !important;
+}
+.table .s-no-arrow:hover {
+  text-decoration: none;
 }
