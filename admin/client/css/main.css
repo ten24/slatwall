@@ -8825,3 +8825,6 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
+table.table.table-bordered.s-detail-content-table > tbody > tr > td:not(:first-child) {
+    text-align: right;
+}
