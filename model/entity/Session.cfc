@@ -175,6 +175,29 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		}
 	}
 	
+	public string function getRbLocale(){
+		if(structKeyExists(variables, 'rbLocale')){
+			return variables.rbLocale;
+		}
+		
+		if(len(getAccount().getPreferedLocale())){
+			variables.rbLocale = getAccount().getPreferedLocale();
+		}else if(structKeyExists(COOKIE, 'rbLocale')){
+			variables.rbLocale = COOKIE['rbLocale'];
+		}else{
+			variables.rbLocale = 'en_us';
+		}
+		
+		return variables.rbLocale;
+	}
+	
+	public string function setRbLocale(required string language){
+		if(isValid('regex',language,'\w{2}(_\w{2})?')){
+			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rc.rbLocale,expires='never');
+			variables.rbLocale = language;
+		}
+	}
+	
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

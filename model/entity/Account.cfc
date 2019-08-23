@@ -210,6 +210,12 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getPreferedLocale(){
+		//TODO: Get qualified locale based on account prefered language
+		return '';
+	}
+
 	public array function getOrderCurrencies(){
 		var currencyCollectionList = this.getOrdersCollectionList();
 		currencyCollectionList.setDisplayProperties('currencyCode');
