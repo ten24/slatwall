@@ -8842,9 +8842,9 @@ table.s-detail-content-table tbody tr.s-done {
 .customtimeline {
   margin-bottom: 15px !important;
 }
-.customtimeline {
-  margin-bottom: 15px !important;
-}
 .table .s-no-arrow:hover {
   text-decoration: none;
+}
+table.table.table-bordered.s-detail-content-table > tbody > tr > td:not(:first-child) {
+    text-align: right;
 }
