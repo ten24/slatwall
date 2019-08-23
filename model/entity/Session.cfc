@@ -191,10 +191,10 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		return variables.rbLocale;
 	}
 	
-	public string function setRbLocale(required string language){
-		if(isValid('regex',language,'\w{2}(_\w{2})?')){
-			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rc.rbLocale,expires='never');
-			variables.rbLocale = language;
+	public string function setRbLocale(required string rbLocale){
+		if(isValid('regex',arguments.rbLocale,'\w{2}(_\w{2})?')){
+			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rbLocale,expires='never');
+			variables.rbLocale = arguments.rbLocale;
 		}
 	}
 	
