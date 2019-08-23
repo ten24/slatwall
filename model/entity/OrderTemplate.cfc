@@ -112,7 +112,9 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="lastSyncedDateTime" ormtype="timestamp";
+property name="accountRemoteID" ormtype="string"; 
+	property name="accountPaymentMethodRemoteID" ormtype="string"; 
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
@@ -252,7 +254,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	} 
 
 	public string function getLastOrderPlacedDateTime(){
-		if(!structKeyExists(variables, 'getLastOrderPlacedDateTime') || !len(variables.getLastOrderPlacedDateTime)){
+		if(!structKeyExists(variables, 'lastOrderPlacedDateTime') || !len(variables.lastOrderPlacedDateTime)){
 			var orderCollectionList = getService('OrderService').getOrderCollectionList();
 			orderCollectionList.addDisplayProperty('createdDateTime');  
 			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
@@ -260,12 +262,12 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			var records = orderCollectionList.getPageRecords();
 	
 			if(!arrayIsEmpty(records)){
-				variables.getLastOrderPlacedDateTime = records[1]['createdDateTime'];
+				variables.lastOrderPlacedDateTime = records[1]['createdDateTime'];
 			} else { 
-				variables.getLastOrderPlacedDateTime = '';
+				variables.lastOrderPlacedDateTime = '';
 			}
 		} 
-		return variables.orderTemplateCancellationReasonTypeOptions;
+		return variables.lastOrderPlacedDateTime;
 	}
 
 	public string function getScheduledOrderDates(numeric iterations = 5){
