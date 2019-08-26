@@ -206,8 +206,6 @@ component extends="framework.one" {
 	try{include "../../../configORM.cfm";}catch(any e){} 
 	try{include "../../../../configORM.cfm";}catch(any e){}
 	
-
-
 	// ==================== END: SYSTEM GENERATED MIGRATION ======================
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
@@ -325,13 +323,7 @@ component extends="framework.one" {
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		
-		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
-			server[variables.framework.applicationKey] = {};
-		}
-
-		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
-			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
-		}
+		
 		
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
@@ -624,10 +616,19 @@ component extends="framework.one" {
 		return (
 			structKeyExists(url, variables.framework.reload)
 			&& url[variables.framework.reload] == variables.framework.password
-		) || !hasBeanFactory();
+		);
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
+		
+		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
+			server[variables.framework.applicationKey] = {};
+		}
+
+		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
+			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+		}
+		
 		createHibachiScope();
 
 		if(
@@ -635,6 +636,8 @@ component extends="framework.one" {
 				hasReloadKey()
 			) || arguments.reloadByServerInstance
 		) {
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - HasReloadKey:#hasReloadKey()#");
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - reloadByServerInstance:#reloadByServerInstance#");
 			getHibachiScope().setApplicationValue("initialized", false);
 		}
 
