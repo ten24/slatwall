@@ -329,7 +329,7 @@ component extends="framework.one" {
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 		if(
 			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getApplicationValue('applicationEnvironment') == 'production'
+			getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'
 		){
 			if(
 				!variables.framework.hibachi.isApplicationStart && 
