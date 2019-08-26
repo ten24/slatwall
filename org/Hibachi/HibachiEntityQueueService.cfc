@@ -34,7 +34,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	private any function getServiceForEntityQueue(required struct entityQueue){ 
 		
 		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
-		var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])) 			
+		var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])); 			
 
 		if(hasIntegration || hasIntegrationPackageService){
 			
@@ -43,7 +43,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
 			}  				
 			
-			return getService("#entityQueue['integration_integrationPackage']#Service")
+			return getService("#entityQueue['integration_integrationPackage']#Service");
 		}	
 	
 		return getServiceByEntityName( entityName=entityQueue['baseObject'] ); 
@@ -97,13 +97,13 @@ component accessors="true" output="false" extends="HibachiService" {
 			return;
 		}
 		
-		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
+		if(1==0 && arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
 			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
 				processEntityQueueArray(entityQueueArray, false);
 			}
 		}else{
-			var entityQueueIDsToBeDeleted = '';
+			var entityQueueIDsToBeDeleted = [];
 			
 			for(var entityQueue in arguments.entityQueueArray){
 
@@ -113,7 +113,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								    !len(entityQueue['processMethod']);  
 
 					if(noMethod) { 
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+						arrayAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 						continue;
 					}
 				
@@ -122,23 +122,25 @@ component accessors="true" output="false" extends="HibachiService" {
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
 					
 					if(isNull(entity)){
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+						arrayAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 						continue;
 					}
 
 					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
 					
-					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
+					arrayAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 				
 					if(entityMethodInvoked){
 						ormflush();
 					} 
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
+					logHibachi(serializeJson(e),true);
+					rethrow;
 				}
 			}
-			if(listLen(entityQueueIDsToBeDeleted)){
-				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+			if(arrayLen(entityQueueIDsToBeDeleted)){
+				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeleted));
 			}
 
 		}
