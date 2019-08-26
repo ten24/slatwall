@@ -116,7 +116,7 @@
 							<td style="white-space:nowrap;width:1%;"><cfif showTime>#formattedAuditDateTime#</cfif><cfif len(currentAudit['sessionAccountFullName'])> - #attributes.hibachiScope.getService("HibachiUtilityService").hibachiHTMLEditFormat(currentAudit['sessionAccountFullName'])#</cfif></td>
 							<td class="primary">
 								<cfif not listFindNoCase("login,loginInvalid,logout", currentAudit['auditType'])>
-									#currentAudit['auditType']#<cfif thisTag.mode neq 'object'> #currentAudit['baseObject']# - </cfif>
+									<span class="badge badge-secondary">#currentAudit['auditType']#</span><cfif thisTag.mode neq 'object'> #currentAudit['baseObject']# - </cfif>
 									<cfif listFindNoCase("create,update,rollback,archive", currentAudit['auditType'])>
 										<hb:HibachiActionCaller action="admin:entity.detail#currentAudit['baseObject']#" queryString="#currentAudit['baseObject']#ID=#currentAudit['baseID']#" text="#currentAudit['title']#" />
 									<cfelse>
