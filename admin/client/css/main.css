@@ -7505,7 +7505,7 @@ sw-sku-thumbnail .thumbnail .caption {
   position: relative;
   background: #fff;
   margin-bottom: 5px;
-  padding: 0px;
+  padding: 0px 10px 10px 10px;
   border: 1px solid rgba(0, 0, 0, 0);
   border-radius: 4px;
 }
@@ -8838,6 +8838,9 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #j-add-action-b #searchinput.form-control {
   padding: 16px 10px;
+}
+.customtimeline {
+  margin-bottom: 15px !important;
 }
 .customtimeline {
   margin-bottom: 15px !important;
