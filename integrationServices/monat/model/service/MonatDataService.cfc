@@ -33,4 +33,5 @@ component extends="Slatwall.model.service.HibachiService" {
         productReviewCollection.addFilter("productReviewStatusType.typeID", "9c60366a4091434582f5085f90d81bad");
         return productReviewCollection;
     }
+    
 }
