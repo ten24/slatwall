@@ -4,7 +4,7 @@
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset rc.orderTemplateCollectionList = rc.account.getOrderTemplateCollectionList() />
+<cfset rc.orderTemplateCollectionList = rc.account.getOrderTemplatesCollectionList() />
 <cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress',{isVisible=true,isSearchable=true,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('createdDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('calculatedTotal',{isVisible=true,isSearchable=false,isDeletable=true}) />
