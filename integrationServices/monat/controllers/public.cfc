@@ -19,8 +19,4 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         }
         
     }
-    
-	public void function getFlexshipItems(required struct rc){ 
-		
-	} 
 }
