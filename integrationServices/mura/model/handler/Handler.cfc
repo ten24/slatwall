@@ -54,13 +54,12 @@
 	
 		// Helper method to get the Slatwall Application
 		public any function getSlatwallApplication() {
-			
 			variables.slatwallApplication = createObject("component", "Slatwall.Application");
 			if(!structkeyExists(variables,'isApplicationStart')){
 				variables.slatwallApplication.onApplicationStart();
 				variables.isApplicationStart=true;
 			}
-			
+			variables.slatwallApplication.bootstrap();
 			return variables.slatwallApplication;
 		}
 		
@@ -74,13 +73,9 @@
 		
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
-			// Cannot rely solely on the non-existence of request.slatwallScope because slatwallApplication.reloadApplication() will create the slatwallScope. 
-			// And in that case we use the forceBootstrapFlag to indicate slatwallApplication.bootstrap() must be invoked.
-			if(!structKeyExists(request, "slatwallScope") || (request.slatwallScope.hasValue('forceBootstrapFlag') && request.slatwallScope.getValue('forceBootstrapFlag'))) {
-				getSlatwallApplication().bootstrap();
-			}
+			
 			if(!structKeyExists(arguments.$, "slatwall")) {
-				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	
+				$.setCustomMuraScopeKey("slatwall", getSlatwallApplication().getHibachiScope());	
 			}
 		}
 		
