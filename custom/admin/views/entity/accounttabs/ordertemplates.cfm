@@ -1,5 +1,5 @@
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -16,12 +16,13 @@
 <cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.typeID', '2c948084697d51bd01697d5725650006') />
 <cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|asc')/>
 
+
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiListingDisplay
 				recordDetailAction="admin:entity.detailordertemplate"
-				collectionList="#rc.account.getOrderTemplatesCollectionList()#"
+				collectionList="#rc.orderTemplateCollectionList#"
 				usingPersonalCollection="false"
 			>
 			</hb:HibachiListingDisplay>
@@ -31,6 +32,7 @@
 							 entity="OrderTemplate" 
 							 processContext="create" 
 							 queryString="accountID=#rc.account.getAccountID()#"
+							 text="#getHibachiScope().rbKey('entity.OrderTemplate.process.create.flexship')#"
 							 class="btn btn-primary" 
 							 icon="plus icon-white" 
 							 modal="true" />
