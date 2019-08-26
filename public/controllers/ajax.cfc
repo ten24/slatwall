@@ -144,21 +144,4 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 
-	public void function getOrderTemplates(required struct rc){ 
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
-		return getOrderService().getOrderTemplatesForAccount(arguments.rc);  
-	} 
-
-	public void function getOrderTemplateItems(required struct rc){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
-		return getOrderService().getOrderTemplateItemsForAccount(arguments.rc);  
-	}
 }
