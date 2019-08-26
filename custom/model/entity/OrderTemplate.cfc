@@ -1,8 +1,11 @@
 component {
 
+	property name="lastSyncedDateTime" ormtype="timestamp";
+	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
+	
 
 	public boolean function getCustomerCanCreateFlag(){
 			

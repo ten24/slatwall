@@ -1349,8 +1349,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			promoCode.setPromotion(promo);
 			promoCode.addAccount(arguments.data.account);
 			promoCode.setMaximumAccountUseCount(1);
+			promoCode.setMaximumUseCount(1);
 			promoCode = getService("PromotionService").savePromotionCode(promoCode);
 			promoCode.setStartDateTime(Now());
+			var term = arguments.data.loyaltyAccruement.getExpirationTerm();
+			if(!isNull(term)){
+				promoCode.setEndDateTime(term.getEndDate());
+			}
 			promo = getService("PromotionService").savePromotion(promo);
 			arguments.accountLoyaltyTransaction.setPromotionCode(promoCode);
 			getHibachiEventService().announceEvent("LoyaltyTransaction_PromotionCodeAssigned", promoCode);

@@ -70,6 +70,7 @@ Notes:
 						  recordDetailAction="admin:entity.detailpromotioncode"
 						  recordEditAction="admin:entity.editpromotioncode"
 						  recordDetailActionProperty="promotionCode.promotionCodeID"
+						  enableAveragesAndSums="false"
 						  recordDeleteAction="admin:entity.processAccount&processContext=removePromotionCode&sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"       
 						  >
 </hb:HibachiListingDisplay>

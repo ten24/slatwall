@@ -633,7 +633,7 @@ component extends="framework.one" {
 		if(
 			(
 				hasReloadKey()
-			) || reloadByServerInstance
+			) || arguments.reloadByServerInstance
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
 		}
@@ -891,11 +891,11 @@ component extends="framework.one" {
 
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!variables.framework.hibachi.isApplicationStart){
-					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
-					}else{
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
-						serverInstance.setServerInstanceExpired(false);
+						if(!arguments.reloadByServerInstance){
+							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
+						}else{
+							var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
+							serverInstance.setServerInstanceExpired(false);
 							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
 						}						

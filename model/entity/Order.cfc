@@ -237,6 +237,8 @@ property name="personalVolumeSubtotal" persistent="false";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     
+    property name="lastSyncedDateTime" ormtype="timestamp";
+    
     
    
  property name="businessDate" ormtype="string";

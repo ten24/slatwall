@@ -31,18 +31,18 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			if ( isSimpleValue( idOrFilter ) && len( idOrFilter ) ) {
-				var entity = entityLoadByPK( entityName, idOrFilter );
-			} else if ( isStruct( idOrFilter ) ){
-				var entity = entityLoad( entityName, idOrFilter, true );
+			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
+				var entity = entityLoadByPK( arguments.entityName, arguments.idOrFilter );
+			} else if ( isStruct( arguments.idOrFilter ) ){
+				var entity = entityLoad( arguments.entityName, arguments.idOrFilter, true );
 			}
 
 			if ( !isNull( entity ) ) {
 				return entity;
 			}
 
-			if ( isReturnNewOnNotFound ) {
-				return new( entityName );
+			if ( arguments.isReturnNewOnNotFound ) {
+				return new( arguments.entityName );
 			}
 		}
 
@@ -53,7 +53,7 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			return entityLoad( entityName, filterCriteria, sortOrder, options );
+			return entityLoad( arguments.entityName, arguments.filterCriteria, arguments.sortOrder, arguments.options );
 		}
 
 
@@ -63,34 +63,34 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			return entityNew( entityName );
+			return entityNew( arguments.entityName );
 		}
 
 
 		public any function save( required target ) {
 
 			// Save this entity
-			entitySave( target );
+			entitySave( arguments.target );
 
 			// Digg Deeper into any populatedSubProperties and save those as well.
-			if(!isNull(target.getPopulatedSubProperties())) {
-				for(var p in target.getPopulatedSubProperties()) {
-            		if(isArray(target.getPopulatedSubProperties()[p])) {
-            			for(var e=1; e<=arrayLen(target.getPopulatedSubProperties()[p]); e++) {
-            				this.save(target=target.getPopulatedSubProperties()[p][e]);
+			if(!isNull(arguments.target.getPopulatedSubProperties())) {
+				for(var p in arguments.target.getPopulatedSubProperties()) {
+            		if(isArray(arguments.target.getPopulatedSubProperties()[p])) {
+            			for(var e=1; e<=arrayLen(arguments.target.getPopulatedSubProperties()[p]); e++) {
+            				this.save(target=arguments.target.getPopulatedSubProperties()[p][e]);
             			}
             		} else {
-            			this.save(target=target.getPopulatedSubProperties()[p]);
+            			this.save(target=arguments.target.getPopulatedSubProperties()[p]);
             		}
             	}
             }
 
-			return target;
+			return arguments.target;
 		}
 
 		public void function delete(required target) {
-			if(isArray(target)) {
-				for(var object in target) {
+			if(isArray(arguments.target)) {
+				for(var object in arguments.target) {
 					delete(object);
 				}
 			} else {
@@ -98,7 +98,7 @@
 				if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 					getHibachiAuditService().logEntityDelete(target);
 				}
-				entityDelete(target);
+				entityDelete(arguments.target);
 			}
 		}
 
