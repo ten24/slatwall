@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     property name="MonatDataService";
     
     this.publicMethods = 'getProductReviews';
+	this.publicMethods = listAppend(this.publicMethods, 'getFlexshipItems');
     
     public any function before(required struct rc){
         arguments.rc.ajaxRequest = true;
@@ -19,4 +20,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         
     }
     
+	public void function getFlexshipItems(required struct rc){ 
+		
+	} 
 }
