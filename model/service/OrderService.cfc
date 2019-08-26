@@ -1422,23 +1422,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderTemplate_createWishList(required any orderTemplate, required any processObject, required struct data={}) {
 
+		
+		var account = getHibachiScope().getAccount();
+		
 		if(arguments.processObject.getNewAccountFlag()) {
-			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else {
-			var account = getAccountService().getAccount(processObject.getAccountID());
+			account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} 
+		
+		if(!isNull(arguments.processObject.getAccountID())){
+			account = getAccountService().getAccount(arguments.processObject.getAccountID());
 		}
 
 		if(account.hasErrors()) {
-			arguments.order.addError('create', account.getErrors());
-		} else {
-			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
-			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+			arguments.orderTemplate.addError('create', account.getErrors());
+			return arguments.orderTemplate;
+			
 		}
-
+		
+		arguments.orderTemplate.setAccount(account);
+		
+		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		arguments.orderTemplate.setSite(getSiteService().getSite( arguments.processObject.getSiteID()));
+		
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		
+		var orderTemplateName = arguments.processObject.getOrderTemplateName();
+		
+		if(!isNull(orderTemplateName)){
+			arguments.orderTemplate.setOrderTemplateName(orderTemplateName);
+		}
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		
 		return arguments.orderTemplate;
 	}
 
