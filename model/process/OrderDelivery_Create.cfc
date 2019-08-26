@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -69,6 +69,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
+	
+	
+	public any function getLocationTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		locationCollectionList.addFilter('parentLocation','NULL','IS NOT');
+		return locationCollectionList;
+	}
 	
 	public array function getContainers(){
 		if(!structKeyExists(variables,'containers')){

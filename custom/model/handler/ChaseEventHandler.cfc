@@ -14,10 +14,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			// this block executes only & only if it is a print/bundle Subscription
 			var requestBean = new Slatwall.model.transient.payment.CreditCardTransactionRequestBean();  // Request Bean Object initiation
 			var order = arguments.orderPayment.getOrder(); // initiating the Order object.
-			var orderPayment = arguments.orderPayment; // initiating an object of orderPayment.
 			var account = arguments.orderPayment.getOrder().getAccount(); // initiating an object of Accounts.
 			// if credit card is Null exit.
-			if(isNull(orderPayment.getCreditCardNumber()))
+			if(isNull(arguments.orderPayment.getCreditCardNumber()))
 			{
 				return;
 			}
@@ -25,22 +24,22 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		requestBean.setTransactionType('generateToken'); // manually passing the transactionType as for token generation
 		requestBean.setTransactionCurrencyCode(Order.getCurrencyCode());  //Transaction currency code
 		requestBean.setOrderShortReferenceID(order.getShortReferenceID());
-		requestBean.setCreditCardNumber(orderPayment.getCreditCardNumber());
-		requestBean.setCreditCardType(orderPayment.getCreditCardType());
-		requestBean.setSecurityCode(orderPayment.getSecurityCode());
-		requestBean.setExpirationMonth(orderPayment.getExpirationMonth());
-		requestBean.setExpirationYear(orderPayment.getExpirationYear());
-		requestBean.setTransactionAmount(orderPayment.getAmount());
+		requestBean.setCreditCardNumber(arguments.orderPayment.getCreditCardNumber());
+		requestBean.setCreditCardType(arguments.orderPayment.getCreditCardType());
+		requestBean.setSecurityCode(arguments.orderPayment.getSecurityCode());
+		requestBean.setExpirationMonth(arguments.orderPayment.getExpirationMonth());
+		requestBean.setExpirationYear(arguments.orderPayment.getExpirationYear());
+		requestBean.setTransactionAmount(arguments.orderPayment.getAmount());
 		requestBean.setAccountFirstName(account.getFirstName());
 		requestBean.setAccountLastName(account.getLastName());
-		requestBean.setBillingCity(orderPayment.getBillingAddress().getCity());
-		requestBean.setBillingStateCode(orderPayment.getBillingAddress().getStateCode());
-		requestBean.setBillingCountryCode(orderPayment.getBillingAddress().getCountryCode());
-		requestBean.setBillingStreetAddress(orderPayment.getBillingAddress().getStreetAddress());
-		requestBean.setBillingPostalCode(orderPayment.getBillingAddress().getPostalCode());
+		requestBean.setBillingCity(arguments.orderPayment.getBillingAddress().getCity());
+		requestBean.setBillingStateCode(arguments.orderPayment.getBillingAddress().getStateCode());
+		requestBean.setBillingCountryCode(arguments.orderPayment.getBillingAddress().getCountryCode());
+		requestBean.setBillingStreetAddress(arguments.orderPayment.getBillingAddress().getStreetAddress());
+		requestBean.setBillingPostalCode(arguments.orderPayment.getBillingAddress().getPostalCode());
 		var integration = new Slatwall.integrationServices.chase.Payment();  // initiating the chase integration object to access processCreditCard Method
 		var response = integration.processCreditCard(requestBean); // declaring the callback response into a variable
-		orderPayment.setChaseProviderToken(response.getProviderToken()); // storing the token in orderPayment entity.
+		arguments.orderPayment.setChaseProviderToken(response.getProviderToken()); // storing the token in orderPayment entity.
 		return;
 			
 

@@ -478,15 +478,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	public any function getCartData(string propertyList,string cartDataOptions="full") {
 		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
-		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+		
 		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
 
         if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
             arguments.propertyList = availablePropertyList;
         }
-
+        
+        availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+        
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-
+        
         //only need to work if order fulfillment data exists
         if(structKeyExists(data,'orderFulfillments')){
             //Attach some meta for for orderFulfillments
@@ -502,15 +504,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             }
             data['requiresFulfillment'] = requiresFulfillment;
             if (requiresFulfillment){
-                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
+            	data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
             }else{
-                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
+            	data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
             }
         }
         // add error messages
         data["hasErrors"] = getCart().hasErrors();
         data["errors"] = getCart().getErrors();
-
+        
         // add process object error messages
         data[ 'processObjects' ] = {};
         for(var key in getCart().getProcessObjects()) {
