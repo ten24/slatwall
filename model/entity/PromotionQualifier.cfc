@@ -248,24 +248,27 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	public any function getOrderCollection(){
-		if(isNull(getExcludedOrdersCollectionConfig())){
-			if(isNull(getIncludedOrdersCollectionConfig())){
-				return;
+		if(!structKeyExists(variables,'orderCollection')){
+			if(isNull(getExcludedOrdersCollectionConfig())){
+				if(isNull(getIncludedOrdersCollectionConfig())){
+					return;
+				}
+				return getIncludedOrdersCollection();
 			}
-			return getIncludedOrdersCollection();
-		}
-			
-		if(!isNull(getIncludedOrdersCollectionConfig())){
-			var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
-		}else{
-			var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
-		}
-		if(isNull(variables.excludedOrderIDs)){
-			variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
-		}
+				
+			if(!isNull(getIncludedOrdersCollectionConfig())){
+				variables.orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
+			}else{
+				variables.orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
+			}
+			if(isNull(variables.excludedOrderIDs)){
+				variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
+			}
+			variables.orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
+		}	
+		return variables.orderCollection;
 		
-		orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
-		return orderCollection;
+		
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -319,7 +322,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			orderCollection.setPageRecordsShow(1); 
 			orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
 			try{
-				variables[cacheKey] = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+				variables[cacheKey] = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true,formatRecords=false));
 				
 			}catch(any e){
 				getHibachiScope().addError('PromotionQualifier','hasOrderByOrderID has a bad Collection');

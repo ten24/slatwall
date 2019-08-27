@@ -1472,7 +1472,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
-		
+		newOrder.setOrderTemplate(arguments.orderTemplate);
 		var processOrderCreate = newOrder.getProcessObject('create'); 
 		processOrderCreate.setNewAccountFlag(false); 
 		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
@@ -1489,7 +1489,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate; 
 		} 
 
-		newOrder.setOrderTemplate(arguments.orderTemplate);
+		
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 
