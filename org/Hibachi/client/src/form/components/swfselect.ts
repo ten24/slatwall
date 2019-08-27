@@ -19,26 +19,28 @@ class Option {
 }
 
 class SWFSelectController {
+
+    public optionsMethod:string;
+    public selectEventName:string;
+    public options:Option[];
+    public selectedOption:Option;
+    
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
-        public optionsMethod:string,
-        public selectMethod:string,
-        public selectParameterName:string,
-        public loading:boolean,
-        public successfulActions:any,
-        public failureActions:any,
-        public errors:any,
-        public options:Option[],
+        public observerService,
     ){
-        debugger;
+        this.getOptions().then(options=>{
+            this.options = options;
+            this.selectedOption = this.options[0];
+        });
     }
     
-    public getOptions = ()=>{
-        this.$rootScope.hibachiScope.doAction(this.optionsMethod).then(result=>{
+    public getOptions = ():any=>{
+        return this.$rootScope.hibachiScope.doAction(this.optionsMethod).then(result=>{
             let options = [];
-            for(const option of result){
+            for(const option of result.accountWishlistOptions){
                 if(option.value && option.name){ // if we have a struct with value and name, use that
                     options.push(new Option(option.value,option.name));
                     continue;
@@ -46,22 +48,13 @@ class SWFSelectController {
                 // otherwise, it's a simple string, so let's use that
                 options.push(new Option(option));
             }
+            return options;
         });
     }
     
-    public select = (option)=>{
-        
-        this.loading = true;
-        
-        const params = {};
-        params[this.selectParameterName] = option.value;
-        
-        this.$rootScope.hibachiScope.doAction(this.selectMethod,params).then(result=>{
-            this.loading = false;
-            this.successfulActions = result.successfulActions;
-            this.failureActions = result.failureActions;
-            this.errors = result.errors;
-        });
+    public selectOption = (option)=>{
+        this.selectedOption = option;
+        this.observerService.notify(this.selectEventName,option);
     }
     
 }
@@ -80,8 +73,7 @@ class SWFSelect  {
     */
     public bindToController = {
         optionsMethod:"@",
-        selectMethod:"@",
-        selectParameterName:"@",
+        selectEventName:"@",
     };
     public controller       = SWFSelectController;
     public controllerAs     = "swfSelect";
