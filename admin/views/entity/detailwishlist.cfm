@@ -62,15 +62,26 @@
 		<hb:HibachiEntityActionBar type="detail" object="#rc.ordertemplate#" edit="#rc.edit#" pageTitle="#rc.orderTemplate.getSimpleRepresentation()#" deleteQueryString="#deleteQueryString#"></hb:HibachiEntityActionBar>
 
 		<div class="panel-group s-pannel-group row">	
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
 											data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'>
 				</sw-customer-account-card> 
 			</div>
+			<div class="col-md-4">
+			    <div class="j-panel panel panel-default">
+			        <div class="panel-heading">
+                		<h4 class="panel-title">#$.slatwall.rbKey('admin.define.basic.wishList')#</h4>
+                	</div>
+                	<content class="s-body-box">
+        				<label class="control-label">#getHibachiScope().rbKey('entity.orderTemplate.createdDateTime')#</label>
+        				<p class="form-control-static">#DateFormat(rc.orderTemplate.getCreatedDateTime(),'mm/dd/yyyy')#</p>
+    				</content>
+				</div>
+			</div> 
 		</div>
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
-			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.wishList')#" />
+			<!---<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic.wishList')#" />--->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/ordertemplateitems" text="#$.slatwall.rbKey('admin.define.ordertemplateitems.wishList')#" open="true" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
