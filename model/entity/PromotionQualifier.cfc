@@ -310,12 +310,17 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getOrderCollection();
-		if(isNull(orderCollection)){
+		if(isNull(orderCollection) || !len(arguments.orderID)){
 			return false;
 		}
 		orderCollection.setPageRecordsShow(1); 
 		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+		try{
+			var hasOrder = orderCollection.getPageRecords(refresh=true);
+		}catch(any e){
+			getHibachiScope().addError('PromotionQualifier.hasOrderByOrderID has a bad Collection');
+			return false;
+		}
 		return hasOrder;
 	}
 	

@@ -2972,9 +2972,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderItemCount = 0;
 		for (var orderItem in arguments.order.getOrderItems()) {
 			orderItemCount++;
-			
+			var currentOrderItemAmountAsPercentage=0;
 			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
-			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
+			if(!isNull(arguments.order.getSubtotalAfterItemDiscounts()) && arguments.order.getSubtotalAfterItemDiscounts() > 0){
+				currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();	
+			}
+			
 			
 			// Approximate amount to allocate (rounded to nearest penny)
 		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
