@@ -1165,7 +1165,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	//begin order template functionality
-
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
 		var ormSession = ormGetSessionFactory().openSession();
@@ -1422,23 +1421,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderTemplate_createWishList(required any orderTemplate, required any processObject, required struct data={}) {
 
+		
+		var account = getHibachiScope().getAccount();
+		
 		if(arguments.processObject.getNewAccountFlag()) {
-			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else {
-			var account = getAccountService().getAccount(processObject.getAccountID());
+			account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} 
+		
+		if(!isNull(arguments.processObject.getAccountID())){
+			account = getAccountService().getAccount(arguments.processObject.getAccountID());
 		}
 
 		if(account.hasErrors()) {
-			arguments.order.addError('create', account.getErrors());
-		} else {
-			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
-			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+			arguments.orderTemplate.addError('create', account.getErrors());
+			return arguments.orderTemplate;
+			
 		}
-
+		
+		arguments.orderTemplate.setAccount(account);
+		
+		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		arguments.orderTemplate.setSite(getSiteService().getSite( arguments.processObject.getSiteID()));
+		
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		
+		var orderTemplateName = arguments.processObject.getOrderTemplateName();
+		
+		if(!isNull(orderTemplateName)){
+			arguments.orderTemplate.setOrderTemplateName(orderTemplateName);
+		}
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		
 		return arguments.orderTemplate;
 	}
 
@@ -1833,7 +1850,72 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 	
-	}   
+	}  
+
+	//begin order template api functionality
+	public array function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		
+		var orderTemplateCollection = getOrderService().getOrderTemplateCollectionList();
+		
+		var displayProperties = 'orderTemplateID,orderTemplateName';  
+		
+		orderTemplateCollection.setDisplayProperties(displayProperties)
+		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
+		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
+		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
+	
+		return orderTemplateCollection; 
+	}  
+
+	public array function getOrderTemplatesForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		if(isNull(arguments.account)){
+			return []; 
+		} 
+
+		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
+	}  
+
+	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+	
+		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionList();
+
+		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
+		displayProperties &= 'sku.priceByCurrencyCode';
+
+		orderTemplateItemCollection.setDisplayProperties(displayProperties)
+		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
+		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+
+		return orderTemplateItemCollection;	
+	} 
+
+	public array function getOrderTemplateItemsForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		if(!len(arguments.data.orderTemplateID) || isNull(arguments.account)){
+			return []; 
+		}
+
+		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
+	} 
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {

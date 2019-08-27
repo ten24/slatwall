@@ -62,6 +62,8 @@ component  accessors="true" output="false"
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
+    property name="typeService" type="any";
+
 
     variables.publicContexts = [];
     variables.responseType = "json";
@@ -222,6 +224,7 @@ component  accessors="true" output="false"
      *  @param passwordConfirm {string}
      *  @ProcessMethod Account_Create
      */
+
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
         
@@ -232,6 +235,27 @@ component  accessors="true" output="false"
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+    }
+    
+    public any function createWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateName";
+        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        
+        if(getHibachiScope().getAccount().isNew()){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("createWishlist");
+        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
+    
+        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
+        processObject.setSiteID(arguments.data.siteID);
+        processObject.setOrderTemplateTypeID(wishlistTypeID);
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
+        
+        getHibachiScope().addActionResult( "public:order.createWishlist", orderTemplate.hasErrors() );
     }
     
     public any function updatePrimaryEmailAddress(required struct data) {
@@ -1698,5 +1722,22 @@ component  accessors="true" output="false"
         var sku = getSkuService().getSku(arguments.data.skuID);
         data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
-    
+   
+	public void function getOrderTemplates(required any data){ 
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		return getOrderService().getOrderTemplatesForAccount(arguments.rc);  
+	} 
+
+	public void function getOrderTemplateItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		return getOrderService().getOrderTemplateItemsForAccount(arguments.rc);  
+	} 
 }
