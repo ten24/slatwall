@@ -1170,7 +1170,7 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 
 	public string function getSimpleRepresentation() {
-		return getFullName();
+		return getService("accountService").getSimpleRepresentation(this);
 	}
 
 	public string function getSimpleRepresentationPropertyName(){

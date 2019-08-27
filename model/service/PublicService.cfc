@@ -1727,5 +1727,22 @@ component  accessors="true" output="false"
         var sku = getSkuService().getSku(arguments.data.skuID);
         data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
-    
+   
+	public void function getOrderTemplates(required any data){ 
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		return getOrderService().getOrderTemplatesForAccount(arguments.rc);  
+	} 
+
+	public void function getOrderTemplateItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		return getOrderService().getOrderTemplateItemsForAccount(arguments.rc);  
+	} 
 }
