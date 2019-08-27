@@ -1382,8 +1382,11 @@ property name="personalVolumeSubtotal" persistent="false";
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Account (many-to-one)
-	public any function setAccount(required any account) {
+	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
+		if(arguments.skipBidirectional){
+			return this; 
+		} 
 		if(isNew() or !arguments.account.hasOrder( this )) {
 			arrayAppend(arguments.account.getOrders(), this);
 		}

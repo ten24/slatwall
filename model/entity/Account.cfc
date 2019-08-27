@@ -164,7 +164,7 @@ property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
-
+	property name="username" ormtype="string"; 
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
 
@@ -204,6 +204,12 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getPreferedLocale(){
+		//TODO: Get qualified locale based on account prefered language
+		return '';
+	}
+
 	public array function getOrderCurrencies(){
 		var currencyCollectionList = this.getOrdersCollectionList();
 		currencyCollectionList.setDisplayProperties('currencyCode');
@@ -1158,7 +1164,7 @@ property name="enrollmentDate" ormtype="timestamp";
 	}
 
 	public string function getSimpleRepresentation() {
-		return getFullName();
+		return getService("accountService").getSimpleRepresentation(this);
 	}
 
 	public string function getSimpleRepresentationPropertyName(){

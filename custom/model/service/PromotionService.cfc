@@ -7,39 +7,44 @@ component extends="Slatwall.model.service.PromotionService" {
     private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
 		
 		// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+		var orderItemsCount = arrayLen(arguments.order.getOrderItems()); 	
+		for(var i=1; i<=orderItemsCount; i++) {
 
 			var orderItem = arguments.order.getOrderItems()[i];
 			// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				var promotionReward = this.getPromotionReward(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotionRewardID);
-				if(!isNull(promotionReward)){
-					var newAppliedPromotion = this.newPromotionApplied();
-					newAppliedPromotion.setAppliedType('orderItem');
-					newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
-					newAppliedPromotion.setOrderItem( orderItem );
-					newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
-				    //Custom price fields
-				    for(var customPriceField in variables.customPriceFields){
-						
-						if(!isNull(promotionReward.getAmountType()) && promotionReward.getAmountType() == 'amountOff'){
-							var rewardAmount = getProportionalRewardAmount(newAppliedPromotion.getDiscountAmount(), orderItem.getPrice(),orderItem.invokeMethod('get#customPriceField#'));
-						}else{
-					        var args = {
-					            reward=promotionReward,
-					            price=orderItem.invokeMethod('get#customPriceField#'),
-					            quantity=orderItem.getQuantity(),
-					            customPriceField=customPriceField,
-					            sku=orderItem.getSku(),
-					            account=arguments.order.getAccount()
-					        };
-					        var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
-						}
-		        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=rewardAmount});
-				    }
-					//making sure calculated props run
-					getHibachiScope().addModifiedEntity(orderItem);
-				}
+			
+				//if we weren't able to find a reward keep going
+				if(isNull(promotionReward)){ 
+					continue; 
+				} 
+					
+				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
+				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
+				newAppliedPromotion.setOrderItem( orderItem );
+				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
+			    //Custom price fields
+			    for(var customPriceField in variables.customPriceFields){
+					
+					if(promotionReward.getAmountType() == 'amountOff'){
+						var rewardAmount = getProportionalRewardAmount(newAppliedPromotion.getDiscountAmount(), orderItem.getPrice(),orderItem.invokeMethod('get#customPriceField#'));
+					}else{
+				        var args = {
+				            reward=promotionReward,
+				            price=orderItem.invokeMethod('get#customPriceField#'),
+				            quantity=orderItem.getQuantity(),
+				            customPriceField=customPriceField,
+				            sku=orderItem.getSku(),
+				            account=arguments.order.getAccount()
+				        };
+				        var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
+					}
+	        		newAppliedPromotion.invokeMethod('set#customPriceField#DiscountAmount',{1=rewardAmount});
+			    }
+				//making sure calculated props run
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
