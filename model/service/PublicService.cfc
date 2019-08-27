@@ -1660,6 +1660,11 @@ component  accessors="true" output="false"
         
     }
     
+    public void function getAccountWishlistsOptions(required struct data){
+        var options = getOrderService().getAccountWishlistsOptions(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistOptions"] = options;
+    }
+    
     /** returns the list of country code options */
      public void function getCountries( required struct data ) {
         arguments.data.ajaxResponse['countryCodeOptions'] = getService('HibachiCacheService').getOrCacheFunctionValue('PublicService.getCountries',getAddressService(),'getCountryCodeOptions');

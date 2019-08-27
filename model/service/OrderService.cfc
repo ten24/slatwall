@@ -822,6 +822,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
         return arguments.orderItem;
 	}
+	
+	public array function getAccountWishlistsOptions(required string accountID){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.systemCode","ottWishList");
+		return list.getRecords();
+	}
 
 	// @hint Process to associate orderItem and orderItemGiftRecipient
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){

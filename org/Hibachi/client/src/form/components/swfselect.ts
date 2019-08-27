@@ -1,10 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-/**
-* Form Controller handles the logic for this directive.
-*/
-
 class Option {
     public value:string;
     public name:string;
@@ -33,7 +29,7 @@ class SWFSelectController {
     ){
         this.getOptions().then(options=>{
             this.options = options;
-            this.selectedOption = this.options[0];
+            this.selectOption(this.options[0]);
         });
     }
     
