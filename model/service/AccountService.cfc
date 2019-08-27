@@ -95,6 +95,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
+	public string function getSimpleRepresentation(required any account){
+		return arguments.account.getFullName();
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
