@@ -164,7 +164,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="saveBillingAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="saveShippingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveShippingAccountAddressName" hb_populateEnabled="public" persistent="false";
-	property name="ignoreShippingMethodOptions" hb_populateEnabled="public" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
@@ -544,18 +543,6 @@ property name="personalVolumeSubtotal" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function setIgnoreShippingMethodOptions(boolean ignoreShippingMethodOptions){
-		if(structKeyExists(arguments,'ignoreShippingMethodOptions')){
-			variables.ignoreShippingMethodOptions = arguments.ignoreShippingMethodOptions;
-		}
-	}
-	
-	public any function getIgnoreShippingMethodOptions(){
-		if(structKeyExists(variables,'ignoreShippingMethodOptions')){
-			return variables.ignoreShippingMethodOptions;
-		}
-		return false;
-	}
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();
