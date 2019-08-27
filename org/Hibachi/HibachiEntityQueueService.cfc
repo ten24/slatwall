@@ -97,7 +97,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			return;
 		}
 		
-		if(1==0 && arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
+		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
 			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
 				processEntityQueueArray(entityQueueArray, false);
@@ -135,7 +135,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					} 
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
-					logHibachi(serializeJson(e),true);
+					//logHibachi(serializeJson(e),true);
 					//rethrow;
 				}
 			}
