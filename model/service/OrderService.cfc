@@ -1620,15 +1620,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
 		newOrder = this.saveOrder(newOrder); 
-
+		
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
 			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
+			this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 		}
-			
+		
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
 
@@ -3000,7 +3001,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		            
 		        // Need to increase the allocation by a cent to prevent under allocating 
 		        } else if (currentDiscrepancyAmount < 0) {
-		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		            currentOrderItemAllocationAmount = (Int(currentOrderItemAllocationAmount * 100) + 1) / 100;
 		        }
 		    }
 		    

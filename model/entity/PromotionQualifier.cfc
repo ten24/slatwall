@@ -309,19 +309,25 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
-		var orderCollection = getOrderCollection();
-		if(isNull(orderCollection) || !len(arguments.orderID)){
-			return false;
+		var cacheKey = 'orderByOrderID'&arguments.orderID;
+		if(!structKeyExists(variables,cacheKey)){
+			var orderCollection = getOrderCollection();
+			if(isNull(orderCollection) || !len(arguments.orderID)){
+				variables[cacheKey] = false;
+				return false;
+			}
+			orderCollection.setPageRecordsShow(1); 
+			orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+			try{
+				variables[cacheKey] = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+				
+			}catch(any e){
+				getHibachiScope().addError('PromotionQualifier','hasOrderByOrderID has a bad Collection');
+				variables[cacheKey] = false;
+				return false;
+			}
 		}
-		orderCollection.setPageRecordsShow(1); 
-		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-		try{
-			var hasOrder = orderCollection.getPageRecords(refresh=true);
-		}catch(any e){
-			getHibachiScope().addError('PromotionQualifier.hasOrderByOrderID has a bad Collection');
-			return false;
-		}
-		return hasOrder;
+		return variables[cacheKey];
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
