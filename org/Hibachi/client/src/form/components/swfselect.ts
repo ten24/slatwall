@@ -18,6 +18,7 @@ class SWFSelectController {
 
     public optionsMethod:string;
     public selectEventName:string;
+    public updateEventName:string;
     public options:Option[];
     public selectedOption:Option;
     
@@ -27,13 +28,20 @@ class SWFSelectController {
         public $scope,
         public observerService,
     ){
+        this.refreshOptions();
+        if(this.updateEventName){
+            this.observerService.attach(this.refreshOptions,this.updateEventName);
+        }
+    }
+    
+    private refreshOptions = ():void=>{
         this.getOptions().then(options=>{
             this.options = options;
             this.selectOption(this.options[0]);
         });
     }
     
-    public getOptions = ():any=>{
+    public getOptions = ():Promise<Option[]>=>{
         return this.$rootScope.hibachiScope.doAction(this.optionsMethod).then(result=>{
             let options = [];
             for(const option of result.accountWishlistOptions){
@@ -70,6 +78,7 @@ class SWFSelect  {
     public bindToController = {
         optionsMethod:"@",
         selectEventName:"@",
+        updateEventName:"@?",
     };
     public controller       = SWFSelectController;
     public controllerAs     = "swfSelect";

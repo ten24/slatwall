@@ -1,5 +1,9 @@
-class SWFWishlistController {
+class WishListProduct {
+    
+}
 
+class SWFWishlistController {
+    public products:WishListProduct[];
     
     // @ngInject
     constructor(
@@ -10,7 +14,25 @@ class SWFWishlistController {
         this.observerService.attach(this.getProducts,"myAccountWishlistSelected");
     }
     
-    public getProducts = (wishlistOption)=>{
+    private refreshList = (wishlistOption)=>{
+        this.getProducts(wishlistOption).then(products=>{
+            debugger;
+        });
+    }
+    
+    public getProducts = (wishlistOption):Promise<WishListProduct[]>=>{
+        return this.$rootScope.hibachiScope.doAction("getWishlist").then(result=>{
+            let options = [];
+            for(const option of result.accountWishlistOptions){
+                if(option.value && option.name){ // if we have a struct with value and name, use that
+                    options.push(new Option(option.value,option.name));
+                    continue;
+                }
+                // otherwise, it's a simple string, so let's use that
+                options.push(new Option(option));
+            }
+            return options;
+        });
     }
 }
 

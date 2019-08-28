@@ -32263,6 +32263,9 @@ var SWFFormController = /** @class */ (function () {
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
+                if (_this.closeModal && _this.modalId) {
+                    $("#" + _this.modalId).modal('toggle');
+                }
                 if (_this.fileFlag) {
                     var file = _this.getFileFromFormData(formData);
                     return _this.uploadFile(_this.method, file).then(function (result) {
@@ -32273,10 +32276,8 @@ var SWFFormController = /** @class */ (function () {
                     return _this.processResult(result);
                 });
             }
-            else {
-                _this.form.$setSubmitted(true);
-                return new Promise(function (resolve, reject) { return []; });
-            }
+            _this.form.$setSubmitted(true);
+            return new Promise(function (resolve, reject) { return []; });
         };
         this.uploadFile = function (action, data) {
             return new Promise(function (resolve, reject) {
@@ -32315,6 +32316,7 @@ var SWFFormController = /** @class */ (function () {
                 return result;
             _this.$timeout(function () {
                 _this.loading = false;
+                _this.observerService.notify(_this.afterSubmitEventName);
                 _this.successfulActions = result.successfulActions;
                 _this.failureActions = result.failureActions;
                 _this.errors = result.errors;
@@ -32367,7 +32369,10 @@ var SWFForm = /** @class */ (function () {
             fRedirectUrl: "@?",
             sAction: "=?",
             fAction: "=?",
-            fileFlag: "@?"
+            fileFlag: "@?",
+            afterSubmitEventName: "@?",
+            closeModal: "@?",
+            modalId: "@?",
         };
         this.controller = SWFFormController;
         this.controllerAs = "swfForm";
@@ -59356,13 +59361,37 @@ exports.SWFReviewListing = SWFReviewListing;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var WishListProduct = /** @class */ (function () {
+    function WishListProduct() {
+    }
+    return WishListProduct;
+}());
 var SWFWishlistController = /** @class */ (function () {
     // @ngInject
     function SWFWishlistController($rootScope, $scope, observerService) {
+        var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.refreshList = function (wishlistOption) {
+            _this.getProducts(wishlistOption).then(function (products) {
+                debugger;
+            });
+        };
         this.getProducts = function (wishlistOption) {
+            return _this.$rootScope.hibachiScope.doAction("getWishlist").then(function (result) {
+                var options = [];
+                for (var _i = 0, _a = result.accountWishlistOptions; _i < _a.length; _i++) {
+                    var option = _a[_i];
+                    if (option.value && option.name) { // if we have a struct with value and name, use that
+                        options.push(new Option(option.value, option.name));
+                        continue;
+                    }
+                    // otherwise, it's a simple string, so let's use that
+                    options.push(new Option(option));
+                }
+                return options;
+            });
         };
         this.observerService.attach(this.getProducts, "myAccountWishlistSelected");
     }
@@ -78491,6 +78520,12 @@ var SWFSelectController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.refreshOptions = function () {
+            _this.getOptions().then(function (options) {
+                _this.options = options;
+                _this.selectOption(_this.options[0]);
+            });
+        };
         this.getOptions = function () {
             return _this.$rootScope.hibachiScope.doAction(_this.optionsMethod).then(function (result) {
                 var options = [];
@@ -78510,10 +78545,10 @@ var SWFSelectController = /** @class */ (function () {
             _this.selectedOption = option;
             _this.observerService.notify(_this.selectEventName, option);
         };
-        this.getOptions().then(function (options) {
-            _this.options = options;
-            _this.selectOption(_this.options[0]);
-        });
+        this.refreshOptions();
+        if (this.updateEventName) {
+            this.observerService.attach(this.refreshOptions, this.updateEventName);
+        }
     }
     return SWFSelectController;
 }());
@@ -78533,6 +78568,7 @@ var SWFSelect = /** @class */ (function () {
         this.bindToController = {
             optionsMethod: "@",
             selectEventName: "@",
+            updateEventName: "@?",
         };
         this.controller = SWFSelectController;
         this.controllerAs = "swfSelect";
