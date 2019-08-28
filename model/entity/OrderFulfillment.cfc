@@ -762,8 +762,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod( any shippingMethod, boolean persistShippingMethodOption=true ) {
+		
+		
 		if(structKeyExists(arguments, "shippingMethod")) {
-			if(!arrayLen(getFulfillmentShippingMethodOptions())){
+			if(!isNull(getOrder().getOrderTemplate())){
+				variables.shippingMethod=arguments.shippingMethod;
+				return;
+			}
+			
+			if(!arrayLen(getFulfillmentShippingMethodOptions()) ){
 				getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this, arguments.persistShippingMethodOption );
 			}
 			// make sure that the shippingMethod exists in the fulfillmentShippingMethodOptions

@@ -1,0 +1,45 @@
+<div class="orderbox">
+	<div class="subtext">
+		<table>
+    		<tr>
+    			<td class="col1">
+    				<h3 ng-bind="monatFlexshipCard.orderTemplate.orderTemplateName"></h3>
+    				<a href="##" class="name"><span sw-rbkey="'define.edit'"></span> <span sw-rbkey="'define.name'"></span></a>
+    			</td>
+    			<td class="col2">
+    				<span class="status" sw-rbkey="'define.deliveryFrequency'"></span>
+    				<p class="broad">
+    					<span ng-bind="monatFlexshipCard.orderTemplate.frequencyTerm_termName"></span> <span sw-rbkey="'define.aroundThe'"></span> <span ng-bind="monatFlexshipCard.orderTemplate.scheduleOrderDayOfTheMonth"></span>
+    				</p>
+    			</td>
+    			<td class="col3">
+    				<span class="status" sw-rbkey="'entity.order.shippingAddress'"></span>
+    				<p class="broad" ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_addressID.trim().length">
+    					<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_name"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress"></span> <br>
+    					<span ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address">
+    					    <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address"></span> <br>
+    					</span>
+    					<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_city"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_stateCode"></span> <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_postalCode"></span>
+    				</p>
+    				<p class="broad" ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_address_addressID.trim().length">
+    				    <!-- No markup specified -->
+    				    <span sw-rbkey="'define.none'"></span>
+    				</p>
+    			</td>
+    		</tr>
+		</table>
+		<div class="makeedits">
+			<div class="orderunit">
+			    <!-- pending business logic -->
+				<p>
+					You can make edits to your next order until <span>3pm on April 15</span>
+				</p>
+			</div>
+			
+			<monat-flexship-menu></monat-flexship-menu>
+		</div>
+	</div>
+	<div class="items">
+		<a href="##" class="plus"><span ng-bind="monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount.trim().length ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> <span sw-rbkey="'define.items'"></span> <i class="fa fa-plus"></i></a>
+	</div>
+</div>

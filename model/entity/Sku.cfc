@@ -2007,7 +2007,8 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     }
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
-	public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+
+public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
@@ -2141,6 +2142,5 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		    }
 			return variables[cacheKey];
 		}
-    }
-	//CUSTOM FUNCTIONS END
+    }//CUSTOM FUNCTIONS END
 }

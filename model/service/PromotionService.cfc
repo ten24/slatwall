@@ -967,6 +967,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var sku in skus){
 			if(!isNull(arguments.currencyCode)){
 				var originalPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
+				if(isNull(originalPrice)){
+					originalPrice = sku.getPrice();
+					arguments.currencyCode = '';
+				}
 			}else{
 				var originalPrice = sku.getPrice();
 				arguments.currencyCode = '';

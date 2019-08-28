@@ -121,7 +121,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	// ======================== START: Defaults ============================
-
 	public array function getChildOrderItems(){
 		if(structkeyExists(variables,'childOrderItems')){
 			return variables.childOrderItems;

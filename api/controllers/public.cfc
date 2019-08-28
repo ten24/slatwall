@@ -3,9 +3,12 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     property name="fw" type="any";
     property name="hibachiService" type="any";
     property name="hibachiUtilityService" type="any";
+    property name="publicService" type="any";
 
     this.publicMethods='';
     this.publicMethods=listAppend(this.publicMethods, 'get');
+    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
+    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
     this.publicMethods=listAppend(this.publicMethods, 'post');
 
     public void function init( required any fw ) {
@@ -87,4 +90,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         }
     }
 
+	public any function getOrderTemplates( required struct rc ){
+		getPublicService().getOrderTemplates(arguments.rc); 
+	} 
+
+	public any function getOrderTemplateItems( required struct rc ){
+		getPublicService().getOrderTemplateItems(arguments.rc); 
+	} 
 }
