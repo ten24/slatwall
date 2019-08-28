@@ -1861,16 +1861,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	//begin order template api functionality
-	public array function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	public any function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
-		var orderTemplateCollection = getOrderService().getOrderTemplateCollectionList();
+		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		
-		var displayProperties = 'orderTemplateID,orderTemplateName';  
-		
-		orderTemplateCollection.setDisplayProperties(displayProperties);
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,'
+		displayProperties &= ',shippingAccountAddress.address.addressID';  
+		displayProperties &= ',shippingAccountAddress.address.name';  
+		displayProperties &= ',shippingAccountAddress.address.streetAddress';  
+		displayProperties &= ',shippingAccountAddress.address.street2Address';	
+		displayProperties &= ',shippingAccountAddress.address.city';	
+		displayProperties &= ',shippingAccountAddress.address.locality';	
+		displayProperties &= ',shippingAccountAddress.address.postalCode';	
+		displayProperties &= ',shippingAccountAddress.address.stateCode';	
+		displayProperties &= ',shippingAccountAddress.address.countryCode';	
+		displayProperties &= ',frequencyTerm.termName';	
+	
+		orderTemplateCollection.setDisplayProperties(displayProperties)
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
@@ -1897,7 +1907,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 	
-		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionList();
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
 		displayProperties &= 'sku.priceByCurrencyCode';

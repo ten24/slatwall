@@ -485,15 +485,15 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required data){
+   public void function verifyAddress(required any data){
         param name="data.accountAddressID" default="";
 
-        data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
+        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
         getHibachiScope().addActionResult("verifyAddress",false);
     }
     
-    public void function addEditAccountAddress(required data){
-        if(structKeyExists(data,'accountAddressID') && len(data['accountAddressID'])){
+    public void function addEditAccountAddress(required any data){
+        if(structKeyExists(data,'accountAddressID') && len(arguments.data['accountAddressID'])){
             param name="data.countrycode" default="US";
      	
          	var accountAddress = getService("AccountService").getAccountAddress(data.accountAddressID);
@@ -511,10 +511,10 @@ component  accessors="true" output="false"
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                    data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                    arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
        	     	}
           	}else{
-              this.addErrors(data, address.getErrors());
+              this.addErrors(arguments.data, address.getErrors());
               getHibachiScope().addActionResult("public:account.addNewAccountAddress", address.hasErrors());
             }
         }else{
@@ -1704,7 +1704,7 @@ component  accessors="true" output="false"
     		
     		//remove the orderfulfillment that we used to get the rates because it will disrupt other entities saving.
     		getService("OrderService").deleteOrderFulfillment(orderFulfillment);
-    		data['ajaxResponse']['estimatedShippingRates'] = options;
+    		arguments.data['ajaxResponse']['estimatedShippingRates'] = options;
     	}
     }
     
@@ -1720,7 +1720,7 @@ component  accessors="true" output="false"
         }
         
         var sku = getSkuService().getSku(arguments.data.skuID);
-        data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
+        arguments.data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
    
 	public void function getOrderTemplates(required any data){ 
@@ -1729,7 +1729,7 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		return getOrderService().getOrderTemplatesForAccount(arguments.rc);  
+		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data);  
 	} 
 
 	public void function getOrderTemplateItems(required any data){
@@ -1738,6 +1738,6 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		return getOrderService().getOrderTemplateItemsForAccount(arguments.rc);  
+		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
 }
