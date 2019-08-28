@@ -5,7 +5,7 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cfif rc.orderTemplate.getOrderTemplateType().getSystemCode() NEQ 'ottWishList'>
+	<cfif rc.orderTemplate.getOrderTemplateType().getSystemCode() EQ 'ottWishList'>
 		<div class="col-md-4">
 	<cfelse>
 		<div>
