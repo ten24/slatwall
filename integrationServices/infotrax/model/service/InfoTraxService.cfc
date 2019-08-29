@@ -59,11 +59,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return variables.qualifiers;
 	}
 	
-	public boolean function isEntityQualified(required string entityName, required string baseID, required any event){
-		
-		if(!isSimpleValue(arguments.event)){
-			return false;
-		}
+	public boolean function isEntityQualified(required string entityName, required string baseID, required string event){
 		
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		var qualifiers = getQualifiers();
@@ -89,7 +85,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		var entityCollectionList = invokeMethod('get#arguments.entityName#CollectionList');
-		entityCollectionList.setDisplayProperties('#primaryIDPropertyName#');
+		entityCollectionList.setDisplayProperties('#primaryIDPropertyName#')
 		entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		
 		//TODO: Support filter groups
