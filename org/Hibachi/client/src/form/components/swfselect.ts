@@ -18,7 +18,8 @@ class SWFSelectController {
 
     public optionsMethod:string;
     public selectEventName:string;
-    public updateEventName:string;
+    public updateEventList:string;
+    public payloadFieldName:string;
     public options:Option[];
     public selectedOption:Option;
     
@@ -29,8 +30,11 @@ class SWFSelectController {
         public observerService,
     ){
         this.refreshOptions();
-        if(this.updateEventName){
-            this.observerService.attach(this.refreshOptions,this.updateEventName);
+        if(this.updateEventList){
+            const events = this.updateEventList.split(",");
+            events.map(event=>{
+                this.observerService.attach(this.refreshOptions,event);
+            });
         }
     }
     
@@ -44,14 +48,14 @@ class SWFSelectController {
     public getOptions = ():Promise<Option[]>=>{
         return this.$rootScope.hibachiScope.doAction(this.optionsMethod).then(result=>{
             let options = [];
-            for(const option of result.accountWishlistOptions){
+            result[this.payloadFieldName].map(option=>{
                 if(option.value && option.name){ // if we have a struct with value and name, use that
                     options.push(new Option(option.value,option.name));
-                    continue;
+                    return;
                 }
                 // otherwise, it's a simple string, so let's use that
                 options.push(new Option(option));
-            }
+            })
             return options;
         });
     }
@@ -77,8 +81,9 @@ class SWFSelect  {
     */
     public bindToController = {
         optionsMethod:"@",
+        payloadFieldName:"@",
         selectEventName:"@",
-        updateEventName:"@?",
+        updateEventList:"@?",
     };
     public controller       = SWFSelectController;
     public controllerAs     = "swfSelect";
@@ -104,5 +109,6 @@ class SWFSelect  {
 }
 export{
     SWFSelect,
-    SWFSelectController
+    SWFSelectController,
+    Option
 }

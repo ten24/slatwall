@@ -59503,40 +59503,55 @@ exports.SWFReviewListing = SWFReviewListing;
 
 "use strict";
 
+/// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var WishListProduct = /** @class */ (function () {
-    function WishListProduct() {
-    }
-    return WishListProduct;
-}());
 var SWFWishlistController = /** @class */ (function () {
     // @ngInject
-    function SWFWishlistController($rootScope, $scope, observerService) {
+    function SWFWishlistController($rootScope, $scope, observerService, $timeout) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
-        this.refreshList = function (wishlistOption) {
-            _this.getProducts(wishlistOption).then(function (products) {
-                debugger;
+        this.$timeout = $timeout;
+        this.refreshList = function (option) {
+            _this.loading = true;
+            _this.currentList = option;
+            _this.getOrderTemplateItems(option).then(function (orderTemplateItems) {
+                _this.orderTemplateItems = orderTemplateItems;
+                _this.loading = false;
             });
         };
-        this.getProducts = function (wishlistOption) {
-            return _this.$rootScope.hibachiScope.doAction("getWishlist").then(function (result) {
-                var options = [];
-                for (var _i = 0, _a = result.accountWishlistOptions; _i < _a.length; _i++) {
-                    var option = _a[_i];
-                    if (option.value && option.name) { // if we have a struct with value and name, use that
-                        options.push(new Option(option.value, option.name));
-                        continue;
-                    }
-                    // otherwise, it's a simple string, so let's use that
-                    options.push(new Option(option));
-                }
-                return options;
+        this.getOrderTemplateItems = function (option) {
+            var data = {};
+            data['pageRecordsShow'] = _this.pageRecordsShow;
+            data['currentPage'] = _this.currentPage;
+            data['orderTemplateID'] = option.value;
+            data['orderTemplateTypeID'] = '2c9280846b712d47016b75464e800014'; //wishlist type ID
+            return _this.$rootScope.hibachiScope.doAction("getOrderTemplateItems", data).then(function (result) {
+                return result['orderTemplateItems'];
             });
         };
-        this.observerService.attach(this.getProducts, "myAccountWishlistSelected");
+        this.deleteItem = function (index) {
+            _this.loading = true;
+            var item = _this.orderTemplateItems[index];
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+                _this.orderTemplateItems.splice(index, 1);
+                _this.refreshList(_this.currentList);
+                return result;
+            });
+        };
+        this.addToCart = function (index) {
+        };
+        this.search = function (index) {
+        };
+        if (!this.pageRecordsShow) {
+            this.pageRecordsShow = 6;
+        }
+        if (!this.currentPage) {
+            this.currentPage = 1;
+        }
+        this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
     }
     return SWFWishlistController;
 }());
@@ -59553,7 +59568,10 @@ var SWFWishlist = /** @class */ (function () {
         /**
          * Binds all of our variables to the controller so we can access using this
          */
-        this.bindToController = {};
+        this.bindToController = {
+            pageRecordsShow: "@?",
+            currentPage: "@?",
+        };
         this.controller = SWFWishlistController;
         this.controllerAs = "swfWishlist";
         /**
@@ -78701,6 +78719,7 @@ var Option = /** @class */ (function () {
     }
     return Option;
 }());
+exports.Option = Option;
 var SWFSelectController = /** @class */ (function () {
     // @ngInject
     function SWFSelectController($rootScope, $scope, observerService) {
@@ -78717,15 +78736,14 @@ var SWFSelectController = /** @class */ (function () {
         this.getOptions = function () {
             return _this.$rootScope.hibachiScope.doAction(_this.optionsMethod).then(function (result) {
                 var options = [];
-                for (var _i = 0, _a = result.accountWishlistOptions; _i < _a.length; _i++) {
-                    var option = _a[_i];
+                result[_this.payloadFieldName].map(function (option) {
                     if (option.value && option.name) { // if we have a struct with value and name, use that
                         options.push(new Option(option.value, option.name));
-                        continue;
+                        return;
                     }
                     // otherwise, it's a simple string, so let's use that
                     options.push(new Option(option));
-                }
+                });
                 return options;
             });
         };
@@ -78734,8 +78752,11 @@ var SWFSelectController = /** @class */ (function () {
             _this.observerService.notify(_this.selectEventName, option);
         };
         this.refreshOptions();
-        if (this.updateEventName) {
-            this.observerService.attach(this.refreshOptions, this.updateEventName);
+        if (this.updateEventList) {
+            var events = this.updateEventList.split(",");
+            events.map(function (event) {
+                _this.observerService.attach(_this.refreshOptions, event);
+            });
         }
     }
     return SWFSelectController;
@@ -78755,8 +78776,9 @@ var SWFSelect = /** @class */ (function () {
          */
         this.bindToController = {
             optionsMethod: "@",
+            payloadFieldName: "@",
             selectEventName: "@",
-            updateEventName: "@?",
+            updateEventList: "@?",
         };
         this.controller = SWFSelectController;
         this.controllerAs = "swfSelect";

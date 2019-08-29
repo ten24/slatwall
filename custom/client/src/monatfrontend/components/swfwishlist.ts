@@ -1,39 +1,79 @@
-class WishListProduct {
-    
-}
+/// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
+
+import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
 class SWFWishlistController {
-    public products:WishListProduct[];
+    public orderTemplateItems:Array<any>;
+    public pageRecordsShow:number;
+    public currentPage:number;
+    public currentList:Option;
+    public loading:boolean;
     
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
         public observerService,
+        public $timeout,
     ){
-        this.observerService.attach(this.getProducts,"myAccountWishlistSelected");
+        if(!this.pageRecordsShow){
+            this.pageRecordsShow = 6;
+        }
+        
+        if(!this.currentPage){
+            this.currentPage = 1;
+        }
+        
+        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
     }
     
-    private refreshList = (wishlistOption)=>{
-        this.getProducts(wishlistOption).then(products=>{
-            debugger;
+    private refreshList = (option:Option)=>{
+        this.loading = true;
+        this.currentList = option;
+        this.getOrderTemplateItems(option).then(orderTemplateItems=>{
+            this.orderTemplateItems = orderTemplateItems;
+            this.loading = false;
         });
     }
     
-    public getProducts = (wishlistOption):Promise<WishListProduct[]>=>{
-        return this.$rootScope.hibachiScope.doAction("getWishlist").then(result=>{
-            let options = [];
-            for(const option of result.accountWishlistOptions){
-                if(option.value && option.name){ // if we have a struct with value and name, use that
-                    options.push(new Option(option.value,option.name));
-                    continue;
-                }
-                // otherwise, it's a simple string, so let's use that
-                options.push(new Option(option));
-            }
-            return options;
+    public getOrderTemplateItems = (option:Option):Promise<any>=>{
+        
+        const data = {};
+        data['pageRecordsShow'] = this.pageRecordsShow;
+        data['currentPage'] = this.currentPage;
+        data['orderTemplateID'] = option.value;
+        data['orderTemplateTypeID'] = '2c9280846b712d47016b75464e800014'; //wishlist type ID
+        
+        return this.$rootScope.hibachiScope.doAction("getOrderTemplateItems",data).then(result=>{
+            
+            return result['orderTemplateItems'];
+            
         });
     }
+    
+    public deleteItem =(index):Promise<any>=>{
+        
+        this.loading = true;
+        const item = this.orderTemplateItems[index];
+        
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",item).then(result=>{
+            
+            this.orderTemplateItems.splice(index, 1);
+            this.refreshList(this.currentList);
+            return result;
+            
+        });
+    }
+    
+    public addToCart =(index)=>{
+        
+    }
+    
+    public search =(index)=>{
+        
+    }
+
 }
 
 class SWFWishlist  {
@@ -49,6 +89,8 @@ class SWFWishlist  {
     * Binds all of our variables to the controller so we can access using this
     */
     public bindToController = {
+        pageRecordsShow:"@?",
+        currentPage:"@?",
     };
     public controller       = SWFWishlistController;
     public controllerAs     = "swfWishlist";
