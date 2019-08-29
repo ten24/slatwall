@@ -1405,8 +1405,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(account.hasErrors()) {
-			arguments.order.addError('create', account.getErrors());
+			arguments.orderTemplate.addError('create', account.getErrors());
 		} else {
+			if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+				arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+				return arguments.orderTemplate; 
+			}
+
 			arguments.orderTemplate.setAccount(account);
 			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
