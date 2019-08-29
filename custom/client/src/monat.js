@@ -59508,28 +59508,22 @@ exports.SWFReviewListing = SWFReviewListing;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFWishlistController = /** @class */ (function () {
     // @ngInject
-    function SWFWishlistController($rootScope, $scope, observerService, $timeout) {
+    function SWFWishlistController($rootScope, $scope, observerService, $timeout, orderTemplateService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
         this.$timeout = $timeout;
+        this.orderTemplateService = orderTemplateService;
+        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
         this.refreshList = function (option) {
             _this.loading = true;
             _this.currentList = option;
-            _this.getOrderTemplateItems(option).then(function (orderTemplateItems) {
-                _this.orderTemplateItems = orderTemplateItems;
+            _this.orderTemplateService
+                .getOrderTemplateItems(option.value, _this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
+                .then(function (result) {
+                _this.orderTemplateItems = result['orderTemplateItems'];
                 _this.loading = false;
-            });
-        };
-        this.getOrderTemplateItems = function (option) {
-            var data = {};
-            data['pageRecordsShow'] = _this.pageRecordsShow;
-            data['currentPage'] = _this.currentPage;
-            data['orderTemplateID'] = option.value;
-            data['orderTemplateTypeID'] = '2c9280846b712d47016b75464e800014'; //wishlist type ID
-            return _this.$rootScope.hibachiScope.doAction("getOrderTemplateItems", data).then(function (result) {
-                return result['orderTemplateItems'];
             });
         };
         this.deleteItem = function (index) {
@@ -59644,7 +59638,7 @@ var OrderTemplateService = /** @class */ (function () {
             };
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
         };
-        this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage) {
+        this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             var data = {
@@ -59652,6 +59646,9 @@ var OrderTemplateService = /** @class */ (function () {
                 currentPage: currentPage,
                 pageRecordsShow: pageRecordsShow
             };
+            if (orderTemplateTypeID) {
+                data['orderTemplateTypeID'] = orderTemplateTypeID;
+            }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems', data).promise;
         };
     }

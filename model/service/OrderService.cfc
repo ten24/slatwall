@@ -1919,7 +1919,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
-		displayProperties &= 'sku.priceByCurrencyCode,sku.skuName';
+		displayProperties &= 'sku.priceByCurrencyCode,sku.skuDefinition';
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);

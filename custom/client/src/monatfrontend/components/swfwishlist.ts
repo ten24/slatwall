@@ -3,12 +3,15 @@
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
+
+
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
     public pageRecordsShow:number;
     public currentPage:number;
     public currentList:Option;
     public loading:boolean;
+    private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     
     // @ngInject
     constructor(
@@ -16,6 +19,7 @@ class SWFWishlistController {
         public $scope,
         public observerService,
         public $timeout,
+        public orderTemplateService,
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -29,26 +33,15 @@ class SWFWishlistController {
     }
     
     private refreshList = (option:Option)=>{
+        
         this.loading = true;
         this.currentList = option;
-        this.getOrderTemplateItems(option).then(orderTemplateItems=>{
-            this.orderTemplateItems = orderTemplateItems;
+        
+        this.orderTemplateService
+        .getOrderTemplateItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .then(result=>{
+            this.orderTemplateItems = result['orderTemplateItems'];
             this.loading = false;
-        });
-    }
-    
-    public getOrderTemplateItems = (option:Option):Promise<any>=>{
-        
-        const data = {};
-        data['pageRecordsShow'] = this.pageRecordsShow;
-        data['currentPage'] = this.currentPage;
-        data['orderTemplateID'] = option.value;
-        data['orderTemplateTypeID'] = '2c9280846b712d47016b75464e800014'; //wishlist type ID
-        
-        return this.$rootScope.hibachiScope.doAction("getOrderTemplateItems",data).then(result=>{
-            
-            return result['orderTemplateItems'];
-            
         });
     }
     
