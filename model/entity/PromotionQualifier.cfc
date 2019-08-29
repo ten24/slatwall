@@ -248,27 +248,24 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	}
 	
 	public any function getOrderCollection(){
-		if(!structKeyExists(variables,'orderCollection')){
-			if(isNull(getExcludedOrdersCollectionConfig())){
-				if(isNull(getIncludedOrdersCollectionConfig())){
-					return;
-				}
-				return getIncludedOrdersCollection();
+		if(isNull(getExcludedOrdersCollectionConfig())){
+			if(isNull(getIncludedOrdersCollectionConfig())){
+				return;
 			}
-				
-			if(!isNull(getIncludedOrdersCollectionConfig())){
-				variables.orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
-			}else{
-				variables.orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
-			}
-			if(isNull(variables.excludedOrderIDs)){
-				variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
-			}
-			variables.orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
-		}	
-		return variables.orderCollection;
+			return getIncludedOrdersCollection();
+		}
+			
+		if(!isNull(getIncludedOrdersCollectionConfig())){
+			var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
+		}else{
+			var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
+		}
+		if(isNull(variables.excludedOrderIDs)){
+			variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
+		}
 		
-		
+		orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
+		return orderCollection;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -312,25 +309,14 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
-		var cacheKey = 'orderByOrderID'&arguments.orderID;
-		if(!structKeyExists(variables,cacheKey)){
-			var orderCollection = getOrderCollection();
-			if(isNull(orderCollection) || !len(arguments.orderID)){
-				variables[cacheKey] = false;
-				return false;
-			}
-			orderCollection.setPageRecordsShow(1); 
-			orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-			try{
-				variables[cacheKey] = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true,formatRecords=false));
-				
-			}catch(any e){
-				getHibachiScope().addError('PromotionQualifier','hasOrderByOrderID has a bad Collection');
-				variables[cacheKey] = false;
-				return false;
-			}
+		var orderCollection = getOrderCollection();
+		if(isNull(orderCollection)){
+			return false;
 		}
-		return variables[cacheKey];
+		orderCollection.setPageRecordsShow(1); 
+		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+		return hasOrder;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
