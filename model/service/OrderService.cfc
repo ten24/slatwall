@@ -1291,6 +1291,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
 		
 		arguments.transientOrder = new Slatwall.model.entity.Order();
+		arguments.transientOrder.setOrderTemplate(arguments.orderTemplate); 
 		
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder);
