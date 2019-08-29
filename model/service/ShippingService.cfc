@@ -470,10 +470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment, boolean persistShippingMethodOption=true ) {
-		//if order is generated via orderTemplate then skip
-		if(!isNull(arguments.orderFulfillment.getOrder().getOrderTemplate())){
-			return;
-		}
+	
 		//only run if the method is shipping
 		if(arguments.orderfulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq 'shipping'){
 			// Container to hold all shipping integrations that are in all the usable rates

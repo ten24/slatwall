@@ -803,8 +803,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
-		arguments.order = this.saveOrder( arguments.order );	
-		
+		arguments.order = this.saveOrder( arguments.order );
 
 		return arguments.order;
 	}
@@ -926,9 +925,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(!newOrderPayment.hasErrors()){
 			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 			getHibachiScope().flushORMSession();
-			if(isNull(arguments.order.getOrderTemplate())){
-				arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
-			}
+			arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
 			// Save the newOrderPayment
 			newOrderPayment = this.saveOrderPayment( newOrderPayment );
@@ -1049,9 +1046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
 				arguments.order.addPromotionCode( pc );
-				if(isNull(arguments.order.getOrderTemplate())){
-					this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
-				}
+				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
 			}
 		}
 
@@ -1473,7 +1468,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
-		newOrder.setOrderTemplate(arguments.orderTemplate);
+
 		var processOrderCreate = newOrder.getProcessObject('create'); 
 		processOrderCreate.setNewAccountFlag(false); 
 		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
@@ -1490,7 +1485,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate; 
 		} 
 
-		
+		newOrder.setOrderTemplate(arguments.orderTemplate);
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 
@@ -1500,9 +1495,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity'); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 
-		var orderTemplateItems = orderTemplateItemCollection.getRecords();
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(); 
 		for(var orderTemplateItem in orderTemplateItems){ 
-			
+
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
 			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
@@ -1567,8 +1562,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-		//updateOrder amounts
-		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+
 		ormFlush();//flush so that the order exists
 
 		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
@@ -1621,16 +1615,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
 		newOrder = this.saveOrder(newOrder); 
-		
+
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
 			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 		}
-		
+			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
 
@@ -1849,14 +1842,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_removeAppliedGiftCards (required any orderTemplate, any processObject, struct data={}){
 	
 		var appliedGiftCardsCount = arguments.orderTemplate.getOrderTemplateAppliedGiftCardsCount(); 
-		if(appliedGiftCardsCount){
 		var appliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards();
-			for(var i=appliedGiftCardsCount; i>0; i--){
-				arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(appliedGiftCards[i]); 
-			} 
-			
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
-		}
+
+		for(var i=appliedGiftCardsCount; i>0; i--){
+			arguments.orderTemplate.removeOrderTemplateAppliedGiftCard(appliedGiftCards[i]); 
+		} 
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 	
 	}  
@@ -1913,7 +1905,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
 		displayProperties &= 'sku.priceByCurrencyCode';
 
-		orderTemplateItemCollection.setDisplayProperties(displayProperties);
+		orderTemplateItemCollection.setDisplayProperties(displayProperties)
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
@@ -2984,12 +2976,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderItemCount = 0;
 		for (var orderItem in arguments.order.getOrderItems()) {
 			orderItemCount++;
-			var currentOrderItemAmountAsPercentage=0;
-			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
-			if(!isNull(arguments.order.getSubtotalAfterItemDiscounts()) && arguments.order.getSubtotalAfterItemDiscounts() > 0){
-				currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();	
-			}
 			
+			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
+			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
 			
 			// Approximate amount to allocate (rounded to nearest penny)
 		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
@@ -3012,7 +3001,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		            
 		        // Need to increase the allocation by a cent to prevent under allocating 
 		        } else if (currentDiscrepancyAmount < 0) {
-		            currentOrderItemAllocationAmount = (Int(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
 		        }
 		    }
 		    
@@ -4385,8 +4374,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		// skip updateOrder amounts for order template because it will handle on it's own
-		if(!arguments.order.hasErrors() && isNull(arguments.order.getOrderTemplate())) {
+		if(!arguments.order.hasErrors()) {
 			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
 		}
 
@@ -4482,7 +4470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderFulfillment.hasErrors() && isNull(arguments.orderfulfillment.getOrder().getOrderTemplate())) {
+		if(!arguments.orderFulfillment.hasErrors()) {
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
 		}
 
@@ -4525,7 +4513,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderItem.hasErrors() && isNull(arguments.orderItem.getOrder().getOrderTemplate())){
+		if(!arguments.orderItem.hasErrors()){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 
