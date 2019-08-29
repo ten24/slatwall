@@ -542,6 +542,7 @@ property name="personalVolumeSubtotal" persistent="false";
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();

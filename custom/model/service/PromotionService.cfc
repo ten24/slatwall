@@ -5,7 +5,7 @@ component extends="Slatwall.model.service.PromotionService" {
     	variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     }
     private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
-
+		
 		// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
 		var orderItemsCount = arrayLen(arguments.order.getOrderItems()); 	
 		for(var i=1; i<=orderItemsCount; i++) {

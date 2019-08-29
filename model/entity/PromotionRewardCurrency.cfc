@@ -78,14 +78,14 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 
 	// ============ START: Non-Persistent Property Methods =================
 		//CUSTOM PROPERTIES BEGIN
-	property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     
-   	//CUSTOM PROPERTIES END
+   //CUSTOM PROPERTIES END
 	public string function getCurrencyCode(){
 		if(!structKeyExists(variables, "currencyCode")) {
 			if(!isnull(this.getCurrency())){
@@ -144,7 +144,8 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
-	public string function getPersonalVolumeAmountFormatted(){
+
+public string function getPersonalVolumeAmountFormatted(){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmountFormatted(argumentCollection=arguments);
     }
@@ -180,6 +181,5 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 		}
 		
 		return formatValue(this.invokeMethod('get#customPriceField#Amount'), "currency");
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }
