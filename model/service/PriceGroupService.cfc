@@ -418,7 +418,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		var totalQuantity = arguments.order.getTotalItemQuantity();
+
+		//temporary workaround for failed to fetch price groups 
+		//if(!isNull(arguments.order.getOrderTemplate)){
+		//	return; 
+		//}
+
 		if(!isNull(arguments.order.getAccount())){
+			ormGetSession().attach;
 			var priceGroups = arguments.order.getAccount().getPriceGroups();
 			var priceGroupList = '';
 			for(var priceGroup in priceGroups){

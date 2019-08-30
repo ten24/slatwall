@@ -214,7 +214,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			variables.subtotal = 0; 
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
-				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
+				if(isNull(sku)){
+					continue; 
+				} 
 				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
 			} 
 		}
