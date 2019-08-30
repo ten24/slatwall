@@ -1891,6 +1891,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	}  
 
+	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateID" default="";
+	
+		if(len(arguments.data.orderTemplateID) == 0){
+			return arguments.data; 
+		} 
+	
+		arguments.data.orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID).getJsonRepresentation(); 
+		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		return arguments.data; 
+	} 
+
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
