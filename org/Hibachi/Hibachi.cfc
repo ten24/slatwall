@@ -335,11 +335,12 @@ component extends="framework.one" {
 				!variables.framework.hibachi.isApplicationStart && 
 				getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
 			){
-			
+				writeLog(file="#variables.framework.applicationKey#", text="General Log - Server instance cache expired, starting reload for instance #server[variables.framework.applicationKey].serverInstanceKey#");
 				verifyApplicationSetup(reloadByServerInstance=true);
 			
 			}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 			
+				writeLog(file="#variables.framework.applicationKey#", text="General Log - setting cache expired, resetting setting cache for instance #server[variables.framework.applicationKey].serverInstanceKey#");
 				getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 	
 				var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
@@ -897,7 +898,7 @@ component extends="framework.one" {
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
 
 					//only run the update if it wasn't initiated by serverside cache being expired
-					if(!variables.framework.hibachi.isApplicationStart){
+					if(hasReloadKey()){
 						if(!arguments.reloadByServerInstance){
 							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
 						}else{
@@ -905,6 +906,7 @@ component extends="framework.one" {
 							serverInstance.setServerInstanceExpired(false);
 							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - server instance cache reset completed for instance: #server[variables.framework.applicationKey].serverInstanceKey#");
 						}						
 					}
 
