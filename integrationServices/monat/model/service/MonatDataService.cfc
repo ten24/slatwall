@@ -36,9 +36,15 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.stateCode" default="";
         
         var accountCollection = getService('productService').getAccountCollectionList();
-        accountCollection.setDisplayProperties('accountID,firstName,lastName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.countryCode,calculatedAdminIcon');
+        
         accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
         accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        accountCollection.setDisplayProperties("firstName,lastName,primaryAddress.address.stateCode", {isSearchable: true});
+        accountCollection.addDisplayProperty('accountID');
+        accountCollection.addDisplayProperty('primaryAddress.address.city');
+        accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
+        
         accountCollection.setKeywords(arguments.data.search);
         return accountCollection; 
     }
