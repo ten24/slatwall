@@ -1898,10 +1898,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.data; 
 		} 
 	
-		arguments.data.orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID).getJsonRepresentation(); 
+		arguments.data.orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID).getStructRepresentation(); 
 		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return arguments.data; 
 	} 
+	
+	
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHiibachiScope().getAccount()){
+		arguments.data = this.getOrderTemplateForAccount(argumentCollection = arguments);
+		//arguments.data.orderTemplate['shipping'] = getShippingInfo();
+		//arguments.data.orderTemplate['billing'] = getBillingInfo();
+		//arguments.data.orderTemplate['order'] = getOrderTotalInfo();
+	}
 
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
@@ -1936,6 +1944,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
+	
+	
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {

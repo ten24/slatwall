@@ -7,13 +7,14 @@ class MonatFlexshipListingController{
 
 	}
 	
-	public $onInit = () =>{
-	    this.orderTemplateService.getOrderTemplates().then(
-	        (data)=>{
-	            this.orderTemplates = data.orderTemplates
+	public $onInit = () => {
+	    this.orderTemplateService.getOrderTemplates()
+	    .then(
+	        (data) => {
+	            this.orderTemplates = data.orderTemplate
 	        },
-	        (reason)=>{
-	            
+	        (reason) => {
+	            console.error(reason);
 	        }
 	    );
 	}
@@ -36,7 +37,7 @@ class MonatFlexshipListing {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipListing(
+        ) => new MonatFlexshipListing (
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,

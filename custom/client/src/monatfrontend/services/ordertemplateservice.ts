@@ -12,12 +12,21 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
    }
    
-   public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1) =>{
+   public getOrderTemplateItems = (orderTemplateId, pageRecordsShow=100, currentPage=1) =>{
        var data = {
-           orderTemplateID:orderTemplateID,
-           currentPage:currentPage,
-           pageRecordsShow:pageRecordsShow
+           'orderTemplateId' : orderTemplateId,
+           'currentPage' : currentPage,
+           'pageRecordsShow' : pageRecordsShow
        }
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
+   }
+   
+    public getOrderTemplateDetails = (orderTemplaetId:string) => {
+       var data = {
+           "orderTemplaetId" : orderTemplaetId
+       }
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
+                  .promise;
    }
 }

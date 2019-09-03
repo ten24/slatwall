@@ -1,16 +1,21 @@
+import {IOrderTemplate} from "../models";
+
 class MonatFlexshipDetailController {
     public orderTemplateID: string;
-    public orderTemplate: any;
+    public orderTemplate: IOrderTemplate;
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {
         if (this.orderTemplate == null) {
-            this.orderTemplateService.getOrderTemplate(this.orderTemplateID).then((response) => {
+            this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID).then(
+            (response) => {
                 this.orderTemplate = response.orderTemplate;
-            }, (reason) => {
+            }, 
+            (reason) => {
                 throw (reason);
             });
         }
+        
     };
 }
 
@@ -18,6 +23,7 @@ class MonatFlexshipDetail {
 
 	public restrict:string;
 	public templateUrl:string;
+	
 	public scope = {};
 	public bindToController = {
 	    orderTemplateID:'@',
