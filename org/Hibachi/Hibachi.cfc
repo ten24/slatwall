@@ -650,10 +650,8 @@ component extends="framework.one" {
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			
 
-			writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Scope Key: #getHibachiInstanceApplicationScopeKey()#");
-			
 			// If not, lock the application until this is finished
-			lock name="application_#getHibachiInstanceApplicationScopeKey()#_init" type="exclusive" timeout="2400"  {
+			lock scope="Application" timeout="2400"  {
 
 				// Set the request timeout to 2400
 				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=2400);
