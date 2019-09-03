@@ -1,7 +1,7 @@
 export interface IOrderTemplate{
     id: string;
     name: string;
-    items?: IOrderItem[];
+    orderItems?: IOrderItem[];
 }
 
 export interface IOrderItem{
@@ -10,8 +10,8 @@ export interface IOrderItem{
 }
 
 export class OrderTemplate implements IOrderTemplate {
-  id: string;
-  name: string;
+  public  id: string;
+  public  name: string;
   /**
    * some utility functions as needed
    * 

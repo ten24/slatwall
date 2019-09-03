@@ -1,22 +1,10 @@
-import {OrderTemplate} from "../models";
+import { IOrderItem } from "../models";
 
-class MonatFlexshipDetailController {
-    public orderTemplateID: string;
-    public orderTemplate: OrderTemplate;
+class MonatFlexshipOrdereItemController {
+    public orderItem: IOrderItem;
     constructor(public orderTemplateService) {
     }
-    public $onInit = () => {
-        if (this.orderTemplate == null) {
-            this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID).then(
-            (response) => {
-                this.orderTemplate = response.orderTemplate;
-            }, 
-            (reason) => {
-                throw (reason);
-            });
-        }
-        
-    };
+    public $onInit = () => {};
 }
 
 class MonatFlexshipDetail {
@@ -26,11 +14,10 @@ class MonatFlexshipDetail {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplateID:'@',
-	    orderTemplate:'<'
+	    orderItem:'='
 	};
-	public controller=MonatFlexshipDetailController;
-	public controllerAs="monatFlexshipDetail";
+	public controller=MonatFlexshipOrdereItemController;
+	public controllerAs="monatFlexshipOrderItem";
 
 	public static Factory(){
         var directive:any = (
@@ -58,8 +45,8 @@ class MonatFlexshipDetail {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipdetail.html";
-		this.restrict = "EA";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshiporderitem.html";
+		this.restrict = "E";
 	}
 
 	public link = (scope, element, attrs) =>{

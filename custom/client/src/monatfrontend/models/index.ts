@@ -4,7 +4,8 @@
  */
 
 export {
-  IOrderTemplate, 
+  IOrderTemplate,
+  IOrderItem, 
   OrderTemplate
 } from './orderTemplate.model'
 
