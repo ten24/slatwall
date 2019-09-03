@@ -36,7 +36,7 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.stateCode" default="";
         
         var accountCollection = getService('productService').getAccountCollectionList();
-        accountCollection.setDisplayProperties('firstName,lastName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.countryCode,calculatedAdminIcon');
+        accountCollection.setDisplayProperties('accountID,firstName,lastName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.countryCode,calculatedAdminIcon');
         accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
         accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
         accountCollection.setKeywords(arguments.data.search);
