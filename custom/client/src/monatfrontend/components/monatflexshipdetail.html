@@ -28,7 +28,8 @@
 		<table class="table items-details-table">
 			<tbody>
 				
-		<!--   <monat-flexship-order-item ng-repeat="orderTemplate in monatFlexshipDetail.orderTemplate.orderItems" 
+		<!--   
+				<monat-flexship-order-item ng-repeat="orderTemplate in monatFlexshipDetail.orderTemplate.orderItems" 
                      data-order-item="orderitem">
 
 				</monat-flexship-order-item>
@@ -80,6 +81,13 @@
 			</tbody>
 		</table>
 	</div>
+	
+	<!--   
+			<monat-flexship-shipping-and-billing-card 
+                 data-shipping-and-billing-detail="monatFlexshipDetail.orderTemplate.shippingAndBillingDetail">
+			</monat-flexship-shipping-and-billing-card>
+	-->	
+
 	<div class="order-details-box shipping-billing-info">
 		<h3>Shipping &amp; billing info</h3>
 		<ul>
@@ -101,6 +109,15 @@
 			</li>
 		</ul>
 	</div>
+
+
+	<!--	
+			<monat-flexship-order-total-card 
+                 data-order-total-detail="monatFlexshipDetail.orderTemplate.orderTotalDetail">
+			</monat-flexship-order-total-card>
+	-->	
+
+
 	<div class="order-total">
 		<h3>Order Total</h3>
 		<ul>

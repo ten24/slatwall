@@ -6,6 +6,8 @@
 export {
   IOrderTemplate,
   IOrderItem, 
+  IShippingAndBillingDetail,
+  IOrderTotalDetail,
   OrderTemplate
 } from './orderTemplate.model'
 

@@ -1,23 +1,23 @@
-import { IOrderItem } from "../models";
+import { IOrderTotalDetail } from "../models";
 
-class MonatFlexshipOrdereItemController {
-    public orderItem: IOrderItem;
+class MonatFlexshipOrderTotalCardController {
+    public orderTotalDetail: IOrderTotalDetail;
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
 }
 
-class MonatFlexshipDetail {
+class MonatFlexshipOrderTotalCard {
 
 	public restrict:string;
 	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
-	    orderItem:'='
+	    orderTotalDetail:'='
 	};
-	public controller=MonatFlexshipOrdereItemController;
-	public controllerAs="monatFlexshipOrderItem";
+	public controller = MonatFlexshipOrderTotalCardController;
+	public controllerAs = "monatFlexshipOrderTotalCard";
 
 	public static Factory(){
         var directive:any = (
@@ -25,7 +25,7 @@ class MonatFlexshipDetail {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipDetail(
+        ) => new MonatFlexshipOrderTotalCard(
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
@@ -45,7 +45,7 @@ class MonatFlexshipDetail {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshiporderitem.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-ordertotalcard.html";
 		this.restrict = "E";
 	}
 
@@ -56,6 +56,6 @@ class MonatFlexshipDetail {
 }
 
 export {
-	MonatFlexshipDetail
+	MonatFlexshipOrderTotalCard
 };
 

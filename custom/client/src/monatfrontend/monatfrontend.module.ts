@@ -3,6 +3,9 @@ import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/
 import {SWFReviewListing} from "./components/swfreviewlisting";
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipDetail} from "./components/monatflexshipdetail";
+import {MonatFlexshipOrderItem} from "./components/monatflexship-orderitem";
+import {MonatFlexshipShippingAndBillingCard} from "./components/monatflexship-shippingandbillingcard";
+import {MonatFlexshipOrderTotalCard} from "./components/monatflexship-ordertotalcard";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 //services
