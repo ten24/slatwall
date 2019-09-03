@@ -1192,22 +1192,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 	
-		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
-		 * because this object contains unpersisted changes that this method seeks to validate. 
-		 */
-		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
-	
-		
-		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
-		 * unvalidated changes in the order template.
-		 */
+		request.orderTemplate = arguments.orderTemplate; 	
+
 		thread name="#threadName#"
-			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
-		{	
-
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+		{
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
 			transientOrder = this.saveOrder(transientOrder);
 			
 			ormFlush();
@@ -1219,6 +1209,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
+			
 		}
 		
 		threadJoin(threadName);
@@ -1246,8 +1237,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
 
-			//merge the entity to prevent failed to laizy initiate collection errors
-			entityMerge(transientOrder);	
+			//merge the entity to prevent failed to lazy initiate collection errors
 			transientOrder = this.saveOrder(transientOrder);
 			
 			ormFlush();
@@ -1285,7 +1275,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount(),true); 
+		
+		var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+		arguments.transientOrder.setAccount(account); 
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());

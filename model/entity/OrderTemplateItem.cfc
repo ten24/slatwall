@@ -54,8 +54,17 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 	property name="total" persistent="false" hb_formatType="currency"; 
 
-	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
-property name="commissionableVolumeTotal" persistent="false"; 
+	// Remote properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+	//CUSTOM PROPERTIES BEGIN
+property name="remoteSkuCode" ormtype="string"; //for import
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
