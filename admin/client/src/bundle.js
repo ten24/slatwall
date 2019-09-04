@@ -60737,6 +60737,9 @@ var SWSiteSelectorController = /** @class */ (function () {
         this.typeaheadService = typeaheadService;
         this.utilityService = utilityService;
         this.selectSite = function () {
+            if (!_this.collectionConfigToFilter && _this.swListingDisplay) {
+                _this.collectionConfigToFilter = _this.swListingDisplay.collectionConfig;
+            }
             _this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(_this.simpleFilterPropertyIdentifier);
             console.log("selectSite", _this.selectedSite);
             switch (_this.selectedSite) {
@@ -60802,16 +60805,16 @@ var SWSiteSelectorController = /** @class */ (function () {
 exports.SWSiteSelectorController = SWSiteSelectorController;
 var SWSiteSelector = /** @class */ (function () {
     //@ngInject
-    function SWSiteSelector($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder) {
+    function SWSiteSelector($http, $hibachi, listingService, contentPartialsPath, slatwallPathBuilder) {
         var _this = this;
         this.$http = $http;
         this.$hibachi = $hibachi;
         this.listingService = listingService;
-        this.scopeService = scopeService;
         this.contentPartialsPath = contentPartialsPath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.restrict = "EA";
         this.scope = {};
+        this.require = { swListingDisplay: '?^swListingDisplay' };
         this.bindToController = {
             inListingDisplay: "=?",
             filterPropertyIdentifier: "@?",
@@ -60829,8 +60832,8 @@ var SWSiteSelector = /** @class */ (function () {
             if ($scope.swSiteSelector.inListingDisplay == null) {
                 $scope.swSiteSelector.inListingDisplay = !$scope.swSiteSelector.withTypeahead;
             }
-            if ($scope.swSiteSelector.inListingDisplay == true && _this.scopeService.hasParentScope($scope, "swListingDisplay")) {
-                var listingDisplayScope = _this.scopeService.getRootParentScope($scope, "swListingDisplay")["swListingDisplay"];
+            if ($scope.swSiteSelector.inListingDisplay == true && $scope.swSiteSelector.swListingDisplay) {
+                var listingDisplayScope = $scope.swSiteSelector.swListingDisplay;
                 $scope.swSiteSelector.listingID = listingDisplayScope.tableID;
                 if (listingDisplayScope.collectionConfig != null) {
                     $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;
@@ -60844,12 +60847,11 @@ var SWSiteSelector = /** @class */ (function () {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + "/siteselector.html";
     }
     SWSiteSelector.Factory = function () {
-        var directive = function ($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder) { return new SWSiteSelector($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder); };
+        var directive = function ($http, $hibachi, listingService, contentPartialsPath, slatwallPathBuilder) { return new SWSiteSelector($http, $hibachi, listingService, contentPartialsPath, slatwallPathBuilder); };
         directive.$inject = [
             '$http',
             '$hibachi',
             'listingService',
-            'scopeService',
             'contentPartialsPath',
             'slatwallPathBuilder'
         ];
@@ -62293,6 +62295,7 @@ var SWOptionsForOptionGroupController = /** @class */ (function () {
         this.optionCollectionConfig.setDisplayProperties("optionID, optionName, optionGroup.optionGroupID,optionGroup.optionGroupName");
         this.optionCollectionConfig.addFilter("optionGroup.optionGroupID", this.optionGroupId);
         this.optionCollectionConfig.setOrderBy('sortOrder|ASC');
+        this.optionCollectionConfig.addFilter('activeFlag', 1, '=');
         this.optionCollectionConfig.setAllRecords(true);
         this.optionCollectionConfig.getEntity().then(function (response) {
             _this.options = response.records;
@@ -64764,6 +64767,7 @@ var ProductCreateController = /** @class */ (function () {
                     collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
                     //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                     collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
+                    collectionConfig.addFilter('activeFlag', 1, '=');
                     var productTypeIDArray = _this.$scope.productTypeIDPaths[_this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(",");
                     for (var j = 0; j < productTypeIDArray.length; j++) {
                         collectionConfig.addFilter('optionGroup.productTypes.productTypeID', productTypeIDArray[j], '=', 'OR');
@@ -68832,7 +68836,9 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
                 catch (e) { }
                 _this.appConfig = appConfig;
-                return _this.getResourceBundles();
+                return _this.getAuthInfo().then(function () {
+                    return _this.getResourceBundles();
+                });
             });
         };
         this.getResourceBundle = function (locale) {
@@ -68858,6 +68864,13 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
             });
             return deferred.promise;
+        };
+        this.getAuthInfo = function () {
+            return _this.$http.get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
+                if (loginResponse.status === 200) {
+                    core_module_1.coremodule.value('token', loginResponse.data.token);
+                }
+            });
         };
         this.getResourceBundles = function () {
             var rbLocale = _this.appConfig.rbLocale;
@@ -70795,6 +70808,15 @@ var SWCriteriaBoolean = /** @class */ (function () {
                         }
                     }
                 });
+                scope.booleanfilterPropertyChanged = function (selectedFilterProperty) {
+                    scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+                };
+                scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
+                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    }
+                    scope.filterItem.value = selectedFilterProperty.criteriaValue;
+                };
             }
         };
     }
@@ -73977,7 +73999,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -73989,6 +74010,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -78995,6 +79017,7 @@ var DateReporting = /** @class */ (function () {
             if (date.trim && date.trim().length === 0) {
                 return '';
             }
+            periodInterval = periodInterval.toLowerCase(); //to avoid case sensitivity
             switch (periodInterval) {
                 case 'hour':
                     var dateArray = date.split('-');
@@ -80125,17 +80148,47 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, appConfig, $injector, utilityService) {
+    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService, token) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
+        this.$window = $window;
         this.appConfig = appConfig;
         this.$injector = $injector;
         this.utilityService = utilityService;
+        this.token = token;
+        this.getJWTDataFromToken = function (str) {
+            // Going backwards: from bytestream, to percent-encoding, to original string.
+            str = str.split('.')[1];
+            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            var jwtData = angular.fromJson(decodedString);
+            var now = +new Date();
+            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+            now = +nowString;
+            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
+                if (!_this.$rootScope.slatwall.account) {
+                    _this.$rootScope.slatwall.account = {};
+                }
+                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+                //important to check to prevent recursion between $http and hibachinterceptor
+                if (!_this.$rootScope.slatwall.role) {
+                    _this.$rootScope.slatwall.role = jwtData.role;
+                    _this.getRoleBasedData(jwtData);
+                    if (jwtData.permissionGroups) {
+                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
+                    }
+                }
+            }
+        };
         this.isSuperUser = function () {
             return _this.$rootScope.slatwall.role == 'superUser';
         };
         this.authenticateActionByAccount = function (action, processContext) {
+            if (!_this.$rootScope.slatwall.authInfo) {
+                _this.getJWTDataFromToken(_this.token);
+            }
             var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
             return authDetails.authorizedFlag;
         };
@@ -80548,7 +80601,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -80559,6 +80612,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
+        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -80569,30 +80623,8 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
-        this.getJWTDataFromToken = function (str) {
-            // Going backwards: from bytestream, to percent-encoding, to original string.
-            str = str.split('.')[1];
-            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            var jwtData = angular.fromJson(decodedString);
-            var now = +new Date();
-            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
-            now = +nowString;
-            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
-                if (!_this.$rootScope.slatwall.account) {
-                    _this.$rootScope.slatwall.account = {};
-                }
-                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-                //important to check to prevent recursion between $http and hibachinterceptor
-                if (!_this.$rootScope.slatwall.role) {
-                    _this.$rootScope.slatwall.role = jwtData.role;
-                    _this.hibachiAuthenticationService.getRoleBasedData(jwtData);
-                    if (jwtData.permissionGroups) {
-                        _this.$rootScope.slatwall.permissionGroups = jwtData.permissionGroups;
-                    }
-                }
-            }
+        this.getJWTDataFromToken = function () {
+            _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
         this.request = function (config) {
             _this.$log.debug('request');
@@ -80607,9 +80639,9 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.localStorageService.hasItem('token')) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.localStorageService.getItem('token');
-                _this.getJWTDataFromToken(_this.localStorageService.getItem('token'));
+            if (_this.token) {
+                config.headers['Auth-Token'] = 'Bearer ' + _this.token;
+                _this.getJWTDataFromToken();
             }
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -80645,9 +80677,6 @@ var HibachiInterceptor = /** @class */ (function () {
                 var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
                 _this.alertService.addAlerts(alerts);
             }
-            if (response.data.hasOwnProperty('token')) {
-                _this.localStorageService.setItem('token', response.data.token);
-            }
             return response;
         };
         this.responseError = function (rejection) {
@@ -80682,10 +80711,11 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise = $http.get(_this.baseUrl + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
                                 _this.loginResponse = loginResponse;
                                 if (loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', loginResponse.data.token);
+                                    _this.hibachiAuthenticationService.jwtToken = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                    _this.getJWTDataFromToken(loginResponse.data.token);
+                                    _this.token = loginResponse.data.token;
+                                    _this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -80697,10 +80727,10 @@ var HibachiInterceptor = /** @class */ (function () {
                         else {
                             return _this.authPromise.then(function () {
                                 if (_this.loginResponse.status === 200) {
-                                    _this.localStorageService.setItem('token', _this.loginResponse.data.token);
                                     rejection.config.headers = rejection.config.headers || {};
                                     rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
-                                    _this.getJWTDataFromToken(_this.loginResponse.data.token);
+                                    _this.token = _this.loginResponse.data.token;
+                                    _this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -80723,6 +80753,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
+        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -80730,7 +80761,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -80741,6 +80772,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'localStorageService',
             'alertService',
             'appConfig',
+            'token',
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
@@ -88880,7 +88912,7 @@ var SWListingDisplayController = /** @class */ (function () {
             // Iterate over columns, find out if we have any numericals and return
             if (_this.columns != null && _this.columns.length) {
                 return _this.columns.reduce(function (totalNumericalCols, col) {
-                    return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+                    return totalNumericalCols + (col.ormtype && col.isVisible === true && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
                 }, 0);
             }
             return false;
@@ -89693,6 +89725,11 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.saveReportCollection = function (collectionName) {
+            //Prevent saving report if no aggregate column is selected
+            if (!_this.hasMetric) {
+                _this.hasMetric = false;
+                return;
+            }
             if (collectionName || _this.collectionId) {
                 var serializedJSONData = {
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
@@ -89818,21 +89855,21 @@ var SWListingReportController = /** @class */ (function () {
                 _this.startDate.setHours(0, 0, 0, 0);
                 _this.endDate = new Date(_this.endDate);
                 _this.endDate.setHours(23, 59, 59, 999);
-                //if date is in the wrong format then update those dates
-                if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
-                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
-                }
                 _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
                 //if the interval is an hour than we should only be able to show data for one day
                 if (_this.selectedPeriodInterval.value == 'hour') {
                     _this.tempEndDate = _this.endDate;
-                    _this.endDate = new Date(_this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                    _this.endDate = new Date(_this.startDate).addDays(1); //.toString('MMM dd, yyyy hh:mm tt');
                 }
                 else if (_this.tempEndDate) {
                     _this.endDate = _this.tempEndDate;
                     delete _this.tempEndDate;
+                }
+                //if date is in the wrong format then update those dates
+                if (_this.startDate.indexOf && _this.startDate.indexOf('000Z') != -1) {
+                    _this.startDate = new Date(_this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                    _this.endDate = new Date(_this.endDate).toString('MMM dd, yyyy hh:mm tt');
                 }
                 for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
@@ -89888,18 +89925,18 @@ var SWListingReportController = /** @class */ (function () {
             _this.startDateCompare.setHours(0, 0, 0, 0);
             _this.endDateCompare = new Date(_this.endDateCompare);
             _this.endDateCompare.setHours(23, 59, 59, 999);
-            //if date is in the wrong format then update those dates
-            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
-                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
-                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-            }
             if (_this.selectedPeriodInterval.value == 'hour') {
                 _this.tempEndDateCompare = _this.endDateCompare;
-                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.startDateCompare).addDays(1); //.toString('MMM dd, yyyy hh:mm tt');
             }
             else if (_this.tempEndDateCompare) {
                 _this.endDateCompare = _this.tempEndDateCompare;
                 delete _this.tempEndDateCompare;
+            }
+            //if date is in the wrong format then update those dates
+            if (_this.startDateCompare.indexOf && _this.startDateCompare.indexOf('000Z') != -1) {
+                _this.startDateCompare = new Date(_this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
+                _this.endDateCompare = new Date(_this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
             }
             _this.compareReportCollectionConfig = _this.collectionConfig.clone();
             for (var i in _this.compareReportCollectionConfig.columns) {
@@ -89971,6 +90008,12 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             //used to clear old rendered charts before adding new ones
+            if (ctx.is($("#myChartCompare"))) {
+                var chart_label = (_this.startDateCompare.toDateString ? _this.startDateCompare.toDateString() : _this.startDate) + " - " + (_this.endDateCompare.toDateString ? _this.endDateCompare.toDateString() : _this.endDateCompare);
+            }
+            else {
+                var chart_label = (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate);
+            }
             chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
@@ -89982,7 +90025,7 @@ var SWListingReportController = /** @class */ (function () {
                     responsive: true,
                     title: {
                         display: true,
-                        text: "(" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")"
+                        text: '(' + chart_label + ')'
                     },
                     scales: {
                         yAxes: [{
@@ -90119,6 +90162,7 @@ var SWListingReportController = /** @class */ (function () {
         else {
             this.getPeriodColumns();
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
+            $("#get-started-report").removeClass("hide");
         }
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
         this.observerService.attach(this.updateReportFromListing, 'displayOptionsAction', this.tableId);
@@ -90347,9 +90391,7 @@ var SWListingSearchController = /** @class */ (function () {
             });
         };
         this.deletePersonalCollection = function (personalCollection) {
-            _this.$hibachi.saveEntity('Collection', personalCollection.collectionID, {
-                'softDeleteFlag': true
-            }, 'save').then(function (data) {
+            _this.$hibachi.saveEntity('Collection', personalCollection.collectionID, {}, 'softDelete').then(function (data) {
                 if (_this.localStorageService.hasItem('selectedPersonalCollection')) {
                     var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
                     var currentSelectedPersonalCollection = selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey];
@@ -90416,11 +90458,11 @@ var SWListingSearchController = /** @class */ (function () {
         this.getPersonalCollections = function () {
             if (!_this.hasPersonalCollections) {
                 var personalCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
-                personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
+                personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription,softDeleteFlag');
                 personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
                 personalCollectionList.addFilter('reportFlag', 0);
-                personalCollectionList.addFilter('softDeleteFlag', true, "!=");
+                personalCollectionList.addFilter('softDeleteFlag', false);
                 if (angular.isDefined(_this.personalCollectionIdentifier)) {
                     personalCollectionList.addFilter('collectionDescription', _this.personalCollectionIdentifier);
                 }
@@ -90443,11 +90485,10 @@ var SWListingSearchController = /** @class */ (function () {
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-            if (_this.selectedSearchFilter.value != 'All') {
+            if (_this.showSearchFilterDropDown && _this.selectedSearchFilter.title != 'All') {
                 if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
                     _this.searchFilterPropertyIdentifier = 'createdDateTime';
                 }
-                console.log(_this.searchFilterPropertyIdentifier);
                 _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
             }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
@@ -94387,3 +94428,4 @@ module.exports = __webpack_require__(305);
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map

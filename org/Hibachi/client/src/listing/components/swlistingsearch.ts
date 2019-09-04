@@ -150,10 +150,8 @@ class SWListingSearchController {
         this.$hibachi.saveEntity(
             'Collection',
             personalCollection.collectionID,
-            {
-                'softDeleteFlag':true
-            },
-            'save'
+            {},
+            'softDelete'
         ).then((data)=>{
             if(this.localStorageService.hasItem('selectedPersonalCollection')){
                 const selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
@@ -241,11 +239,11 @@ class SWListingSearchController {
     public getPersonalCollections = ()=>{
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
+            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription,softDeleteFlag');
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
-            personalCollectionList.addFilter('softDeleteFlag',true,"!=");
+            personalCollectionList.addFilter('softDeleteFlag',false);
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }
@@ -272,11 +270,11 @@ class SWListingSearchController {
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        if(this.selectedSearchFilter.value!='All'){
+        if(this.showSearchFilterDropDown && this.selectedSearchFilter.title!='All'){
             if(angular.isUndefined(this.searchFilterPropertyIdentifier) || !this.searchFilterPropertyIdentifier.length){
                 this.searchFilterPropertyIdentifier='createdDateTime';
             }
-            console.log(this.searchFilterPropertyIdentifier)
+            
             this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;

@@ -318,16 +318,6 @@ private void function populateWithAddressVerification(required struct rc){
 		super.before(rc);
 	}
 	
-	public void function after(required struct rc){
-		if(structKeyExists(rc,'viewPath')){
-			request.layout = false;
-			getFW().setView("admin:entity.ajax");
-
-			rc.templatePath = "./#rc.viewPath#.cfm";
-
-		}
-	}
-	
 	//Account
 	public void function detailAccount(required struct rc){
 		genericDetailMethod(entityName="Account", rc=arguments.rc);

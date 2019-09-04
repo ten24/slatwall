@@ -103,14 +103,15 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
 	
-	public void function setProperSession() {
+	public void function setProperSession(boolean stateless=false) {
+		
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), getRemoteAddress())) {
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
 			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
-		super.setProperSession();
+		super.setProperSession(arguments.stateless);
 		
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {

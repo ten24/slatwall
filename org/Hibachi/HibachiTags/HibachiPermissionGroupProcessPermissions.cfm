@@ -24,12 +24,12 @@
 								<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='process', entityClassName=attributes.editEntityName, processContext=processContext) />
 								<tr class="#rowClass#">
 									<td class="primary">
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="process" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].entityClassName" value="#attributes.editEntityName#" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" value="">
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].processContext" value="#processContext#">
-										<input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#request.context.permissionFormIndex#].allowCreateFlag" value="1" <cfif not isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag() and not isNull(thisPermission.getProcessContext())>checked="checked"</cfif>> 
+										<input type="hidden" name="processpermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+										<input type="hidden" name="processpermission.permissions[#request.context.permissionFormIndex#].accessType" value="process" />
+										<input type="hidden" name="processpermission.permissions[#request.context.permissionFormIndex#].entityClassName" value="#attributes.editEntityName#" />
+										<input type="hidden" name="processpermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" value="">
+										<input type="hidden" name="processpermission.permissions[#request.context.permissionFormIndex#].processContext" value="#processContext#">
+										<input type="checkbox" name="processpermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="processpermission.permissions[#request.context.permissionFormIndex#].allowCreateFlag" value="1" <cfif not isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag() and not isNull(thisPermission.getProcessContext())>checked="checked"</cfif>> 
 										#processContext#
 									</td>
 								</tr>

@@ -7,6 +7,7 @@ class DateReporting{
             if(date.trim && date.trim().length===0){
                 return '';
             }
+            periodInterval = periodInterval.toLowerCase(); //to avoid case sensitivity
             switch(periodInterval){
                 case 'hour':
                     var dateArray = date.split('-');

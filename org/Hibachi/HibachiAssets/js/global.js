@@ -852,6 +852,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 		jQuery('.hibachi-permission-checkbox:checked').change();
 	
+		jQuery('body').on('lazyLoadComplete',function(){
+			jQuery('.hibachi-permission-checkbox').each(function() {
+				if(jQuery(this).attr('checked')=='checked'){
+					updatePermissionCheckboxDisplay( jQuery(this) );
+				}
+			});
+		});
 	
 		// Report Hooks ============================================
 	
@@ -1880,10 +1887,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				AngularHelper.Compile($('#'+tabID),htmlToCompile);
 				//jquery should work
 				initUIElements($('#'+tabID));
+				$('body').trigger('lazyLoadComplete');
 			});
 		}
-		
-		
 	}
 	/**
 	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive

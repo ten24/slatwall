@@ -6,15 +6,15 @@
 
 <cfoutput>
 	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divClass="col-md-6">
-			<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
+		<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
+			<hb:HibachiPropertyList divClass="col-md-6">
 				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
 				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
-			</cfif>
-		</hb:HibachiPropertyList>
-		<hb:HibachiPropertyList divClass="col-md-6">
+			</hb:HibachiPropertyList>
+		</cfif>
+	<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
 			<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
 			<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />

@@ -59,14 +59,17 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<cfif !structKeyExists(rc,"modal")>
-					<hb:HibachiPropertyDisplay object="#rc.productReview.getProduct()#" property="productName" valueLink="?slatAction=admin:entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#" edit="false">
-				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
+					edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
+				/>
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
+				<cfif rc.productReview.isNew() neq true >
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewsStatus" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
+				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 

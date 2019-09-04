@@ -84,7 +84,7 @@ Notes:
 		<div class="row s-detail-content-wrapper">
 			<div class="col-xs-12 s-results-listing">
 				<div class="s-detail-body">
-					<div class="s-content-header">
+					<div class="s-content-header customtimeline">
 						<h2>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h2>
 					</div>
 					<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />

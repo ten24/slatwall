@@ -41,7 +41,7 @@
 			</cfif>
 
 			<cfif not len(tab.count) and structKeyExists(propertyMetaData, "fieldtype") and listFindNoCase("many-to-one,one-to-many,many-to-many", propertyMetaData.fieldtype)>
-				<cfset thisCount = attributes.object.getPropertyCount( tab.property ) />
+				<cfset tab.count = attributes.object.getPropertyCount( tab.property ) />
 			</cfif>
 		</cfif>
 
