@@ -239,6 +239,7 @@ property name="personalVolumeSubtotal" persistent="false";
     
     property name="lastSyncedDateTime" ormtype="timestamp";
     
+    property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     
    
  property name="businessDate" ormtype="string";
