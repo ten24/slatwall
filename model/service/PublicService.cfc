@@ -1745,10 +1745,26 @@ component  accessors="true" output="false"
 	public void function getOrderTemplateDetails(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.orderTemplateId" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		arguments.data['ajaxResponse']['orderTemplateDetails'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
-	} 
+		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
+	}
+
+	public void function updateOrderTemplateShipping(required any data){ 
+        param name="arguments.data.orderTemplateId" default="";
+		
+		var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateId);
+
+		//check if it's null
+
+		//check if the account has access to the order template
+		// if getHibachiScope().getAccount().getAccountID != orderTemplate.getAccount().getAccountID()
+			//return  
+		
+		getOrderService.process(orderTemplate, arguments.data, 'updateShipping'); 
+		
+		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
+	}   
 	
 }

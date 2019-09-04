@@ -21,9 +21,9 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
    }
    
-    public getOrderTemplateDetails = (orderTemplaetId:string) => {
+    public getOrderTemplateDetails = (orderTemplateId:string) => {
        var data = {
-           "orderTemplaetId" : orderTemplaetId
+           "orderTemplateId" : orderTemplateId
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)

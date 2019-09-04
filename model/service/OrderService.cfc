@@ -1860,6 +1860,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ',shippingAccountAddress.address.postalCode';	
 		displayProperties &= ',shippingAccountAddress.address.stateCode';	
 		displayProperties &= ',shippingAccountAddress.address.countryCode';	
+		displayProperties &= ',billingAccountAddress.address.addressID';  
+		displayProperties &= ',billingAccountAddress.address.name';  
+		displayProperties &= ',billingAccountAddress.address.streetAddress';  
+		displayProperties &= ',billingAccountAddress.address.street2Address';	
+		displayProperties &= ',billingAccountAddress.address.city';	
+		displayProperties &= ',billingAccountAddress.address.locality';	
+		displayProperties &= ',billingAccountAddress.address.postalCode';	
+		displayProperties &= ',billingAccountAddress.address.stateCode';	
+		displayProperties &= ',billingAccountAddress.address.countryCode';		
 		displayProperties &= ',frequencyTerm.termName';	
 	
 		orderTemplateCollection.setDisplayProperties(displayProperties)
@@ -1890,14 +1899,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.data; 
 		} 
 	
-		arguments.data['orderTemplate'] = this.getOrderTemplate(arguments.data.orderTemplateID).getStructRepresentation(); 
+		arguments.data['orderTemplate'] = this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
 		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return arguments.data; 
 	} 
 	
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
-		this.getOrderTemplateForAccount(argumentCollection = arguments);
+		arguments.data = this.getOrderTemplateForAccount(argumentCollection = arguments);
+
 		//arguments.data.orderTemplate['shipping'] = getShippingInfo();
 		//arguments.data.orderTemplate['billing'] = getBillingInfo();
 		//arguments.data.orderTemplate['order'] = getOrderTotalInfo();
