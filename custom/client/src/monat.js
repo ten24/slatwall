@@ -59421,7 +59421,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
                 .then(function (data) {
-                _this.orderTemplates = data.orderTemplate;
+                _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
                 console.error(reason);
             });

@@ -10,8 +10,8 @@ class MonatFlexshipListingController{
 	public $onInit = () => {
 	    this.orderTemplateService.getOrderTemplates()
 	    .then(
-	        (data) => {
-	            this.orderTemplates = data.orderTemplate
+	    	(data) => {
+	            this.orderTemplates = data.orderTemplates
 	        },
 	        (reason) => {
 	            console.error(reason);
