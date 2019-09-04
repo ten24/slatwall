@@ -23,6 +23,9 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipListing', MonatFlexshipListing.Factory())
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
 .directive('monatFlexshipDetail', MonatFlexshipDetail.Factory())
+.directive('monatFlexshipOrderItem', MonatFlexshipOrderItem.Factory())
+.directive('monatFlexshipShippingAndBillingCard', MonatFlexshipShippingAndBillingCard.Factory())
+.directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 
 .service('orderTemplateService', OrderTemplateService);
