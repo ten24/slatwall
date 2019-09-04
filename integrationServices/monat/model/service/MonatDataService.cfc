@@ -14,6 +14,41 @@ component extends="Slatwall.model.service.HibachiService" {
         return productReviewCollection.getPageRecords();
     }
     
+    public array function getMarketPartners(required struct data){
+        param name="arguments.data.pageRecordsShow" default=9;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.search" default="";
+        param name="arguments.data.stateCode" default="";
+        
+        if(isNull(arguments.data.search) && isNull(arguments.data.stateCode)){
+            return [];
+        }
+        
+        var marketPartnerCollection = this.getAccountCollection(arguments.data);
+
+        return marketPartnerCollection.getPageRecords();
+    }
+    
+    private any function getAccountCollection(required struct data){
+        param name="arguments.data.pageRecordsShow" default=9;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.search" default="";
+        param name="arguments.data.stateCode" default="";
+        
+        var accountCollection = getService('productService').getAccountCollectionList();
+        
+        accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+        accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        accountCollection.setDisplayProperties("firstName,lastName,primaryAddress.address.stateCode", {isSearchable: true});
+        accountCollection.addDisplayProperty('accountID');
+        accountCollection.addDisplayProperty('primaryAddress.address.city');
+        accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
+        
+        accountCollection.setKeywords(arguments.data.search);
+        return accountCollection; 
+    }
+    
     public numeric function getProductReviewCount(required struct data){
         var productReviewCollection = getProductReviewCollection(arguments.data);
         return productReviewCollection.getRecordsCount();
