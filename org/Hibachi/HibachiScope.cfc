@@ -456,14 +456,21 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 
-	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
+	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', struct entityQueueData={}, string integrationID=''){
 		if(!structKeyExists(variables, "entityQueueData")) {
 			variables.entityQueueData = {};
 		}
+		var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#";
 		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
 		
-		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#')){
-			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#'] = arguments;
+		if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
+			dataString = dataString & "_#integrationID#"; 
+		}
+		
+		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
+		
+		if(!structKeyExists(variables.entityQueueData, dataString)){
+			variables.entityQueueData[dataString] = arguments;
 			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
 		}
 	}

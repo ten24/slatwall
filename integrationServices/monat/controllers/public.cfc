@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     property name="MonatDataService";
     
     this.publicMethods = 'getProductReviews';
+    this.publicMethods = 'getMarketPartners';
     
     public any function before(required struct rc){
         arguments.rc.ajaxRequest = true;
@@ -16,6 +17,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         if(structKeyExists(arguments.rc,'getRecordsCount') && arguments.rc.getRecordsCount){
             arguments.rc.ajaxResponse['recordsCount'] = getMonatDataService().getProductReviewCount(data=arguments.rc);
         }
+        
+    }
+    
+    public void function getMarketPartners(required struct rc){
+        
+        var marketPartners = getMonatDataService().getMarketPartners(data=arguments.rc);
+        arguments.rc.ajaxResponse['pageRecords'] = marketPartners;
         
     }
     

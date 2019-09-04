@@ -62,10 +62,9 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	<cfset searchableDisplayProperties = "firstName,lastName,company,userName,primaryEmailAddress.emailAddress,sponsorIDNumber"/>
+	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username,primaryEmailAddress.emailAddress,sponsorIDNumber"/>
 	<cfset accountCollectionList.setDisplayProperties(
 	searchableDisplayProperties,
 	{

@@ -85,6 +85,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
+	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
@@ -112,9 +113,12 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="customerCanCreateFlag" persistent="false";
+property name="lastSyncedDateTime" ormtype="timestamp";
+	
+	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
+	
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
@@ -249,17 +253,20 @@ property name="customerCanCreateFlag" persistent="false";
 	} 
 
 	public string function getLastOrderPlacedDateTime(){
-		var orderCollectionList = getService('OrderService').getOrderCollectionList();
-		orderCollectionList.addDisplayProperty('createdDateTime');  
-		orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
-		orderCollectionList.addOrderBy('createdDateTime|DESC');
-		var records = orderCollectionList.getPageRecords();
-
-		if(!arrayIsEmpty(records)){
-			return records[1]['createdDateTime'];
-		} else { 
-			return '';
-		}
+		if(!structKeyExists(variables, 'lastOrderPlacedDateTime') || !len(variables.lastOrderPlacedDateTime)){
+			var orderCollectionList = getService('OrderService').getOrderCollectionList();
+			orderCollectionList.addDisplayProperty('createdDateTime');  
+			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
+			orderCollectionList.addOrderBy('createdDateTime|DESC');
+			var records = orderCollectionList.getPageRecords();
+	
+			if(!arrayIsEmpty(records)){
+				variables.lastOrderPlacedDateTime = records[1]['createdDateTime'];
+			} else { 
+				variables.lastOrderPlacedDateTime = '';
+			}
+		} 
+		return variables.lastOrderPlacedDateTime;
 	}
 
 	public string function getScheduledOrderDates(numeric iterations = 5){

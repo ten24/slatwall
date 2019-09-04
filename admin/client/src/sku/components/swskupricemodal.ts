@@ -262,6 +262,8 @@ class SWSkuPriceModalController{
                 
                 if(angular.isDefined(this.skuOptions) && this.skuOptions.length == 1){
                     this.setSelectedSku(this.skuOptions[0]);
+                } else {
+                    this.setCoumpoundSkuName("");
                 }
             }); 
             
@@ -407,6 +409,8 @@ class SWSkuPriceModalController{
                         this.skuPrice.data[key] = null;
                     }
                 }
+                this.selectedSku = {};
+                this.submittedSku = {};
                 this.formService.resetForm(form);
                 
                 this.listingService.getCollection(this.listingID); 

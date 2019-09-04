@@ -7,18 +7,19 @@ component extends="Slatwall.model.service.PromotionService" {
     private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
 
 		// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+		var orderItemsCount = arrayLen(arguments.order.getOrderItems()); 	
+		for(var i=1; i<=orderItemsCount; i++) {
 
 			var orderItem = arguments.order.getOrderItems()[i];
 			// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				var promotionReward = this.getPromotionReward(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotionRewardID);
-				
-				// If they have defined a promo without a reward, skip it.
-				if (isNull(promotionReward)){
-					continue;
-				}
-				
+			
+				//if we weren't able to find a reward keep going
+				if(isNull(promotionReward)){ 
+					continue; 
+				} 
+					
 				var newAppliedPromotion = this.newPromotionApplied();
 				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
