@@ -66,7 +66,14 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	
 	// Non-Persistent Properties
 	property name="measurementUnitOptions" persistent="false";
-
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";
+    property name="commissionableVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
+    property name="productPackVolume" ormtype="big_decimal";
+    property name="retailValueVolume" ormtype="big_decimal";
+    property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";//CUSTOM PROPERTIES END
 	public numeric function getBundleQATS(string locationID=''){
 		
 		var locationArray = getService('LocationService').getLocationOptions(arguments.locationID);
