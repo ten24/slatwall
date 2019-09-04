@@ -62,6 +62,8 @@ component  accessors="true" output="false"
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
+    property name="typeService" type="any";
+
 
     variables.publicContexts = [];
     variables.responseType = "json";
@@ -222,6 +224,7 @@ component  accessors="true" output="false"
      *  @param passwordConfirm {string}
      *  @ProcessMethod Account_Create
      */
+
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
         
@@ -232,6 +235,27 @@ component  accessors="true" output="false"
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+    }
+    
+    public any function createWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateName";
+        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        
+        if(getHibachiScope().getAccount().isNew()){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("createWishlist");
+        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
+    
+        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
+        processObject.setSiteID(arguments.data.siteID);
+        processObject.setOrderTemplateTypeID(wishlistTypeID);
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
+        
+        getHibachiScope().addActionResult( "public:order.createWishlist", orderTemplate.hasErrors() );
     }
     
     public any function updatePrimaryEmailAddress(required struct data) {
@@ -461,15 +485,15 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required data){
+   public void function verifyAddress(required any data){
         param name="data.accountAddressID" default="";
 
-        data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
+        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
         getHibachiScope().addActionResult("verifyAddress",false);
     }
     
-    public void function addEditAccountAddress(required data){
-        if(structKeyExists(data,'accountAddressID') && len(data['accountAddressID'])){
+    public void function addEditAccountAddress(required any data){
+        if(structKeyExists(data,'accountAddressID') && len(arguments.data['accountAddressID'])){
             param name="data.countrycode" default="US";
      	
          	var accountAddress = getService("AccountService").getAccountAddress(data.accountAddressID);
@@ -487,10 +511,10 @@ component  accessors="true" output="false"
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                    data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                    arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
        	     	}
           	}else{
-              this.addErrors(data, address.getErrors());
+              this.addErrors(arguments.data, address.getErrors());
               getHibachiScope().addActionResult("public:account.addNewAccountAddress", address.hasErrors());
             }
         }else{
@@ -1636,6 +1660,11 @@ component  accessors="true" output="false"
         
     }
     
+    public void function getAccountWishlistsOptions(required struct data){
+        var options = getOrderService().getAccountWishlistsOptions(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistOptions"] = options;
+    }
+    
     /** returns the list of country code options */
      public void function getCountries( required struct data ) {
         arguments.data.ajaxResponse['countryCodeOptions'] = getService('HibachiCacheService').getOrCacheFunctionValue('PublicService.getCountries',getAddressService(),'getCountryCodeOptions');
@@ -1680,7 +1709,7 @@ component  accessors="true" output="false"
     		
     		//remove the orderfulfillment that we used to get the rates because it will disrupt other entities saving.
     		getService("OrderService").deleteOrderFulfillment(orderFulfillment);
-    		data['ajaxResponse']['estimatedShippingRates'] = options;
+    		arguments.data['ajaxResponse']['estimatedShippingRates'] = options;
     	}
     }
     
@@ -1696,7 +1725,67 @@ component  accessors="true" output="false"
         }
         
         var sku = getSkuService().getSku(arguments.data.skuID);
-        data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
+        arguments.data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
+    }
+   
+	public void function getOrderTemplates(required any data){ 
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data);  
+	} 
+
+	public void function getOrderTemplateItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
+	} 
+	
+	public void function deleteOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        
+        if(!isNull(orderTemplateItem) && orderTemplateItem.getOrderTemplate().getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOk = getOrderService().deleteOrderTemplateItem( orderTemplateItem );
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", !deleteOK );
+            return;
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", true );  
     }
     
+    public void function editOrderTemplate(required any data){
+        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateName" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
+            orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+            getHibachiScope().addActionResult( "public:order.editOrderTemplate", orderTemplate.hasErrors() );
+        }
+        
+        getHibachiScope().addActionResult( "public:order.editOrderTemplate", true );  
+    }
+    
+    public void function deleteOrderTemplate(required any data){
+        param name="data.orderTemplateItemID" default="";
+
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOK = getOrderService().deleteOrderTemplate(orderTemplate);
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", !deleteOK);
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
+        
+    }
 }

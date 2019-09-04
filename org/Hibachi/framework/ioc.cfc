@@ -87,8 +87,8 @@ component {
     // return true if the factory (or a parent factory) knows about the requested bean
     public boolean function containsBean( string beanName ) {
         discoverBeans();
-        return structKeyExists( variables.beanInfo, beanName ) ||
-            ( hasParent() && variables.parent.containsBean( beanName ) );
+        return structKeyExists( variables.beanInfo, arguments.beanName ) ||
+            ( hasParent() && variables.parent.containsBean( arguments.beanName ) );
     }
 
 
@@ -202,7 +202,9 @@ component {
             if ( structKeyExists( variables.getBeanCache, arguments.beanName ) ) {
                 return variables.getBeanCache[ arguments.beanName ];
             }
-            var bean = resolveBean( arguments.beanName, constructorArgs );
+
+            var bean = resolveBean( arguments.beanName, arguments.constructorArgs );
+            
             if ( isSingleton( arguments.beanName ) ) variables.getBeanCache[ arguments.beanName ] = bean;
             return bean;
         } else if ( hasParent() ) {

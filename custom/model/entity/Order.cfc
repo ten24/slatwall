@@ -39,6 +39,9 @@ component {
     property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
+    
+    property name="lastSyncedDateTime" ormtype="timestamp";
+    
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     
     public numeric function getPersonalVolumeSubtotal(){

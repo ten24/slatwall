@@ -60,28 +60,33 @@ Notes:
 
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
-			
-			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
-				<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
+		
+		<cfif not structKeyExists(rc,'accountID') OR len(rc.accountID) EQ 0 >
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
+				
+				<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
+					<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 				</hb:HibachiDisplayToggle>
-			</hb:HibachiDisplayToggle>
-			
-			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" /> 	
-			</hb:HibachiDisplayToggle>
+				
+				<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
+					<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" /> 	
+				</hb:HibachiDisplayToggle>
 
-			<hr>
+				<hr>
+			<cfelse> 
+				<input type="hidden" name="accountID" value="#rc.accountID#" />
+			</cfif> 
 
 			<!--- Always use schedule order template type for flexship ---> 
 			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />	

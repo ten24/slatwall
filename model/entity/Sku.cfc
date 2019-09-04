@@ -187,6 +187,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="productScheduleSmartList" type="any" persistent="false";
+	property name="priceByCurrencyCode" persistent="false" hb_formatType="currency";
 	property name="bundledSkusCount" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
@@ -2146,5 +2147,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		    }
 			return variables[cacheKey];
 		}
-    }//CUSTOM FUNCTIONS END
+	}	
+	//CUSTOM FUNCTIONS END
 }
