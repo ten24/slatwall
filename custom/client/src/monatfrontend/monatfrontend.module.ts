@@ -2,6 +2,10 @@ import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/
 //directives
 import {SWFReviewListing} from "./components/swfreviewlisting";
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
+import {MonatFlexshipDetail} from "./components/monatflexshipdetail";
+import {MonatFlexshipOrderItem} from "./components/monatflexship-orderitem";
+import {MonatFlexshipShippingAndBillingCard} from "./components/monatflexship-shippingandbillingcard";
+import {MonatFlexshipOrderTotalCard} from "./components/monatflexship-ordertotalcard";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 //services
@@ -18,6 +22,10 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('swfReviewListing', SWFReviewListing.Factory())
 .directive('monatFlexshipListing', MonatFlexshipListing.Factory())
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
+.directive('monatFlexshipDetail', MonatFlexshipDetail.Factory())
+.directive('monatFlexshipOrderItem', MonatFlexshipOrderItem.Factory())
+.directive('monatFlexshipShippingAndBillingCard', MonatFlexshipShippingAndBillingCard.Factory())
+.directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 
 .service('orderTemplateService', OrderTemplateService);

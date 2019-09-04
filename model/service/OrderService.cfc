@@ -1883,6 +1883,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	}  
 
+	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateId" default="";
+	
+		if(len(arguments.data.orderTemplateId) == 0){
+			return arguments.data; 
+		} 
+	
+		arguments.data['orderTemplate'] = this.getOrderTemplate(arguments.data.orderTemplateID).getStructRepresentation(); 
+		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		return arguments.data; 
+	} 
+	
+	
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
+		this.getOrderTemplateForAccount(argumentCollection = arguments);
+		//arguments.data.orderTemplate['shipping'] = getShippingInfo();
+		//arguments.data.orderTemplate['billing'] = getBillingInfo();
+		//arguments.data.orderTemplate['order'] = getOrderTotalInfo();
+		return arguments.data;
+	}
+
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -1916,6 +1937,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
+	
+	
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {

@@ -1,0 +1,166 @@
+	<!-- This was designed with Order we need to find out what to use for flexship
+	<div class="orderbox">
+		<div class="subtext">
+			<table>
+				<tbody>
+					<tr>
+						<td class="col1">
+							<h3>Order #631786432</h3>
+						</td>
+						<td class="col2">
+							<span class="status">Order Status</span>
+							<p class="broad">Shipped</p>
+						</td>
+						<td class="col3">
+							<span class="status">Shipping Address</span>
+							<p class="broad">Gabby Burleson, 34 Broad St.<br> New York, NY 123456</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="btngroup">
+				<a href="#" class="btn bg-primary">track order</a>
+			</div>
+		</div>
+	</div>-->
+	<div class="order-details-box items-details" >
+		<h3>2 items</h3>
+		<table class="table items-details-table">
+			<tbody>
+				
+		<!--   
+				<monat-flexship-order-item ng-repeat="orderTemplate in monatFlexshipDetail.orderTemplate.orderItems" 
+                     data-order-item="orderitem">
+
+				</monat-flexship-order-item>
+		-->	
+				<tr>
+					<td class="item-image">
+						<a href="#">
+						<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
+						</a>
+					</td>
+					<td class="item-name">
+						<h6 class="title-sm">
+							<a href="#">Smoothing Shampoo</a>
+						</h6>
+					</td>
+					<td class="item-quantity">
+						<div class="qty">
+							<span>QTY</span> 1
+						</div>
+					</td>
+					<td class="item-price">
+						<span class="price">$35.00</span>
+						<!-- no reviews for flexship
+						<a href="#" class="leave-review">Leave a review</a>
+						-->
+					</td>
+				</tr>
+				<tr>
+					<td class="item-image">
+						<a href="#">
+						<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
+						</a>
+					</td>
+					<td class="item-name">
+						<h6 class="title-sm">
+							<a href="#">Revitalize Conditioner</a>
+						</h6>
+					</td>
+					<td class="item-quantity">
+						<div class="qty">
+							<span>QTY</span> 1
+						</div>
+					</td>
+					<td class="item-price">
+						<span class="price">$35.00</span>
+						<a href="#" class="leave-review">Leave a review</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	  
+			<monat-flexship-shipping-and-billing-card 
+                 data-shipping-and-billing-detail="monatFlexshipDetail.orderTemplate.shippingAndBillingDetail">
+			</monat-flexship-shipping-and-billing-card>
+
+<!-- 
+	<div class="order-details-box shipping-billing-info">
+		<h3>Shipping &amp; billing info</h3>
+		<ul>
+			<li>
+				<h6 class="title-sm">Shipping Address</h6>
+				<p>Gabby Burleson<br> 34 Broad St. New York, NY 10013</p>
+			</li>
+			<li>
+				<h6 class="title-sm">Billing Address</h6>
+				<p>Gabby Burleson<br> 34 Broad St. New York, NY 10013</p>
+			</li>
+			<li>
+				<h6 class="title-sm">Delivery Method</h6>
+				<p>Standard shipping<br> $5.95</p>
+			</li>
+			<li>
+				<h6 class="title-sm">Credit Card</h6>
+				<p>Ending in 7589<br> Exp 11/2020</p>
+			</li>
+		</ul>
+	</div>
+
+-->	
+		
+			<monat-flexship-order-total-card 
+                 data-order-total-detail="monatFlexshipDetail.orderTemplate.orderTotalDetail">
+			</monat-flexship-order-total-card>
+	
+
+<!--
+	<div class="order-total">
+		<h3>Order Total</h3>
+		<ul>
+			<li>
+				<div class="left">
+					<span class="title-sm">Subtotal</span>
+				</div>
+				<div class="right">
+					<span class="price">$36.00</span>
+				</div>
+			</li>
+			<li>
+				<div class="left">
+					<span class="title-sm">Shipping</span>
+				</div>
+				<div class="right">
+					<span class="price">$5.95</span>
+				</div>
+			</li>
+			<li>
+				<div class="left">
+					<span class="title-sm">Tax</span>
+				</div>
+				<div class="right">
+					<span class="price">$5.00</span>
+				</div>
+			</li>
+			<li>
+				<div class="left">
+					<span class="title-sm">Promo Code (20% off)</span>
+				</div>
+				<div class="right">
+					<span class="price">-$7.00</span>
+				</div>
+			</li>
+			<li class="total">
+				<div class="left">
+					<h4>Total</h4>
+				</div>
+				<div class="right">
+					<h4>$91.40</h4>
+				</div>
+			</li>
+		</ul>
+	</div>
+-->
