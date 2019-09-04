@@ -1751,20 +1751,20 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
 
-	public void function updateOrderTemplateShipping(required any data){ 
-        param name="arguments.data.orderTemplateId" default="";
+// 	public void function updateOrderTemplateShipping(required any data){ 
+//         param name="arguments.data.orderTemplateId" default="";
 		
-		var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateId);
+// 		var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateId);
 
-		//check if it's null
+// 		//check if it's null
 
-		//check if the account has access to the order template
-		// if getHibachiScope().getAccount().getAccountID != orderTemplate.getAccount().getAccountID()
-			//return  
+// 		//check if the account has access to the order template
+// 		// if getHibachiScope().getAccount().getAccountID != orderTemplate.getAccount().getAccountID()
+// 			//return  
 		
-		getOrderService.process(orderTemplate, arguments.data, 'updateShipping'); 
+// 		getOrderService.process(orderTemplate, arguments.data, 'updateShipping'); 
 		
-		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
-	}   
+// 		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
+// 	}   
 	
 }

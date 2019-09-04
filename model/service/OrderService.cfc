@@ -1872,6 +1872,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ',frequencyTerm.termName';	
 	
 		orderTemplateCollection.setDisplayProperties(displayProperties)
+		orderTemplateCollection.addDisplayAggregate("orderTemplateItems","COUNT");
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
@@ -1900,7 +1901,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 	
 		arguments.data['orderTemplate'] = this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
-		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		// arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return arguments.data; 
 	} 
 	

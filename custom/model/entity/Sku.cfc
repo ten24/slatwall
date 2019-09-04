@@ -8,7 +8,8 @@ component {
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
-    
+    property name="personalVolumeByCurrencyCode" persistent="false";
+	property name="comissionableVolumeByCurrencyCode" persistent="false";
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
