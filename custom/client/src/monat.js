@@ -59364,7 +59364,8 @@ var MonatFlexshipDetailController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.$onInit = function () {
             if (_this.orderTemplate == null) {
-                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateID).then(function (response) {
+                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
+                    .then(function (response) {
                     _this.orderTemplate = response.orderTemplate;
                 }, function (reason) {
                     throw (reason);
@@ -59382,7 +59383,7 @@ var MonatFlexshipDetail = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplateID: '@',
+            orderTemplateId: '@',
             orderTemplate: '<'
         };
         this.controller = MonatFlexshipDetailController;

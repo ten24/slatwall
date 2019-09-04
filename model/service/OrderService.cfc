@@ -1892,23 +1892,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
-        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.orderTemplateId" default="";
 	
-		if(len(arguments.data.orderTemplateID) == 0){
+		if(len(arguments.data.orderTemplateId) == 0){
 			return arguments.data; 
 		} 
 	
-		arguments.data.orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID).getStructRepresentation(); 
+		arguments.data['orderTemplate'] = this.getOrderTemplate(arguments.data.orderTemplateID).getStructRepresentation(); 
 		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return arguments.data; 
 	} 
 	
 	
-	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHiibachiScope().getAccount()){
-		arguments.data = this.getOrderTemplateForAccount(argumentCollection = arguments);
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
+		this.getOrderTemplateForAccount(argumentCollection = arguments);
 		//arguments.data.orderTemplate['shipping'] = getShippingInfo();
 		//arguments.data.orderTemplate['billing'] = getBillingInfo();
 		//arguments.data.orderTemplate['order'] = getOrderTotalInfo();
+		return arguments.data;
 	}
 
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

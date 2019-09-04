@@ -1,19 +1,21 @@
 import {OrderTemplate} from "../models";
 
 class MonatFlexshipDetailController {
-    public orderTemplateID: string;
+    public orderTemplateId: string;
     public orderTemplate: OrderTemplate;
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {
         if (this.orderTemplate == null) {
-            this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID).then(
-            (response) => {
-                this.orderTemplate = response.orderTemplate;
-            }, 
-            (reason) => {
-                throw (reason);
-            });
+            this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateId)
+            .then(
+	            (response) => {
+	                this.orderTemplate = response.orderTemplate;
+	            }, 
+	            (reason) => {
+	                throw (reason);
+	            }
+	        );
         }
         
     };
@@ -26,7 +28,7 @@ class MonatFlexshipDetail {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplateID:'@',
+	    orderTemplateId:'@',
 	    orderTemplate:'<'
 	};
 	public controller=MonatFlexshipDetailController;

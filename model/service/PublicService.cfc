@@ -1748,7 +1748,7 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		arguments.data['ajaxResponse']['orderTemplateDetails'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
+		arguments.data['ajaxResponse']['orderTemplateDetails'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	} 
 	
 }

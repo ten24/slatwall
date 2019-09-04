@@ -9,6 +9,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=listAppend(this.publicMethods, 'get');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
+    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateDetails');
     this.publicMethods=listAppend(this.publicMethods, 'post');
 
     public void function init( required any fw ) {
