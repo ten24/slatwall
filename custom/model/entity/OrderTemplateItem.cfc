@@ -2,7 +2,16 @@ component {
 
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
-
+	property name="skuProductURL" persistent="false";
+	
+	public any function getSkuProductURL(){
+		if (!structKeyExists(variables, "skuProductURL")){
+			variables.skuProductURL = this.getSku().getProduct().getProductURL();
+		}
+		
+		return variables.skuProductURL;
+	}
+	
 	public numeric function getCommissionVolumeTotal(string currencyCode, string accountID){
 		if(!structKeyExists(variables, 'commissionVolumeTotal')){
 			variables.commissionVolumeTotal = 0; 

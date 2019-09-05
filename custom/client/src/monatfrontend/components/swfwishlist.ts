@@ -7,6 +7,7 @@ import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfs
 
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
+    public orderTemplates:Array<any>;
     public pageRecordsShow:number;
     public currentPage:number;
     public currentList:Option;
@@ -46,7 +47,6 @@ class SWFWishlistController {
     }
     
     public deleteItem =(index):Promise<any>=>{
-        
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
@@ -56,6 +56,17 @@ class SWFWishlistController {
             this.refreshList(this.currentList);
             return result;
             
+        });
+    }
+    
+    public getAllWishlits = () => {
+        this.loading = true;
+        
+        this.orderTemplateService
+        .getOrderTemplates(this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .then(result=>{
+            this.orderTemplates = result['orderTemplates'];
+            this.loading = false;
         });
     }
     
