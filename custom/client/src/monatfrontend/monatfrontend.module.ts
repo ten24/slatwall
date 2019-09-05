@@ -10,6 +10,8 @@ import {MonatFlexshipListing} from "./components/monatflexshiplisting";
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 //services
 import {OrderTemplateService} from "./services/ordertemplateservice"; 
+import {SWFWishlist} from "./components/swfwishlist";
+
 //declare variables out of scope
 declare var $:any;
 
@@ -27,8 +29,8 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipShippingAndBillingCard', MonatFlexshipShippingAndBillingCard.Factory())
 .directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
-
-.service('orderTemplateService', OrderTemplateService);
+.service('orderTemplateService', OrderTemplateService)
+.directive('swfWishlist', SWFWishlist.Factory());
 
 export{
     monatfrontendmodule

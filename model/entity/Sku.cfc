@@ -656,7 +656,11 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
     		return variables[cacheKey];
+    	}else if(structKeyExists(getCurrencyDetails(), "price")){
+    		variables[cacheKey]= getCurrencyDetails().price;
+    		return variables[cacheKey];
     	}
+    	
     }
 
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
@@ -951,7 +955,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 						variables.currencyDetails[ currentCurrencyCode ].priceFormatted = baseSkuPriceForCurrencyCode.getFormattedValue("price");
 						variables.currencyDetails[ currentCurrencyCode ].converted = false;
 						variables.currencyDetails[ currentCurrencyCode ].skuPriceID = baseSkuPriceForCurrencyCode.getSkuPriceID();
-
+						
 					}
 					// Use a conversion mechinism
 					if(!structKeyExists(variables.currencyDetails[ currentCurrencyCode ], "price")) {
@@ -2112,7 +2116,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		}
 		
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				    if(a['price'] < b['price']){ return -1;}
