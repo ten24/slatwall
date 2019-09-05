@@ -1,0 +1,46 @@
+<div class="modal" role="dialog" id="flexship-modal-payment-method">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	        
+	        <!-- Modal Close -->
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	            <i class="fas fa-times"></i>
+	        </button>
+	
+		    <!-- TODO: Add Conditional to show Payment Method -->
+		    <div class="payment">
+			    <h6 class="title-with-line mb-5">Payment Method</h6>
+			    
+			    <div class="custom-radio form-group">
+	                <input type="radio" name="saved_cards" id="visa1" checked>
+	                <label for="visa1"><i class="fab fa-cc-visa"></i> Visa 0023</label>
+	            </div>
+	            <div class="custom-radio form-group">
+	                <input type="radio" name="saved_cards" id="new_card">
+	                <label for="new_card">Add New Credit Card</label>
+	            </div>
+	            
+	            <!-- TODO: Add Conditional: Add New Payment Address form -->
+	            <span class="label">New Credit Card</span>
+	    		<div class="form-group">
+	    			<input type="text" class="form-control" placeholder="Credit Card Number">
+	    		</div>
+	    		<div class="form-group">
+	    			<input type="text" class="form-control" placeholder="Expiration Month">
+	    		</div>
+	    		<div class="form-group">
+	    			<input type="text" class="form-control" placeholder="Expiration Year">
+	    		</div>
+	    		<div class="form-group">
+	    			<input type="text" class="form-control" placeholder="CVV">
+	    		</div>
+	        </div>
+			
+			<div class="footer">
+			    <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
+			    <button type="button" class="btn btn-block bg-primary">Save changes</button>
+		    </div>
+		    
+		</div>
+	</div>
+</div>

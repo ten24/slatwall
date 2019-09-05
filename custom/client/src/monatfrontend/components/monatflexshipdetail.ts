@@ -1,8 +1,7 @@
-import {OrderTemplate} from "../models";
 
 class MonatFlexshipDetailController {
     public orderTemplateId: string;
-    public orderTemplate: OrderTemplate;
+    public orderTemplate: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {

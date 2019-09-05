@@ -6,6 +6,9 @@ import {MonatFlexshipDetail} from "./components/monatflexshipdetail";
 import {MonatFlexshipOrderItem} from "./components/monatflexship-orderitem";
 import {MonatFlexshipShippingAndBillingCard} from "./components/monatflexship-shippingandbillingcard";
 import {MonatFlexshipOrderTotalCard} from "./components/monatflexship-ordertotalcard";
+import {MonatFlexshipPaymentMethodModal} from "./components/monatflexship-modal-paymentmethod"; 
+import {MonatFlexshipShippingMethodModal} from "./components/monatflexship-modal-shippingmethod";
+import {MonatFlexshipChangeOrSkipOrderModal} from "./components/monatflexship-modal-changeorskiporder";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 //services
@@ -26,6 +29,9 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipOrderItem', MonatFlexshipOrderItem.Factory())
 .directive('monatFlexshipShippingAndBillingCard', MonatFlexshipShippingAndBillingCard.Factory())
 .directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
+.directive('monatFlexshipPaymentMethodModal',MonatFlexshipPaymentMethodModal.Factory())
+.directive('monatFlexshipShippingMethodModal',MonatFlexshipShippingMethodModal.Factory())
+.directive('monatFlexshipChangeOrSkipOrderModal',MonatFlexshipChangeOrSkipOrderModal.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 
 .service('orderTemplateService', OrderTemplateService);

@@ -1872,7 +1872,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ',frequencyTerm.termName';	
 	
 		orderTemplateCollection.setDisplayProperties(displayProperties)
-		//orderTemplateCollection.addDisplayAggregate("orderTemplateItems","COUNT");
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
@@ -1905,13 +1904,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
-		arguments.data['orderTemplate'] = this.getOrderTemplateForAccount(argumentCollection = arguments);
-		arguments.data.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
-
-		//arguments.data.orderTemplate['shipping'] = getShippingInfo();
-		//arguments.data.orderTemplate['billing'] = getBillingInfo();
-		//arguments.data.orderTemplate['order'] = getOrderTotalInfo();
-		return arguments.data['orderTemplate'];
+		var response={};
+		
+		response['orderTemplate'] = this.getOrderTemplateForAccount(argumentCollection = arguments);
+		response.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		
+		return response;
 	}
 
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

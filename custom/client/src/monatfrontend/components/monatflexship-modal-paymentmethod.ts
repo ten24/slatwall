@@ -1,22 +1,23 @@
 
-class MonatFlexshipOrderTotalCardController {
-    public orderTotalDetail: {};
+class MonatFlexshipPaymentMethodModalController {
+    public PaymentMethodModal: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
 }
 
-class MonatFlexshipOrderTotalCard {
+class MonatFlexshipPaymentMethodModal {
 
 	public restrict:string;
 	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
-	    orderTotalDetail:'='
+	    paymentMethod:'=',
+	    orderTemplateId:'@'
 	};
-	public controller = MonatFlexshipOrderTotalCardController;
-	public controllerAs = "monatFlexshipOrderTotalCard";
+	public controller=MonatFlexshipPaymentMethodModalController;
+	public controllerAs="monatFlexshipPaymentMethodModal";
 
 	public static Factory(){
         var directive:any = (
@@ -24,7 +25,7 @@ class MonatFlexshipOrderTotalCard {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipOrderTotalCard(
+        ) => new MonatFlexshipPaymentMethodModal(
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
@@ -44,7 +45,7 @@ class MonatFlexshipOrderTotalCard {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-ordertotalcard.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-paymentmethod.html";
 		this.restrict = "E";
 	}
 
@@ -55,6 +56,6 @@ class MonatFlexshipOrderTotalCard {
 }
 
 export {
-	MonatFlexshipOrderTotalCard
+	MonatFlexshipPaymentMethodModal
 };
 

@@ -1,7 +1,6 @@
-import { IShippingAndBillingDetail } from "../models";
 
 class MonatFlexshipShippingAndBillingCardController {
-    public shippingAndBillingDetail: IShippingAndBillingDetail;
+    public shippingAndBillingDetail: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};

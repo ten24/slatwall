@@ -1,4 +1,6 @@
 /**
+ *  Not in use for now
+ * 
  * will be used like import {IOredrTemplate, SomeOtherModal, SomeOtherStuff} from "./...some path../modals"
  * 
  */
