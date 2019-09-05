@@ -1,22 +1,23 @@
 
-class MonatFlexshipOrderTotalCardController {
-    public orderTotalDetail: {};
+class MonatFlexshipChangeOrSkipOrderModalController {
+    public ChangeOrSkipOrderModal: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
 }
 
-class MonatFlexshipOrderTotalCard {
+class MonatFlexshipChangeOrSkipOrderModal {
 
 	public restrict:string;
 	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
-	    orderTotalDetail:'='
+	    orderTemplate:'=',
+	    orderTemplateId:'@'
 	};
-	public controller = MonatFlexshipOrderTotalCardController;
-	public controllerAs = "monatFlexshipOrderTotalCard";
+	public controller=MonatFlexshipChangeOrSkipOrderModalController;
+	public controllerAs="monatFlexshipChangeOrSkipOrderModal";
 
 	public static Factory(){
         var directive:any = (
@@ -24,7 +25,7 @@ class MonatFlexshipOrderTotalCard {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipOrderTotalCard(
+        ) => new MonatFlexshipChangeOrSkipOrderModal(
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
@@ -44,7 +45,7 @@ class MonatFlexshipOrderTotalCard {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-ordertotalcard.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-changeorskiporder.html";
 		this.restrict = "E";
 	}
 
@@ -55,6 +56,6 @@ class MonatFlexshipOrderTotalCard {
 }
 
 export {
-	MonatFlexshipOrderTotalCard
+	MonatFlexshipChangeOrSkipOrderModal
 };
 

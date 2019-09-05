@@ -1,5 +1,13 @@
+
+
+
+// Not in use for now
+
+
+
+
 export interface IOrderTemplate {
-    id: string;
+    orderTemplateId: string;
     name: string;
     orderItems?: IOrderItem[];
     shippingAndBillingDetail?: IShippingAndBillingDetail;
@@ -23,11 +31,15 @@ export interface IOrderTotalDetail {
 }
 
 export class OrderTemplate implements IOrderTemplate {
-  public  id: string;
+  public  orderTemplateId: string;
   public  name: string;
   /**
    * some utility functions as needed
    * 
    */
+   
+   public OrderTemplate(data:IOrderTemplate){
+        Object.assign(this, data);
+   }
    
 }

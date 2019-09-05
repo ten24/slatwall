@@ -1,7 +1,6 @@
-import { IOrderItem } from "../models";
 
-class MonatFlexshipOrdereItemController {
-    public orderItem: IOrderItem;
+class MonatFlexshipOrderItemController {
+    public orderItem: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
@@ -16,7 +15,7 @@ class MonatFlexshipOrderItem {
 	public bindToController = {
 	    orderItem:'='
 	};
-	public controller=MonatFlexshipOrdereItemController;
+	public controller=MonatFlexshipOrderItemController;
 	public controllerAs="monatFlexshipOrderItem";
 
 	public static Factory(){

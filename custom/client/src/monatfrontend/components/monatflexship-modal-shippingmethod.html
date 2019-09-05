@@ -1,0 +1,56 @@
+<div class="modal" role="dialog" id="flexship-modal-shipping-method">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	        
+	        <!--- Modal Close --->
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	            <i class="fas fa-times"></i>
+	        </button>
+	
+		    <!--- TODO: Add Conditional logic to show Shipping Method --->
+                <div class="shipping">
+                    <h6 class="title-with-line mb-5">Shipping Method</h6>
+
+    			    <div class="custom-radio form-group">
+                        <input type="radio" name="shipping" id="shipping" checked>
+                        <label for="shipping">John Doe</label>
+                    </div>
+                    <div class="custom-radio form-group">
+                        <input type="radio" name="shipping" id="shipping2">
+                        <label for="shipping2">Jane Doe</label>
+                    </div>
+                    <div class="custom-radio form-group">
+                        <input type="radio" name="shipping" id="new_shipping">
+                        <label for="new_shipping">Add a new shipping address</label>
+                    </div>
+                
+                    <!--- TODO: Add Conditional: Add New Shipping Address form --->
+                    <span class="label">New Shipping Address</span>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="First Name *">
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="Last Name *">
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="Address">       
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="Address 2">                          
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="State *">       
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" placeholder="Zip Code *">                          
+            		</div>
+                </div>
+		
+			<div class="footer">
+			    <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
+			    <button type="button" class="btn btn-block bg-primary">Save changes</button>
+		    </div>
+		    
+		</div>
+	</div>
+</div>
