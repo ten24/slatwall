@@ -1734,7 +1734,10 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data);  
+		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
+		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
+		
+ 
 	} 
 
 	public void function getOrderTemplateItems(required any data){

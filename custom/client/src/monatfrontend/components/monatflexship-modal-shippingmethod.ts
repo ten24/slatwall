@@ -1,9 +1,28 @@
 
 class MonatFlexshipShippingMethodModalController {
+	public orderTemplate; 
+	public accountAddresses;
+	public existingAccountAddress; 
+	public createNewShippingAddress:boolean=false; 
     public ShippingMethodModal: {};
     constructor(public orderTemplateService) {
     }
-    public $onInit = () => {};
+    public $onInit = () => {
+    	console.log('shippingMethodModal', this);
+    	
+    	for(var i; i<this.accountAddresses.length; i++){
+    		if(this.orderTemplate.shippingAccountAddress_accountAddressID === this.accountAddresses[i].accountAddressID){
+    			this.existingAccountAddress = this.accountAddresses[i]; 
+    			console.log('found existing shipping account address', this.accountAddresses[i]);
+    			break; 
+    		}
+    	}
+    };
+    
+    public selectAccountAddress = (accountAddress) =>{
+    	console.log('accountAddress', accountAddress);
+    	this.existingAccountAddress = accountAddress; 	
+    }
 }
 
 class MonatFlexshipShippingMethodModal {
@@ -14,7 +33,9 @@ class MonatFlexshipShippingMethodModal {
 	public scope = {};
 	public bindToController = {
 	    shippingMethod:'=',
-	    orderTemplateId:'@'
+	    orderTemplateId:'@',
+	    orderTemplate:'<',
+	    accountAddresses:'<'
 	};
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";

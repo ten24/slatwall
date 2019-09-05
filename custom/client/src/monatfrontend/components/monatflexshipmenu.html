@@ -2,19 +2,28 @@
 	<a href="##" class="flexs">Manage my Flexship <i class="fas fa-chevron-down"></i></a>
 	<ul>
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-shipping-method">Edit delivery address</a>
+		    <a href="##" data-toggle="modal" data-target="#flexship-modal-shipping-method{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Edit delivery address</a>
 		</li>
 		<li>
 		    <a href="/flexship-detail">Add or remove items</a>
 		</li>
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-payment-method">Edit payment method</a>
+		    <a href="##" data-toggle="modal" data-target="#flexship-modal-payment-method{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Edit payment method</a>
 		</li>
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-change-or-skip-order">Delay or skip order</a>
+		    <a href="##" data-toggle="modal" data-target="#flexship-modal-change-or-skip-order{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Delay or skip order</a>
 		</li>
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-change-or-skip-order">Cancel Flexship</a>
+		    <a href="##" data-toggle="modal" data-target="#flexship-modal-cancel{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Cancel Flexship</a>
 		</li>
 	</ul>
 </div>
+
+<monat-flexship-payment-method-modal data-order-template="monatFlexshipMenu.orderTemplate" 
+									 data-account-addresses="monatFlexshipMenu.accountAddresses"> 
+</monat-flexship-payment-method-modal>
+<monat-flexship-shipping-method-modal data-account-addresses="monatFlexshipMenu.accountAddresses"
+									  data-order-template="monatFlexshipMenu.orderTemplate"> 
+</monat-flexship-shipping-method-modal>
+<monat-flexship-change-or-skip-order-modal data-order-template="monatFlexshipMenu.orderTemplate"> 
+</monat-flexship-change-or-skip-order-modal> 

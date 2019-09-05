@@ -1,6 +1,7 @@
 class MonatFlexshipMenuController{
     
     public orderTemplate;
+    public accountAddresses;
 
 	constructor( public orderTemplateService
 	){
@@ -8,7 +9,6 @@ class MonatFlexshipMenuController{
 	}
 	
 	public $onInit = () =>{
-
 	}
 
 }
@@ -19,7 +19,8 @@ class MonatFlexshipMenu{
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'<'
+	    orderTemplate:'<',
+	    accountAddresses:'<'
 	};
 	public controller=MonatFlexshipMenuController;
 	public controllerAs="monatFlexshipMenu";
