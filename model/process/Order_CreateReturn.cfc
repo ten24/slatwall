@@ -99,9 +99,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for(var orderPayment in opSmartList.getRecords()) {
 				arrayAppend(variables.refundOrderPaymentIDOptions, 
 					{
-						name=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('amountReceived'),
+						name=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('availableAmountToRefund'),
 						value=orderPayment.getOrderPaymentID(),
-						amountReceived=orderPayment.getAmountReceived()
+						amountToRefund=orderPayment.getAvailableAmountToRefund()
 					}
 				);
 			}
@@ -205,7 +205,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var amount = 0;
 		if(!isNull(this.getOrderPayments())){
 			for( var orderPayment in this.getOrderPayments() ){
-				
+				var originalOrderPayment = getService('orderService').getOrderPayment(orderPayment.originalOrderPaymentID);
+				if(isNull(originalOrderPayment) || orderPayment.amount > originalOrderPayment.getAvailableAmountToRefund()){
+					return false;
+				}
 				amount += orderPayment.amount;
 				
 			}

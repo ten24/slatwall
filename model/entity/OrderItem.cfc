@@ -121,6 +121,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedUnitPriceAfterAllDiscounts" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
+	property name="quantityDeliveredMinusReturns" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
@@ -191,6 +192,7 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedQuantityDeliveredMinusReturns" persistent="false";"
     
    
  property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END

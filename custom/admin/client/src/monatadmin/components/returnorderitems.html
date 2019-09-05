@@ -1,0 +1,104 @@
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
+		<th>#$.slatwall.rbKey('entity.product.title')#</th>
+		<th>#$.slatwall.rbKey('entity.sku.skuDefinition')#</th>
+		<th>#$.slatwall.rbKey('entity.orderItem.quantity')# Ordered</th>
+		<th>#$.slatwall.rbKey('entity.orderItem.quantityDeliveredMinusReturns')#</th>
+		<th>Return #$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+		
+		<th>#$.slatwall.rbKey('entity.orderItem.discountAmount')#</th>
+		<th>#$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
+		<th>#$.slatwall.rbKey('entity.orderItem.extendedPersonalVolumeAfterDiscount')#</th>
+		<th>#$.slatwall.rbKey('entity.orderItem.extendedCommissionableVolumeAfterDiscount')#</th>
+		
+		<th>Unit Price</th>
+		<th>Unit Price after Order Discounts</th>
+		<th>Refund Unit Price</th>
+		<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
+		<th>Refund Tax</th>
+		<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
+		<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedCommissionableVolumeAfterDiscount')#</th>
+	</tr>
+	<cfset orderItemIndex = 0 />
+	<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
+		<tr class="orderItem" ng-init="swReturnOrderItems.orderItems[#orderItemIndex#] = {refundTotal:0,refundPVTotal:0,refundCVTotal:0};orderItem#orderItemIndex# = swReturnOrderItems.orderItems[#orderItemIndex#]">
+			
+			<input type="hidden" name="orderItems[#orderItemIndex + 1#].orderItemID" value="" />
+			<input type="hidden" name="orderItems[#orderItemIndex + 1#].referencedOrderItem.orderItemID" value="#orderItem.getOrderItemID()#" />
+			
+			<td>#orderItem.getSku().getSkuCode()#</td>
+			<td>#orderItem.getSku().getProduct().getTitle()#</td>
+			<td>#orderItem.getSku().getSkuDefinition()#</td>
+			<td ng-init="orderItem#orderItemIndex#.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
+			<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.returnQuantityMaximum = #orderItem.getQuantityDeliveredMinusReturns()#">#orderItem.getQuantityDeliveredMinusReturns()#</td>
+			<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" ng-model="orderItem#orderItemIndex#.returnQuantity" name="orderItems[#orderItemIndex + 1#].quantity" value="" class="span1 number returnQuantity" /></td>
+			
+			<td>#orderItem.getDiscountAmount() + orderItem.getAllocatedOrderDiscountAmount()#</td>
+			<td ng-init="orderItem#orderItemIndex#.total = #orderItem.getExtendedPriceAfterAllDiscounts()#">#orderItem.getFormattedValue('extendedPriceAfterAllDiscounts')#</td>
+			<td ng-init="orderItem#orderItemIndex#.personalVolumeTotal = #orderItem.getExtendedPersonalVolumeAfterAllDiscounts()#">#orderItem.getExtendedPersonalVolumeAfterAllDiscounts()#</td>
+			<td ng-init="orderItem#orderItemIndex#.commissionableVolumeTotal = #orderItem.getExtendedCommissionableVolumeAfterAllDiscounts()#">#orderItem.getExtendedCommissionableVolumeAfterAllDiscounts()#</td>
+			
+			<td>#orderItem.getFormattedValue('extendedUnitPriceAfterDiscount')#</td>
+			<td>#orderItem.getFormattedValue('extendedUnitPriceAfterAllDiscounts')#</td>
+			<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" name="orderItems[#orderItemIndex + 1#].price" ng-model="orderItem#orderItemIndex#.refundUnitPrice" ng-init="orderItem#orderItemIndex#.refundUnitPrice = #numberFormat(orderItem.getExtendedUnitPriceAfterAllDiscounts(), '0.00')#" class="span1 number refundUnitPrice" /></td>
+			<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+				<span ng-bind="orderItem#orderItemIndex#.refundTotal.toFixed(2)"></span>
+			</td>
+			<td class="refundTotal" ng-init="orderItem#orderItemIndex#.taxTotal = #orderItem.getTaxAmount()#">
+				<span ng-bind="orderItem#orderItemIndex#.taxRefundAmount.toFixed(2)" ng-init="orderItem#orderItemIndex#.taxRefundAmount = 0"></span>
+			</td>
+			<td class="refundTotal">
+				<span ng-bind="orderItem#orderItemIndex#.refundPVTotal.toFixed(2)"></span>
+			</td>
+			<td class="refundTotal">
+				<span ng-bind="orderItem#orderItemIndex#.refundCVTotal.toFixed(2)"></span>
+			</td>
+			<!--- IF THIS IS AN EVENT ORDER ITEM
+				ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
+				
+				// if getAllocatedPVAmount
+				// discount PV
+				// discount CV
+				// refund unit PV
+				// refund unit CV
+				// total PV
+				// total CV
+				// total return amount
+				// payment methods and amount allocation
+			--->
+		</tr>
+		<cfset orderItemIndex++ />
+	</cfloop>
+	
+	<tr>
+		<td colspan="10"></td>
+		<td colspan="3"><strong>Fulfillment Refund:</strong> #getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+			<input name="fulfillmentRefundAmount" type="number" ng-model="swReturnOrderItems.fulfillmentRefundAmount" ng-change="swReturnOrderItems.validateFulfillmentRefundAmount()" ng-init="swReturnOrderItems.fulfillmentRefundAmount = #rc.processObject.getFulfillmentRefundAmount()#;swReturnOrderItems.maxFulfillmentRefundAmount = swReturnOrderItems.fulfillmentRefundAmount">
+		</td>
+		<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
+			<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)" ng-init="swReturnOrderItems.updateRefundTotals()"></span>
+		</td>
+		<td class="refundTotal">
+				<span ng-bind="swReturnOrderItems.refundPVTotal.toFixed(2)"></span>
+		</td>
+		<td class="refundTotal">
+			<span ng-bind="swReturnOrderItems.refundCVTotal.toFixed(2)"></span>
+		</td>
+	</tr>
+	<cfset paymentIndex = 0 />
+	<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">
+		<cfif op.amountToRefund GT 0>
+			<tr ng-init="swReturnOrderItems.orderPayments[#paymentIndex#] = {amount:0};orderPayment#paymentIndex#=swReturnOrderItems.orderPayments[#paymentIndex#]">
+				<td colspan="11" ng-init="orderPayment#paymentIndex#.amountToRefund = #op.amountToRefund#"></td>
+				<td>#op.name#</td>
+				<td class="total">
+					<input type="hidden" name="orderPayments[#paymentIndex + 1#].orderPaymentID" value="">
+					<input type="hidden" name="orderPayments[#paymentIndex + 1#].originalOrderPaymentID" value="#op.value#">
+					<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment#paymentIndex#)" name="orderPayments[#paymentIndex + 1#].amount" ng-model="orderPayment#paymentIndex#.amount" class="span1 number" />
+				</td>
+			</tr>
+			<cfset paymentIndex++ />
+		</cfif>
+	</cfloop>
+</table>

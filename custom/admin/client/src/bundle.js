@@ -70936,14 +70936,23 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWReturnOrderItemsController = /** @class */ (function () {
-    function SWReturnOrderItemsController($hibachi) {
+    function SWReturnOrderItemsController($hibachi, collectionConfigService) {
         var _this = this;
         this.$hibachi = $hibachi;
+        this.collectionConfigService = collectionConfigService;
         this.orderItems = [];
         this.orderPayments = [];
         this.refundTotal = 0;
         this.refundPVTotal = 0;
         this.refundCVTotal = 0;
+        this.setupOrderItemCollectionList = function () {
+            _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
+            _this.orderItemCollectionList.setDisplayProperties(_this.displayPropertiesList);
+            _this.orderItemCollectionList.addFilter("order.orderID", _this.orderId, "=");
+        };
+        this.getDisplayPropertiesList = function () {
+            return "orderItemID,\n                quantity,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                sku.skuCode,\n                sku.product.title,\n                sku.calculatedSkuDefinition".replace(/\s+/gi, '');
+        };
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
@@ -70951,6 +70960,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
             if (orderItem.refundTotal > orderItem.total) {
                 orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
                 _this.updateOrderItem(orderItem);
@@ -70981,7 +70991,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var refundPVTotal = 0;
             var refundCVTotal = 0;
             _this.orderItems.forEach(function (item) {
-                refundTotal += item.refundTotal;
+                refundTotal += item.refundTotal + item.taxRefundAmount;
                 refundPVTotal += item.refundPVTotal;
                 refundCVTotal += item.refundCVTotal;
             });
@@ -71004,32 +71014,39 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 return (payment == orderPayment) ? total : total += payment.amount;
             }, 0);
-            var maxRefund = Math.min(orderPayment.amountReceived, _this.refundTotal - paymentTotal);
+            var maxRefund = Math.min(orderPayment.amountToRefund, _this.refundTotal - paymentTotal);
             if (orderPayment.amount == undefined) {
                 orderPayment.amount = 0;
             }
             if (orderPayment.amount > maxRefund) {
-                orderPayment.amount = Math.max(maxRefund, 0);
+                orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
+        this.displayPropertiesList = this.getDisplayPropertiesList();
+        this.setupOrderItemCollectionList();
     }
     return SWReturnOrderItemsController;
 }());
 var SWReturnOrderItems = /** @class */ (function () {
-    function SWReturnOrderItems($hibachi) {
+    function SWReturnOrderItems($hibachi, monatBasePath) {
         this.$hibachi = $hibachi;
+        this.monatBasePath = monatBasePath;
         this.scope = true;
-        this.bindToController = {};
+        this.bindToController = {
+            orderId: '@'
+        };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
         this.link = function (scope, element, attrs) {
         };
-        this.restrict = "A";
+        this.restrict = "E";
+        this.templateUrl = monatBasePath + "/monatadmin/components/returnorderitems.html";
     }
     SWReturnOrderItems.Factory = function () {
-        var directive = function ($hibachi) { return new SWReturnOrderItems($hibachi); };
+        var directive = function ($hibachi, monatBasePath) { return new SWReturnOrderItems($hibachi, monatBasePath); };
         directive.$inject = [
-            '$hibachi'
+            '$hibachi',
+            'monatBasePath'
         ];
         return directive;
     };

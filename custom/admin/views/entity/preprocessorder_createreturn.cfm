@@ -168,6 +168,7 @@ Notes:
 						<th>Unit Price after Order Discounts</th>
 						<th>Refund Unit Price</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPriceAfterDiscount')#</th>
+						<th>Refund Tax</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedPersonalVolumeAfterDiscount')#</th>
 						<th>Refund #$.slatwall.rbKey('entity.orderitem.extendedCommissionableVolumeAfterDiscount')#</th>
 					</tr>
@@ -181,7 +182,7 @@ Notes:
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
-							<td ng-init="orderItem.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
+							<td ng-init="orderItem#orderItemIndex#.quantity = #orderItem.getQuantity()#">#orderItem.getQuantity()#</td>
 							<td class="returnQuantityMaximum" ng-init="orderItem#orderItemIndex#.returnQuantityMaximum = #orderItem.getQuantityDeliveredMinusReturns()#">#orderItem.getQuantityDeliveredMinusReturns()#</td>
 							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" ng-model="orderItem#orderItemIndex#.returnQuantity" name="orderItems[#orderItemIndex + 1#].quantity" value="" class="span1 number returnQuantity" /></td>
 							
@@ -195,6 +196,9 @@ Notes:
 							<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem#orderItemIndex#)" name="orderItems[#orderItemIndex + 1#].price" ng-model="orderItem#orderItemIndex#.refundUnitPrice" ng-init="orderItem#orderItemIndex#.refundUnitPrice = #numberFormat(orderItem.getExtendedUnitPriceAfterAllDiscounts(), '0.00')#" class="span1 number refundUnitPrice" /></td>
 							<td class="refundTotal">#getHibachiScope().getService('CurrencyService').getCurrencyByCurrencyCode(orderItem.getCurrencyCode()).getCurrencySymbol()#
 								<span ng-bind="orderItem#orderItemIndex#.refundTotal.toFixed(2)"></span>
+							</td>
+							<td class="refundTotal" ng-init="orderItem#orderItemIndex#.taxTotal = #orderItem.getTaxAmount()#">
+								<span ng-bind="orderItem#orderItemIndex#.taxRefundAmount.toFixed(2)" ng-init="orderItem#orderItemIndex#.taxRefundAmount = 0"></span>
 							</td>
 							<td class="refundTotal">
 								<span ng-bind="orderItem#orderItemIndex#.refundPVTotal.toFixed(2)"></span>
@@ -236,16 +240,18 @@ Notes:
 					</tr>
 					<cfset paymentIndex = 0 />
 					<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">
-						<tr ng-init="swReturnOrderItems.orderPayments[#paymentIndex#] = {amount:0};orderPayment#paymentIndex#=swReturnOrderItems.orderPayments[#paymentIndex#]">
-							<td colspan="11" ng-init="orderPayment#paymentIndex#.amountReceived = #op.amountReceived#"></td>
-							<td>#op.name#</td>
-							<td class="total">
-								<input type="hidden" name="orderPayments[#paymentIndex + 1#].orderPaymentID" value="">
-								<input type="hidden" name="orderPayments[#paymentIndex + 1#].originalOrderPaymentID" value="#op.value#">
-								<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment#paymentIndex#)" name="orderPayments[#paymentIndex + 1#].amount" ng-model="orderPayment#paymentIndex#.amount" class="span1 number" />
-							</td>
-						</tr>
-						<cfset paymentIndex++ />
+						<cfif op.amountToRefund GT 0>
+							<tr ng-init="swReturnOrderItems.orderPayments[#paymentIndex#] = {amount:0};orderPayment#paymentIndex#=swReturnOrderItems.orderPayments[#paymentIndex#]">
+								<td colspan="11" ng-init="orderPayment#paymentIndex#.amountToRefund = #op.amountToRefund#"></td>
+								<td>#op.name#</td>
+								<td class="total">
+									<input type="hidden" name="orderPayments[#paymentIndex + 1#].orderPaymentID" value="">
+									<input type="hidden" name="orderPayments[#paymentIndex + 1#].originalOrderPaymentID" value="#op.value#">
+									<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment#paymentIndex#)" name="orderPayments[#paymentIndex + 1#].amount" ng-model="orderPayment#paymentIndex#.amount" class="span1 number" />
+								</td>
+							</tr>
+							<cfset paymentIndex++ />
+						</cfif>
 					</cfloop>
 				</table>
 				
