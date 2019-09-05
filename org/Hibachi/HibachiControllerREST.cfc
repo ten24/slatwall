@@ -761,7 +761,9 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	        // SAVE
 	        if(arguments.rc.context eq 'save') {
+	           
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
+	            
 	        // DELETE
 	        } else if (arguments.rc.context eq 'delete') {
 	            getService('HibachiValidationService').validate(entity, 'delete');
@@ -816,7 +818,14 @@ component output="false" accessors="true" extends="HibachiController" {
 	            // Setup success response message
 	            var replaceValues = {
 	                entityName = rbKey('entity.#entity.getClassName()#')
+	                 
 	            };
+	            
+	            if(arguments.rc.context eq 'save' && arguments.rc.entityName eq 'Collection' && entity.isReport())
+                    {
+                        replaceValues.entityName = 'Report';
+                    
+                    }
 
 	            var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entity.getClassName()#.#rc.context#_success" ), replaceValues);
 	            getHibachiScope().showMessage( successMessage, "success" );
@@ -832,6 +841,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	                var errors = entity.getHibachiErrors().getErrors();
 	            }
                 arguments.rc.apiResponse.content.errors = errors;
+                
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
 	        
@@ -839,7 +849,7 @@ component output="false" accessors="true" extends="HibachiController" {
                 getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
             } 
         }
-
+        
     }
 
     private struct function addPopulatedSubPropertyIDsToData(required any entity, required struct data) {
