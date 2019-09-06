@@ -173,7 +173,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
-		ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
+		if(getHibachiScope().setting('globalDisableUninstalledIntegrations')){
+			ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
+		}
 		getHibachiDAO().flushORMSession();
 		
 		return getBeanFactory();
