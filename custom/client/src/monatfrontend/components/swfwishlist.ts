@@ -65,7 +65,7 @@ class SWFWishlistController {
         });
     }
     
-    public getAllWishlits = () => {
+    public getAllWishlists = () => {
         this.loading = true;
         
         this.orderTemplateService

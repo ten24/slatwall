@@ -59512,7 +59512,7 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.getAllWishlits = function () {
+        this.getAllWishlists = function () {
             _this.loading = true;
             _this.orderTemplateService
                 .getOrderTemplates(_this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
