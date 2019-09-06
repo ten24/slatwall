@@ -71,7 +71,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID) ";
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
 		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
 		sql &= "'#arguments.entityName#' as baseObject, ";  
 		sql &= "#primaryIDPropertyName# as baseID, ";
@@ -85,7 +85,8 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		}
 		sql &= "'#accountID#' as createdByAccountID, ";
 		sql &= "'#accountID#' as modifiedByAccountID ";
-
+		sql &= "0 as tryCount ";
+		
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
 		sql &= "WHERE #primaryIDPropertyName# in ('";
 

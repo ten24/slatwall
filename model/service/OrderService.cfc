@@ -394,7 +394,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -562,7 +562,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			if(arguments.order.isNew()){
-				this.saveOrder(arguments.order);
+				this.saveOrder(order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag());
 			}
 
 			// Save the new order items
@@ -803,7 +803,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
-		arguments.order = this.saveOrder( arguments.order );
+		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
 
 		return arguments.order;
 	}
@@ -930,9 +930,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Save the newOrderPayment
         this.saveOrderPayment(newOrderPayment);
 
-        if(!newOrderPayment.hasErrors()){
+        if(!newOrderPayment.hasErrors() && arguments.processObject.getUpdateOrderAmountFlag()){
 			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 			getHibachiScope().flushORMSession();
+			
 			arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
 			// Save the newOrderPayment
@@ -1050,7 +1051,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
 		) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
-		} else {
+		} else if(arguments.processObject.getUpdateOrderAmountFlag()) {
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
 				arguments.order.addPromotionCode( pc );
@@ -1473,7 +1474,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
 		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
 		//do we need location
-	
 		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
 		
 		if(newOrder.hasErrors()){
@@ -1486,7 +1486,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 
-		newOrder = this.saveOrder(newOrder); 
+		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity'); 
@@ -1498,7 +1498,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
 			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
-			
+			processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+	
 			if(isNull(orderFulfillment)){
 				processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
 				processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
@@ -1513,7 +1514,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			if(newOrder.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order items', true);
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.orderTemplate.clearHibachiErrors();
 				return arguments.orderTemplate; 
 			}
@@ -1524,7 +1525,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionCode in promotionCodes){
 			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
 			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
-			
+			porcessOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
 
@@ -1546,7 +1548,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderPayment = this.newOrderPayment(); 
 			newOrderPayment.setPaymentMethod(giftCardPaymentMethod);
 			
-			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment); 
+			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment);
+			processOrderAddOrderPayment.setUpdateOrderAmountFlag(false);  
 
 			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
 
@@ -1559,7 +1562,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-
+		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 		ormFlush();//flush so that the order exists
 
 		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
@@ -1611,7 +1614,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
-		newOrder = this.saveOrder(newOrder); 
+		newOrder = this.saveOrder(order=newOrder, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
 			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
@@ -1619,6 +1622,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
+			this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
@@ -1965,8 +1969,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup the Currency Code
 			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 
-			// Save the order
-			arguments.order = this.saveOrder(arguments.order);
+			// Save the order don't calculate order amounts because there's no items yet!
+			arguments.order = this.saveOrder(order=arguments.order, updateOrderAmounts=false);
 
 			// Generate Short Reference for Quote Number
 			arguments.order.getShortReferenceID(true);
@@ -2905,6 +2909,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		this.logHibachi('updating order amounts called', true); 
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
@@ -4289,7 +4294,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ====================== START: Save Overrides ===========================
 
-	public any function saveOrder(required any order, struct data={}, string context="save") {
+	public any function saveOrder(required any order, struct data={}, string context="save", boolean updateOrderAmounts=true, boolean updateShippingMethodOptions=true, boolean checkNewAccountAddressSave=true) {
 
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
@@ -4340,11 +4345,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// If is is still in use, and a shipping fulfillment then we need to update some stuff.
 				} else if(orderFulfillment.getFulfillmentMethodType() eq "shipping") {
 
-					// Update the shipping methods
-					getShippingService().updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
-
-					// Save the accountAddress if needed
-					orderFulfillment.checkNewAccountAddressSave();
+					if(arguments.updateShippingMethodOptions){
+						// Update the shipping methods
+						getShippingService().updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
+					}
+					
+					if(arguments.checkNewAccountAddressSave){
+						// Save the accountAddress if needed
+						orderFulfillment.checkNewAccountAddressSave();
+					}
 				}
 
 			}
@@ -4375,7 +4384,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.order.hasErrors()) {
+		if(!arguments.order.hasErrors() && arguments.updateOrderAmounts) {
+			this.logHibachi('saveOrder updateOrderAmounts');
 			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
 		}
 
@@ -4406,7 +4416,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save") {
+	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmount=true) {
 		//if we have a new account address then override shippingaddress data. This must happen before populate
 		if(
 			(
@@ -4471,7 +4481,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderFulfillment.hasErrors()) {
+		if(!arguments.orderFulfillment.hasErrors() && arguments.updateOrderAmount) {
+			this.logHibachi('saveOrderFulfillment updateOrderAmounts');
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
 		}
 
