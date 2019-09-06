@@ -1910,13 +1910,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
 	} 
 	
+	private function function getListPrefixerFunction(required string prefix){
+		return function (entry) {
+			return prefix & arguments.entry;
+		}
+	}
 	
-	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
-		var response={};
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		
-		response['orderTemplate'] = this.getOrderTemplateForAccount(argumentCollection = arguments);
-		response.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		//Making PropertiesList
+		var orderTemplateCollectionPropList = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("OrderTemplate");
+
+		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("Address");
+		var billingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("billingAccountAddress.address."));
+		var shippingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("shippingAccountAddress.address."));
+
+		var newDisplayProperties = orderTemplateCollectionPropList & "," & billingAddressPropList &"," & shippingAddressPropList;
+
+		//Get collectionList, with presettted filters and stuff // we can created a ne one just being lazy
+		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments);
+		orderTemplateCollection.setDisplayProperties(newDisplayProperties);  //clear the old-ones and set newproperties
+		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID);
 		
+		
+		var response = this.getOrderTemplateForAccount(argumentCollection = arguments);
+		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		response['newStuff'] = orderTemplateCollection.getPageRecords();
 		return response;
 	}
 

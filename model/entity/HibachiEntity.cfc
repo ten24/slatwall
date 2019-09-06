@@ -492,9 +492,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return listToArray( defaultPropertyIdentifiersList );
 	}
 	
-	public string function getDefaultPropertyIdentifiersList(){
+	public string function getDefaultPropertyIdentifiersList(string includesList="", string excludesList=""){
 		// Lets figure out the properties that need to be returned
-		var defaultProperties = getDefaultCollectionProperties();
+		var defaultProperties = getDefaultCollectionProperties(argumentCollection = arguments);
 		var defaultPropertyIdentifiersList = "";
 		for(var i=1; i<=arrayLen(defaultProperties); i++) {
 			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
