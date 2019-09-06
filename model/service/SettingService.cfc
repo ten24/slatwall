@@ -287,7 +287,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
-			globalDisableUninstalledIntegrations = {fieldType="yesno",defaultValue=1},
+			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			
 			
 			// Image
