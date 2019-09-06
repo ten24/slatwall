@@ -75,6 +75,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="taxService";
 	property name="typeService";
 
+
 	// ===================== START: Logical Methods ===========================
 
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
@@ -1886,12 +1887,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ',shippingAccountAddress.address.countryCode';	
 		displayProperties &= ',frequencyTerm.termName';	
 	
-		orderTemplateCollection.setDisplayProperties(displayProperties)
+		orderTemplateCollection.setDisplayProperties(displayProperties);
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
-	
+	    
 		return orderTemplateCollection; 
 	}  
 
@@ -1900,10 +1901,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.currentPage" default=1;
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
-		if(isNull(arguments.account)){
-			return []; 
-		} 
-
+		
 		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	}  
 
@@ -1916,7 +1914,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
-		displayProperties &= 'sku.priceByCurrencyCode,sku.skuDefinition';
+		displayProperties &= 'sku.priceByCurrencyCode';
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties)
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);

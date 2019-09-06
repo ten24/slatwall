@@ -12,6 +12,7 @@ class SWFWishlistController {
     public currentPage:number;
     public currentList:Option;
     public loading:boolean;
+    public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     
     // @ngInject
@@ -34,14 +35,19 @@ class SWFWishlistController {
     }
     
     private refreshList = (option:Option)=>{
-        
         this.loading = true;
         this.currentList = option;
         
         this.orderTemplateService
-        .getOrderTemplateItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             this.orderTemplateItems = result['orderTemplateItems'];
+            if(this.orderTemplateItems.length){
+                if(this.orderTemplateItems[0].accountPriceGroup.includes(3)){
+                    this.isVIPAccount = true;                   
+                }
+            }
+
             this.loading = false;
         });
     }
@@ -69,6 +75,9 @@ class SWFWishlistController {
             this.loading = false;
         });
     }
+    
+    
+    
     
     public addToCart =(index)=>{
         
