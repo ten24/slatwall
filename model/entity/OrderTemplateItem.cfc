@@ -54,8 +54,17 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 	property name="total" persistent="false" hb_formatType="currency"; 
 
-	// Order Template (many-to-one)	//CUSTOM PROPERTIES BEGIN
-property name="commissionableVolumeTotal" persistent="false"; 
+	// Remote properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+	//CUSTOM PROPERTIES BEGIN
+property name="remoteSkuCode" ormtype="string"; //for import
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
@@ -94,7 +103,6 @@ public numeric function getCommissionVolumeTotal(string currencyCode, string acc
 			variables.commissionVolumeTotal = 0; 
 			
 			if( !isNull(this.getSku()) && 
-				!isNull(this.getSku().getcommissionVolume()) && 
 				!isNull(this.getQuantity())
 			){
 				variables.commissionVolumeTotal += (this.getSku().getCommissionVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
@@ -108,7 +116,6 @@ public numeric function getCommissionVolumeTotal(string currencyCode, string acc
 			variables.personalVolumeTotal = 0; 
 			
 			if( !isNull(this.getSku()) && 
-				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
 				variables.personalVolumeTotal += (this.getSku().getPersonalVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 

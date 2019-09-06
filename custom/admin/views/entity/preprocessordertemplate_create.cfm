@@ -109,7 +109,7 @@ Notes:
 										fieldType="text" 
 										fieldAttributes="sw-date-picker 
 														ng-model=""scheduleOrderNextPlaceDateTime""
-														data-end-day-of-the-month=""26""
+														data-end-day-of-the-month=""25""
 														data-end-date=""endDate""
 														autocomplete=""off""">
 

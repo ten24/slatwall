@@ -31,7 +31,7 @@
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
 	  any part of the application
-	- Your custom code must not alter or
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
@@ -822,6 +822,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
         return arguments.orderItem;
 	}
+	
+	public array function getAccountWishlistsOptions(string accountID=getHibachiSCope().getAccount().getAccountID()){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.typeID","2c9280846b712d47016b75464e800014");
+		return list.getRecords();
+	}
 
 	// @hint Process to associate orderItem and orderItemGiftRecipient
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
@@ -1192,22 +1200,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 	
-		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
-		 * because this object contains unpersisted changes that this method seeks to validate. 
-		 */
-		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
-	
-		
-		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
-		 * unvalidated changes in the order template.
-		 */
+		request.orderTemplate = arguments.orderTemplate; 	
+
 		thread name="#threadName#"
-			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
-		{	
-
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+		{
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
 			transientOrder = this.saveOrder(transientOrder);
 			
 			ormFlush();
@@ -1219,6 +1217,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
+			
 		}
 		
 		threadJoin(threadName);
@@ -1238,24 +1237,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 	
-		/* We create a soft reference here because we can't reinflate the orderTemplate on the other side of the thread 
-		 * because this object contains unpersisted changes that this method seeks to validate. 
-		 */
-		var orderTemplateSoftReference = createObject( 'java', 'java.lang.ref.SoftReference' ).init(arguments.orderTemplate);
-	
-		
-		/* Because we need to flush and then delete the order we run this logic in a thread so the flush does not persist 
-		 * unvalidated changes in the order template.
-		 */
-
+		request.orderTemplate = arguments.orderTemplate; 	
 		
 		thread name="#threadName#"
-			   orderTemplateSoftReference="#orderTemplateSoftReference#"
 			   action="run" 
 		{	
 
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(orderTemplateSoftReference.get(), false);  
+			//merge the entity to prevent failed to lazy initiate collection errors
 			transientOrder = this.saveOrder(transientOrder);
 			
 			ormFlush();
@@ -1293,7 +1283,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		arguments.transientOrder.setAccount(arguments.orderTemplate.getAccount(),true); 
+		
+		var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+		arguments.transientOrder.setAccount(account); 
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -1908,7 +1900,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
-		displayProperties &= 'sku.priceByCurrencyCode';
+		displayProperties &= 'sku.priceByCurrencyCode,sku.skuDefinition';
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties)
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -2979,11 +2971,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var actualAllocatedAmountTotal = 0;
 		var actualAllocatedAmountAsPercentage = 0;
 		var orderItemCount = 0;
-		for (var orderItem in arguments.order.getOrderItems()) {
+		var orderItems = arguments.order.getOrderItems()  
+		for (var orderItem in orderItems) {
 			orderItemCount++;
 			
 			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
-			var currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();
+			var currentOrderItemAmountAsPercentage=0;
+			if(!isNull(arguments.order.getSubtotalAfterItemDiscounts()) && arguments.order.getSubtotalAfterItemDiscounts() > 0){
+				currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();	
+			}
 			
 			// Approximate amount to allocate (rounded to nearest penny)
 		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;

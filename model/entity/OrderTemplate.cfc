@@ -113,7 +113,9 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="lastSyncedDateTime" ormtype="timestamp";
+property name="accountRemoteID" ormtype="string"; 
+	property name="accountPaymentMethodRemoteID" ormtype="string"; 
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
@@ -214,7 +216,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			variables.subtotal = 0; 
 
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
-				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']); 
+				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
+				if(isNull(sku)){
+					continue; 
+				} 
 				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
 			} 
 		}
