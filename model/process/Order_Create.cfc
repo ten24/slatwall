@@ -83,7 +83,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public string function getCurrencyCode() {
 
 		if(!structKeyExists(variables, 'currencyCode')){
-			variables.currencyCode = setting('skuCurrency');//skuCurrency
+			variables.currencyCode = setting('skuCurrency');//'Default Currency'
 		} 
 		return variables.currencyCode; 
 	} 
