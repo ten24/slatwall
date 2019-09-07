@@ -59288,8 +59288,8 @@ var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            paymentMethod: '=',
-            orderTemplateId: '@'
+            accountPaymentMethods: '<',
+            orderTemplate: '<'
         };
         this.controller = MonatFlexshipPaymentMethodModalController;
         this.controllerAs = "monatFlexshipPaymentMethodModal";
@@ -59536,7 +59536,8 @@ var MonatFlexshipCard = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            accountAddresses: '<'
+            accountAddresses: '<',
+            accountPaymentMethods: '<'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = "monatFlexshipCard";
@@ -59633,6 +59634,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 .then(function (data) {
                 _this.orderTemplates = data.orderTemplates;
                 _this.accountAddresses = data.accountAddresses;
+                _this.accountPaymentMethods = data.accountPaymentMethods;
             }, function (reason) {
                 console.error(reason);
             });
@@ -59694,7 +59696,8 @@ var MonatFlexshipMenu = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            accountAddresses: '<'
+            accountAddresses: '<',
+            accountPaymentMethods: '<'
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = "monatFlexshipMenu";

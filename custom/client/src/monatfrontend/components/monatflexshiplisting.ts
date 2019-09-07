@@ -2,7 +2,7 @@ class MonatFlexshipListingController{
     
     public orderTemplates:any[];
     public accountAddresses:any[];
-
+	public accountPaymentMethods:any[];
 	constructor( public orderTemplateService
 	){
 
@@ -14,6 +14,7 @@ class MonatFlexshipListingController{
 	    	(data) => {
 	            this.orderTemplates = data.orderTemplates; 
 	            this.accountAddresses = data.accountAddresses;
+	            this.accountPaymentMethods= data.accountPaymentMethods;
  	        },
 	        (reason) => {
 	            console.error(reason);
