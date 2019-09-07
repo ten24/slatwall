@@ -1,5 +1,58 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerEntity" {
-    property name="ProductService";
+	property name="ProductService";
+
+	this.secureMethods="";
+	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
+	
+	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
+		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
+			var uri = "https://api.monatcorp.net/ws/simple/" & arguments.endPoint;
+			var authKeyName = "authkey";
+			var authKey = "Basic U011c2VyQG1vbmF0Z2xvYmFsLUxXT1lNMDo0NDVmOTk0MC01MmZkLTRhNGQtYjhkOS0yZTE2MDdlNTE2YzI=";
+		
+			var body = {
+				"Pagination": {
+					"PageSize": "#arguments.pageSize#",
+					"PageNumber": "#arguments.pageNumber#"
+				}
+			};
+
+			if(arguments.endpoint == "queryItems"){
+				body = {
+					"PageSize": "#arguments.pageSize#",
+					"PageNumber": "#arguments.pageNumber#"
+				};
+			}
+
+			httpService = new http(method = "POST", charset = "utf-8", url = uri);
+			httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+			httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+			
+			try {
+				httpService.setTimeout(10000)
+				responseJson = httpService.send().getPrefix();
+				
+				var response = deserializeJson(responseJson.fileContent);
+				
+				if(isArray(response)){
+					response = response[1];
+				} 
+			} catch (any e) {
+				writeDump("Could not read response got #e.message# for page:#arguments.pageNumber#");
+				if(!isNull(responseJson)){
+					writeDump(responseJson);
+				}
+				var response = {}; 
+				response.status = 'error';
+			}
+			response.hasErrors = false;
+			if (isNull(response) || response.status != "success"){
+				writeDump("Could not import from #arguments.endpoint# on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+				response.hasErrors = true;
+			}
+		}
+		return response;
+	}
  
     public void function importProducts(){
         param name="arguments.rc.fileLocation" default="#getDirectoryFromPath(getCurrentTemplatePath())#../assets/";
@@ -100,7 +153,201 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		writeDump('Price Check on Other Shampoo');
 		}
 		abort;
-    }
+	}
+
+	private array function getSkuPriceDataFlattened(required struct skuPriceData, required struct skuData){ 
+		var skuPrices = [];
+
+		StructEach(arguments.skuPriceData, function(key, value){
+			var countryCode = arguments.key;
+			var priceGroups = arguments.value;
+			StructEach(priceGroups, function(key, value){
+				var priceGroupCode = arguments.key;
+				var priceTypes = arguments.value;
+				var skuPrice = {};
+
+				switch(TRIM(countryCode)){
+					case 'CAN':
+						skuPrice['CountryCode'] = 'CAD';
+						break;
+					case 'GBR':
+						skuPrice['CountryCode'] = 'GBP';
+						break;
+					case 'USA':
+						skuPrice['CountryCode'] = 'USD';
+						break;
+				}
+				skuPrice['PriceLevel'] = priceGroupCode;
+				skuPrice["ItemCode"] = skuData.ItemCode;
+
+				StructEach(priceTypes, function(key, value){
+					var priceType = arguments.key;
+					var priceValue = arguments.value;
+
+					switch(TRIM(priceType)){
+						case 'Commissionable Volume':
+							skuPrice['CommissionableVolume'] = priceValue;
+							break;
+						case 'Qualifying Volume':
+							skuPrice['QualifyingPrice'] = priceValue;
+							break;
+						case 'Retail Profit':
+							skuPrice['RetailsCommissions'] = priceValue;
+							break;
+						case 'Retail Volume':
+							skuPrice['RetailValueVolume'] = priceValue;
+							break;
+						case 'Selling Price':
+							skuPrice['SellingPrice'] = priceValue;
+							break;
+						case 'Taxable Price':
+							skuPrice['TaxablePrice'] = priceValue;
+							break;
+						case 'Product Pack Volume':
+							skuPrice['ProductPackBonus'] = priceValue;
+							break;
+					}
+				}, true, 10);
+
+				ArrayAppend(skuPrices, skuPrice);
+			}, true, 10);
+
+		}, true, 10);
+
+		return skuPrices;
+	}
+
+	private any function populateSkuQuery( required any skuQuery, required struct skuData ){
+		var data = {};
+		var query = arguments.skuQuery;
+
+		StructEach(arguments.skuData, function(key, value){
+			var skuField = arguments.key;
+			var fieldValue = arguments.value;
+			switch(TRIM(skuField)){
+				case 'ItemCode':
+					data['SKUItemCode'] = fieldValue;
+					break;
+				case 'ItemName':
+					data['ItemName'] = fieldValue;
+					break;
+				case 'ItemName':
+					data['ItemName'] = fieldValue;
+					break;
+				case 'DisableOnRegularOrders':
+					data['DisableOnRegularOrders'] = fieldValue;
+					break;
+				case 'DisableInFlexShip':
+					data['DisableOnFlexShip'] = fieldValue;
+					break;
+				case 'ItemCategoryCode':
+					data['ItemCategoryAccounting'] = fieldValue;
+					break;
+				case 'ItemCategoryName':
+					data['CategoryNameAccounting'] = fieldValue;
+					break;
+			}
+		}, true, 10);
+
+		QueryAddRow(query, data);
+
+		return query;
+	}
+
+	private any function populateSkuPriceQuery( required any skuPriceQuery, required struct skuData ){
+		var skuPriceData = {}
+		var query = arguments.skuPriceQuery;
+		if(structKeyExists(arguments.skuData, "PriceLevels") ){
+			var priceLevels = skuData.PriceLevels;
+
+			for( var priceLevel in priceLevels ){
+				skuPriceData[priceLevel.CountryCode][priceLevel.PriceLevelCode][priceLevel.PriceVolumeTypeName] = priceLevel.Amount;
+			}
+		}
+
+		if(structKeyExists(arguments.skuData, "ComponentsPriceLevel")){
+			var componentsPriceLevel = skuData.ComponentsPriceLevel;
+
+			for(var pricelevel in componentsPriceLevel){
+				skuPriceData[priceLevel.CountryCode][priceLevel.PriceLevelCode][priceLevel.PriceVolumeTypeName] = priceLevel.Amount;
+			}
+		}
+
+		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
+
+		ArrayEach(skuPricesFlattened, function(item){
+			QueryAddRow(query, item);
+		}, true, 10);
+
+		return arguments.skuPriceQuery;
+	}
+
+	private string function getSkuColumnsList(){
+		return "SKUItemCode,RemoteID,ItemName,SecondName,DisableOnRegularOrders,DisableOnFlexship,ImageFile,ItemCategoryAccounting,CategoryNameAccounting,productTypeActiveFlag,productTypePublishedFlag,productActiveFlag,productPublishedFlag,skuActiveFlag,skuPublishedFlag";
+	}
+
+	private string function getSkuPriceColumnsList(){
+		return "ItemCode,RemoteID,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,MinQuantity,PriceLevel,PriceGroupRemoteID";
+	}
+
+	public void function importMonatProducts(){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:20;
+		var pageMax = rc.pageMax?:1;
+		var updateFlag = rc.updateFlag?:false;
+		var index=0;
+		var skuIndex=0;
+		var skuPriceIndex=0;
+
+
+		while( pageNumber <= pageMax ){
+			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
+
+			if ( productResponse.hasErrors ){
+				//goto next page causing this is erroring!
+				pageNumber++;
+				continue;
+			}
+			//Set the pagination info.
+			var productData = productResponse.Data;
+			var monatProducts = productResponse.Data?:[];
+
+    		try{
+				var skuColumns = this.getSkuColumnsList();
+				var skuColumnsLength = ListLen(skuColumns);				
+				var columnTypes = [];
+				ArraySet(columnTypes, 1, skuColumnsLength, 'varchar');
+				var skuQuery = QueryNew(skuColumns, columnTypes);
+
+				var skuPriceColumns = this.getSkuPriceColumnsList();
+				var columnTypes = [];
+				ArraySet(columnTypes, 1, ListLen(skuPriceColumns), 'varchar');
+				var skuPriceQuery = QueryNew(skuPriceColumns, columnTypes);
+
+				for (var skuData in monatProducts){
+
+					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
+
+					if(structKeyExists(skuData, 'PriceLevels') || structKeyExists(skuData, 'ComponentsPriceLevel')){
+						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+					}
+				}
+
+				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+
+				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+			} catch (any e){
+    			writeDump(e); // rollback the tx
+			}
+			pageNumber++
+		}
+		abort;
+	}
     
     private query function filterBundleQueryToOneLocationPerBundle( required query skuBundleQuery ){
         var columnList = arguments.skuBundleQuery.columnList;
