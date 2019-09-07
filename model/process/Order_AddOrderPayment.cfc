@@ -84,7 +84,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="copyFromTypeOptions";
 
 	// Helper Properties
-
+	property name="updateOrderAmountFlag" default="1";
 
 	// ======================== START: Defaults ============================
 	public boolean function getSaveGiftCardToAccountFlag(){

@@ -8,7 +8,6 @@ component {
 			variables.commissionVolumeTotal = 0; 
 			
 			if( !isNull(this.getSku()) && 
-				!isNull(this.getSku().getcommissionVolume()) && 
 				!isNull(this.getQuantity())
 			){
 				variables.commissionVolumeTotal += (this.getSku().getCommissionVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
@@ -22,7 +21,6 @@ component {
 			variables.personalVolumeTotal = 0; 
 			
 			if( !isNull(this.getSku()) && 
-				!isNull(this.getSku().getPersonalVolume()) && 
 				!isNull(this.getQuantity())
 			){
 				variables.personalVolumeTotal += (this.getSku().getPersonalVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 

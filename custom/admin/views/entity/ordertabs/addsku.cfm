@@ -46,12 +46,13 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" default="oitSale"/>
+<!---<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />--->
 
 <cfoutput>
 	<cfset local.orderFulfillmentID = "new">
@@ -70,6 +71,6 @@ Notes:
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
 	<cfset local.accountID = "#rc.order.getAccount().getAccountID()#">
 	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'"></sw-add-order-items-by-sku>
+	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'" data-sku-properties-to-display-with-config="[{'name': 'personalVolumeByCurrencyCode','rbkey': 'Personal Volume','config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}},{'name': 'commissionableVolumeByCurrencyCode','rbkey': 'Commissionable Volume', 'config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}}]"></sw-add-order-items-by-sku>
 	
 </cfoutput>

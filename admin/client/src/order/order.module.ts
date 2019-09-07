@@ -20,7 +20,8 @@ import {SWOrderTemplatePromotionItems} from "./components/swordertemplatepromoti
 import {SWOrderTemplateTotal} from "./components/swordertemplatetotal";
 import {SWOrderTemplateUpcomingOrdersCard} from "./components/swordertemplateupcomingorderscard";
 import {SWOrderTemplateUpdateScheduleModal} from "./components/swordertemplateupdateschedulemodal";
-  
+import {SWAddOrderItemsBySku} from "./components/swaddorderitemsbysku";
+
 var ordermodule = angular.module('order',[coremodule.name])
 .config([()=>{
 
@@ -47,6 +48,7 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swOrderTemplateTotal', SWOrderTemplateTotal.Factory())
 .directive('swOrderTemplateUpcomingOrdersCard', SWOrderTemplateUpcomingOrdersCard.Factory())
 .directive('swOrderTemplateUpdateScheduleModal', SWOrderTemplateUpdateScheduleModal.Factory())
+.directive('swAddOrderItemsBySku', SWAddOrderItemsBySku.Factory())
 ;
 export{
 	ordermodule

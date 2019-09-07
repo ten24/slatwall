@@ -226,6 +226,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					}
 				}else{
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
+					
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
 
 						pageRecordStruct[ arguments.propertyIdentifier ] = this.capitalCase(lcase(value)) & " ";
