@@ -1905,7 +1905,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = ",subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName"; //extra prop we need
 			
 		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		

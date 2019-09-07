@@ -2,19 +2,52 @@
 	<h3>Shipping &amp; billing info</h3>
 	<ul>
 		<li>
-			<h6 class="title-sm">Shipping Address</h6>
+			<h6 class="title-sm">
+				<span sw-rbkey="'entity.order.shippingAddress'"></span>
+			</h6>
+			<p class="broad" ng-if="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_addressID.trim().length">
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_name"></span>, 
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_streetAddress"></span> 
+				<br>
+				<span ng-if="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_street2Address">
+				    <span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_street2Address"></span> 
+				    <br>
+				</span>
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.shippingAccountAddress_address_city"></span>, 
+				<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_stateCode"></span> 
+				<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_postalCode"></span>
+			</p>
+		<!-- <h6 class="title-sm">Shipping Address</h6>
+
 			<p>Gabby Burleson<br> 34 Broad St. New York, NY 10013</p>
+		-->
 		</li>
 		<li>
-			<h6 class="title-sm">Billing Address</h6>
+			<h6 class="title-sm">
+				<span sw-rbkey="'entity.order.billing'"></span>
+			</h6>
+			<p class="broad" ng-if="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_addressID.trim().length">
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_name"></span>, 
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_streetAddress"></span> 
+				<br>
+				<span ng-if="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_street2Address">
+				    <span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_street2Address"></span> 
+				    <br>
+				</span>
+				<span ng-bind="monatFlexshipShippingAndBillingCard.orderTemplate.billingAccountAddress_address_city"></span>, 
+				<span ng-bind="monatFlexshipCard.orderTemplate.billingAccountAddress_address_stateCode"></span> 
+				<span ng-bind="monatFlexshipCard.orderTemplate.billingAccountAddress_address_postalCode"></span>
+			</p>
+		<!--	<h6 class="title-sm">Billing Address</h6>
 			<p>Gabby Burleson<br> 34 Broad St. New York, NY 10013</p>
+		-->
 		</li>
 		<li>
-			<h6 class="title-sm">Delivery Method</h6>
+			<h6 class="title-sm">Delivery Method ``</h6>
 			<p>Standard shipping<br> $5.95</p>
 		</li>
 		<li>
-			<h6 class="title-sm">Credit Card</h6>
+			<h6 class="title-sm">Credit Card ``</h6>
 			<p>Ending in 7589<br> Exp 11/2020</p>
 		</li>
 	</ul>

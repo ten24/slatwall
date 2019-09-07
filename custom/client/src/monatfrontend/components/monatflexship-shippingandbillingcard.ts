@@ -1,6 +1,5 @@
 
 class MonatFlexshipShippingAndBillingCardController {
-    public shippingAndBillingDetail: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
@@ -13,7 +12,7 @@ class MonatFlexshipShippingAndBillingCard {
 	
 	public scope = {};
 	public bindToController = {
-	    shippingAndBillingDetail:'='
+	    orderTemplate:'<'
 	};
 	public controller = MonatFlexshipShippingAndBillingCardController;
 	public controllerAs = "monatFlexshipShippingAndBillingCard";

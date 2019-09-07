@@ -1,6 +1,5 @@
 
 class MonatFlexshipOrderTotalCardController {
-    public orderTotalDetail: {};
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
@@ -13,7 +12,7 @@ class MonatFlexshipOrderTotalCard {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTotalDetail:'='
+	    orderTemplate:'='
 	};
 	public controller = MonatFlexshipOrderTotalCardController;
 	public controllerAs = "monatFlexshipOrderTotalCard";

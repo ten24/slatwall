@@ -24,71 +24,25 @@
 		</div>
 	</div>-->
 	<div class="order-details-box items-details" >
-		<h3>2 items</h3>
+		<h3><span ng-bind="monatFlexshipDetail.orderTemplate.calculatedOrderTemplateItemsCount.trim().length ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> items `</h3>
 		<table class="table items-details-table">
 			<tbody>
 				
-		<!--   
-				<monat-flexship-order-item ng-repeat="orderTemplate in monatFlexshipDetail.orderTemplate.orderItems" 
-                     data-order-item="orderitem">
-
+				<monat-flexship-order-item ng-repeat="orderItem in monatFlexshipDetail.orderTemplate.orderTemplateItems" 
+                     data-order-item="orderItem">
 				</monat-flexship-order-item>
-		-->	
-				<tr>
-					<td class="item-image">
-						<a href="#">
-						<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
-						</a>
-					</td>
-					<td class="item-name">
-						<h6 class="title-sm">
-							<a href="#">Smoothing Shampoo</a>
-						</h6>
-					</td>
-					<td class="item-quantity">
-						<div class="qty">
-							<span>QTY</span> 1
-						</div>
-					</td>
-					<td class="item-price">
-						<span class="price">$35.00</span>
-						<!-- no reviews for flexship
-						<a href="#" class="leave-review">Leave a review</a>
-						-->
-					</td>
-				</tr>
-				<tr>
-					<td class="item-image">
-						<a href="#">
-						<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
-						</a>
-					</td>
-					<td class="item-name">
-						<h6 class="title-sm">
-							<a href="#">Revitalize Conditioner</a>
-						</h6>
-					</td>
-					<td class="item-quantity">
-						<div class="qty">
-							<span>QTY</span> 1
-						</div>
-					</td>
-					<td class="item-price">
-						<span class="price">$35.00</span>
-						<a href="#" class="leave-review">Leave a review</a>
-					</td>
-				</tr>
+				
 			</tbody>
 		</table>
 	</div>
 	
 	  
 	<monat-flexship-shipping-and-billing-card 
-         data-shipping-and-billing-detail="monatFlexshipDetail.orderTemplate.shippingAndBillingDetail">
+         data-order-template="monatFlexshipDetail.orderTemplate">
 	</monat-flexship-shipping-and-billing-card>
 
 
 	<monat-flexship-order-total-card 
-         data-order-total-detail="monatFlexshipDetail.orderTemplate.orderTotalDetail">
+         data-order-template="monatFlexshipDetail.orderTemplate">
 	</monat-flexship-order-total-card>
 	

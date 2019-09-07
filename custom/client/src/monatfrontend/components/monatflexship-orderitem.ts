@@ -13,7 +13,7 @@ class MonatFlexshipOrderItem {
 	
 	public scope = {};
 	public bindToController = {
-	    orderItem:'='
+	    orderItem:'<'
 	};
 	public controller=MonatFlexshipOrderItemController;
 	public controllerAs="monatFlexshipOrderItem";

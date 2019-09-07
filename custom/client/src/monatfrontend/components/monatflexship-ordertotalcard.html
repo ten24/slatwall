@@ -1,25 +1,27 @@
 	<div class="order-total">
-		<h3>Order Total</h3>
+		<h3 >Order Total `</h3>
+		<!--<span sw-rbkey="'entity.order.billing'"></span>-->
+
 		<ul>
 			<li>
 				<div class="left">
-					<span class="title-sm">Subtotal</span>
+					<span class="title-sm">Subtotal `</span>
 				</div>
 				<div class="right">
-					<span class="price">$36.00</span>
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.subtotal | currency}}</span>
 				</div>
 			</li>
 			<li>
 				<div class="left">
-					<span class="title-sm">Shipping</span>
+					<span class="title-sm">Shipping `</span>
 				</div>
 				<div class="right">
-					<span class="price">$5.95</span>
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.fulfillmentTotal | currency}}</span>
 				</div>
 			</li>
 			<li>
 				<div class="left">
-					<span class="title-sm">Tax</span>
+					<span class="title-sm">Tax ``</span>
 				</div>
 				<div class="right">
 					<span class="price">$5.00</span>
@@ -27,7 +29,7 @@
 			</li>
 			<li>
 				<div class="left">
-					<span class="title-sm">Promo Code (20% off)</span>
+					<span class="title-sm">Promo Code (20% off) ``</span>
 				</div>
 				<div class="right">
 					<span class="price">-$7.00</span>
@@ -35,10 +37,10 @@
 			</li>
 			<li class="total">
 				<div class="left">
-					<h4>Total</h4>
+					<h4>Total `</h4>
 				</div>
 				<div class="right">
-					<h4>$91.40</h4>
+					<h4>{{monatFlexshipOrderTotalCard.orderTemplate.total | currency}}</h4>
 				</div>
 			</li>
 		</ul>
