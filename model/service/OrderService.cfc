@@ -1857,28 +1857,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName'
 		
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,'
-		displayProperties &= ',shippingAccountAddress.address.addressID';  
-		displayProperties &= ',shippingAccountAddress.address.name';  
-		displayProperties &= ',shippingAccountAddress.address.streetAddress';  
-		displayProperties &= ',shippingAccountAddress.address.street2Address';	
-		displayProperties &= ',shippingAccountAddress.address.city';	
-		displayProperties &= ',shippingAccountAddress.address.locality';	
-		displayProperties &= ',shippingAccountAddress.address.postalCode';	
-		displayProperties &= ',shippingAccountAddress.address.stateCode';	
-		displayProperties &= ',shippingAccountAddress.address.countryCode';	
-		displayProperties &= ',billingAccountAddress.address.addressID';  
-		displayProperties &= ',billingAccountAddress.address.name';  
-		displayProperties &= ',billingAccountAddress.address.streetAddress';  
-		displayProperties &= ',billingAccountAddress.address.street2Address';	
-		displayProperties &= ',billingAccountAddress.address.city';	
-		displayProperties &= ',billingAccountAddress.address.locality';	
-		displayProperties &= ',billingAccountAddress.address.postalCode';	
-		displayProperties &= ',billingAccountAddress.address.stateCode';	
-		displayProperties &= ',billingAccountAddress.address.countryCode';		
-		displayProperties &= ',frequencyTerm.termName';	
-	
+		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
+		var shippingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("shippingAccountAddress."));
+		var billingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("billingAccountAddress."));
+		
+		displayProperties &= ',' & shippingAddressPropList; 
+		displayProperties &= ',' & billingAddressPropList;  
+		
 		orderTemplateCollection.setDisplayProperties(displayProperties)
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
@@ -1917,25 +1904,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
-		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("OrderTemplate");
-
-		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("Address");
-		var billingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("billingAccountAddress.address."));
-		var shippingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("shippingAccountAddress.address."));
-
-		var newDisplayProperties = orderTemplateCollectionPropList & "," & billingAddressPropList &"," & shippingAddressPropList;
-
-		//Get collectionList, with presettted filters and stuff // we can created a ne one just being lazy
-		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments);
-		orderTemplateCollection.setDisplayProperties(newDisplayProperties);  //clear the old-ones and set newproperties
-		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID);
+		var orderTemplateCollectionPropList = ",subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName"; //extra prop we need
+			
+		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		
+		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
+		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
-		var response = this.getOrderTemplateForAccount(argumentCollection = arguments);
+		var response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
-		response['newStuff'] = orderTemplateCollection.getPageRecords();
 		return response;
 	}
 

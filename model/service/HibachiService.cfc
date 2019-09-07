@@ -166,7 +166,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	
 	//used by the rest api to return default property values
-	public any function getDefaultPropertyIdentifiersListByEntityName(required string entityName, string includesList = "", string excludesList = ""){
+	public any function getDefaultPropertyIdentifiersListByEntityName(required string entityName, string includesList, string excludesList){
 		// First Check the application cache
 		var cacheKey = 'getDefaultPropertyIdentifiersListByEntityName#hash(arguments.entityName&arguments.includesList&arguments.excludesList,'md5')#';
 		

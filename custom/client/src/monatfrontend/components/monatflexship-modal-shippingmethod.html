@@ -12,12 +12,19 @@
                     <h6 class="title-with-line mb-5">Shipping Method</h6>
 
     			    <div class="custom-radio form-group" ng-repeat="accountAddress in monatFlexshipShippingMethodModal.accountAddresses">
-                        <input type="radio" name="accountAddressID" ng-click="monatFlexshipShippingMethodModal.selectAccountAddress(accountAddress)" id="{{accountAddress.accountAddressID}}" ng-model="monatFlexshipShippingMethodModal.existingAccountAddress" ng-value="accountAddress">
+                        <input type="radio" name="accountAddressID" id="{{accountAddress.accountAddressID}}" 
+                               ng-click="monatFlexshipShippingMethodModal.selectAccountAddress(accountAddress)" 
+                               ng-value="accountAddress"
+                               ng-checked ="accountAddress.accountAddressID === monatFlexshipShippingMethodModal.existingAccountAddress.accountAddressID"
+                               >
                         <label for="shipping" ng-bind="accountAddress.accountAddressName"></label>
                     </div>
 
                     <div class="custom-radio form-group">
-                        <input type="radio" name="accountAddressID" id="new_shipping" ng-model="monatFlexshipShippingMethodModal.existingAccountAddress">
+                        <input type="radio" name="accountAddressID" id="new_shipping" 
+                               ng-click="monatFlexshipShippingMethodModal.selectAccountAddress(null)" 
+                               ng-checked="monatFlexshipShippingMethodModal.createNewShippingAddress"
+                        >
                         <label for="new_shipping">Add a new shipping address</label>
                     </div>
                 
@@ -46,8 +53,8 @@
                 </div>
 		
 			<div class="footer">
-			    <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
-			    <button type="button" class="btn btn-block bg-primary">Save changes</button>
+        		<button type="button" class="btn btn-block bg-primary">Save changes</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
 		    </div>
 		    
 		</div>
