@@ -63,7 +63,8 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
 	//CUSTOM PROPERTIES BEGIN
-property name="commissionableVolumeTotal" persistent="false"; 
+property name="remoteSkuCode" ormtype="string"; //for import
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 
 //CUSTOM PROPERTIES END
