@@ -290,7 +290,7 @@ component extends="framework.one" {
 	public any function bootstrap() {
 		
 		setupRequestDefaults();
-		setupGlobalRequest(noredirect=true);
+		setupGlobalRequest();
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
 
@@ -307,15 +307,12 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function setupGlobalRequest(boolean noredirect=false) {
+	public void function setupGlobalRequest() {
 
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		
-		
-		
 		// Verify that the application is setup
-		//verifyApplicationSetup(noredirect=arguments.noredirect);
 		if(
 			variables.framework.hibachi.useServerInstanceCacheControl &&
 			getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'
@@ -613,13 +610,7 @@ component extends="framework.one" {
 		);
 	}
 
-	public boolean function isApplicationInitialized() {
-		return (
-			getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")	
-		);
-	}
-	
-	public void function setupApplication(reloadByServerInstance=false,noredirect=false) {
+	public void function setupApplication(reloadByServerInstance=false) {
 		
 		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
 			server[variables.framework.applicationKey] = {};
@@ -912,10 +903,6 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					/*if(!arguments.noredirect && updated && structKeyExists(request, "action")){
-
-						redirect(action=request.action,queryString='updated=true');
-					}*/
 				}
 			}
 		}
