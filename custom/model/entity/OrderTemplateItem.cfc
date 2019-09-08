@@ -8,12 +8,12 @@ component {
 
 	
 	public any function getSkuProductURL(){
-		skuProductURL = this.getSku().getProduct().getProductURL();
+		var skuProductURL = this.getSku().getProduct().getProductURL();
 		return skuProductURL;
 	}
 	
 	public any function getSkuImagePath(){
-		skuImagePath = this.getSku().getImagePath();
+		var skuImagePath = this.getSku().getImagePath();
 		return skuImagePath;
 	}
 	
