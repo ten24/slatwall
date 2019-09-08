@@ -54,12 +54,12 @@
 	
 		// Helper method to get the Slatwall Application
 		public any function getSlatwallApplication() {
-			variables.slatwallApplication = createObject("component", "Slatwall.Application");
-			if(!structkeyExists(variables,'isApplicationStart')){
-				variables.slatwallApplication.onApplicationStart();
-				variables.isApplicationStart=true;
+			if(!structkeyExists(variables,'slatwallApplication')){
+				variables.slatwallApplication = createObject("component", "Slatwall.Application");
+				if(!variables.slatwallApplication.getHibachiScope().hasApplicationValue("initialized")) {
+					variables.slatwallApplication.onApplicationStart();
+				}
 			}
-			variables.slatwallApplication.bootstrap();
 			return variables.slatwallApplication;
 		}
 		
@@ -73,9 +73,11 @@
 		
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
-			
+			if(!structKeyExists(request, "slatwallScope")) {
+				getSlatwallApplication().setupGlobalRequest();
+			}
 			if(!structKeyExists(arguments.$, "slatwall")) {
-				$.setCustomMuraScopeKey("slatwall", getSlatwallApplication().getHibachiScope());	
+				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	
 			}
 		}
 		

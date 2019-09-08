@@ -181,7 +181,7 @@ component extends="framework.one" {
 	}
 
 	// =============== configORM
-
+	
 	// Defaults
 	this.ormenabled = true;
 	this.ormsettings = {};
@@ -248,9 +248,6 @@ component extends="framework.one" {
 	// ==================== END: PRE UPDATE SCRIPTS ======================
 	// =======  END: ENVIRONMENT CONFIGURATION  =======
 	
-	public void function setupApplication() {
-		
-	}
     public void function setupEnvironment( env ) {
 
     }
@@ -293,7 +290,6 @@ component extends="framework.one" {
 	public any function bootstrap() {
 		
 		setupRequestDefaults();
- 		createHibachiScope();
 		setupGlobalRequest(noredirect=true);
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
@@ -303,7 +299,6 @@ component extends="framework.one" {
 
 	public any function reloadApplication() {
 		setupApplicationWrapper();
-		createHibachiScope();
 		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
 			if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
 				application[ getHibachiInstanceApplicationScopeKey() ] = {};
@@ -312,21 +307,15 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function onApplicationStart(){
-		variables.framework.hibachi.isApplicationStart = true;
-		super.onApplicationStart();
-	}
-
 	public void function setupGlobalRequest(boolean noredirect=false) {
-		createHibachiScope();
-		
+
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		
 		
 		
 		// Verify that the application is setup
-		verifyApplicationSetup(noredirect=arguments.noredirect);
+		//verifyApplicationSetup(noredirect=arguments.noredirect);
 		if(
 			variables.framework.hibachi.useServerInstanceCacheControl &&
 			getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'
@@ -336,7 +325,7 @@ component extends="framework.one" {
 				getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
 			){
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Server instance cache expired, starting reload for instance #server[variables.framework.applicationKey].serverInstanceKey#");
-				verifyApplicationSetup(reloadByServerInstance=true);
+				setupApplication(reloadByServerInstance=true);
 			
 			}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 			
@@ -624,7 +613,13 @@ component extends="framework.one" {
 		);
 	}
 
-	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
+	public boolean function isApplicationInitialized() {
+		return (
+			getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")	
+		);
+	}
+	
+	public void function setupApplication(reloadByServerInstance=false,noredirect=false) {
 		
 		if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
 			server[variables.framework.applicationKey] = {};
@@ -634,8 +629,6 @@ component extends="framework.one" {
 			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
 		}
 		
-		createHibachiScope();
-
 		if(
 			(
 				hasReloadKey()
@@ -649,9 +642,10 @@ component extends="framework.one" {
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Scope Key: #getHibachiInstanceApplicationScopeKey()#");
 
 			// If not, lock the application until this is finished
-			lock scope="Application" timeout="2400"  {
+			lock name="hibachiapp_#getHibachiInstanceApplicationScopeKey()#_init" type="exclusive" timeout="2400"  {
 
 				// Set the request timeout to 2400
 				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=2400);
@@ -809,7 +803,7 @@ component extends="framework.one" {
 					}
 					
 					setBeanFactory(coreBF);
-					
+
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
 					//========================= END: IOC SETUP ===============================
@@ -918,10 +912,10 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					if(!arguments.noredirect && updated && structKeyExists(request, "action")){
+					/*if(!arguments.noredirect && updated && structKeyExists(request, "action")){
 
 						redirect(action=request.action,queryString='updated=true');
-					}
+					}*/
 				}
 			}
 		}
