@@ -95,6 +95,7 @@ component extends="HibachiDAO" {
 			",
 			{serverInstance=arguments.serverInstance}
 		);
+		logHibachi("server instance cache reset initiated by instance: #arguments.serverInstance.getServerInstanceKey()#",true);
 	}
 
 	public void function updateServerInstanceSettingsCache(required any serverInstance){

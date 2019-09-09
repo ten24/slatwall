@@ -7,10 +7,12 @@ import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfs
 
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
+    public orderTemplates:Array<any>;
     public pageRecordsShow:number;
     public currentPage:number;
     public currentList:Option;
     public loading:boolean;
+    public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     
     // @ngInject
@@ -33,20 +35,24 @@ class SWFWishlistController {
     }
     
     private refreshList = (option:Option)=>{
-        
         this.loading = true;
         this.currentList = option;
         
         this.orderTemplateService
-        .getOrderTemplateItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             this.orderTemplateItems = result['orderTemplateItems'];
+            if(this.orderTemplateItems.length){
+                if(this.orderTemplateItems[0].accountPriceGroup.includes(3)){
+                    this.isVIPAccount = true;                   
+                }
+            }
+
             this.loading = false;
         });
     }
     
     public deleteItem =(index):Promise<any>=>{
-        
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
@@ -58,6 +64,20 @@ class SWFWishlistController {
             
         });
     }
+    
+    public getAllWishlists = () => {
+        this.loading = true;
+        
+        this.orderTemplateService
+        .getOrderTemplates(this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .then(result=>{
+            this.orderTemplates = result['orderTemplates'];
+            this.loading = false;
+        });
+    }
+    
+    
+    
     
     public addToCart =(index)=>{
         

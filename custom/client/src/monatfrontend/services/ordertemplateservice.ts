@@ -4,10 +4,11 @@ export class OrderTemplateService {
        
    } 
    
-   public getOrderTemplates = (pageRecordsShow=100, currentPage=1) =>{
+   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?) =>{
        var data = {
            currentPage:currentPage,
-           pageRecordsShow:pageRecordsShow
+           pageRecordsShow:pageRecordsShow,
+           orderTemplateTypeID
        }
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
    }
@@ -25,4 +26,19 @@ export class OrderTemplateService {
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
    }
+   
+   public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
+       var data = {
+           orderTemplateID:orderTemplateID,
+           currentPage:currentPage,
+           pageRecordsShow:pageRecordsShow
+       }
+       
+       if(orderTemplateTypeID){
+           data['orderTemplateTypeID'] = orderTemplateTypeID;
+       }
+       
+       return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
+   }
+   
 }
