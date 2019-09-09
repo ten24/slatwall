@@ -1,7 +1,12 @@
 export class OrderTemplateService { 
    
-   constructor(public requestService){
-       
+   constructor(
+       public requestService,
+       public observerService
+
+       ){
+    // this.observerService.attach(this.refreshOrderTemplatesListing, 'OrderTemplateUpdateShippingSuccess');
+
    } 
    
    public getOrderTemplates = (pageRecordsShow=100, currentPage=1) =>{
@@ -14,7 +19,7 @@ export class OrderTemplateService {
    
    public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {
-           'orderTemplateId' : orderTemplateId,
+           'orderTemplateID' : orderTemplateID,
            'currentPage' : currentPage,
            'pageRecordsShow' : pageRecordsShow
        }
@@ -26,9 +31,9 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
    }
    
-    public getOrderTemplateDetails = (orderTemplateId:string) => {
+    public getOrderTemplateDetails = (orderTemplateID:string) => {
        var data = {
-           "orderTemplateId" : orderTemplateId
+           "orderTemplateID" : orderTemplateID
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)

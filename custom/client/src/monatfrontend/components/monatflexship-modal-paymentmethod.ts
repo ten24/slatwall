@@ -13,8 +13,8 @@ class MonatFlexshipPaymentMethodModal {
 	
 	public scope = {};
 	public bindToController = {
-	    paymentMethod:'=',
-	    orderTemplateId:'@'
+	    accountPaymentMethods:'<',
+	    orderTemplate:'<'
 	};
 	public controller=MonatFlexshipPaymentMethodModalController;
 	public controllerAs="monatFlexshipPaymentMethodModal";

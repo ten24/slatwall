@@ -1,27 +1,24 @@
 <tr>
 	<td class="item-image">
 		<a href="#">
-		<!--<a> {{orderItem.img-path}}</a>-->
+		<!--<a> {{monatFlexshipOrderItem.orderItem.img-path}}</a>-->
 
 		<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
 		</a>
 	</td>
+	{{monatFlexshipOrderItem.orderItem. | json}}
 	<td class="item-name">
 		<h6 class="title-sm">
-			<a href="#">Smoothing Shampoo</a>
-			<!--<a> {{orderItem.name}}</a>-->
+			<a href="#">{{monatFlexshipOrderItem.orderItem.sku_skuDefinition}}</a>
 		</h6>
 	</td>
 	<td class="item-quantity">
 		<div class="qty">
-			<span>QTY</span> 1
-			<!-- <span>QTY</span>  {{orderItem.qty}} -->
-
+			<span>QTY `</span> {{monatFlexshipOrderItem.orderItem.quantity}}
 		</div>
 	</td>
 	<td class="item-price">
-		<span class="price">$35.00</span>
-		<!-- <span class="price"> {{orderItem.price | currency }} </span> -->
+		<span class="price">{{monatFlexshipOrderItem.orderItem.sku_priceByCurrencyCode | currency}}</span>
 	</td>
 </tr>
 				

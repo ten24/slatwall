@@ -2,7 +2,7 @@ class MonatFlexshipMenuController{
     
     public orderTemplate;
     public accountAddresses;
-
+	public accountPaymentMethods;
 	constructor( public orderTemplateService
 	){
 
@@ -20,7 +20,8 @@ class MonatFlexshipMenu{
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    accountAddresses:'<'
+	    accountAddresses:'<',
+	    accountPaymentMethods:'<'
 	};
 	public controller=MonatFlexshipMenuController;
 	public controllerAs="monatFlexshipMenu";

@@ -1,4 +1,4 @@
-<div class="modal" role="dialog" id="flexship-modal-payment-method">
+<div class="modal" role="dialog" id="flexship-modal-payment-method{{monatFlexshipPaymentMethodModal.orderTemplate.orderTemplateID}}">
 	<div class="modal-dialog">
 	    <div class="modal-content">
 	        
@@ -11,7 +11,8 @@
 		    <div class="payment">
 			    <h6 class="title-with-line mb-5">Payment Method</h6>
 			    
-			    <div class="custom-radio form-group">
+			    {{monatFlexshipPaymentMethodModal.accountPaymentMethods || json}}
+			    <div class="custom-radio form-group" ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods">
 	                <input type="radio" name="saved_cards" id="visa1" checked>
 	                <label for="visa1"><i class="fab fa-cc-visa"></i> Visa 0023</label>
 	            </div>
@@ -37,8 +38,8 @@
 	        </div>
 			
 			<div class="footer">
-			    <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
-			    <button type="button" class="btn btn-block bg-primary">Save changes</button>
+        		<button type="button" class="btn btn-block bg-primary">Save changes</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
 		    </div>
 		    
 		</div>

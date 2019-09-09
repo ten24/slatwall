@@ -12,17 +12,25 @@
                     <h6 class="title-with-line mb-5">Shipping Method</h6>
 
     			    <div class="custom-radio form-group" ng-repeat="accountAddress in monatFlexshipShippingMethodModal.accountAddresses">
-                        <input type="radio" name="accountAddressID" ng-click="monatFlexshipShippingMethodModal.selectAccountAddress(accountAddress)" id="{{accountAddress.accountAddressID}}" ng-model="monatFlexshipShippingMethodModal.existingAccountAddress" ng-value="accountAddress">
+                        <input type="radio" name="accountAddressID" id="accountAddress.accountAddressID" 
+                               ng-model="monatFlexshipShippingMethodModal.selectedAccountAddressID" 
+                               ng-value="accountAddress.accountAddressID" 
+                               ng-change="$parent.monatFlexshipShippingMethodModal.setSelectedAccountAddressID(accountAddress.accountAddressID)"
+                              >
                         <label for="shipping" ng-bind="accountAddress.accountAddressName"></label>
                     </div>
 
                     <div class="custom-radio form-group">
-                        <input type="radio" name="accountAddressID" id="new_shipping" ng-model="monatFlexshipShippingMethodModal.existingAccountAddress">
-                        <label for="new_shipping">Add a new shipping address</label>
+                        <input type="radio" name="accountAddressID" id="new_shipping" 
+                                ng-model="monatFlexshipShippingMethodModal.selectedAccountAddressID" 
+                                ng-value="new"
+                                ng-change="monatFlexshipShippingMethodModal.setSelectedAccountAddressID('new')"
+                        >                        
+                        <label for="new_shipping">Add a new shipping address</label>"
                     </div>
                 
                     <!--- TODO: Add Conditional: Add New Shipping Address form --->
-                    <div ng-if="monatFlexshipShippingMethodModal.createNewShippingAddress">
+                    <div ng-show="'new' === monatFlexshipShippingMethodModal.selectedAccountAddressID">
                         <span class="label">New Shipping Address</span>
                 		<div class="form-group">
                 			<input type="text" class="form-control" placeholder="First Name *">
@@ -46,8 +54,8 @@
                 </div>
 		
 			<div class="footer">
-			    <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
-			    <button type="button" class="btn btn-block bg-primary">Save changes</button>
+        		<button type="button" class="btn btn-block bg-primary">Save changes</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
 		    </div>
 		    
 		</div>

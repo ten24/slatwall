@@ -1861,28 +1861,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName'
 		
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,'
-		displayProperties &= ',shippingAccountAddress.address.addressID';  
-		displayProperties &= ',shippingAccountAddress.address.name';  
-		displayProperties &= ',shippingAccountAddress.address.streetAddress';  
-		displayProperties &= ',shippingAccountAddress.address.street2Address';	
-		displayProperties &= ',shippingAccountAddress.address.city';	
-		displayProperties &= ',shippingAccountAddress.address.locality';	
-		displayProperties &= ',shippingAccountAddress.address.postalCode';	
-		displayProperties &= ',shippingAccountAddress.address.stateCode';	
-		displayProperties &= ',shippingAccountAddress.address.countryCode';	
-		displayProperties &= ',billingAccountAddress.address.addressID';  
-		displayProperties &= ',billingAccountAddress.address.name';  
-		displayProperties &= ',billingAccountAddress.address.streetAddress';  
-		displayProperties &= ',billingAccountAddress.address.street2Address';	
-		displayProperties &= ',billingAccountAddress.address.city';	
-		displayProperties &= ',billingAccountAddress.address.locality';	
-		displayProperties &= ',billingAccountAddress.address.postalCode';	
-		displayProperties &= ',billingAccountAddress.address.stateCode';	
-		displayProperties &= ',billingAccountAddress.address.countryCode';		
-		displayProperties &= ',frequencyTerm.termName';	
-	
+		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
+		var shippingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("shippingAccountAddress."));
+		var billingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("billingAccountAddress."));
+		
+		displayProperties &= ',' & shippingAddressPropList; 
+		displayProperties &= ',' & billingAddressPropList;  
+		
 		orderTemplateCollection.setDisplayProperties(displayProperties)
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
@@ -1914,13 +1901,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
 	} 
 	
+	private function function getListPrefixerFunction(required string prefix){
+		return function (entry) {
+			return prefix & arguments.entry;
+		}
+	}
 	
-	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()){
-		var response={};
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
+		//Making PropertiesList
+		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName"; //extra prop we need
+			
+		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		
-		response['orderTemplate'] = this.getOrderTemplateForAccount(argumentCollection = arguments);
-		response.orderTemplate['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
+		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
+		var response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}
 
