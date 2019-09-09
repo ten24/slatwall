@@ -1737,8 +1737,8 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
+		// 		arguments.data['ajaxResponse']['stateOptions'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
- 
 	}
 	
 	public void function getOrderTemplateItems(required any data){

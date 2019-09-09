@@ -2,35 +2,33 @@
 class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
 	public accountAddresses;
-	
+
 	public existingAccountAddress; 
-	public newAccountAddress;
-	public selectedAccountAddressID; 
-    constructor(public orderTemplateService, public observerService) {
-    }
+	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public newAccountAddress = {};
+
+    constructor(public orderTemplateService, public observerService) {}
+    
     public $onInit = () => {
     	console.log('shippingMethodModal', this);
-
+    	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
-    	
-    	if(this.existingAccountAddress) {
-	    	this.selectedAccountAddressID = this.existingAccountAddress.accountAddressID;
-    	}
+	    this.setSelectedAccountAddressID(this.existingAccountAddress.accountAddressID);
     };
     
-    public setSelectedAccountAddressID(accountAddressID) {
-    	console.warn("new address id :" +accountAddressID);
+    public setSelectedAccountAddressID(accountAddressID = 'new') {
+    	console.warn("new address id :" + accountAddressID);
 
-    	this.selectedAccountAddressID = accountAddressID;
+    	this.selectedShippingAddress.accountAddressID = accountAddressID;
     }
     
     public updateShippingAddress() {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	if(this.selectedAccountAddressID !== 'new') {
-    		 payload['shippingAccountAddressID'] = this.selectedAccountAddressID; //make it a struct
+    	if(this.selectedShippingAddress.accountAddressID !== 'new') {
+    		 payload['shippingAccountAddress'] = {'accountAddressID' : this.selectedShippingAddress.accountAddressID };
     	} else {
     		 payload['newAccountAddress'] = this.newAccountAddress;
     	}

@@ -1,8 +1,8 @@
 class MonatFlexshipCardController{
     
-    public orderTemplate:any;
-    public accountAddresses:any[]; 
-    public accountPaymentMethods:any[];
+    // public orderTemplate:any;
+    // public accountAddresses:any[]; 
+    // public accountPaymentMethods:any[];
     public dayOfMonthFormatted:string;
 
 	constructor(){

@@ -1,6 +1,6 @@
 
 class MonatFlexshipOrderItemController {
-    public orderItem: {};
+    public orderItem;
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};

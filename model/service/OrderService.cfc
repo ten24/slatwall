@@ -1876,7 +1876,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
-	    
 		return orderTemplateCollection; 
 	}  
 
