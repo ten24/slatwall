@@ -2417,7 +2417,7 @@ table .s-edit-elements a:hover {
 }
 .s-add-filter-secondary-layout.s-add-filter h4 {
   margin-top: 15px;
-  color: #666 !important;
+  /*color: #666 !important;*/
 }
 .s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {
   content: "\f105";
@@ -3010,6 +3010,14 @@ table .s-table-header .table-section a.s-hint {
   font-size: 14px;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+}
+.s-add-filter > .row > h4 .styl-1:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.s-add-filter > .row > h4 .styl-1{
+  color: #fff;
 }
 .s-add-filter .row h4.s-heading {
   margin-top: 0px;
