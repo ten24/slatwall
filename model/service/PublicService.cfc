@@ -1735,8 +1735,8 @@ component  accessors="true" output="false"
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data);  
-	} 
-
+	}
+	
 	public void function getOrderTemplateItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -1744,6 +1744,54 @@ component  accessors="true" output="false"
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
+	} 
+
+	public void function getWishlistItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		
+		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
+		
+		if (len(arguments.data.orderTemplateID)){
+		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
+		}
+		
+		var scrollableSession = ormGetSessionFactory().openSession();
+		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
+		
+		//now iterate over all the objects
+		
+		try{
+		    while(wishlistsItems.next()){
+		    
+			    var wishlistItem = wishlistsItems.get(0);
+			    
+			    var wishListItemStruct={
+			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
+			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
+			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:"",
+			      "personalVolume"   :   wishListItem.getSkuAdjustedPricing().personalVolume?:"",
+			      "accountPriceGroup"   :   wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
+			      "skuURL"   :    wishlistItem.getSkuProductURL()?:"",
+			      "skuImage"   :    wishlistItem.getSkuImagePath()?:"",
+			      "skuProductName"   :    wishlistItem.getSku().getProduct().getProductName()?:"",
+			      
+			    };
+
+			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+		    }
+		}catch (e){
+
+		}finally{
+			if (scrollableSession.isOpen()){
+				scrollableSession.close();
+			}
+		}
 	} 
 	
 	public void function deleteOrderTemplateItem(required any data) {
