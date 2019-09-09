@@ -1175,9 +1175,7 @@ component extends="framework.one" {
 		}
 
 		// Set the passed in action to the form scope
-		if(structKeyExists(arguments, "action")) {
-			form[ getAction() ] = arguments.action;
-		}
+		form[ getAction() ] = arguments.action;
 
 		// create a new request context to hold simple data, and an empty request services so that the view() function works
 		request.context = {};
