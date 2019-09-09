@@ -235,11 +235,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public void function checkNewAccountAddressSave() {
 
-		//if it's an order template let's skip this check because it throws errors when validating promotions with transients
-		if(!isNull(getOrder().getOrderTemplate())){
-			return; 
-		}
-
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
     	if(!isNull(getOrder().getAccount()) && !
 			getOrder().getAccount().getGuestAccountFlag() && 
@@ -774,7 +769,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod( any shippingMethod, boolean persistShippingMethodOption=true ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
-			if(!arrayLen(getFulfillmentShippingMethodOptions())){
+			
+			if(!isNull(getOrder().getOrderTemplate())){
+				variables.shippingMethod=arguments.shippingMethod;
+				return;
+			}
+
+			if(arrayIsEmpty(getFulfillmentShippingMethodOptions())){
 				getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this, arguments.persistShippingMethodOption );
 			}
 			// make sure that the shippingMethod exists in the fulfillmentShippingMethodOptions

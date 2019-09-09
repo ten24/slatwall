@@ -1660,6 +1660,11 @@ component  accessors="true" output="false"
         
     }
     
+    public void function getAccountWishlistsOptions(required struct data){
+        var options = getOrderService().getAccountWishlistsOptions(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistOptions"] = options;
+    }
+    
     /** returns the list of country code options */
      public void function getCountries( required struct data ) {
         arguments.data.ajaxResponse['countryCodeOptions'] = getService('HibachiCacheService').getOrCacheFunctionValue('PublicService.getCountries',getAddressService(),'getCountryCodeOptions');
@@ -1730,8 +1735,8 @@ component  accessors="true" output="false"
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data);  
-	} 
-
+	}
+	
 	public void function getOrderTemplateItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -1740,4 +1745,95 @@ component  accessors="true" output="false"
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
+
+	public void function getWishlistItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		
+		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
+		
+		if (len(arguments.data.orderTemplateID)){
+		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
+		}
+		
+		var scrollableSession = ormGetSessionFactory().openSession();
+		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
+		
+		//now iterate over all the objects
+		
+		try{
+		    while(wishlistsItems.next()){
+		    
+			    var wishlistItem = wishlistsItems.get(0);
+			    
+			    var wishListItemStruct={
+			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
+			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
+			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:"",
+			      "personalVolume"   :   wishListItem.getSkuAdjustedPricing().personalVolume?:"",
+			      "accountPriceGroup"   :   wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
+			      "skuURL"   :    wishlistItem.getSkuProductURL()?:"",
+			      "skuImage"   :    wishlistItem.getSkuImagePath()?:"",
+			      "skuProductName"   :    wishlistItem.getSku().getProduct().getProductName()?:"",
+			      
+			    };
+
+			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+		    }
+		}catch (e){
+
+		}finally{
+			if (scrollableSession.isOpen()){
+				scrollableSession.close();
+			}
+		}
+	} 
+	
+	public void function deleteOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        
+        if(!isNull(orderTemplateItem) && orderTemplateItem.getOrderTemplate().getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOk = getOrderService().deleteOrderTemplateItem( orderTemplateItem );
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", !deleteOK );
+            return;
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", true );  
+    }
+    
+    public void function editOrderTemplate(required any data){
+        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateName" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
+            orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+            getHibachiScope().addActionResult( "public:order.editOrderTemplate", orderTemplate.hasErrors() );
+        }
+        
+        getHibachiScope().addActionResult( "public:order.editOrderTemplate", true );  
+    }
+    
+    public void function deleteOrderTemplate(required any data){
+        param name="data.orderTemplateItemID" default="";
+
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOK = getOrderService().deleteOrderTemplate(orderTemplate);
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", !deleteOK);
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
+        
+    }
 }

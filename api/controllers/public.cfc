@@ -97,4 +97,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	public any function getOrderTemplateItems( required struct rc ){
 		getPublicService().getOrderTemplateItems(arguments.rc); 
 	} 
+	
+	public any function getWishlistItems( required struct rc ){
+		getPublicService().getWishlistItems(arguments.rc); 
+	} 
 }

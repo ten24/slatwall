@@ -402,7 +402,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		bestPrice.priceGroup = "";
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
-		for(var i=1; i<=arrayLen(arguments.account.getPriceGroups()); i++) {
+		var priceGroupCount = arrayLen(arguments.account.getPriceGroups());	
+		for(var i=1; i<=priceGroupCount; i++) {
 			if(account.getPriceGroups()[i].getActiveFlag()){
 				var thisPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=account.getPriceGroups()[i],currencyCode=arguments.currencyCode);
 
@@ -419,17 +420,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		var totalQuantity = arguments.order.getTotalItemQuantity();
 
-		//temporary workaround for failed to fetch price groups 
-		//if(!isNull(arguments.order.getOrderTemplate)){
-		//	return; 
-		//}
-
 		if(!isNull(arguments.order.getAccount())){
-			ormGetSession().attach;
-			var priceGroups = arguments.order.getAccount().getPriceGroups();
+			var priceGroupCollection = arguments.order.getAccount().getPriceGroupsCollectionList();
+			priceGroupCollection.setDisplayProperties('priceGroupID');
+			priceGroups = priceGroupCollection.getRecords();
+ 
 			var priceGroupList = '';
 			for(var priceGroup in priceGroups){
-				priceGroupList &= priceGroup.getPriceGroupID();
+				priceGroupList &= priceGroup['priceGroupID'];
 			}
 		}else{
 			var priceGroupList = '';
@@ -439,7 +437,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
 			
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
-			for(var orderItem in arguments.order.getOrderItems()){
+			var orderItems = arguments.order.getOrderItems(); 
+			for(var orderItem in orderItems){
 				orderItem.removeAppliedPriceGroup();
 				
 				if(!isNull(arguments.order.getAccount())){
