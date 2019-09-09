@@ -54,13 +54,11 @@
 	
 		// Helper method to get the Slatwall Application
 		public any function getSlatwallApplication() {
-			if(!structkeyExists(variables,'slatwallApplication')){
-				variables.slatwallApplication = createObject("component", "Slatwall.Application");
-				if(!variables.slatwallApplication.getHibachiScope().hasApplicationValue("initialized")) {
-					variables.slatwallApplication.onApplicationStart();
-				}
+			var slatwallApplication = createObject("component", "Slatwall.Application");
+			if(!slatwallApplication.getHibachiScope().hasApplicationValue("initialized")) {
+				slatwallApplication.onApplicationStart();
 			}
-			return variables.slatwallApplication;
+			return slatwallApplication;
 		}
 		
 		// Helper method to return the mura plugin config for the slatwall-mura connector
