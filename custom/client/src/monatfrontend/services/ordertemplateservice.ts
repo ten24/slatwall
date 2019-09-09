@@ -1,7 +1,12 @@
 export class OrderTemplateService { 
    
-   constructor(public requestService){
-       
+   constructor(
+       public requestService,
+       public observerService
+
+       ){
+    // this.observerService.attach(this.refreshOrderTemplatesListing, 'OrderTemplateUpdateShippingSuccess');
+
    } 
    
    public getOrderTemplates = (pageRecordsShow=100, currentPage=1) =>{
