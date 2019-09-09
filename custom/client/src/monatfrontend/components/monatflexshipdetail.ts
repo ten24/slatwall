@@ -10,6 +10,7 @@ class MonatFlexshipDetailController {
             .then(
 	            (response) => {
 	                this.orderTemplate = response.orderTemplate;
+	                console.log('ot', this.orderTemplate); 
 	            }, 
 	            (reason) => {
 	                throw (reason);

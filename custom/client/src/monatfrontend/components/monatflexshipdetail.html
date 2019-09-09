@@ -37,12 +37,12 @@
 	</div>
 	
 	  
-	<monat-flexship-shipping-and-billing-card 
+	<monat-flexship-shipping-and-billing-card ng-if="monatFlexshipDetail.orderTemplate"
          data-order-template="monatFlexshipDetail.orderTemplate">
 	</monat-flexship-shipping-and-billing-card>
 
 
-	<monat-flexship-order-total-card 
+	<monat-flexship-order-total-card ng-if="monatFlexshipDetail.orderTemplate"
          data-order-template="monatFlexshipDetail.orderTemplate">
 	</monat-flexship-order-total-card>
 	

@@ -1,8 +1,13 @@
 
 class MonatFlexshipShippingAndBillingCardController {
+    public orderTemplate; 
+    
     constructor(public orderTemplateService) {
     }
-    public $onInit = () => {};
+    public $onInit = () => {
+    	
+    	console.log('ot',this.orderTemplate);
+    };
 }
 
 class MonatFlexshipShippingAndBillingCard {

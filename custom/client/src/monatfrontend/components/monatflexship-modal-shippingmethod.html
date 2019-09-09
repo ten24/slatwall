@@ -15,13 +15,13 @@
                         <input type="radio" name="accountAddressID" id="accountAddress.accountAddressID" 
                                ng-model="monatFlexshipShippingMethodModal.selectedAccountAddressID" 
                                ng-value="accountAddress.accountAddressID" 
-                               ng-change="$parent.monatFlexshipShippingMethodModal.setSelectedAccountAddressID(accountAddress.accountAddressID)"
+                               ng-change="monatFlexshipShippingMethodModal.setSelectedAccountAddressID(accountAddress.accountAddressID)"
                               >
                         <label for="shipping" ng-bind="accountAddress.accountAddressName"></label>
                     </div>
 
                     <div class="custom-radio form-group">
-                        <input type="radio" name="accountAddressID" id="new_shipping" 
+                        <input type="radio" name="accountAddressID" 
                                 ng-model="monatFlexshipShippingMethodModal.selectedAccountAddressID" 
                                 ng-value="new"
                                 ng-change="monatFlexshipShippingMethodModal.setSelectedAccountAddressID('new')"
