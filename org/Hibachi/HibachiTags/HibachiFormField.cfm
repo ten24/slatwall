@@ -23,6 +23,9 @@
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<cfparam name="attributes.translateAttributes" type="any" default="" />
+	<cfparam name="attributes.enableOtherInputForRadioGroup" type="any" default="true" />
+
+	<cfparam name="attributes.enableOtherInputForRadioGroupShowHide" type="any" default="true" />
 	<!---
 	attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -208,12 +211,23 @@
 				<cfloop array="#attributes.valueOptions#" index="option">
 					<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 					<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
+
 					<div class="radio">
-						<input type="radio" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# />
+						<input type="radio" ng-model="#attributes.fieldName#" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# />
 						<label for="#thisOptionValue#">
 							#thisOptionName#
 						</label>
-					</div>	
+					</div>
+					
+					<cfif findNoCase(thisOptionName, 'other') AND len(thisOptionName) EQ 5 AND attributes.enableOtherInputForRadioGroup> 
+						<input type="text"
+							name="#attributes.fieldName#Other"	
+
+							<cfif attributes.enableOtherInputForRadioGroupShowHide >
+								ng-if="#attributes.fieldName#.toString() == '#thisOptionValue#'"  
+							</cfif>
+						/>
+					</cfif>	
 				</cfloop>
 			</cfoutput>
 		</cfcase>
