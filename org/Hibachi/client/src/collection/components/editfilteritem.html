@@ -8,8 +8,8 @@
             <span data-sw-rbkey="'admin.editfilteritem.definefilter'" style="color:#fff;"></span>:
             <span data-ng-repeat="breadCrumb in filterItem.breadCrumbs">
 	        	<span data-ng-if="filterItem.breadCrumbs.length - 1 !== $index" data-ng-click="selectBreadCrumb($index)" style="color:#fff;">
-                    <span data-ng-bind="breadCrumb.rbKey" class="styl-1"></span>
-                    <span data-ng-if="$index !== filterItem.breadCrumbs.length - 2" >&nbsp; > &nbsp;</span>
+                    <span data-ng-bind="breadCrumb.rbKey" class="style-1"></span>
+                    <span data-ng-if="$index !== filterItem.breadCrumbs.length - 2" >&nbsp;>&nbsp;</span>
                 </span>
 	        </span>
             <i class="fa fa-times" data-ng-click="cancelFilterItem()" ></i>
