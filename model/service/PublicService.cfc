@@ -1737,8 +1737,8 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
+		// 		arguments.data['ajaxResponse']['stateOptions'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
- 
 	}
 	
 	public void function getOrderTemplateItems(required any data){
@@ -1809,20 +1809,27 @@ component  accessors="true" output="false"
 	}
 
  	public void function updateOrderTemplateShipping(required any data){ 
-         param name="arguments.data.orderTemplateId" default="";
+        param name="arguments.data.orderTemplateId" default="";
 	
- 		var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateId);
-
-		//check if it's null
-
-		//check if the account has access to the order template
-		if(getHibachiScope().getAccount().getAccountID != orderTemplate.getAccount().getAccountID()){
+     	var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+    	//check if it's null
+    	//check if the account has access to the order template
+		if( isNull(orderTemplate) || 
+		    getHibachiScope().getAccount().getAccountID() != orderTemplate.getAccount().getAccountID()
+		) {
 			return; 
 		}
+	    
+ 		orderTemplate = getOrderService.processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.updateShipping", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors()) {
+            orderTemplate.clearProcessObject("updateShipping");
+        }
 		
- 		getOrderService.process(orderTemplate, arguments.data, 'updateShipping'); 
-		
- 		arguments.data['ajaxResponse'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
+ 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.jetStructRepresentation();  
+ 		//condition
+ 		arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress.getStructRepresentation();
  	}   
 	
 	public void function deleteOrderTemplateItem(required any data) {

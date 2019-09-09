@@ -1,6 +1,7 @@
 
 class MonatFlexshipChangeOrSkipOrderModalController {
-    public ChangeOrSkipOrderModal: {};
+	public orderTemplate; 
+
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
@@ -13,8 +14,7 @@ class MonatFlexshipChangeOrSkipOrderModal {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'=',
-	    orderTemplateId:'@'
+	    orderTemplate:'='
 	};
 	public controller=MonatFlexshipChangeOrSkipOrderModalController;
 	public controllerAs="monatFlexshipChangeOrSkipOrderModal";

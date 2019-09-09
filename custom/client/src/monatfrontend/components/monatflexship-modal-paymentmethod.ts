@@ -1,6 +1,8 @@
 
 class MonatFlexshipPaymentMethodModalController {
-    public PaymentMethodModal: {};
+    public orderTemplate; 
+    public accountPaymentMethods;
+
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {};

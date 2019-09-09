@@ -2,28 +2,61 @@
 class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
 	public accountAddresses;
+
 	public existingAccountAddress; 
-	public selectedAccountAddressID; 
-    public ShippingMethodModal: {};
-    constructor(public orderTemplateService) {
-    }
+	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public newAccountAddress = {};
+
+    constructor(public orderTemplateService, public observerService) {}
+    
     public $onInit = () => {
     	console.log('shippingMethodModal', this);
-
+    	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
-    	
-    	if(this.existingAccountAddress) {
-	    	this.selectedAccountAddressID = this.existingAccountAddress.accountAddressID;
-    	}
+	    this.setSelectedAccountAddressID(this.existingAccountAddress.accountAddressID);
     };
     
-    public setSelectedAccountAddressID(accountAddressID) {
-    	console.warn("new address id :" +accountAddressID);
+    public setSelectedAccountAddressID(accountAddressID = 'new') {
+    	console.warn("new address id :" + accountAddressID);
 
-    	this.selectedAccountAddressID = accountAddressID;
+    	this.selectedShippingAddress.accountAddressID = accountAddressID;
     }
+    
+    public updateShippingAddress() {
+    	let payload = {};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+    	if(this.selectedShippingAddress.accountAddressID !== 'new') {
+    		 payload['shippingAccountAddress'] = {'accountAddressID' : this.selectedShippingAddress.accountAddressID };
+    	} else {
+    		 payload['newAccountAddress'] = this.newAccountAddress;
+    	}
+    
+    	// make api request
+        this.orderTemplateService.updateShipping(payload).then(
+            (response) => {
+               
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated",response.orderTemplate);
+
+                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                
+                console.log('ot updateShipping: ', this.orderTemplate); 
+                
+                if(angular.isDefined(response.newAccountAddress)) {
+            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+                }
+                		
+                // TODO: show alert
+            }, 
+            (reason) => {
+                throw (reason);
+                // TODO: show alert
+            }
+        );
+    }
+    	
 }
 
 class MonatFlexshipShippingMethodModal {
@@ -33,10 +66,8 @@ class MonatFlexshipShippingMethodModal {
 	
 	public scope = {};
 	public bindToController = {
-	    shippingMethod:'=',
 	    orderTemplate:'<',
-	    accountAddresses:'<',
-	    selectedAccountAddressID:'<'
+	    accountAddresses:'<'
 	};
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";

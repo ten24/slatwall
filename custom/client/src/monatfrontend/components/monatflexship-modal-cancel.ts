@@ -1,7 +1,7 @@
 
 class MonatFlexshipCancelModalController {
-    public CancelModal: {};
-    constructor(public orderTemplateService) {
+	public orderTemplate; 
+	constructor(public orderTemplateService) {
     }
     public $onInit = () => {};
 }
@@ -13,8 +13,7 @@ class MonatFlexshipCancelModal {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'=',
-	    orderTemplateId:'@'
+	    orderTemplate:'='
 	};
 	public controller=MonatFlexshipCancelModalController;
 	public controllerAs="monatFlexshipCancelModal";

@@ -1,8 +1,8 @@
 class MonatFlexshipMenuController{
     
-    public orderTemplate;
-    public accountAddresses;
-	public accountPaymentMethods;
+ //   public orderTemplate;
+ //   public accountAddresses;
+	// public accountPaymentMethods;
 	constructor( public orderTemplateService
 	){
 
