@@ -143,8 +143,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================	
-	//CUSTOM FUNCTIONS BEGIN
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
 public string function getPersonalVolumeAmountFormatted(){
         arguments['customPriceField'] = 'personalVolume';

@@ -75,11 +75,14 @@
                                 <sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
                                                         data-disabled="swSkuPriceModal.isDefaultSkuPrice()"
                                                         data-placeholder-text="Select Sku"
-                                                        data-search-text="swSkuPriceModal.selectedSku['skuCode']"
-                                                        data-add-function="swSkuPriceModal.setSelectedSku"
-                                                        data-property-to-show="skuCode">
-                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" ng-bind="item.skuCode"></span>
+                                                        data-search-text="swSkuPriceModal.compoundSkuName"
+                                                        data-add-function="swSkuPriceModal.setSelectedSku">
+                                    
+                                    <span sw-typeahead-search-line-item data-property-identifier="skuName"></span>
+                                    <span> - </span>
+                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode"></span>
                                 </sw-typeahead-search>
+                                
                                 <input type="hidden" readonly style="display:none" name="sku" ng-model="swSkuPriceModal.submittedSku" />
                             </div>
                             <div class="col-sm-6">

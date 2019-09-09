@@ -250,9 +250,9 @@ export class BaseBootStrapper{
                 }
             }catch(e){}
             this.appConfig = appConfig;
-            return this.getAuthInfo().then(()=>{
+            return this.getAuthInfo().finally(()=>{
                 return this.getResourceBundles();    
-            });
+			});
         });
 
     };
@@ -285,11 +285,20 @@ export class BaseBootStrapper{
     };
     
     getAuthInfo=()=>{
-        return this.$http.get(this.appConfig.baseURL+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:any)=>{
-            if(loginResponse.status === 200){
-                coremodule.value('token',loginResponse.data.token);
-            }
-        });
+		return this.$http.get(this.appConfig.baseURL+'?'+this.appConfig.action+'=api:main.login').then(  
+			
+			(loginResponse:any)=>{
+				if(loginResponse.status === 200){
+					coremodule.value('token',loginResponse.data.token);
+				} else {
+				    coremodule.value('token','invalidToken');
+				}
+			},
+
+			(reason)=>{
+			    coremodule.value('token','invalidToken');
+			}
+		);
     }
 
     getResourceBundles= () => {
@@ -308,14 +317,12 @@ export class BaseBootStrapper{
         if(localeListArray[0] !== 'en') {
             this.getResourceBundle('en');
         }
-        
-        return this.$q.all(rbPromises).then((data) => {
+
+		return this.$q.all(rbPromises).then((data) => {
             coremodule.constant('resourceBundles',this._resourceBundle);
         },(error) =>{
             //can enter here due to 404
             coremodule.constant('resourceBundles',this._resourceBundle);
-        });
-        
-
+        });	
     }
 }

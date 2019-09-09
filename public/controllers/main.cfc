@@ -69,7 +69,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.rbLocale" default="";
 		arguments.rc.$.slatwall.getSession().setRBLocale(hibachiHTMLEditFormat(arguments.rc.rbLocale));
 		arguments.rc.$.slatwall.setPersistSessionFlag( true );
-		getBeanFactory().getBean("hibachiTagService").cfcookie('rbLocale', hibachiHTMLEditFormat(arguments.rc.rbLocale));
 	}
 
 

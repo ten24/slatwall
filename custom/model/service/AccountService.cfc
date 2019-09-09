@@ -30,4 +30,9 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		}
 		return arguments.accountLoyalty;
 	} 
+	
+	
+	public string function getSimpleRepresentation(required any account){
+		return arguments.account.getAccountNumber() & ' - ' & arguments.account.getFullName();
+	}
 }

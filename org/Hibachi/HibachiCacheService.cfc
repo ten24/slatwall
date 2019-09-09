@@ -133,7 +133,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		verifyCacheKey(arguments.key);
 
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), key) && (!structKeyExists(getCache()[key],"expirationDateTime") || getCache()[key].expirationDateTime > now()) ) {
+		if(getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && (!structKeyExists(getCache()[arguments.key],"expirationDateTime") || getCache()[arguments.key].expirationDateTime > now()) ) {
 			return getCache()[ arguments.key ].value;
 			
 		// If using the external cache, then check there

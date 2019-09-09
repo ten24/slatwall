@@ -243,6 +243,9 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     
+    property name="lastSyncedDateTime" ormtype="timestamp";
+    
+    property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     
    
  property name="businessDate" ormtype="string";
@@ -1403,8 +1406,11 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Account (many-to-one)
-	public any function setAccount(required any account) {
+	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
+		if(arguments.skipBidirectional){
+			return this; 
+		} 
 		if(isNew() or !arguments.account.hasOrder( this )) {
 			arrayAppend(arguments.account.getOrders(), this);
 		}

@@ -101,7 +101,8 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="securityCode" hb_populateEnabled="public" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
-
+	//CUSTOM PROPERTIES BEGIN
+property name="accountRemoteID" ormtype="string"; //CUSTOM PROPERTIES END
 	public string function getPaymentMethodType() {
 		if(isNull(getPaymentMethod())){
 			return "";

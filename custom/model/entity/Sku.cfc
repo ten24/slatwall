@@ -8,7 +8,8 @@ component {
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
-    
+    property name="personalVolumeByCurrencyCode" persistent="false";
+    property name="comissionablelVolumeByCurrencyCode" persistent="false";
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
@@ -113,7 +114,7 @@ component {
 		}
 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				    if(a['price'] < b['price']){ return -1;}

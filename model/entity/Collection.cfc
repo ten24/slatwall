@@ -561,8 +561,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
 		}
-		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],cacheKey)){
-			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][cacheKey];
+		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],arguments.cacheKey)){
+			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey];
 		}
 	}
 
@@ -1511,6 +1511,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				var filter = selectedFilterGroup[i];
+				
 				var isRemovable = true;
 				if(structKeyExists(arguments,'propertyIdentifier')){
 					if(getPropertyIdentifierAlias(filter.propertyIdentifier) != getPropertyIdentifierAlias(arguments.propertyIdentifier)){
@@ -1530,7 +1531,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 
-				if(structKeyExists(arguments,'value')){
+				if(!isNull(filter.value) && structKeyExists(arguments,'value')){
 					if(filter.value != arguments.value){
 						isRemovable = false;
 					}

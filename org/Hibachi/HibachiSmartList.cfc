@@ -359,7 +359,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(propertyIsAttribute) {
 			return "#entityAlias#.attributeValue";	
 		}
-		return "#entityAlias#.#variables.entities[entityName].entityProperties[listLast(propertyIdentifier, variables.subEntityDelimiters)].name#";
+		return "#entityAlias#.#variables.entities[entityName].entityProperties[listLast(arguments.propertyIdentifier, variables.subEntityDelimiters)].name#";
 	}
 	
 	public void function addSelect(required string propertyIdentifier, required string alias) {

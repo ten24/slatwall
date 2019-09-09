@@ -21,14 +21,14 @@
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;margin-bottom: 20px;">
 													<tbody>
 														<tr>
-															<td class="column_cell px pt_xs pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;text-align: left;padding: 8px 16px 25px;">
+															<td class="column_cell px pt_xs pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;text-align: left;padding: 8px 16px 25px;">
 																
 																<!-- FOOTER COPY -->
-																<p class="mb_xxs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;color: #colorContainerAccent#;">
+																<p class="mb_xxs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;color: #colorContainerAccent#;">
 																	&copy; <cfoutput>#year(Now())#</cfoutput> MONAT GLOBAL CORP<br>
 																</p>
 																
-																<p class="small mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
+																<p class="small mb_0" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
 																	<!-- FOOTER LINKS -->
 																	<a href="#accountLink#/shop/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;"> | </span> 
@@ -45,8 +45,8 @@
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;margin-bottom: 20px;">
 													<tbody>
 														<tr>
-															<td class="column_cell px pt_xs pb_0 ord_cell tr" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 8px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
-																<p class="fsocial mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
+															<td class="column_cell px pt_xs pb_0 ord_cell tr" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 8px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
+																<p class="fsocial mb_0" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
 																	<!-- INSTAGRAM ICON/LINK -->
 																	<a href="https://instagram.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#/assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a>
