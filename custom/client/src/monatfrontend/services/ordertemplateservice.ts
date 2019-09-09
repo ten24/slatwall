@@ -29,7 +29,7 @@ export class OrderTemplateService {
        }
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
-   }
+    }
    
     public getOrderTemplateDetails = (orderTemplateID:string) => {
        var data = {
@@ -37,6 +37,12 @@ export class OrderTemplateService {
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
+                  .promise;
+    }
+   
+    public updateShipping = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
                   .promise;
    }
 }

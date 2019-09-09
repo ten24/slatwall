@@ -2,10 +2,11 @@
 class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
 	public accountAddresses;
+	
 	public existingAccountAddress; 
+	public newAccountAddress;
 	public selectedAccountAddressID; 
-    public ShippingMethodModal: {};
-    constructor(public orderTemplateService) {
+    constructor(public orderTemplateService, public observerService) {
     }
     public $onInit = () => {
     	console.log('shippingMethodModal', this);
@@ -24,6 +25,40 @@ class MonatFlexshipShippingMethodModalController {
 
     	this.selectedAccountAddressID = accountAddressID;
     }
+    
+    public updateShippingAddress() {
+    	let payload = {};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+    	if(this.selectedAccountAddressID !== 'new') {
+    		 payload['shippingAccountAddressID'] = this.selectedAccountAddressID; //make it a struct
+    	} else {
+    		 payload['newAccountAddress'] = this.newAccountAddress;
+    	}
+    
+    	// make api request
+        this.orderTemplateService.updateShipping(payload).then(
+            (response) => {
+               
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated",response.orderTemplate);
+
+                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                
+                console.log('ot updateShipping: ', this.orderTemplate); 
+                
+                if(angular.isDefined(response.newAccountAddress)) {
+            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+                }
+                		
+                // TODO: show alert
+            }, 
+            (reason) => {
+                throw (reason);
+                // TODO: show alert
+            }
+        );
+    }
+    	
 }
 
 class MonatFlexshipShippingMethodModal {
@@ -33,10 +68,8 @@ class MonatFlexshipShippingMethodModal {
 	
 	public scope = {};
 	public bindToController = {
-	    shippingMethod:'=',
 	    orderTemplate:'<',
-	    accountAddresses:'<',
-	    selectedAccountAddressID:'<'
+	    accountAddresses:'<'
 	};
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";
