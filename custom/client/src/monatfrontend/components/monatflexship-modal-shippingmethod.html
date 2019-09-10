@@ -11,11 +11,11 @@
                     <h6 class="title-with-line mb-5">Shipping Method `</h6>
                     <div class="custom-radio form-group" 
     			         ng-repeat="shippingMethod in monatFlexshipShippingMethodModal.shippingMethodOptions"
+    			         ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedShippingMethodID(shippingMethod.value)"
     			         >
                         <input  type="radio" 
                                 name="shippingMethodID"
-                                checked
-                                ng-value="shippingMethod.value"
+                                ng-checked="shippingMethod.value === monatFlexshipShippingMethodModal.selectedShippingMethod.shippingMethodID"
                               >
                         <label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
                     </div>

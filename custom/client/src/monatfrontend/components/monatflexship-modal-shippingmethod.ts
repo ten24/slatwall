@@ -2,26 +2,41 @@
 class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
 	public accountAddresses;
+	public shippingMethodOptions;
 
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public existingShippingMethod; 
+	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	
 	public newAccountAddress = {};
-	public shippingMethodOptions:any[];
 
     constructor(public orderTemplateService, public observerService) {}
     
     public $onInit = () => {
-    	console.log('shippingMethod? ', this.shippingMethodOptions);
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
-	    this.setSelectedAccountAddressID(this.existingAccountAddress.accountAddressID);
+    	if(!!this.existingAccountAddress && !!this.existingAccountAddress.accountAddressID){
+	    	this.setSelectedAccountAddressID(this.existingAccountAddress.accountAddressID);
+    	}
+    	
+    	this.existingShippingMethod = this.shippingMethodOptions.find( item => {
+    		return item.value === this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shipping-method-name, "value":"shipping-method-ID" }
+    	});
+    	if(!!this.existingShippingMethod && !!this.existingShippingMethod.value){
+	    	this.setSelectedShippingMethodID(this.existingShippingMethod.value);
+    	}
     };
     
-    public setSelectedAccountAddressID(accountAddressID = 'new') {
-    	console.warn("new address id :" + accountAddressID);
-
+    public setSelectedAccountAddressID(accountAddressID:any = 'new') {
+    	console.warn("selected address id :" + accountAddressID);
     	this.selectedShippingAddress.accountAddressID = accountAddressID;
+    }
+    
+    public setSelectedShippingMethodID(shippingMethodID?) {
+    	console.warn("selected shipping method id :" + shippingMethodID);
+    	this.selectedShippingMethod.shippingMethodID = shippingMethodID;
     }
     
     public updateShippingAddress() {
@@ -33,7 +48,7 @@ class MonatFlexshipShippingMethodModalController {
     		 payload['newAccountAddress'] = this.newAccountAddress;
     	}
     	
-    	payload['shippingMethod.shippingMethodID'] = '2c94808469d9160f0169da220afa0014';//temp hardcoded to ground
+    	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;//temp hardcoded to ground
     
     	console.log(payload); 
     	//return;
@@ -45,6 +60,7 @@ class MonatFlexshipShippingMethodModalController {
                 this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
 
                 this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
                 
                 console.log('ot updateShipping: ', this.orderTemplate); 
                 

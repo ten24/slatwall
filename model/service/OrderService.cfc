@@ -1863,12 +1863,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName'
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID'
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
-		var shippingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("shippingAccountAddress."));
-		var billingAddressPropList = ListMap(addressCollectionProps, getListPrefixerFunction("billingAccountAddress."));
-		
+		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
+		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
+
 		displayProperties &= ',' & shippingAddressPropList; 
 		displayProperties &= ',' & billingAddressPropList;  
 	
@@ -1898,12 +1898,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		return this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
 	} 
-	
-	private function function getListPrefixerFunction(required string prefix){
-		return function (entry) {
-			return prefix & arguments.entry;
-		}
-	}
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList

@@ -127,7 +127,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	} 
 	
 	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total', string persistentProperties=''){ 
-		var properties = listAppend(arrayToList(getDefaultCollectionProperties()), arguments.persistentProperties); 
+		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
 
 		var orderTemplateStruct = super.getStructRepresentation(properties);
 
