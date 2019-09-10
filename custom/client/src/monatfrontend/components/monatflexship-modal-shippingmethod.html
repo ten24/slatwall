@@ -8,7 +8,20 @@
 	        </button>
 	
                 <div class="shipping">
-                    <h6 class="title-with-line mb-5">Shipping Method</h6>
+                    <h6 class="title-with-line mb-5">Shipping Method `</h6>
+                    <div class="custom-radio form-group" 
+    			         ng-repeat="item in [1,2,3]"
+    			         >
+                        <input  type="radio" 
+                                name="shippingMethodID"
+                                vlue={{item}}
+                              >
+                        <label for="shippingMethodID">Shiping Method {{item}} ``</label>
+                    </div>
+
+                    <br/> 
+                    <h6 class="title-with-line mb-5">Shipping Address `</h6>
+
     			    <div class="custom-radio form-group" 
     			         ng-repeat="accountAddress in monatFlexshipShippingMethodModal.accountAddresses"
     			         ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedAccountAddressID(accountAddress.accountAddressID)"
@@ -26,11 +39,11 @@
                                 name="accountAddressID" 
                                 ng-checked="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
                         >                        
-                        <label for="accountAddressID">Add a new shipping address</label>
+                        <label for="accountAddressID">Add a new shipping address `</label>
                     </div>
                     <!--- Conditional: Add New Shipping Address form --->
                     <div ng-show="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID">
-                        <span class="label">New Shipping Address</span>
+                        <span class="label">New Shipping Address `</span>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
@@ -62,7 +75,7 @@
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.zipCode"
-                			placeholder="Zip Code *">                          
+                			placeholder="Zip Code * `">                          
                 		</div>
             		</div>
                 </div>
