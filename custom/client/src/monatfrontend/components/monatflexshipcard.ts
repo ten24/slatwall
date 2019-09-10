@@ -1,8 +1,5 @@
 class MonatFlexshipCardController{
     
-    // public orderTemplate:any;
-    // public accountAddresses:any[]; 
-    // public accountPaymentMethods:any[];
     public dayOfMonthFormatted:string;
 
 	constructor(){
@@ -21,7 +18,8 @@ class MonatFlexshipCard {
 	public bindToController = {
 	    orderTemplate:'<',
 	    accountAddresses:'<',
-	    accountPaymentMethods:'<'
+	    accountPaymentMethods:'<',
+	    stateCodeOptions:'<'
 	};
 	public controller=MonatFlexshipCardController;
 	public controllerAs="monatFlexshipCard";

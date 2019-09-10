@@ -59196,7 +59196,8 @@ var MonatFlexshipCard = /** @class */ (function () {
         this.bindToController = {
             orderTemplate: '<',
             accountAddresses: '<',
-            accountPaymentMethods: '<'
+            accountPaymentMethods: '<',
+            stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = "monatFlexshipCard";
@@ -59237,6 +59238,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.orderTemplates = data.orderTemplates;
                 _this.accountAddresses = data.accountAddresses;
                 _this.accountPaymentMethods = data.accountPaymentMethods;
+                _this.stateCodeOptions = data.stateCodeOptions;
             }, function (reason) {
                 console.error(reason);
             });
@@ -59302,7 +59304,8 @@ var MonatFlexshipMenu = /** @class */ (function () {
         this.bindToController = {
             orderTemplate: '<',
             accountAddresses: '<',
-            accountPaymentMethods: '<'
+            accountPaymentMethods: '<',
+            stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = "monatFlexshipMenu";
@@ -59644,14 +59647,21 @@ var OrderTemplateService = /** @class */ (function () {
         var _this = this;
         this.requestService = requestService;
         this.observerService = observerService;
+        /**
+         * This function is being used to fetch flexShips and wishLists
+         *
+         *
+        */
         this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             var data = {
                 currentPage: currentPage,
                 pageRecordsShow: pageRecordsShow,
-                orderTemplateTypeID: orderTemplateTypeID
             };
+            if (orderTemplateTypeID) {
+                data['orderTemplateTypeID'] = orderTemplateTypeID;
+            }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
         };
         this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
@@ -87119,7 +87129,6 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.$onInit = function () {
-            console.log('shippingMethodModal', _this);
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
             });
@@ -87141,6 +87150,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         else {
             payload['newAccountAddress'] = this.newAccountAddress;
         }
+        console.log(payload);
+        return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
             _this.orderTemplate = response.orderTemplate;
@@ -87167,7 +87178,8 @@ var MonatFlexshipShippingMethodModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            accountAddresses: '<'
+            accountAddresses: '<',
+            stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipShippingMethodModalController;
         this.controllerAs = "monatFlexshipShippingMethodModal";

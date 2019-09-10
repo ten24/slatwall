@@ -21,7 +21,8 @@ class MonatFlexshipMenu{
 	public bindToController = {
 	    orderTemplate:'<',
 	    accountAddresses:'<',
-	    accountPaymentMethods:'<'
+	    accountPaymentMethods:'<',
+	    stateCodeOptions: '<'
 	};
 	public controller=MonatFlexshipMenuController;
 	public controllerAs="monatFlexshipMenu";

@@ -9,11 +9,18 @@ export class OrderTemplateService {
 
    } 
    
+   /**
+    * This function is being used to fetch flexShips and wishLists 
+    * 
+    * 
+   */
    public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?) =>{
        var data = {
            currentPage:currentPage,
            pageRecordsShow:pageRecordsShow,
-           orderTemplateTypeID
+       }
+       if(orderTemplateTypeID){
+           data['orderTemplateTypeID'] = orderTemplateTypeID;
        }
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
    }
