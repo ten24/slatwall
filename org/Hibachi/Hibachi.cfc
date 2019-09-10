@@ -322,6 +322,7 @@ component extends="framework.one" {
 		){
 			if( isServerInstanceCacheExpired() ) {
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Server instance cache expired, starting reload for instance #server[variables.framework.applicationKey].serverInstanceKey#");
+				setupRequestDefaults();
 				setupApplication(reloadByServerInstance=true);
 
 			}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
