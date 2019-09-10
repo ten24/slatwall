@@ -347,8 +347,8 @@
     };
     
 	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
-		var rowsTotal = ArrayLen(arrayOfStructs);
-		var columnsTotal = ArrayLen(colNames); 
+		var rowsTotal = ArrayLen(arguments.arrayOfStructs);
+		var columnsTotal = ArrayLen(arguments.colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
 		var columnNames = arguments.colNames;
 		var newQuery = queryNew(arrayToList(columnNames), "VarChar"&repeatString(",VarChar", arraylen(columnNames)-1));
@@ -358,10 +358,10 @@
 				var column = nullReplace(columnNames[n], "");
 				var value = "";
 				//Fixes undefined values
-				if (!StructKeyExists(arrayOfStructs[i], "#column#")){
+				if (!StructKeyExists(arguments.arrayOfStructs[i], "#column#")){
 					value = "";
 				}else{
-					value = arrayOfStructs[i][column];
+					value = arguments.arrayOfStructs[i][column];
 				}
 				querySetCell(newQuery, column, value, i);
 			}
@@ -410,35 +410,35 @@
 		 * NOTE: Ordered arguments only--named arguments not supported.
 		*/
 		public any function onMissingMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			var lCaseMissingMethodName = lCase( missingMethodName );
+			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
 	
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
 				if(right(lCaseMissingMethodName,9) == "smartlist") {
-					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
+					return onMissingGetSmartListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
-					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
+					return onMissingGetCollectionListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName,6) == "struct"){
-					return onMissingGetEntityStructMethod( missingMethodName, missingMethodArguments );
+					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else {
-					return onMissingGetMethod( missingMethodName, missingMethodArguments );
+					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
 			} else if ( lCaseMissingMethodName.startsWith( 'new' ) ) {
-				return onMissingNewMethod( missingMethodName, missingMethodArguments );
+				return onMissingNewMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'list' ) ) {
-				return onMissingListMethod( missingMethodName, missingMethodArguments );
+				return onMissingListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'save' ) ) {
-				return onMissingSaveMethod( missingMethodName, missingMethodArguments );
+				return onMissingSaveMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'delete' ) )	{
-				return onMissingDeleteMethod( missingMethodName, missingMethodArguments );
+				return onMissingDeleteMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'count' ) ) {
-				return onMissingCountMethod( missingMethodName, missingMethodArguments );
+				return onMissingCountMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'export' ) ) {
-				return onMissingExportMethod( missingMethodName, missingMethodArguments );
+				return onMissingExportMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'process' ) ) {
 				if(right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
-					return onMissingUpdateCalculatedProperties(missingMethodName, missingMethodArguments);
+					return onMissingUpdateCalculatedProperties(arguments.missingMethodName, arguments.missingMethodArguments);
 				}else{
-					return onMissingProcessMethod( missingMethodName, missingMethodArguments );
+					return onMissingProcessMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
 			}
 
@@ -449,7 +449,7 @@
 	
 		/********** PRIVATE ************************************************************/
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			return delete( missingMethodArguments[ 1 ] );
+			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
 	
 	
@@ -468,9 +468,9 @@
 		 * NOTE: Ordered arguments only--named arguments not supported.
 		 */
 		private function onMissingGetMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var isReturnNewOnNotFound = structKeyExists( missingMethodArguments, '2' ) ? missingMethodArguments[ 2 ] : false;
+			var isReturnNewOnNotFound = structKeyExists( arguments.missingMethodArguments, '2' ) ? arguments.missingMethodArguments[ 2 ] : false;
 	
-			var entityName = missingMethodName.substring( 3 );
+			var entityName = arguments.missingMethodName.substring( 3 );
 	
 			if ( entityName.matches( '(?i).+by.+' ) ) {
 				var tokens = entityName.split( '(?i)by', 2 );
@@ -479,15 +479,15 @@
 					tokens = tokens[ 2 ].split( 'AND' );
 					var filter = {};
 					for(var i = 1; i <= arrayLen(tokens); i++) {
-						filter[ tokens[ i ] ] = missingMethodArguments[ 1 ][ i ];
+						filter[ tokens[ i ] ] = arguments.missingMethodArguments[ 1 ][ i ];
 					}
 					return get( entityName, filter, isReturnNewOnNotFound );
 				} else {
-					var filter = { '#tokens[ 2 ]#' = missingMethodArguments[ 1 ] };
+					var filter = { '#tokens[ 2 ]#' = arguments.missingMethodArguments[ 1 ] };
 					return get( entityName, filter, isReturnNewOnNotFound );
 				}
 			} else {
-				var id = missingMethodArguments[ 1 ];
+				var id = arguments.missingMethodArguments[ 1 ];
 				return get( entityName, id, isReturnNewOnNotFound );
 			}
 		}
@@ -506,10 +506,10 @@
 			var smartListArgs = {};
 			var entityNameLength = len(arguments.missingMethodName) - 12;
 			
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
 			var data = {};
-			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
-				data = missingMethodArguments[ 1 ];
+			if( structCount(arguments.missingMethodArguments) && !isNull(arguments.missingMethodArguments[ 1 ]) && isStruct(arguments.missingMethodArguments[ 1 ]) ) {
+				data = arguments.missingMethodArguments[ 1 ];
 			}
 			
 			return getSmartList(entityName=entityName, data=data);
@@ -529,10 +529,10 @@
 			var collectionArgs = {};
 			var entityNameLength = len(arguments.missingMethodName) - 17;
 			
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
 			var data = {};
-			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
-				data = missingMethodArguments[ 1 ];
+			if( structCount(arguments.missingMethodArguments) && !isNull(arguments.missingMethodArguments[ 1 ]) && isStruct(arguments.missingMethodArguments[ 1 ]) ) {
+				data = arguments.missingMethodArguments[ 1 ];
 			}
 			
 			return getCollectionList(entityName=entityName, data=data);
@@ -734,7 +734,7 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingCountMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityName = missingMethodName.substring( 5 );
+			var entityName = arguments.missingMethodName.substring( 5 );
 	
 			return count( entityName );
 		}
@@ -742,27 +742,27 @@
 	
 		private function onMissingNewMethod( required string missingMethodName, required struct missingMethodArguments )
 		{
-			var entityName = missingMethodName.substring( 3 );
+			var entityName = arguments.missingMethodName.substring( 3 );
 	
 			return new( entityName );
 		}
 	
 	
 		private function onMissingSaveMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			if ( structKeyExists( missingMethodArguments, '3' ) ) {
-				return save( entity=missingMethodArguments[1], data=missingMethodArguments[2], context=missingMethodArguments[3]);
-			} else if ( structKeyExists( missingMethodArguments, '2' ) ) {
-				return save( entity=missingMethodArguments[1], data=missingMethodArguments[2]);
+			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], context = arguments.missingMethodArguments[3]);
+			} else if ( structKeyExists(  arguments.missingMethodArguments, '2' ) ) {
+				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2]);
 			} else {
-				return save( entity=missingMethodArguments[1] );
+				return save( entity = arguments.missingMethodArguments[1] );
 			}
 		}
 		
 		private function onMissingProcessMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			if ( structKeyExists( missingMethodArguments, '3' ) ) {
-				return process( entity=missingMethodArguments[1], data=missingMethodArguments[2], processContext=missingMethodArguments[3]);
-			} else if ( structKeyExists( missingMethodArguments, '2' ) ) {
-				return process( entity=missingMethodArguments[1], processContext=missingMethodArguments[2]);
+			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+				return process( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], processContext = arguments.missingMethodArguments[3]);
+			} else if ( structKeyExists( arguments.missingMethodArguments, '2' ) ) {
+				return process( entity = arguments.missingMethodArguments[1], processContext = arguments.missingMethodArguments[2]);
 			}
 		}
 		
@@ -774,7 +774,7 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingExportMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityMeta = getMetaData(getEntityObject( missingMethodName.substring( 6 ) ));
+			var entityMeta = getMetaData(getEntityObject( arguments.missingMethodName.substring( 6 ) ));
 			var exportQry = getHibachiDAO().getExportQuery(tableName = entityMeta.table);
 			
 			export(data=exportQry);
@@ -782,7 +782,7 @@
 		
 
 		private any function onMissingUpdateCalculatedProperties( required string missingMethodName, required struct missingMethodArguments ){
-			var entity = missingMethodArguments[1];
+			var entity = arguments.missingMethodArguments[1];
 			entity.updateCalculatedProperties();
 			return entity;
 		}

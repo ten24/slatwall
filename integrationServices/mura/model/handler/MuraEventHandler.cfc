@@ -855,11 +855,6 @@
 		// This method is explicitly called during application reload from the conntector plugins onApplicationLoad() event
 		public void function verifySetup( required any $ ) {
 		
-			// Adding conditional statement to ensure backwards compatibility
-			// slatwallScope should exist because Slatwall Mura plugin (plugins/slatwall-mura/eventHandler.cfc) invokes slatwallApplication.reloadApplication() which creates hibachiScope. Need to set a flag so verifySlatwallRequest() will explicitly invoke slatwallApplication.bootstrap()
-			if (structKeyExists(request, 'slatwallScope')) {
-				request.slatwallScope.setValue('forceBootstrapFlag', true);
-			}
 			
 			verifySlatwallRequest( $=$ );
 			

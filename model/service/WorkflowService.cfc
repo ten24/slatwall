@@ -662,7 +662,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
-	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		
 		getHibachiDAO().flushORMSession();

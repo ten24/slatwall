@@ -156,7 +156,7 @@ component accessors="true" output="false" persistent="false" {
 	public any function invokeMethod(required string methodName, struct methodArguments={}) {
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = methodArguments);
+			return theMethod(argumentCollection = arguments.methodArguments);
 		}
 		if(structKeyExists(this, "onMissingMethod")) {
 			return this.onMissingMethod(missingMethodName=arguments.methodName, missingMethodArguments=arguments.methodArguments);	
@@ -185,7 +185,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	//Dump & Die, shortcut
 	public any function dd(required any data, numeric top = 2){
-		writeDump(var="#data#", top=arguments.top, abort=true);
+		writeDump(var="#arguments.data#", top=arguments.top, abort=true);
 	}
 	
 	// ===========================  END:  UTILITY METHODS ===========================================

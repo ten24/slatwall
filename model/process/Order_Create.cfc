@@ -79,6 +79,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.orderTypeID;
 	}
+
+	public string function getCurrencyCode() {
+
+		if(!structKeyExists(variables, 'currencyCode')){
+			variables.currencyCode = getService("SettingService").getSettingValue('skuCurrency');//'Default Currency'
+		} 
+		return variables.currencyCode; 
+	} 
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();

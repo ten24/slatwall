@@ -97,6 +97,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
+	property name="accountGovernmentIdentifications" hb_populateEnabled="public" singularname="accountGovernmentIdentifications" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountGovernmentIdentification" cascade="all-delete-orphan" inverse="true";
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
   	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
   	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
@@ -161,13 +162,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
-
+	property name="username" ormtype="string"; 
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
-
-
+	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
  property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
@@ -178,6 +179,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="governmentIDNumber" ormtype="string";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
@@ -190,6 +192,16 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
+ property name="accountTypeCode" ormtype="string";
+ property name="accountStatusName" ormtype="string" hb_formFieldType="select";
+ property name="businessName" ormtype="string";
+ property name="flagDescription" ormtype="string" hb_formFieldType="select";
+ property name="terminateDate" ormtype="string";
+ property name="PayerAccountIdentification" ormtype="string";
+ property name="payerName" ormtype="string";
+ property name="govermentNumber" ormtype="string";
+ property name="CareerTitle" ormtype="string";
+ property name="GovermentTypeCode" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
@@ -203,6 +215,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getPreferedLocale(){
+		//TODO: Get qualified locale based on account prefered language
+		return '';
+	}
+
 	public array function getOrderCurrencies(){
 		var currencyCollectionList = this.getOrdersCollectionList();
 		currencyCollectionList.setDisplayProperties('currencyCode');
@@ -898,6 +916,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public void function removeAccountPhoneNumber(required any accountPhoneNumber) {
 		arguments.accountPhoneNumber.removeAccount( this );
 	}
+	
+	// Account Phone Numbers (one-to-many)
+	public void function addAccountGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.setAccount( this );
+	}
+	public void function removeAccountGovernmentIdentification(required any governmentIdentification) {
+		arguments.accountGovernmentIdentification.removeAccount( this );
+	}
 
 	// Account Promotions (one-to-many)
 	public void function addAccountPromotion(required any AccountPromotion) {
@@ -1149,12 +1175,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getSimpleRepresentation() {
-		return getFullName();
+		return getService("accountService").getSimpleRepresentation(this);
 	}
 
 	public string function getSimpleRepresentationPropertyName(){
 		return 'calculatedFullName';
 	}
+	
+	
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1193,6 +1221,19 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
 		} 
 		return variables.successfulFlexshipOrdersThisYearCount; 
+	}
+
+	public any function getSaveablePaymentMethodsCollectionList() {
+		if(!structKeyExists(variables, 'saveablePaymentMethodsCollectionList')) {
+			variables.saveablePaymentMethodsCollectionList = getService('paymentService').getPaymentMethodCollectionList();
+			variables.saveablePaymentMethodsCollectionList.addFilter('activeFlag', 1);
+			variables.saveablePaymentMethodsCollectionList.addFilter('allowSaveFlag', 1);
+			variables.saveablePaymentMethodsCollectionList.addFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment', 'in');
+			if(len(setting('accountEligiblePaymentMethods'))) {
+				variables.saveablePaymentMethodsCollectionList.addFilter('paymentMethodID', setting('accountEligiblePaymentMethods'), 'in');
+			}
+		}
+		return variables.saveablePaymentMethodsCollectionList;
 	}
 //CUSTOM FUNCTIONS END
 }

@@ -12,7 +12,9 @@ class SWCurrency{
 
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             var currencySymbol = "$";
-            if(angular.isDefined(data)){
+            if(data != null &&
+               data[currencyCode] != null
+            ){
                 currencySymbol=data[currencyCode];
             } else {
                  $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
@@ -37,7 +39,6 @@ class SWCurrency{
 
         var filterStub:any;
         filterStub = function(value,currencyCode,decimalPlace,returnStringFlag=true) {
-                        
             if( data == null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;

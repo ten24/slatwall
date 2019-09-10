@@ -19,6 +19,9 @@ class SWFFormController {
     public fileFlag:boolean = false;
     public errorToDisplay:string; //very first error returned from call
     public uploadProgressPercentage:any = 0;
+    public afterSubmitEventName:string;
+    public closeModal:boolean;
+    public modalId:string;
     
     // @ngInject
     constructor(
@@ -77,20 +80,23 @@ class SWFFormController {
         if(this.form.$valid){
             this.loading = true;
             let formData = this.getFormData();
+            if(this.closeModal && this.modalId){
+                $(`#${this.modalId}`).modal('toggle');
+            }
             if(this.fileFlag){
                 let file = this.getFileFromFormData(formData);
                 return this.uploadFile(this.method,file).then(result=>{
                     return this.processResult(result);
                 });
             }
+            
             return this.$rootScope.slatwall.doAction(this.method,formData).then( (result) =>{
                 return this.processResult(result);
             });
-            
-        }else{
-            this.form.$setSubmitted(true);
-            return new Promise((resolve,reject)=>[]);
+   
         }
+        this.form.$setSubmitted(true);
+        return new Promise((resolve,reject)=>[]);
     }
     
    public uploadFile = (action, data) =>{ //promisified version of public service's uploadFile
@@ -131,6 +137,7 @@ class SWFFormController {
         if(!result) return result;
         this.$timeout(()=>{
         this.loading = false;
+        this.observerService.notify(this.afterSubmitEventName);
         this.successfulActions = result.successfulActions;
         this.failureActions = result.failureActions;
         this.errors = result.errors;
@@ -182,7 +189,10 @@ class SWFForm  {
         fRedirectUrl:"@?",
         sAction:"=?",
         fAction:"=?",
-        fileFlag:"@?"
+        fileFlag:"@?",
+        afterSubmitEventName:"@?",
+        closeModal:"@?",
+        modalId:"@?",
     };
     public controller       = SWFFormController;
     public controllerAs     = "swfForm";

@@ -37,7 +37,7 @@ export class OrderTemplateService {
     
     public searchableColumnConfig = {
     	isVisible:true,
-    	isSearchable:false,
+    	isSearchable:true,
     	isDeletable:true,
     	isEditable:false
     };
@@ -252,7 +252,11 @@ export class OrderTemplateService {
     public getColumnConfigForSkuOrOrderTemplateItemPropertyIdentifier = (propertyIdentifier, index, originalLength) =>{
 		var lastProperty = this.$hibachi.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
 		if(this.editablePropertyIdentifierList.indexOf(lastProperty) !== -1){
-			return angular.copy(this.editColumnConfig);
+			var columnConfig = angular.copy(this.editColumnConfig)
+			if(this.searchablePropertyIdentifierList.indexOf(lastProperty) !== -1){
+				columnConfig.isSearchable = true;
+			}
+			return columnConfig;
 		} else if(this.pricePropertyIdentfierList.indexOf(lastProperty) !== -1){
 			return angular.copy(this.priceColumnConfig);
 		} else if(this.searchablePropertyIdentifierList.indexOf(lastProperty) !== -1){
