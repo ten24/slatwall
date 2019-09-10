@@ -67,7 +67,8 @@ class MonatFlexshipShippingMethodModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    accountAddresses:'<'
+	    accountAddresses:'<',
+	    stateCodeOptions:'<'
 	};
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";

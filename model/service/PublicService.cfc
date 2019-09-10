@@ -1737,7 +1737,9 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
-		// 		arguments.data['ajaxResponse']['stateOptions'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
+//TODO: 		arguments.data['ajaxResponse']['shippingMethodOptions'] = getHibachiScope().getAccount().getShippingMethiodsOptions()
+		//this function will set the stateCodeOptions in ajaxResponce
+		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
 	}
 	
