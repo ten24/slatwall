@@ -318,10 +318,11 @@ component extends="framework.one" {
 		// Verify that the application is setup
 		if(
 			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'
+			getHibachiScope().getApplicationValue('applicationEnvironment') != 'xlocal'
 		){
 			if( isServerInstanceCacheExpired() ) {
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Server instance cache expired, starting reload for instance #server[variables.framework.applicationKey].serverInstanceKey#");
+				setupRequestDefaults();
 				setupApplication(reloadByServerInstance=true);
 
 			}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
