@@ -333,15 +333,8 @@ Notes:
 		</cfif>
 		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
 		
-		<cfset accounts = ormExecuteQuery(hql, {username=lcase(arguments.username)}) />
-		
-		<cfdump var="#accounts#" top="2" abort=true />
-	
-		<cfif accounts.recordsCount EQ 1>
-			<cfreturn accounts[1] />
-		<cfelse>
-			<cfreturn javacast("null","") />
-		</cfif>
+		<cfreturn ormExecuteQuery(hql, {username=lcase(arguments.username)}, true, {maxResults=1}) />
+
 	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">

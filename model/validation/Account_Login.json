@@ -1,7 +1,7 @@
 {	
 	"properties":{
 		
-		"emailAddressOrUserName":	[{"required":true, "dataType":"string", "method":"enforcedLoginType"}],
+		"emailAddressOrUserName":	[{"required":true, "method":"getEnforcedLoginType"}],
 		"password":					[{"required":true}]
 	}
 }
