@@ -59326,7 +59326,6 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.$onInit = function () {
-            console.log('shippingMethodModal', _this);
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
             });
@@ -59348,6 +59347,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         else {
             payload['newAccountAddress'] = this.newAccountAddress;
         }
+        console.log(payload);
+        return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
             _this.orderTemplate = response.orderTemplate;
@@ -60069,13 +60070,12 @@ var OrderTemplateService = /** @class */ (function () {
         var _this = this;
         this.requestService = requestService;
         this.observerService = observerService;
-        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
+        this.getOrderTemplates = function (pageRecordsShow, currentPage) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             var data = {
                 currentPage: currentPage,
-                pageRecordsShow: pageRecordsShow,
-                orderTemplateTypeID: orderTemplateTypeID
+                pageRecordsShow: pageRecordsShow
             };
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
         };

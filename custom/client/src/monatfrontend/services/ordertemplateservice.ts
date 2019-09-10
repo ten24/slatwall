@@ -9,11 +9,11 @@ export class OrderTemplateService {
 
    } 
    
-   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?) =>{
+   public getOrderTemplates = (pageRecordsShow=100, currentPage=1) =>{
        var data = {
            currentPage:currentPage,
-           pageRecordsShow:pageRecordsShow,
-           orderTemplateTypeID
+           pageRecordsShow:pageRecordsShow
+           
        }
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
    }

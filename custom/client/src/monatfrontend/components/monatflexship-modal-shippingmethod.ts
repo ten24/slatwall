@@ -10,8 +10,6 @@ class MonatFlexshipShippingMethodModalController {
     constructor(public orderTemplateService, public observerService) {}
     
     public $onInit = () => {
-    	console.log('shippingMethodModal', this);
-    	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
@@ -33,6 +31,8 @@ class MonatFlexshipShippingMethodModalController {
     		 payload['newAccountAddress'] = this.newAccountAddress;
     	}
     
+    	console.log(payload); 
+    	return;
     	// make api request
         this.orderTemplateService.updateShipping(payload).then(
             (response) => {
