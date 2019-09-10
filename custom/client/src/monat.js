@@ -59180,8 +59180,15 @@ exports.toSubscriber = toSubscriber;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
-    function MonatFlexshipCardController() {
+    function MonatFlexshipCardController(observerService) {
+        var _this = this;
+        this.observerService = observerService;
         this.$onInit = function () {
+            console.log('smo', _this.shippingMethodOptions);
+            _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+        };
+        this.updateOrderTemplate = function (orderTemplate) {
+            _this.orderTemplate = orderTemplate;
         };
     }
     return MonatFlexshipCardController;
@@ -59197,6 +59204,7 @@ var MonatFlexshipCard = /** @class */ (function () {
             orderTemplate: '<',
             accountAddresses: '<',
             accountPaymentMethods: '<',
+            shippingMethodOptions: '<',
             stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipCardController;
@@ -59232,15 +59240,21 @@ var MonatFlexshipListingController = /** @class */ (function () {
     function MonatFlexshipListingController(orderTemplateService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.initialized = false;
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
                 .then(function (data) {
-                _this.orderTemplates = data.orderTemplates;
                 _this.accountAddresses = data.accountAddresses;
                 _this.accountPaymentMethods = data.accountPaymentMethods;
+                _this.shippingMethodOptions = data.shippingMethodOptions;
                 _this.stateCodeOptions = data.stateCodeOptions;
+                //set this last so that ng repeat inits with all needed data
+                _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
                 console.error(reason);
+            })
+                .finally(function () {
+                _this.initialized = true;
             });
         };
     }
@@ -59284,12 +59298,11 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
-    //   public orderTemplate;
-    //   public accountAddresses;
-    // public accountPaymentMethods;
     function MonatFlexshipMenuController(orderTemplateService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$onInit = function () {
+            console.log('sm', _this.shippingMethodOptions);
         };
     }
     return MonatFlexshipMenuController;
@@ -59305,6 +59318,7 @@ var MonatFlexshipMenu = /** @class */ (function () {
             orderTemplate: '<',
             accountAddresses: '<',
             accountPaymentMethods: '<',
+            shippingMethodOptions: '<',
             stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipMenuController;
@@ -87129,6 +87143,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.$onInit = function () {
+            console.log('shippingMethod? ', _this.shippingMethodOptions);
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
             });
@@ -87145,17 +87160,18 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
-            payload['shippingAccountAddress'] = { 'accountAddressID': this.selectedShippingAddress.accountAddressID };
+            payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
         else {
             payload['newAccountAddress'] = this.newAccountAddress;
         }
+        payload['shippingMethod.shippingMethodID'] = '2c94808469d9160f0169da220afa0014'; //temp hardcoded to ground
         console.log(payload);
-        return;
+        //return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
             _this.orderTemplate = response.orderTemplate;
-            _this.observerService.notify("orderTemplateUpdated", response.orderTemplate);
+            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
             _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
             console.log('ot updateShipping: ', _this.orderTemplate);
             if (angular.isDefined(response.newAccountAddress)) {
@@ -87179,6 +87195,7 @@ var MonatFlexshipShippingMethodModal = /** @class */ (function () {
         this.bindToController = {
             orderTemplate: '<',
             accountAddresses: '<',
+            shippingMethodOptions: '<',
             stateCodeOptions: '<'
         };
         this.controller = MonatFlexshipShippingMethodModalController;

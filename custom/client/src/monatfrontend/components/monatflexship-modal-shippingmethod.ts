@@ -6,10 +6,12 @@ class MonatFlexshipShippingMethodModalController {
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public newAccountAddress = {};
+	public shippingMethodOptions:any[];
 
     constructor(public orderTemplateService, public observerService) {}
     
     public $onInit = () => {
+    	console.log('shippingMethod? ', this.shippingMethodOptions);
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
@@ -26,19 +28,21 @@ class MonatFlexshipShippingMethodModalController {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	if(this.selectedShippingAddress.accountAddressID !== 'new') {
-    		 payload['shippingAccountAddress'] = {'accountAddressID' : this.selectedShippingAddress.accountAddressID };
+    		 payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
     	} else {
     		 payload['newAccountAddress'] = this.newAccountAddress;
     	}
+    	
+    	payload['shippingMethod.shippingMethodID'] = '2c94808469d9160f0169da220afa0014';//temp hardcoded to ground
     
     	console.log(payload); 
-    	return;
+    	//return;
     	// make api request
         this.orderTemplateService.updateShipping(payload).then(
             (response) => {
                
                 this.orderTemplate = response.orderTemplate;
-                this.observerService.notify("orderTemplateUpdated",response.orderTemplate);
+                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
 
                 this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
                 
@@ -68,6 +72,7 @@ class MonatFlexshipShippingMethodModal {
 	public bindToController = {
 	    orderTemplate:'<',
 	    accountAddresses:'<',
+	    shippingMethodOptions:'<',
 	    stateCodeOptions:'<'
 	};
 	public controller=MonatFlexshipShippingMethodModalController;

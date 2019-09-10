@@ -1734,10 +1734,12 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
+		var newOrderTemplate = getOrderService().newOrderTemplate(); 
+
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
-//TODO: 		arguments.data['ajaxResponse']['shippingMethodOptions'] = getHibachiScope().getAccount().getShippingMethiodsOptions()
+		arguments.data['ajaxResponse']['shippingMethodOptions'] = newOrderTemplate.getShippingMethodOptions();
 		//this function will set the stateCodeOptions in ajaxResponce
 		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
@@ -1822,16 +1824,23 @@ component  accessors="true" output="false"
 			return; 
 		}
 	    
- 		orderTemplate = getOrderService.processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
         getHibachiScope().addActionResult( "public:orderTemplate.updateShipping", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors()) {
             orderTemplate.clearProcessObject("updateShipping");
         }
-		
- 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.jetStructRepresentation();  
+		var addressCollectionProps = listToArray(getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress"));
+
+		var propertiesList = ''; 
+		for(var addressProp in addressCollectionProps){
+			propertiesList = listAppend(propertiesList, 'shippingAccountAddress.' & addressProp);
+			propertiesList = listAppend(propertiesList, 'billingAccountAddress.' & addressProp);
+		} 
+
+ 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getStructRepresentation(persistentProperties=propertiesList);  
  		//condition
- 		arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress.getStructRepresentation();
+ 		arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
  	}   
 	
 	public void function deleteOrderTemplateItem(required any data) {

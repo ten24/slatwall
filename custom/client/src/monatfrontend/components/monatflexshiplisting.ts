@@ -4,6 +4,8 @@ class MonatFlexshipListingController{
     public accountAddresses: any[];
 	public accountPaymentMethods: any[];
 	public stateCodeOptions: any[];
+	public shippingMethodOptions: any[];
+	public initialized=false; 
 	constructor( public orderTemplateService
 	){
 
@@ -13,15 +15,22 @@ class MonatFlexshipListingController{
 	    this.orderTemplateService.getOrderTemplates()
 	    .then(
 	    	(data) => {
-	            this.orderTemplates = data.orderTemplates; 
+
 	            this.accountAddresses = data.accountAddresses;
 	            this.accountPaymentMethods = data.accountPaymentMethods;
+	            this.shippingMethodOptions = data.shippingMethodOptions;
 	            this.stateCodeOptions = data.stateCodeOptions;
+	            
+	            //set this last so that ng repeat inits with all needed data
+	        	this.orderTemplates = data.orderTemplates; 
  	        },
 	        (reason) => {
 	            console.error(reason);
 	        }
-	    );
+	    )
+	    .finally(()=>{
+	    	this.initialized=true; 
+	    });
 	}
 
 }

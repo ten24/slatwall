@@ -10,13 +10,14 @@
                 <div class="shipping">
                     <h6 class="title-with-line mb-5">Shipping Method `</h6>
                     <div class="custom-radio form-group" 
-    			         ng-repeat="item in [1,2,3]"
+    			         ng-repeat="shippingMethod in monatFlexshipShippingMethodModal.shippingMethodOptions"
     			         >
                         <input  type="radio" 
                                 name="shippingMethodID"
-                                vlue={{item}}
+                                checked
+                                ng-value="shippingMethod.value"
                               >
-                        <label for="shippingMethodID">Shiping Method {{item}} ``</label>
+                        <label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
                     </div>
 
                     <br/> 

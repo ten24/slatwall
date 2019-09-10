@@ -3,12 +3,15 @@ class MonatFlexshipMenuController{
  //   public orderTemplate;
  //   public accountAddresses;
 	// public accountPaymentMethods;
+	public shippingMethodOptions:any[];
+	
 	constructor( public orderTemplateService
 	){
 
 	}
 	
 	public $onInit = () =>{
+		console.log('sm', this.shippingMethodOptions);
 	}
 
 }
@@ -22,6 +25,7 @@ class MonatFlexshipMenu{
 	    orderTemplate:'<',
 	    accountAddresses:'<',
 	    accountPaymentMethods:'<',
+	    shippingMethodOptions: '<',
 	    stateCodeOptions: '<'
 	};
 	public controller=MonatFlexshipMenuController;
