@@ -68,11 +68,10 @@ class SWFWishlistController {
         });
     }
     
-    public addWishlistItem =(skuID)=>{ 
+    public addWishlistItem =()=>{ 
         this.loading = true;
         let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
         this.SKUID = newSKUID;
-        console.log(this.SKUID);
         this.orderTemplateService.addOrderTemplateItem(this.SKUID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;

@@ -59512,11 +59512,10 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.addWishlistItem = function (skuID) {
+        this.addWishlistItem = function () {
             _this.loading = true;
             var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
             _this.SKUID = newSKUID;
-            console.log(_this.SKUID);
             _this.orderTemplateService.addOrderTemplateItem(_this.SKUID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
