@@ -38,15 +38,6 @@ var hibachimodule = angular.module('hibachi',[
     if(!isAdmin && $hibachi.newOrder){
         $rootScope.hibachiScope.getCart();
     }
-    if(!isAdmin && $hibachi.newCountry){
-        $rootScope.hibachiScope.getCountries();
-    }
-    if(!isAdmin && $hibachi.newState){
-        $rootScope.hibachiScope.getStates();
-    }
-    if(!isAdmin && $hibachi.newState){
-        $rootScope.hibachiScope.getAddressOptions();
-    }
 
     if(localStorageService.hasItem('selectedPersonalCollection')){
         $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
