@@ -59513,12 +59513,13 @@ var SWFWishlistController = /** @class */ (function () {
             });
         };
         this.addWishlistItem = function (skuID) {
-            console.log("function called");
             _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
+            var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+            _this.SKUID = newSKUID;
+            console.log(_this.SKUID);
+            _this.orderTemplateService.addOrderTemplateItem(_this.SKUID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
-                console.log("function complete man");
                 return result;
             });
         };

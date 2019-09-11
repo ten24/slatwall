@@ -15,6 +15,8 @@ class SWFWishlistController {
     public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
+    public SKUID:string;
+
     
     // @ngInject
     constructor(
@@ -67,12 +69,13 @@ class SWFWishlistController {
     }
     
     public addWishlistItem =(skuID)=>{ 
-        console.log("function called");
         this.loading = true;
-        this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID)
+        let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+        this.SKUID = newSKUID;
+        console.log(this.SKUID);
+        this.orderTemplateService.addOrderTemplateItem(this.SKUID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            console.log("function complete man");
             return result
         });
 
