@@ -16,6 +16,7 @@ class SWFWishlistController {
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
     public SKUID:string;
+    public newTemplateID:string;
 
     
     // @ngInject
@@ -35,6 +36,7 @@ class SWFWishlistController {
         }
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
+        this.observerService.attach(this.getfirstWishlist,"newMyAccountWishlistCreated");
     }
     
     private refreshList = (option:Option)=>{
@@ -70,25 +72,55 @@ class SWFWishlistController {
     
     public addWishlistItem =()=>{ 
         this.loading = true;
-        let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-        this.SKUID = newSKUID;
+        this.setSKUIDFromAttribute();
         this.orderTemplateService.addOrderTemplateItem(this.SKUID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
             return result
         });
-
     }
     
-    public getAllWishlists = () => {
+    public AddItemAndCreateWishlist = (orderTemplateName:string)=>{
+        this.loading = true;
+        this.setSKUIDFromAttribute();
+        const data = {
+           orderTemplateName:orderTemplateName,
+           skuID:this.SKUID
+        };
+        return this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist",data).then(result=>{
+            this.loading = false;
+            this.getAllWishlists();
+            return result;
+        });
+    }
+    
+    public setSKUIDFromAttribute = ()=>{
+        let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+        this.SKUID = newSKUID;
+    }
+    
+    public getAllWishlists = (pageRecordstoShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .getOrderTemplates(pageRecordstoShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplates = result['orderTemplates'];
+            
+            if(setNewTemplates){
+                this.orderTemplates = result['orderTemplates'];                
+            } else if(setNewTemplateID){
+                this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                console.log(this.newTemplateID);
+            }
             this.loading = false;
         });
+    }
+    
+    public getfirstWishlist = () => {
+        
+        this.loading = true;
+        this.getAllWishlists(1, false, true);
+        console.log(this.newTemplateID);
     }
     
     public setWishlistID = (newID) => {

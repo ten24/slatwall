@@ -59514,22 +59514,52 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addWishlistItem = function () {
             _this.loading = true;
-            var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-            _this.SKUID = newSKUID;
+            _this.setSKUIDFromAttribute();
             _this.orderTemplateService.addOrderTemplateItem(_this.SKUID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
             });
         };
-        this.getAllWishlists = function () {
+        this.AddItemAndCreateWishlist = function (orderTemplateName) {
+            _this.loading = true;
+            _this.setSKUIDFromAttribute();
+            var data = {
+                orderTemplateName: orderTemplateName,
+                skuID: _this.SKUID
+            };
+            return _this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist", data).then(function (result) {
+                _this.loading = false;
+                _this.getAllWishlists();
+                return result;
+            });
+        };
+        this.setSKUIDFromAttribute = function () {
+            var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+            _this.SKUID = newSKUID;
+        };
+        this.getAllWishlists = function (pageRecordstoShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordstoShow === void 0) { pageRecordstoShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(_this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(pageRecordstoShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
-                _this.orderTemplates = result['orderTemplates'];
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                    console.log(_this.newTemplateID);
+                }
                 _this.loading = false;
             });
+        };
+        this.getfirstWishlist = function () {
+            _this.loading = true;
+            _this.getAllWishlists(1, false, true);
+            console.log(_this.newTemplateID);
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
@@ -59545,6 +59575,7 @@ var SWFWishlistController = /** @class */ (function () {
             this.currentPage = 1;
         }
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
+        this.observerService.attach(this.getfirstWishlist, "newMyAccountWishlistCreated");
     }
     return SWFWishlistController;
 }());
