@@ -29,6 +29,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderTemplateItem.setOrderTemplate(orderTemplate);
         var sku = getService("SkuService").getSku(arguments.data['skuID']);
         orderTemplateItem.setSku(sku);
+        orderTemplateItem.setQuantity(arguments.data['quantity']);
         //add item to template
         
     }

@@ -80,12 +80,13 @@ class SWFWishlistController {
         });
     }
     
-    public AddItemAndCreateWishlist = (orderTemplateName:string)=>{
+    public AddItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
         this.setSKUIDFromAttribute();
         const data = {
            orderTemplateName:orderTemplateName,
-           skuID:this.SKUID
+           skuID:this.SKUID,
+           quantity:quantity
         };
         return this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist",data).then(result=>{
             this.loading = false;

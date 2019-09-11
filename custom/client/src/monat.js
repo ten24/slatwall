@@ -59521,12 +59521,14 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.AddItemAndCreateWishlist = function (orderTemplateName) {
+        this.AddItemAndCreateWishlist = function (orderTemplateName, quantity) {
+            if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
             _this.setSKUIDFromAttribute();
             var data = {
                 orderTemplateName: orderTemplateName,
-                skuID: _this.SKUID
+                skuID: _this.SKUID,
+                quantity: quantity
             };
             return _this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist", data).then(function (result) {
                 _this.loading = false;
