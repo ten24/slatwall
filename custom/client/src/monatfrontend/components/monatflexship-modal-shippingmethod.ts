@@ -10,6 +10,7 @@ class MonatFlexshipShippingMethodModalController {
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
+	public newAddress = {'countryCode':'US'}; // hard-coded default
 
     constructor(public orderTemplateService, public observerService) {}
     
@@ -42,15 +43,16 @@ class MonatFlexshipShippingMethodModalController {
     public updateShippingAddress() {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+    	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+  
     	if(this.selectedShippingAddress.accountAddressID !== 'new') {
     		 payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
     	} else {
-    		 payload['newAccountAddress'] = this.newAccountAddress;
+    		this.newAccountAddress['address'] = this.newAddress;
+    		payload['newAccountAddress'] = this.newAccountAddress;
     	}
-    	
-    	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;//temp hardcoded to ground
-    
-    	console.log(payload); 
+ 
+    	payload = this.orderTemplateService.getFlattenObject(payload);
     	//return;
     	// make api request
         this.orderTemplateService.updateShipping(payload).then(
@@ -59,15 +61,16 @@ class MonatFlexshipShippingMethodModalController {
                 this.orderTemplate = response.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
 
-                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
-                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-                
                 console.log('ot updateShipping: ', this.orderTemplate); 
                 
                 if(angular.isDefined(response.newAccountAddress)) {
             		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+            		this.accountAddresses.push(response.newAccountAddress);
                 }
                 		
+                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
+                
                 // TODO: show alert
             }, 
             (reason) => {

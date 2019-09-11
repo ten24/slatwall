@@ -1827,23 +1827,27 @@ component  accessors="true" output="false"
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
         getHibachiScope().addActionResult( "public:orderTemplate.updateShipping", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors()) {
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
             orderTemplate.clearProcessObject("updateShipping");
+           
+            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+    		
+    		var propertiesList = ''; 
+    		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
+    		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
+    		propertiesList = ListAppend(propertiesList, shippingAddressPropList);
+    		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
+    		propertiesList = ListAppend(propertiesList, billingAddressPropList);
+    		propertiesList = ListAppend(propertiesList, "shippingMethod.shippingMethodID")
+    
+     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getStructRepresentation(persistentProperties=propertiesList);  
+     		//condition
+     		if(StructKeyExists(arguments.data, "newAccountAddress")){
+     		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
+     		}
         }
         
-		var propertiesList = ''; 
-		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
-		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
-		propertiesList = ListAppend(propertiesList, shippingAddressPropList);
-		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
-		propertiesList = ListAppend(propertiesList, billingAddressPropList);
-		propertiesList = ListAppend(propertiesList, "shippingMethod.shippingMethodID")
-
- 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getStructRepresentation(persistentProperties=propertiesList);  
- 		//condition
- 		if(StructKeyExists(arguments.data, "newAccountAddress")){
- 		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
- 		}
  	}   
 	
 	public void function deleteOrderTemplateItem(required any data) {
@@ -1888,4 +1892,5 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
+    
 }

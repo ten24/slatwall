@@ -59326,6 +59326,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
+        this.newAddress = { 'countryCode': 'US' }; // hard-coded default
         this.$onInit = function () {
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
@@ -59354,25 +59355,27 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var _this = this;
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
             payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
         else {
+            this.newAccountAddress['address'] = this.newAddress;
             payload['newAccountAddress'] = this.newAccountAddress;
         }
-        payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID; //temp hardcoded to ground
-        console.log(payload);
+        payload = this.orderTemplateService.getFlattenObject(payload);
         //return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
             _this.orderTemplate = response.orderTemplate;
             _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-            _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
-            _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
             console.log('ot updateShipping: ', _this.orderTemplate);
             if (angular.isDefined(response.newAccountAddress)) {
                 _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
+                _this.accountAddresses.push(response.newAccountAddress);
             }
+            _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
+            _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
             // TODO: show alert
         }, function (reason) {
             throw (reason);
@@ -60159,6 +60162,43 @@ var OrderTemplateService = /** @class */ (function () {
                 data['orderTemplateTypeID'] = orderTemplateTypeID;
             }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems', data).promise;
+        };
+        /**
+         * for more details https://gist.github.com/penguinboy/762197
+     */
+        this.getFlattenObject = function (inObject, delimiter) {
+            if (delimiter === void 0) { delimiter = '.'; }
+            var objectToReturn = {};
+            for (var key in inObject) {
+                if (!inObject.hasOwnProperty(key))
+                    continue;
+                if ((typeof inObject[key]) == 'object' && inObject[key] !== null) {
+                    var flatObject = _this.getFlattenObject(inObject[key]);
+                    for (var x in flatObject) {
+                        if (!flatObject.hasOwnProperty(x))
+                            continue;
+                        objectToReturn[key + delimiter + x] = flatObject[x];
+                    }
+                }
+                else {
+                    objectToReturn[key] = inObject[key];
+                }
+            }
+            return objectToReturn;
+        };
+        /**
+         * for more details  https://stackoverflow.com/a/42696154
+        */
+        this.getUnflattenObject = function (inObject, delimiter) {
+            if (delimiter === void 0) { delimiter = '_'; }
+            var objectToReturn = {};
+            for (var flattenkey in inObject) {
+                var keys = flattenkey.split(delimiter);
+                keys.reduce(function (r, e, j) {
+                    return r[e] || (r[e] = isNaN(Number(keys[j + 1])) ? (keys.length - 1 == j ? inObject[flattenkey] : {}) : []);
+                }, objectToReturn);
+            }
+            return objectToReturn;
         };
     }
     return OrderTemplateService;

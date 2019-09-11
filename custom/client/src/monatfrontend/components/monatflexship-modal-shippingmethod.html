@@ -52,30 +52,45 @@
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
-                   			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.name"
+                   			ng-model="monatFlexshipShippingMethodModal.newAddress.name"
                 			placeholder="Name * `">
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
-                			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.address"
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
                 			placeholder="Address `">       
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
-                			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.address2"
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.street2Address"
                 			placeholder="Address 2 `">                          
                 		</div>
+                		
+                		<div class="form-group">
+                			<input type="text" class="form-control" 
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
+                			readonly
+                			placeholder="Country * `">                          
+                		</div>
+                		
                 		<div class="form-group">
                 			<select type="text" class="form-control" 
-                			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.stateCode"
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.stateCode"
                 			placeholder="State *">
                 			    <option value="">Select your State * `</option>
-                			    <option ng-repeat="x in monatFlexshipShippingMethodModal.stateCodeOptions" value={{x.value}}>{{x.name}}</option>
+                			    <option ng-repeat="x in monatFlexshipShippingMethodModal.stateCodeOptions" 
+                			            value={{x.value}}>{{x.name}}</option>
                 			</select>     
+                		</div>
+                		
+                		<div class="form-group">
+                			<input type="text" class="form-control" 
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.city"
+                			placeholder="City * `">                          
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
-                			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.zipCode"
+                			ng-model="monatFlexshipShippingMethodModal.newAddress.postalCode"
                 			placeholder="Zip Code * `">                          
                 		</div>
             		</div>

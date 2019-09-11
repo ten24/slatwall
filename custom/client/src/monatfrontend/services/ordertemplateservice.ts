@@ -67,4 +67,39 @@ export class OrderTemplateService {
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
    }
+   
+   /**
+    * for more details https://gist.github.com/penguinboy/762197
+*/ 
+    public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
+        var objectToReturn = {};
+        for (var key in inObject) {
+            if (!inObject.hasOwnProperty(key)) continue;
+    
+            if ((typeof inObject[key]) == 'object' && inObject[key] !== null) {
+                var flatObject = this.getFlattenObject(inObject[key]);
+                for (var x in flatObject) {
+                    if (!flatObject.hasOwnProperty(x)) continue;
+                    objectToReturn[key + delimiter + x] = flatObject[x];
+                }
+            } else {
+                objectToReturn[key] = inObject[key];
+            }
+        }
+        return objectToReturn;
+    }
+    
+    /**
+     * for more details  https://stackoverflow.com/a/42696154 
+    */ 
+    public getUnflattenObject = (inObject:Object, delimiter:string='_') => {
+      var objectToReturn = {};
+      for (var flattenkey in inObject) {
+        var keys = flattenkey.split(delimiter);
+        keys.reduce(function(r, e, j) {
+          return r[e] || (r[e] = isNaN(Number(keys[j + 1])) ? (keys.length - 1 == j ? inObject[flattenkey] : {}) : []);
+        }, objectToReturn);
+      }
+      return objectToReturn;
+    }
 }
