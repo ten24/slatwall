@@ -59530,6 +59530,8 @@ var SWFWishlistController = /** @class */ (function () {
                 skuID: _this.SKUID,
                 quantity: quantity
             };
+            _this.setWishlistName(orderTemplateName);
+            _this.succesfulAlert();
             return _this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist", data).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
@@ -59558,13 +59560,16 @@ var SWFWishlistController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.getfirstWishlist = function () {
-            _this.loading = true;
-            _this.getAllWishlists(1, false, true);
-            console.log(_this.newTemplateID);
+        this.succesfulAlert = function () {
+            var wishlistAlert = document.getElementById("wishlistAddAlert");
+            wishlistAlert.textContent += _this.wishlistTemplateName;
+            wishlistAlert.style.display = "block";
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
+        };
+        this.setWishlistName = function (newName) {
+            _this.wishlistTemplateName = newName;
         };
         this.addToCart = function (index) {
         };
@@ -59577,7 +59582,6 @@ var SWFWishlistController = /** @class */ (function () {
             this.currentPage = 1;
         }
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
-        this.observerService.attach(this.getfirstWishlist, "newMyAccountWishlistCreated");
     }
     return SWFWishlistController;
 }());

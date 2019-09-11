@@ -15,6 +15,7 @@ class SWFWishlistController {
     public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
+    public wishlistTemplateName:string;
     public SKUID:string;
     public newTemplateID:string;
 
@@ -36,7 +37,6 @@ class SWFWishlistController {
         }
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
-        this.observerService.attach(this.getfirstWishlist,"newMyAccountWishlistCreated");
     }
     
     private refreshList = (option:Option)=>{
@@ -88,6 +88,9 @@ class SWFWishlistController {
            skuID:this.SKUID,
            quantity:quantity
         };
+        this.setWishlistName(orderTemplateName)
+        this.succesfulAlert();
+        
         return this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist",data).then(result=>{
             this.loading = false;
             this.getAllWishlists();
@@ -117,15 +120,18 @@ class SWFWishlistController {
         });
     }
     
-    public getfirstWishlist = () => {
-        
-        this.loading = true;
-        this.getAllWishlists(1, false, true);
-        console.log(this.newTemplateID);
+    public succesfulAlert = () =>{
+       let wishlistAlert = document.getElementById("wishlistAddAlert");
+       wishlistAlert.textContent += this.wishlistTemplateName;
+       wishlistAlert.style.display = "block";
     }
     
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
+    }
+    
+    public setWishlistName = (newName) => {
+        this.wishlistTemplateName = newName;
     }
     
     public addToCart =(index)=>{
