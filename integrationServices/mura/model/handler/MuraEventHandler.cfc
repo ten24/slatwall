@@ -574,8 +574,6 @@
 			// Setup the mura scope
 			var $ = request.muraScope;
 			
-			
-			
 			// Make sure that this hasn't been run twice
 			if(!len($.event('slatwallEditTabDisplayed')) && $.getBean('permUtility').getModulePerm($.getPlugin('slatwall-mura').getModuleID(),$.event('siteid'))) {
 			
@@ -676,19 +674,12 @@
 			endSlatwallRequest();
 		}
 		
-		public void function copyContentToSubSites(){
-		
-			
-		}
-		
 
 		// SAVE / DELETE EVENTS ===== CONTENT
 		
 		public void function onAfterContentSave( required any $ ) {
 			verifySlatwallRequest( $=$ );
 			
-			
-		
 			var data = $.slatwall.getService("hibachiUtilityService").buildFormCollections( form , false );
 			
 			var slatwallSite = $.slatwall.getService("siteService").getSiteByCMSSiteID($.event('siteID'));
@@ -764,67 +755,6 @@
 			
 			// Sync all content category assignments
 			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID'), muraContentID=$.event('contentBean').getContentID() );
-			
-			//Create content on all Sites
-			var contentPathArray = listToArray($.event('contentBean').get('path'));
-			var assignedSitesQuery = getMuraPluginConfig().getAssignedSites();
-			
-			var siteParentPath = {};
-			for(var i = 1; i <= arrayLen(contentPathArray); i++){
-			
-				var originalContent = $.getBean("content").loadBy(contentID=contentPathArray[i]);
-				
-				for(var j = 1; j<=assignedSitesQuery.recordCount; j++) {
-		
-					var cmsSiteID = assignedSitesQuery["siteid"][j];
-					
-					if(cmsSiteID == 'default') {
-						continue;
-					}
-					
-					if(!structKeyExists(siteParentPath,cmsSiteID)){
-						siteParentPath[cmsSiteID] = '';
-					}
-					
-					/*if(len(originalContent.get('urltitle'))){
-						var siteContent = $.getBean('content').loadBy(urltitle=originalContent.get('urltitle'), siteID=cmsSiteID);
-					}else{*/
-						var siteContent = $.getBean('content').loadBy(title=originalContent.get('title'), siteID=cmsSiteID);
-					//}
-					
-					//Skip if content already exists
-					if(!siteContent.getIsNew()){
-						siteParentPath[cmsSiteID] = listAppend(siteParentPath[cmsSiteID], siteContent.getContentID());
-						continue;
-					}
-					
-	
-					var contentBeanCopy = $.getBean('contentDAO').readActive(contentPathArray[i], 'default');
-					//This makes sure that all extended data is loaded
-					contentBeanCopy.getAllValues();
-					
-					contentBeanCopy.setIsNew(1);
-					contentBeanCopy.setContentID("");
-					contentBeanCopy.setContentHistID("");
-					contentBeanCopy.setSiteID(cmsSiteID);
-					
-					if(len(siteParentPath[cmsSiteID])){
-						contentBeanCopy.setParentID(listLast(siteParentPath[cmsSiteID]));
-					}
-					
-					if(listFindNoCase("Page,Folder,Gallery,Calendar,Link,File",contentBeanCopy.getType())){
-						$.getBean('contentUtility').setUniqueFilename(contentBeanCopy);
-					}else{
-						$.getBean('contentUtility').setUniqueTitle(contentBeanCopy);
-					}
-					
-					siteParentPath[cmsSiteID] = listAppend(siteParentPath[cmsSiteID], contentBeanCopy.getContentID());
-					
-					contentBeanCopy.setPath(siteParentPath[cmsSiteID]);
-					contentBeanCopy.save();
-				}
-				
-			}
 			
 			endSlatwallRequest();
 		}
