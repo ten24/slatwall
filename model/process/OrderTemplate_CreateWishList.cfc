@@ -63,6 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="organizationFlag";
 	property name="password";
 	property name="passwordConfirm";
+	property name="orderTemplateName";
 	
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
 	property name="frequencyTermID" hb_rbKey="entity.orderTemplate.frequencyTerm" hb_formFieldType="select";
@@ -103,4 +104,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.newAccountFlag;
 	}
+
+	
 }

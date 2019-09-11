@@ -88,7 +88,7 @@ class SWListingDisplayCellController{
         var basePartialPath = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath);
         
         if(this.column.isEditable){
-            
+            //sets a default
             if(!this.column.type){
                 this.column.type = 'text';
             }
@@ -97,7 +97,11 @@ class SWListingDisplayCellController{
                 this.pageRecord[this.column.propertyIdentifier] = this.column.defaultValue;
             }
             
-            return basePartialPath + 'listingdisplaycelledit.html';
+            if (this.column.type == "select") {
+                return basePartialPath + 'listingdisplaycelleditselect.html';
+            }else{
+                return basePartialPath + 'listingdisplaycelledit.html';    
+            }
         }
         
         var templateUrl = basePartialPath + 'listingdisplaycell.html';

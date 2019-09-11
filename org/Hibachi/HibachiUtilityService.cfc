@@ -1181,16 +1181,16 @@
 		<cftry>
 			<cflog file="#getApplicationValue('applicationKey')#" text="START EXCEPTION" />
 			<cfif structKeyExists(arguments.exception, "detail") and isSimpleValue(arguments.exception.detail)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.detail#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Detail: #arguments.exception.detail#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "errNumber") and isSimpleValue(arguments.exception.errNumber)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.errNumber#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="errNumber: #arguments.exception.errNumber#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "message") and isSimpleValue(arguments.exception.message)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.message#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Message: #arguments.exception.message#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "stackTrace") and isSimpleValue(arguments.exception.stackTrace)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.stackTrace#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Stack Trace: #arguments.exception.stackTrace#" />
 			</cfif>
 			<cflog file="#getApplicationValue('applicationKey')#" text="END EXCEPTION" />
 			<cfcatch>

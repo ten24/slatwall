@@ -871,7 +871,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return reward.hasOrderItemSku(arguments.orderItem);
 	}
 
-	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode, any sku, any account) {
+	private numeric function getDiscountAmount(required any reward, numeric price=0, required numeric quantity, string currencyCode, any sku, any account) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = val(getService('HibachiUtilityService').precisionCalculate(arguments.price * arguments.quantity));

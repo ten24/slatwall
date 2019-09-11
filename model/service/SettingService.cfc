@@ -287,6 +287,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
+			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
+			
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -1170,7 +1172,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		if(!disableFormatting) {
+		if(!arguments.disableFormatting) {
 			// First we look for a formatType in the meta data
 			if( structKeyExists(settingMetaData, "formatType") ) {
 				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.formatType);

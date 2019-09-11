@@ -58,7 +58,7 @@ Notes:
 <cfset rc.orderTemplateCollectionList.addDisplayProperty(displayProperty="currencyCode",columnConfig={isVisible=false,isSearchable=false,isDeletable=true} ) />
 <!--- ottSchedule, using ID to improve performance --->
 <cfset rc.orderTemplateCollectionList.addFilter('orderTemplateType.typeID', '2c948084697d51bd01697d5725650006') />
-<cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|asc')/>
+<cfset rc.orderTemplateCollectionList.setOrderBy('createdDateTime|desc')/>
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">

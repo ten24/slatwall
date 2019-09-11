@@ -114,6 +114,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	property name="shippingAccountAddresses" type="array";
+	property name="updateOrderAmountFlag" default="1";
 
 	public any function init(){
 		super.init();
