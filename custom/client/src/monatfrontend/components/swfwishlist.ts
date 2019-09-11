@@ -14,6 +14,7 @@ class SWFWishlistController {
     public loading:boolean;
     public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
+    public wishlistTemplateID:string;
     
     // @ngInject
     constructor(
@@ -65,6 +66,18 @@ class SWFWishlistController {
         });
     }
     
+    public addWishlistItem =(skuID)=>{ 
+        console.log("function called");
+        this.loading = true;
+        this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID)
+        .then(result=>{
+            this.loading = false;
+            console.log("function complete man");
+            return result
+        });
+
+    }
+    
     public getAllWishlists = () => {
         this.loading = true;
         
@@ -76,8 +89,9 @@ class SWFWishlistController {
         });
     }
     
-    
-    
+    public setWishlistID = (newID) => {
+        this.wishlistTemplateID = newID;
+    }
     
     public addToCart =(index)=>{
         
