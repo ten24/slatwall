@@ -61,10 +61,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterAllDiscounts" column="calcExtdPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedExtendedUnitPriceAfterAllDiscount" column="calcExtdUnitPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedUnitPriceAfterAllDiscounts" column="calcExtdUnitPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -138,8 +139,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
- 
-	//CUSTOM PROPERTIES BEGIN
+ 	//CUSTOM PROPERTIES BEGIN
 property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
@@ -192,7 +192,6 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedQuantityDeliveredMinusReturns" persistent="false";"
     
    
  property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END
@@ -1184,7 +1183,7 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================	
-	//CUSTOM FUNCTIONS BEGIN
+		//CUSTOM FUNCTIONS BEGIN
 
 public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){

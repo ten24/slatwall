@@ -71150,6 +71150,27 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var ReturnOrderItem = /** @class */ (function () {
+    function ReturnOrderItem(obj) {
+        var _this = this;
+        this.returnQuantity = 0;
+        this.getAllocatedRefundOrderDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderDiscountAmount * _this.refundTotal * 100 / _this.total) / 100;
+            }
+            return 0;
+        };
+        obj && Object.assign(this, obj);
+        this.refundTotal = 0;
+        this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
+        this.total = this.calculatedExtendedPriceAfterDiscount;
+        this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
+        this.taxTotal = this.calculatedTaxAmount;
+        this.taxRefundAmount = 0;
+        return this;
+    }
+    return ReturnOrderItem;
+}());
 var SWReturnOrderItemsController = /** @class */ (function () {
     function SWReturnOrderItemsController($hibachi, collectionConfigService) {
         var _this = this;
@@ -71157,16 +71178,27 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.collectionConfigService = collectionConfigService;
         this.orderItems = [];
         this.orderPayments = [];
+        this.refundSubtotal = 0;
         this.refundTotal = 0;
-        this.refundPVTotal = 0;
-        this.refundCVTotal = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
-            _this.orderItemCollectionList.setDisplayProperties(_this.displayPropertiesList);
+            for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
+                var displayProperty = _a[_i];
+                _this.orderItemCollectionList.addDisplayProperty(displayProperty);
+            }
             _this.orderItemCollectionList.addFilter("order.orderID", _this.orderId, "=");
+            _this.orderItemCollectionList.setAllRecords(true);
+            _this.orderItemCollectionList.getEntity().then(function (result) {
+                for (var i = 0; i < result.records.length; i++) {
+                    result.records[i] = new ReturnOrderItem(result.records[i]);
+                }
+                _this.orderItems = result.records;
+            });
         };
         this.getDisplayPropertiesList = function () {
-            return "orderItemID,\n                quantity,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                sku.skuCode,\n                sku.product.title,\n                sku.calculatedSkuDefinition".replace(/\s+/gi, '');
+            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns".replace(/\s+/gi, '');
+            // calculatedExtendedPersonalVolumeAfterDiscount,
+            // calculatedExtendedCommissionableVolumeAfterDiscount,
         };
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
@@ -71202,17 +71234,15 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.updatePaymentTotals();
         };
         this.updateRefundTotals = function () {
-            var refundTotal = 0;
-            var refundPVTotal = 0;
-            var refundCVTotal = 0;
+            var refundSubtotal = 0;
+            var allocatedOrderDiscountAmountTotal = 0;
             _this.orderItems.forEach(function (item) {
-                refundTotal += item.refundTotal + item.taxRefundAmount;
-                refundPVTotal += item.refundPVTotal;
-                refundCVTotal += item.refundCVTotal;
+                refundSubtotal += item.refundTotal + item.taxRefundAmount;
+                allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
             });
-            _this.refundTotal = Number((refundTotal + _this.fulfillmentRefundAmount).toFixed(2));
-            _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
-            _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
+            _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+            _this.refundSubtotal = refundSubtotal;
+            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
         };
         this.updatePaymentTotals = function () {
             for (var i = _this.orderPayments.length - 1; i >= 0; i--) {
@@ -71238,7 +71268,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             }
         };
         this.displayPropertiesList = this.getDisplayPropertiesList();
+        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
         this.setupOrderItemCollectionList();
+        $hibachi.getCurrencies().then(function (result) {
+            console.log(result);
+            _this.currencySymbol = result.data[_this.currencyCode];
+        });
     }
     return SWReturnOrderItemsController;
 }());
@@ -71248,7 +71284,9 @@ var SWReturnOrderItems = /** @class */ (function () {
         this.monatBasePath = monatBasePath;
         this.scope = true;
         this.bindToController = {
-            orderId: '@'
+            orderId: '@',
+            currencyCode: '@',
+            initialFulfillmentRefundAmount: '@'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";

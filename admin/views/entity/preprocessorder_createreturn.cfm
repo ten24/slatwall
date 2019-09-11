@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
 <cfparam name="rc.order" type="any" />
@@ -149,7 +149,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hr />
 				<!--- Items Selector --->
-				<sw-return-order-items order-id="#rc.order.getOrderID()#"></sw-return-order-items>
+				<sw-return-order-items order-id="#rc.order.getOrderID()#" currency-code="#rc.order.getCurrencyCode()#" initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"></sw-return-order-items>
 				
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
