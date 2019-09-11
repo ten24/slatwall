@@ -14,14 +14,14 @@
     			</td>
     			<td class="col3">
     				<span class="status" sw-rbkey="'entity.order.shippingAddress'"></span>
-    				<p class="broad" ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_addressID.trim().length">
+    				<p class="broad" ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length">
     					<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_name"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress"></span> <br>
     					<span ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address">
     					    <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address"></span> <br>
     					</span>
     					<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_city"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_stateCode"></span> <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_postalCode"></span>
     				</p>
-    				<p class="broad" ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_address_addressID.trim().length">
+    				<p class="broad" ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length">
     				    <!-- No markup specified -->
     				    <span sw-rbkey="'define.none'"></span>
     				</p>
