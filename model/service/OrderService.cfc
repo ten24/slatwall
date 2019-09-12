@@ -1649,7 +1649,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			
 			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
-			baseQuantity = orderTemplateItem.getQuantity();
+			var baseQuantity = orderTemplateItem.getQuantity();
 			
 			orderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
 			

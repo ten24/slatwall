@@ -23,7 +23,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return orderTemplate;
     }
     
-    public any function AddItemAndCreateWishlist( required struct data ) {
+    public any function addItemAndCreateWishlist( required struct data ) {
         var orderTemplate = this.createWishlist(argumentCollection=arguments);
         var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
         orderTemplateItem.setOrderTemplate(orderTemplate);

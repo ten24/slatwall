@@ -36,7 +36,9 @@ class SWFWishlistController {
             this.currentPage = 1;
         }
         
-        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
+        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
+        this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
+
     }
     
     private refreshList = (option:Option)=>{
@@ -72,33 +74,33 @@ class SWFWishlistController {
     
     public addWishlistItem =()=>{ 
         this.loading = true;
-        this.setSKUIDFromAttribute();
+        this.setSkuIDFromAttribute();
         this.orderTemplateService.addOrderTemplateItem(this.SKUID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            return result
+            return result;
         });
     }
     
-    public AddItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
+    public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
-        this.setSKUIDFromAttribute();
+        this.setSkuIDFromAttribute();
         const data = {
            orderTemplateName:orderTemplateName,
            skuID:this.SKUID,
            quantity:quantity
         };
         this.setWishlistName(orderTemplateName)
-        this.succesfulAlert();
         
-        return this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist",data).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data).then(result=>{
             this.loading = false;
             this.getAllWishlists();
+            this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
     }
     
-    public setSKUIDFromAttribute = ()=>{
+    public setSkuIDFromAttribute = ()=>{
         let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
         this.SKUID = newSKUID;
     }
@@ -120,7 +122,7 @@ class SWFWishlistController {
         });
     }
     
-    public succesfulAlert = () =>{
+    public successfulAlert = () =>{
        let wishlistAlert = document.getElementById("wishlistAddAlert");
        wishlistAlert.textContent += this.wishlistTemplateName;
        wishlistAlert.style.display = "block";

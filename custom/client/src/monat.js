@@ -59514,31 +59514,31 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addWishlistItem = function () {
             _this.loading = true;
-            _this.setSKUIDFromAttribute();
+            _this.setSkuIDFromAttribute();
             _this.orderTemplateService.addOrderTemplateItem(_this.SKUID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
             });
         };
-        this.AddItemAndCreateWishlist = function (orderTemplateName, quantity) {
+        this.addItemAndCreateWishlist = function (orderTemplateName, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.setSKUIDFromAttribute();
+            _this.setSkuIDFromAttribute();
             var data = {
                 orderTemplateName: orderTemplateName,
                 skuID: _this.SKUID,
                 quantity: quantity
             };
             _this.setWishlistName(orderTemplateName);
-            _this.succesfulAlert();
-            return _this.$rootScope.hibachiScope.doAction("AddItemAndCreateWishlist", data).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
+                _this.observerService.attach(_this.successfulAlert, "createWishlistSuccess");
                 return result;
             });
         };
-        this.setSKUIDFromAttribute = function () {
+        this.setSkuIDFromAttribute = function () {
             var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
             _this.SKUID = newSKUID;
         };
@@ -59560,7 +59560,7 @@ var SWFWishlistController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.succesfulAlert = function () {
+        this.successfulAlert = function () {
             var wishlistAlert = document.getElementById("wishlistAddAlert");
             wishlistAlert.textContent += _this.wishlistTemplateName;
             wishlistAlert.style.display = "block";
@@ -59582,6 +59582,7 @@ var SWFWishlistController = /** @class */ (function () {
             this.currentPage = 1;
         }
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
+        this.observerService.attach(this.successfulAlert, "OrderTemplateAddOrderTemplateItemSuccess");
     }
     return SWFWishlistController;
 }());
