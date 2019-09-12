@@ -25,20 +25,24 @@ component accessors="true" output="false" extends="HibachiService" {
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
 		
 		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-		}
-
-		if(serverInstance.getNewFlag()){
-			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
-				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
+			lock name="create_serverinstance_#arguments.serverInstanceKey#" type="exclusive" timeout="10"  {
+				// check one more time to make avoid duplicate server instance 
+				serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
+				if(isNull(serverInstance)){
+					serverInstance = this.newServerInstance();
+				
+					if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
+						arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
+					}
+					serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
+					serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+					serverInstance.setServerInstanceExpired(false);
+					serverInstance.setSettingsExpired(false);
+					
+					this.saveServerInstance(serverInstance); 
+					getHibachiScope().flushOrmSession();
+				}
 			}
-			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setServerInstanceExpired(false);
-			serverInstance.setSettingsExpired(false);
-			
-			this.saveServerInstance(serverInstance); 
-			getHibachiScope().flushOrmSession();
 		}
 		return serverInstance;	
 	} 
@@ -113,6 +117,8 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
 		if(isNull(isExpired)){
+			// create server instance if missing, but return false as it's not expired
+			this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
 			return false;
 		}else{
 			return isExpired;
@@ -122,7 +128,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
 		if(isNull(isExpired)){
-			return true;
+			return false;
 		}else{
 			return isExpired;
 		}	

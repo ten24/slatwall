@@ -59561,9 +59561,9 @@ var SWFWishlistController = /** @class */ (function () {
             });
         };
         this.successfulAlert = function () {
-            var wishlistAlertbox = document.getElementById("wishlistAddAlert");
-            wishlistAlertbox.textContent += _this.wishlistTemplateName;
-            wishlistAlertbox.style.display = "block";
+            var wishlistAddAlertbox = document.getElementById("wishlistAddAlert");
+            wishlistAddAlertbox.textContent += _this.wishlistTemplateName;
+            wishlistAddAlertbox.style.display = "block";
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
@@ -80437,21 +80437,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }

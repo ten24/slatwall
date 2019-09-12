@@ -123,9 +123,9 @@ class SWFWishlistController {
     }
     
     public successfulAlert = () =>{
-       let wishlistAlertbox = document.getElementById("wishlistAddAlert");
-       wishlistAlertbox.textContent += this.wishlistTemplateName;
-       wishlistAlertbox.style.display = "block";
+       let wishlistAddAlertbox = document.getElementById("wishlistAddAlert");
+       wishlistAddAlertbox.textContent += this.wishlistTemplateName;
+       wishlistAddAlertbox.style.display = "block";
     }
     
     public setWishlistID = (newID) => {
