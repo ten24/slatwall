@@ -6,7 +6,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public void function init(){
 		//on init load all possible record level perms
-		loadPermissionRecordRestrictionsCache();
+		variables.permissionRecordRestrictionMap = {};
+		//loadPermissionRecordRestrictionsCache();
 	}
 	
 	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
