@@ -1,14 +1,15 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerEntity" {
 	property name="ProductService";
+	property name="SettingService";
 
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
-			var uri = "https://api.monatcorp.net/ws/simple/" & arguments.endPoint;
+			var uri = getSettingService().getSettingValue('globalProductImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
-			var authKey = "Basic U011c2VyQG1vbmF0Z2xvYmFsLUxXT1lNMDo0NDVmOTk0MC01MmZkLTRhNGQtYjhkOS0yZTE2MDdlNTE2YzI=";
+			var authKey = getSettingService().getSettingValue('globalProductImportAuthKey');
 		
 			var body = {
 				"Pagination": {
@@ -166,7 +167,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				var priceTypes = arguments.value;
 				var skuPrice = {};
 
-				switch(TRIM(countryCode)){
+				switch(countryCode){
 					case 'CAN':
 						skuPrice['CountryCode'] = 'CAD';
 						break;
@@ -184,7 +185,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					var priceType = arguments.key;
 					var priceValue = arguments.value;
 
-					switch(TRIM(priceType)){
+					switch(priceType){
 						case 'Commissionable Volume':
 							skuPrice['CommissionableVolume'] = priceValue;
 							break;
@@ -220,11 +221,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function populateSkuQuery( required any skuQuery, required struct skuData ){
 		var data = {};
 		var query = arguments.skuQuery;
+		var skuPriceData = {}
+
+		if(structKeyExists(arguments.skuData, "PriceLevels") ){
+			var priceLevels = skuData.PriceLevels;
+
+			for( var priceLevel in priceLevels ){
+				skuPriceData[Trim(priceLevel.CountryCode)][Trim(priceLevel.PriceLevelCode)][Trim(priceLevel.PriceVolumeTypeName)] = priceLevel.Amount;
+			}
+		}
+
+		if(structKeyExists(skuPriceData, 'USA') && structKeyExists(skuPriceData['USA'], '2') && structKeyExists(skuPriceData['USA']['2'], 'Selling Price')){
+			data['Amount'] = skuPriceData['USA']['2']['Selling Price']; // this is the default sku price
+		}
 
 		StructEach(arguments.skuData, function(key, value){
 			var skuField = arguments.key;
 			var fieldValue = arguments.value;
-			switch(TRIM(skuField)){
+			switch(skuField){
 				case 'ItemCode':
 					data['SKUItemCode'] = fieldValue;
 					break;
@@ -255,13 +269,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private any function populateSkuPriceQuery( required any skuPriceQuery, required struct skuData ){
-		var skuPriceData = {}
+		var skuPriceData = {};
 		var query = arguments.skuPriceQuery;
 		if(structKeyExists(arguments.skuData, "PriceLevels") ){
 			var priceLevels = skuData.PriceLevels;
 
 			for( var priceLevel in priceLevels ){
-				skuPriceData[priceLevel.CountryCode][priceLevel.PriceLevelCode][priceLevel.PriceVolumeTypeName] = priceLevel.Amount;
+				skuPriceData[Trim(priceLevel.CountryCode)][Trim(priceLevel.PriceLevelCode)][Trim(priceLevel.PriceVolumeTypeName)] = priceLevel.Amount;
 			}
 		}
 
@@ -283,11 +297,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,RemoteID,ItemName,SecondName,DisableOnRegularOrders,DisableOnFlexship,ImageFile,ItemCategoryAccounting,CategoryNameAccounting,productTypeActiveFlag,productTypePublishedFlag,productActiveFlag,productPublishedFlag,skuActiveFlag,skuPublishedFlag";
+		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
 	}
 
 	private string function getSkuPriceColumnsList(){
-		return "ItemCode,RemoteID,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,MinQuantity,PriceLevel,PriceGroupRemoteID";
+		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
 	}
 
 	public void function importMonatProducts(){
@@ -312,7 +326,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				continue;
 			}
 			//Set the pagination info.
-			var productData = productResponse.Data;
 			var monatProducts = productResponse.Data?:[];
 
     		try{
@@ -335,7 +348,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
 					}
 				}
-
+				
 				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
 				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
