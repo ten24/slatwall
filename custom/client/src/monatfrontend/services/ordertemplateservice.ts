@@ -52,7 +52,19 @@ export class OrderTemplateService {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
                   .promise;
-   }
+    }
+    
+    public activate = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
+                  .promise;
+    }
+    
+    public cancel = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
+                  .promise;
+    }
 	
 	public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {
@@ -66,7 +78,7 @@ export class OrderTemplateService {
        }
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
-   }
+    }
    
    /**
     * for more details https://gist.github.com/penguinboy/762197

@@ -1,10 +1,12 @@
-<div  sw-loading="monatFlexshipListing.initialized">
+<div sw-loading="monatFlexshipListing.initialized">
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates" >
         <monat-flexship-card data-order-template="orderTemplate"
                          data-account-addresses="monatFlexshipListing.accountAddresses"
                          data-account-payment-methods="monatFlexshipListing.accountPaymentMethods"
                          data-shipping-method-options="monatFlexshipListing.shippingMethodOptions"
                          data-state-code-options="monatFlexshipListing.stateCodeOptions"
+                         data-cancellation-reason-type-options="monatFlexshipListing.cancellationReasonTypeOptions"
+                         data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
                          >
         </monat-flexship-card>
     </div>

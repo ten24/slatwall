@@ -36,12 +36,15 @@
 				</p>
 			</div>
 			
-			<monat-flexship-menu data-order-template="monatFlexshipCard.orderTemplate"
+			<monat-flexship-menu ng-if="monatFlexshipCard.orderTemplate.statusCode !== 'otstCancelled'"
+								 data-order-template="monatFlexshipCard.orderTemplate"
 								 data-account-addresses="monatFlexshipCard.accountAddresses"
 								 data-account-payment-methods="monatFlexshipCard.accountPaymentMethods"
 								 data-shipping-method-options="monatFlexshipCard.shippingMethodOptions"
 								 data-state-code-options="monatFlexshipCard.stateCodeOptions"
-			>
+								 data-cancellation-reason-type-options="monatFlexshipCard.cancellationReasonTypeOptions"
+                				 data-schedule-date-change-reason-type-options="monatFlexshipCard.scheduleDateChangeReasonTypeOptions"
+							>
 			</monat-flexship-menu>
 		</div>
 	</div>

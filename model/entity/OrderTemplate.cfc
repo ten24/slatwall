@@ -239,7 +239,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateScheduleDateChangeReasonTypeOptions')){	
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value');
 			typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateScheduleDateChangeReasonTypeOptions = typeCollection.getRecords(); 
@@ -250,11 +250,11 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getOrderTemplateCancellationReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateCancellationReasonTypeOptions')){
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value'); 
 			typeCollection.addFilter('parentType.systemCode','orderTemplateCancellationReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateCancellationReasonTypeOptions = typeCollection.getRecords(); 
-		} 
+		}
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
 

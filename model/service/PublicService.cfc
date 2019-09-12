@@ -1740,6 +1740,9 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		arguments.data['ajaxResponse']['shippingMethodOptions'] = newOrderTemplate.getShippingMethodOptions();
+		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = newOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
+		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = newOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+		
 		//this function will set the stateCodeOptions in ajaxResponce
 		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
@@ -1812,16 +1815,13 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
 
+
  	public void function updateOrderTemplateShipping(required any data){ 
-        param name="arguments.data.orderTemplateId" default="";
+        param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
-    	//check if it's null
-    	//check if the account has access to the order template
-		if( isNull(orderTemplate) || 
-		    getHibachiScope().getAccount().getAccountID() != orderTemplate.getAccount().getAccountID()
-		) {
-			return; 
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; // TODO error message
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
@@ -1830,25 +1830,73 @@ component  accessors="true" output="false"
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("updateShipping");
-           
             getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
     		
-    		var propertiesList = ''; 
-    		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
-    		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
-    		propertiesList = ListAppend(propertiesList, shippingAddressPropList);
-    		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
-    		propertiesList = ListAppend(propertiesList, billingAddressPropList);
-    		propertiesList = ListAppend(propertiesList, "shippingMethod.shippingMethodID")
-    
-     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getStructRepresentation(persistentProperties=propertiesList);  
-     		//condition
-     		if(StructKeyExists(arguments.data, "newAccountAddress")){
+    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+		    
+     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+     		
+     		//if there's a new account address
+     		if(StructKeyExists(arguments.data, "newAccountAddress")) {
      		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
      		}
         }
         
  	}   
+ 	
+ 	
+ 	public void function activateOrderTemplate(required any data) { 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; // TODO error message
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.activateOrderTemplate", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("activate");
+            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+            
+    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+		    
+     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+        } else {
+            dump(orderTemplate.getErrors()); abort;
+        }
+ 	} 
+ 	
+
+ 	public void function cancelOrderTemplate(required any data) { 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; // TODO error message
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.cancelOrderTemplate", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("cancel");
+            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+            
+    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+		    
+     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+        } else {
+            dump(orderTemplate.getErrors()); abort;
+        }
+ 	}   
+
 	
 	public void function deleteOrderTemplateItem(required any data) {
         param name="data.orderTemplateItemID" default="";

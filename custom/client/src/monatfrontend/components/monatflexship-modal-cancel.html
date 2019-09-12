@@ -9,15 +9,24 @@
 	
             <div class="cancel-flexship">
                 <h6 class="title-with-line mb-5">Cancel </h6>
-                <select id="cancel-flexship" width="100%">
-                    <option value="1">Why are you canceling your flexship?</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </select>
-            </div>
+ 
+                <select type="text" class="form-control" 
+        			ng-model="monatFlexshipCancelModal.formData.typeID"
+        			placeholder="Flexship cancel reason *">
+                	<option value="">Why are you canceling your flexship?</option>
+    			    <option ng-repeat="x in monatFlexshipCancelModal.cancellationReasonTypeOptions" 
+    			            value={{x.value}}>{{x.name}}</option>
+    			</select> 
+    			<br/>
+    			<div class="form-group">
+        			<input type="text" class="form-control" 
+        			ng-model="monatFlexshipCancelModal.formData.typeIDOther"
+        			placeholder="Other reason `">                          
+        		</div>
+       		</div>
 
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary">Save changes</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">Save changes</button>
         	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
 		    </div>
 		    

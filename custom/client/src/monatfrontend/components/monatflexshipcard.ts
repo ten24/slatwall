@@ -1,14 +1,21 @@
 class MonatFlexshipCardController{
     
     public dayOfMonthFormatted:string;
-	public shippingMethodOptions:any[]; 
+    
 	public orderTemplate:any; 
+	
+	public accountAddresses: any[];
+	public accountPaymentMethods: any[];
+	public shippingMethodOptions: any[]; 
+	public stateCodeOptions: any[];
+	public cancellationReasonTypeOptions: any[];
+	public scheduleDateChangeReasonTypeOptions: any[];
 	
 	constructor(public observerService){
 	}
 	
 	public $onInit = () =>{
-		console.log('smo', this.shippingMethodOptions)
+		console.log('flexship card: ', this);
 		this.observerService.attach(this.updateOrderTemplate, "orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
 	}
 	
@@ -28,7 +35,9 @@ class MonatFlexshipCard {
 	    accountAddresses:'<',
 	    accountPaymentMethods:'<',
 	    shippingMethodOptions: '<',
-	    stateCodeOptions:'<'
+	    stateCodeOptions:'<',
+	    cancellationReasonTypeOptions: '<',
+	    scheduleDateChangeReasonTypeOptions: '<'
 	};
 	public controller=MonatFlexshipCardController;
 	public controllerAs="monatFlexshipCard";

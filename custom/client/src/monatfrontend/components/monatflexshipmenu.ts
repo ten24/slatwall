@@ -1,18 +1,45 @@
 class MonatFlexshipMenuController{
     
- //   public orderTemplate;
- //   public accountAddresses;
-	// public accountPaymentMethods;
-	public shippingMethodOptions:any[];
+	public orderTemplate:any; 
 	
-	constructor( public orderTemplateService
+	public accountAddresses: any[];
+	public accountPaymentMethods: any[];
+	public shippingMethodOptions: any[]; 
+	public stateCodeOptions: any[];
+	public cancellationReasonTypeOptions: any[];
+	public scheduleDateChangeReasonTypeOptions: any[];
+
+	constructor( 
+		public orderTemplateService,
+		public observerService,
 	){
 
 	}
 	
 	public $onInit = () =>{
-		console.log('sm', this.shippingMethodOptions);
+		console.log('flexship menue: ', this);
 	}
+	
+   public activateFlexship() {
+    	let payload = {};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+ 
+    	payload = this.orderTemplateService.getFlattenObject(payload);
+    	//return;
+    	// make api request
+        this.orderTemplateService.activate(payload).then(
+            (response) => {
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                // TODO: show alert
+            }, 
+            (reason) => {
+                throw (reason);
+                // TODO: show alert
+            }
+        );
+    }
+
 
 }
 
@@ -26,7 +53,9 @@ class MonatFlexshipMenu{
 	    accountAddresses:'<',
 	    accountPaymentMethods:'<',
 	    shippingMethodOptions: '<',
-	    stateCodeOptions: '<'
+	    stateCodeOptions: '<',
+	    cancellationReasonTypeOptions: '<',
+	    scheduleDateChangeReasonTypeOptions: '<'
 	};
 	public controller=MonatFlexshipMenuController;
 	public controllerAs="monatFlexshipMenu";

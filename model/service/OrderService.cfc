@@ -1863,7 +1863,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID'
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID,statusCode'
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
@@ -1890,18 +1890,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
-        param name="arguments.data.orderTemplateId" default="";
+        param name="arguments.data.orderTemplateID" default="";
 	
-		if(len(arguments.data.orderTemplateId) == 0){
-			return arguments.data; 
+		if(len(arguments.data.orderTemplateID) == 0){
+			return javaCast('null',0); 
 		} 
+		
+		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
+		if( isNull(orderTemplate) || 
+		    getHibachiScope().getAccount().getAccountID() != orderTemplate.getAccount().getAccountID()
+		) {
+			return javaCast('null',0); 
+		}
 	
-		return this.getOrderTemplate(arguments.data.orderTemplateId).getStructRepresentation(); 
+		return orderTemplate; 
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
 			
 		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		

@@ -31,7 +31,7 @@
                                 name="accountAddressID"
                                 ng-checked="accountAddress.accountAddressID === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
                               >
-                        <label for="accountAddressID" ng-bind="accountAddress.accountAddressName"></label>
+                        <label for="accountAddressID" ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : '---'"></label>
                     </div>
 
                     <div class="custom-radio form-group"                                 

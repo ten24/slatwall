@@ -1,9 +1,44 @@
 
 class MonatFlexshipCancelModalController {
 	public orderTemplate; 
-	constructor(public orderTemplateService) {
+	public cancellationReasonTypeOptions: any[];
+	
+	public formData = {}; // {typeID:'', typeIDOther: '' }
+
+	constructor(public orderTemplateService, public observerService) {
     }
-    public $onInit = () => {};
+    public $onInit = () => {
+    	console.log('flexship menue item cancel: ', this);
+    };
+    
+    public cancelOrdertemplate = () => {
+    	console.log("cancelling order template : "+this.orderTemplate);
+    	let payload = {'orderTemplateCancellationReasonType' : this.formData};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+     	console.log(this.orderTemplateService.getFlattenObject(payload));
+    }
+    
+    public cancelFlexship() {
+    	console.log("cancelling order template : "+this.orderTemplate);
+    	
+    	let payload = {'orderTemplateCancellationReasonType' : this.formData};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+    	payload = this.orderTemplateService.getFlattenObject(payload);
+
+     	console.log(payload);
+    	// make api request
+        this.orderTemplateService.cancel(payload).then(
+            (response) => {
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                // TODO: show alert
+            }, 
+            (reason) => {
+                throw (reason);
+                // TODO: show alert
+            }
+        );
+    }
 }
 
 class MonatFlexshipCancelModal {
@@ -13,7 +48,8 @@ class MonatFlexshipCancelModal {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'='
+	    orderTemplate:'<',
+	    cancellationReasonTypeOptions:'<'
 	};
 	public controller=MonatFlexshipCancelModalController;
 	public controllerAs="monatFlexshipCancelModal";

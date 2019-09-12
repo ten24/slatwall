@@ -59180,10 +59180,38 @@ exports.toSubscriber = toSubscriber;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCancelModalController = /** @class */ (function () {
-    function MonatFlexshipCancelModalController(orderTemplateService) {
+    function MonatFlexshipCancelModalController(orderTemplateService, observerService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
-        this.$onInit = function () { };
+        this.observerService = observerService;
+        this.formData = {}; // {typeID:'', typeIDOther: '' }
+        this.$onInit = function () {
+            console.log('flexship menue item cancel: ', _this);
+        };
+        this.cancelOrdertemplate = function () {
+            console.log("cancelling order template : " + _this.orderTemplate);
+            var payload = { 'orderTemplateCancellationReasonType': _this.formData };
+            payload['orderTemplateID'] = _this.orderTemplate.orderTemplateID;
+            console.log(_this.orderTemplateService.getFlattenObject(payload));
+        };
     }
+    MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
+        var _this = this;
+        console.log("cancelling order template : " + this.orderTemplate);
+        var payload = { 'orderTemplateCancellationReasonType': this.formData };
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        console.log(payload);
+        // make api request
+        this.orderTemplateService.cancel(payload).then(function (response) {
+            _this.orderTemplate = response.orderTemplate;
+            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipCancelModalController;
 }());
 var MonatFlexshipCancelModal = /** @class */ (function () {
@@ -59194,7 +59222,8 @@ var MonatFlexshipCancelModal = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '='
+            orderTemplate: '<',
+            cancellationReasonTypeOptions: '<'
         };
         this.controller = MonatFlexshipCancelModalController;
         this.controllerAs = "monatFlexshipCancelModal";
@@ -59572,7 +59601,7 @@ var MonatFlexshipCardController = /** @class */ (function () {
         var _this = this;
         this.observerService = observerService;
         this.$onInit = function () {
-            console.log('smo', _this.shippingMethodOptions);
+            console.log('flexship card: ', _this);
             _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
         };
         this.updateOrderTemplate = function (orderTemplate) {
@@ -59593,7 +59622,9 @@ var MonatFlexshipCard = /** @class */ (function () {
             accountAddresses: '<',
             accountPaymentMethods: '<',
             shippingMethodOptions: '<',
-            stateCodeOptions: '<'
+            stateCodeOptions: '<',
+            cancellationReasonTypeOptions: '<',
+            scheduleDateChangeReasonTypeOptions: '<'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = "monatFlexshipCard";
@@ -59694,6 +59725,8 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.accountPaymentMethods = data.accountPaymentMethods;
                 _this.shippingMethodOptions = data.shippingMethodOptions;
                 _this.stateCodeOptions = data.stateCodeOptions;
+                _this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
+                _this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
                 //set this last so that ng repeat inits with all needed data
                 _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
@@ -59744,13 +59777,30 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
-    function MonatFlexshipMenuController(orderTemplateService) {
+    function MonatFlexshipMenuController(orderTemplateService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
         this.$onInit = function () {
-            console.log('sm', _this.shippingMethodOptions);
+            console.log('flexship menue: ', _this);
         };
     }
+    MonatFlexshipMenuController.prototype.activateFlexship = function () {
+        var _this = this;
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        //return;
+        // make api request
+        this.orderTemplateService.activate(payload).then(function (response) {
+            _this.orderTemplate = response.orderTemplate;
+            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipMenuController;
 }());
 var MonatFlexshipMenu = /** @class */ (function () {
@@ -59765,7 +59815,9 @@ var MonatFlexshipMenu = /** @class */ (function () {
             accountAddresses: '<',
             accountPaymentMethods: '<',
             shippingMethodOptions: '<',
-            stateCodeOptions: '<'
+            stateCodeOptions: '<',
+            cancellationReasonTypeOptions: '<',
+            scheduleDateChangeReasonTypeOptions: '<'
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = "monatFlexshipMenu";
@@ -60148,6 +60200,16 @@ var OrderTemplateService = /** @class */ (function () {
         this.updateShipping = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
+                .promise;
+        };
+        this.activate = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
+                .promise;
+        };
+        this.cancel = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
                 .promise;
         };
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
