@@ -78,7 +78,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
 	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
 	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
-	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
+	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID" hb_cascadeCalculate="true"; // Used For Returns. This is set when this order is a return.
 
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
@@ -746,6 +746,7 @@ property name="personalVolume" ormtype="big_decimal";
 		var referencingOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
 		referencingOrderItemCollectionList.setDisplayProperties('quantity');
 		referencingOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
+		referencingOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
 		referencingOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
 		var result = referencingOrderItemCollectionList.getRecords();
 		if(!isNull(result) && arrayLen(result)){

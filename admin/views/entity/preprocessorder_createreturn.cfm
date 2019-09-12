@@ -149,7 +149,11 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hr />
 				<!--- Items Selector --->
-				<sw-return-order-items order-id="#rc.order.getOrderID()#" currency-code="#rc.order.getCurrencyCode()#" initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"></sw-return-order-items>
+				<sw-return-order-items 
+					order-id="#rc.order.getOrderID()#" 
+					currency-code="#rc.order.getCurrencyCode()#" 
+					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
+					order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"></sw-return-order-items>
 				
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

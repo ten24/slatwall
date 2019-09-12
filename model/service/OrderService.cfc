@@ -2039,6 +2039,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Persist the new order
 		getHibachiDAO().save( returnOrder );
 
+		// Add any discount amount from order item allocated order discounts
+		this.updateReturnOrderWithAllocatedDiscounts(arguments.order, returnOrder, arguments.processObject);
+		
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 		
@@ -2146,6 +2149,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Return the new order so that the redirect takes users to this new order
+		return returnOrder;
+	}
+	
+	private any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
+		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+			var promotionApplied = getService('PromotionService').newPromotionApplied();
+			promotionApplied.setOrder(returnOrder);
+			if(arguments.order.hasAppliedPromotion()){
+				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
+			}
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setManualDiscountAmountFlag(true);
+			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
+		}
 		return returnOrder;
 	}
 	

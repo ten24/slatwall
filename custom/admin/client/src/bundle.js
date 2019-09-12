@@ -71182,7 +71182,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.refundTotal = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
-            for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
+            for (var _i = 0, _a = _this.orderItemDisplayPropertiesList.split(','); _i < _a.length; _i++) {
                 var displayProperty = _a[_i];
                 _this.orderItemCollectionList.addDisplayProperty(displayProperty);
             }
@@ -71195,10 +71195,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 _this.orderItems = result.records;
             });
         };
-        this.getDisplayPropertiesList = function () {
+        this.getOrderItemDisplayPropertiesList = function () {
             return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns".replace(/\s+/gi, '');
-            // calculatedExtendedPersonalVolumeAfterDiscount,
-            // calculatedExtendedCommissionableVolumeAfterDiscount,
         };
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
@@ -71267,14 +71265,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
-        this.displayPropertiesList = this.getDisplayPropertiesList();
-        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
-        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
+        this.orderItemDisplayPropertiesList = this.getOrderItemDisplayPropertiesList();
         this.setupOrderItemCollectionList();
         $hibachi.getCurrencies().then(function (result) {
-            console.log(result);
             _this.currencySymbol = result.data[_this.currencyCode];
         });
+        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
     }
     return SWReturnOrderItemsController;
 }());
@@ -71286,7 +71283,8 @@ var SWReturnOrderItems = /** @class */ (function () {
         this.bindToController = {
             orderId: '@',
             currencyCode: '@',
-            initialFulfillmentRefundAmount: '@'
+            initialFulfillmentRefundAmount: '@',
+            orderPayments: '<'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";

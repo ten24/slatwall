@@ -68,7 +68,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
-	
+	property name="allocatedOrderDiscountAmountTotal";
 	// Option Properties
     property name="returnReasonTypeOptions";
 	
@@ -77,7 +77,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	
 	public any function setupDefaults() {
-		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+		if(arrayLen(getRefundOrderPaymentIDOptions())){
+			variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+		}
 	}
 	
 	// ====================== START: Data Options ==========================
@@ -99,13 +101,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for(var orderPayment in opSmartList.getRecords()) {
 				arrayAppend(variables.refundOrderPaymentIDOptions, 
 					{
-						name=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('availableAmountToRefund'),
-						value=orderPayment.getOrderPaymentID(),
-						amountToRefund=orderPayment.getAvailableAmountToRefund()
+						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('availableAmountToRefund'),
+						"value"=orderPayment.getOrderPaymentID(),
+						"amountToRefund"=orderPayment.getAvailableAmountToRefund(),
+						"amount"=0
 					}
 				);
 			}
-			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
 		}
 		return variables.refundOrderPaymentIDOptions;
 	}
@@ -215,6 +217,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
-		return amount < maxRefundAmount;
+		return amount <= maxRefundAmount;
 	}
 }

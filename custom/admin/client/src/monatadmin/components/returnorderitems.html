@@ -54,7 +54,9 @@
 	    <td><strong>Allocated Order Discount Amount:</strong></td>
 	    <td>
 	        <span>({{swReturnOrderItems.allocatedOrderDiscountAmountTotal.toFixed(2)}})</span>
+	        <input type="hidden" name="allocatedOrderDiscountAmountTotal" value="{{swReturnOrderItems.allocatedOrderDiscountAmountTotal}}">
 	    </td>
+	    <td></td>
     </tr>
     <tr>
         <td colspan="9"></td>
@@ -62,6 +64,7 @@
 		<td class="refundTotal">{{swReturnOrderItems.currencySymbol}}
 			<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)" ng-init="swReturnOrderItems.updateRefundTotals()"></span>
 		</td>
+		<td></td>
 		<!--<td class="refundTotal">-->
 		<!--		<span ng-bind="swReturnOrderItems.refundPVTotal.toFixed(2)"></span>-->
 		<!--</td>-->
@@ -69,19 +72,16 @@
 		<!--	<span ng-bind="swReturnOrderItems.refundCVTotal.toFixed(2)"></span>-->
 		<!--</td>-->
 	</tr>
-	<!--<cfset paymentIndex = 0 />-->
-	<!--<cfloop array="#arraySlice(rc.processObject.getRefundOrderPaymentIDOptions(), 1, arrayLen(rc.processObject.getRefundOrderPaymentIDOptions())-1)#" index="op">-->
-	<!--	<cfif op.amountToRefund GT 0>-->
-	<!--		<tr ng-init="swReturnOrderItems.orderPayments[#paymentIndex#] = {amount:0};orderPayment#paymentIndex#=swReturnOrderItems.orderPayments[#paymentIndex#]">-->
-	<!--			<td colspan="11" ng-init="orderPayment#paymentIndex#.amountToRefund = #op.amountToRefund#"></td>-->
-	<!--			<td>#op.name#</td>-->
-	<!--			<td class="total">-->
-	<!--				<input type="hidden" name="orderPayments[#paymentIndex + 1#].orderPaymentID" value="">-->
-	<!--				<input type="hidden" name="orderPayments[#paymentIndex + 1#].originalOrderPaymentID" value="#op.value#">-->
-	<!--				<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment#paymentIndex#)" name="orderPayments[#paymentIndex + 1#].amount" ng-model="orderPayment#paymentIndex#.amount" class="span1 number" />-->
-	<!--			</td>-->
-	<!--		</tr>-->
-	<!--		<cfset paymentIndex++ />-->
-	<!--	</cfif>-->
-	<!--</cfloop>-->
+	
+	<tr ng-repeat="orderPayment in swReturnOrderItems.orderPayments">
+		<td colspan="9"></td>
+		<td><strong>{{orderPayment.name}}</strong></td>
+		<td class="total">
+			<input type="hidden" name="orderPayments[{{$index+1}}].orderPaymentID" value="">
+			<input type="hidden" name="orderPayments[{{$index+1}}].originalOrderPaymentID" value="{{orderPayment.value}}">
+			<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment)" name="orderPayments[{{$index+1}}].amount" ng-model="orderPayment.amount" class="span1 number" />
+		</td>
+		<td></td>
+	</tr>
+	
 </table>
