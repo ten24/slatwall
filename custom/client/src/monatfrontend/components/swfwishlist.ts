@@ -123,13 +123,14 @@ class SWFWishlistController {
     }
     
     public successfulAlert = () =>{
-       let wishlistAlert = document.getElementById("wishlistAddAlert");
-       wishlistAlert.textContent += this.wishlistTemplateName;
-       wishlistAlert.style.display = "block";
+       let wishlistAlertbox = document.getElementById("wishlistAddAlert");
+       wishlistAlertbox.textContent += this.wishlistTemplateName;
+       wishlistAlertbox.style.display = "block";
     }
     
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
+        
     }
     
     public setWishlistName = (newName) => {

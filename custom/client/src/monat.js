@@ -59561,9 +59561,9 @@ var SWFWishlistController = /** @class */ (function () {
             });
         };
         this.successfulAlert = function () {
-            var wishlistAlert = document.getElementById("wishlistAddAlert");
-            wishlistAlert.textContent += _this.wishlistTemplateName;
-            wishlistAlert.style.display = "block";
+            var wishlistAlertbox = document.getElementById("wishlistAddAlert");
+            wishlistAlertbox.textContent += _this.wishlistTemplateName;
+            wishlistAlertbox.style.display = "block";
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
