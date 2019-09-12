@@ -4,12 +4,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
+
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+	}
+	
+	// @hint helper function to return the integration entity that this belongs to
+	public any function getIntegration() {
+		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
+	}
+
+	// @hint helper function to return the packagename of this integration
+	public any function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 2, '.'));
+	}
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
-			var uri = getSettingService().getSettingValue('globalProductImportURL') & arguments.endPoint;
+			var uri = setting('productImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
-			var authKey = getSettingService().getSettingValue('globalProductImportAuthKey');
+			var authKey = setting('authKey');
 		
 			var body = {
 				"Pagination": {
