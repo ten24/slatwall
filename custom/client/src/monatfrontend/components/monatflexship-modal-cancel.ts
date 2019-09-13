@@ -7,20 +7,14 @@ class MonatFlexshipCancelModalController {
 
 	constructor(public orderTemplateService, public observerService) {
     }
+    
     public $onInit = () => {
-    	console.log('flexship menue item cancel: ', this);
+    	console.log('flexship modal cancel: ', this);
     };
     
-    public cancelOrdertemplate = () => {
-    	console.log("cancelling order template : "+this.orderTemplate);
-    	let payload = {'orderTemplateCancellationReasonType' : this.formData};
-    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-     	console.log(this.orderTemplateService.getFlattenObject(payload));
-    }
-    
     public cancelFlexship() {
-    	console.log("cancelling order template : "+this.orderTemplate);
-    	
+
+    	//TODO frontend validation
     	let payload = {'orderTemplateCancellationReasonType' : this.formData};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload = this.orderTemplateService.getFlattenObject(payload);
@@ -28,10 +22,15 @@ class MonatFlexshipCancelModalController {
      	console.log(payload);
     	// make api request
         this.orderTemplateService.cancel(payload).then(
-            (response) => {
-                this.orderTemplate = response.orderTemplate;
-                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-                // TODO: show alert
+            (data) => {
+            	if(angular.isDefined(data.orderTemplate)) {
+	                this.orderTemplate = data.orderTemplate;
+	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            	} else {
+            		console.error(data);
+            		//TODO handle errors
+            	}
+            	// TODO: show alert
             }, 
             (reason) => {
                 throw (reason);

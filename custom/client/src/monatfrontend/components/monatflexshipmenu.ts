@@ -28,10 +28,14 @@ class MonatFlexshipMenuController{
     	//return;
     	// make api request
         this.orderTemplateService.activate(payload).then(
-            (response) => {
-                this.orderTemplate = response.orderTemplate;
-                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-                // TODO: show alert
+            (data) => {
+            	if(angular.isDefined(data.orderTemplate)) {
+	                this.orderTemplate = data.orderTemplate;
+	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            	} else{
+            		console.error(data);
+            	}
+            	// TODO: show alert
             }, 
             (reason) => {
                 throw (reason);

@@ -15,32 +15,46 @@
                 
                 <!-- Delay/Change Order -->
                 <div class="custom-radio form-group">
-                    <input type="radio" name="change-order" id="change-order" checked>
+                    <input type="radio" name="change-order"  >
                     <label for="change-order">Delay this months order</label>
                 </div>
         		
         		<!-- Delay/Change Order Datepicker -->
         		<div class="form-group">
-            		<input id="datepicker" placeholder="For how long?">
+            		<input id="datepicker" 
+            		       ng-modal="monatFlexshipChangeOrSkipOrderModal.formData.nextPlaceDateTime"
+            		       placeholder="For how long?"
+            		  >
                 </div>
         		
         		<!-- Skip this month's order -->
                 <div class="custom-radio form-group mt-5">
-                    <input type="radio" name="change-order" id="change-order2">
+                    <input type="radio" name="change-order">
                     <label for="change-order2">Skip this month's order</label>
                 </div>
                 
                 <!-- Why are you pushing your flexship? -->
                 <div class="form-group">
-        			<select id="change-flexship" width="100%">
-                        <option value="1">Why are you pushing your flexship?</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                    </select>
+                    <select type="text" class="form-control" id="change-flexship"
+            			ng-model="monatFlexshipChangeOrSkipOrderModal.formData.selectedReason"
+            			placeholder="Flexship cancel reason *">
+                    	<option value="">Why are you pushing your flexship?</option>
+        			    <option ng-repeat="x in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions" 
+        			            ng-value="x">{{x.name}}</option>
+    			    </select> 
         		</div>
+        		
+        		<div class="form-group" 
+        		     ng-if="monatFlexshipChangeOrSkipOrderModal.formData.selectedReason.systemCode === 'otsdcrtOther'"
+        		    >
+        			<input type="text" class="form-control" 
+                		   ng-model="monatFlexshipChangeOrSkipOrderModal.formData.otherReasonNotes"
+                		   placeholder="Other reason `">                 
+        		</div>
+        		
         		<script>
-                    $('##datepicker').datepicker();
-                    $('##change-flexship').dropdown();
+                    $('#datepicker').datepicker();
+                    $('#change-flexship').dropdown();
                 </script>
             </div>
 

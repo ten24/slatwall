@@ -59186,26 +59186,26 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
         this.observerService = observerService;
         this.formData = {}; // {typeID:'', typeIDOther: '' }
         this.$onInit = function () {
-            console.log('flexship menue item cancel: ', _this);
-        };
-        this.cancelOrdertemplate = function () {
-            console.log("cancelling order template : " + _this.orderTemplate);
-            var payload = { 'orderTemplateCancellationReasonType': _this.formData };
-            payload['orderTemplateID'] = _this.orderTemplate.orderTemplateID;
-            console.log(_this.orderTemplateService.getFlattenObject(payload));
+            console.log('flexship modal cancel: ', _this);
         };
     }
     MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
         var _this = this;
-        console.log("cancelling order template : " + this.orderTemplate);
+        //TODO frontend validation
         var payload = { 'orderTemplateCancellationReasonType': this.formData };
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload = this.orderTemplateService.getFlattenObject(payload);
         console.log(payload);
         // make api request
-        this.orderTemplateService.cancel(payload).then(function (response) {
-            _this.orderTemplate = response.orderTemplate;
-            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+        this.orderTemplateService.cancel(payload).then(function (data) {
+            if (angular.isDefined(data.orderTemplate)) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(data);
+                //TODO handle errors
+            }
             // TODO: show alert
         }, function (reason) {
             throw (reason);
@@ -59255,10 +59255,49 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
-    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService) {
+    // payload :: {orderTemplateScheduleDateChangeReasonTypeID:'', otherScheduleDateChangeReasonNotes: '', nextPlaceDateTime: '' }
+    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
-        this.$onInit = function () { };
+        this.observerService = observerService;
+        this.formData = {
+            selectedReason: '',
+            otherReasonNotes: undefined,
+            nextPlaceDateTime: new Date()
+        };
+        this.$onInit = function () {
+            console.log('flexship modal update schedule : ', _this);
+        };
     }
+    MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
+        var _this = this;
+        //TODO frontend validation
+        var payload = {};
+        payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.formData.selectedReason.value;
+        //HardCoded sysCode for "Other reason"
+        if (this.formData.selectedReason.sysCode === 'otsdcrtOther' && this.formData.otherReasonNotes) {
+            payload['otherScheduleDateChangeReasonNotes'] = this.formData.otherReasonNotes;
+        }
+        payload['scheduleOrderNextPlaceDateTime'] = this.formData.nextPlaceDateTime;
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        console.log('updateSchedule :' + JSON.stringify(payload));
+        return;
+        // make api request
+        this.orderTemplateService.updateSchedule(payload).then(function (data) {
+            if (angular.isDefined(data.orderTemplate)) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(JSON.stringify(data));
+                //TODO handle errors
+            }
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipChangeOrSkipOrderModalController;
 }());
 var MonatFlexshipChangeOrSkipOrderModal = /** @class */ (function () {
@@ -59269,7 +59308,8 @@ var MonatFlexshipChangeOrSkipOrderModal = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '='
+            orderTemplate: '<',
+            scheduleDateChangeReasonTypeOptions: '<'
         };
         this.controller = MonatFlexshipChangeOrSkipOrderModalController;
         this.controllerAs = "monatFlexshipChangeOrSkipOrderModal";
@@ -59792,9 +59832,14 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         payload = this.orderTemplateService.getFlattenObject(payload);
         //return;
         // make api request
-        this.orderTemplateService.activate(payload).then(function (response) {
-            _this.orderTemplate = response.orderTemplate;
-            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+        this.orderTemplateService.activate(payload).then(function (data) {
+            if (angular.isDefined(data.orderTemplate)) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(data);
+            }
             // TODO: show alert
         }, function (reason) {
             throw (reason);
@@ -60210,6 +60255,16 @@ var OrderTemplateService = /** @class */ (function () {
         this.cancel = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
+                .promise;
+        };
+        this.updateSchedule = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
+                .promise;
+        };
+        this.updateFrequency = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
                 .promise;
         };
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {

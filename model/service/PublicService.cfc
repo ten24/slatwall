@@ -1814,6 +1814,14 @@ component  accessors="true" output="false"
 
 		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
+	
+	private void function setOrderTemplateAjaxResponse(required any data) {
+	    
+		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+	    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+	    
+ 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+	}
 
 
  	public void function updateOrderTemplateShipping(required any data){ 
@@ -1821,28 +1829,27 @@ component  accessors="true" output="false"
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
-			return; // TODO error message
+			return; 
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.updateShipping", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public.updateOrderTemplateShipping", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("updateShipping");
-            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
     		
-    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
-		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
-		    
-     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
      		
      		//if there's a new account address
      		if(StructKeyExists(arguments.data, "newAccountAddress")) {
      		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
      		}
+     		
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
-        
  	}   
  	
  	
@@ -1851,23 +1858,20 @@ component  accessors="true" output="false"
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
-			return; // TODO error message
+			return;
 		}
 		
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.activateOrderTemplate", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public.activateOrderTemplate", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("activate");
             getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+            setOrderTemplateAjaxResponse(argumentCollection = arguments);
             
-    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
-		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
-		    
-     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
         } else {
-            dump(orderTemplate.getErrors()); abort;
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
  	} 
  	
@@ -1877,25 +1881,69 @@ component  accessors="true" output="false"
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
-			return; // TODO error message
+			return;
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.cancelOrderTemplate", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public:cancelOrderTemplate", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");
-            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
-            
-    		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
-		    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
-		    
-     		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
         } else {
-            dump(orderTemplate.getErrors()); abort;
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
  	}   
+ 	
+ 	
+ 	public any function updateOrderTemplateSchedule( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateSchedule'); 
+        getHibachiScope().addActionResult( "public:updateOrderTemplateSchedule", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("updateSchedule");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+ 	} 
+	
+	
+	public any function updateOrderTemplateFrequency( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateFrequency'); 
+        getHibachiScope().addActionResult( "public:updateOrderTemplateFrequency", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("updateFrequency");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+	} 
+	
 
 	
 	public void function deleteOrderTemplateItem(required any data) {

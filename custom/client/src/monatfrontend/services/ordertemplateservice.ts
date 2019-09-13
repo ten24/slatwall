@@ -65,6 +65,18 @@ export class OrderTemplateService {
                   .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
                   .promise;
     }
+    
+    public updateSchedule = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
+                  .promise;
+    }
+    
+    public updateFrequency = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+                  .promise;
+    }
 	
 	public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {

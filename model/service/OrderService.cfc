@@ -1892,15 +1892,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.orderTemplateID" default="";
 	
-		if(len(arguments.data.orderTemplateID) == 0){
-			return javaCast('null',0); 
+		if(len(arguments.data.orderTemplateID) == 0) {
+			ArrayAppend(arguments.data.messages, 'data.orderTemplateID must be set');
+			return;
 		} 
 		
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
-		if( isNull(orderTemplate) || 
-		    getHibachiScope().getAccount().getAccountID() != orderTemplate.getAccount().getAccountID()
-		) {
-			return javaCast('null',0); 
+		
+		if( isNull(orderTemplate) ){
+			ArrayAppend(arguments.data.messages, 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#');
+			return;
+		}  
+		
+		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
+			ArrayAppend(arguments.data.messages, "OrderTemplate doesn't belong to the User");
+			return; 
 		}
 	
 		return orderTemplate; 
