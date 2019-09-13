@@ -333,11 +333,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(arguments.constraintValue == true){
-			return isNull(propertyValue);			
-		}else{
-			return !isNull(propertyValue);			
-		}
+		return arguments.constraintValue == isNull(propertyValue);			
 	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
