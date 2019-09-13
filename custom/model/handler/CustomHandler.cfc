@@ -1,6 +1,6 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     
-    public void function afterOrderSave(any slatwallScope, any order, any data) {
+    public void function beforeOrderSave(any slatwallScope, any order, any data) {
         
         // Sets the actual order created site from the account.
         var account = order.getAccount();
@@ -28,7 +28,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
     
     // Sets a default on the account created site.
-    public void function afterAccountSave(any slatwallScope, any account, any data) {
+    public void function beforeAccountSave(any slatwallScope, any account, any data) {
         if ( isNull(account.getAccountCreatedSite())){
             account.setAccountCreatedSite(slatwallScope.getService("OrderService").getSiteBySiteCode("mura-default"));
         }
