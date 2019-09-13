@@ -1695,6 +1695,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
 
+		if(arguments.processObject.getSkipMonthFlag()) {
+			//do some calc dateAdd 
+			// DateAdd(arguments.processObject.getScheduleOrderNextPlaceDateTime(), 1);
+		}
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 

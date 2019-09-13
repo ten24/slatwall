@@ -55,6 +55,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	property name="orderTemplateScheduleDateChangeReasonTypeID"; 
 	property name="orderTemplateScheduleDateChangeReasonType"; 
+	
+	property name="skipMontFlag" default=false;
+
 
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 

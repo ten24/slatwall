@@ -59260,31 +59260,58 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.endDayOfTheMonth = 25;
         this.formData = {
-            selectedReason: '',
-            otherReasonNotes: undefined,
-            nextPlaceDateTime: new Date()
+            delayOrSkip: 'delay',
+            showOtherReasonNotes: false,
         };
         this.$onInit = function () {
             console.log('flexship modal update schedule : ', _this);
+            _this.calculateNextPlacedDateTime();
+        };
+        this.calculateNextPlacedDateTime = function () {
+            //format mm/dd/yyyy
+            var date = new Date(Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime));
+            _this.nextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+            _this.endDayOfTheMonth = 25;
+            _this.endDate = new Date((date.getMonth() + 1 + 3) + '/' + date.getDate() + '/' + date.getFullYear());
+        };
+        this.updateDelayOrSkip = function (val) {
+            _this.formData.delayOrSkip = val;
+        };
+        this.selectedReasonChanged = function () {
+            console.log('reason changed ', _this.selectedReason);
+            if (!!_this.selectedReason && !!_this.selectedReason.value) {
+                _this.formData.showOtherReasonNotes = _this.selectedReason.systemCode === 'otsdcrtOther';
+            }
+            else {
+                _this.formData.showOtherReasonNotes = false;
+                //disable form
+            }
         };
     }
     MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
         var _this = this;
         //TODO frontend validation
         var payload = {};
-        payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.formData.selectedReason.value;
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
         //HardCoded sysCode for "Other reason"
-        if (this.formData.selectedReason.sysCode === 'otsdcrtOther' && this.formData.otherReasonNotes) {
-            payload['otherScheduleDateChangeReasonNotes'] = this.formData.otherReasonNotes;
+        if (this.formData.showOtherReasonNotes) {
+            payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
         }
-        payload['scheduleOrderNextPlaceDateTime'] = this.formData.nextPlaceDateTime;
+        if (this.formData.delayOrSkip === 'delay') {
+            payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
+        }
+        else {
+            payload['skipMontFlag'] = true;
+        }
         payload = this.orderTemplateService.getFlattenObject(payload);
-        console.log('updateSchedule :' + JSON.stringify(payload));
+        console.log('updateSchedule :', payload);
         return;
         // make api request
         this.orderTemplateService.updateSchedule(payload).then(function (data) {
-            if (angular.isDefined(data.orderTemplate)) {
+            if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
