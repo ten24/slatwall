@@ -151,9 +151,17 @@
                                 swListingDisplay.recordDeleteAction.length ||
                                 swListingDisplay.recordProcessButtonDisplayFlag.length
                             ">
-                                <center><div ng-if="swListingDisplay.loading" class="right">
-                                    <b><i class="fas fa-spinner fa-pulse"></i></b>
-                                </div></center>
+                                <div ng-if="swListingDisplay.loading" class="right">
+                                    <style>
+                                        div.centered {
+                                            margin: auto;
+                                            width: 100%;
+                                            display: flex;
+                                            justify-content: center;
+                                        }
+                                    </style>
+                                    <div class="centered"><b><i class="fas fa-spinner fa-pulse"></i></b></div>
+                                </div>
                             </th>
                         </tr>
                     </thead>
