@@ -59330,19 +59330,19 @@ var swfAccountController = /** @class */ (function () {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             var accountCreatedYear = Date.parse(_this.accountData.createdDateTime).getFullYear();
             var curDate = new Date;
             var curYear = curDate.getFullYear();
             _this.accountAge = accountCreatedYear - curYear;
-            console.log("test");
-        };
-        this.search = function () {
         };
         this.account = this.$rootScope.hibachiScope.getAccount();
+        //Do this when then account data returns
         this.account.then(function () {
             _this.accountData = _this.account.$$state.value;
             _this.checkAndApplyAccountAge();
+            console.log('I ran');
         });
     }
     return swfAccountController;

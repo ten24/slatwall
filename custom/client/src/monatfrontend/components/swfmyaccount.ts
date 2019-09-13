@@ -13,28 +13,21 @@ class swfAccountController {
     ){
         this.account = this.$rootScope.hibachiScope.getAccount();
         
+        //Do this when then account data returns
         this.account.then(()=>{
             this.accountData = this.account.$$state.value;
             this.checkAndApplyAccountAge();
+            console.log('I ran')
         })
         
     }
-    
+    // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
         let accountCreatedYear = Date.parse(this.accountData.createdDateTime).getFullYear();
         let curDate = new Date
         let curYear = curDate.getFullYear();
         this.accountAge = accountCreatedYear - curYear;
-        console.log("test");
- 
     }
-    
-    public search =()=>{
- 
-    }
-    
-    
-
 }
 
 class swfAccount  {
