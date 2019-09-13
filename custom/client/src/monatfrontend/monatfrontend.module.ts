@@ -7,6 +7,8 @@ import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 //services
 import {OrderTemplateService} from "./services/ordertemplateservice"; 
 import {SWFWishlist} from "./components/swfwishlist";
+import {swfAccount} from "./components/swfmyaccount";
+
 
 //declare variables out of scope
 declare var $:any;
@@ -22,7 +24,9 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .service('orderTemplateService', OrderTemplateService)
-.directive('swfWishlist', SWFWishlist.Factory());
+.directive('swfWishlist', SWFWishlist.Factory())
+.directive('swfAccount', swfAccount.Factory());
+
 
 export{
     monatfrontendmodule
