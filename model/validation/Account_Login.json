@@ -1,7 +1,15 @@
 {	
+	"conditions":{
+	    "EmailAddressOrUsernameEnforcedLoginType":{
+	        "emailAddressOrUsername":{"null":false}
+	    },
+		"EmailAddressEnforcedLoginType":{
+	        "emailAddress":{"null":false}
+	    }
+	},
 	"properties":{
-		
-		"emailAddressOrUserName":	[{"required":true, "method":"getEnforcedLoginType"}],
-		"password":					[{"required":true}]
+		"emailAddressOrUsername":			[{"conditions":"EmailAddressOrUsernameEnforcedLoginType", "required":true}],
+		"emailAddress":						[{"conditions":"EmailAddressEnforcedLoginType","required":true, "dataType":"email"}],
+		"password":							[{"required":true}]
 	}
 }

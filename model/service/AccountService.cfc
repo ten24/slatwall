@@ -687,8 +687,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
-		// var emailAddress = arguments.processObject.getEmailAddress();
-		// var username = arguments.processObject.getUsername();
 		var emailAddressOrUsername = arguments.processObject.getEmailAddressOrUsername();
 		var password = arguments.processObject.getPassword();
 		var authenticationCode = arguments.processObject.getAuthenticationCode();
@@ -698,7 +696,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If emailAddressOrUsername is an email
 		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUsername', 'email')){
 			loginType = "emailAddress";
-			var emailAddress = arguments.processObject.getEmailAddressOrUsername();
+			
+			if(!isNull(arguments.processObject.getEmailAddress())){
+				var emailAddress = arguments.processObject.getEmailAddress();
+			}else{
+				var emailAddress = arguments.processObject.getEmailAddressOrUsername();
+			}
 			
 			// Attempt to load the account authentication by emailAddress
 			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
