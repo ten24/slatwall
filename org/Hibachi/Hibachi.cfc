@@ -482,7 +482,8 @@ component extends="framework.one" {
 		// Verify Authentication before anything happens
 
 		if(
-			!authorizationDetails.authorizedFlag
+			!authorizationDetails.authorizedFlag && 
+			!getHibachiScope().getStateless()
 		) {
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
@@ -973,6 +974,14 @@ component extends="framework.one" {
 		abort;
 	}
 
+	public boolean function isAPIRequest(){
+		return getSubSystem()=='api';
+	}
+
+	public boolean function isAPIGetRequest(){
+		return isApiRequest() && getSection() == 'main' && getItem() == 'get';
+	}
+
 	public void function setupResponse(rc) {
 		param name="arguments.rc.ajaxRequest" default="false";
 		param name="arguments.rc.ajaxResponse" default="#structNew()#";
@@ -982,8 +991,10 @@ component extends="framework.one" {
 		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
 			getHibachiScope().setPersistSessionFlag(false);
 		}
-		
-		endHibachiLifecycle();
+	
+		if(!isAPIGetRequest()){	
+			endHibachiLifecycle();
+		}
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
@@ -992,7 +1003,7 @@ component extends="framework.one" {
 		}
 
 		// Check for an API Response
-		if(arguments.rc.apiRequest) {
+		if(isAPIRequest()){
 			renderApiResponse();
 		}
 
