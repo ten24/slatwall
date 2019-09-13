@@ -1,15 +1,57 @@
+class ReturnOrderItem{
+    public orderItemID:string;
+    public quantity:number;
+    public sku_calculatedSkuDefinition:string;
+    public calculatedDiscountAmount:number;
+    public calculatedExtendedPriceAfterDiscount:number;
+    public calculatedExtendedUnitPriceAfterDiscount:number;
+    public calculatedTaxAmount:number;
+    public allocatedOrderDiscountAmount:number;
+    public sku_skuCode:string;
+    public sku_product_calculatedTitle:string;
+    public calculatedQuantityDeliveredMinusReturns:number;
+    public refundTotal:number;
+    public returnQuantityMaximum:number;
+    public total:number;
+    public refundUnitPrice:number;
+    public taxTotal:number;
+    public taxRefundAmount:number;
+    public returnQuantity=0;
+    
+    constructor(obj){
+        obj && Object.assign(this,obj);
+        this.refundTotal=0;
+        this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
+        this.total = this.calculatedExtendedPriceAfterDiscount;
+        this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
+        this.taxTotal = this.calculatedTaxAmount;
+        this.taxRefundAmount = 0;
+        return this;
+    }
+    
+    public getAllocatedRefundOrderDiscountAmount = ()=>{
+        if(this.returnQuantity >= 0){
+            return Math.round(this.allocatedOrderDiscountAmount * this.refundTotal * 100 / this.total) / 100;
+        }
+        return 0;
+    }
+}
+
 class SWReturnOrderItemsController{
     private orderId:string;
     private displayPropertiesList:string;
+    private currencyCode:string;
     
     public orderItemCollectionList;
-    public orderItems:Array<Object> = [];
+    public orderItems:Array<ReturnOrderItem> = [];
     public orderPayments:Array<Object> = [];
+    public refundSubtotal:number=0;
     public refundTotal:number=0;
-    public refundPVTotal:number=0;
-    public refundCVTotal:number=0;
+    public initialFulfillmentRefundAmount:string;
     public fulfillmentRefundAmount:number;
     public maxFulfillmentRefundAmount:number;
+    public allocatedOrderDiscountAmountTotal;
+    public currencySymbol:string;
     
     public setupOrderItemCollectionList = () =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
@@ -19,22 +61,31 @@ class SWReturnOrderItemsController{
         this.orderItemCollectionList.addFilter("order.orderID", this.orderId, "=");
         this.orderItemCollectionList.setAllRecords(true);
         this.orderItemCollectionList.getEntity().then(result=>{
-            console.log(result);
+            for(let i = 0; i < result.records.length; i++){
+                result.records[i] = new ReturnOrderItem(result.records[i]);
+            }
+            this.orderItems = result.records;
         })
+    
     }
     
     public getDisplayPropertiesList = () =>{
+
         return `orderItemID,
                 quantity,
-                calculatedQuantityDeliveredMinusReturns,
+                sku.calculatedSkuDefinition,
                 calculatedDiscountAmount,
                 calculatedExtendedPriceAfterDiscount,
-                calculatedExtendedPersonalVolumeAfterDiscount,
-                calculatedExtendedCommissionableVolumeAfterDiscount,
                 calculatedExtendedUnitPriceAfterDiscount,
+                calculatedTaxAmount,
+                allocatedOrderDiscountAmount,
                 sku.skuCode,
-                sku.product.title,
-                sku.calculatedSkuDefinition`.replace(/\s+/gi,'');
+                sku.product.calculatedTitle,
+                calculatedQuantityDeliveredMinusReturns`.replace(/\s+/gi,'');
+                
+                // calculatedExtendedPersonalVolumeAfterDiscount,
+                // calculatedExtendedCommissionableVolumeAfterDiscount,
+                
     }
     
     constructor(
@@ -42,7 +93,13 @@ class SWReturnOrderItemsController{
         private collectionConfigService
     ){
         this.displayPropertiesList = this.getDisplayPropertiesList();
+        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
         this.setupOrderItemCollectionList();
+        $hibachi.getCurrencies().then(result=>{
+            console.log(result);
+            this.currencySymbol = result.data[this.currencyCode];
+        })
     }
 
     public updateOrderItem = (orderItem) => {
@@ -86,19 +143,16 @@ class SWReturnOrderItemsController{
    }
    
    private updateRefundTotals = () =>{
-       let refundTotal = 0;
-       let refundPVTotal = 0;
-       let refundCVTotal = 0;
-       
+       let refundSubtotal = 0;
+       let allocatedOrderDiscountAmountTotal = 0;
+
        this.orderItems.forEach((item:any)=>{
-           refundTotal += item.refundTotal + item.taxRefundAmount;
-           refundPVTotal += item.refundPVTotal;
-           refundCVTotal += item.refundCVTotal;
-           
+           refundSubtotal += item.refundTotal + item.taxRefundAmount;
+           allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
        })
-       this.refundTotal = Number((refundTotal + this.fulfillmentRefundAmount).toFixed(2));
-       this.refundPVTotal = Number(refundPVTotal.toFixed(2));
-       this.refundCVTotal = Number(refundCVTotal.toFixed(2));
+       this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+       this.refundSubtotal = refundSubtotal;
+       this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundAmount - this.allocatedOrderDiscountAmountTotal).toFixed(2));
    }
    
    private updatePaymentTotals = ()=>{
@@ -137,7 +191,9 @@ class SWReturnOrderItems {
 	public templateUrl:string;
 	public scope=true;
 	public bindToController = {
-	    orderId:'@'
+	    orderId:'@',
+	    currencyCode:'@',
+	    initialFulfillmentRefundAmount:'@'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";
@@ -163,7 +219,6 @@ class SWReturnOrderItems {
 	}
 
 	public link = (scope, element, attrs) =>{
-
 	}
 
 }
