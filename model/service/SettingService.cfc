@@ -290,6 +290,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			
 			
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
