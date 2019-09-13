@@ -63578,11 +63578,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.observerService.notify("addOrderItemStartLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
                 if (data.preProcessView) {
@@ -63599,7 +63600,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     //now get the order values because we updated them and pass along to anything listening...
                     _this.$hibachi.getEntity("Order", _this.order).then(function (data) {
                         _this.observerService.notify("refreshOrder" + _this.order, data);
+                        _this.observerService.notify("addOrderItemStopLoading", {});
                     });
+                    _this.observerService.notify("addOrderItemStopLoading", {});
                     //(window as any).location.reload();
                 }
             }) // JSON-string from `response.json()` call
@@ -91593,21 +91596,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }
@@ -92194,6 +92182,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
             });
         };
+        this.startLoading = function () {
+            _this.loading = true;
+        };
+        this.stopLoading = function () {
+            _this.loading = false;
+        };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
          * collection on demand (refresh).
@@ -92202,6 +92196,12 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.startLoading, "addOrderItemStartLoading");
+            }
+            if (initial) {
+                _this.observerService.attach(_this.stopLoading, "addOrderItemStopLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
