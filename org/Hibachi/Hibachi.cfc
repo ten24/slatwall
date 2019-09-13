@@ -337,7 +337,10 @@ component extends="framework.one" {
 		}
 		
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(isAPIGetRequest()){
+			getHibachiScope().setStateless(true);
+		}
+		getHibachiScope().getService("hibachiSessionService").setProperSession(getHibachiScope().getStateless());
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){

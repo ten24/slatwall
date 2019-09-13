@@ -91,7 +91,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		// All these potentials require the account to be logged in, and that it matches the hibachiScope
-		if(getHibachiScope().getStateless() || (getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+		if(getHibachiScope().getStateless() || (getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID())) {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
@@ -370,7 +370,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Get all of the entities in the application
 			var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/model/entity'));
-			
+		    var auditPropertiesList = 'createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID'	
 			// Loop over each of the entities
 			for(var e=1; e<=arrayLen(entityDirectoryArray); e++) {
 				
@@ -403,7 +403,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						for(var p=1; p<=arrayLen(entityMetaData.properties); p++) {
 							
 							// Make sure that this property should be added as a property that can have permissions
-							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
+							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID" || ListFindNoCase(auditPropertiesList, entityMetaData.properties[p].name) )
 								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
 								
 								// Add to ManyToMany Properties
@@ -454,9 +454,9 @@ component output="false" accessors="true" extends="HibachiService" {
 									} else {
 										entityPermissions[ entityName ].properties[ currentEntityMetaData.properties[p].name ] = currentEntityMetaData.properties[p];	
 									}
+								}
 							}
-						}
-						
+						}	
 						// Sort the structure in order by propertyName
 						structSort(entityPermissions[ entityName ]['properties'], "text", "ASC", "name");
 					}
