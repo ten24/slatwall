@@ -60,7 +60,7 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateCancellationReasonType" fieldType="radioGroup" edit="#rc.edit#"/>
+				<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateCancellationReasonType" fieldType="radioGroup" edit="#rc.edit#" enableOtherInputForRadioGroupShowHide="false" />
 				
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
