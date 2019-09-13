@@ -51,10 +51,14 @@
 	<!--- ======================= Helper Methods ================================ --->
 		
 	<cfscript>
+	
 		// Helper method to get the Slatwall Application
 		public any function getSlatwallApplication() {
-			variables.slatwallApplication = createObject("component", "Slatwall.Application");
-			return variables.slatwallApplication;
+			var slatwallApplication = createObject("component", "Slatwall.Application");
+			if(!slatwallApplication.getHibachiScope().hasApplicationValue("initialized")) {
+				slatwallApplication.onApplicationStart();
+			}
+			return slatwallApplication;
 		}
 		
 		// Helper method to return the mura plugin config for the slatwall-mura connector
@@ -67,10 +71,8 @@
 		
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
-			// Cannot rely solely on the non-existence of request.slatwallScope because slatwallApplication.reloadApplication() will create the slatwallScope. 
-			// And in that case we use the forceBootstrapFlag to indicate slatwallApplication.bootstrap() must be invoked.
-			if(!structKeyExists(request, "slatwallScope") || (request.slatwallScope.hasValue('forceBootstrapFlag') && request.slatwallScope.getValue('forceBootstrapFlag'))) {
-				getSlatwallApplication().bootstrap();
+			if(!structKeyExists(request, "slatwallScope")) {
+				getSlatwallApplication().setupGlobalRequest();
 			}
 			if(!structKeyExists(arguments.$, "slatwall")) {
 				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	

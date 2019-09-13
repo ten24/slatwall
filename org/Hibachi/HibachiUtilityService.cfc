@@ -74,7 +74,15 @@
 		public string function camelCaseToTitleCase(required string stringValue){
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
-		
+
+		public string function arrayOfStructsToList(required array structs, required string structKeyForList, string delimiter=','){
+			var listToReturn = "";
+			for(var record in arguments.structs){
+				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList], arguments.delimiter );
+			} 
+			return listToReturn; 
+		}
+
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -87,7 +95,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -101,12 +109,9 @@
 		        var returnArray = arraynew(1);
 
 		        //grab the number of elements in the array (used in the loops)
-		        var count = arrayLen(aOfS);
+		        var count = arrayLen(arguments.aOfS);
 		        //make a variable to use in the loop
 		        var ii = 1; var j=1;
-		        //if there is a 3rd argument, set the sortOrder
-		        if(arraylen(arguments) GT 2)
-		            sortOrder = arguments[3];
 		        //if there is a 4th argument, set the sortType
 		        if(arraylen(arguments) GT 3)
 		            sortType = arguments[4];
@@ -115,12 +120,12 @@
 		            delim = arguments[5];
 		        //loop over the array of structs, building the sortArray
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            sortArray[ii] = aOfS[ii][key] & delim & ii;
+		            sortArray[ii] = arguments.aOfS[ii][arguments.key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,arguments.sortOrder2);
+		        arraySort(sortArray,sortType,arguments.sortOrder);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
+		            returnArray[ii] = arguments.aOfS[listLast(sortArray[ii],delim)];
 		        //return the array
 		        return returnArray;
 		}
@@ -149,9 +154,9 @@
 
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
-			for(var key in data){
-			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
-			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			for(var key in arguments.data){
+			  if( isSimpleValue(arguments.data[key]) && key != 'serializedJsonData'){
+			    arguments.data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
 			  }
 			}
 		}
@@ -273,6 +278,16 @@
 			}
 
 			return returnTitle;
+		}
+		
+		public string function createUniqueCode(required string tableName, required string column, string prefix = '', numeric size = 7) {
+			var isUnique = false;
+			var uniqueCode = "";
+			while(!isUnique) {
+				uniqueCode = prefix & getHibachiUtilityService().generateRandomID(size);
+				isUnique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.column, value=uniqueCode);
+			}
+			return uniqueCode;
 		}
 		
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
@@ -480,7 +495,7 @@
 		}
 
 		public boolean function isStringTemplate(required string value){
-			return arraylen(getTemplateKeys(value));
+			return arraylen(getTemplateKeys(arguments.value));
 		}
 
 		//replace single brackets ${}
@@ -710,7 +725,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = htmlEditFormat(arguments.html);
+				var sanitizedString = esapiEncode('html', arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);
 			}
@@ -1151,7 +1166,7 @@
  			return timezoneOffsetInSeconds;
 		}
 
- 		public date function getLocalServerDateTimeByUtcEpoch(numeric utcEpoch) {
+ 		public date function getLocalServerDateTimeByUtcEpoch(number utcEpoch) {
 			//XXX explaination: for "* -1"  ==> https://www.bennadel.com/blog/1595-converting-to-gmt-and-from-gmt-in-coldfusion-for-use-with-http-time-stamps.htm
 			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
@@ -1166,16 +1181,16 @@
 		<cftry>
 			<cflog file="#getApplicationValue('applicationKey')#" text="START EXCEPTION" />
 			<cfif structKeyExists(arguments.exception, "detail") and isSimpleValue(arguments.exception.detail)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.detail#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Detail: #arguments.exception.detail#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "errNumber") and isSimpleValue(arguments.exception.errNumber)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.errNumber#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="errNumber: #arguments.exception.errNumber#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "message") and isSimpleValue(arguments.exception.message)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.message#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Message: #arguments.exception.message#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "stackTrace") and isSimpleValue(arguments.exception.stackTrace)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.stackTrace#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Stack Trace: #arguments.exception.stackTrace#" />
 			</cfif>
 			<cflog file="#getApplicationValue('applicationKey')#" text="END EXCEPTION" />
 			<cfcatch>

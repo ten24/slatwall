@@ -2,12 +2,12 @@
 	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	 
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	 
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -88,8 +88,24 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
 		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
 		
-		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
+		setupIntegrations();
+		
+		getBeanFactory().getBean("hibachiAuthenticationService").loadPermissionRecordRestrictionsCache(refresh=true);
+	}
+	
+	public void function setupIntegrations() {
+		var tryCount = 0;
+		while(tryCount < 10) {
+			tryCount++;
+			try{
+				getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
+				writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
+				break;
+			} catch (any e) {
+				writeLog(file="Slatwall", text="General Log - Integrations setup try count: #tryCount#");
+				sleep(1);
+			}
+		}
 	}
 	
 	public void function onUpdateRequest() {
@@ -114,10 +130,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		// Clear the setting cache so that it can be reloaded
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
-		
-		// Clear the setting meta cache so that it can be reloaded
-        	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
-        	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
 		
 		// Run Scripts
 		if( !getHibachiScope().getApplicationValue('skipDbData')){

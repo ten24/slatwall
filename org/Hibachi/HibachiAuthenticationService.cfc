@@ -6,7 +6,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public void function init(){
 		//on init load all possible record level perms
-		loadPermissionRecordRestrictionsCache();
+		variables.permissionRecordRestrictionMap = {};
+		//loadPermissionRecordRestrictionsCache();
 	}
 	
 	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
@@ -23,7 +24,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function hasPermissionRecordRestriction(required string entityName){
-		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+		return structKeyExists(variables.permissionRecordRestrictionMap,arguments.entityName);
 	}
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
@@ -88,8 +89,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			authDetails.publicAccessFlag = true;
 			return authDetails;
 		}
+		
 		// All these potentials require the account to be logged in, and that it matches the hibachiScope
-		if(getHibachiScope().getStateless() || (getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID())) {
+		if(getHibachiScope().getLoggedInFlag() && arguments.account.getAccountID() == getHibachiScope().getAccount().getAccountID()) {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
@@ -360,7 +362,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ================================ PUBLIC META INFO ==========================================
 	
 	public struct function getEntityPermissionDetails() {
-		
 		// First check to see if this is cached
 		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
@@ -403,7 +404,7 @@ component output="false" accessors="true" extends="HibachiService" {
 							
 							// Make sure that this property should be added as a property that can have permissions
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
-								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false" || ListFindNoCase('createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID', entityMetaData.properties[p].name) )) {
+								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {
@@ -421,42 +422,6 @@ component output="false" accessors="true" extends="HibachiService" {
 								} else {
 									entityPermissions[ entityName ]['properties'][ entityMetaData.properties[p].name ] = entityMetaData.properties[p];	
 								}
-
-							}
-						}
-
-						var currentEntityMetaData = entityMetaData;
-
-						while ( structKeyExists(currentEntityMetaData, 'extends') ){
-
-							currentEntityMetaData = currentEntityMetaData.extends;
-
-							for(var p=1; p<=arrayLen(currentEntityMetaData.properties); p++) {
-
-								// Make sure that this property should be added as a property that can have permissions
-								if( (!structKeyExists(currentEntityMetaData.properties[p], "fieldtype") || currentEntityMetaData.properties[p].fieldtype neq "ID")
-									&& (!structKeyExists(currentEntityMetaData.properties[p], "hb_populateEnabled") || currentEntityMetaData.properties[p].hb_populateEnabled neq "false")) {
-
-									// Add to ManyToMany Properties
-									if(structKeyExists(currentEntityMetaData.properties[p], "fieldtype") && currentEntityMetaData.properties[p].fieldType eq "many-to-one") {
-										entityPermissions[ entityName ].mtoproperties[ currentEntityMetaData.properties[p].name ] = currentEntityMetaData.properties[p];
-
-									// Add to OneToMany Properties
-									} else if (structKeyExists(currentEntityMetaData.properties[p], "fieldtype") && currentEntityMetaData.properties[p].fieldType eq "one-to-many") {
-										entityPermissions[ entityName ].otmproperties[ currentEntityMetaData.properties[p].name ] = currentEntityMetaData.properties[p];
-
-									// Add to ManyToMany Properties
-									} else if (structKeyExists(currentEntityMetaData.properties[p], "fieldtype") && currentEntityMetaData.properties[p].fieldType eq "many-to-many") {
-										entityPermissions[ entityName ].mtmproperties[ currentEntityMetaData.properties[p].name ] = currentEntityMetaData.properties[p];
-
-									// Add to regular field Properties
-									} else {
-										entityPermissions[ entityName ].properties[ currentEntityMetaData.properties[p].name ] = currentEntityMetaData.properties[p];	
-									}
-								
-								
-								
-								}
 							}
 						}
 						
@@ -469,6 +434,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			// Update the cached value to be used in the future
 			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
 			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
+			
 			
 		}
 		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
@@ -492,7 +458,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
-			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
+			
 		}
 		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}

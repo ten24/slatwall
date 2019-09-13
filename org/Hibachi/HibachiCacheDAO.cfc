@@ -57,13 +57,13 @@ component extends="HibachiDAO" {
 			return false;
 		}
 		
-		return ORMExecuteQuery('
+		return  ORMExecuteQuery('
 			SELECT si.serverInstanceExpired 
 			FROM #getApplicationKey()#ServerInstance si 
 			WHERE si.serverInstanceKey=:serverInstanceKey',
 			{serverInstanceKey=arguments.serverInstanceKey},
 			true
-		);
+		); 
 	}
 
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
@@ -95,6 +95,7 @@ component extends="HibachiDAO" {
 			",
 			{serverInstance=arguments.serverInstance}
 		);
+		logHibachi("server instance cache reset initiated by instance: #arguments.serverInstance.getServerInstanceKey()#",true);
 	}
 
 	public void function updateServerInstanceSettingsCache(required any serverInstance){
@@ -104,7 +105,7 @@ component extends="HibachiDAO" {
 		ORMExecuteQuery("
 			UPDATE #getApplicationKey()#ServerInstance si SET si.settingsExpired=1 where si<>:serverInstance",{serverInstance=arguments.serverInstance});
 	}
-	
+
 	public void function setAllServerInstancesExpired(){
 		ORMExecuteQuery("
 			UPDATE #getApplicationKey()#ServerInstance si 

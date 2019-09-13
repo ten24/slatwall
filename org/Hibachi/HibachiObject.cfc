@@ -39,18 +39,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		
-		// Attempts to prevent concurrent requests on same server from interfering with each other while reloading beanFactory
-		if (!structKeyExists(variables, 'beanFactory')) {
-			lock scope="Application" timeout="2400" type="readonly" {
-				if (isNull(application[ getApplicationValue('applicationKey') ].factory)) {
-					throw("The beanFactory is expected to exist at this stage. Readonly application lock is applied. It is possible another concurrent request reloaded server and is interfering. Further investigation into this issue is required.");
-				}
-				
-				variables.beanFactory = application[ getApplicationValue('applicationKey') ].factory;
-			}
-		}
-		return variables.beanFactory;
+		return application[ getApplicationValue('applicationKey') ].factory;		
 	}
 	
 	public any function getCustom(){
@@ -68,9 +57,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
 	public void function setBeanFactory(required any beanFactory) {
-		lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
-			application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
-		}
+		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
 	}
 
 	// @hint whether or not we have a bean
@@ -156,7 +143,7 @@ component accessors="true" output="false" persistent="false" {
 	public any function invokeMethod(required string methodName, struct methodArguments={}) {
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = methodArguments);
+			return theMethod(argumentCollection = arguments.methodArguments);
 		}
 		if(structKeyExists(this, "onMissingMethod")) {
 			return this.onMissingMethod(missingMethodName=arguments.methodName, missingMethodArguments=arguments.methodArguments);	
@@ -185,7 +172,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	//Dump & Die, shortcut
 	public any function dd(required any data, numeric top = 2){
-		writeDump(var="#data#", top=arguments.top, abort=true);
+		writeDump(var="#arguments.data#", top=arguments.top, abort=true);
 	}
 	
 	// ===========================  END:  UTILITY METHODS ===========================================
@@ -233,7 +220,7 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	public string function rbKey(required string key) {
-		return getHibachiScope().rbKey(arguments.key);
+		return getHibachiScope().rbKey(argumentCollection=arguments);
 	}
 	
 	public string function hibachiHTMLEditFormat(required any html=""){
