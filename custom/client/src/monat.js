@@ -59336,19 +59336,25 @@ var swfAccountController = /** @class */ (function () {
                 var accountCreatedYear = Date.parse(_this.accountData.createdDateTime).getFullYear();
                 var curDate = new Date;
                 var curYear = curDate.getFullYear();
-                _this.accountAge = accountCreatedYear - curYear;
             }
         };
         this.getAccount = function () {
             _this.account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
-            _this.account.then(function () {
-                _this.accountData = _this.account.$$state.value;
+            _this.account.then(function (request) {
+                console.log(request);
+                _this.$rootScope.accountData = request;
+                _this.accountData = request;
                 _this.checkAndApplyAccountAge();
-                console.log('I raan');
             });
         };
-        //this.getAccount();
+        this.setPrimaryPaymentMethod = function (item) {
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+                _this.loading = false;
+                return result;
+            });
+        };
     }
     return swfAccountController;
 }());
@@ -80432,6 +80438,9 @@ var hibachimodule = angular.module('hibachi', [
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }
+        if (!isAdmin && $hibachi.newAccount) {
+            $rootScope.hibachiScope.getAccount();
+        }
     }])
     .constant('hibachiPartialsPath', 'hibachi/components/')
     .directive('swSaveAndFinish', swsaveandfinish_1.SWSaveAndFinish.Factory());
@@ -81015,6 +81024,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
             });
         };
+        this.startLoading = function () {
+            _this.loading = true;
+        };
+        this.stopLoading = function () {
+            _this.loading = false;
+        };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
          * collection on demand (refresh).
@@ -81023,6 +81038,12 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.startLoading, "addOrderItemStartLoading");
+            }
+            if (initial) {
+                _this.observerService.attach(_this.stopLoading, "addOrderItemStopLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
