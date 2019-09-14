@@ -52,20 +52,21 @@ class swfAccountController {
         
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
             
-            console.log(result)
-            return result;
+            this.countryCodeOptions = result.countryCodeOptions;
+            console.log(this.countryCodeOptions)
+            this.loading = false;
             
         });
     }
     
-    public getStateCodeOptions = ():Promise<any>=>{
+    public getStateCodeOptions = (countryCode):Promise<any> =>{
+        console.log(typeof(countryCode));
         this.loading = true;
         
-        return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", this.selectedCountry).then(result=>{
-            
-            console.log(result)
+        return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
+            this.stateCodeOptions = result;
+            this.loading = false;
             return result;
-            
         });
     }
 }

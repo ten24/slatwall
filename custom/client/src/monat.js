@@ -59351,14 +59351,17 @@ var swfAccountController = /** @class */ (function () {
         this.getCountryCodeOptions = function () {
             _this.loading = true;
             return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
-                console.log(result);
-                return result;
+                _this.countryCodeOptions = result.countryCodeOptions;
+                console.log(_this.countryCodeOptions);
+                _this.loading = false;
             });
         };
-        this.getStateCodeOptions = function () {
+        this.getStateCodeOptions = function (countryCode) {
+            console.log(typeof (countryCode));
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", _this.selectedCountry).then(function (result) {
-                console.log(result);
+            return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
+                _this.stateCodeOptions = result;
+                _this.loading = false;
                 return result;
             });
         };
@@ -74675,7 +74678,7 @@ var PublicService = /** @class */ (function () {
             }
             if (data) {
                 method = "post";
-                data.returnJsonObjects = "cart,account";
+                //data.returnJsonObjects = "cart,account";
                 if (_this.cmsSiteID) {
                     data.cmsSiteID = _this.cmsSiteID;
                 }
@@ -74688,7 +74691,7 @@ var PublicService = /** @class */ (function () {
                 }
             }
             if (method == "post") {
-                data.returnJsonObjects = "cart,account";
+                //data.returnJsonObjects = "cart,account";
                 //post
                 var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
                 request_1.promise.then(function (result) {
