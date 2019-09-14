@@ -59330,6 +59330,7 @@ var swfAccountController = /** @class */ (function () {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {

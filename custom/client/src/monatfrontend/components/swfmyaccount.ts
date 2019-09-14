@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
 
     // @ngInject
     constructor(
