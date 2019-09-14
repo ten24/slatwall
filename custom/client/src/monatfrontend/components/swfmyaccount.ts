@@ -8,18 +8,31 @@ class swfAccountController {
     public accountAge:number;
     public loading:boolean;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
+    public yearOptions:Array<number> = [];
+    public currentYear;
+    public countryCodeOptions;
+    public stateCodeOptions;
+    public selectedCountry;
 
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
-    ){}
+    ){
+        const currDate = new Date;
+        this.currentYear = currDate.getFullYear();
+        let manipulateableYear = this.currentYear;
+        
+        do {
+            this.yearOptions.push(manipulateableYear++)
+        }
+        while(this.yearOptions.length <= 9);
+    }
     // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
         if(this.accountData.createdDateTime){
             let accountCreatedYear = Date.parse(this.accountData.createdDateTime).getFullYear();
-            let curDate = new Date;
-            let curYear = curDate.getFullYear();
+            this.accountAge = this.currentYear - accountCreatedYear
         }
     }
     
@@ -28,23 +41,32 @@ class swfAccountController {
         //Do this when then account data returns
         this.account.then((request)=>{
             console.log(request);
-            this.$rootScope.accountData = request;
-            
             this.accountData = request;
             this.checkAndApplyAccountAge();
             
         })
     }
     
-    public deletePaymentMethod = (methodID) => {
+    public getCountryCodeOptions = ():Promise<any>=>{
         this.loading = true;
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",methodID).then(result=>{
-            this.loading= false;
+        return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
+            
+            console.log(result)
             return result;
             
         });
+    }
+    
+    public getStateCodeOptions = ():Promise<any>=>{
+        this.loading = true;
         
+        return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", this.selectedCountry).then(result=>{
+            
+            console.log(result)
+            return result;
+            
+        });
     }
 }
 

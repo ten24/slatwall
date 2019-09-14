@@ -59331,12 +59331,12 @@ var swfAccountController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        this.yearOptions = [];
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {
                 var accountCreatedYear = Date.parse(_this.accountData.createdDateTime).getFullYear();
-                var curDate = new Date;
-                var curYear = curDate.getFullYear();
+                _this.accountAge = _this.currentYear - accountCreatedYear;
             }
         };
         this.getAccount = function () {
@@ -59344,18 +59344,30 @@ var swfAccountController = /** @class */ (function () {
             //Do this when then account data returns
             _this.account.then(function (request) {
                 console.log(request);
-                _this.$rootScope.accountData = request;
                 _this.accountData = request;
                 _this.checkAndApplyAccountAge();
             });
         };
-        this.deletePaymentMethod = function (methodID) {
+        this.getCountryCodeOptions = function () {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", methodID).then(function (result) {
-                _this.loading = false;
+            return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
+                console.log(result);
                 return result;
             });
         };
+        this.getStateCodeOptions = function () {
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", _this.selectedCountry).then(function (result) {
+                console.log(result);
+                return result;
+            });
+        };
+        var currDate = new Date;
+        this.currentYear = currDate.getFullYear();
+        var manipulateableYear = this.currentYear;
+        do {
+            this.yearOptions.push(manipulateableYear++);
+        } while (this.yearOptions.length <= 9);
     }
     return swfAccountController;
 }());
