@@ -123,7 +123,7 @@ public any function getSkuProductURL(){
 			var adjustedVipPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
 			var adjustedRetailPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
 			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-			var mPPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode();
+			var mPPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:1;
 			
 			var formattedAccountPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
 			var formattedVipPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
