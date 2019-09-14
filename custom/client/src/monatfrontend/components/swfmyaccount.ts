@@ -35,10 +35,10 @@ class swfAccountController {
         })
     }
     
-    public setPrimaryPaymentMethod = (item) => {
+    public deletePaymentMethod = (methodID) => {
         this.loading = true;
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",item).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",methodID).then(result=>{
             this.loading= false;
             return result;
             

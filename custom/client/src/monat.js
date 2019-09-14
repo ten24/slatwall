@@ -59348,9 +59348,9 @@ var swfAccountController = /** @class */ (function () {
                 _this.checkAndApplyAccountAge();
             });
         };
-        this.setPrimaryPaymentMethod = function (item) {
+        this.deletePaymentMethod = function (methodID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", methodID).then(function (result) {
                 _this.loading = false;
                 return result;
             });
