@@ -9,16 +9,19 @@ class swfAccountController {
     public loading:boolean;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
-    public currentYear;
+    public currentYear = 2018;
     public countryCodeOptions;
     public stateCodeOptions;
     public selectedCountry;
+    public userIsLoggedIn:boolean = false;
 
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
+        //public accountService
     ){
+        console.log("controller activatttteed");
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -37,12 +40,14 @@ class swfAccountController {
     }
     
     public getAccount = () => {
+        console.log("I was calllllledd")
         this.account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
         this.account.then((request)=>{
             console.log(request);
             this.accountData = request;
             this.checkAndApplyAccountAge();
+            this.userIsLoggedIn = true;
             
         })
     }

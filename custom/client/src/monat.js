@@ -59332,6 +59332,8 @@ var swfAccountController = /** @class */ (function () {
         this.$scope = $scope;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
+        this.currentYear = 2018;
+        this.userIsLoggedIn = false;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {
@@ -59340,12 +59342,14 @@ var swfAccountController = /** @class */ (function () {
             }
         };
         this.getAccount = function () {
+            console.log("I was calllllledd");
             _this.account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             _this.account.then(function (request) {
                 console.log(request);
                 _this.accountData = request;
                 _this.checkAndApplyAccountAge();
+                _this.userIsLoggedIn = true;
             });
         };
         this.getCountryCodeOptions = function () {
@@ -59365,6 +59369,7 @@ var swfAccountController = /** @class */ (function () {
                 return result;
             });
         };
+        console.log("controller activatedddddd");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
@@ -59663,10 +59668,10 @@ var swfreviewlisting_1 = __webpack_require__(607);
 var monatflexshipcard_1 = __webpack_require__(603);
 var monatflexshiplisting_1 = __webpack_require__(604);
 var monatflexshipmenu_1 = __webpack_require__(605);
-//services
-var ordertemplateservice_1 = __webpack_require__(610);
 var swfwishlist_1 = __webpack_require__(608);
 var swfmyaccount_1 = __webpack_require__(606);
+//services
+var ordertemplateservice_1 = __webpack_require__(610);
 var monatfrontendmodule = angular.module('monatfrontend', [
     frontend_module_1.frontendmodule.name
 ])
@@ -59678,6 +59683,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipCard', monatflexshipcard_1.MonatFlexshipCard.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
+    //.service('accountService', AccountService)
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('swfAccount', swfmyaccount_1.swfAccount.Factory());
 exports.monatfrontendmodule = monatfrontendmodule;
