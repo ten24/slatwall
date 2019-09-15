@@ -758,12 +758,6 @@ export class AccountService {
          this.doAction('deleteAccountAddress',{accountAddressID:accountAddressID})
      }
 
-    //gets the calcuated total minus the applied gift cards.
-    public getTotalMinusGiftCards = ()=>{
-        var total = this.getAppliedGiftCardTotals();
-        return this.cart.calculatedTotal - total;
-    };
-
     /** Format saved payment method info for display in list*/
     public formatPaymentMethod = (paymentMethod) =>{
         return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)

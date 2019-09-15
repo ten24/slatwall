@@ -4,10 +4,14 @@ import {SWFReviewListing} from "./components/swfreviewlisting";
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
-//services
-import {OrderTemplateService} from "./services/ordertemplateservice"; 
 import {SWFWishlist} from "./components/swfwishlist";
 import {swfAccount} from "./components/swfmyaccount";
+
+//services
+import {OrderTemplateService} from "./services/ordertemplateservice"; 
+import {AccountService} from "./services/accountservice"; 
+
+
 
 
 //declare variables out of scope
@@ -24,6 +28,7 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .service('orderTemplateService', OrderTemplateService)
+.service('accountService', AccountService)
 .directive('swfWishlist', SWFWishlist.Factory())
 .directive('swfAccount', swfAccount.Factory());
 
