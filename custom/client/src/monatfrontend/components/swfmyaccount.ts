@@ -9,7 +9,7 @@ class swfAccountController {
     public loading:boolean;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
-    public currentYear = 2018;
+    public currentYear;
     public countryCodeOptions;
     public stateCodeOptions = [];
     public selectedCountry;
@@ -42,20 +42,20 @@ class swfAccountController {
         let account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
         account.then((response)=>{
-            console.log(response);
             this.accountData = response;
             this.checkAndApplyAccountAge();
+            this.getOrdersOnAccount()
             this.userIsLoggedIn = true;
 
         })
     }
     
-    public getOrdersOnAccount = (accountID = this.accountData.accountID) => {
+    public getOrdersOnAccount = () => {
         this.loading = true;
-        console.log(accountID);
+        const accountID = this.accountData.accountID
         return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
             this.ordersOnAccount = result.ordersOnAccount;
-            console.log(this.ordersOnAccount[0]);
+            console.log(this.ordersOnAccount);
             this.loading = false;
         });
             

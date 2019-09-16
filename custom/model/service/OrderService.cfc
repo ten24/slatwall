@@ -95,7 +95,46 @@ component extends="Slatwall.model.service.OrderService" {
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
+			orderFulfillments.shippingAddress.postalCode,
+			subtotal,
+			fulfillmentTotal,
+			taxTotal,
+			discountTotal,
+			total
+		');
+		
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return ordersList.getPageRecords();
+	}
+	
+	public any function getOrderItemsByOrderID(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default="";
+
+
+		var ordersList = getHibachiSCope().getAccount().getOrderItemsCollectionList();
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			orderNumber,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode,
+			subtotal,
+			fulfillmentTotal,
+			taxTotal,
+			discountTotal,
+			total
 		');
 		
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);

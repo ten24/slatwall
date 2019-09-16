@@ -59332,7 +59332,6 @@ var swfAccountController = /** @class */ (function () {
         this.$scope = $scope;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
-        this.currentYear = 2018;
         this.stateCodeOptions = [];
         this.userIsLoggedIn = false;
         // Determine how many years old the account is
@@ -59346,19 +59345,18 @@ var swfAccountController = /** @class */ (function () {
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             account.then(function (response) {
-                console.log(response);
                 _this.accountData = response;
                 _this.checkAndApplyAccountAge();
+                _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
             });
         };
-        this.getOrdersOnAccount = function (accountID) {
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+        this.getOrdersOnAccount = function () {
             _this.loading = true;
-            console.log(accountID);
+            var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount;
-                console.log(_this.ordersOnAccount[0]);
+                console.log(_this.ordersOnAccount);
                 _this.loading = false;
             });
         };
