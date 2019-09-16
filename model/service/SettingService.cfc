@@ -611,7 +611,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return optionSL.getRecords();
 			case "orderTemplateDefaultFrequencyTerm" :
 				var termCollection = this.getTermCollectionList();
-				termCollection.setDisplayProperties('termID|value, termName|name');
+				termCollection.setDisplayProperties('termID|value,termName|name');
 				return termCollection.getRecords(); 
 			case "paymentMethodCheckoutTransactionType" :
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
