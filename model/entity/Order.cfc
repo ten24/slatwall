@@ -244,7 +244,17 @@ property name="personalVolumeSubtotal" persistent="false";
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
- property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
+ property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
+ property name="orderAccountNumber" ormtype="string";
+ property name="orderCountryCode" ormtype="string";
+ property name="orderPartnerNumber" ormtype="string";
+ property name="orderInvoiceNumber" ormtype="string";
+ property name="miscChargeAmount" ormtype="string";
+ property name="redeemPoints" ormtype="string";
+ property name="remoteAmountTotal" ormtype="string";
+ property name="orderSourceCode" ormtype="string";
+ property name="FSNumber" ormtype="string";
+ property name="originalRMANumber" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1584,17 +1594,7 @@ property name="personalVolumeSubtotal" persistent="false";
 	}
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getOrderNumber()) && len(getOrderNumber())) {
-			var representation = getOrderNumber();
-		} else {
-			var representation = rbKey('define.cart');
-		}
-
-		if(!isNull(getAccount())) {
-			representation &= " - #getAccount().getFullname()#";
-		}
-
-		return representation;
+		return getOrderService().getSimpleRepresentation(this);
 	}
 
 	public any function getReferencingOrdersSmartList() {
