@@ -46,6 +46,7 @@
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="orderTemplateEligibleTerms" />
+		<swa:SlatwallSetting settingName="orderTemplateDefaultFrequencyTerm" />
 		<swa:slatwallSetting settingName="orderTemplateCanPlaceFutureScheduleDateFlag" />
 		<swa:SlatwallSetting settingName="orderTemplateEligibleShippingMethods" />
 	</swa:SlatwallSettingTable>
