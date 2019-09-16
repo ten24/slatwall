@@ -8843,6 +8843,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .table .s-no-arrow:hover {
   text-decoration: none;
+  cursor: default;
 }
 #j-property-box .form-group-sm .form-control {
   padding: 16px 10px;
