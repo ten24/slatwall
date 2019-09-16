@@ -15,6 +15,8 @@ class swfAccountController {
     public selectedCountry;
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
+    public orderItems = [];
+    public urlParams = new URLSearchParams(window.location.search)
 
     // @ngInject
     constructor(
@@ -24,7 +26,7 @@ class swfAccountController {
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-        
+
         do {
             this.yearOptions.push(manipulateableYear++)
         }
@@ -39,6 +41,7 @@ class swfAccountController {
     }
     
     public getAccount = () => {
+        this.loading = true;
         let account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
         account.then((response)=>{
@@ -46,6 +49,7 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.getOrdersOnAccount()
             this.userIsLoggedIn = true;
+            this.loading = false;
 
         })
     }
@@ -54,12 +58,22 @@ class swfAccountController {
         this.loading = true;
         const accountID = this.accountData.accountID
         return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
+            console.log(result)
             this.ordersOnAccount = result.ordersOnAccount;
-            console.log(this.ordersOnAccount);
+            this.getOrderItemsByOrderID();
+            // Review why so much gets returned in this response 
             this.loading = false;
         });
-            
-
+    }
+    
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid')) => {
+        this.loading = true;
+        console.log(orderID)
+        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID}).then(result=>{
+            result.OrderItemsByOrderID.forEach(orderItem =>{
+                this.orderItems.push(orderItem);
+            });
+        });
     }
     
     public getCountryCodeOptions = ():Promise<any>=>{
@@ -75,14 +89,13 @@ class swfAccountController {
         this.loading = true;
         
         return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
+            //Reset the state code options on each click so they dont add up incorrectly
             if(this.stateCodeOptions.length){
                 this.stateCodeOptions = [];
             }
             result.stateCodeOptions.forEach(stateCode =>{
                 this.stateCodeOptions.push(stateCode);
             });
-            console.log(this.stateCodeOptions);
-            console.log(this.stateCodeOptions);
 
             this.loading = false;
         });

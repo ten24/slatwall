@@ -59334,6 +59334,8 @@ var swfAccountController = /** @class */ (function () {
         this.yearOptions = [];
         this.stateCodeOptions = [];
         this.userIsLoggedIn = false;
+        this.orderItems = [];
+        this.urlParams = new URLSearchParams(window.location.search);
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {
@@ -59342,6 +59344,7 @@ var swfAccountController = /** @class */ (function () {
             }
         };
         this.getAccount = function () {
+            _this.loading = true;
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             account.then(function (response) {
@@ -59349,15 +59352,28 @@ var swfAccountController = /** @class */ (function () {
                 _this.checkAndApplyAccountAge();
                 _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
+                _this.loading = false;
             });
         };
         this.getOrdersOnAccount = function () {
             _this.loading = true;
             var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
+                console.log(result);
                 _this.ordersOnAccount = result.ordersOnAccount;
-                console.log(_this.ordersOnAccount);
+                _this.getOrderItemsByOrderID();
+                // Review why so much gets returned in this response 
                 _this.loading = false;
+            });
+        };
+        this.getOrderItemsByOrderID = function (orderID) {
+            if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
+            _this.loading = true;
+            console.log(orderID);
+            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID }).then(function (result) {
+                result.OrderItemsByOrderID.forEach(function (orderItem) {
+                    _this.orderItems.push(orderItem);
+                });
             });
         };
         this.getCountryCodeOptions = function () {
@@ -59370,14 +59386,13 @@ var swfAccountController = /** @class */ (function () {
         this.getStateCodeOptions = function (countryCode) {
             _this.loading = true;
             return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
+                //Reset the state code options on each click so they dont add up incorrectly
                 if (_this.stateCodeOptions.length) {
                     _this.stateCodeOptions = [];
                 }
                 result.stateCodeOptions.forEach(function (stateCode) {
                     _this.stateCodeOptions.push(stateCode);
                 });
-                console.log(_this.stateCodeOptions);
-                console.log(_this.stateCodeOptions);
                 _this.loading = false;
             });
         };
@@ -74694,7 +74709,7 @@ var PublicService = /** @class */ (function () {
             }
             if (data) {
                 method = "post";
-                //data.returnJsonObjects = "cart,account";
+                data.returnJsonObjects = "cart,account";
                 if (_this.cmsSiteID) {
                     data.cmsSiteID = _this.cmsSiteID;
                 }
@@ -74707,7 +74722,7 @@ var PublicService = /** @class */ (function () {
                 }
             }
             if (method == "post") {
-                //data.returnJsonObjects = "cart,account";
+                data.returnJsonObjects = "cart,account";
                 //post
                 var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
                 request_1.promise.then(function (result) {

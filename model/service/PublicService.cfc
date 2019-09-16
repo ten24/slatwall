@@ -1840,6 +1840,10 @@ component  accessors="true" output="false"
     public void function getOrdersOnAccount(required any data){
         var accountOrders = getOrderService().getOrdersOnAccount({accountID: arguments.data.accountID});
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-        
+    }
+    
+    public void function getOrderItemsByOrderID(required any data){
+        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID});
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
 }
