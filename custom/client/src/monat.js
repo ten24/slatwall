@@ -59357,7 +59357,8 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             console.log(accountID);
             return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
-                console.log(result);
+                _this.ordersOnAccount = result.ordersOnAccount;
+                console.log(_this.ordersOnAccount[0]);
                 _this.loading = false;
             });
         };

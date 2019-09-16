@@ -14,6 +14,7 @@ class swfAccountController {
     public stateCodeOptions = [];
     public selectedCountry;
     public userIsLoggedIn:boolean = false;
+    public ordersOnAccount;
 
     // @ngInject
     constructor(
@@ -53,7 +54,8 @@ class swfAccountController {
         this.loading = true;
         console.log(accountID);
         return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
-            console.log(result);
+            this.ordersOnAccount = result.ordersOnAccount;
+            console.log(this.ordersOnAccount[0]);
             this.loading = false;
         });
             

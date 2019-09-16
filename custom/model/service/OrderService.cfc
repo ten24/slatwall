@@ -75,6 +75,33 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
     
+	public any function getOrdersOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default="";
 
+
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			orderNumber,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode
+		');
+		
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return ordersList.getPageRecords();
+	}
 
 }
