@@ -40,6 +40,7 @@ component {
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
     property name="accountType" ormtype="string";
+    property name="accountPriceGroup" ormtype="string";
     
     property name="lastSyncedDateTime" ormtype="timestamp";
     
@@ -194,5 +195,23 @@ component {
 	        variables.accountType = "";
 	    }
 	    return variables.accountType;
+	}
+	
+	public any function getAccountPriceGroup() {
+	    if (structKeyExists(variables, "accountPriceGroup")){
+	        return variables.accountPriceGroup;
+	    }
+	    
+	    if (!isNull(getAccount()) && !isNull(getAccount().getPriceGroups())){
+	        var priceGroups = getAccount().getPriceGroups();
+    	    if (!isNull(priceGroups) && arraylen(priceGroups)){
+    	        //there should only be 1 max.
+    	        variables.accountPriceGroup = priceGroups[1].getPriceGroupCode();
+    	    }
+	    }else{
+	        return;
+	    }
+	    
+	    return variables.accountPriceGroup;
 	}
 }
