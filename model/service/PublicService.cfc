@@ -1836,4 +1836,10 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
+    
+    public void function getOrdersOnAccount(required any data){
+        var accountOrders = getOrderService().getOrdersOnAccount({accountID: arguments.data.accountID});
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+        
+    }
 }

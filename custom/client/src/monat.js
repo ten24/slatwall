@@ -59343,7 +59343,6 @@ var swfAccountController = /** @class */ (function () {
             }
         };
         this.getAccount = function () {
-            console.log("I was calllllledd");
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             account.then(function (response) {
@@ -59351,7 +59350,15 @@ var swfAccountController = /** @class */ (function () {
                 _this.accountData = response;
                 _this.checkAndApplyAccountAge();
                 _this.userIsLoggedIn = true;
-                console.log("I ran");
+            });
+        };
+        this.getOrdersOnAccount = function (accountID) {
+            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+            _this.loading = true;
+            console.log(accountID);
+            return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
+                console.log(result);
+                _this.loading = false;
             });
         };
         this.getCountryCodeOptions = function () {

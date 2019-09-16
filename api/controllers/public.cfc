@@ -101,4 +101,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	public any function getWishlistItems( required struct rc ){
 		getPublicService().getWishlistItems(arguments.rc); 
 	} 
+	
+		
+	public any function getOrdersOnAccount( required struct rc ){
+		getPublicService().getWishlistItems(arguments.rc); 
+	}
 }

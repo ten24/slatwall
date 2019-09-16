@@ -38,7 +38,6 @@ class swfAccountController {
     }
     
     public getAccount = () => {
-        console.log("I was calllllledd");
         let account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
         account.then((response)=>{
@@ -46,9 +45,19 @@ class swfAccountController {
             this.accountData = response;
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
-            console.log("I ran");
-            
+
         })
+    }
+    
+    public getOrdersOnAccount = (accountID = this.accountData.accountID) => {
+        this.loading = true;
+        console.log(accountID);
+        return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
+            console.log(result);
+            this.loading = false;
+        });
+            
+
     }
     
     public getCountryCodeOptions = ():Promise<any>=>{
