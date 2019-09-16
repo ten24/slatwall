@@ -35,10 +35,6 @@ var hibachimodule = angular.module('hibachi',[
     if(localStorageService.hasItem('selectedPersonalCollection')){
         $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
     }
-    
-    if(!isAdmin && $hibachi.newAccount){
-        $rootScope.hibachiScope.getAccount();
-    }
 
 }])
 .constant('hibachiPartialsPath','hibachi/components/')
