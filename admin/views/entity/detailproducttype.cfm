@@ -63,6 +63,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.productType#">
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypedescription" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/producttype" text="#$.slatwall.rbKey('admin.entity.attributesettabs.producttypes')#" property="productType" count="#rc.productType.getchildProductTypesCount()#" />
 			<hb:HibachiEntityDetailItem property="products" count="#rc.productType.getProductsSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypesettings" />
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/productsettings" />
