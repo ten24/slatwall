@@ -11,7 +11,7 @@ class swfAccountController {
     public yearOptions:Array<number> = [];
     public currentYear = 2018;
     public countryCodeOptions;
-    public stateCodeOptions;
+    public stateCodeOptions = [];
     public selectedCountry;
     public userIsLoggedIn:boolean = false;
 
@@ -56,22 +56,23 @@ class swfAccountController {
         this.loading = true;
         
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
-            
             this.countryCodeOptions = result.countryCodeOptions;
-            console.log(this.countryCodeOptions)
             this.loading = false;
-            
         });
     }
     
     public getStateCodeOptions = (countryCode):Promise<any> =>{
-        console.log(typeof(countryCode));
         this.loading = true;
         
         return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
-            this.stateCodeOptions = result;
+            if(this.stateCodeOptions.length){
+                this.stateCodeOptions = [];
+            }
+            result.stateCodeOptions.forEach(stateCode =>{
+                this.stateCodeOptions.push(stateCode);
+            });
+            console.log(this.stateCodeOptions);
             this.loading = false;
-            return result;
         });
     }
 }

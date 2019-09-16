@@ -59333,6 +59333,7 @@ var swfAccountController = /** @class */ (function () {
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
         this.currentYear = 2018;
+        this.stateCodeOptions = [];
         this.userIsLoggedIn = false;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
@@ -59356,20 +59357,23 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
                 _this.countryCodeOptions = result.countryCodeOptions;
-                console.log(_this.countryCodeOptions);
                 _this.loading = false;
             });
         };
         this.getStateCodeOptions = function (countryCode) {
-            console.log(typeof (countryCode));
             _this.loading = true;
             return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
-                _this.stateCodeOptions = result;
+                if (_this.stateCodeOptions.length) {
+                    _this.stateCodeOptions = [];
+                }
+                result.stateCodeOptions.forEach(function (stateCode) {
+                    _this.stateCodeOptions.push(stateCode);
+                });
+                console.log(_this.stateCodeOptions);
                 _this.loading = false;
-                return result;
             });
         };
-        console.log("controller activatedddddd");
+        console.log("controller activatttteed");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
@@ -59683,7 +59687,6 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipCard', monatflexshipcard_1.MonatFlexshipCard.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
-    //.service('accountService', AccountService)
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('swfAccount', swfmyaccount_1.swfAccount.Factory());
 exports.monatfrontendmodule = monatfrontendmodule;
