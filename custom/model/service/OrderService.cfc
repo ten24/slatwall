@@ -74,5 +74,19 @@ component extends="Slatwall.model.service.OrderService" {
             }
         }
     }
+    
+    public string function getSimpleRepresentation(required any order){
+		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
+			var representation = arguments.order.getOrderNumber();
+		} else {
+			var representation = rbKey('define.cart');
+		}
+
+		if(!isNull(arguments.order.getAccount())) {
+			representation &= " - #arguments.order.getAccount().getSimpleRepresentation()#";
+		}
+
+		return representation;
+	}
 
 }
