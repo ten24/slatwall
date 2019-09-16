@@ -120,7 +120,9 @@ component extends="Slatwall.model.service.OrderService" {
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.setDisplayProperties('
 			quantity,
-			price
+			price,
+			order.orderNumber,
+			
 		');
 		
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);

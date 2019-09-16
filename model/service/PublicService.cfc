@@ -1775,12 +1775,10 @@ component  accessors="true" output="false"
 			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
 			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
 			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"   :   wishListItem.getSkuAdjustedPricing().personalVolume?:"",
 			      "accountPriceGroup"   :   wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
 			      "skuURL"   :    wishlistItem.getSkuProductURL()?:"",
 			      "skuImage"   :    wishlistItem.getSkuImagePath()?:"",
-			      "skuProductName"   :    wishlistItem.getSku().getProduct().getProductName()?:"",
-			      
+
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);

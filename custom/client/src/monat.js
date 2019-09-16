@@ -59369,7 +59369,6 @@ var swfAccountController = /** @class */ (function () {
         this.getOrderItemsByOrderID = function (orderID) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             _this.loading = true;
-            console.log(orderID);
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);

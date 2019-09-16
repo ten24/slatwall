@@ -68,7 +68,6 @@ class swfAccountController {
     
     public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid')) => {
         this.loading = true;
-        console.log(orderID)
         return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
