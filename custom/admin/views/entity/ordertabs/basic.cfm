@@ -33,11 +33,11 @@
 			</cfif>
 
 			<!--- Origin --->
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
 
 			<!--- Order Type --->
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="false">
 				
 			<!--- Quote Flag --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="quoteFlag" edit="#rc.edit#">

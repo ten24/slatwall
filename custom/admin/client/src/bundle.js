@@ -63496,7 +63496,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
             if (_this.skuPropertiesToDisplay != null) {
                 // join the two lists.
                 skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
@@ -63504,6 +63504,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('price', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
