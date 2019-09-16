@@ -39,6 +39,7 @@ component {
     property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
+    property name="accountType" ormtype="string";
     
     property name="lastSyncedDateTime" ormtype="timestamp";
     
@@ -180,5 +181,18 @@ component {
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	public any function getAccountType() {
+	    if (structKeyExists(variables, "accountType")){
+	        return variables.accountType;
+	    }
+	    
+	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	        variables.accountType = getAccount().getAccountType();
+	    }else{
+	        variables.accountType = "";
+	    }
+	    return variables.accountType;
 	}
 }
