@@ -19,9 +19,7 @@ class swfAccountController {
     constructor(
         public $rootScope,
         public $scope,
-        //public accountService
     ){
-        console.log("controller activatttteed");
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -40,14 +38,15 @@ class swfAccountController {
     }
     
     public getAccount = () => {
-        console.log("I was calllllledd")
-        this.account = this.$rootScope.hibachiScope.getAccount();
+        console.log("I was calllllledd");
+        let account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
-        this.account.then((request)=>{
-            console.log(request);
-            this.accountData = request;
+        account.then((response)=>{
+            console.log(response);
+            this.accountData = response;
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
+            console.log("I ran");
             
         })
     }
@@ -72,6 +71,8 @@ class swfAccountController {
                 this.stateCodeOptions.push(stateCode);
             });
             console.log(this.stateCodeOptions);
+            console.log(this.stateCodeOptions);
+
             this.loading = false;
         });
     }

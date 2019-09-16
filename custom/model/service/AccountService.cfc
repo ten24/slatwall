@@ -1,6 +1,6 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,primaryPaymentMethod';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {

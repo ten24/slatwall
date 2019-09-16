@@ -59344,13 +59344,14 @@ var swfAccountController = /** @class */ (function () {
         };
         this.getAccount = function () {
             console.log("I was calllllledd");
-            _this.account = _this.$rootScope.hibachiScope.getAccount();
+            var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
-            _this.account.then(function (request) {
-                console.log(request);
-                _this.accountData = request;
+            account.then(function (response) {
+                console.log(response);
+                _this.accountData = response;
                 _this.checkAndApplyAccountAge();
                 _this.userIsLoggedIn = true;
+                console.log("I ran");
             });
         };
         this.getCountryCodeOptions = function () {
@@ -59370,10 +59371,10 @@ var swfAccountController = /** @class */ (function () {
                     _this.stateCodeOptions.push(stateCode);
                 });
                 console.log(_this.stateCodeOptions);
+                console.log(_this.stateCodeOptions);
                 _this.loading = false;
             });
         };
-        console.log("controller activatttteed");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
@@ -80462,9 +80463,6 @@ var hibachimodule = angular.module('hibachi', [
         $rootScope.hasAccount = publicService.hasAccount;
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
-        }
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
         }
     }])
     .constant('hibachiPartialsPath', 'hibachi/components/')

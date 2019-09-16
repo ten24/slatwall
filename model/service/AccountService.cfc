@@ -1910,6 +1910,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPhoneNumber", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPaymentMethod", "left");
+
 
 		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
@@ -1917,6 +1919,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.addKeywordProperty(propertyIdentifier="primaryEmailAddress.emailAddress", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryPhoneNumber.phoneNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryAddress.streetAddress", weight=1);
+
 
 		return smartList;
 	}
