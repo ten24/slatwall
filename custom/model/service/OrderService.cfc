@@ -19,6 +19,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         return order;
     }
+    
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
