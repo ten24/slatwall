@@ -204,14 +204,13 @@ component {
 	    
 	    if (!isNull(getAccount()) && !isNull(getAccount().getPriceGroups())){
 	        var priceGroups = getAccount().getPriceGroups();
-    	    if (!isNull(priceGroups) && arraylen(priceGroups)){
+    	    if (arraylen(priceGroups)){
     	        //there should only be 1 max.
     	        variables.accountPriceGroup = priceGroups[1].getPriceGroupCode();
+    	        return variables.accountPriceGroup;
     	    }
-	    }else{
-	        return;
 	    }
-	    
-	    return variables.accountPriceGroup;
+	   
 	}
+	
 }

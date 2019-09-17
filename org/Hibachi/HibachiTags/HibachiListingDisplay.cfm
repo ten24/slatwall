@@ -99,6 +99,7 @@
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
 	<cfparam name="attributes.personalCollectionKey" type="string" default="" />
+	<cfparam name="attributes.currencyCode" type="string" default="" />
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -196,6 +197,9 @@
 			    </cfif>
 			    <cfif attributes.hideUnfilteredResults >
 			    	hide-unfiltered-results="true"
+			    </cfif>
+			    <cfif !isNull(attributes.currencyCode) && len(attributes.currencyCode)>
+			    	data-currency-code="#attributes.currencyCode#"
 			    </cfif>
 			>
 			</sw-listing-display>
