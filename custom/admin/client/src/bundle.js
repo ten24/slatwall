@@ -91193,9 +91193,6 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
             if (_this.refreshEvent) {
                 _this.observerService.attach(_this.refresh, _this.refreshEvent);
             }
-            if (_this.currencyCode == undefined) {
-                _this.currencyCode = "$";
-            }
         };
         this.refresh = function (payload) {
             _this.object = payload;
