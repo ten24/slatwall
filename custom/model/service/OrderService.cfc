@@ -113,9 +113,7 @@ component extends="Slatwall.model.service.OrderService" {
 		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();;
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
-		ordersItemsList.setDisplayProperties('
-			quantity,
-		');
+		ordersItemsList.setDisplayProperties('quantity');
 		
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
