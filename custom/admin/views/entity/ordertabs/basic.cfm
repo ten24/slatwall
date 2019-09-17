@@ -31,7 +31,12 @@
 				</cfloop>
 				
 			</cfif>
-
+			
+			<!--- Adds account type from the order. --->
+			<cfif !isNull(rc.order.getAccountType())>
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="accountType">
+			</cfif>
+			
 			<!--- Origin --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
