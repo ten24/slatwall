@@ -27,6 +27,12 @@ class SWSimplePropertyDisplayController {
 	public $onInit = () =>{ 
 	   
 	    this.value = this.object[this.property];
+	    
+	    // First, check if it was passed in via the object instead of the attribute.
+	    if (this.object && this.object.currencyCode && !this.currencyCode) {
+	        this.currencyCode = this.object.currencyCode;
+	    }
+	    
 	    //sets a default if there is no value and we have one...
 	    if (!this.value && this.default){
 	        this.value = this.default;
