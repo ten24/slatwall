@@ -1976,26 +1976,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function processOrder_createReturn(required any order, required any processObject) {
+	public any function processOrder_createReturn(required any order, required any processObject, struct data) {
+		var orderTypeCode = arguments.processObject.getOrderTypeCode();
+		
 		// Create a new return order
 		var returnOrder = this.newOrder();
 		returnOrder.setAccount( arguments.order.getAccount() );
-		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
+		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(orderTypeCode));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		returnOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
 		returnOrder.setReferencedOrder( arguments.order );
 		returnOrder.setReferencedOrderType('return');
 
-		// Create OrderReturn entity (to save the fulfillment amount)
-		var orderReturn = this.newOrderReturn();
-		orderReturn.setOrder( returnOrder );
-		orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
-		orderReturn.setReturnLocation( arguments.processObject.getLocation() );
 
 		var orderItemFoundFlag = false;
 		// Look for that orderItem in the data records
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
-
+			if(!structKeyExists(orderItemStruct,'price')){
+				orderItemStruct.price = 0;
+			}
 			// Verify that there was a quantity
 			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
 
@@ -2004,20 +2003,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Create a new return orderItem
 				if(!isNull(originalOrderItem)) {
-
-					// Create a new order item
-					var orderItem = this.newOrderItem();
-
-					// Setup the details
-					orderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
-					orderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
-					
-
-					// Add needed references
-					orderItem.setReferencedOrderItem( originalOrderItem );
-					orderItem.setOrderReturn( orderReturn );
-					orderItem.setOrder( returnOrder );
-					orderItem = addReturnOrderItemSetup(orderItem,originalOrderItem,orderItemStruct);
+					switch(orderTypeCode){
+						case 'otReturnOrder':
+							var orderItem = addReturnOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+						case 'otExchangeOrder':
+							var orderItem = addExchangeOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+						case 'otReplacementOrder':
+							var orderItem = addReplacementOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+					}
 
 					if(originalOrderItem.getSku().getBaseProductType() == "event") {
 						// If necessary, initiate the registration cancellation process.
@@ -2028,9 +2024,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 
-					// Persist the new item
-					getHibachiDAO().save( orderItem );
-
 				}
 
 			}
@@ -2040,7 +2033,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiDAO().save( returnOrder );
 
 		// Add any discount amount from order item allocated order discounts
-		this.updateReturnOrderWithAllocatedDiscounts(arguments.order, returnOrder, arguments.processObject);
+		if(orderTypeCode == 'otReturnOrder'){
+			this.updateReturnOrderWithAllocatedDiscounts(arguments.order, returnOrder, arguments.processObject);
+		}
 		
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
@@ -2071,7 +2066,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder);
 
 		// New return order payment, provided order payment information is not related to any previous order payments
-		} else {
+		} else if(!isNull(arguments.processObject.getAccountPaymentMethodID())){
 
 			// Manually populate for 'placeOrder' data, and set payment type as 'credit' rather than the default 'charge'
 			placeOrderData.newOrderPayment = {};
@@ -2167,13 +2162,95 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return returnOrder;
 	}
 	
-	public any function addReturnOrderItemSetup(required any returnOrderItem, required any originalOrderItem, required struct orderItemStruct){
-		arguments.returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-		arguments.returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
-		arguments.returnOrderItem.setSku( originalOrderItem.getSku() );
-		arguments.returnOrderItem.setPrice( arguments.orderItemStruct.price );
-		arguments.returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
-		return arguments.returnOrderItem;
+	public any function addExchangeOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		if(orderItemStruct.orderItemType == 'oitReturn'){
+			var returnOrderItem = addReturnOrderItemSetup(argumentCollection=arguments);
+		}else{
+			var returnOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);
+		}
+		
+		return returnOrderItem;
+	}
+	
+	public any function addReplacementOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		
+		// Create OrderReturn entity (to save the fulfillment amount)
+		if(returnOrder.hasOrderFulfillment()){
+			var orderFulfillment = returnOrder.getOrderFulfillments()[1];
+		}else{
+			var orderFulfillment = this.newOrderFulfillment();
+			orderFulfillment.setOrder( arguments.returnOrder );
+			orderFulfillment.setFulfillmentCharge( arguments.processObject.getFulfillmentAmount() );
+			orderFulfillment.setManualFulfillmentChargeFlag(true);
+			var originalOrder = returnOrder.getReferencedOrder();
+			var originalFulfillment = originalOrder.getOrderFulfillments()[1];
+			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
+			if(originalFulfillment.hasShippingAddress()){
+				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(originalFulfillment.hasPickupLocation()){
+				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
+			}
+			this.saveOrderFulfillment(orderFulfillment);
+		}
+		
+		// Create a new order item
+		var replacementOrderItem = this.newOrderItem();
+
+		// Setup the details
+		replacementOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReplacement') );
+		replacementOrderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
+		
+
+		// Add needed references
+		replacementOrderItem.setReferencedOrderItem( originalOrderItem );
+		replacementOrderItem.setOrderFulfillment( orderFulfillment );
+		replacementOrderItem.setOrder( returnOrder );
+
+		replacementOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+		replacementOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		replacementOrderItem.setSku( originalOrderItem.getSku() );
+		replacementOrderItem.setPrice( arguments.orderItemStruct.price );
+		replacementOrderItem.setQuantity( arguments.orderItemStruct.quantity );
+		
+		getHibachiDAO().save( replacementOrderItem );
+		return replacementOrderItem;
+	}
+	
+	public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		
+		// Create OrderReturn entity (to save the fulfillment amount)
+		if(returnOrder.hasOrderReturn()){
+			var orderReturn = returnOrder.getOrderReturns()[1];
+		}else{
+			var orderReturn = this.newOrderReturn();
+			orderReturn.setOrder( arguments.returnOrder );
+			orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+			orderReturn.setReturnLocation( arguments.processObject.getLocation() );
+			this.saveOrderReturn(orderReturn);
+		}
+		
+		// Create a new order item
+		var returnOrderItem = this.newOrderItem();
+
+		// Setup the details
+		returnOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
+		returnOrderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
+		
+
+		// Add needed references
+		returnOrderItem.setReferencedOrderItem( originalOrderItem );
+		returnOrderItem.setOrderReturn( orderReturn );
+		returnOrderItem.setOrder( returnOrder );
+
+		returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+		returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		returnOrderItem.setSku( originalOrderItem.getSku() );
+		returnOrderItem.setPrice( arguments.orderItemStruct.price );
+		returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
+		
+		getHibachiDAO().save( returnOrderItem );
+		return returnOrderItem;
 	}
 	
 	public any function setupReturnOrderPayment(required any originalOrderPayment, required any returnOrder, struct orderPaymentStruct){

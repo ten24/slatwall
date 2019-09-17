@@ -62,6 +62,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
+	property name="fulfillmentAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
 	property name="stockLossFlag" hb_formFieldType="yesno";
@@ -149,6 +150,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.fulfillmentRefundAmount;
+	}
+	
+	public numeric function getFulfillmentAmount() {
+		if(!structKeyExists(variables, "fulfillmentAmount")) {
+			variables.fulfillmentAmount = 0;
+			if(!getPreProcessDisplayedFlag()) {
+				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+			}
+		}
+		return variables.fulfillmentAmount;
 	}
 	
 	public boolean function getReceiveItemsFlag() {

@@ -42,6 +42,7 @@ class SWReturnOrderItemsController{
     private displayPropertiesList:string;
     private currencyCode:string;
     
+    public orderType:string;
     public orderItemCollectionList;
     public orderItems:Array<ReturnOrderItem> = [];
     public orderPayments:Array<Object> = [];
@@ -97,7 +98,6 @@ class SWReturnOrderItemsController{
         this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
         this.setupOrderItemCollectionList();
         $hibachi.getCurrencies().then(result=>{
-            console.log(result);
             this.currencySymbol = result.data[this.currencyCode];
         })
     }
@@ -193,7 +193,9 @@ class SWReturnOrderItems {
 	public bindToController = {
 	    orderId:'@',
 	    currencyCode:'@',
-	    initialFulfillmentRefundAmount:'@'
+	    initialFulfillmentRefundAmount:'@',
+	    orderPayments:'<',
+	    orderType:'@'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";

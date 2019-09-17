@@ -71182,7 +71182,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.refundTotal = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
-            for (var _i = 0, _a = _this.orderItemDisplayPropertiesList.split(','); _i < _a.length; _i++) {
+            for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
                 var displayProperty = _a[_i];
                 _this.orderItemCollectionList.addDisplayProperty(displayProperty);
             }
@@ -71195,8 +71195,10 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 _this.orderItems = result.records;
             });
         };
-        this.getOrderItemDisplayPropertiesList = function () {
+        this.getDisplayPropertiesList = function () {
             return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns".replace(/\s+/gi, '');
+            // calculatedExtendedPersonalVolumeAfterDiscount,
+            // calculatedExtendedCommissionableVolumeAfterDiscount,
         };
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
@@ -71265,13 +71267,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
-        this.orderItemDisplayPropertiesList = this.getOrderItemDisplayPropertiesList();
+        this.displayPropertiesList = this.getDisplayPropertiesList();
+        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
         this.setupOrderItemCollectionList();
         $hibachi.getCurrencies().then(function (result) {
             _this.currencySymbol = result.data[_this.currencyCode];
         });
-        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
-        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
     }
     return SWReturnOrderItemsController;
 }());
@@ -71284,7 +71286,8 @@ var SWReturnOrderItems = /** @class */ (function () {
             orderId: '@',
             currencyCode: '@',
             initialFulfillmentRefundAmount: '@',
-            orderPayments: '<'
+            orderPayments: '<',
+            orderType: '@'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
@@ -91756,21 +91759,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }

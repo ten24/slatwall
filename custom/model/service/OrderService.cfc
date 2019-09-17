@@ -21,23 +21,48 @@ component extends="Slatwall.model.service.OrderService" {
         return arguments.newOrderItem;
     }
     
-    public any function addReturnOrderItemSetup(required any returnOrderItem, required any originalOrderItem, required struct orderItemStruct){
-        arguments.returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
-        var sku = arguments.returnOrderItem.getSku();
-        var account = arguments.returnOrderItem.getOrder().getAccount();
+    public any function addExchangeOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+			var returnOrderItem = addReturnOrderItemSetup(argumentCollection=arguments);
+			var replacementOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);
+			return returnOrderItem;
+	}
+    
+    public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+        var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
+        var sku = returnOrderItem.getSku();
+        var account = returnOrderItem.getOrder().getAccount();
         if(isNull(account)){
             account = getService('AccountService').newAccount();
         }
         
         for(var priceField in variables.customPriceFields){
-            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterAllDiscounts',{1=priceField});
+            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
             if(!isNull(price)){
-                price = price * arguments.returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterAllDiscounts();
-                arguments.returnOrderItem.invokeMethod('set#priceField#',{1=price});
+                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+                returnOrderItem.invokeMethod('set#priceField#',{1=price});
             }
         }
-        return arguments.returnOrderItem;
+        return returnOrderItem;
     }
+    
+    public any function addReplacementOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+        var replacementOrderItem = super.addReplacementOrderItemSetup(argumentCollection=arguments);
+        var sku = replacementOrderItem.getSku();
+        var account = replacementOrderItem.getOrder().getAccount();
+        if(isNull(account)){
+            account = getService('AccountService').newAccount();
+        }
+        
+        for(var priceField in variables.customPriceFields){
+            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
+            if(!isNull(price)){
+                price = price * replacementOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+                replacementOrderItem.invokeMethod('set#priceField#',{1=price});
+            }
+        }
+        return replacementOrderItem;
+    }
+    
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;

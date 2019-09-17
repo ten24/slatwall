@@ -59,13 +59,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedExtendedPriceAfterAllDiscounts" column="calcExtdPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedExtendedUnitPriceAfterAllDiscounts" column="calcExtdUnitPriceAfterAllDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedPriceAfterDiscountMinusReturns" column="calcExtdPriceAfterDiscMinusReturns" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
+	
 	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -117,9 +117,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
-	property name="extendedPriceAfterAllDiscounts" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
-	property name="extendedUnitPriceAfterAllDiscounts" persistent="false" hb_formatType="currency";
+	property name="extendedPriceAfterDiscountMinusReturns" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityDeliveredMinusReturns" persistent="false";
@@ -609,8 +608,29 @@ property name="personalVolume" ormtype="big_decimal";
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
 	}
 	
-	public numeric function getExtendedPriceAfterAllDiscounts(boolean forceCalculationFlag = false) {
-		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments) - getAllocatedOrderDiscountAmount());
+	public numeric function getExtendedPriceAfterDiscountMinusReturns(boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments) - getExtendedPriceOnReturns());
+	}
+	
+	public numeric function getExtendedPriceOnReturns(){
+		var total = 0;
+		var referencingOrderItemSmartList = getService('HibachiService').getOrderItemSmartList();
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','orderItemType','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','order','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrder','orderStatusType','inner');
+		referencingOrderItemSmartList.addWhereCondition("aslatwalltype.systemCode IN ('oitReturn','oitReplacement')");
+		referencingOrderItemSmartList.addWhereCondition("bslatwalltype.systemCode NOT IN ('ostCanceled','ostNotPlaced')");
+		referencingOrderItemSmartList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = referencingOrderItemSmartList.getRecords();
+		
+		for(var item in result){
+			if(item.getOrderItemType().getSystemCode() == 'oitReturn'){
+				total += item.getExtendedPriceAfterDiscount();
+			}else{
+				total -= item.getExtendedPriceAfterDiscount();
+			}
+		}
+		return total;
 	}
 
 	public numeric function getExtendedUnitPrice() {
@@ -629,14 +649,6 @@ property name="personalVolume" ormtype="big_decimal";
 			return 0;
 		}
 		
-	}
-	
-	public numeric function getExtendedUnitPriceAfterAllDiscounts() {
-		if(!isNull(getQuantity()) && getQuantity() > 0){
-			return val(precisionEvaluate(getExtendedPriceAfterAllDiscounts() / getQuantity()));
-		}else{
-			return 0;
-		}
 	}
 
 	public any function getActiveEventRegistrations() {

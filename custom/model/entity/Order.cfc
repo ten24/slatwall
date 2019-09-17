@@ -124,7 +124,7 @@ component {
         var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(customPriceField));
@@ -143,7 +143,7 @@ component {
 		var discountTotal = 0;
 		var orderItems = getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal + orderItems[i].getCustomDiscountAmount(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal - orderItems[i].getCustomDiscountAmount(customPriceField));

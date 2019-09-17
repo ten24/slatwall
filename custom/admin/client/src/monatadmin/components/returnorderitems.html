@@ -43,7 +43,7 @@
 		</td>
 	</tr>
 	
-	<tr>
+	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">
 		<td colspan="9"></td>
 		<td><strong>Fulfillment Refund:</strong></td>
 		<td>{{swReturnOrderItems.currencySymbol}}
@@ -51,7 +51,7 @@
 		</td>
 		<td></td>
 	</tr>
-	<tr>
+	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">
 	    <td colspan="9"></td>
 	    <td><strong>Allocated Order Discount Amount:</strong></td>
 	    <td>
@@ -60,7 +60,7 @@
 	    </td>
 	    <td></td>
     </tr>
-    <tr>
+    <tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">
         <td colspan="9"></td>
         <td><strong>Refund Total:</strong></td>
 		<td class="refundTotal">{{swReturnOrderItems.currencySymbol}}
@@ -75,7 +75,8 @@
 		<!--</td>-->
 	</tr>
 	
-	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" ng-repeat="orderPayment in swReturnOrderItems.orderPayments">		<td colspan="9"></td>
+	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" ng-repeat="orderPayment in swReturnOrderItems.orderPayments">
+		<td colspan="9"></td>
 		<td><strong>{{orderPayment.name}}</strong></td>
 		<td class="total">
 			<input type="hidden" name="orderPayments[{{$index+1}}].orderPaymentID" value="">

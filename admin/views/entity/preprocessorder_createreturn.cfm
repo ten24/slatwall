@@ -150,6 +150,7 @@ Notes:
 				<hr />
 				<!--- Items Selector --->
 				<sw-return-order-items 
+					order-type="#rc.processObject.getOrderTypeCode()#"
 					order-id="#rc.order.getOrderID()#" 
 					currency-code="#rc.order.getCurrencyCode()#" 
 					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
