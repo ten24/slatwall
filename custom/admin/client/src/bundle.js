@@ -92960,18 +92960,17 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
                     // if it wasn't passed in, define it if we can...
-                    console.log("CC:", _this.currencyCode);
-                    if (_this.currencyCode == undefined || _this.currencyCode == "") {
-                        console.log("Setting code...");
-                        if (_this.pageRecord['currencyCode'] != null &&
-                            _this.pageRecord['currencyCode'].trim().length) {
-                            _this.currencyCode = _this.pageRecord['currencyCode'];
-                        }
-                        else if (_this.column.arguments != null &&
-                            _this.column.arguments.currencyCode) {
-                            _this.currencyCode = _this.column.arguments.currencyCode;
-                        }
-                        else {
+                    if (_this.pageRecord['currencyCode'] != null &&
+                        _this.pageRecord['currencyCode'].trim().length) {
+                        _this.currencyCode = _this.pageRecord['currencyCode'];
+                    }
+                    else if (_this.column.arguments != null &&
+                        _this.column.arguments.currencyCode) {
+                        _this.currencyCode = _this.column.arguments.currencyCode;
+                    }
+                    else {
+                        //set a default if one was not passed in to use...
+                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
                             _this.currencyCode = 'USD';
                         }
                     }
