@@ -120,21 +120,23 @@ class SWListingDisplayCellController{
                     this.value = this.pageRecord[pageRecordKey];
                 }
                 
-                // if it wasn't passed in, define it if we can...
-                console.log("CC:", this.currencyCode);
-                if (this.currencyCode == undefined || this.currencyCode == ""){
-                    console.log("Setting code...");
-                    if(this.pageRecord['currencyCode'] != null &&
-                       this.pageRecord['currencyCode'].trim().length
-                    ){
-                        
-                        this.currencyCode = this.pageRecord['currencyCode'];
-                        
-                    } else if(this.column.arguments != null &&
-                              this.column.arguments.currencyCode
-                    ){
-                        this.currencyCode = this.column.arguments.currencyCode;
-                    } else {
+                // If there is a currency code for the page record, first use that.
+                // Then check if it was passed via the column args.
+                // Then check if it was passed into the directive.
+                // then set a default.
+                if(this.pageRecord['currencyCode'] != null &&
+                   this.pageRecord['currencyCode'].trim().length
+                ){
+                    
+                    this.currencyCode = this.pageRecord['currencyCode'];
+                    
+                } else if(this.column.arguments != null &&
+                          this.column.arguments.currencyCode
+                ){
+                    this.currencyCode = this.column.arguments.currencyCode;
+                } else {
+                    //set a default if one was not passed in to use...
+                    if (this.currencyCode == undefined || this.currencyCode == ""){
                         this.currencyCode = 'USD';
                     }
                 }
