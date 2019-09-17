@@ -59359,20 +59359,22 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
-                console.log(result);
                 _this.ordersOnAccount = result.ordersOnAccount;
-                _this.getOrderItemsByOrderID();
-                // Review why so much gets returned in this response 
+                //this.getOrderItemsByOrderID();
+                console.log(result);
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
+            if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
+            if (currentPage === void 0) { currentPage = 1; }
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID }).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, currentPage: currentPage, pageRecordsShow: pageRecordsShow }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
                 });
+                console.log(result);
             });
         };
         this.getCountryCodeOptions = function () {

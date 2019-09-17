@@ -58,20 +58,20 @@ class swfAccountController {
         this.loading = true;
         const accountID = this.accountData.accountID
         return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
-            console.log(result)
             this.ordersOnAccount = result.ordersOnAccount;
-            this.getOrderItemsByOrderID();
-            // Review why so much gets returned in this response 
+            //this.getOrderItemsByOrderID();
+            console.log(result);
             this.loading = false;
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid')) => {
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID}).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,currentPage,pageRecordsShow }).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
             });
+            console.log(result)
         });
     }
     

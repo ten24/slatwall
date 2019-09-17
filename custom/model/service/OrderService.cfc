@@ -95,12 +95,7 @@ component extends="Slatwall.model.service.OrderService" {
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode,
-			subtotal,
-			fulfillmentTotal,
-			taxTotal,
-			discountTotal,
-			total
+			orderFulfillments.shippingAddress.postalCode
 		');
 		
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -110,19 +105,16 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function getOrderItemsByOrderID(struct data={}) {
+        param name="arguments.data.orderID" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
-        param name="arguments.data.orderID" default="";
-
+        
 
 		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();;
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.setDisplayProperties('
 			quantity,
-			price,
-			order.orderNumber,
-			
 		');
 		
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);

@@ -1774,11 +1774,7 @@ component  accessors="true" output="false"
 			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
 			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
 			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "accountPriceGroup"   :   wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuURL"   :    wishlistItem.getSkuProductURL()?:"",
-			      "skuImage"   :    wishlistItem.getSkuImagePath()?:"",
-
+			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
@@ -1841,7 +1837,8 @@ component  accessors="true" output="false"
     }
     
     public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID});
+
+        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow = arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
 }
