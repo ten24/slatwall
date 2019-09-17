@@ -9,6 +9,7 @@ class SWSimplePropertyDisplayController {
     public value:string;
     public displayType:string;
     public currencyFlag:string;
+    public currencyCode:string;
     public refreshEvent:string;
     public default:string;
     public displayWidth:string;
@@ -39,6 +40,11 @@ class SWSimplePropertyDisplayController {
         if (this.refreshEvent){
 	        this.observerService.attach(this.refresh, this.refreshEvent);
         }
+        
+        if (this.currencyCode == undefined){
+            this.currencyCode = "$";
+        }
+        
 	}
 	
 	public refresh = (payload) => {
@@ -68,6 +74,7 @@ class SWSimplePropertyDisplay implements ng.IDirective{
         currencyFlag:"@?",
         refreshEvent: "@?",
         displayWidth: "@?",
+        currencyCode: "@?",
         default: "@?"
         
     };
