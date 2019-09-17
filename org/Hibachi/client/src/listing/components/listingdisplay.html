@@ -93,7 +93,7 @@
                 </sw-pagination-bar>
             </div>
             <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
-
+                
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
@@ -151,6 +151,17 @@
                                 swListingDisplay.recordDeleteAction.length ||
                                 swListingDisplay.recordProcessButtonDisplayFlag.length
                             ">
+                                <div ng-if="swListingDisplay.loading" class="right">
+                                    <style>
+                                        div.centered {
+                                            margin: auto;
+                                            width: 100%;
+                                            display: flex;
+                                            justify-content: center;
+                                        }
+                                    </style>
+                                    <div class="centered"><b><i class="fas fa-spinner fa-pulse"></i></b></div>
+                                </div>
                             </th>
                         </tr>
                     </thead>

@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BATCH:
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 default:
                     return _this.state;
             }
@@ -63585,6 +63585,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.observerService.notify("addOrderItemLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
                 if (data.preProcessView) {
@@ -86089,13 +86090,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -87218,7 +87212,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -87917,10 +87911,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -92095,7 +92089,11 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
                 _this.collectionData = data;
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
+                _this.loading = false;
             });
+        };
+        this.listingIsLoading = function () {
+            _this.loading = true;
         };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
@@ -92105,6 +92103,9 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.listingIsLoading, "addOrderItemLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
@@ -94159,11 +94160,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }

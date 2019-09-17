@@ -62,7 +62,7 @@ component extends="Slatwall.model.service.OrderService" {
         }
         return replacementOrderItem;
     }
-    
+
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -125,8 +125,6 @@ component extends="Slatwall.model.service.OrderService" {
             }
         }
     }
-    
-    
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
         super.updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
@@ -215,6 +213,20 @@ component extends="Slatwall.model.service.OrderService" {
 			logHibachi("ATTN: There was a discrepancy while attempting to allocate the order discount amount to the order items of orderID '#arguments.order.getOrderID()#'. The result of the allocation was '#actualAllocatedAmountTotal#' of the '#arguments.order.getOrderDiscountAmountTotal()#' total order discount amount. Further investigation is needed to correct the calculation issue.", true);
 		}
 
+    }
+    
+    public string function getSimpleRepresentation(required any order){
+		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
+			var representation = arguments.order.getOrderNumber();
+		} else {
+			var representation = rbKey('define.cart');
+		}
+
+		if(!isNull(arguments.order.getAccount())) {
+			representation &= " - #arguments.order.getAccount().getSimpleRepresentation()#";
+		}
+
+		return representation;
 	}
 
 }

@@ -236,11 +236,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public void function checkNewAccountAddressSave() {
 
-		//if it's an order template let's skip this check because it throws errors when validating promotions with transients
-		if(!isNull(getOrder().getOrderTemplate())){
-			return; 
-		}
-
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
     	if(!isNull(getOrder().getAccount()) && !
 			getOrder().getAccount().getGuestAccountFlag() && 

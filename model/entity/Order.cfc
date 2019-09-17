@@ -198,7 +198,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalReturnQuantity" ormtype="integer";
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
-				
+
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1569,17 +1569,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getOrderNumber()) && len(getOrderNumber())) {
-			var representation = getOrderNumber();
-		} else {
-			var representation = rbKey('define.cart');
-		}
-
-		if(!isNull(getAccount())) {
-			representation &= " - #getAccount().getFullname()#";
-		}
-
-		return representation;
+		return getOrderService().getSimpleRepresentation(this);
 	}
 
 	public any function getReferencingOrdersSmartList() {

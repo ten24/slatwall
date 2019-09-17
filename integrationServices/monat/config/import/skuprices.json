@@ -7,7 +7,7 @@
             "key":true
         },
         {
-            "sourcecolumn":"remoteID",
+            "sourcecolumn":"RemoteID",
             "sourceColumnDataGenerator":"'IMPORT-' + ItemCode + '-' + CountryCode + '-' + PriceLevel",
             "propertyidentifier":"remoteID",
             "key":true
@@ -37,7 +37,7 @@
             "propertyIdentifier":"productPackVolume"
         },
         {
-            "sourceColumn":"ReailValueVolume",
+            "sourceColumn":"RetailValueVolume",
             "propertyIdentifier":"retailValueVolume"
         },
         {

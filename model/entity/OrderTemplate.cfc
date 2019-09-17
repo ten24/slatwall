@@ -82,6 +82,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
+	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
@@ -113,9 +114,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="accountRemoteID" ormtype="string"; 
-	property name="accountPaymentMethodRemoteID" ormtype="string"; 
-	property name="lastSyncedDateTime" ormtype="timestamp";
+property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 

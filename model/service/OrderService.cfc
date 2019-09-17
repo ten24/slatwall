@@ -1383,6 +1383,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		} 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getType(arguments.data.orderTemplateCancellationReasonType.typeID));
+		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.data.orderTemplateCancellationReasonType.typeIDOther);  
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
