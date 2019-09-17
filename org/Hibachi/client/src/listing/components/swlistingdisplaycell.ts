@@ -120,18 +120,23 @@ class SWListingDisplayCellController{
                     this.value = this.pageRecord[pageRecordKey];
                 }
                 
-                if(this.pageRecord['currencyCode'] != null &&
-                   this.pageRecord['currencyCode'].trim().length
-                ){
-                    
-                    this.currencyCode = this.pageRecord['currencyCode'];
-                    
-                } else if(this.column.arguments != null &&
-                          this.column.arguments.currencyCode
-                ){
-                    this.currencyCode = this.column.arguments.currencyCode;
-                } else {
-                    this.currencyCode = 'USD';
+                // if it wasn't passed in, define it if we can...
+                console.log("CC:", this.currencyCode);
+                if (this.currencyCode == undefined || this.currencyCode == ""){
+                    console.log("Setting code...");
+                    if(this.pageRecord['currencyCode'] != null &&
+                       this.pageRecord['currencyCode'].trim().length
+                    ){
+                        
+                        this.currencyCode = this.pageRecord['currencyCode'];
+                        
+                    } else if(this.column.arguments != null &&
+                              this.column.arguments.currencyCode
+                    ){
+                        this.currencyCode = this.column.arguments.currencyCode;
+                    } else {
+                        this.currencyCode = 'USD';
+                    }
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
@@ -181,6 +186,7 @@ class SWListingDisplayCell {
         pageRecord:"=?",
         value:"=?",
         cellView:"@?",
+        currencyCode:"@?",
         expandableRules:"=?"
     }
     public controller=SWListingDisplayCellController;
