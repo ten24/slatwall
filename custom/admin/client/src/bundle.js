@@ -91193,6 +91193,9 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
             if (_this.refreshEvent) {
                 _this.observerService.attach(_this.refresh, _this.refreshEvent);
             }
+            if (_this.currencyCode == undefined) {
+                _this.currencyCode = "$";
+            }
         };
         this.refresh = function (payload) {
             _this.object = payload;
@@ -91222,6 +91225,7 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             currencyFlag: "@?",
             refreshEvent: "@?",
             displayWidth: "@?",
+            currencyCode: "@?",
             default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
@@ -92869,6 +92873,7 @@ var SWListingDisplay = /** @class */ (function () {
             createAction: "@?",
             createQueryString: "@?",
             exportAction: "@?",
+            currencyCode: "@?",
             getChildCount: "<?",
             hasSearch: "<?",
             hasActionBar: "<?",
@@ -92957,16 +92962,21 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
-                    if (_this.pageRecord['currencyCode'] != null &&
-                        _this.pageRecord['currencyCode'].trim().length) {
-                        _this.currencyCode = _this.pageRecord['currencyCode'];
-                    }
-                    else if (_this.column.arguments != null &&
-                        _this.column.arguments.currencyCode) {
-                        _this.currencyCode = _this.column.arguments.currencyCode;
-                    }
-                    else {
-                        _this.currencyCode = 'USD';
+                    // if it wasn't passed in, define it if we can...
+                    console.log("CC:", _this.currencyCode);
+                    if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                        console.log("Setting code...");
+                        if (_this.pageRecord['currencyCode'] != null &&
+                            _this.pageRecord['currencyCode'].trim().length) {
+                            _this.currencyCode = _this.pageRecord['currencyCode'];
+                        }
+                        else if (_this.column.arguments != null &&
+                            _this.column.arguments.currencyCode) {
+                            _this.currencyCode = _this.column.arguments.currencyCode;
+                        }
+                        else {
+                            _this.currencyCode = 'USD';
+                        }
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -93048,6 +93058,7 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
+            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;
