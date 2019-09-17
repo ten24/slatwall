@@ -6,7 +6,6 @@
 
 <cfoutput>
 	<cfset local.OrderJSON = rc.order.getEncodedJsonRepresentation()>
-	<cfset currencyCode = rc.order.getCurrencyCode() ?: "USD">
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
@@ -96,17 +95,17 @@
 			</hb:HibachiPropertyTable>
 		
 			<div class="table-responsive">
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedPersonalVolumeSubtotal" currency-flag="true" currency-code="#currencyCode#" title="Personal Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" currency-flag="true" currency-code="#currencyCode#" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" currency-code="#currencyCode#" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true" currency-code="#currencyCode#" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true" currency-code="#currencyCode#" title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true" currency-code="#currencyCode#" title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" default="#rc.order.getTotal()#" currency-flag="true" currency-code="#currencyCode#" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedPersonalVolumeSubtotal" currency-flag="true" title="Personal Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" currency-flag="true" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true"  title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true"  title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" default="#rc.order.getTotal()#" currency-flag="true" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 			</div>
 				
 			<div class="table-responsive">
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedPaymentAmountDue" default="#rc.order.getPaymentAmountDue()#" currency-flag="true" currency-code="#currencyCode#" title="Payment Amount Due" edit="false" display-type="table" display-width="'200'" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedPaymentAmountDue" default="#rc.order.getPaymentAmountDue()#" currency-flag="true" title="Payment Amount Due" edit="false" display-type="table" display-width="'200'" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 			</div>
 			
 		</hb:HibachiPropertyList>
