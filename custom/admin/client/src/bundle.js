@@ -91181,6 +91181,10 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.formattedFlag = false;
         this.$onInit = function () {
             _this.value = _this.object[_this.property];
+            // First, check if it was passed in via the object instead of the attribute.
+            if (_this.object && _this.object.currencyCode && !_this.currencyCode) {
+                _this.currencyCode = _this.object.currencyCode;
+            }
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
                 _this.value = _this.default;
@@ -92959,7 +92963,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
-                    // if it wasn't passed in, define it if we can...
+                    // If there is a currency code for the page record, first use that.
+                    // Then check if it was passed via the column args.
+                    // Then check if it was passed into the directive.
+                    // then set a default.
                     if (_this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
