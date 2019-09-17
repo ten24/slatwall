@@ -41,10 +41,6 @@ class SWSimplePropertyDisplayController {
 	        this.observerService.attach(this.refresh, this.refreshEvent);
         }
         
-        if (this.currencyCode == undefined){
-            this.currencyCode = "$";
-        }
-        
 	}
 	
 	public refresh = (payload) => {
