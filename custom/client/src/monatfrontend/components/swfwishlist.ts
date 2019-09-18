@@ -101,7 +101,7 @@ class SWFWishlistController {
     }
     
     public setskuIDFromAttribute = ()=>{
-        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-SKUID');
+        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
         this.skuID = newskuID;
     }
     

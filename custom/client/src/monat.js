@@ -59539,7 +59539,7 @@ var SWFWishlistController = /** @class */ (function () {
             });
         };
         this.setskuIDFromAttribute = function () {
-            var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-SKUID');
+            var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
             _this.skuID = newskuID;
         };
         this.getAllWishlists = function (pageRecordstoShow, setNewTemplates, setNewTemplateID) {
