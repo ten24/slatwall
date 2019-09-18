@@ -16,6 +16,7 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
+    public orderItemsLength:number;
     public urlParams = new URLSearchParams(window.location.search)
 
     // @ngInject
@@ -51,7 +52,9 @@ class swfAccountController {
             this.userIsLoggedIn = true;
             this.loading = false;
 
-        })
+        }, err => {
+            console.log(err);
+        });
     }
     
     public getOrdersOnAccount = () => {
@@ -71,7 +74,9 @@ class swfAccountController {
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
             });
-            console.log(result)
+            
+            this.orderItemsLength = result.OrderItemsByOrderID.length;
+            console.log(this.orderItems)
         });
     }
     

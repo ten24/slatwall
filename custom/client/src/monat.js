@@ -59353,6 +59353,8 @@ var swfAccountController = /** @class */ (function () {
                 _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
                 _this.loading = false;
+            }, function (err) {
+                console.log(err);
             });
         };
         this.getOrdersOnAccount = function () {
@@ -59374,7 +59376,8 @@ var swfAccountController = /** @class */ (function () {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
                 });
-                console.log(result);
+                _this.orderItemsLength = result.OrderItemsByOrderID.length;
+                console.log(_this.orderItems);
             });
         };
         this.getCountryCodeOptions = function () {
