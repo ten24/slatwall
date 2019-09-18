@@ -120,6 +120,10 @@ class SWListingDisplayCellController{
                     this.value = this.pageRecord[pageRecordKey];
                 }
                 
+                // If there is a currency code for the page record, first use that.
+                // Then check if it was passed via the column args.
+                // Then check if it was passed into the directive.
+                // then set a default.
                 if(this.pageRecord['currencyCode'] != null &&
                    this.pageRecord['currencyCode'].trim().length
                 ){
@@ -131,7 +135,10 @@ class SWListingDisplayCellController{
                 ){
                     this.currencyCode = this.column.arguments.currencyCode;
                 } else {
-                    this.currencyCode = 'USD';
+                    //set a default if one was not passed in to use...
+                    if (this.currencyCode == undefined || this.currencyCode == ""){
+                        this.currencyCode = 'USD';
+                    }
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
@@ -181,6 +188,7 @@ class SWListingDisplayCell {
         pageRecord:"=?",
         value:"=?",
         cellView:"@?",
+        currencyCode:"@?",
         expandableRules:"=?"
     }
     public controller=SWListingDisplayCellController;

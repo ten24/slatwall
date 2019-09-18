@@ -19,6 +19,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         return order;
     }
+    
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -75,6 +76,7 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
     
+<<<<<<< HEAD
 	public any function getOrdersOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
@@ -124,6 +126,19 @@ component extends="Slatwall.model.service.OrderService" {
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
 		return ordersItemsList.getPageRecords();
-	}
 
-}
+    }
+    
+    public string function getSimpleRepresentation(required any order){
+		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
+			var representation = arguments.order.getOrderNumber();
+		} else {
+			var representation = rbKey('define.cart');
+		}
+
+		if(!isNull(arguments.order.getAccount())) {
+			representation &= " - #arguments.order.getAccount().getSimpleRepresentation()#";
+		}
+
+		return representation;
+	}

@@ -1594,17 +1594,7 @@ property name="personalVolumeSubtotal" persistent="false";
 	}
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getOrderNumber()) && len(getOrderNumber())) {
-			var representation = getOrderNumber();
-		} else {
-			var representation = rbKey('define.cart');
-		}
-
-		if(!isNull(getAccount())) {
-			representation &= " - #getAccount().getFullname()#";
-		}
-
-		return representation;
+		return getOrderService().getSimpleRepresentation(this);
 	}
 
 	public any function getReferencingOrdersSmartList() {
