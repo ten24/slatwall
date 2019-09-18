@@ -76,7 +76,6 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
     
-<<<<<<< HEAD
 	public any function getOrdersOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
