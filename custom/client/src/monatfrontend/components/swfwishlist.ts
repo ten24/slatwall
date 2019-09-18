@@ -16,7 +16,7 @@ class SWFWishlistController {
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
     public wishlistTemplateName:string;
-    public SKUID:string;
+    public skuID:string;
     public newTemplateID:string;
 
     
@@ -74,8 +74,8 @@ class SWFWishlistController {
     
     public addWishlistItem =()=>{ 
         this.loading = true;
-        this.setSkuIDFromAttribute();
-        this.orderTemplateService.addOrderTemplateItem(this.SKUID, this.wishlistTemplateID)
+        this.setskuIDFromAttribute();
+        this.orderTemplateService.addOrderTemplateItem(this.skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
             return result;
@@ -84,10 +84,10 @@ class SWFWishlistController {
     
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
-        this.setSkuIDFromAttribute();
+        this.setskuIDFromAttribute();
         const data = {
            orderTemplateName:orderTemplateName,
-           skuID:this.SKUID,
+           skuID:this.skuID,
            quantity:quantity
         };
         this.setWishlistName(orderTemplateName)
@@ -100,9 +100,9 @@ class SWFWishlistController {
         });
     }
     
-    public setSkuIDFromAttribute = ()=>{
-        let newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-        this.SKUID = newSKUID;
+    public setskuIDFromAttribute = ()=>{
+        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-SKUID');
+        this.skuID = newskuID;
     }
     
     public getAllWishlists = (pageRecordstoShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
@@ -116,7 +116,6 @@ class SWFWishlistController {
                 this.orderTemplates = result['orderTemplates'];                
             } else if(setNewTemplateID){
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
-                console.log(this.newTemplateID);
             }
             this.loading = false;
         });

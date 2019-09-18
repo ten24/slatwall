@@ -59514,8 +59514,8 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addWishlistItem = function () {
             _this.loading = true;
-            _this.setSkuIDFromAttribute();
-            _this.orderTemplateService.addOrderTemplateItem(_this.SKUID, _this.wishlistTemplateID)
+            _this.setskuIDFromAttribute();
+            _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
@@ -59524,10 +59524,10 @@ var SWFWishlistController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.setSkuIDFromAttribute();
+            _this.setskuIDFromAttribute();
             var data = {
                 orderTemplateName: orderTemplateName,
-                skuID: _this.SKUID,
+                skuID: _this.skuID,
                 quantity: quantity
             };
             _this.setWishlistName(orderTemplateName);
@@ -59538,9 +59538,9 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.setSkuIDFromAttribute = function () {
-            var newSKUID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-            _this.SKUID = newSKUID;
+        this.setskuIDFromAttribute = function () {
+            var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-SKUID');
+            _this.skuID = newskuID;
         };
         this.getAllWishlists = function (pageRecordstoShow, setNewTemplates, setNewTemplateID) {
             if (pageRecordstoShow === void 0) { pageRecordstoShow = _this.pageRecordsShow; }
@@ -59555,7 +59555,6 @@ var SWFWishlistController = /** @class */ (function () {
                 }
                 else if (setNewTemplateID) {
                     _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
-                    console.log(_this.newTemplateID);
                 }
                 _this.loading = false;
             });
@@ -79311,6 +79310,10 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.formattedFlag = false;
         this.$onInit = function () {
             _this.value = _this.object[_this.property];
+            // First, check if it was passed in via the object instead of the attribute.
+            if (_this.object && _this.object.currencyCode && !_this.currencyCode) {
+                _this.currencyCode = _this.object.currencyCode;
+            }
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
                 _this.value = _this.default;
@@ -79352,6 +79355,7 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             currencyFlag: "@?",
             refreshEvent: "@?",
             displayWidth: "@?",
+            currencyCode: "@?",
             default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
@@ -81023,6 +81027,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
             });
         };
+        this.startLoading = function () {
+            _this.loading = true;
+        };
+        this.stopLoading = function () {
+            _this.loading = false;
+        };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
          * collection on demand (refresh).
@@ -81031,6 +81041,12 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.startLoading, "addOrderItemStartLoading");
+            }
+            if (initial) {
+                _this.observerService.attach(_this.stopLoading, "addOrderItemStopLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
@@ -81697,6 +81713,7 @@ var SWListingDisplay = /** @class */ (function () {
             createAction: "@?",
             createQueryString: "@?",
             exportAction: "@?",
+            currencyCode: "@?",
             getChildCount: "<?",
             hasSearch: "<?",
             hasActionBar: "<?",
@@ -81785,6 +81802,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
+                    // If there is a currency code for the page record, first use that.
+                    // Then check if it was passed via the column args.
+                    // Then check if it was passed into the directive.
+                    // then set a default.
                     if (_this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
@@ -81794,7 +81815,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
                     else {
-                        _this.currencyCode = 'USD';
+                        //set a default if one was not passed in to use...
+                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                            _this.currencyCode = 'USD';
+                        }
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -81876,6 +81900,7 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
+            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;

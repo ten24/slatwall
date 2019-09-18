@@ -63496,7 +63496,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
             if (_this.skuPropertiesToDisplay != null) {
                 // join the two lists.
                 skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
@@ -63504,6 +63504,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('price', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
@@ -63578,11 +63579,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.observerService.notify("addOrderItemStartLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
                 if (data.preProcessView) {
@@ -63599,7 +63601,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     //now get the order values because we updated them and pass along to anything listening...
                     _this.$hibachi.getEntity("Order", _this.order).then(function (data) {
                         _this.observerService.notify("refreshOrder" + _this.order, data);
+                        _this.observerService.notify("addOrderItemStopLoading", {});
                     });
+                    _this.observerService.notify("addOrderItemStopLoading", {});
                     //(window as any).location.reload();
                 }
             }) // JSON-string from `response.json()` call
@@ -91177,6 +91181,10 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.formattedFlag = false;
         this.$onInit = function () {
             _this.value = _this.object[_this.property];
+            // First, check if it was passed in via the object instead of the attribute.
+            if (_this.object && _this.object.currencyCode && !_this.currencyCode) {
+                _this.currencyCode = _this.object.currencyCode;
+            }
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
                 _this.value = _this.default;
@@ -91218,6 +91226,7 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             currencyFlag: "@?",
             refreshEvent: "@?",
             displayWidth: "@?",
+            currencyCode: "@?",
             default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
@@ -91593,21 +91602,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }
@@ -92194,6 +92188,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
             });
         };
+        this.startLoading = function () {
+            _this.loading = true;
+        };
+        this.stopLoading = function () {
+            _this.loading = false;
+        };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
          * collection on demand (refresh).
@@ -92202,6 +92202,12 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.startLoading, "addOrderItemStartLoading");
+            }
+            if (initial) {
+                _this.observerService.attach(_this.stopLoading, "addOrderItemStopLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
@@ -92868,6 +92874,7 @@ var SWListingDisplay = /** @class */ (function () {
             createAction: "@?",
             createQueryString: "@?",
             exportAction: "@?",
+            currencyCode: "@?",
             getChildCount: "<?",
             hasSearch: "<?",
             hasActionBar: "<?",
@@ -92956,6 +92963,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
+                    // If there is a currency code for the page record, first use that.
+                    // Then check if it was passed via the column args.
+                    // Then check if it was passed into the directive.
+                    // then set a default.
                     if (_this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
@@ -92965,7 +92976,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
                     else {
-                        _this.currencyCode = 'USD';
+                        //set a default if one was not passed in to use...
+                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                            _this.currencyCode = 'USD';
+                        }
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -93047,6 +93061,7 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
+            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;

@@ -489,10 +489,10 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON) {
-		var qryColumns = getService("HibachiUtilityService").getQueryLabels(query);
+		var qryColumns = getService("HibachiUtilityService").getQueryLabels(arguments.query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
-
+		
 		try {
 			// add all the new columns to query
 			for(var addedColumn in listToArray(configStruct["addedColumns"])) {
@@ -524,7 +524,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(tables[ tableName ][ "tableType" ] == "linktable" && listFindNoCase(qryColumns, "#tables[ tableName ][ "primaryKeyColumn" ]#_new")) {
 					selectList = listAppend(selectList, "#tables[ tableName ][ "primaryKeyColumn" ]#_new");
 				}
-			// get distinct values for this table
+				// get distinct values for this table
 				var errorFree = false;
 				var remainingTries = 20;
 				tables[tableName]['missingColumns'] = [];
@@ -561,6 +561,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if (isNull(thisTableData)){
 					continue;
 				}
+				
 				// Loop over each record to insert or update
 				for(var r=1; r <= thisTableData.recordcount; r++) {
 					transaction {
@@ -643,7 +644,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								}
 							}
 
-						if(okToImport && len(tableData[tableName].idcolumns)) {
+							if(okToImport && len(tableData[tableName].idcolumns)) {
 
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
@@ -652,7 +653,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							}
 						}
 
-						//writedump(label="#tableName#",var="#tableData[tableName]#");
+						// writedump(label="#tableName#",var="#tableData[tableName]#");
 
 						// set the proper key for generated ID columns, for link table this will be the primary key of the table, so the key is set directly for table
 						if(tables[ tableName ].sourceIDColumns != "") {
