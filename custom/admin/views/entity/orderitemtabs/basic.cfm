@@ -7,7 +7,7 @@
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-
+	<cfset local.OrderItemJSON = rc.orderItem.getEncodedJsonRepresentation()>
 	
 	<hb:HibachiPropertyRow>
 		
@@ -24,15 +24,15 @@
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="currencyCode" edit="false" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="personalVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="commissionableVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="productPackVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="retailValueVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPersonalVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedTaxableAmount" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedCommissionableVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedProductPackVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
-			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedRetailValueVolume" edit="#(rc.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn')?true:false#" />
+			
+			<hr />
+			<div class="table-responsive">
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedPersonalVolume" currency-flag="true" title="Personal Volume (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedCommissionableVolume" currency-flag="true" title="Commissionable Volume (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedProductPackVolume" title="Product Pack Volume (Extended)" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedRetailValueVolume" title="Retail Value Volume (Extended)" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedTaxableAmount" title="Taxable Amount (Extended)" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+			</div>
 		</hb:HibachiPropertyList>
 		
 		<hb:HibachiPropertyList divclass="col-md-6">
@@ -72,6 +72,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
+				
 				
 			</hb:HibachiPropertyTable>
 			
