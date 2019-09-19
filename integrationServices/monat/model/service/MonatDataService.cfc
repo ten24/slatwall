@@ -19,6 +19,7 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
         param name="arguments.data.stateCode" default="";
+        param name="arguments.data.accountTypeCode" default="false";
         
         if(isNull(arguments.data.search) && isNull(arguments.data.stateCode)){
             return [];
