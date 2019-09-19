@@ -54,7 +54,16 @@ component extends="Slatwall.model.service.OrderService" {
         // Sales Orders
         } else if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
             if (arguments.systemCode == 'ostProcessing') {
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                
+                //if the order is paid but not shipped, set to Paid status
+                if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0){
+                    //the order is paid but not shipped
+                    arguments.order.setOrderStatusType(getTypeService().getTypeByTypeCode( typeCode="paid"));
+                }else{
+                    // set to processing
+                    arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                }
+                
             } else if (arguments.systemCode == 'ostClosed') {
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
             } else {
