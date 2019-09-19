@@ -64410,61 +64410,7 @@ exports.SWOrderTemplatePromotions = SWOrderTemplatePromotions;
 
 
 /***/ }),
-/* 655 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWOrderTemplateTotalController = /** @class */ (function () {
-    function SWOrderTemplateTotalController($hibachi, observerService, orderTemplateService, rbkeyService) {
-        var _this = this;
-        this.$hibachi = $hibachi;
-        this.observerService = observerService;
-        this.orderTemplateService = orderTemplateService;
-        this.rbkeyService = rbkeyService;
-        this.refreshTotal = function (data) {
-            _this.total = data.total;
-        };
-        this.observerService.attach(this.refreshTotal, 'OrderTemplateTotalUpdate');
-    }
-    return SWOrderTemplateTotalController;
-}());
-var SWOrderTemplateTotal = /** @class */ (function () {
-    function SWOrderTemplateTotal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.orderPartialsPath = orderPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.scope = {};
-        this.bindToController = {
-            orderTemplate: '<'
-        };
-        this.controller = SWOrderTemplateTotalController;
-        this.controllerAs = "swOrderTemplateTotal";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/ordertemplatefrequencycard.html";
-        this.restrict = "EA";
-    }
-    SWOrderTemplateTotal.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWOrderTemplateTotal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
-        directive.$inject = [
-            'orderPartialsPath',
-            'slatwallPathBuilder',
-            '$hibachi',
-            'rbkeyService'
-        ];
-        return directive;
-    };
-    return SWOrderTemplateTotal;
-}());
-exports.SWOrderTemplateTotal = SWOrderTemplateTotal;
-
-
-/***/ }),
+/* 655 */,
 /* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -64673,7 +64619,6 @@ var swordertemplategiftcards_1 = __webpack_require__(651);
 var swordertemplateitems_1 = __webpack_require__(652);
 var swordertemplatepromotions_1 = __webpack_require__(654);
 var swordertemplatepromotionitems_1 = __webpack_require__(653);
-var swordertemplatetotal_1 = __webpack_require__(655);
 var swordertemplateupcomingorderscard_1 = __webpack_require__(656);
 var swordertemplateupdateschedulemodal_1 = __webpack_require__(657);
 var swaddorderitemsbysku_1 = __webpack_require__(645);
@@ -64698,7 +64643,6 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swOrderTemplateItems', swordertemplateitems_1.SWOrderTemplateItems.Factory())
     .directive('swOrderTemplatePromotions', swordertemplatepromotions_1.SWOrderTemplatePromotions.Factory())
     .directive('swOrderTemplatePromotionItems', swordertemplatepromotionitems_1.SWOrderTemplatePromotionItems.Factory())
-    .directive('swOrderTemplateTotal', swordertemplatetotal_1.SWOrderTemplateTotal.Factory())
     .directive('swOrderTemplateUpcomingOrdersCard', swordertemplateupcomingorderscard_1.SWOrderTemplateUpcomingOrdersCard.Factory())
     .directive('swOrderTemplateUpdateScheduleModal', swordertemplateupdateschedulemodal_1.SWOrderTemplateUpdateScheduleModal.Factory())
     .directive('swAddOrderItemsBySku', swaddorderitemsbysku_1.SWAddOrderItemsBySku.Factory());
@@ -76783,7 +76727,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76796,6 +76739,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
