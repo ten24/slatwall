@@ -105,11 +105,11 @@ class SWFWishlistController {
         this.skuID = newskuID;
     }
     
-    public getAllWishlists = (pageRecordstoShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
+    public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(pageRecordstoShow,this.currentPage,this.wishlistTypeID)
+        .getOrderTemplates(pageRecordsToShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             
             if(setNewTemplates){
@@ -122,9 +122,9 @@ class SWFWishlistController {
     }
     
     public successfulAlert = () =>{
-       let wishlistAddAlertbox = document.getElementById("wishlistAddAlert");
-       wishlistAddAlertbox.textContent += this.wishlistTemplateName;
-       wishlistAddAlertbox.style.display = "block";
+       let wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+       wishlistAddAlertBox.textContent += this.wishlistTemplateName;
+       wishlistAddAlertBox.style.display = "block";
     }
     
     public setWishlistID = (newID) => {

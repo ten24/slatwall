@@ -59542,13 +59542,13 @@ var SWFWishlistController = /** @class */ (function () {
             var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
             _this.skuID = newskuID;
         };
-        this.getAllWishlists = function (pageRecordstoShow, setNewTemplates, setNewTemplateID) {
-            if (pageRecordstoShow === void 0) { pageRecordstoShow = _this.pageRecordsShow; }
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
             if (setNewTemplates === void 0) { setNewTemplates = true; }
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordstoShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -59560,9 +59560,9 @@ var SWFWishlistController = /** @class */ (function () {
             });
         };
         this.successfulAlert = function () {
-            var wishlistAddAlertbox = document.getElementById("wishlistAddAlert");
-            wishlistAddAlertbox.textContent += _this.wishlistTemplateName;
-            wishlistAddAlertbox.style.display = "block";
+            var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+            wishlistAddAlertBox.textContent += _this.wishlistTemplateName;
+            wishlistAddAlertBox.style.display = "block";
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
