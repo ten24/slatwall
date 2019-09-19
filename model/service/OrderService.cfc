@@ -1694,11 +1694,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
-
-		if(arguments.processObject.getSkipMonthFlag()) {
-			//do some calc dateAdd 
-			// DateAdd(arguments.processObject.getScheduleOrderNextPlaceDateTime(), 1);
-		}
+		
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
@@ -1867,7 +1863,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID,statusCode'
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,statusCode'
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");

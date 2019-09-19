@@ -5,10 +5,11 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	
 	public endDayOfTheMonth = 25;
 	public endDate;
+	public startDate;
 	public nextPlaceDateTime;
 	
 	public formData = {
-		delayOrSkip : 'delay',
+		delayOrSkip : '',
 		showOtherReasonNotes: false,
 	}; 
 	
@@ -27,9 +28,11 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     private calculateNextPlacedDateTime = () => {
     	//format mm/dd/yyyy
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
-	    this.nextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
+	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
-	    this.endDate = new Date((date.getMonth() + 1 +3) + '/' + date.getDate() + '/' +  date.getFullYear());
+	    // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
+	    this.endDate = Date.parse(`${(date.getMonth() + 1 +3)}/${date.getDate()}/${date.getFullYear()}`);
+	    console.log('startDate, endDate: ', this.startDate, this.endDate);
     }
     
     public updateDelayOrSkip = (val:string) =>{
