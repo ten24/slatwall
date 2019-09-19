@@ -54,7 +54,7 @@ component entityname="SlatwallOrderStatusHistory" table="SwOrderStatusHistory" p
 
 	// Related Object Properties (many-to-one)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="orderStatusHistoryType" cfc="Type" fieldtype="many-to-one" fkcolumn="OrderStatusHistoryTypeID" hb_optionsSmartListData="f:parentType.systemCode=OrderStatusHistoryType";
+	property name="orderStatusHistoryType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusHistoryTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusHistoryType";
 
 	// Related Object Properties (one-to-many)
 	
