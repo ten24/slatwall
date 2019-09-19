@@ -17,8 +17,12 @@ class swfAccountController {
     public ordersOnAccount;
     public orderItems = [];
     public orderItemsLength:number;
-    public urlParams = new URLSearchParams(window.location.search)
-
+    public urlParams = new URLSearchParams(window.location.search);
+    public newAccountPaymentMethod
+    public cachedCountryCode;
+    public editPaymentMethod;
+    public accountPaymentMethods;
+    
     // @ngInject
     constructor(
         public $rootScope,
@@ -50,10 +54,8 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.getOrdersOnAccount()
             this.userIsLoggedIn = true;
+            this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             this.loading = false;
-
-        }, err => {
-            console.log(err);
         });
     }
     
@@ -73,25 +75,42 @@ class swfAccountController {
         return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,currentPage,pageRecordsShow }).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
+                console.log(result);
             });
-            
             this.orderItemsLength = result.OrderItemsByOrderID.length;
-            console.log(this.orderItems)
         });
     }
     
     public getCountryCodeOptions = ():Promise<any>=>{
         this.loading = true;
         
+        if(this.countryCodeOptions){
+            console.log(this.countryCodeOptions)
+            return this.countryCodeOptions;
+        }
+    
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
+            console.log("it failed")
         });
     }
     
-    public getStateCodeOptions = (countryCode):Promise<any> =>{
+    public setEditPaymentMethod = (index:number) =>{
+        this.editPaymentMethod = this.accountPaymentMethods[index];
+        console.log(this.editPaymentMethod);
+    }
+    
+    public getStateCodeOptions = (countryCode) =>{
         this.loading = true;
         
+        if(this.cachedCountryCode == countryCode ){
+            return this.stateCodeOptions
+        }
+        
+        this.cachedCountryCode = countryCode;
+        console.log(this.cachedCountryCode)
+        console.log(countryCode)
         return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
             //Reset the state code options on each click so they dont add up incorrectly
             if(this.stateCodeOptions.length){
@@ -107,6 +126,10 @@ class swfAccountController {
 }
 
 class swfAccount  {
+    
+    public bindToController = {
+        currentAccountPayment:"@?"
+    };
     
     public controller       = swfAccountController;
     public controllerAs     = "swfAccount";

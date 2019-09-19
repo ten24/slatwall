@@ -18,7 +18,10 @@ component {
     property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
-    
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+
+	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
@@ -186,4 +189,20 @@ component {
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
 	}
+	
+	public any function getSkuProductURL(){
+		var skuProductURL = this.getSku().getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+
 }

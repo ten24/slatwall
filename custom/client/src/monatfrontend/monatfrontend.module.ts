@@ -1,16 +1,17 @@
 import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/frontend.module";
 //directives
-import {SWFReviewListing} from "./components/swfreviewlisting";
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 import {SWFWishlist} from "./components/swfwishlist";
 import {swfAccount} from "./components/swfmyaccount";
+import {MonatEnrollment} from "./components/monatenrollment";
+import {MonatEnrollmentStep} from "./components/monatenrollmentstep";
+import {SWFReviewListing} from "./components/swfreviewlisting";
 
 //services
+import {MonatService} from "./services/monatservice"; 
 import {OrderTemplateService} from "./services/ordertemplateservice"; 
-
-
 
 
 //declare variables out of scope
@@ -22,13 +23,20 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 //constants
 .constant('monatFrontendBasePath','/Slatwall/custom/client/src')
 //directives
-.directive('swfReviewListing', SWFReviewListing.Factory())
 .directive('monatFlexshipListing', MonatFlexshipListing.Factory())
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
+.directive('monatEnrollment', MonatEnrollment.Factory())
+.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
+
+.directive('swfReviewListing', SWFReviewListing.Factory())
+.directive('swfWishlist', SWFWishlist.Factory())
+
+.service('monatService', MonatService)
 .service('orderTemplateService', OrderTemplateService)
 .directive('swfWishlist', SWFWishlist.Factory())
 .directive('swfAccount', swfAccount.Factory());
+
 
 
 export{
