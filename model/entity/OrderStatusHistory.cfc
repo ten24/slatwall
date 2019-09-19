@@ -51,13 +51,11 @@ component entityname="SlatwallOrderStatusHistory" table="SwOrderStatusHistory" p
 	// Persistent Properties
 	property name="orderStatusHistoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="changeDateTime" ormtype="timestamp";
-	property name="effectiveDateTime" ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderStatusHistoryType" cfc="Type" fieldtype="many-to-one" fkcolumn="OrderStatusHistoryTypeID" hb_optionsSmartListData="f:parentType.systemCode=OrderStatusHistoryType";
-	property name="orderStatusHistoryChangeReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="OrderStatusHistoryChangeReasonTypeID" hb_optionsSmartListData="f:parentType.systemCode=OrderStatusHistoryChangeReasonType";
-	
+
 	// Related Object Properties (one-to-many)
 	
 	// Related Object Properties (many-to-many)
