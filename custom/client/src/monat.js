@@ -59514,7 +59514,7 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addWishlistItem = function () {
             _this.loading = true;
-            _this.setskuIDFromAttribute();
+            _this.setSkuIDFromAttribute();
             _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
@@ -59524,7 +59524,7 @@ var SWFWishlistController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.setskuIDFromAttribute();
+            _this.setSkuIDFromAttribute();
             var data = {
                 orderTemplateName: orderTemplateName,
                 skuID: _this.skuID,
@@ -59538,7 +59538,7 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.setskuIDFromAttribute = function () {
+        this.setSkuIDFromAttribute = function () {
             var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
             _this.skuID = newskuID;
         };

@@ -74,7 +74,7 @@ class SWFWishlistController {
     
     public addWishlistItem =()=>{ 
         this.loading = true;
-        this.setskuIDFromAttribute();
+        this.setSkuIDFromAttribute();
         this.orderTemplateService.addOrderTemplateItem(this.skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
@@ -84,7 +84,7 @@ class SWFWishlistController {
     
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
-        this.setskuIDFromAttribute();
+        this.setSkuIDFromAttribute();
         const data = {
            orderTemplateName:orderTemplateName,
            skuID:this.skuID,
@@ -100,7 +100,7 @@ class SWFWishlistController {
         });
     }
     
-    public setskuIDFromAttribute = ()=>{
+    public setSkuIDFromAttribute = ()=>{
         let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
         this.skuID = newskuID;
     }
