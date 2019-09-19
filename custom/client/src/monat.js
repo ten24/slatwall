@@ -59561,8 +59561,9 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.successfulAlert = function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
-            wishlistAddAlertBox.textContent += _this.wishlistTemplateName;
+            var wishlistInnerText = document.getElementById("wishlistTextWrapper");
             wishlistAddAlertBox.style.display = "block";
+            wishlistInnerText.textContent += _this.wishlistTemplateName;
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
@@ -59632,25 +59633,31 @@ exports.SWFWishlist = SWFWishlist;
 Object.defineProperty(exports, "__esModule", { value: true });
 var frontend_module_1 = __webpack_require__(779);
 //directives
-var swfreviewlisting_1 = __webpack_require__(606);
 var monatflexshipcard_1 = __webpack_require__(603);
 var monatflexshiplisting_1 = __webpack_require__(604);
 var monatflexshipmenu_1 = __webpack_require__(605);
-//services
-var ordertemplateservice_1 = __webpack_require__(609);
+var monatenrollment_1 = __webpack_require__(837);
+var monatenrollmentstep_1 = __webpack_require__(838);
+var swfreviewlisting_1 = __webpack_require__(606);
 var swfwishlist_1 = __webpack_require__(607);
+//services
+var monatservice_1 = __webpack_require__(839);
+var ordertemplateservice_1 = __webpack_require__(609);
 var monatfrontendmodule = angular.module('monatfrontend', [
     frontend_module_1.frontendmodule.name
 ])
     //constants
     .constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
     //directives
-    .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('monatFlexshipListing', monatflexshiplisting_1.MonatFlexshipListing.Factory())
     .directive('monatFlexshipCard', monatflexshipcard_1.MonatFlexshipCard.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
-    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
-    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory());
+    .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
+    .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
+    .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
+    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
+    .service('monatService', monatservice_1.MonatService)
+    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService);
 exports.monatfrontendmodule = monatfrontendmodule;
 
 
@@ -86945,6 +86952,169 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 837 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatEnrollmentController = /** @class */ (function () {
+    //@ngInject
+    function MonatEnrollmentController(monatService) {
+        var _this = this;
+        this.monatService = monatService;
+        this.backUrl = '/';
+        this.position = 0;
+        this.steps = [];
+        this.addStep = function (step) {
+            if (_this.steps.length == 0) {
+                step.selected = true;
+            }
+            _this.steps.push(step);
+        };
+        this.removeStep = function (step) {
+            var index = _this.steps.indexOf(step);
+            if (index > 0) {
+                _this.steps.splice(index, 1);
+            }
+        };
+        if (hibachiConfig.baseSiteURL) {
+            this.backUrl = hibachiConfig.baseSiteURL;
+        }
+        if (angular.isUndefined(this.onFinish)) {
+            this.onFinish = function () { return console.log('Done!'); };
+        }
+        if (angular.isUndefined(this.finishText)) {
+            this.finishText = 'Finish';
+        }
+        monatService.getCart().then(function (data) {
+            _this.cart = data;
+        });
+    }
+    MonatEnrollmentController.prototype.next = function () {
+        this.navigate(this.position + 1);
+    };
+    MonatEnrollmentController.prototype.previous = function () {
+        this.navigate(this.position - 1);
+    };
+    MonatEnrollmentController.prototype.navigate = function (index) {
+        if (index < 0 || index == this.position) {
+            return;
+        }
+        //If on next returns false, prevent it from navigating
+        if (index > this.position && !this.steps[this.position].onNext()) {
+            return;
+        }
+        if (index >= this.steps.length) {
+            return this.onFinish();
+        }
+        this.position = index;
+        angular.forEach(this.steps, function (step) {
+            step.selected = false;
+        });
+        this.steps[this.position].selected = true;
+    };
+    return MonatEnrollmentController;
+}());
+var MonatEnrollment = /** @class */ (function () {
+    function MonatEnrollment(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'EA';
+        this.transclude = true;
+        this.scope = {};
+        this.bindToController = {
+            finishText: '@',
+            onFinish: '=?'
+        };
+        this.controller = MonatEnrollmentController;
+        this.controllerAs = "monatEnrollment";
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollment.html";
+    }
+    MonatEnrollment.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return MonatEnrollment;
+}());
+exports.MonatEnrollment = MonatEnrollment;
+
+
+/***/ }),
+/* 838 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatEnrollmentStep = /** @class */ (function () {
+    function MonatEnrollmentStep(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'EA';
+        this.replace = true;
+        this.transclude = true;
+        this.scope = {
+            stepClass: '@',
+            onNext: '=?'
+        };
+        this.require = '^monatEnrollment';
+        this.link = function (scope, element, attrs, monatEnrollment) {
+            if (angular.isUndefined(scope.onNext)) {
+                scope.onNext = function () { return true; };
+            }
+            monatEnrollment.addStep(scope);
+            scope.$on('$destroy', function () {
+                monatEnrollment.removeStep(scope);
+            });
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollmentstep.html";
+    }
+    MonatEnrollmentStep.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return MonatEnrollmentStep;
+}());
+exports.MonatEnrollmentStep = MonatEnrollmentStep;
+
+
+/***/ }),
+/* 839 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatService = /** @class */ (function () {
+    //@ngInject
+    function MonatService(publicService, $q) {
+        this.publicService = publicService;
+        this.$q = $q;
+    }
+    MonatService.prototype.getCart = function (refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        if (refresh || angular.isUndefined(this.cart)) {
+            this.publicService.getCart(refresh).then(function (data) {
+                _this.cart = data;
+                deferred.resolve(_this.cart);
+            });
+        }
+        else {
+            deferred.resolve(this.cart);
+        }
+        return deferred.promise;
+    };
+    return MonatService;
+}());
+exports.MonatService = MonatService;
 
 
 /***/ })
