@@ -64,14 +64,14 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	if(this.formData.delayOrSkip === 'delay') {
     		payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
     	} else {
-    		payload['skipMontFlag'] = true;
+    		payload['skipNextMonthFlag'] = 1;
     	}
     	
     	
     	payload = this.orderTemplateService.getFlattenObject(payload);
      	console.log('updateSchedule :', payload);
      	
-     	return;
+     	// return;
     	// make api request
         this.orderTemplateService.updateSchedule(payload).then(
             (data) => {

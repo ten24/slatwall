@@ -9,36 +9,163 @@
 	
 		    <!-- TODO: Add Conditional to show Payment Method -->
 		    <div class="payment">
+		    	
+		    	<h6 class="title-with-line mb-5">Billing Address `</h6>
+
+			    <div class="custom-radio form-group" 
+			         ng-repeat="accountAddress in monatFlexshipPaymentMethodModal.accountAddresses"
+			         ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID(accountAddress.accountAddressID)"
+			         >
+                    <input  type="radio" 
+                            name="accountAddressID"
+                            ng-checked="accountAddress.accountAddressID === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+                          >
+                    <label for="accountAddressID" ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : '--- `'"></label>
+                </div>
+
+                <div class="custom-radio form-group"                                 
+                     ng-click="monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID()"
+                     >
+                    <input  type="radio" 
+                            name="accountAddressID" 
+                            ng-checked="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+                    >                        
+                    <label for="accountAddressID">Add a new billing address `</label>
+                </div>
+                <!--- Conditional: Add New Shipping Address form --->
+                <div ng-show="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID">
+                    <span class="label">New Billing Address `</span>
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
+            			placeholder="Nick Name * `">
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+               			ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
+            			placeholder="Name * `">
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
+            			placeholder="Address `">       
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.street2Address"
+            			placeholder="Address 2 `">                          
+            		</div>
+            		
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.countryCode"
+            			readonly
+            			placeholder="Country * `">                          
+            		</div>
+            		
+            		<div class="form-group">
+            			<select type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
+            			placeholder="State *">
+            			    <option value="">Select your State * `</option>
+            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.stateCodeOptions" 
+            			            value={{x.value}}>{{x.name}}</option>
+            			</select>     
+            		</div>
+            		
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.city"
+            			placeholder="City * `">                          
+            		</div>
+            		<div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAddress.postalCode"
+            			placeholder="Zip Code * `">                          
+            		</div>
+        		</div> <!-- end add new account address-->
+        		
+        		<br/> <!-- end select billing address-->
+	    	
 			    <h6 class="title-with-line mb-5">Payment Method</h6>
 			    
-			    {{monatFlexshipPaymentMethodModal.accountPaymentMethods || json}}
-			    <div class="custom-radio form-group" ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods">
-	                <input type="radio" name="saved_cards" id="visa1" checked>
-	                <label for="visa1"><i class="fab fa-cc-visa"></i> Visa 0023</label>
+			    <div class="custom-radio form-group" 
+			    	 ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
+			    	 ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID)"
+			    	>
+	                <input type="radio" 
+	                		name="saved_cards"
+                            ng-checked="accountPaymentMethod.accountPaymentMethodID === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+	                	>
+	                <label for="saved_cards" ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : '--- `'">
+	                	<i class="fab fa-cc-visa"></i>
+	                </label>
 	            </div>
-	            <div class="custom-radio form-group">
-	                <input type="radio" name="saved_cards" id="new_card">
+	            
+	            <div class="custom-radio form-group"
+	                   ng-click="monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID()">
+
+	                <input type="radio" name="saved_cards"
+                            ng-checked="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+	                	>
 	                <label for="new_card">Add New Credit Card</label>
 	            </div>
 	            
-	            <!-- TODO: Add Conditional: Add New Payment Address form -->
-	            <span class="label">New Credit Card</span>
-	    		<div class="form-group">
-	    			<input type="text" class="form-control" placeholder="Credit Card Number">
-	    		</div>
-	    		<div class="form-group">
-	    			<input type="text" class="form-control" placeholder="Expiration Month">
-	    		</div>
-	    		<div class="form-group">
-	    			<input type="text" class="form-control" placeholder="Expiration Year">
-	    		</div>
-	    		<div class="form-group">
-	    			<input type="text" class="form-control" placeholder="CVV">
+	            <!-- Conditional: Add New Payment Address form -->
+	            <div ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
+		            <span class="label">New Credit Card</span>
+		            
+		            <div class="form-group">
+            			<input type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName"
+            			placeholder="Nick Name `">
+            		</div>
+		            
+		    		<div class="form-group">
+		    			<input type="text" class="form-control"
+		    				placeholder="Credit Card Number `"
+		    				ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.creditCardNumber"
+		    			>
+		    		</div>
+		    		
+		    		<div class="form-group">
+		    			<input type="text" class="form-control"
+		    				placeholder="Name on Card `"
+		    				ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard"
+		    			>
+		    		</div>
+		    		
+		    		<div class="form-group">
+            			<select type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
+            			placeholder="Expiration Month *">
+            			    <option value="">Expiration Month * `</option>
+            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.expirationMonthOptions" 
+            			            value={{x}}>{{x}}</option>
+            			</select>     
+            		</div>
+            		
+            		<div class="form-group">
+            			<select type="text" class="form-control" 
+            			ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+            			placeholder="Expiration Year *">
+            			    <option value="">Expiration Year * `</option>
+            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.expirationYearOptions" 
+            			            value={{x.VALUE}}>{{x.NAME}}</option>
+            			</select>     
+            		</div>
+            		
+		    		<div class="form-group">
+		    			<input type="text" class="form-control" 
+		    					placeholder="CVV"
+		    					ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
+		    				>
+		    		</div>
 	    		</div>
 	        </div>
 			
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary">Save changes</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipPaymentMethodModal.updateBilling()">Save changes</button>
         	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
 		    </div>
 		    

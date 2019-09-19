@@ -53,7 +53,13 @@ export class OrderTemplateService {
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
                   .promise;
     }
-    
+
+    public updateBilling = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateBilling', data)
+                  .promise;
+    }
+
     public activate = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)

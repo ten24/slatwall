@@ -59262,7 +59262,7 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
         this.observerService = observerService;
         this.endDayOfTheMonth = 25;
         this.formData = {
-            delayOrSkip: 'delay',
+            delayOrSkip: '',
             showOtherReasonNotes: false,
         };
         this.$onInit = function () {
@@ -59272,9 +59272,11 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
         this.calculateNextPlacedDateTime = function () {
             //format mm/dd/yyyy
             var date = new Date(Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime));
-            _this.nextPlaceDateTime = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+            _this.nextPlaceDateTime = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             _this.endDayOfTheMonth = 25;
-            _this.endDate = new Date((date.getMonth() + 1 + 3) + '/' + date.getDate() + '/' + date.getFullYear());
+            // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
+            _this.endDate = Date.parse((date.getMonth() + 1 + 3) + "/" + date.getDate() + "/" + date.getFullYear());
+            console.log('startDate, endDate: ', _this.startDate, _this.endDate);
         };
         this.updateDelayOrSkip = function (val) {
             _this.formData.delayOrSkip = val;
@@ -59304,11 +59306,11 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
         }
         else {
-            payload['skipMontFlag'] = true;
+            payload['skipNextMonthFlag'] = 1;
         }
         payload = this.orderTemplateService.getFlattenObject(payload);
         console.log('updateSchedule :', payload);
-        return;
+        // return;
         // make api request
         this.orderTemplateService.updateSchedule(payload).then(function (data) {
             if (data.orderTemplate) {
@@ -59368,10 +59370,92 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
-    function MonatFlexshipPaymentMethodModalController(orderTemplateService) {
+    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
-        this.$onInit = function () { };
+        this.observerService = observerService;
+        this.selectedBillingAccountAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.selectedAccountPaymentMethod = { accountPaymentMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.newAccountAddress = {};
+        this.newAddress = { 'countryCode': 'US' }; // hard-coded default
+        this.newAccountPaymentMethod = {};
+        this.$onInit = function () {
+            console.log('monatFlexshipPaymentMethodModal', _this);
+            /**
+             * Find and set old billing-address if any
+            */
+            _this.existingBillingAccountAddress = _this.accountAddresses.find(function (item) {
+                return item.accountAddressID === _this.orderTemplate.billingAccountAddress_accountAddressID;
+            });
+            if (!!_this.existingBillingAccountAddress && !!_this.existingBillingAccountAddress.accountAddressID) {
+                _this.setSelectedBillingAccountAddressID(_this.existingBillingAccountAddress.accountAddressID);
+            }
+            /**
+             * Find and set old payment-method if any
+            */
+            _this.existingAccountPaymentMethod = _this.accountPaymentMethods.find(function (item) {
+                return item.accountPaymentMethodID === _this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; //
+            });
+            if (!!_this.existingAccountPaymentMethod && !!_this.existingAccountPaymentMethod.accountPaymentMethodID) {
+                _this.setSelectedAccountPaymentMethodID(_this.existingAccountPaymentMethod.accountPaymentMethodID);
+            }
+        };
     }
+    MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
+        if (accountAddressID === void 0) { accountAddressID = 'new'; }
+        console.warn("selected billing address id :", accountAddressID);
+        this.selectedBillingAccountAddress.accountAddressID = accountAddressID;
+    };
+    MonatFlexshipPaymentMethodModalController.prototype.setSelectedAccountPaymentMethodID = function (accountPaymentMethodID) {
+        if (accountPaymentMethodID === void 0) { accountPaymentMethodID = 'new'; }
+        console.warn("selected account-payment-method id :", accountPaymentMethodID);
+        this.selectedAccountPaymentMethod.accountPaymentMethodID = accountPaymentMethodID;
+    };
+    MonatFlexshipPaymentMethodModalController.prototype.updateBilling = function () {
+        var _this = this;
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        if (this.selectedBillingAccountAddress.accountAddressID !== 'new') {
+            payload['billingAccountAddress.value'] = this.selectedBillingAccountAddress.accountAddressID;
+        }
+        else {
+            this.newAccountAddress['address'] = this.newAddress;
+            payload['newAccountAddress'] = this.newAccountAddress;
+        }
+        if (this.selectedAccountPaymentMethod.accountPaymentMethodID !== 'new') {
+            payload['accountPaymentMethod.value'] = this.selectedAccountPaymentMethod.accountPaymentMethodID;
+        }
+        else {
+            payload['newAccountPaymentMethod'] = this.newAccountPaymentMethod;
+        }
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        console.log("updateBilling", payload);
+        // make api request
+        this.orderTemplateService.updateBilling(payload).then(function (response) {
+            if (response.orderTemplate) {
+                _this.orderTemplate = response.orderTemplate;
+                if (response.newAccountAddress) {
+                    _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
+                    _this.accountAddresses.push(response.newAccountAddress);
+                }
+                if (response.newAccountPaymentMethod) {
+                    _this.observerService.notify("newAccountPaymentMethodAdded", response.newAccountPaymentMethod);
+                    _this.accountPaymentMethods.push(response.newAccountPaymentMethod);
+                }
+                _this.setSelectedBillingAccountAddressID(_this.orderTemplate.billingAccountAddress_accountAddressID);
+                _this.setSelectedAccountPaymentMethodID(_this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
+                _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+            }
+            else {
+                //TODO handle errors
+                console.error(response);
+            }
+            // TODO: show alerts
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipPaymentMethodModalController;
 }());
 var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
@@ -59383,7 +59467,11 @@ var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             accountPaymentMethods: '<',
-            orderTemplate: '<'
+            stateCodeOptions: '<',
+            accountAddresses: '<',
+            orderTemplate: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
         };
         this.controller = MonatFlexshipPaymentMethodModalController;
         this.controllerAs = "monatFlexshipPaymentMethodModal";
@@ -59463,15 +59551,19 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         //return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
-            _this.orderTemplate = response.orderTemplate;
-            _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-            console.log('ot updateShipping: ', _this.orderTemplate);
-            if (angular.isDefined(response.newAccountAddress)) {
-                _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
-                _this.accountAddresses.push(response.newAccountAddress);
+            if (response.orderTemplate) {
+                _this.orderTemplate = response.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                if (response.newAccountAddress) {
+                    _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
+                    _this.accountAddresses.push(response.newAccountAddress);
+                }
+                _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
+                _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
             }
-            _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
-            _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
+            else {
+                console.error(response); //
+            }
             // TODO: show alert
         }, function (reason) {
             throw (reason);
@@ -59691,7 +59783,9 @@ var MonatFlexshipCard = /** @class */ (function () {
             shippingMethodOptions: '<',
             stateCodeOptions: '<',
             cancellationReasonTypeOptions: '<',
-            scheduleDateChangeReasonTypeOptions: '<'
+            scheduleDateChangeReasonTypeOptions: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = "monatFlexshipCard";
@@ -59794,6 +59888,8 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.stateCodeOptions = data.stateCodeOptions;
                 _this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
                 _this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+                _this.expirationMonthOptions = data.expirationMonthOptions;
+                _this.expirationYearOptions = data.expirationYearOptions;
                 //set this last so that ng repeat inits with all needed data
                 _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
@@ -59860,7 +59956,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         //return;
         // make api request
         this.orderTemplateService.activate(payload).then(function (data) {
-            if (angular.isDefined(data.orderTemplate)) {
+            if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
@@ -59889,7 +59985,9 @@ var MonatFlexshipMenu = /** @class */ (function () {
             shippingMethodOptions: '<',
             stateCodeOptions: '<',
             cancellationReasonTypeOptions: '<',
-            scheduleDateChangeReasonTypeOptions: '<'
+            scheduleDateChangeReasonTypeOptions: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = "monatFlexshipMenu";
@@ -60272,6 +60370,11 @@ var OrderTemplateService = /** @class */ (function () {
         this.updateShipping = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
+                .promise;
+        };
+        this.updateBilling = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateBilling', data)
                 .promise;
         };
         this.activate = function (data) {

@@ -7,6 +7,8 @@ class MonatFlexshipListingController{
 	public shippingMethodOptions: any[];
 	public cancellationReasonTypeOptions: any[];
 	public scheduleDateChangeReasonTypeOptions: any[];
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
 	
 	public initialized=false; 
 	constructor( public orderTemplateService
@@ -25,6 +27,9 @@ class MonatFlexshipListingController{
 	            this.stateCodeOptions = data.stateCodeOptions;
 	            this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
 	            this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+	            this.expirationMonthOptions = data.expirationMonthOptions;
+	            this.expirationYearOptions = data.expirationYearOptions;
+	            
 	            //set this last so that ng repeat inits with all needed data
 	        	this.orderTemplates = data.orderTemplates; 
  	        },

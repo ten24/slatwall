@@ -132,7 +132,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}
 
 	public array function getExpirationMonthOptions() {
-		return getService('paymentService').getCardExpirationMonthOptions()
+		return getService('paymentService').getCardExpirationMonthOptions();
 	}
 
 	public array function getExpirationYearOptions() {

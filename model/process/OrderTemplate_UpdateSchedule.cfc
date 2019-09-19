@@ -56,16 +56,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplateScheduleDateChangeReasonTypeID"; 
 	property name="orderTemplateScheduleDateChangeReasonType"; 
 	
-	property name="skipMontFlag" default=false;
+	property name="skipNextMonthFlag" ormtype="boolean" default=false;
 
 
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 	
 	public any function getscheduleOrderNextPlaceDateTime() {
-
-	    if(variables.skipMontFlag) {
+		
+	    if(variables.skipNextMonthFlag) {
 	   	    var otNextPlaceDateTime =  variables.orderTemplate.getScheduleOrderNextPlaceDateTime();
-	        DateAdd('m', 1, otNextPlaceDateTime); // adding one month
+	        otNextPlaceDateTime = DateAdd('m', 1, otNextPlaceDateTime); // adding one month
 	        return otNextPlaceDateTime;
 	    }
 	    

@@ -111,6 +111,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().updateOrderTemplateShipping(arguments.rc); 
 	} 
 	
+	public any function updateOrderTemplateBilling(required struct rc){
+	    getPublicService().updateOrderTemplateBilling(arguments.rc);
+	}
+	
 	public any function activateOrderTemplate( required struct rc ){
 		getPublicService().activateOrderTemplate(arguments.rc); 
 	} 

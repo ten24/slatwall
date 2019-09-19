@@ -11,6 +11,9 @@ class MonatFlexshipCardController{
 	public cancellationReasonTypeOptions: any[];
 	public scheduleDateChangeReasonTypeOptions: any[];
 	
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
+	
 	constructor(public observerService){
 	}
 	
@@ -37,7 +40,9 @@ class MonatFlexshipCard {
 	    shippingMethodOptions: '<',
 	    stateCodeOptions:'<',
 	    cancellationReasonTypeOptions: '<',
-	    scheduleDateChangeReasonTypeOptions: '<'
+	    scheduleDateChangeReasonTypeOptions: '<',
+	    expirationMonthOptions: '<',
+		expirationYearOptions: '<'
 	};
 	public controller=MonatFlexshipCardController;
 	public controllerAs="monatFlexshipCard";

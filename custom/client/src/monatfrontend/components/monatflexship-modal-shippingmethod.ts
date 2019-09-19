@@ -58,19 +58,21 @@ class MonatFlexshipShippingMethodModalController {
         this.orderTemplateService.updateShipping(payload).then(
             (response) => {
                
-                this.orderTemplate = response.orderTemplate;
-                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-
-                console.log('ot updateShipping: ', this.orderTemplate); 
-                
-                if(angular.isDefined(response.newAccountAddress)) {
-            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-            		this.accountAddresses.push(response.newAccountAddress);
-                }
-                		
-                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
-                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-                
+               if(response.orderTemplate) {
+	                this.orderTemplate = response.orderTemplate;
+	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+	
+	                if(response.newAccountAddress) {
+	            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+	            		this.accountAddresses.push(response.newAccountAddress);
+	                }
+	                		
+	                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+	                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
+	                
+               } else {
+	               	console.error(response); //
+               }
                 // TODO: show alert
             }, 
             (reason) => {

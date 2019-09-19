@@ -8,6 +8,9 @@ class MonatFlexshipMenuController{
 	public stateCodeOptions: any[];
 	public cancellationReasonTypeOptions: any[];
 	public scheduleDateChangeReasonTypeOptions: any[];
+	
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
 
 	constructor( 
 		public orderTemplateService,
@@ -29,7 +32,7 @@ class MonatFlexshipMenuController{
     	// make api request
         this.orderTemplateService.activate(payload).then(
             (data) => {
-            	if(angular.isDefined(data.orderTemplate)) {
+            	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             	} else{
@@ -59,7 +62,9 @@ class MonatFlexshipMenu{
 	    shippingMethodOptions: '<',
 	    stateCodeOptions: '<',
 	    cancellationReasonTypeOptions: '<',
-	    scheduleDateChangeReasonTypeOptions: '<'
+	    scheduleDateChangeReasonTypeOptions: '<',
+	    expirationMonthOptions: '<',
+		expirationYearOptions: '<'
 	};
 	public controller=MonatFlexshipMenuController;
 	public controllerAs="monatFlexshipMenu";

@@ -387,7 +387,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 
 	public array function getExpirationMonthOptions() {
-		return getService('paymentService').getCardExpirationMonthOptions()
+		return getService('paymentService').getCardExpirationMonthOptions();
 	}
 
 	public array function getExpirationYearOptions() {

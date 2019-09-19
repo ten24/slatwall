@@ -111,7 +111,7 @@ property name="accountRemoteID" ormtype="string"; //CUSTOM PROPERTIES END
 	}
 
 	public array function getExpirationMonthOptions() {
-		return getService('paymentService').getCardExpirationMonthOptions()
+		return getService('paymentService').getCardExpirationMonthOptions();
 	}
 
 	public array function getExpirationYearOptions() {
