@@ -4306,6 +4306,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order = this.saveOrder(arguments.order);	
 
 		return arguments.order; 
+	}
+	
+	public any function processOrder_releaseCredits(required any order, struct data){
+
+		var orderPaymentsSmartList = arguments.order.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCredit');
+		var orderPayments = orderPaymentsSmartList.getRecords();
+
+		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+		
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = 'credit',
+					amount = orderPayment.getAmountUncredited(), 
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
+				};
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
+					arguments.order.clearHibachiErrors(); 
+					orderPayment.clearHibachiErrors();
+					getHibachiScope().setORMHasErrors(false);	
+ 
+					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
+					arguments.order.setPaymentTryCount(currentTryCount);
+					arguments.order.setPaymentLastRetryDateTime(now());
+				} 
+			}
+		}	
+		
+		arguments.order.setPaymentProcessingInProgressFlag(false); 
+		
+		arguments.order = this.saveOrder(arguments.order);	
+
+		return arguments.order; 
 	} 
 
 	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
