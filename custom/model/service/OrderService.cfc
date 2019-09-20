@@ -119,5 +119,20 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return representation;
 	}
+	
+	public any function processOrderDeliver_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
+		
+		var orderDeliveryStatusTypeUndeliverable = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
+		
+		if (structKeyExists(data, "undeliverableOrderReason")){
+		    arguments.orderDelivery.setUndeliverableOrderReason(data.undeliverableOrderReason);
+		    arguments.orderDelivery.setOrderDeliveryStatusType(orderDeliveryStatusType);
+		}
+		
+		arguments.orderDelivery = saveOrderDelivery(arguments.orderDelivery);
+		getHibachiScope().flushORMSession();
+		
+		return arguments.orderDelivery;
+	}
 
 }
