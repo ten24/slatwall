@@ -1,12 +1,10 @@
 export class OrderTemplateService { 
    
    constructor(
-       public requestService,
-       public observerService
-
-       ){
-    // this.observerService.attach(this.refreshOrderTemplatesListing, 'OrderTemplateUpdateShippingSuccess');
-
+        public requestService,
+        public $hibachi
+    ) {
+       
    } 
    
    /**
@@ -97,10 +95,27 @@ export class OrderTemplateService {
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
     }
-   
-   /**
+
+   public addOrderTemplateItem = (skuID, orderTemplateID, quantity=1):Promise<any> =>{
+        
+        var formDataToPost:any = {
+			entityID: orderTemplateID,
+			entityName: 'OrderTemplate',
+			context: 'addOrderTemplateItem',
+			skuID: skuID,
+			quantity: quantity
+		};
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		return adminRequest.promise
+    }
+    
+    /**
     * for more details https://gist.github.com/penguinboy/762197
-*/ 
+    */ 
     public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
         var objectToReturn = {};
         for (var key in inObject) {
@@ -132,4 +147,5 @@ export class OrderTemplateService {
       }
       return objectToReturn;
     }
+   
 }
