@@ -120,19 +120,18 @@ component extends="Slatwall.model.service.OrderService" {
 		return representation;
 	}
 	
-	public any function processOrderDeliver_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
+	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
 		
-		var orderDeliveryStatusTypeUndeliverable = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
+		var orderDeliveryStatusType = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
 		
-		if (structKeyExists(data, "undeliverableOrderReason")){
+		if (structKeyExists(data, "undeliverableOrderReason") && !isNull(orderDeliveryStatusType)){
 		    arguments.orderDelivery.setUndeliverableOrderReason(data.undeliverableOrderReason);
 		    arguments.orderDelivery.setOrderDeliveryStatusType(orderDeliveryStatusType);
 		}
 		
-		arguments.orderDelivery = saveOrderDelivery(arguments.orderDelivery);
+		arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
 		getHibachiScope().flushORMSession();
 		
 		return arguments.orderDelivery;
 	}
-
 }
