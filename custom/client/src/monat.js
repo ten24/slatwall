@@ -60099,6 +60099,20 @@ var MonatFlexshipMenuController = /** @class */ (function () {
             // TODO: show alert
         });
     };
+    MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        //return;
+        // make api request
+        this.orderTemplateService.setAsCurrentFlexship(payload).then(function (data) {
+            console.error('setAsCurrentFlexship :', data);
+            // TODO: redirect // show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipMenuController;
 }());
 var MonatFlexshipMenu = /** @class */ (function () {
@@ -60549,6 +60563,11 @@ var OrderTemplateService = /** @class */ (function () {
         this.activate = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
+                .promise;
+        };
+        this.setAsCurrentFlexship = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.setAsCurrentFlexship', data)
                 .promise;
         };
         this.cancel = function (data) {

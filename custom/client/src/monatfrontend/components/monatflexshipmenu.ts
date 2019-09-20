@@ -46,6 +46,25 @@ class MonatFlexshipMenuController{
             }
         );
     }
+    
+    public setAsCurrentFlexship() {
+    	let payload = {};
+    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+ 
+    	payload = this.orderTemplateService.getFlattenObject(payload);
+    	//return;
+    	// make api request
+        this.orderTemplateService.setAsCurrentFlexship(payload).then(
+            (data) => {
+            	console.error('setAsCurrentFlexship :',data);
+            	// TODO: redirect // show alert
+            }, 
+            (reason) => {
+                throw (reason);
+                // TODO: show alert
+            }
+        );
+    }
 
 
 }

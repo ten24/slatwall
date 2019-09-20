@@ -66,6 +66,12 @@ export class OrderTemplateService {
                   .promise;
     }
     
+    public setAsCurrentFlexship = (data) => {
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.setAsCurrentFlexship', data)
+                  .promise;
+    }
+    
     public cancel = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
