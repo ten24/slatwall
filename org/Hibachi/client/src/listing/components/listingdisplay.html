@@ -93,7 +93,7 @@
                 </sw-pagination-bar>
             </div>
             <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
-
+                
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
@@ -151,6 +151,17 @@
                                 swListingDisplay.recordDeleteAction.length ||
                                 swListingDisplay.recordProcessButtonDisplayFlag.length
                             ">
+                                <div ng-if="swListingDisplay.loading" class="right">
+                                    <style>
+                                        div.centered {
+                                            margin: auto;
+                                            width: 100%;
+                                            display: flex;
+                                            justify-content: center;
+                                        }
+                                    </style>
+                                    <div class="centered"><b><i class="fas fa-spinner fa-pulse"></i></b></div>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -234,13 +245,14 @@
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     data-expandable-rules="swListingDisplay.expandableRules">
-                            	
+
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-page-record="pageRecord"
                                     data-cell-view="{{column.cellView}}"
-                                    data-expandable-rules="swListingDisplay.expandableRules">
+                                    data-expandable-rules="swListingDisplay.expandableRules"
+                                    data-currency-code="{{swListingDisplay.currencyCode}}">
                             	</sw-listing-display-cell>
 							</td>
 

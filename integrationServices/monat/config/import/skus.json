@@ -3,17 +3,21 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode"
+          "propertyIdentifier":"skuCode",
+          "key":true
         },
         {
           "sourceColumn":"RemoteID",
           "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
-          "propertyIdentifier":"remoteID",
-          "key":true
+          "propertyIdentifier":"remoteID"
         },
         {
           "sourceColumn":"ItemName",
           "propertyIdentifier":"skuName"
+        },
+        {
+          "sourceColumn":"Amount",
+          "propertyIdentifier":"price"
         },
         {
           "sourceColumn":"SecondName",
@@ -34,13 +38,13 @@
         },
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"product.productCode"
+          "propertyIdentifier":"product.productCode",
+          "key":true
         },
         {
           "sourceColumn":"RemoteID",
           "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
-          "propertyIdentifier":"product.remoteID",
-          "key":true
+          "propertyIdentifier":"product.remoteID"
         },
         {
           "sourceColumn":"ItemName",
@@ -84,6 +88,23 @@
           "sourceColumn":"skuPublishedFlag",
           "sourceColumnDataGenerator":"1",
           "propertyIdentifier":"publishedFlag"
+        },
+        {
+          "sourceColumn":"skuBundleFlag",
+          "sourceColumnDataGenerator":"0",
+          "propertyIdentifier":"bundleFlag"
+        },
+        {
+          "sourceColumn": "SKUItemCode",
+          "propertyIdentifier": "product.defaultSku",
+          "circular": "true",
+          "matchType": "first"
+        },
+        {
+          "sourceColumn": "SKUBrandName",
+          "sourceColumnDataGenerator":"'Monat'",
+          "propertyIdentifier": "product.brand.brandName",
+          "key":true
         }
     ]
 }

@@ -47,10 +47,18 @@ Notes:
 
 */
 component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
+	
+	public boolean function healthcheck() {
+        var responseBean = testIntegration();
+        return responseBean.healthcheckFlag;
+    }
+	
 	public any function getTaxRates(required any requestBean) {
 
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
+		
+		responseBean.healthcheckFlag = false;
 		
 		var docType = 'SalesOrder';
 		var usageType = '';
@@ -97,6 +105,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		} else if ( setting('taxDocumentCommitType') == 'commitOnClose' && !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
 			docType = 'SalesInvoice';
 		}
+		
 		
 		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
 			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
@@ -153,8 +162,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		// Loop over each unique tax address
 		var addressIndex = 1;
-		var referenceObjectTypeHashMap = {};
-
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
 			addressIndex ++;
@@ -186,7 +193,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					itemData.OriginCode = 1;
 					itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
 					itemData.TaxCode = item.getTaxCategoryRateCode();
-					itemData.Description = item.getOrderItem().getSku().getProduct().getProductName();	
+					itemData.Description = item.getOrderItem().getSku().getProduct().getProductName();
 					itemData.Qty = item.getQuantity();
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
@@ -195,24 +202,26 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
-					
-					StructInsert(referenceObjectTypeHashMap, item.getOrderItemID(), 'OrderItem');
 
 					
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
+					
+					var amount = item.getPrice();
+					
+					if(!isNull(item.getOrderFulfillment().getHandlingFee())){
+						amount += item.getOrderFulfillment().getHandlingFee();
+					}
+					
 					var itemData = {};
 					itemData.LineNo = item.getOrderFulfillmentID();
 					itemData.DestinationCode = addressIndex;
 					itemData.OriginCode = 1;
 					itemData.ItemCode = 'Shipping';
-					itemData.TaxCode = 'FR';
+					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
-					itemData.Amount = item.getPrice();
-					
+					itemData.Amount = amount;
 					arrayAppend(requestDataStruct.Lines, itemData);
-					
-					StructInsert(referenceObjectTypeHashMap, item.getOrderFulfillmentID(), 'OrderFulfillment');
 
 				}
 			}
@@ -220,7 +229,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		// Setup the auth string
 		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
-		
 		// Setup Request to push to Avatax
         var httpRequest = new http();
         httpRequest.setMethod("POST");
@@ -230,22 +238,26 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         }
         
         if(testingFlag) {
-        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
+        	httpRequest.setUrl(setting('testURL'));	
         } else {
-        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");
+        	httpRequest.setUrl(setting('productionURL'));
         }
 		httpRequest.addParam(type="header", name="Content-type", value="application/json");
 		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
 		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
-		
+	
 		var responseData = httpRequest.send().getPrefix();
 		
 		if (IsJSON(responseData.FileContent)){
 			
-			var fileContent = DeserializeJSON(responseData.FileContent);
+			// a valid response was retrieved
+			// health check passed
+			responseBean.healthcheckFlag = true;
 			
+			var fileContent = DeserializeJSON(responseData.FileContent);
+
 			if (fileContent.resultCode == 'Error'){
 				responseBean.setData(fileContent.messages);
 			}
@@ -262,34 +274,42 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					// Make sure that there is a taxAmount for this orderItem
 					if(taxLine.Tax > 0) {
 						
+						var primaryIDName = left(taxLine.taxCode,2) == "FR" ? "orderFulfillmentId" : "orderItemId";
+						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0 && structKeyExists(referenceObjectTypeHashMap, taxLine.LineNo )) {
-								responseBean.addTaxRateItem(
-									referenceObjectID = taxLine.LineNo,
+							if(taxDetail.Tax > 0) {
+								var args = {
+									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
 									taxRate = taxDetail.Rate * 100,
 									taxJurisdictionName=taxDetail.JurisName,
 									taxJurisdictionType=taxDetail.JurisType,
 									taxImpositionName=taxDetail.TaxName,
-									referenceObjectType = referenceObjectTypeHashMap['#taxLine.LineNo#']
+									referenceObjectType="#referenceObjectType#"
+								};
+								
+								// Add the details of the taxes charged
+								responseBean.addTaxRateItem(
+									argumentCollection=args
 								);
+									
 							}
 						}
 					}
 				}
 			}
-		}if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
- 			responseBean.setData(responseData.Responseheader.Explanation);
+		}else if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
+			responseBean.setData(responseData.Responseheader.Explanation);
 		}else{
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
- 		}
-		
+		}
 		return responseBean;
 	}
 	
 	public any function voidTaxDocument(required any requestBean){
+		
 		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
 			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
 		} else{

@@ -1,6 +1,5 @@
 import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/frontend.module";
 //directives
-import {SWFReviewListing} from "./components/swfreviewlisting";
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipDetail} from "./components/monatflexshipdetail";
 import {MonatFlexshipOrderItem} from "./components/monatflexship-orderitem";
@@ -12,9 +11,14 @@ import {MonatFlexshipChangeOrSkipOrderModal} from "./components/monatflexship-mo
 import {MonatFlexshipCancelModal} from "./components/monatflexship-modal-cancel";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
-//services
-import {OrderTemplateService} from "./services/ordertemplateservice"; 
+import {MonatEnrollment} from "./components/monatenrollment";
+import {MonatEnrollmentStep} from "./components/monatenrollmentstep";
+
+import {SWFReviewListing} from "./components/swfreviewlisting";
 import {SWFWishlist} from "./components/swfwishlist";
+//services
+import {MonatService} from "./services/monatservice"; 
+import {OrderTemplateService} from "./services/ordertemplateservice"; 
 
 //declare variables out of scope
 declare var $:any;
@@ -25,7 +29,6 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 //constants
 .constant('monatFrontendBasePath','/Slatwall/custom/client/src')
 //directives
-.directive('swfReviewListing', SWFReviewListing.Factory())
 .directive('monatFlexshipListing', MonatFlexshipListing.Factory())
 .directive('monatFlexshipCard', MonatFlexshipCard.Factory())
 .directive('monatFlexshipDetail', MonatFlexshipDetail.Factory())
@@ -37,8 +40,14 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipChangeOrSkipOrderModal',MonatFlexshipChangeOrSkipOrderModal.Factory())
 .directive('monatFlexshipCancelModal',MonatFlexshipCancelModal.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
+.directive('monatEnrollment', MonatEnrollment.Factory())
+.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
+
+.directive('swfReviewListing', SWFReviewListing.Factory())
+.directive('swfWishlist', SWFWishlist.Factory())
+
+.service('monatService', MonatService)
 .service('orderTemplateService', OrderTemplateService)
-.directive('swfWishlist', SWFWishlist.Factory());
 
 export{
     monatfrontendmodule
