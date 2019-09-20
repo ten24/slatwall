@@ -14,6 +14,11 @@ class SWFWishlistController {
     public loading:boolean;
     public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
+    public wishlistTemplateID:string;
+    public wishlistTemplateName:string;
+    public skuID:string;
+    public newTemplateID:string;
+
     
     // @ngInject
     constructor(
@@ -31,7 +36,9 @@ class SWFWishlistController {
             this.currentPage = 1;
         }
         
-        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
+        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
+        this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
+
     }
     
     private refreshList = (option:Option)=>{
@@ -65,19 +72,71 @@ class SWFWishlistController {
         });
     }
     
-    public getAllWishlists = () => {
+    public addWishlistItem =()=>{ 
+        this.loading = true;
+        this.setSkuIDFromAttribute();
+        this.orderTemplateService.addOrderTemplateItem(this.skuID, this.wishlistTemplateID)
+        .then(result=>{
+            this.loading = false;
+            return result;
+        });
+    }
+    
+    public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
+        this.loading = true;
+        this.setSkuIDFromAttribute();
+        const data = {
+           orderTemplateName:orderTemplateName,
+           skuID:this.skuID,
+           quantity:quantity
+        };
+        this.setWishlistName(orderTemplateName)
+        
+        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data).then(result=>{
+            this.loading = false;
+            this.getAllWishlists();
+            this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
+            return result;
+        });
+    }
+    
+    public setSkuIDFromAttribute = ()=>{
+        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+        this.skuID = newskuID;
+    }
+    
+    public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .getOrderTemplates(pageRecordsToShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplates = result['orderTemplates'];
+            
+            if(setNewTemplates){
+                this.orderTemplates = result['orderTemplates'];                
+            } else if(setNewTemplateID){
+                this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+            }
             this.loading = false;
         });
     }
     
+    public successfulAlert = () =>{
+        const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+        const wishlistInnerText = document.getElementById("wishlistTextWrapper");
+        wishlistAddAlertBox.style.display = "block";
+        wishlistInnerText.textContent += this.wishlistTemplateName;
+
+    }
     
+    public setWishlistID = (newID) => {
+        this.wishlistTemplateID = newID;
+        
+    }
     
+    public setWishlistName = (newName) => {
+        this.wishlistTemplateName = newName;
+    }
     
     public addToCart =(index)=>{
         
