@@ -19,6 +19,7 @@
 			<cfif not isNull(rc.account.getOrganizationFlag())  and rc.account.getOrganizationFlag()>
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCode" edit="#rc.edit#">
 			</cfif>
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 
 		<!--- Overview --->
