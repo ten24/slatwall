@@ -20,7 +20,6 @@ class swfAccountController {
     public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
-    public editPaymentMethod;
     public accountPaymentMethods;
     
     // @ngInject
@@ -94,11 +93,6 @@ class swfAccountController {
             this.loading = false;
             console.log("it failed")
         });
-    }
-    
-    public setEditPaymentMethod = (index:number) =>{
-        this.editPaymentMethod = this.accountPaymentMethods[index];
-        console.log(this.editPaymentMethod);
     }
     
     public getStateCodeOptions = (countryCode) =>{
