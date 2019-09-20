@@ -9,7 +9,7 @@
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
-
+			
 			<!--- Account --->
 			
 			<cfif rc.edit>
@@ -34,11 +34,15 @@
 			
 			<!--- Adds account type from the order. --->
 			<cfif !isNull(rc.order.getAccountType())>
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="accountType">
+				<cfset local.accountType = $.slatwall.getService("TypeService").getTypeByTypeCode(rc.order.getAccountType())>
+				<cfif !isNull(accountType)>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="accountType" value="#accountType.getTypeName()#">
+				</cfif>
 			</cfif>
 			
 			<!--- Origin --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
+			
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
 
 			<!--- Order Type --->
