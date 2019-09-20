@@ -16,12 +16,12 @@ component output="false" accessors="true" extends="Slatwall.model.process.Hibach
             var typeCollectionList = getService('integrationService').getTypeCollectionList();
             typeCollectionList.setDisplayProperties('typeCode|value,typeName|name');
             
-            integrationsCollectionList.addFilter('typeCode', 'undeliverable%', 'like');
+            typeCollectionList.addFilter('typeCode', 'undeliverable%', 'like');
             arrayAppend(variables.undeliverableOrderReason, typeCollectionList.getRecords(), true);
             
         }
         
-        return variables.integrationOptions;
+        return variables.undeliverableOrderReason;
     }
 
 }
