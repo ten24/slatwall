@@ -1841,18 +1841,4 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
-    public void function editAccountPaymentMethod(required any data){
-        
-        param name="data.accountPaymentMethodID" default="";
-
-        var paymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
-
-        if(!isNull(paymentMethod)) {
-            paymentMethod.setAccountPaymentMethodName(arguments.data.accountPaymentMethodName);
-            getAccountService().saveAccountPaymentMethod(paymentMethod);
-            getHibachiScope().addActionResult( "public:account.editAccountPaymentMethod", paymentMethod.hasErrors() );
-        }
-        
-        getHibachiScope().addActionResult( "public:account.editAccountPaymentMethod", true );  
-    }
 }
