@@ -26,6 +26,7 @@ class ReturnOrderItem{
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
+
         return this;
     }
     
@@ -41,10 +42,12 @@ class SWReturnOrderItemsController{
     private orderId:string;
     private displayPropertiesList:string;
     private currencyCode:string;
+    private orderTotal:number;
     
     public orderType:string;
     public orderItemCollectionList;
-    public orderItems:Array<ReturnOrderItem> = [];
+    private refundOrderItems;
+    public orderItems:Array<ReturnOrderItem>;
     public orderPayments:Array<Object> = [];
     public refundSubtotal:number=0;
     public refundTotal:number=0;
@@ -53,7 +56,7 @@ class SWReturnOrderItemsController{
     public maxFulfillmentRefundAmount:number;
     public allocatedOrderDiscountAmountTotal;
     public currencySymbol:string;
-    
+
     public setupOrderItemCollectionList = () =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
         for(let displayProperty of this.displayPropertiesList.split(',')){
@@ -93,10 +96,16 @@ class SWReturnOrderItemsController{
         public $hibachi,
         private collectionConfigService
     ){
-        this.displayPropertiesList = this.getDisplayPropertiesList();
         this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
         this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
-        this.setupOrderItemCollectionList();
+        
+        if(this.refundOrderItems == undefined){
+            this.displayPropertiesList = this.getDisplayPropertiesList();
+            this.setupOrderItemCollectionList();
+        }else{
+            this.orderItems = this.refundOrderItems.map(item=>{return new ReturnOrderItem(item)});
+        }
+        
         $hibachi.getCurrencies().then(result=>{
             this.currencySymbol = result.data[this.currencyCode];
         })
@@ -107,53 +116,63 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-       orderItem.refundPVTotal = orderItem.refundTotal * orderItem.personalVolumeTotal / orderItem.total;
-       orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
-       orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
-       orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+        
+       this.validateRefundItemAmount(orderItem);
+       
        orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
-       if(orderItem.refundTotal > orderItem.total){
+       
+       if((orderItem.refundTotal > orderItem.total) && this.orderType != 'otRefundOrder'){
            orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
            this.updateOrderItem(orderItem);
        }else{
             this.updateTotals();
        }
-   }
+    }
    
-   private setValuesWithinConstraints = (orderItem)=>{
-       var returnQuantityMaximum = orderItem.returnQuantityMaximum;
-       
-       if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
-           orderItem.returnQuantity = 0;
-       }
-       
-       if(orderItem.returnQuantity > returnQuantityMaximum){
-           orderItem.returnQuantity = returnQuantityMaximum;
-       }
-       
-       if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
-           orderItem.refundUnitPrice = 0;
-       }
-       return orderItem;
-   } 
+    private setValuesWithinConstraints = (orderItem)=>{
+        var returnQuantityMaximum = orderItem.returnQuantityMaximum;
+        
+        if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
+            orderItem.returnQuantity = 0;
+        }
+        
+        
+        if(orderItem.returnQuantity > returnQuantityMaximum){
+            orderItem.returnQuantity = returnQuantityMaximum;
+        }
+        
+        if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
+            orderItem.refundUnitPrice = 0;
+        }
+        if(this.orderType == 'otRefundOrder'){
+            if(orderItem.refundUnitPrice != 0){
+                orderItem.returnQuantity = 1;
+            }else{
+                orderItem.returnQuantity = 0;
+            }
+        }
+        return orderItem;
+    } 
    
-   private updateTotals = () =>{
-       this.updateRefundTotals();
-       this.updatePaymentTotals();
-   }
+    private updateTotals = () =>{
+        this.updateRefundTotals();
+        this.updatePaymentTotals();
+    }
    
-   private updateRefundTotals = () =>{
+    private updateRefundTotals = () =>{
        let refundSubtotal = 0;
        let allocatedOrderDiscountAmountTotal = 0;
+        
+        this.orderItems.forEach((item:any)=>{
+            refundSubtotal += item.refundTotal + item.taxRefundAmount;
+            allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
+        })
+        this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
 
-       this.orderItems.forEach((item:any)=>{
-           refundSubtotal += item.refundTotal + item.taxRefundAmount;
-           allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
-       })
-       this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
-       this.refundSubtotal = refundSubtotal;
-       this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundAmount - this.allocatedOrderDiscountAmountTotal).toFixed(2));
-   }
+        this.refundSubtotal = refundSubtotal;
+
+        this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundAmount - this.allocatedOrderDiscountAmountTotal).toFixed(2));
+    }
    
    private updatePaymentTotals = ()=>{
        for(let i = this.orderPayments.length - 1; i >= 0; i--){
@@ -183,6 +202,19 @@ class SWReturnOrderItemsController{
            orderPayment.amount = Number((Math.max(maxRefund,0)).toFixed(2));
        }
    }
+   
+   public validateRefundItemAmount = (orderItem)=>{
+
+       const refundTotal = this.orderItems.reduce((total:number,item:any)=>{
+           return (item == orderItem) ?  total : total += item.refundTotal;
+       },0);
+       
+       const maxRefund = this.orderTotal - refundTotal;
+
+       if(orderItem.refundTotal > maxRefund){
+           orderItem.refundUnitPrice = Number((Math.max(maxRefund,0)).toFixed(2));
+       }
+   }
 }
 
 class SWReturnOrderItems {
@@ -195,7 +227,9 @@ class SWReturnOrderItems {
 	    currencyCode:'@',
 	    initialFulfillmentRefundAmount:'@',
 	    orderPayments:'<',
-	    orderType:'@'
+	    refundOrderItems:'<?',
+	    orderType:'@',
+	    orderTotal:'<?'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";

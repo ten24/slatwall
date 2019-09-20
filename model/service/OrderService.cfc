@@ -4030,10 +4030,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// Process: Order Return
 	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
+		
+		// this.copyToNewOrderItem()
+		
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "order" );
 		stockReceiver.setOrder( arguments.orderReturn.getOrder() );
-		var stockAdjustments = [];
 
 		if(!isNull(processObject.getPackingSlipNumber())) {
 			stockReceiver.setPackingSlipNumber( processObject.getPackingSlipNumber() );
@@ -4051,45 +4053,49 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderReturnItem = this.getOrderItem( thisRecord.orderReturnItem.orderItemID );
 
 				if(!isNull(orderReturnItem)) {
-					var stock = getStockService().getStockBySkuAndLocation( orderReturnItem.getSku(), location );
-
-					var stockReceiverItem = getStockService().newStockReceiverItem();
-
-					stockReceiverItem.setQuantity( thisRecord.quantity );
-					stockReceiverItem.setStock( stock );
-					stockReceiverItem.setOrderItem( orderReturnItem );
-					stockReceiverItem.setStockReceiver( stockReceiver );
-					stockreceiverItem.setCurrencyCode(orderReturnItem.getCurrencyCode());
+					if(!isNull(thisRecord.stockLoss) && thisRecord.stockLoss > 0){
+						thisRecord.quantity = thisRecord.quantity - thisRecord.stockLoss;
+						var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
+						newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
+						newOrderReturnItem.setOrderReturn(arguments.orderReturn);
+						orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
+						newOrderReturnItem.setQuantity(thisRecord.stockLoss);
+						this.saveOrderItem(orderReturnItem);
+						this.saveOrderItem(newOrderReturnItem);
+						
+						this.createStockReceiverItemForReturnOrderItem(stockReceiver, newOrderReturnItem, location, thisRecord.stockLoss);
+						
+						if(!structKeyExists(local,'stockAdjustment')){
+							var stockAdjustment = getStockService().newStockAdjustment();
+							//stockadjustmentType:manual out
+							var stockAdjustmentType = getStockService().getType('444df2e7dba550b7a24a03acbb37e717');
+							stockAdjustment.setStockAdjustmentType(stockAdjustmentType);
+							stockAdjustment.setFromLocation(location);
+							stockAdjustment = getStockService().saveStockAdjustment(stockAdjustment);
+							
+							var comment = getCommentService().newComment();
+							comment.setPublicFlag(false);
+							comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
+							var commentRelationship = getCommentService().newCommentRelationship();
+							commentRelationship.setStockAdjustment(stockAdjustment);
+							commentRelationship.setComment(comment);
+							commentRelationship.setStockAdjustment(stockAdjustment);
+							commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+							comment = getCommentService().saveComment(comment,{});
+						}
+						
+						var addStockAdjustmentItemData = {
+							skuID=orderReturnItem.getSku().getSkuID(),
+							quantity=thisRecord.stockLoss,
+							stockAdjustment=stockAdjustment
+						};
+						stockAdjustment = getStockService().processStockAdjustment(stockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
+						
+					}
+					
+					this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
 
 				}
-				//create a stock adjustment with a comment for items that were added back in
-				if(arguments.processObject.getStockLossFlag()){
-					var newStockAdjustment = getStockService().newStockAdjustment();
-					//stockadjustmentType:manual out
-					var stockAdjustmentType = getStockService().getType('444df2e7dba550b7a24a03acbb37e717');
-					newStockAdjustment.setStockAdjustmentType(stockAdjustmentType);
-					newStockAdjustment.setFromLocation(location);
-					var addStockAdjustmentItemData = {
-						skuID=orderReturnItem.getSku().getSkuID(),
-						quantity=thisRecord.quantity,
-						stockAdjustment=newStockAdjustment
-					};
-					newStockAdjustment = getStockService().processStockAdjustment(newStockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
-
-					var comment = getCommentService().newComment();
-					comment.setPublicFlag(false);
-					comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
-					var commentRelationship = getCommentService().newCommentRelationship();
-					commentRelationship.setStockAdjustment(newStockAdjustment);
-					commentRelationship.setComment(comment);
-					commentRelationship.setStockAdjustment(newStockAdjustment);
-					commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
-					comment = getCommentService().saveComment(comment,{});
-
-					newStockAdjustment = getStockService().saveStockAdjustment(newStockAdjustment);
-					arrayAppend(stockAdjustments,newStockAdjustment);
-				}
-
 			}
 		}
 
@@ -4129,16 +4135,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived');
 		}
 
-		for(var stockAdjustment in stockAdjustments) {
-			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');
-		}
 
 		// Update the orderStatus
 		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
 
-
+		if(structKeyExists(local,'stockAdjustment')){
+			getHibachiScope().flushORMSession();
+			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');
+		}
 
 		return arguments.orderReturn;
+	}
+	
+	private any function createStockReceiverItemForReturnOrderItem(required any stockReceiver, required any returnOrderItem, required any location, required numeric quantity){
+		
+		var stock = getStockService().getStockBySkuAndLocation( returnOrderItem.getSku(), location );
+
+		var stockReceiverItem = getStockService().newStockReceiverItem();
+
+		stockReceiverItem.setQuantity( quantity );
+		stockReceiverItem.setStock( stock );
+		stockReceiverItem.setOrderItem( returnOrderItem );
+		stockReceiverItem.setStockReceiver( stockReceiver );
+		stockreceiverItem.setCurrencyCode(returnOrderItem.getCurrencyCode());
+		
+		return stockReceiverItem;
 	}
 
 	// Process: Order Payment
@@ -4947,6 +4968,51 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return propertyList;
+	}
+	
+	public any function getRefundSkuCollectionList(){
+		var refundSkuSettingRecords = getOrderDAO().getTrueRefundSkuSettingRecords();
+		var skuInList="";
+		var productInList="";
+		var productTypeInList="";
+		var brandInList="";
+		var skuNotInList="";
+		var productNotInList="";
+		var productTypeNotInList="";
+		var brandNotInList="";
+	
+		var settingLevels = {
+			'sku':'skuID',
+			'product':'product.productID',
+			'productType':'product.productType.productTypeID',
+			'brand':'product.brand.brandID'
+		};
+		
+		for(var record in refundSkuSettingRecords){
+			var listString = "Not";
+			if(settingValue = 1){
+				listString=""
+			}
+			for(var level in settingLevels){
+				if(!isNull(record['#level#ID']) && len(record['#level#ID'])){
+					local['#level##listString#InList'] = listAppend(local['#level##listString#InList'],record['#level#ID']);
+				}
+			}
+		}
+		
+		var refundSkuCollectionList = getSkuService().getSkuCollectionList();
+		
+		for(var level in settingLevels){
+			if(len(local['#level#InList'])){
+				refundSkuCollectionList.addFilter('#settingLevels[level]#',local["#level#InList"],"IN","OR","","inLists");
+			}
+			if(len(local['#level#NotInList'])){
+				refundSkuCollectionList.addFilter('#settingLevels[level]#',local["#level#NotInList"],"NOT IN","AND","","notInLists");
+			}
+		}
+		
+		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
+		return refundSkuCollectionList;
 	}
 	// ================== START: Private Helper Functions =====================
 

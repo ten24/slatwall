@@ -71180,7 +71180,6 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         var _this = this;
         this.$hibachi = $hibachi;
         this.collectionConfigService = collectionConfigService;
-        this.orderItems = [];
         this.orderPayments = [];
         this.refundSubtotal = 0;
         this.refundTotal = 0;
@@ -71207,12 +71206,9 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-            orderItem.refundPVTotal = orderItem.refundTotal * orderItem.personalVolumeTotal / orderItem.total;
-            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
-            orderItem.refundCVTotal = orderItem.refundTotal * orderItem.commissionableVolumeTotal / orderItem.total;
-            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            _this.validateRefundItemAmount(orderItem);
             orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
-            if (orderItem.refundTotal > orderItem.total) {
+            if ((orderItem.refundTotal > orderItem.total) && _this.orderType != 'otRefundOrder') {
                 orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
                 _this.updateOrderItem(orderItem);
             }
@@ -71231,6 +71227,14 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
                 orderItem.refundUnitPrice = 0;
             }
+            if (_this.orderType == 'otRefundOrder') {
+                if (orderItem.refundUnitPrice != 0) {
+                    orderItem.returnQuantity = 1;
+                }
+                else {
+                    orderItem.returnQuantity = 0;
+                }
+            }
             return orderItem;
         };
         this.updateTotals = function () {
@@ -71246,6 +71250,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             });
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
+            debugger;
             _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
         };
         this.updatePaymentTotals = function () {
@@ -71271,10 +71276,24 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
-        this.displayPropertiesList = this.getDisplayPropertiesList();
+        this.validateRefundItemAmount = function (orderItem) {
+            var refundTotal = _this.orderItems.reduce(function (total, item) {
+                return (item == orderItem) ? total : total += item.refundTotal;
+            }, 0);
+            var maxRefund = _this.orderTotal - refundTotal;
+            if (orderItem.refundTotal > maxRefund) {
+                orderItem.refundUnitPrice = Number((Math.max(maxRefund, 0)).toFixed(2));
+            }
+        };
         this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
         this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
-        this.setupOrderItemCollectionList();
+        if (this.refundOrderItems == undefined) {
+            this.displayPropertiesList = this.getDisplayPropertiesList();
+            this.setupOrderItemCollectionList();
+        }
+        else {
+            this.orderItems = this.refundOrderItems.map(function (item) { return new ReturnOrderItem(item); });
+        }
         $hibachi.getCurrencies().then(function (result) {
             _this.currencySymbol = result.data[_this.currencyCode];
         });
@@ -71291,7 +71310,9 @@ var SWReturnOrderItems = /** @class */ (function () {
             currencyCode: '@',
             initialFulfillmentRefundAmount: '@',
             orderPayments: '<',
-            orderType: '@'
+            refundOrderItems: '<?',
+            orderType: '@',
+            orderTotal: '<?'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";

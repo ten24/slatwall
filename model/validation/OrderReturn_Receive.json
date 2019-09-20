@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"orderReturnItems":			[{"method":"validReturnItemsQuantity"}]
+		"orderReturnItems":			[{"method":"validReturnItemsQuantity"},{"method":"validStockLossQuantity"}]
 	}
 }

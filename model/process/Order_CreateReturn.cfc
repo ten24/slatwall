@@ -70,6 +70,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	property name="allocatedOrderDiscountAmountTotal";
+	property name="refundOrderItemList";
 	// Option Properties
     property name="returnReasonTypeOptions";
 	
@@ -196,6 +197,32 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.orderTypeCode="otReturnOrder";
 		}
 		return variables.orderTypeCode;
+	}
+	
+	public array function getRefundOrderItemList(){
+		if(!structKeyExists(variables,'refundOrderItemList')){
+			var refundOrderItemList = [];
+			var refundSkuCollectionList = getService('OrderService').getRefundSkuCollectionList();
+			var refundSkus = refundSkuCollectionList.getRecords();
+			for(var sku in refundSkus){
+				var orderItem = {
+					'orderItemID':'',
+	                'quantity':1,
+	                'sku_calculatedSkuDefinition':sku.calculatedSkuDefinition,
+	                'calculatedDiscountAmount':0,
+	                'calculatedExtendedPriceAfterDiscount':sku.price,
+	                'calculatedExtendedUnitPriceAfterDiscount':sku.price,
+	                'calculatedTaxAmount':0,
+	                'allocatedOrderDiscountAmount':0,
+	                'sku_skuCode':sku.skuCode,
+	                'sku_product_calculatedTitle':sku.product_calculatedTitle,
+	                'calculatedQuantityDeliveredMinusReturns':1
+				};
+				arrayAppend(refundOrderItemList,orderItem);
+			}
+			variables.refundOrderItemList = refundOrderItemList;
+		}
+		return variables.refundOrderItemList;
 	}
 	
 	public boolean function orderItemsWithinOriginalQuantity(){

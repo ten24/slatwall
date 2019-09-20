@@ -2,9 +2,9 @@
 	<tr>
 		<th>Sku Code</th>
 		<th>Product Title</th>
-		<th>Sku Definition</th>
-		<th>Quantity Ordered</th>
-		<th>Quantity Delivered Minus Returns</th>
+		<th ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">Sku Definition</th>
+		<th ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">Quantity Ordered</th>
+		<th ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">Quantity Delivered Minus Returns</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Return Quantity</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReplacementOrder'">Replacement Quantity</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otExchangeOrder'">Exchange Quantity</th>
@@ -12,6 +12,7 @@
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Discount Amount</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Extended Price After Discount</th>
 		
+		<th ng-if="swReturnOrderItems.orderType == 'otRefundOrder'">Amount</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Unit Price</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Refund Unit Price</th>
 		<th ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">Refund Extended Price</th>
@@ -25,16 +26,16 @@
 		
 		<td>{{orderItem.sku_skuCode}}</td>
 		<td>{{orderItem.sku_product_calculatedTitle}}</td>
-		<td>{{orderItem.sku_calculatedSkuDefinition}}</td>
-		<td>{{orderItem.quantity}}</td>
-		<td class="returnQuantityMaximum">{{orderItem.returnQuantityMaximum}}</td>
-		<td><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[{{$index+1}}].quantity" class="span1 number returnQuantity" /></td>
+		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">{{orderItem.sku_calculatedSkuDefinition}}</td>
+		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">{{orderItem.quantity}}</td>
+		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'" class="returnQuantityMaximum">{{orderItem.returnQuantityMaximum}}</td>
+		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'"><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[{{$index+1}}].quantity" class="span1 number returnQuantity" /></td>
 		
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">{{swReturnOrderItems.currencySymbol}}{{orderItem.calculatedDiscountAmount.toFixed(2)}}</td>
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">{{swReturnOrderItems.currencySymbol}}{{orderItem.calculatedExtendedPriceAfterDiscount.toFixed(2)}}</td>
 		
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">{{swReturnOrderItems.currencySymbol}}{{orderItem.calculatedExtendedUnitPriceAfterDiscount.toFixed(2)}}</td>
-		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'"><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" name="orderItems[{{$index+1}}].price" ng-model="orderItem.refundUnitPrice" class="span1 number refundUnitPrice" /></td>
+		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder' || swReturnOrderItems.orderType == 'otRefundOrder'"><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" name="orderItems[{{$index+1}}].price" ng-model="orderItem.refundUnitPrice" class="span1 number refundUnitPrice" /></td>
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="refundTotal">{{swReturnOrderItems.currencySymbol}}
 			<span ng-bind="orderItem.refundTotal.toFixed(2)"></span>
 		</td>
@@ -60,8 +61,9 @@
 	    </td>
 	    <td></td>
     </tr>
-    <tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'">
-        <td colspan="9"></td>
+    <tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder' || swReturnOrderItems.orderType == 'otRefundOrder'">
+        <td colspan="8" ng-if="swReturnOrderItems.orderType == 'otReturnOrder'"></td>
+		<td></td>
         <td><strong>Refund Total:</strong></td>
 		<td class="refundTotal">{{swReturnOrderItems.currencySymbol}}
 			<span ng-bind="swReturnOrderItems.refundTotal.toFixed(2)" ng-init="swReturnOrderItems.updateRefundTotals()"></span>
@@ -75,8 +77,9 @@
 		<!--</td>-->
 	</tr>
 	
-	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" ng-repeat="orderPayment in swReturnOrderItems.orderPayments">
-		<td colspan="9"></td>
+	<tr ng-if="swReturnOrderItems.orderType == 'otReturnOrder' || swReturnOrderItems.orderType == 'otRefundOrder'" ng-repeat="orderPayment in swReturnOrderItems.orderPayments">
+		<td colspan="8" ng-if="swReturnOrderItems.orderType == 'otReturnOrder'"></td>
+		<td></td>
 		<td><strong>{{orderPayment.name}}</strong></td>
 		<td class="total">
 			<input type="hidden" name="orderPayments[{{$index+1}}].orderPaymentID" value="">
