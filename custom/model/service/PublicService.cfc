@@ -49,7 +49,7 @@ Notes:
 component extends="Slatwall.model.service.PublicService"  accessors="true" output="false" 
 {
    
-    public any function setAsCurrentlySelectedFlexship(required any data) {
+    public any function setAsCurrentFlexship(required any data) {
         param name="data.orderTemplateID" default="";
         
         var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
@@ -59,7 +59,7 @@ component extends="Slatwall.model.service.PublicService"  accessors="true" outpu
 		
 	    getHibachiScope().getSession().setCurrentFlexship(arguments.data.orderTemplateID);
 	    var failure = isNull(getHibachiScope().getSession().getCurrentFlexship());
-	    getHibachiScope().addActionResult( "api:public.setAsCurrentlySelectedFlexship", failure );
+	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
 
 	}
     

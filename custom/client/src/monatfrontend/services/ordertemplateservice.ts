@@ -68,7 +68,7 @@ export class OrderTemplateService {
     
     public setAsCurrentFlexship = (data) => {
        return this.requestService
-                  .newPublicRequest('?slatAction=api:public.setAsCurrentFlexship', data)
+                  .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', data)
                   .promise;
     }
     
@@ -106,7 +106,7 @@ export class OrderTemplateService {
    
    /**
     * for more details https://gist.github.com/penguinboy/762197
-*/ 
+   */ 
     public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
         var objectToReturn = {};
         for (var key in inObject) {

@@ -131,11 +131,4 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
 	} 
 	
-	/**
-	 * Custom api-end-points
-	*/ 
-	public any function setAsCurrentlySelectedFlexship(required struct rc) {
-	    getPublicService().setAsCurrentlySelectedFlexship(arguments.rc); 
-	}
-	
 }
