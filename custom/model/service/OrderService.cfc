@@ -84,14 +84,6 @@ component extends="Slatwall.model.service.OrderService" {
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
 
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
-		
-		if(arguments.data.orderID != false){
-		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
-		}
-		
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
 		ordersList.setDisplayProperties('
 			orderID,
@@ -103,6 +95,15 @@ component extends="Slatwall.model.service.OrderService" {
 			orderFulfillments.shippingAddress.stateCode,
 			orderFulfillments.shippingAddress.postalCode
 		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
+		
+		if(arguments.data.orderID != false){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
+		}
+		
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
@@ -115,7 +116,7 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.pageRecordsShow" default=10;
         
 
-		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();;
+		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath');
