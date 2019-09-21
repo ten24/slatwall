@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,34 +45,10 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+	
+	// Injected Entity
+	property name="order";
 
-
-<cfparam name="rc.orderReturn" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
-			
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.orderReturn#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderreturntabs/orderreturnitems" open="true">
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+}

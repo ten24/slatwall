@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,34 +45,43 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="Slatwall.model.process.Order_ReleaseCredits" {
+	
+	// Injected Entity
+	
+	property name="personalVolumeTotal";
+	property name="commissionableVolumeTotal";
+	
+	property name="personalVolumeDiscount";
+	property name="commissionableVolumeDiscount";
+	
+	public any function getPersonalVolumeTotal(){
+        if(!structKeyExists(variables, 'personalVolumeTotal')){
+            variables.personalVolumeTotal = -1 * getOrder().getPersonalVolumeTotal();
+        }   
+        return variables.personalVolumeTotal;
+	}
+	
+	public any function getCommissionableVolumeTotal(){
+        if(!structKeyExists(variables, 'commissionableVolumeTotal')){
+            variables.commissionableVolumeTotal = -1 * getOrder().getCommissionableVolumeTotal();
+        }   
+        return variables.commissionableVolumeTotal;
+	}
+	
+	public any function getPersonalVolumeDiscount(){
+        if(!structKeyExists(variables, 'personalVolumeDiscount')){
+            variables.personalVolumeDiscount = getOrder().getPersonalVolumeTotal() + getPersonalVolumeTotal();
+        }   
+        return variables.personalVolumeDiscount;
+	}
+	
+	public any function getCommissionableVolumeDiscount(){
+        if(!structKeyExists(variables, 'commissionableVolumeDiscount')){
+            variables.commissionableVolumeDiscount = getOrder().getCommissionableVolumeTotal() + getCommissionableVolumeTotal();
+        }   
+        return variables.commissionableVolumeDiscount;
+	}
 
-
-<cfparam name="rc.orderReturn" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
-			
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.orderReturn#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderreturntabs/orderreturnitems" open="true">
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+}

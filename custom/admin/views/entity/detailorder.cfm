@@ -88,7 +88,7 @@ Notes:
 				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
 			</cfif>
 			<cfif listFindNoCase("otReturnOrder,otRefundOrder",rc.order.getOrderType().getSystemCode()) >
-				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="releaseCredits" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="releaseCredits" type="list" modal="true"/>
 			</cfif>
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />

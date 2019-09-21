@@ -46,33 +46,27 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.orderReturn" type="any" />
+<cfparam name="rc.order" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
+<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
+	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.orderReturn#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderreturntabs/orderreturnitems" open="true">
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="personalVolumeTotal" edit="#rc.edit#">
+		    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="commissionableVolumeTotal" edit="#rc.edit#">
+			
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
+

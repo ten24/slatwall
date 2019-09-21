@@ -71250,7 +71250,6 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             });
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
-            debugger;
             _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
         };
         this.updatePaymentTotals = function () {

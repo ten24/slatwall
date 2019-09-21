@@ -228,5 +228,18 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return representation;
 	}
+	
+	public any function processOrder_releaseCredits(required any order, any processObject, struct data){
+        if(arguments.processObject.getPersonalVolumeDiscount() < 0 || arguments.processObject.getCommissionableVolumeDiscount() < 0){
+            var promotionApplied = getService('PromotionService').newPromotionApplied();
+			promotionApplied.setOrder(arguments.order);
+			promotionApplied.setPersonalVolumeDiscountAmount(arguments.processObject.getPersonalVolumeDiscount());
+			promotionApplied.setCommissionableVolumeDiscountAmount(arguments.processObject.getCommissionableVolumeDiscount());
+			promotionApplied.setManualDiscountAmountFlag(true);
+			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
+        }
+	    
+	    return super.processOrder_releaseCredits(argumentCollection=arguments);
+	}
 
 }

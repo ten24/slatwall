@@ -4308,7 +4308,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order; 
 	}
 	
-	public any function processOrder_releaseCredits(required any order, struct data){
+	public any function processOrder_releaseCredits(required any order, any processObject, struct data){
 
 		var orderPaymentsSmartList = arguments.order.getOrderPaymentsSmartList();
 		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCredit');
