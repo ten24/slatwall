@@ -9,9 +9,9 @@ class MonatEnrollmentController{
 	public steps=[];
 	public onFinish;
 	public finishText;
-	
+
 	//@ngInject
-	constructor(public monatService){
+	constructor(public monatService, public observerService){
 		
 		if(hibachiConfig.baseSiteURL){
 			this.backUrl = hibachiConfig.baseSiteURL;
@@ -28,6 +28,9 @@ class MonatEnrollmentController{
 		monatService.getCart().then(data =>{
 			this.cart = data;
 		});
+		
+    	this.observerService.attach(this.next.bind(this),"createSuccess");
+
 	}
 	
 	public addStep = (step) =>{
@@ -43,6 +46,8 @@ class MonatEnrollmentController{
 			this.steps.splice(index, 1);
 		}
 	}
+	
+	public
 	
 	public next(){
 		this.navigate(this.position + 1);
