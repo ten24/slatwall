@@ -9,7 +9,7 @@ class VIPController {
     
 }
 
-class MonatEnrollmentVIP  {
+class MonatEnrollmentVIPController  {
     
     
     public require          = {
@@ -30,13 +30,13 @@ class MonatEnrollmentVIP  {
     }
 
     public static Factory(){
-        var directive = () => new MonatEnrollmentVIP();
+        var directive = () => new MonatEnrollmentVIPController();
         directive.$inject = [];
         return directive;
     }
     
 }
 export{
-    MonatEnrollmentVIP,
+    MonatEnrollmentVIPController,
     VIPController
 }

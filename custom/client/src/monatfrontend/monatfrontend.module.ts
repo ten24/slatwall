@@ -6,7 +6,7 @@ import {MonatFlexshipListing} from "./components/monatflexshiplisting";
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 import {MonatEnrollment} from "./components/monatenrollment";
 import {MonatEnrollmentStep} from "./components/monatenrollmentstep";
-import {MonatEnrollmentVIP} from "./components/monatenrollmentvip";
+import {MonatEnrollmentVIPController} from "./components/monatenrollmentvip";
 
 import {SWFReviewListing} from "./components/swfreviewlisting";
 import {SWFWishlist} from "./components/swfwishlist";
@@ -28,7 +28,7 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .directive('monatEnrollment', MonatEnrollment.Factory())
 .directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
-.directive('vipController', MonatEnrollmentVIP.Factory())
+.directive('vipController', MonatEnrollmentVIPController.Factory())
 
 
 

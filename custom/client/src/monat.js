@@ -32259,9 +32259,8 @@ var SWFFormController = /** @class */ (function () {
             }
             return file;
         };
-        this.submitForm = function (form) {
-            if (form === void 0) { form = _this.form; }
-            if (form.$valid) {
+        this.submitForm = function () {
+            if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
                 if (_this.closeModal && _this.modalId) {
@@ -59321,9 +59320,9 @@ var VIPController = /** @class */ (function () {
     return VIPController;
 }());
 exports.VIPController = VIPController;
-var MonatEnrollmentVIP = /** @class */ (function () {
+var MonatEnrollmentVIPController = /** @class */ (function () {
     // @ngInject
-    function MonatEnrollmentVIP() {
+    function MonatEnrollmentVIPController() {
         this.require = {
             ngModel: '?^ngModel'
         };
@@ -59337,14 +59336,14 @@ var MonatEnrollmentVIP = /** @class */ (function () {
         this.controller = VIPController;
         this.controllerAs = "vipController";
     }
-    MonatEnrollmentVIP.Factory = function () {
-        var directive = function () { return new MonatEnrollmentVIP(); };
+    MonatEnrollmentVIPController.Factory = function () {
+        var directive = function () { return new MonatEnrollmentVIPController(); };
         directive.$inject = [];
         return directive;
     };
-    return MonatEnrollmentVIP;
+    return MonatEnrollmentVIPController;
 }());
-exports.MonatEnrollmentVIP = MonatEnrollmentVIP;
+exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 
 /***/ }),
@@ -59830,7 +59829,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
-    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
+    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .service('monatService', monatservice_1.MonatService)
