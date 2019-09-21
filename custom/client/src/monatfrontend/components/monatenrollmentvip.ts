@@ -1,5 +1,5 @@
 class VIPController {
-    public Account_CreateAccount
+    public Account_CreateAccount;
 
     // @ngInject
     constructor(
