@@ -1912,6 +1912,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderTemplate; 
 	} 
 	
+	public any function getOrderTemplateItemForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateItemID" default="";
+	
+		if(len(arguments.data.orderTemplateItemID) == 0) {
+			ArrayAppend(arguments.data.messages, 'data.orderTemplateItemID must be set');
+			return;
+		} 
+		
+		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateID)
+		
+		if( isNull(orderTemplateItem) ){
+			ArrayAppend(arguments.data.messages, 'no orderTemplateItem found for orderTemplateItemID: #arguments.data.orderTemplateItemID#');
+			return;
+		}  
+		
+		if( arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
+			ArrayAppend(arguments.data.messages, "orderTemplateItem doesn't belong to the User");
+			return; 
+		}
+	
+		return orderTemplate; 
+	} 
+	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need

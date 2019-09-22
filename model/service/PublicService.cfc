@@ -2001,11 +2001,34 @@ component  accessors="true" output="false"
             orderTemplate.clearProcessObject("addOrderTemplateItem");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
     		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-            //TODO see if we're sending the updaed items/item
+            //TODO: see if we need to return the updaed item/items
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
+    
+    
+    public void function editOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        param name="data.quantity" default=1;
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( arguments.data.orderTemplateItemID );
+        if( isNull(orderTemplateItem) ) {
+			return;
+		}
+		
+		orderTemplateItem.setQuantity(arguments.data.quantity); 
+
+        var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
+        getHibachiScope().addActionResult( "public:editOrderTemplateItem", orderTemplateItem.hasErrors() );
+            
+        if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            //TODO: see if we need to return any data...            
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
+        }
+    }
+
 
 	public void function removeOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
@@ -2028,6 +2051,7 @@ component  accessors="true" output="false"
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
+
 	
 	public void function deleteOrderTemplateItem(required any data) {
         param name="data.orderTemplateItemID" default="";
@@ -2044,7 +2068,7 @@ component  accessors="true" output="false"
     }
     
     public void function editOrderTemplate(required any data){
-        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateID" default="";
         param name="data.orderTemplateName" default="";
         
         var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
