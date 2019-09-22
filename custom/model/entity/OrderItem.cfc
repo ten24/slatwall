@@ -20,6 +20,9 @@ component {
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
+	property name="mainCreditCardOnOrder" persistent="false";
+	property name="mainCreditCardExpirationDate" persistent="false";
+
 
 	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
@@ -203,6 +206,17 @@ component {
 	public any function getSkuImagePath(){
 		var skuImagePath = this.getSku().getImagePath();
 		return skuImagePath;
+	}
+	
+	public any function getMainCreditCardOnOrder(){
+		var mainCreditCardOnOrder = this.getOrder().getOrderPayments()[1].getCreditCardLastFour();
+		return mainCreditCardOnOrder;
+	}
+	
+	public any function getMainCreditCardExpirationDate(){
+	    var orderPayment = this.getOrder().getOrderPayments()[1];
+		var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
+		return mainCreditCardExpirationDate;
 	}
 
 }
