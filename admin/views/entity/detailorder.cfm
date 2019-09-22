@@ -145,7 +145,10 @@ Notes:
 			<cfif not isNull(rc.order.getAccount()) and not rc.order.getAccount().getNewFlag()>
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/accountdetails" />
 			</cfif>
-
+			
+			<!--- Order Status History --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderstatushistory" />
+			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.order.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />

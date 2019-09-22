@@ -59491,8 +59491,6 @@ var swfAccountController = /** @class */ (function () {
             var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount;
-                //this.getOrderItemsByOrderID();
-                console.log(result);
                 _this.loading = false;
             });
         };
@@ -59504,7 +59502,6 @@ var swfAccountController = /** @class */ (function () {
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, currentPage: currentPage, pageRecordsShow: pageRecordsShow }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
-                    console.log(result);
                 });
                 _this.orderItemsLength = result.OrderItemsByOrderID.length;
             });
@@ -59520,10 +59517,6 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
                 console.log("it failed");
             });
-        };
-        this.setEditPaymentMethod = function (index) {
-            _this.editPaymentMethod = _this.accountPaymentMethods[index];
-            console.log(_this.editPaymentMethod);
         };
         this.getStateCodeOptions = function (countryCode) {
             _this.loading = true;
@@ -59543,6 +59536,9 @@ var swfAccountController = /** @class */ (function () {
                 });
                 _this.loading = false;
             });
+        };
+        this.setPrimaryPaymentMethod = function (methodID) {
+            window.location.href += "?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=" + methodID;
         };
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -59771,14 +59767,64 @@ var SWFWishlistController = /** @class */ (function () {
                 return result;
             });
         };
-        this.getAllWishlists = function () {
+        this.addWishlistItem = function () {
+            _this.loading = true;
+            _this.setSkuIDFromAttribute();
+            _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
+                .then(function (result) {
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.addItemAndCreateWishlist = function (orderTemplateName, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            _this.loading = true;
+            _this.setSkuIDFromAttribute();
+            var data = {
+                orderTemplateName: orderTemplateName,
+                skuID: _this.skuID,
+                quantity: quantity
+            };
+            _this.setWishlistName(orderTemplateName);
+            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data).then(function (result) {
+                _this.loading = false;
+                _this.getAllWishlists();
+                _this.observerService.attach(_this.successfulAlert, "createWishlistSuccess");
+                return result;
+            });
+        };
+        this.setSkuIDFromAttribute = function () {
+            var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+            _this.skuID = newskuID;
+        };
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(_this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
-                _this.orderTemplates = result['orderTemplates'];
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                }
                 _this.loading = false;
             });
+        };
+        this.successfulAlert = function () {
+            var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+            var wishlistInnerText = document.getElementById("wishlistTextWrapper");
+            wishlistAddAlertBox.style.display = "block";
+            wishlistInnerText.textContent += _this.wishlistTemplateName;
+        };
+        this.setWishlistID = function (newID) {
+            _this.wishlistTemplateID = newID;
+        };
+        this.setWishlistName = function (newName) {
+            _this.wishlistTemplateName = newName;
         };
         this.addToCart = function (index) {
         };
@@ -59791,6 +59837,7 @@ var SWFWishlistController = /** @class */ (function () {
             this.currentPage = 1;
         }
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
+        this.observerService.attach(this.successfulAlert, "OrderTemplateAddOrderTemplateItemSuccess");
     }
     return SWFWishlistController;
 }());
@@ -59802,7 +59849,7 @@ var SWFWishlist = /** @class */ (function () {
             ngModel: '?^ngModel'
         };
         this.priority = 1000;
-        this.restrict = "E";
+        this.restrict = "A";
         this.scope = true;
         /**
          * Binds all of our variables to the controller so we can access using this
@@ -59913,9 +59960,10 @@ exports.MonatService = MonatService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
-    function OrderTemplateService(requestService) {
+    function OrderTemplateService(requestService, $hibachi) {
         var _this = this;
         this.requestService = requestService;
+        this.$hibachi = $hibachi;
         this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
@@ -59951,6 +59999,19 @@ var OrderTemplateService = /** @class */ (function () {
                 data['orderTemplateTypeID'] = orderTemplateTypeID;
             }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems', data).promise;
+        };
+        this.addOrderTemplateItem = function (skuID, orderTemplateID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            var formDataToPost = {
+                entityID: orderTemplateID,
+                entityName: 'OrderTemplate',
+                context: 'addOrderTemplateItem',
+                skuID: skuID,
+                quantity: quantity
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            return adminRequest.promise;
         };
     }
     return OrderTemplateService;

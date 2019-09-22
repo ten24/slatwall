@@ -60,11 +60,9 @@ class swfAccountController {
     
     public getOrdersOnAccount = () => {
         this.loading = true;
-        const accountID = this.accountData.accountID
+        const accountID = this.accountData.accountID;
         return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
             this.ordersOnAccount = result.ordersOnAccount;
-            //this.getOrderItemsByOrderID();
-            console.log(result);
             this.loading = false;
         });
     }
@@ -74,7 +72,6 @@ class swfAccountController {
         return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,currentPage,pageRecordsShow }).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
-                console.log(result);
             });
             this.orderItemsLength = result.OrderItemsByOrderID.length;
         });
@@ -116,6 +113,10 @@ class swfAccountController {
 
             this.loading = false;
         });
+    }
+    
+    public setPrimaryPaymentMethod = (methodID) => {
+        window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`
     }
 }
 

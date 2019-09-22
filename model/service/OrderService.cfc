@@ -1638,7 +1638,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
-
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
 			var newOrderTemplateItem = this.newOrderTemplateItem();
@@ -1652,7 +1651,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
 			var baseQuantity = orderTemplateItem.getQuantity();
-			orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
+			
+			orderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			
+			if(!isNull(baseQuantity)){
+				orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
+			}
+			
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
 
