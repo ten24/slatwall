@@ -1984,7 +1984,9 @@ component  accessors="true" output="false"
 	
 	
 	public void function addOrderTemplateItem(required any data) {
-        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateID" default="";
+        param name="data.skuID" default="";
+        param name="data.quantity" default=1;
         
         var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
@@ -2005,6 +2007,27 @@ component  accessors="true" output="false"
         }
     }
 
+	public void function removeOrderTemplateItem(required any data) {
+        param name="data.orderTemplateID" default="";
+        param name="data.orderTemplateItemID" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeOrderTemplateItem'); 
+        getHibachiScope().addActionResult( "public:removeOrderTemplateItem", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("removeOrderTemplateItem");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
 	
 	public void function deleteOrderTemplateItem(required any data) {
         param name="data.orderTemplateItemID" default="";

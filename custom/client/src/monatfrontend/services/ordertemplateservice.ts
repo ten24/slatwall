@@ -109,13 +109,27 @@ export class OrderTemplateService {
            'orderTemplateID',
            'skuID',
            'quantity'
-       }
+        }
      * 
     */ 
     public addOrderTemplateItem = (payload:{}) => {
 
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
+                  .promise;
+    }
+    
+    /**
+     * payload = {
+           'orderTemplateID',
+           'orderTemplateItemID'
+        }
+     * 
+    */ 
+    public removeOrderTemplateItem = (payload:{}) => {
+
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.removeOrderTemplateItem',payload)
                   .promise;
     }
    

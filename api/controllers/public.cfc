@@ -135,4 +135,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().addOrderTemplateItem(arguments.rc); 
 	}
 	
+	public any function removeOrderTemplateItem( required struct rc ){
+		getPublicService().removeOrderTemplateItem(arguments.rc); 
+	}
+	
+	
+	
 }
