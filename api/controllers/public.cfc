@@ -131,4 +131,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
 	} 
 	
+    public any function addOrderTemplateItem( required struct rc ){
+		getPublicService().addOrderTemplateItem(arguments.rc); 
+	}
+	
 }

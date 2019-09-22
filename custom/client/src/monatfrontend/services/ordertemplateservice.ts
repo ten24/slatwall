@@ -103,6 +103,21 @@ export class OrderTemplateService {
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
     }
+    
+    /**
+     * payload = {
+           'orderTemplateID',
+           'skuID',
+           'quantity'
+       }
+     * 
+    */ 
+    public addOrderTemplateItem = (payload:{}) => {
+
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
+                  .promise;
+    }
    
    /**
     * for more details https://gist.github.com/penguinboy/762197
