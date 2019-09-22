@@ -755,18 +755,32 @@ property name="personalVolume" ormtype="big_decimal";
 		
 		var quantity = 0;
 		
-		var referencingOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
-		referencingOrderItemCollectionList.setDisplayProperties('quantity');
-		referencingOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
-		referencingOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
-		referencingOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
-		var result = referencingOrderItemCollectionList.getRecords();
+		var returnOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		returnOrderItemCollectionList.setDisplayProperties('quantity');
+		returnOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
+		returnOrderItemCollectionList.addFilter('order.orderType.systemCode','otReturnOrder,otExchangeOrder','IN');
+		returnOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
+		returnOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = returnOrderItemCollectionList.getRecords();
 		if(!isNull(result) && arrayLen(result)){
 			for(var item in result){
 				quantity += item['quantity'];
 			}
 		}
 		
+		//get replacement order items from Exchange orders
+		var replacementOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		replacementOrderItemCollectionList.setDisplayProperties('quantity');
+		replacementOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReplacement');
+		replacementOrderItemCollectionList.addFilter('order.orderType.systemCode','otExchangeOrder');
+		replacementOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
+		replacementOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		result = replacementOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity -= item['quantity'];
+			}
+		}
 		return quantity;
 	}
 
