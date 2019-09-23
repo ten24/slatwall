@@ -237,27 +237,6 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
     }
     
-    public any function createWishlist( required struct data ) {
-        param name="arguments.data.orderTemplateName";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
-        
-        if(getHibachiScope().getAccount().isNew()){
-            return;
-        }
-        
-        var orderTemplate = getOrderService().newOrderTemplate();
-        var processObject = orderTemplate.getProcessObject("createWishlist");
-        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-    
-        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setSiteID(arguments.data.siteID);
-        processObject.setOrderTemplateTypeID(wishlistTypeID);
-        
-        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
-        
-        getHibachiScope().addActionResult( "public:order.createWishlist", orderTemplate.hasErrors() );
-    }
-    
     public any function updatePrimaryEmailAddress(required struct data) {
         var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePrimaryEmailAddress');
         if (account.hasErrors()) {

@@ -1,7 +1,8 @@
 export class OrderTemplateService { 
    
    constructor(
-       public requestService,
+        public requestService,
+        public $hibachi,
        public observerService
 
        ){
@@ -105,33 +106,36 @@ export class OrderTemplateService {
     }
     
     /**
-     * payload = {
-           'orderTemplateID',
-           'skuID',
-           'quantity'
-        }
+     * 
+       'orderTemplateID',
+       'skuID',
+       'quantity'
      * 
     */ 
-    public addOrderTemplateItem = (payload:{}) => {
-
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+        let payload = {
+			'orderTemplateID': orderTemplateID,
+			'skuID': skuID,
+			'quantity': quantity
+		};
+		
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
                   .promise;
     }
     
     /**
-     * payload = {
-           'orderTemplateItemID'
-        }
+     * orderTemplateItemID
      * 
     */ 
-    public removeOrderTemplateItem = (payload:{}) => {
+    public removeOrderTemplateItem = (orderTemplateItemID:string) => {
 
-       return this.requestService
+        let payload = {'orderTemplateItemID': orderTemplateItemID };
+        return this.requestService
                   .newPublicRequest('?slatAction=api:public.removeOrderTemplateItem',payload)
                   .promise;
     }
-   
+
    /**
     * for more details https://gist.github.com/penguinboy/762197
    */ 
