@@ -281,7 +281,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				// Login with two-factor authentication
 				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
 					// Preserve login data and defer login process request
-					if (!structKeyExists(rc, "authenticationCode")) {
+					if (!structKeyExists(arguments.rc, "authenticationCode")) {
 						var preservedLoginData = {
 						emailAddress = rc.emailAddressOrUsername,
 						password = rc.password
