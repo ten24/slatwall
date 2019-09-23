@@ -64,11 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-<<<<<<< HEAD
 /******/ 	return __webpack_require__(__webpack_require__.s = 839);
-=======
-/******/ 	return __webpack_require__(__webpack_require__.s = 836);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -4989,11 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-<<<<<<< HEAD
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(838)(module)))
-=======
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(835)(module)))
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 
 /***/ }),
 /* 2 */
@@ -5924,13 +5916,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var baseobject_1 = __webpack_require__(296);
-<<<<<<< HEAD
 var Entities = __webpack_require__(707);
 var Processes = __webpack_require__(713);
-=======
-var Entities = __webpack_require__(704);
-var Processes = __webpack_require__(710);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6289,7 +6276,6 @@ exports.MulticastOperator = MulticastOperator;
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var hibachiinterceptor_1 = __webpack_require__(726);
 //constant
 var hibachipathbuilder_1 = __webpack_require__(727);
@@ -6375,93 +6361,6 @@ var swhref_1 = __webpack_require__(674);
 var swprocesscaller_1 = __webpack_require__(682);
 var swsortable_1 = __webpack_require__(686);
 var sworderbycontrols_1 = __webpack_require__(681);
-=======
-var hibachiinterceptor_1 = __webpack_require__(723);
-//constant
-var hibachipathbuilder_1 = __webpack_require__(724);
-//services
-var cacheservice_1 = __webpack_require__(715);
-var publicservice_1 = __webpack_require__(735);
-var accountservice_1 = __webpack_require__(714);
-var accountaddressservice_1 = __webpack_require__(713);
-var cartservice_1 = __webpack_require__(716);
-var draggableservice_1 = __webpack_require__(717);
-var utilityservice_1 = __webpack_require__(742);
-var selectionservice_1 = __webpack_require__(739);
-var observerservice_1 = __webpack_require__(732);
-var orderservice_1 = __webpack_require__(734);
-var orderpaymentservice_1 = __webpack_require__(733);
-var formservice_1 = __webpack_require__(721);
-var filterservice_1 = __webpack_require__(720);
-var expandableservice_1 = __webpack_require__(719);
-var hibachiauthenticationservice_1 = __webpack_require__(722);
-var metadataservice_1 = __webpack_require__(731);
-var rbkeyservice_1 = __webpack_require__(736);
-var typeaheadservice_1 = __webpack_require__(741);
-var hibachiservice_1 = __webpack_require__(726);
-var historyservice_1 = __webpack_require__(729);
-var localstorageservice_1 = __webpack_require__(730);
-var hibachiservicedecorator_1 = __webpack_require__(727);
-var hibachiscope_1 = __webpack_require__(725);
-var requestservice_1 = __webpack_require__(737);
-var scopeservice_1 = __webpack_require__(738);
-var skuservice_1 = __webpack_require__(740);
-var hibachivalidationservice_1 = __webpack_require__(728);
-var entityservice_1 = __webpack_require__(718);
-//controllers
-var globalsearch_1 = __webpack_require__(692);
-//filters
-var percentage_1 = __webpack_require__(696);
-var entityrbkey_1 = __webpack_require__(695);
-var swcurrency_1 = __webpack_require__(697);
-var swtrim_1 = __webpack_require__(698);
-var swunique_1 = __webpack_require__(699);
-var datefilter_1 = __webpack_require__(693);
-var datereporting_1 = __webpack_require__(694);
-//directives
-//  components
-var swactioncaller_1 = __webpack_require__(651);
-var swtypeaheadsearch_1 = __webpack_require__(690);
-var swtypeaheadinputfield_1 = __webpack_require__(687);
-var swtypeaheadmultiselect_1 = __webpack_require__(688);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(691);
-var swtypeaheadremoveselection_1 = __webpack_require__(689);
-var swcollectionconfig_1 = __webpack_require__(655);
-var swcollectionfilter_1 = __webpack_require__(656);
-var swcollectionorderby_1 = __webpack_require__(657);
-var swcollectioncolumn_1 = __webpack_require__(654);
-var swcurrencyformatter_1 = __webpack_require__(660);
-var swactioncallerdropdown_1 = __webpack_require__(652);
-var swcolumnsorter_1 = __webpack_require__(658);
-var swconfirm_1 = __webpack_require__(659);
-var swdatepicker_1 = __webpack_require__(661);
-var swdraggable_1 = __webpack_require__(663);
-var swdraggablecontainer_1 = __webpack_require__(664);
-var swentityactionbar_1 = __webpack_require__(665);
-var swentityactionbarbuttongroup_1 = __webpack_require__(666);
-var swexpandablerecord_1 = __webpack_require__(667);
-var swexpiringsessionnotifier_1 = __webpack_require__(668);
-var swgravatar_1 = __webpack_require__(670);
-var swlogin_1 = __webpack_require__(673);
-var swmodallauncher_1 = __webpack_require__(674);
-var swmodalwindow_1 = __webpack_require__(675);
-var swnumbersonly_1 = __webpack_require__(676);
-var swloading_1 = __webpack_require__(672);
-var swscrolltrigger_1 = __webpack_require__(681);
-var swtabgroup_1 = __webpack_require__(685);
-var swtabcontent_1 = __webpack_require__(684);
-var swtooltip_1 = __webpack_require__(686);
-var swrbkey_1 = __webpack_require__(680);
-var swoptions_1 = __webpack_require__(677);
-var swselection_1 = __webpack_require__(682);
-var swclickoutside_1 = __webpack_require__(653);
-var swdirective_1 = __webpack_require__(662);
-var swexportaction_1 = __webpack_require__(669);
-var swhref_1 = __webpack_require__(671);
-var swprocesscaller_1 = __webpack_require__(679);
-var swsortable_1 = __webpack_require__(683);
-var sworderbycontrols_1 = __webpack_require__(678);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var alert_module_1 = __webpack_require__(294);
 var dialog_module_1 = __webpack_require__(299);
 var coremodule = angular.module('hibachi.core', [
@@ -31962,15 +31861,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-<<<<<<< HEAD
 var alertcontroller_1 = __webpack_require__(613);
 //services
 var alertservice_1 = __webpack_require__(615);
-=======
-var alertcontroller_1 = __webpack_require__(610);
-//services
-var alertservice_1 = __webpack_require__(612);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -31991,7 +31884,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(17);
 //services
-<<<<<<< HEAD
 var collectionconfigservice_1 = __webpack_require__(652);
 var collectionservice_1 = __webpack_require__(653);
 //controllers
@@ -32024,40 +31916,6 @@ var swfiltergroupitem_1 = __webpack_require__(643);
 var swrestrictionconfig_1 = __webpack_require__(646);
 //filters
 var aggregatefilter_1 = __webpack_require__(651);
-=======
-var collectionconfigservice_1 = __webpack_require__(649);
-var collectionservice_1 = __webpack_require__(650);
-//controllers
-var collections_1 = __webpack_require__(644);
-var createcollection_1 = __webpack_require__(646);
-var confirmationcontroller_1 = __webpack_require__(645);
-var entity_createcollection_1 = __webpack_require__(647);
-//directives
-var swcollection_1 = __webpack_require__(623);
-var swaddfilterbuttons_1 = __webpack_require__(622);
-var swdisplayoptions_1 = __webpack_require__(638);
-var swdisplayitem_1 = __webpack_require__(636);
-var swdisplayitemaggregate_1 = __webpack_require__(637);
-var swcollectiontable_1 = __webpack_require__(624);
-var swcolumnitem_1 = __webpack_require__(625);
-var swconditioncriteria_1 = __webpack_require__(626);
-var swcriteria_1 = __webpack_require__(627);
-var swcriteriaboolean_1 = __webpack_require__(628);
-var swcriteriadate_1 = __webpack_require__(629);
-var swcriteriamanytomany_1 = __webpack_require__(630);
-var swcriteriamanytoone_1 = __webpack_require__(631);
-var swcriterianumber_1 = __webpack_require__(632);
-var swcriteriaonetomany_1 = __webpack_require__(633);
-var swcriteriarelatedobject_1 = __webpack_require__(634);
-var swcriteriastring_1 = __webpack_require__(635);
-var sweditfilteritem_1 = __webpack_require__(639);
-var swfiltergroups_1 = __webpack_require__(641);
-var swfilteritem_1 = __webpack_require__(642);
-var swfiltergroupitem_1 = __webpack_require__(640);
-var swrestrictionconfig_1 = __webpack_require__(643);
-//filters
-var aggregatefilter_1 = __webpack_require__(648);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -32323,15 +32181,9 @@ exports.IStore = IStore;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-<<<<<<< HEAD
 var dialogservice_1 = __webpack_require__(747);
 //controllers
 var pagedialog_1 = __webpack_require__(746);
-=======
-var dialogservice_1 = __webpack_require__(744);
-//controllers
-var pagedialog_1 = __webpack_require__(743);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -32883,13 +32735,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*jshint browser:true */
-<<<<<<< HEAD
 var basebootstrap_1 = __webpack_require__(616);
 var monatfrontend_module_1 = __webpack_require__(610);
-=======
-var basebootstrap_1 = __webpack_require__(613);
-var monatfrontend_module_1 = __webpack_require__(608);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -46300,7 +46147,6 @@ core_defaults._set('global', {
 		}
 	}
 });
-<<<<<<< HEAD
 
 var mappers = {
 	dataset: function(source) {
@@ -47004,711 +46850,6 @@ var Legend = core_element.extend({
 				}
 			};
 
-=======
-
-var mappers = {
-	dataset: function(source) {
-		var index = source.fill;
-		var chart = source.chart;
-		var meta = chart.getDatasetMeta(index);
-		var visible = meta && chart.isDatasetVisible(index);
-		var points = (visible && meta.dataset._children) || [];
-		var length = points.length || 0;
-
-		return !length ? null : function(point, i) {
-			return (i < length && points[i]._view) || null;
-		};
-	},
-
-	boundary: function(source) {
-		var boundary = source.boundary;
-		var x = boundary ? boundary.x : null;
-		var y = boundary ? boundary.y : null;
-
-		return function(point) {
-			return {
-				x: x === null ? point.x : x,
-				y: y === null ? point.y : y,
-			};
-		};
-	}
-};
-
-// @todo if (fill[0] === '#')
-function decodeFill(el, index, count) {
-	var model = el._model || {};
-	var fill = model.fill;
-	var target;
-
-	if (fill === undefined) {
-		fill = !!model.backgroundColor;
-	}
-
-	if (fill === false || fill === null) {
-		return false;
-	}
-
-	if (fill === true) {
-		return 'origin';
-	}
-
-	target = parseFloat(fill, 10);
-	if (isFinite(target) && Math.floor(target) === target) {
-		if (fill[0] === '-' || fill[0] === '+') {
-			target = index + target;
-		}
-
-		if (target === index || target < 0 || target >= count) {
-			return false;
-		}
-
-		return target;
-	}
-
-	switch (fill) {
-	// compatibility
-	case 'bottom':
-		return 'start';
-	case 'top':
-		return 'end';
-	case 'zero':
-		return 'origin';
-	// supported boundaries
-	case 'origin':
-	case 'start':
-	case 'end':
-		return fill;
-	// invalid fill values
-	default:
-		return false;
-	}
-}
-
-function computeBoundary(source) {
-	var model = source.el._model || {};
-	var scale = source.el._scale || {};
-	var fill = source.fill;
-	var target = null;
-	var horizontal;
-
-	if (isFinite(fill)) {
-		return null;
-	}
-
-	// Backward compatibility: until v3, we still need to support boundary values set on
-	// the model (scaleTop, scaleBottom and scaleZero) because some external plugins and
-	// controllers might still use it (e.g. the Smith chart).
-
-	if (fill === 'start') {
-		target = model.scaleBottom === undefined ? scale.bottom : model.scaleBottom;
-	} else if (fill === 'end') {
-		target = model.scaleTop === undefined ? scale.top : model.scaleTop;
-	} else if (model.scaleZero !== undefined) {
-		target = model.scaleZero;
-	} else if (scale.getBasePosition) {
-		target = scale.getBasePosition();
-	} else if (scale.getBasePixel) {
-		target = scale.getBasePixel();
-	}
-
-	if (target !== undefined && target !== null) {
-		if (target.x !== undefined && target.y !== undefined) {
-			return target;
-		}
-
-		if (helpers$1.isFinite(target)) {
-			horizontal = scale.isHorizontal();
-			return {
-				x: horizontal ? target : null,
-				y: horizontal ? null : target
-			};
-		}
-	}
-
-	return null;
-}
-
-function resolveTarget(sources, index, propagate) {
-	var source = sources[index];
-	var fill = source.fill;
-	var visited = [index];
-	var target;
-
-	if (!propagate) {
-		return fill;
-	}
-
-	while (fill !== false && visited.indexOf(fill) === -1) {
-		if (!isFinite(fill)) {
-			return fill;
-		}
-
-		target = sources[fill];
-		if (!target) {
-			return false;
-		}
-
-		if (target.visible) {
-			return fill;
-		}
-
-		visited.push(fill);
-		fill = target.fill;
-	}
-
-	return false;
-}
-
-function createMapper(source) {
-	var fill = source.fill;
-	var type = 'dataset';
-
-	if (fill === false) {
-		return null;
-	}
-
-	if (!isFinite(fill)) {
-		type = 'boundary';
-	}
-
-	return mappers[type](source);
-}
-
-function isDrawable(point) {
-	return point && !point.skip;
-}
-
-function drawArea(ctx, curve0, curve1, len0, len1) {
-	var i;
-
-	if (!len0 || !len1) {
-		return;
-	}
-
-	// building first area curve (normal)
-	ctx.moveTo(curve0[0].x, curve0[0].y);
-	for (i = 1; i < len0; ++i) {
-		helpers$1.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
-	}
-
-	// joining the two area curves
-	ctx.lineTo(curve1[len1 - 1].x, curve1[len1 - 1].y);
-
-	// building opposite area curve (reverse)
-	for (i = len1 - 1; i > 0; --i) {
-		helpers$1.canvas.lineTo(ctx, curve1[i], curve1[i - 1], true);
-	}
-}
-
-function doFill(ctx, points, mapper, view, color, loop) {
-	var count = points.length;
-	var span = view.spanGaps;
-	var curve0 = [];
-	var curve1 = [];
-	var len0 = 0;
-	var len1 = 0;
-	var i, ilen, index, p0, p1, d0, d1;
-
-	ctx.beginPath();
-
-	for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
-		index = i % count;
-		p0 = points[index]._view;
-		p1 = mapper(p0, index, view);
-		d0 = isDrawable(p0);
-		d1 = isDrawable(p1);
-
-		if (d0 && d1) {
-			len0 = curve0.push(p0);
-			len1 = curve1.push(p1);
-		} else if (len0 && len1) {
-			if (!span) {
-				drawArea(ctx, curve0, curve1, len0, len1);
-				len0 = len1 = 0;
-				curve0 = [];
-				curve1 = [];
-			} else {
-				if (d0) {
-					curve0.push(p0);
-				}
-				if (d1) {
-					curve1.push(p1);
-				}
-			}
-		}
-	}
-
-	drawArea(ctx, curve0, curve1, len0, len1);
-
-	ctx.closePath();
-	ctx.fillStyle = color;
-	ctx.fill();
-}
-
-var plugin_filler = {
-	id: 'filler',
-
-	afterDatasetsUpdate: function(chart, options) {
-		var count = (chart.data.datasets || []).length;
-		var propagate = options.propagate;
-		var sources = [];
-		var meta, i, el, source;
-
-		for (i = 0; i < count; ++i) {
-			meta = chart.getDatasetMeta(i);
-			el = meta.dataset;
-			source = null;
-
-			if (el && el._model && el instanceof elements.Line) {
-				source = {
-					visible: chart.isDatasetVisible(i),
-					fill: decodeFill(el, i, count),
-					chart: chart,
-					el: el
-				};
-			}
-
-			meta.$filler = source;
-			sources.push(source);
-		}
-
-		for (i = 0; i < count; ++i) {
-			source = sources[i];
-			if (!source) {
-				continue;
-			}
-
-			source.fill = resolveTarget(sources, i, propagate);
-			source.boundary = computeBoundary(source);
-			source.mapper = createMapper(source);
-		}
-	},
-
-	beforeDatasetDraw: function(chart, args) {
-		var meta = args.meta.$filler;
-		if (!meta) {
-			return;
-		}
-
-		var ctx = chart.ctx;
-		var el = meta.el;
-		var view = el._view;
-		var points = el._children || [];
-		var mapper = meta.mapper;
-		var color = view.backgroundColor || core_defaults.global.defaultColor;
-
-		if (mapper && color && points.length) {
-			helpers$1.canvas.clipArea(ctx, chart.chartArea);
-			doFill(ctx, points, mapper, view, color, el._loop);
-			helpers$1.canvas.unclipArea(ctx);
-		}
-	}
-};
-
-var noop$1 = helpers$1.noop;
-var valueOrDefault$d = helpers$1.valueOrDefault;
-
-core_defaults._set('global', {
-	legend: {
-		display: true,
-		position: 'top',
-		fullWidth: true,
-		reverse: false,
-		weight: 1000,
-
-		// a callback that will handle
-		onClick: function(e, legendItem) {
-			var index = legendItem.datasetIndex;
-			var ci = this.chart;
-			var meta = ci.getDatasetMeta(index);
-
-			// See controller.isDatasetVisible comment
-			meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-
-			// We hid a dataset ... rerender the chart
-			ci.update();
-		},
-
-		onHover: null,
-		onLeave: null,
-
-		labels: {
-			boxWidth: 40,
-			padding: 10,
-			// Generates labels shown in the legend
-			// Valid properties to return:
-			// text : text to display
-			// fillStyle : fill of coloured box
-			// strokeStyle: stroke of coloured box
-			// hidden : if this legend item refers to a hidden item
-			// lineCap : cap style for line
-			// lineDash
-			// lineDashOffset :
-			// lineJoin :
-			// lineWidth :
-			generateLabels: function(chart) {
-				var data = chart.data;
-				return helpers$1.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
-					return {
-						text: dataset.label,
-						fillStyle: (!helpers$1.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
-						hidden: !chart.isDatasetVisible(i),
-						lineCap: dataset.borderCapStyle,
-						lineDash: dataset.borderDash,
-						lineDashOffset: dataset.borderDashOffset,
-						lineJoin: dataset.borderJoinStyle,
-						lineWidth: dataset.borderWidth,
-						strokeStyle: dataset.borderColor,
-						pointStyle: dataset.pointStyle,
-
-						// Below is extra data used for toggling the datasets
-						datasetIndex: i
-					};
-				}, this) : [];
-			}
-		}
-	},
-
-	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-		for (var i = 0; i < chart.data.datasets.length; i++) {
-			text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-			if (chart.data.datasets[i].label) {
-				text.push(chart.data.datasets[i].label);
-			}
-			text.push('</li>');
-		}
-		text.push('</ul>');
-		return text.join('');
-	}
-});
-
-/**
- * Helper function to get the box width based on the usePointStyle option
- * @param {object} labelopts - the label options on the legend
- * @param {number} fontSize - the label font size
- * @return {number} width of the color box area
- */
-function getBoxWidth(labelOpts, fontSize) {
-	return labelOpts.usePointStyle && labelOpts.boxWidth > fontSize ?
-		fontSize :
-		labelOpts.boxWidth;
-}
-
-/**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
- */
-var Legend = core_element.extend({
-
-	initialize: function(config) {
-		helpers$1.extend(this, config);
-
-		// Contains hit boxes for each dataset (in dataset order)
-		this.legendHitBoxes = [];
-
-		/**
- 		 * @private
- 		 */
-		this._hoveredItem = null;
-
-		// Are we in doughnut mode which has a different data type
-		this.doughnutMode = false;
-	},
-
-	// These methods are ordered by lifecycle. Utilities then follow.
-	// Any function defined here is inherited by all legend types.
-	// Any function can be extended by the legend type
-
-	beforeUpdate: noop$1,
-	update: function(maxWidth, maxHeight, margins) {
-		var me = this;
-
-		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
-		me.beforeUpdate();
-
-		// Absorb the master measurements
-		me.maxWidth = maxWidth;
-		me.maxHeight = maxHeight;
-		me.margins = margins;
-
-		// Dimensions
-		me.beforeSetDimensions();
-		me.setDimensions();
-		me.afterSetDimensions();
-		// Labels
-		me.beforeBuildLabels();
-		me.buildLabels();
-		me.afterBuildLabels();
-
-		// Fit
-		me.beforeFit();
-		me.fit();
-		me.afterFit();
-		//
-		me.afterUpdate();
-
-		return me.minSize;
-	},
-	afterUpdate: noop$1,
-
-	//
-
-	beforeSetDimensions: noop$1,
-	setDimensions: function() {
-		var me = this;
-		// Set the unconstrained dimension before label rotation
-		if (me.isHorizontal()) {
-			// Reset position before calculating rotation
-			me.width = me.maxWidth;
-			me.left = 0;
-			me.right = me.width;
-		} else {
-			me.height = me.maxHeight;
-
-			// Reset position before calculating rotation
-			me.top = 0;
-			me.bottom = me.height;
-		}
-
-		// Reset padding
-		me.paddingLeft = 0;
-		me.paddingTop = 0;
-		me.paddingRight = 0;
-		me.paddingBottom = 0;
-
-		// Reset minSize
-		me.minSize = {
-			width: 0,
-			height: 0
-		};
-	},
-	afterSetDimensions: noop$1,
-
-	//
-
-	beforeBuildLabels: noop$1,
-	buildLabels: function() {
-		var me = this;
-		var labelOpts = me.options.labels || {};
-		var legendItems = helpers$1.callback(labelOpts.generateLabels, [me.chart], me) || [];
-
-		if (labelOpts.filter) {
-			legendItems = legendItems.filter(function(item) {
-				return labelOpts.filter(item, me.chart.data);
-			});
-		}
-
-		if (me.options.reverse) {
-			legendItems.reverse();
-		}
-
-		me.legendItems = legendItems;
-	},
-	afterBuildLabels: noop$1,
-
-	//
-
-	beforeFit: noop$1,
-	fit: function() {
-		var me = this;
-		var opts = me.options;
-		var labelOpts = opts.labels;
-		var display = opts.display;
-
-		var ctx = me.ctx;
-
-		var labelFont = helpers$1.options._parseFont(labelOpts);
-		var fontSize = labelFont.size;
-
-		// Reset hit boxes
-		var hitboxes = me.legendHitBoxes = [];
-
-		var minSize = me.minSize;
-		var isHorizontal = me.isHorizontal();
-
-		if (isHorizontal) {
-			minSize.width = me.maxWidth; // fill all the width
-			minSize.height = display ? 10 : 0;
-		} else {
-			minSize.width = display ? 10 : 0;
-			minSize.height = me.maxHeight; // fill all the height
-		}
-
-		// Increase sizes here
-		if (display) {
-			ctx.font = labelFont.string;
-
-			if (isHorizontal) {
-				// Labels
-
-				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
-				var lineWidths = me.lineWidths = [0];
-				var totalHeight = 0;
-
-				ctx.textAlign = 'left';
-				ctx.textBaseline = 'top';
-
-				helpers$1.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
-
-					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width) {
-						totalHeight += fontSize + labelOpts.padding;
-						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = labelOpts.padding;
-					}
-
-					// Store the hitbox width and height here. Final position will be updated in `draw`
-					hitboxes[i] = {
-						left: 0,
-						top: 0,
-						width: width,
-						height: fontSize
-					};
-
-					lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
-				});
-
-				minSize.height += totalHeight;
-
-			} else {
-				var vPadding = labelOpts.padding;
-				var columnWidths = me.columnWidths = [];
-				var totalWidth = labelOpts.padding;
-				var currentColWidth = 0;
-				var currentColHeight = 0;
-				var itemHeight = fontSize + vPadding;
-
-				helpers$1.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
-
-					// If too tall, go to new column
-					if (i > 0 && currentColHeight + itemHeight > minSize.height - vPadding) {
-						totalWidth += currentColWidth + labelOpts.padding;
-						columnWidths.push(currentColWidth); // previous column width
-
-						currentColWidth = 0;
-						currentColHeight = 0;
-					}
-
-					// Get max width
-					currentColWidth = Math.max(currentColWidth, itemWidth);
-					currentColHeight += itemHeight;
-
-					// Store the hitbox width and height here. Final position will be updated in `draw`
-					hitboxes[i] = {
-						left: 0,
-						top: 0,
-						width: itemWidth,
-						height: fontSize
-					};
-				});
-
-				totalWidth += currentColWidth;
-				columnWidths.push(currentColWidth);
-				minSize.width += totalWidth;
-			}
-		}
-
-		me.width = minSize.width;
-		me.height = minSize.height;
-	},
-	afterFit: noop$1,
-
-	// Shared Methods
-	isHorizontal: function() {
-		return this.options.position === 'top' || this.options.position === 'bottom';
-	},
-
-	// Actually draw the legend on the canvas
-	draw: function() {
-		var me = this;
-		var opts = me.options;
-		var labelOpts = opts.labels;
-		var globalDefaults = core_defaults.global;
-		var defaultColor = globalDefaults.defaultColor;
-		var lineDefault = globalDefaults.elements.line;
-		var legendWidth = me.width;
-		var lineWidths = me.lineWidths;
-
-		if (opts.display) {
-			var ctx = me.ctx;
-			var fontColor = valueOrDefault$d(labelOpts.fontColor, globalDefaults.defaultFontColor);
-			var labelFont = helpers$1.options._parseFont(labelOpts);
-			var fontSize = labelFont.size;
-			var cursor;
-
-			// Canvas setup
-			ctx.textAlign = 'left';
-			ctx.textBaseline = 'middle';
-			ctx.lineWidth = 0.5;
-			ctx.strokeStyle = fontColor; // for strikethrough effect
-			ctx.fillStyle = fontColor; // render in correct colour
-			ctx.font = labelFont.string;
-
-			var boxWidth = getBoxWidth(labelOpts, fontSize);
-			var hitboxes = me.legendHitBoxes;
-
-			// current position
-			var drawLegendBox = function(x, y, legendItem) {
-				if (isNaN(boxWidth) || boxWidth <= 0) {
-					return;
-				}
-
-				// Set the ctx for the box
-				ctx.save();
-
-				var lineWidth = valueOrDefault$d(legendItem.lineWidth, lineDefault.borderWidth);
-				ctx.fillStyle = valueOrDefault$d(legendItem.fillStyle, defaultColor);
-				ctx.lineCap = valueOrDefault$d(legendItem.lineCap, lineDefault.borderCapStyle);
-				ctx.lineDashOffset = valueOrDefault$d(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-				ctx.lineJoin = valueOrDefault$d(legendItem.lineJoin, lineDefault.borderJoinStyle);
-				ctx.lineWidth = lineWidth;
-				ctx.strokeStyle = valueOrDefault$d(legendItem.strokeStyle, defaultColor);
-
-				if (ctx.setLineDash) {
-					// IE 9 and 10 do not support line dash
-					ctx.setLineDash(valueOrDefault$d(legendItem.lineDash, lineDefault.borderDash));
-				}
-
-				if (opts.labels && opts.labels.usePointStyle) {
-					// Recalculate x and y for drawPoint() because its expecting
-					// x and y to be center of figure (instead of top left)
-					var radius = boxWidth * Math.SQRT2 / 2;
-					var centerX = x + boxWidth / 2;
-					var centerY = y + fontSize / 2;
-
-					// Draw pointStyle as legend symbol
-					helpers$1.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
-				} else {
-					// Draw box as legend symbol
-					if (lineWidth !== 0) {
-						ctx.strokeRect(x, y, boxWidth, fontSize);
-					}
-					ctx.fillRect(x, y, boxWidth, fontSize);
-				}
-
-				ctx.restore();
-			};
-			var fillText = function(x, y, legendItem, textWidth) {
-				var halfFontSize = fontSize / 2;
-				var xLeft = boxWidth + halfFontSize + x;
-				var yMiddle = y + halfFontSize;
-
-				ctx.fillText(legendItem.text, xLeft, yMiddle);
-
-				if (legendItem.hidden) {
-					// Strikethrough the text if hidden
-					ctx.beginPath();
-					ctx.lineWidth = 2;
-					ctx.moveTo(xLeft, yMiddle);
-					ctx.lineTo(xLeft + textWidth, yMiddle);
-					ctx.stroke();
-				}
-			};
-
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 			// Horizontal
 			var isHorizontal = me.isHorizontal();
 			if (isHorizontal) {
@@ -60030,7 +59171,6 @@ exports.toSubscriber = toSubscriber;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62), __webpack_require__(307)))
-<<<<<<< HEAD
 
 /***/ }),
 /* 603 */
@@ -60164,11 +59304,6 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 
 /***/ }),
 /* 605 */
-=======
-
-/***/ }),
-/* 603 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60214,11 +59349,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 606 */
-=======
-/* 604 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60268,11 +59399,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 607 */
-=======
-/* 605 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60319,11 +59446,7 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 608 */
-=======
-/* 606 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60477,11 +59600,7 @@ exports.SWFReviewListing = SWFReviewListing;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 609 */
-=======
-/* 607 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60636,17 +59755,12 @@ exports.SWFWishlist = SWFWishlist;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 610 */
-=======
-/* 608 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var frontend_module_1 = __webpack_require__(782);
 //directives
 var monatflexshipcard_1 = __webpack_require__(605);
@@ -60659,20 +59773,6 @@ var swfwishlist_1 = __webpack_require__(609);
 //services
 var monatservice_1 = __webpack_require__(611);
 var ordertemplateservice_1 = __webpack_require__(612);
-=======
-var frontend_module_1 = __webpack_require__(779);
-//directives
-var monatflexshipcard_1 = __webpack_require__(603);
-var monatflexshiplisting_1 = __webpack_require__(604);
-var monatflexshipmenu_1 = __webpack_require__(605);
-var monatenrollment_1 = __webpack_require__(837);
-var monatenrollmentstep_1 = __webpack_require__(838);
-var swfreviewlisting_1 = __webpack_require__(606);
-var swfwishlist_1 = __webpack_require__(607);
-//services
-var monatservice_1 = __webpack_require__(839);
-var ordertemplateservice_1 = __webpack_require__(609);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var monatfrontendmodule = angular.module('monatfrontend', [
     frontend_module_1.frontendmodule.name
 ])
@@ -60692,7 +59792,6 @@ exports.monatfrontendmodule = monatfrontendmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -60727,9 +59826,6 @@ exports.MonatService = MonatService;
 
 /***/ }),
 /* 612 */
-=======
-/* 609 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60796,11 +59892,7 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 613 */
-=======
-/* 610 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60820,11 +59912,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 614 */
-=======
-/* 611 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60848,11 +59936,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 615 */
-=======
-/* 612 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60861,11 +59945,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-<<<<<<< HEAD
 var alert_1 = __webpack_require__(614);
-=======
-var alert_1 = __webpack_require__(611);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -60935,11 +60015,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 616 */
-=======
-/* 613 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61226,11 +60302,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 617 */
-=======
-/* 614 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61242,7 +60314,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(17);
 //services
 //components
-<<<<<<< HEAD
 var swcardlayout_1 = __webpack_require__(621);
 var swcardview_1 = __webpack_require__(624);
 var swcardheader_1 = __webpack_require__(619);
@@ -61250,15 +60321,6 @@ var swcardbody_1 = __webpack_require__(618);
 var swcardicon_1 = __webpack_require__(620);
 var swcardprogressbar_1 = __webpack_require__(623);
 var swcardlistitem_1 = __webpack_require__(622);
-=======
-var swcardlayout_1 = __webpack_require__(618);
-var swcardview_1 = __webpack_require__(621);
-var swcardheader_1 = __webpack_require__(616);
-var swcardbody_1 = __webpack_require__(615);
-var swcardicon_1 = __webpack_require__(617);
-var swcardprogressbar_1 = __webpack_require__(620);
-var swcardlistitem_1 = __webpack_require__(619);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -61277,11 +60339,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 618 */
-=======
-/* 615 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61328,11 +60386,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 619 */
-=======
-/* 616 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61381,11 +60435,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 620 */
-=======
-/* 617 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61436,11 +60486,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 621 */
-=======
-/* 618 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61491,11 +60537,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 622 */
-=======
-/* 619 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61549,11 +60591,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 623 */
-=======
-/* 620 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61606,11 +60644,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 624 */
-=======
-/* 621 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61662,11 +60696,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 625 */
-=======
-/* 622 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61711,11 +60741,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 626 */
-=======
-/* 623 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61758,11 +60784,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 627 */
-=======
-/* 624 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61856,11 +60878,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 628 */
-=======
-/* 625 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62096,11 +61114,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 629 */
-=======
-/* 626 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62998,11 +62012,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 630 */
-=======
-/* 627 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63041,11 +62051,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 631 */
-=======
-/* 628 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63141,11 +62147,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 632 */
-=======
-/* 629 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63660,11 +62662,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 633 */
-=======
-/* 630 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63805,11 +62803,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 634 */
-=======
-/* 631 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63971,11 +62965,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 635 */
-=======
-/* 632 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64203,11 +63193,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 636 */
-=======
-/* 633 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64355,11 +63341,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 637 */
-=======
-/* 634 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64456,11 +63438,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 638 */
-=======
-/* 635 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64638,11 +63616,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 639 */
-=======
-/* 636 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64706,11 +63680,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 640 */
-=======
-/* 637 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64796,11 +63766,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 641 */
-=======
-/* 638 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65084,11 +64050,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 642 */
-=======
-/* 639 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65480,11 +64442,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 643 */
-=======
-/* 640 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65557,11 +64515,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 644 */
-=======
-/* 641 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65661,11 +64615,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 645 */
-=======
-/* 642 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65733,11 +64683,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 646 */
-=======
-/* 643 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65798,11 +64744,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 647 */
-=======
-/* 644 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65858,11 +64800,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 648 */
-=======
-/* 645 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65901,11 +64839,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 649 */
-=======
-/* 646 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66113,11 +65047,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 650 */
-=======
-/* 647 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66156,11 +65086,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 651 */
-=======
-/* 648 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66191,11 +65117,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 652 */
-=======
-/* 649 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66272,7 +65194,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -66285,6 +65206,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -67111,11 +66033,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 653 */
-=======
-/* 650 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67337,11 +66255,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 654 */
-=======
-/* 651 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67669,11 +66583,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 655 */
-=======
-/* 652 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67724,11 +66634,7 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 656 */
-=======
-/* 653 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67779,11 +66685,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 657 */
-=======
-/* 654 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67875,11 +66777,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 658 */
-=======
-/* 655 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68047,11 +66945,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 659 */
-=======
-/* 656 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68114,11 +67008,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 660 */
-=======
-/* 657 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68169,11 +67059,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 661 */
-=======
-/* 658 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68220,11 +67106,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 662 */
-=======
-/* 659 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68378,11 +67260,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 663 */
-=======
-/* 660 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68445,11 +67323,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 664 */
-=======
-/* 661 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68539,11 +67413,7 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 665 */
-=======
-/* 662 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68602,11 +67472,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 666 */
-=======
-/* 663 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68689,11 +67555,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 667 */
-=======
-/* 664 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68828,11 +67690,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 668 */
-=======
-/* 665 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68972,11 +67830,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 669 */
-=======
-/* 666 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69015,11 +67869,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 670 */
-=======
-/* 667 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69227,11 +68077,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 671 */
-=======
-/* 668 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69301,11 +68147,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 672 */
-=======
-/* 669 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69339,11 +68181,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 673 */
-=======
-/* 670 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69387,11 +68225,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 674 */
-=======
-/* 671 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69425,11 +68259,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 675 */
-=======
-/* 672 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69465,11 +68295,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 676 */
-=======
-/* 673 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69545,11 +68371,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 677 */
-=======
-/* 674 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69690,11 +68512,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 678 */
-=======
-/* 675 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69775,11 +68593,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 679 */
-=======
-/* 676 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69838,11 +68652,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 680 */
-=======
-/* 677 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69913,11 +68723,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 681 */
-=======
-/* 678 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70069,11 +68875,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 682 */
-=======
-/* 679 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70158,11 +68960,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 683 */
-=======
-/* 680 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70206,11 +69004,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 684 */
-=======
-/* 681 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70302,11 +69096,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 685 */
-=======
-/* 682 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70403,11 +69193,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 686 */
-=======
-/* 683 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70464,11 +69250,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 687 */
-=======
-/* 684 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70556,11 +69338,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 688 */
-=======
-/* 685 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70671,11 +69449,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 689 */
-=======
-/* 686 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70758,11 +69532,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 690 */
-=======
-/* 687 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70890,11 +69660,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 691 */
-=======
-/* 688 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71050,11 +69816,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 692 */
-=======
-/* 689 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71130,11 +69892,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 693 */
-=======
-/* 690 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71520,11 +70278,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 694 */
-=======
-/* 691 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71585,11 +70339,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 695 */
-=======
-/* 692 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71739,11 +70489,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 696 */
-=======
-/* 693 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71769,11 +70515,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 697 */
-=======
-/* 694 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71814,11 +70556,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 698 */
-=======
-/* 695 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71845,11 +70583,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 699 */
-=======
-/* 696 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71876,11 +70610,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 700 */
-=======
-/* 697 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71945,11 +70675,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 701 */
-=======
-/* 698 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71991,11 +70717,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 702 */
-=======
-/* 699 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72045,11 +70767,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 703 */
-=======
-/* 700 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72090,11 +70808,7 @@ exports.Account = Account;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 704 */
-=======
-/* 701 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72137,11 +70851,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 705 */
-=======
-/* 702 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72174,11 +70884,7 @@ exports.Address = Address;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 706 */
-=======
-/* 703 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72239,11 +70945,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 707 */
-=======
-/* 704 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72251,7 +70953,6 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var account_1 = __webpack_require__(703);
 exports.Account = account_1.Account;
 var address_1 = __webpack_require__(705);
@@ -72265,30 +70966,11 @@ exports.OrderPayment = orderpayment_1.OrderPayment;
 var sku_1 = __webpack_require__(710);
 exports.Sku = sku_1.Sku;
 var accountaddress_1 = __webpack_require__(704);
-=======
-var account_1 = __webpack_require__(700);
-exports.Account = account_1.Account;
-var address_1 = __webpack_require__(702);
-exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(703);
-exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(705);
-exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(706);
-exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(707);
-exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(701);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 708 */
-=======
-/* 705 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72321,11 +71003,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 709 */
-=======
-/* 706 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72342,11 +71020,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 710 */
-=======
-/* 707 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72386,11 +71060,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 711 */
-=======
-/* 708 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72423,11 +71093,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 712 */
-=======
-/* 709 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72448,11 +71114,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var baseprocess_1 = __webpack_require__(711);
-=======
-var baseprocess_1 = __webpack_require__(708);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -72466,11 +71128,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 713 */
-=======
-/* 710 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72478,20 +71136,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var order_addorderpayment_1 = __webpack_require__(712);
-=======
-var order_addorderpayment_1 = __webpack_require__(709);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 714 */
-=======
-/* 711 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72543,11 +71193,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 715 */
-=======
-/* 712 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72607,11 +71253,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 716 */
-=======
-/* 713 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72647,11 +71289,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 717 */
-=======
-/* 714 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72687,11 +71325,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 718 */
-=======
-/* 715 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72777,11 +71411,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 719 */
-=======
-/* 716 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72818,11 +71448,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 720 */
-=======
-/* 717 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72852,11 +71478,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 721 */
-=======
-/* 718 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72894,11 +71516,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 722 */
-=======
-/* 719 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72944,11 +71562,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 723 */
-=======
-/* 720 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73010,11 +71624,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 724 */
-=======
-/* 721 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73107,11 +71717,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 725 */
-=======
-/* 722 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73626,11 +72232,7 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 726 */
-=======
-/* 723 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73826,11 +72428,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 727 */
-=======
-/* 724 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73867,11 +72465,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 728 */
-=======
-/* 725 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73904,11 +72498,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 729 */
-=======
-/* 726 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74449,11 +73039,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 730 */
-=======
-/* 727 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75238,11 +73824,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 731 */
-=======
-/* 728 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75531,11 +74113,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 732 */
-=======
-/* 729 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75571,11 +74149,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 733 */
-=======
-/* 730 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75633,11 +74207,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 734 */
-=======
-/* 731 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75788,11 +74358,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 735 */
-=======
-/* 732 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75962,11 +74528,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 736 */
-=======
-/* 733 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76004,11 +74566,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 737 */
-=======
-/* 734 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76049,24 +74607,13 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 738 */
-=======
-/* 735 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -77189,7 +75736,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -77495,11 +76042,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 739 */
-=======
-/* 736 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77611,11 +76154,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 740 */
-=======
-/* 737 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77623,13 +76162,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var adminrequest_1 = __webpack_require__(714);
 var publicrequest_1 = __webpack_require__(715);
-=======
-var adminrequest_1 = __webpack_require__(711);
-var publicrequest_1 = __webpack_require__(712);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -77659,11 +76193,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 741 */
-=======
-/* 738 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77700,11 +76230,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 742 */
-=======
-/* 739 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77830,11 +76356,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 743 */
-=======
-/* 740 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77872,11 +76394,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 744 */
-=======
-/* 741 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77917,10 +76435,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -78122,11 +76640,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 745 */
-=======
-/* 742 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78599,11 +77113,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 746 */
-=======
-/* 743 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78629,11 +77139,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 747 */
-=======
-/* 744 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78677,11 +77183,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 748 */
-=======
-/* 745 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78756,11 +77258,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 749 */
-=======
-/* 746 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78791,11 +77289,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 750 */
-=======
-/* 747 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78842,11 +77336,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 751 */
-=======
-/* 748 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78865,11 +77355,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 752 */
-=======
-/* 749 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78901,11 +77387,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 753 */
-=======
-/* 750 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78922,21 +77404,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-<<<<<<< HEAD
 var otherwisecontroller_1 = __webpack_require__(751);
 var routercontroller_1 = __webpack_require__(752);
 //directives
 var swdetailtabs_1 = __webpack_require__(749);
 var swdetail_1 = __webpack_require__(748);
 var swlist_1 = __webpack_require__(750);
-=======
-var otherwisecontroller_1 = __webpack_require__(748);
-var routercontroller_1 = __webpack_require__(749);
-//directives
-var swdetailtabs_1 = __webpack_require__(746);
-var swdetail_1 = __webpack_require__(745);
-var swlist_1 = __webpack_require__(747);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var core_module_1 = __webpack_require__(17);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -78994,11 +77467,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 754 */
-=======
-/* 751 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79167,11 +77636,7 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 755 */
-=======
-/* 752 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79228,11 +77693,7 @@ exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 756 */
-=======
-/* 753 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79316,11 +77777,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 757 */
-=======
-/* 754 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79360,11 +77817,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 758 */
-=======
-/* 755 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79466,11 +77919,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 759 */
-=======
-/* 756 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79793,11 +78242,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 760 */
-=======
-/* 757 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80077,11 +78522,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 761 */
-=======
-/* 758 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80129,11 +78570,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 762 */
-=======
-/* 759 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80176,11 +78613,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 763 */
-=======
-/* 760 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80300,11 +78733,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 764 */
-=======
-/* 761 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80372,11 +78801,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 765 */
-=======
-/* 762 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80466,11 +78891,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 766 */
-=======
-/* 763 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80532,11 +78953,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 767 */
-=======
-/* 764 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80637,11 +79054,7 @@ exports.SWFSelect = SWFSelect;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 768 */
-=======
-/* 765 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81006,11 +79419,7 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 769 */
-=======
-/* 766 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81066,11 +79475,7 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 770 */
-=======
-/* 767 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81157,11 +79562,7 @@ exports.SWSimplePropertyDisplay = SWSimplePropertyDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 771 */
-=======
-/* 768 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81256,11 +79657,7 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 772 */
-=======
-/* 769 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81271,7 +79668,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(17);
 //services
-<<<<<<< HEAD
 var fileservice_1 = __webpack_require__(773);
 //directives
 //  components
@@ -81296,32 +79692,6 @@ var swsimplepropertydisplay_1 = __webpack_require__(770);
 var swformsubscriber_1 = __webpack_require__(765);
 var swverifyaddressdialog_1 = __webpack_require__(771);
 var swcollectionconfigasproperty_1 = __webpack_require__(755);
-=======
-var fileservice_1 = __webpack_require__(770);
-//directives
-//  components
-//form
-var swinput_1 = __webpack_require__(765);
-var swfformfield_1 = __webpack_require__(755);
-var swform_1 = __webpack_require__(756);
-var swfform_1 = __webpack_require__(300);
-var swfselect_1 = __webpack_require__(764);
-var swffileinput_1 = __webpack_require__(754);
-var swformfield_1 = __webpack_require__(757);
-var swformfieldfile_1 = __webpack_require__(758);
-var swformfieldjson_1 = __webpack_require__(759);
-var swformfieldsearchselect_1 = __webpack_require__(760);
-var swformregistrar_1 = __webpack_require__(761);
-var swerrordisplay_1 = __webpack_require__(753);
-var swaddressform_1 = __webpack_require__(751);
-var swisolatechildform_1 = __webpack_require__(766);
-var swpropertydisplay_1 = __webpack_require__(301);
-var swfpropertydisplay_1 = __webpack_require__(763);
-var swsimplepropertydisplay_1 = __webpack_require__(767);
-var swformsubscriber_1 = __webpack_require__(762);
-var swverifyaddressdialog_1 = __webpack_require__(768);
-var swcollectionconfigasproperty_1 = __webpack_require__(752);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -81351,11 +79721,7 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 773 */
-=======
-/* 770 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81402,11 +79768,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 774 */
-=======
-/* 771 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81491,11 +79853,7 @@ exports.SWFAddressForm = SWFAddressForm;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 775 */
-=======
-/* 772 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81560,11 +79918,7 @@ exports.SWFAlert = SWFAlert;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 776 */
-=======
-/* 773 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81648,11 +80002,7 @@ exports.SWFCartItems = SWFCartItems;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 777 */
-=======
-/* 774 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81759,11 +80109,7 @@ exports.SWFDirective = SWFDirective;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 778 */
-=======
-/* 775 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81934,11 +80280,7 @@ exports.SWFNavigation = SWFNavigation;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 779 */
-=======
-/* 776 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82005,11 +80347,7 @@ exports.SWFPromoBox = SWFPromoBox;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 780 */
-=======
-/* 777 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82059,11 +80397,7 @@ exports.SWFSaveNotes = SWFSaveNotes;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 781 */
-=======
-/* 778 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82086,11 +80420,7 @@ exports.FrontendController = FrontendController;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 782 */
-=======
-/* 779 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82099,7 +80429,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //modules
-<<<<<<< HEAD
 var hibachi_module_1 = __webpack_require__(784);
 //controllers
 var frontend_1 = __webpack_require__(781);
@@ -82111,19 +80440,6 @@ var swfnavigation_1 = __webpack_require__(778);
 var swfaddressform_1 = __webpack_require__(774);
 var swfsavenotes_1 = __webpack_require__(780);
 var swfalert_1 = __webpack_require__(775);
-=======
-var hibachi_module_1 = __webpack_require__(781);
-//controllers
-var frontend_1 = __webpack_require__(778);
-//directives
-var swfdirective_1 = __webpack_require__(774);
-var swfcartitems_1 = __webpack_require__(773);
-var swfpromobox_1 = __webpack_require__(776);
-var swfnavigation_1 = __webpack_require__(775);
-var swfaddressform_1 = __webpack_require__(771);
-var swfsavenotes_1 = __webpack_require__(777);
-var swfalert_1 = __webpack_require__(772);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
@@ -82162,11 +80478,7 @@ exports.frontendmodule = frontendmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 783 */
-=======
-/* 780 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82276,11 +80588,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 784 */
-=======
-/* 781 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82290,7 +80598,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(294);
-<<<<<<< HEAD
 var card_module_1 = __webpack_require__(617);
 var collection_module_1 = __webpack_require__(295);
 var listing_module_1 = __webpack_require__(800);
@@ -82302,19 +80609,6 @@ var validation_module_1 = __webpack_require__(822);
 var workflow_module_1 = __webpack_require__(837);
 //directives
 var swsaveandfinish_1 = __webpack_require__(783);
-=======
-var card_module_1 = __webpack_require__(614);
-var collection_module_1 = __webpack_require__(295);
-var listing_module_1 = __webpack_require__(797);
-var dialog_module_1 = __webpack_require__(299);
-var entity_module_1 = __webpack_require__(750);
-var pagination_module_1 = __webpack_require__(800);
-var form_module_1 = __webpack_require__(769);
-var validation_module_1 = __webpack_require__(819);
-var workflow_module_1 = __webpack_require__(834);
-//directives
-var swsaveandfinish_1 = __webpack_require__(780);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -82341,11 +80635,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 785 */
-=======
-/* 782 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82394,11 +80684,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 786 */
-=======
-/* 783 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82457,11 +80743,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 787 */
-=======
-/* 784 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82621,11 +80903,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 788 */
-=======
-/* 785 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82807,11 +81085,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 789 */
-=======
-/* 786 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82874,11 +81148,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 790 */
-=======
-/* 787 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83663,11 +81933,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 791 */
-=======
-/* 788 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83836,11 +82102,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 792 */
-=======
-/* 789 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83917,11 +82179,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 793 */
-=======
-/* 790 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83980,11 +82238,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 794 */
-=======
-/* 791 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84023,11 +82277,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 795 */
-=======
-/* 792 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84084,11 +82334,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 796 */
-=======
-/* 793 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84136,11 +82382,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 797 */
-=======
-/* 794 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84662,11 +82904,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 798 */
-=======
-/* 795 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84730,11 +82968,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 799 */
-=======
-/* 796 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84961,11 +83195,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 800 */
-=======
-/* 797 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84976,7 +83206,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(295);
 //services
-<<<<<<< HEAD
 var listingservice_1 = __webpack_require__(801);
 //directives
 var swlistingdisplay_1 = __webpack_require__(790);
@@ -84994,25 +83223,6 @@ var swlistingorderby_1 = __webpack_require__(796);
 var swlistingrowsave_1 = __webpack_require__(798);
 var swlistingsearch_1 = __webpack_require__(799);
 var swlistingglobalsearch_1 = __webpack_require__(795);
-=======
-var listingservice_1 = __webpack_require__(798);
-//directives
-var swlistingdisplay_1 = __webpack_require__(787);
-var swlistingreport_1 = __webpack_require__(794);
-var swlistingdisplaycell_1 = __webpack_require__(788);
-var swlistingcontrols_1 = __webpack_require__(785);
-var swlistingaggregate_1 = __webpack_require__(782);
-var swlistingcolorfilter_1 = __webpack_require__(783);
-var swlistingcolumn_1 = __webpack_require__(784);
-var swlistingdisablerule_1 = __webpack_require__(786);
-var swlistingexpandablerule_1 = __webpack_require__(789);
-var swlistingfilter_1 = __webpack_require__(790);
-var swlistingfiltergroup_1 = __webpack_require__(791);
-var swlistingorderby_1 = __webpack_require__(793);
-var swlistingrowsave_1 = __webpack_require__(795);
-var swlistingsearch_1 = __webpack_require__(796);
-var swlistingglobalsearch_1 = __webpack_require__(792);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -85040,11 +83250,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 801 */
-=======
-/* 798 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85088,11 +83294,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -86016,11 +84222,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 802 */
-=======
-/* 799 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86066,11 +84268,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 803 */
-=======
-/* 800 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86079,13 +84277,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-<<<<<<< HEAD
 var paginationservice_1 = __webpack_require__(804);
 var swpaginationbar_1 = __webpack_require__(802);
-=======
-var paginationservice_1 = __webpack_require__(801);
-var swpaginationbar_1 = __webpack_require__(799);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var core_module_1 = __webpack_require__(17);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -86102,11 +84295,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 804 */
-=======
-/* 801 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86304,11 +84493,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 805 */
-=======
-/* 802 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86697,11 +84882,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 806 */
-=======
-/* 803 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86733,11 +84914,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 807 */
-=======
-/* 804 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86770,11 +84947,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 808 */
-=======
-/* 805 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86838,11 +85011,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 809 */
-=======
-/* 806 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86872,11 +85041,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 810 */
-=======
-/* 807 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86906,11 +85071,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 811 */
-=======
-/* 808 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86944,11 +85105,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 812 */
-=======
-/* 809 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86981,11 +85138,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 813 */
-=======
-/* 810 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87019,11 +85172,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 814 */
-=======
-/* 811 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87056,11 +85205,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 815 */
-=======
-/* 812 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87090,11 +85235,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 816 */
-=======
-/* 813 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87124,11 +85265,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 817 */
-=======
-/* 814 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87159,11 +85296,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 818 */
-=======
-/* 815 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87200,11 +85333,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 819 */
-=======
-/* 816 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87237,11 +85366,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 820 */
-=======
-/* 817 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87278,11 +85403,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 821 */
-=======
-/* 818 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87439,11 +85560,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 822 */
-=======
-/* 819 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87452,7 +85569,6 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-<<<<<<< HEAD
 var swvalidate_1 = __webpack_require__(805);
 var swvalidationminlength_1 = __webpack_require__(813);
 var swvalidationdatatype_1 = __webpack_require__(806);
@@ -87471,26 +85587,6 @@ var swvalidationunique_1 = __webpack_require__(819);
 var swvalidationuniqueornull_1 = __webpack_require__(820);
 //services
 var validationservice_1 = __webpack_require__(821);
-=======
-var swvalidate_1 = __webpack_require__(802);
-var swvalidationminlength_1 = __webpack_require__(810);
-var swvalidationdatatype_1 = __webpack_require__(803);
-var swvalidationeq_1 = __webpack_require__(804);
-var swvalidationeqproperty_1 = __webpack_require__(805);
-var swvalidationgte_1 = __webpack_require__(806);
-var swvalidationlte_1 = __webpack_require__(807);
-var swvalidationmaxlength_1 = __webpack_require__(808);
-var swvalidationmaxvalue_1 = __webpack_require__(809);
-var swvalidationminvalue_1 = __webpack_require__(811);
-var swvalidationneq_1 = __webpack_require__(812);
-var swvalidationnumeric_1 = __webpack_require__(813);
-var swvalidationregex_1 = __webpack_require__(814);
-var swvalidationrequired_1 = __webpack_require__(815);
-var swvalidationunique_1 = __webpack_require__(816);
-var swvalidationuniqueornull_1 = __webpack_require__(817);
-//services
-var validationservice_1 = __webpack_require__(818);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -87518,11 +85614,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 823 */
-=======
-/* 820 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87556,11 +85648,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 824 */
-=======
-/* 821 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87598,11 +85686,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 825 */
-=======
-/* 822 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87636,11 +85720,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 826 */
-=======
-/* 823 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87761,11 +85841,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 827 */
-=======
-/* 824 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87796,11 +85872,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 828 */
-=======
-/* 825 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87850,11 +85922,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 829 */
-=======
-/* 826 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87901,11 +85969,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 830 */
-=======
-/* 827 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88177,11 +86241,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 831 */
-=======
-/* 828 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88381,11 +86441,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 832 */
-=======
-/* 829 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88487,11 +86543,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 833 */
-=======
-/* 830 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88537,11 +86589,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 834 */
-=======
-/* 831 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88830,11 +86878,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 835 */
-=======
-/* 832 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88946,11 +86990,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 836 */
-=======
-/* 833 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89008,11 +87048,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 837 */
-=======
-/* 834 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89021,7 +87057,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-<<<<<<< HEAD
 var workflowconditionservice_1 = __webpack_require__(836);
 var scheduleservice_1 = __webpack_require__(835);
 //directives
@@ -89037,23 +87072,6 @@ var swworkflowtrigger_1 = __webpack_require__(832);
 var swworkflowtriggers_1 = __webpack_require__(834);
 var swworkflowtriggerhistory_1 = __webpack_require__(833);
 var swschedulepreview_1 = __webpack_require__(824);
-=======
-var workflowconditionservice_1 = __webpack_require__(833);
-var scheduleservice_1 = __webpack_require__(832);
-//directives
-var swadmincreatesuperuser_1 = __webpack_require__(820);
-var swworkflowbasic_1 = __webpack_require__(822);
-var swworkflowcondition_1 = __webpack_require__(823);
-var swworkflowconditiongroupitem_1 = __webpack_require__(824);
-var swworkflowconditiongroups_1 = __webpack_require__(825);
-var swworkflowtask_1 = __webpack_require__(826);
-var swworkflowtaskactions_1 = __webpack_require__(827);
-var swworkflowtasks_1 = __webpack_require__(828);
-var swworkflowtrigger_1 = __webpack_require__(829);
-var swworkflowtriggers_1 = __webpack_require__(831);
-var swworkflowtriggerhistory_1 = __webpack_require__(830);
-var swschedulepreview_1 = __webpack_require__(821);
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -89079,11 +87097,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-<<<<<<< HEAD
 /* 838 */
-=======
-/* 835 */
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -89111,146 +87125,6 @@ module.exports = function(module) {
 
 
 /***/ }),
-<<<<<<< HEAD
-=======
-/* 836 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(302);
-
-
-/***/ }),
-/* 837 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatEnrollmentController = /** @class */ (function () {
-    //@ngInject
-    function MonatEnrollmentController(monatService) {
-        var _this = this;
-        this.monatService = monatService;
-        this.backUrl = '/';
-        this.position = 0;
-        this.steps = [];
-        this.addStep = function (step) {
-            if (_this.steps.length == 0) {
-                step.selected = true;
-            }
-            _this.steps.push(step);
-        };
-        this.removeStep = function (step) {
-            var index = _this.steps.indexOf(step);
-            if (index > 0) {
-                _this.steps.splice(index, 1);
-            }
-        };
-        if (hibachiConfig.baseSiteURL) {
-            this.backUrl = hibachiConfig.baseSiteURL;
-        }
-        if (angular.isUndefined(this.onFinish)) {
-            this.onFinish = function () { return console.log('Done!'); };
-        }
-        if (angular.isUndefined(this.finishText)) {
-            this.finishText = 'Finish';
-        }
-        monatService.getCart().then(function (data) {
-            _this.cart = data;
-        });
-    }
-    MonatEnrollmentController.prototype.next = function () {
-        this.navigate(this.position + 1);
-    };
-    MonatEnrollmentController.prototype.previous = function () {
-        this.navigate(this.position - 1);
-    };
-    MonatEnrollmentController.prototype.navigate = function (index) {
-        if (index < 0 || index == this.position) {
-            return;
-        }
-        //If on next returns false, prevent it from navigating
-        if (index > this.position && !this.steps[this.position].onNext()) {
-            return;
-        }
-        if (index >= this.steps.length) {
-            return this.onFinish();
-        }
-        this.position = index;
-        angular.forEach(this.steps, function (step) {
-            step.selected = false;
-        });
-        this.steps[this.position].selected = true;
-    };
-    return MonatEnrollmentController;
-}());
-var MonatEnrollment = /** @class */ (function () {
-    function MonatEnrollment(monatFrontendBasePath) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.restrict = 'EA';
-        this.transclude = true;
-        this.scope = {};
-        this.bindToController = {
-            finishText: '@',
-            onFinish: '=?'
-        };
-        this.controller = MonatEnrollmentController;
-        this.controllerAs = "monatEnrollment";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollment.html";
-    }
-    MonatEnrollment.Factory = function () {
-        var _this = this;
-        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
-        directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    };
-    return MonatEnrollment;
-}());
-exports.MonatEnrollment = MonatEnrollment;
-
-
-/***/ }),
-/* 838 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatEnrollmentStep = /** @class */ (function () {
-    function MonatEnrollmentStep(monatFrontendBasePath) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.restrict = 'EA';
-        this.replace = true;
-        this.transclude = true;
-        this.scope = {
-            stepClass: '@',
-            onNext: '=?'
-        };
-        this.require = '^monatEnrollment';
-        this.link = function (scope, element, attrs, monatEnrollment) {
-            if (angular.isUndefined(scope.onNext)) {
-                scope.onNext = function () { return true; };
-            }
-            monatEnrollment.addStep(scope);
-            scope.$on('$destroy', function () {
-                monatEnrollment.removeStep(scope);
-            });
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollmentstep.html";
-    }
-    MonatEnrollmentStep.Factory = function () {
-        var _this = this;
-        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
-        directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    };
-    return MonatEnrollmentStep;
-}());
-exports.MonatEnrollmentStep = MonatEnrollmentStep;
-
-
-/***/ }),
->>>>>>> f9987768e93e431e9b2cdc4278d0504d18985fd6
 /* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
