@@ -2031,22 +2031,22 @@ component  accessors="true" output="false"
 
 
 	public void function removeOrderTemplateItem(required any data) {
-        param name="data.orderTemplateID" default="";
         param name="data.orderTemplateItemID" default="";
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( arguments.data.orderTemplateItemID );
+        if( isNull(orderTemplateItem) ) {
 			return;
 		}
 	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeOrderTemplateItem'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
         getHibachiScope().addActionResult( "public:removeOrderTemplateItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            orderTemplate.clearProcessObject("removeOrderTemplateItem");
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+                        //TODO: see if we need to return any data...            
+
+    //         orderTemplate.clearProcessObject("removeOrderTemplateItem");
+    //         getHibachiScope().flushORMSession(); //flushing to make new data availble
+    // 		setOrderTemplateAjaxResponse(argumentCollection = arguments);
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }

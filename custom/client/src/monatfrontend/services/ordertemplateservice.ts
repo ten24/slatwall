@@ -121,7 +121,6 @@ export class OrderTemplateService {
     
     /**
      * payload = {
-           'orderTemplateID',
            'orderTemplateItemID'
         }
      * 
