@@ -40,7 +40,7 @@ class SWAddOrderItemsBySkuController{
 		    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
 	    
-		var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+		var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
 		
 		if(this.skuPropertiesToDisplay != null){
 			// join the two lists.
@@ -51,6 +51,7 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('product.productType.productTypeName','Product Type',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('price','',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:true,isDeletable:false})
         this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
@@ -161,6 +162,8 @@ class SWAddOrderItemsBySkuController{
 		
 		var data = { orderFulfillmentID: orderFulfilmentID, quantity:payload.quantity, price: payload.price };
 		
+		this.observerService.notify("addOrderItemStartLoading", {});
+		
 		this.postData(url, data)
 		.then(data => {
 			
@@ -178,7 +181,9 @@ class SWAddOrderItemsBySkuController{
 				//now get the order values because we updated them and pass along to anything listening...
 				this.$hibachi.getEntity("Order", this.order).then((data)=>{
 		    		this.observerService.notify(`refreshOrder${this.order}`, data);
+		    		this.observerService.notify("addOrderItemStopLoading", {});
 		        });
+		        this.observerService.notify("addOrderItemStopLoading", {});
 			
 				//(window as any).location.reload();
 			}

@@ -99,7 +99,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all" inverse="true";
-
+	property name="orderStatusHistory" singularname="orderStatusHistory"  cfc="OrderStatusHistory" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-To-many - owner)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
 
@@ -236,6 +237,8 @@ property name="personalVolumeSubtotal" persistent="false";
     property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
+    property name="accountType" ormtype="string";
+    property name="accountPriceGroup" ormtype="string";
     
     property name="lastSyncedDateTime" ormtype="timestamp";
     
@@ -244,7 +247,17 @@ property name="personalVolumeSubtotal" persistent="false";
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
- property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
+ property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
+ property name="orderAccountNumber" ormtype="string";
+ property name="orderCountryCode" ormtype="string";
+ property name="orderPartnerNumber" ormtype="string";
+ property name="orderInvoiceNumber" ormtype="string";
+ property name="miscChargeAmount" ormtype="string";
+ property name="redeemPoints" ormtype="string";
+ property name="remoteAmountTotal" ormtype="string";
+ property name="orderSourceCode" ormtype="string";
+ property name="FSNumber" ormtype="string";
+ property name="originalRMANumber" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1494,6 +1507,15 @@ property name="personalVolumeSubtotal" persistent="false";
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
+	
+	// Order Status History (one-to-many)
+	public void function addOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.setOrder( this );
+	}
+	
+	public void function removeOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.removeOrder( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -1584,17 +1606,7 @@ property name="personalVolumeSubtotal" persistent="false";
 	}
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getOrderNumber()) && len(getOrderNumber())) {
-			var representation = getOrderNumber();
-		} else {
-			var representation = rbKey('define.cart');
-		}
-
-		if(!isNull(getAccount())) {
-			representation &= " - #getAccount().getFullname()#";
-		}
-
-		return representation;
+		return getOrderService().getSimpleRepresentation(this);
 	}
 
 	public any function getReferencingOrdersSmartList() {
@@ -1875,5 +1887,35 @@ public numeric function getPersonalVolumeSubtotal(){
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public any function getAccountType() {
+	    if (structKeyExists(variables, "accountType")){
+	        return variables.accountType;
+	    }
+	    
+	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	        variables.accountType = getAccount().getAccountType();
+	    }else{
+	        variables.accountType = "";
+	    }
+	    return variables.accountType;
+	}
+	
+	public any function getAccountPriceGroup() {
+	    if (structKeyExists(variables, "accountPriceGroup")){
+	        return variables.accountPriceGroup;
+	    }
+	    
+	    if (!isNull(getAccount()) && !isNull(getAccount().getPriceGroups())){
+	        var priceGroups = getAccount().getPriceGroups();
+    	    if (arraylen(priceGroups)){
+    	        //there should only be 1 max.
+    	        variables.accountPriceGroup = priceGroups[1].getPriceGroupCode();
+    	        return variables.accountPriceGroup;
+    	    }
+	    }
+	   
+	}
+	//CUSTOM FUNCTIONS END
 }

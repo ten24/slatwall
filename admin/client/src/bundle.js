@@ -63580,11 +63580,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.observerService.notify("addOrderItemLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
                 if (data.preProcessView) {
@@ -91506,21 +91507,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }
@@ -92105,7 +92091,11 @@ var SWListingDisplayController = /** @class */ (function () {
             _this.getCollection = _this.collectionConfig.getEntity().then(function (data) {
                 _this.collectionData = data;
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
+                _this.loading = false;
             });
+        };
+        this.listingIsLoading = function () {
+            _this.loading = true;
         };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
@@ -92115,6 +92105,9 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.listingIsLoading, "addOrderItemLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;

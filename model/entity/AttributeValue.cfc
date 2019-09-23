@@ -73,6 +73,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
+	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -369,6 +370,25 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "eventRegistration");
 	}
+	
+	// EmailTemplate (many-to-one)
+  	public void function setEmailTemplate(required any emailTemplate) {
+  		variables.emailTemplate = arguments.emailTemplate;
+  		if(isNew() or !arguments.emailTemplate.hasAttributeValue( this )) {
+  			arrayAppend(arguments.emailTemplate.getAttributeValues(), this);
+  		}
+  	}
+
+  	public void function removeEmailTemplate(any emailTemplate) {
+  		if(!structKeyExists(arguments, "emailTemplate")) {
+  			arguments.emailTemplate = variables.emailTemplate;
+  		}
+  		var index = arrayFind(arguments.emailTemplate.getAttributeValues(), this);
+  		if(index > 0) {
+  			arrayDeleteAt(arguments.emailTemplate.getAttributeValues(), index);
+  		}
+  		structDelete(variables, "emailTemplate");
+  	}
 
 	// File (many-to-one)
 	public void function setFile(required any file) {
