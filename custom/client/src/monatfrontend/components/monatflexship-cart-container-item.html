@@ -1,0 +1,24 @@
+<tr>
+	<td class="item-image">
+		<a href="#">
+		<!--<a> {{monatFlexshipOrderItem.orderItem.img-path}}</a>-->
+
+		<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
+		</a>
+	</td>
+	<td class="item-name">
+		<h6 class="title-sm">
+			<a href="#">{{monatFlexshipOrderItem.orderItem.sku_skuDefinition}}</a>
+		</h6>
+	</td>
+	<td class="item-quantity">
+		<div class="qty">
+			<span>QTY `</span> {{monatFlexshipOrderItem.orderItem.quantity}}
+		</div>
+	</td>
+	<td class="item-price">
+		<span class="price">{{monatFlexshipOrderItem.orderItem.sku_priceByCurrencyCode | currency}}</span>
+	</td>
+</tr>
+				
+

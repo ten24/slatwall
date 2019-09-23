@@ -1973,7 +1973,7 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:addOrderTemplateItem", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
@@ -2018,7 +2018,7 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:removeOrderTemplateItem", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
                         //TODO: see if we need to return any data...            

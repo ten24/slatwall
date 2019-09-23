@@ -1,0 +1,50 @@
+<div class="flexship-block">
+	<div class="flexship-bar">
+		<div class="open-flexship">
+			<a href="#">
+			<i class="fas fa-chevron-up"></i>
+			</a>
+			<span class="qty-and-price">
+				<span ng-bind="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount"></span> Items` /  Total` <span ng-bind="monatFlexshipCartContainer.orderTemplate.total"></span></span>
+		</div>
+		<span class="steps">Step 1 of 2 ``</span>
+		<div class="go-to-cart">
+			<a href="#"><span>Save Changes ``</span></a>
+		</div>
+	</div>
+	
+	<div class="flexship-container">
+		<p><i class="fas fa-info-circle"></i> Your Flexship must be a minimum of $84.00 before you save any changes. `</p>
+		<div class="product-container">
+			<ul>
+				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplate.orderTemplateItems">
+					<button class="close" type="button" ng-click="$parent.removeOrderTemplateItem(item)">
+					<i class="fas fa-times"></i>
+					</button>
+					<div class="img">
+						<a href="#">
+						<!--<img src="{{::item.skuImagePath}}" alt="">-->
+						<img src="common/images/product-1.png">
+						</a>
+					</div>
+					<h6 class="title-sm">
+						<a href="{{::item.skuProductURL}}"><span ng-bind="item.sku_product_productName"></span></a>
+					</h6>
+					<div class="product-bottom">
+						<div class="qty">
+							<button type="button" class="minus" ng-click="$parent.increaseOrderTemplateItemQuantity(item)">-</button>
+							<input type="text" id="qty" name="quantity" class="form-control" ng-model="item.quantity">
+							<button type="button" class="plus" ng-click="$parent.decreaseOrderTemplateItemQuantity(item)">+</button>
+						</div>
+						<div class="price-block">
+							<span class="price" ng-bind="item.sku_priceByCurrencyCode"></span>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<p class="more"><a href="#">+ 4 More Items ``</a></p>
+		<a href="#" class="btn bg-primary btn-block">Go to Cart ``</a>
+	</div>
+</div>
+	
