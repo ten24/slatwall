@@ -45,7 +45,6 @@
 Notes:
 
 */
-
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     public any function createWishlist( required struct data ) {
@@ -90,7 +89,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			return;
 		}
 		
-	    getHibachiScope().getSession().setCurrentFlexship(arguments.data.orderTemplateID);
+	    getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
 	    var failure = isNull(getHibachiScope().getSession().getCurrentFlexship());
 	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
 

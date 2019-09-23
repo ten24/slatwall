@@ -60070,10 +60070,11 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
-    function MonatFlexshipMenuController(orderTemplateService, observerService) {
+    function MonatFlexshipMenuController(orderTemplateService, observerService, $window) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.$window = $window;
         this.$onInit = function () {
             console.log('flexship menue: ', _this);
         };
@@ -60100,14 +60101,17 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         });
     };
     MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
+        var _this = this;
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload = this.orderTemplateService.getFlattenObject(payload);
         //return;
         // make api request
         this.orderTemplateService.setAsCurrentFlexship(payload).then(function (data) {
-            console.error('setAsCurrentFlexship :', data);
-            // TODO: redirect // show alert
+            console.warn('setAsCurrentFlexship :', data);
+            if (data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+                _this.$window.location.href = '/shop';
+            }
         }, function (reason) {
             throw (reason);
             // TODO: show alert

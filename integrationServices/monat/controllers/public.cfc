@@ -1,9 +1,10 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
     property name="MonatDataService";
+    property name="publicService";
     
     this.publicMethods = 'getProductReviews';
-    this.publicMethods = 'getMarketPartners';
-    
+    this.publicMethods &= 'getMarketPartners';
+
     public any function before(required struct rc){
         arguments.rc.ajaxRequest = true;
         arguments.rc.ajaxResponse = {};

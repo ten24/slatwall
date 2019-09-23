@@ -15,6 +15,7 @@ class MonatFlexshipMenuController{
 	constructor( 
 		public orderTemplateService,
 		public observerService,
+		public $window
 	){
 
 	}
@@ -56,8 +57,10 @@ class MonatFlexshipMenuController{
     	// make api request
         this.orderTemplateService.setAsCurrentFlexship(payload).then(
             (data) => {
-            	console.error('setAsCurrentFlexship :',data);
-            	// TODO: redirect // show alert
+            	console.warn('setAsCurrentFlexship :',data);
+            	if(data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+            		this.$window.location.href = '/shop';
+            	}
             }, 
             (reason) => {
                 throw (reason);
