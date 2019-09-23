@@ -283,7 +283,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					// Preserve login data and defer login process request
 					if (!structKeyExists(arguments.rc, "authenticationCode")) {
 						var preservedLoginData = {
-						emailAddress = rc.emailAddressOrUsername,
+						emailAddress = arguments.rc.emailAddressOrUsername,
 						password = rc.password
 						};
 						
