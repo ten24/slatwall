@@ -99,7 +99,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all" inverse="true";
-
+	property name="orderStatusHistory" singularname="orderStatusHistory"  cfc="OrderStatusHistory" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-To-many - owner)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
 
@@ -236,6 +237,8 @@ property name="personalVolumeSubtotal" persistent="false";
     property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
+    property name="accountType" ormtype="string";
+    property name="accountPriceGroup" ormtype="string";
     
     property name="lastSyncedDateTime" ormtype="timestamp";
     
@@ -1504,6 +1507,15 @@ property name="personalVolumeSubtotal" persistent="false";
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
+	
+	// Order Status History (one-to-many)
+	public void function addOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.setOrder( this );
+	}
+	
+	public void function removeOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.removeOrder( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -1875,5 +1887,35 @@ public numeric function getPersonalVolumeSubtotal(){
 	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public any function getAccountType() {
+	    if (structKeyExists(variables, "accountType")){
+	        return variables.accountType;
+	    }
+	    
+	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	        variables.accountType = getAccount().getAccountType();
+	    }else{
+	        variables.accountType = "";
+	    }
+	    return variables.accountType;
+	}
+	
+	public any function getAccountPriceGroup() {
+	    if (structKeyExists(variables, "accountPriceGroup")){
+	        return variables.accountPriceGroup;
+	    }
+	    
+	    if (!isNull(getAccount()) && !isNull(getAccount().getPriceGroups())){
+	        var priceGroups = getAccount().getPriceGroups();
+    	    if (arraylen(priceGroups)){
+    	        //there should only be 1 max.
+    	        variables.accountPriceGroup = priceGroups[1].getPriceGroupCode();
+    	        return variables.accountPriceGroup;
+    	    }
+	    }
+	   
+	}
+	//CUSTOM FUNCTIONS END
 }
