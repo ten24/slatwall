@@ -59212,7 +59212,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         monatService.getCart().then(function (data) {
             _this.cart = data;
         });
-        this.observerService.attach(this.next.bind(this), "createSuccess");
+        this.observerService.attach(this.next.bind(this), "onNext");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
@@ -59311,48 +59311,6 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var VIPController = /** @class */ (function () {
-    // @ngInject
-    function VIPController($rootScope, $scope) {
-        this.$rootScope = $rootScope;
-        this.$scope = $scope;
-    }
-    return VIPController;
-}());
-exports.VIPController = VIPController;
-var MonatEnrollmentVIPController = /** @class */ (function () {
-    // @ngInject
-    function MonatEnrollmentVIPController() {
-        this.require = {
-            ngModel: '?^ngModel'
-        };
-        this.priority = 1000;
-        this.restrict = "A";
-        this.scope = true;
-        /**
-         * Binds all of our variables to the controller so we can access using this
-         */
-        this.bindToController = {};
-        this.controller = VIPController;
-        this.controllerAs = "vipController";
-    }
-    MonatEnrollmentVIPController.Factory = function () {
-        var directive = function () { return new MonatEnrollmentVIPController(); };
-        directive.$inject = [];
-        return directive;
-    };
-    return MonatEnrollmentVIPController;
-}());
-exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
-
-
-/***/ }),
-/* 606 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
     function MonatFlexshipCardController() {
         this.$onInit = function () {
@@ -59393,7 +59351,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 
 /***/ }),
-/* 607 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59443,7 +59401,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 
 /***/ }),
-/* 608 */
+/* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59490,6 +59448,7 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
+/* 608 */,
 /* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -59807,12 +59766,12 @@ exports.SWFWishlist = SWFWishlist;
 Object.defineProperty(exports, "__esModule", { value: true });
 var frontend_module_1 = __webpack_require__(783);
 //directives
-var monatflexshipcard_1 = __webpack_require__(606);
-var monatflexshiplisting_1 = __webpack_require__(607);
-var monatflexshipmenu_1 = __webpack_require__(608);
+var monatflexshipcard_1 = __webpack_require__(605);
+var monatflexshiplisting_1 = __webpack_require__(606);
+var monatflexshipmenu_1 = __webpack_require__(607);
 var monatenrollment_1 = __webpack_require__(603);
 var monatenrollmentstep_1 = __webpack_require__(604);
-var monatenrollmentvip_1 = __webpack_require__(605);
+var monatenrollmentvip_1 = __webpack_require__(841);
 var swfreviewlisting_1 = __webpack_require__(609);
 var swfwishlist_1 = __webpack_require__(610);
 //services
@@ -87161,6 +87120,48 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 841 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var VIPController = /** @class */ (function () {
+    // @ngInject
+    function VIPController($rootScope, $scope) {
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+    }
+    return VIPController;
+}());
+exports.VIPController = VIPController;
+var MonatEnrollmentVIPController = /** @class */ (function () {
+    // @ngInject
+    function MonatEnrollmentVIPController() {
+        this.require = {
+            ngModel: '?^ngModel'
+        };
+        this.priority = 1000;
+        this.restrict = "A";
+        this.scope = true;
+        /**
+         * Binds all of our variables to the controller so we can access using this
+         */
+        this.bindToController = {};
+        this.controller = VIPController;
+        this.controllerAs = "vipController";
+    }
+    MonatEnrollmentVIPController.Factory = function () {
+        var directive = function () { return new MonatEnrollmentVIPController(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatEnrollmentVIPController;
+}());
+exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 
 /***/ })

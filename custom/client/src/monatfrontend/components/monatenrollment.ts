@@ -29,7 +29,7 @@ class MonatEnrollmentController{
 			this.cart = data;
 		});
 		
-    	this.observerService.attach(this.next.bind(this),"createSuccess");
+    	this.observerService.attach(this.next.bind(this),"onNext");
 
 	}
 	
@@ -46,8 +46,6 @@ class MonatEnrollmentController{
 			this.steps.splice(index, 1);
 		}
 	}
-	
-	public
 	
 	public next(){
 		this.navigate(this.position + 1);
