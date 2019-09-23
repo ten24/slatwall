@@ -26,19 +26,12 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
-		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
+		var orderTemplateItemCollection = super.getOrderTemplateItemCollectionForAccount(argumentCollection = arguments);
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		var displayProperties = 'skuProductURL,skuImagePath,sku.priceByCurrencyCode,sku.personalVolumeByCurrencyCode';  
+// 		skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
+		orderTemplateItemCollection.addDisplayProperties(displayProperties, {persistent:false});
 		
-
-		orderTemplateItemCollection.setDisplayProperties(displayProperties);
-		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
-		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
-		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
-		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
-
 		return orderTemplateItemCollection;	
 	} 
 	
