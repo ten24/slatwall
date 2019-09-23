@@ -22,6 +22,7 @@ component {
 	property name="skuImagePath" persistent="false";
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
+	property name="mainPromotionOnOrder" persistent="false";
 
 
 	
@@ -218,5 +219,15 @@ component {
 		var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
 		return mainCreditCardExpirationDate;
 	}
-
+	
+	public any function getMainPromotionOnOrder(){
+	    var promotionCodes = this.getOrder().getPromotionCodes();
+	    if(arrayLen(promotionCodes)){
+    	    var mainPromotionOnOrder = promotionCodes[1].getPromotion().getPromotionName();
+    	    return mainPromotionOnOrder;
+    	} else{
+    	    var mainPromotionOnOrder = "";
+            return mainPromotionOnOrder;
+    	}
+	}
 }

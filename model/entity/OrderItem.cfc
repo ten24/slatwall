@@ -157,6 +157,7 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="skuImagePath" persistent="false";
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
+	property name="mainPromotionOnOrder" persistent="false";
 
 
 	
@@ -1309,5 +1310,15 @@ public any function getPersonalVolume(){
 		var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
 		return mainCreditCardExpirationDate;
 	}
-//CUSTOM FUNCTIONS END
+	
+	public any function getMainPromotionOnOrder(){
+	    var promotionCodes = this.getOrder().getPromotionCodes();
+	    if(arrayLen(promotionCodes)){
+    	    var mainPromotionOnOrder = promotionCodes[1].getPromotion().getPromotionName();
+    	    return mainPromotionOnOrder;
+    	} else{
+    	    var mainPromotionOnOrder = "";
+            return mainPromotionOnOrder;
+    	}
+	}//CUSTOM FUNCTIONS END
 }
