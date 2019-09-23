@@ -25,7 +25,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
-			var uri = setting('productImportURL') & arguments.endPoint;
+			var uri = setting('baseImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
 			var authKey = setting('authKey');
 		
@@ -254,17 +254,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 
 		StructEach(arguments.skuData, function(key, value){
-			var skuField = arguments.key;
+			var skuField = Trim(arguments.key);
 			var fieldValue = arguments.value;
 			switch(skuField){
 				case 'ItemCode':
-					data['SKUItemCode'] = fieldValue;
+					data['SKUItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
-					data['ItemName'] = fieldValue;
-					break;
-				case 'ItemName':
-					data['ItemName'] = fieldValue;
+					data['ItemName'] = Trim(fieldValue);
 					break;
 				case 'DisableOnRegularOrders':
 					data['DisableOnRegularOrders'] = fieldValue;
@@ -273,10 +270,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					data['DisableOnFlexShip'] = fieldValue;
 					break;
 				case 'ItemCategoryCode':
-					data['ItemCategoryAccounting'] = fieldValue;
+					data['ItemCategoryAccounting'] = Trim(fieldValue);
 					break;
 				case 'ItemCategoryName':
-					data['CategoryNameAccounting'] = fieldValue;
+					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
 			}
 		}, true, 10);
@@ -301,7 +298,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var componentsPriceLevel = skuData.ComponentsPriceLevel;
 
 			for(var pricelevel in componentsPriceLevel){
-				skuPriceData[priceLevel.CountryCode][priceLevel.PriceLevelCode][priceLevel.PriceVolumeTypeName] = priceLevel.Amount;
+				skuPriceData[Trim(priceLevel.CountryCode)][Trim(priceLevel.PriceLevelCode)][Trim(priceLevel.PriceVolumeTypeName)] = priceLevel.Amount;
 			}
 		}
 
@@ -328,7 +325,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:20;
-		var pageMax = rc.pageMax?:1;
+		var totalProducts = 0;
+		var totalPages = 0;
+		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
+		if(structKeyExists(initProductData, "TotalItems")){
+			totalProducts = initProductData['TotalItems'];
+			totalPages = (totalProducts % pageSize == 0) ? (totalProducts / pageSize) : floor(totalProducts / pageSize) + 1;
+		}
+		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
 		var index=0;
 		var skuIndex=0;

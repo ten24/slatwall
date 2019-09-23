@@ -46,28 +46,14 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.emailTemplate" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.order" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-
-		<hb:HibachiEntityDetailGroup object="#rc.emailTemplate#">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.emailTemplate.getAssignedAttributeSetSmartList().getRecords()#" index="local.attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.emailTemplate#" attributeSet="#local.attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	<hb:HibachiListingDisplay smartList="#rc.order.getOrderStatusHistorySmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderStatusHistoryType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="changeDateTime" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
-
