@@ -274,7 +274,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(!isNull(arguments.rc.emailAddressOrUsername)){
 			
 			// If emailAddressOrUsername is an email
-			if(isValid('email',rc.emailAddressOrUsername)){
+			if(isValid('email',arguments.rc.emailAddressOrUsername)){
 				// Login without two-factor authentication
 				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=rc.emailAddressOrUsername)) {
 					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
