@@ -302,7 +302,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			// If emailAddressOrUsername is a username
 			}else{
 				// Login without two-factor authentication
-				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=rc.emailAddressOrUsername)) {
+				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
 					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 				// Login with two-factor authentication
 				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=rc.emailAddressOrUsername)) {
