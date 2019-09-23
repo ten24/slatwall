@@ -284,7 +284,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					if (!structKeyExists(arguments.rc, "authenticationCode")) {
 						var preservedLoginData = {
 						emailAddress = arguments.rc.emailAddressOrUsername,
-						password = rc.password
+						password = arguments.rc.password
 						};
 						
 						// Preserve data from last login attempt
