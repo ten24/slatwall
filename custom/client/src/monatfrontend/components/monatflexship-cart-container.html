@@ -14,16 +14,17 @@
 	</div>
 	
 	<div class="flexship-container">
+		<!--TODO conditional logic to show hide message-->
 		<p><i class="fas fa-info-circle"></i> Your Flexship must be a minimum of $84.00 before you save any changes. `</p>
 		<div class="product-container">
 			<ul>
 				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplate.orderTemplateItems">
-					<button class="close" type="button" ng-click="$parent.removeOrderTemplateItem(item)">
+					<button class="close" type="button" ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item)">
 					<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
 						<a href="#">
-						<!--<img src="{{::item.skuImagePath}}" alt="">-->
+						<!--TODO <img src="{{::item.skuImagePath}}" alt="">-->
 						<img src="common/images/product-1.png">
 						</a>
 					</div>
@@ -32,11 +33,12 @@
 					</h6>
 					<div class="product-bottom">
 						<div class="qty">
-							<button type="button" class="minus" ng-click="$parent.increaseOrderTemplateItemQuantity(item)">-</button>
+							<button type="button" class="minus" ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)">-</button>
 							<input type="text" id="qty" name="quantity" class="form-control" ng-model="item.quantity">
-							<button type="button" class="plus" ng-click="$parent.decreaseOrderTemplateItemQuantity(item)">+</button>
+							<button type="button" class="plus" ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item)">+</button>
 						</div>
 						<div class="price-block">
+							<!--TODO calc actual price-->
 							<span class="price" ng-bind="item.sku_priceByCurrencyCode"></span>
 						</div>
 					</div>

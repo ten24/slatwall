@@ -21,6 +21,18 @@ class MonatFlexshipCartContainerController {
         }
         
     };
+    
+    public removeOrderTemplateItem = (item) => {
+    	console.warn('removeOrderTemplateItem :', item);
+    }
+    
+    public increaseOrderTemplateItemQuantity = (item) => {
+    	console.warn('increaseOrderTemplateItemQuantity :', item);
+    }
+    
+     public decreaseOrderTemplateItemQuantity = (item) => {
+    	console.warn('decreaseOrderTemplateItemQuantity :', item);
+    }
 }
 
 class MonatFlexshipCartContainer {

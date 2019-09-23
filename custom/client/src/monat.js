@@ -59325,6 +59325,15 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 });
             }
         };
+        this.removeOrderTemplateItem = function (item) {
+            console.warn('removeOrderTemplateItem :', item);
+        };
+        this.increaseOrderTemplateItemQuantity = function (item) {
+            console.warn('increaseOrderTemplateItemQuantity :', item);
+        };
+        this.decreaseOrderTemplateItemQuantity = function (item) {
+            console.warn('decreaseOrderTemplateItemQuantity :', item);
+        };
     }
     return MonatFlexshipCartContainerController;
 }());
