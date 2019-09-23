@@ -271,7 +271,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		// If emailAddressOrUsername setting is turned on
-		if(!isNull(rc.emailAddressOrUsername)){
+		if(!isNull(arguments.rc.emailAddressOrUsername)){
 			
 			// If emailAddressOrUsername is an email
 			if(isValid('email',rc.emailAddressOrUsername)){
