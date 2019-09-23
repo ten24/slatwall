@@ -296,7 +296,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						rc.twoFactorAuthenticationRequiredFlag = true;
 					// Process login with all required data
 					} else {
-						getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+						getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
 					}
 				}
 			// If emailAddressOrUsername is a username
