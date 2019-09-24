@@ -15,7 +15,8 @@ class MonatFlexshipMenuController{
 	constructor( 
 		public orderTemplateService,
 		public observerService,
-		public $window
+		public $window,
+		public ModalService
 	){
 
 	}
@@ -24,7 +25,32 @@ class MonatFlexshipMenuController{
 		console.log('flexship menue: ', this);
 	}
 	
+	public showCancelFlexshipModal = () => {
+		this.ModalService.closeModals();
+		this.ModalService.showModal({
+		      component: 'monatFlexshipCancelModal',
+			  bindings: {
+			    orderTemplate: this.orderTemplate,
+			    cancellationReasonTypeOptions: this.cancellationReasonTypeOptions
+			  },
+		      preClose: (modal) => { modal.element.modal('hide'); console.log("preclosing ") }
+		}).then( 
+			(modal) => {
+				  //it's a bootstrap element, use 'modal' to show it
+			      modal.element.modal();
+			      
+			      modal.close.then(function(result) {
+			      	console.log("modal closed", result);
+			      });
+			}, 
+			(error) => {
+			    console.error("model error",error);	
+			}
+		);
+	}
+	
    public activateFlexship() {
+ 
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
  
