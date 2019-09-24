@@ -65,8 +65,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
-	
-	//calculated property
+	property name="username" ormtype="string";
+
+	//calucluated property
 	property name="calculatedAdminIcon" ormtype="string";
 	property name="calculatedFullName" ormtype="string";
 	property name="calculatedGuestAccountFlag" ormtype="boolean";
