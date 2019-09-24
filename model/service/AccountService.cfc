@@ -770,10 +770,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 		// Login was invalid
 		} else {
+			var invalidLoginData = {};
 			if(loginType == "emailAddress"){
-				var invalidLoginData = {emailAddress=emailAddress};
+				invalidLoginData = {emailAddress=emailAddress};
 			} else if(loginType == "username"){
-				var invalidLoginData = {username=username};
+				invalidLoginData = {username=username};
 			}
 			
 			if (!isNull(accountAuthentication)) {
