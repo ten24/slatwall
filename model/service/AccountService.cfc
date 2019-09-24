@@ -378,6 +378,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
+			arguments.account.setUsername( processObject.getUsername() );
 			
 			if(!isNull(arguments.processObject.getOrganizationFlag())){
 				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
