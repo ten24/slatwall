@@ -38,7 +38,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	public any function getAllOrdersOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default="";
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.orderID" default= false;
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();

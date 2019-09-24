@@ -59518,6 +59518,9 @@ var swfAccountController = /** @class */ (function () {
                 _this.accountAge = _this.currentYear - accountCreatedYear;
             }
         };
+        this.$onInit = function () {
+            _this.getAccount();
+        };
         this.getAccount = function () {
             _this.loading = true;
             var account = _this.$rootScope.hibachiScope.getAccount();
@@ -59529,13 +59532,16 @@ var swfAccountController = /** @class */ (function () {
                 _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
                 _this.accountPaymentMethods = _this.accountData.accountPaymentMethods;
+                if (_this.urlParams.get('orderid')) {
+                    _this.getOrderItemsByOrderID();
+                }
                 _this.loading = false;
             });
         };
-        this.getOrdersOnAccount = function () {
+        this.getOrdersOnAccount = function (accountID) {
+            if (accountID === void 0) { accountID = _this.accountData.accountID; }
             _this.loading = true;
-            var accountID = _this.accountData.accountID;
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { accountID: accountID }).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount;
                 _this.loading = false;
             });

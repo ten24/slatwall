@@ -108,7 +108,7 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function getOrderItemsByOrderID(struct data={}) {
         param name="arguments.data.orderID" default="";
-        param name="arguments.data.accountID" default="";
+        param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         

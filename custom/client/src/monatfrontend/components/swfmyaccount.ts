@@ -47,7 +47,10 @@ class swfAccountController {
             this.accountAge = this.currentYear - accountCreatedYear
         }
     }
-    
+	public $onInit = () =>{
+        this.getAccount();
+	}
+	
     public getAccount = () => {
         this.loading = true;
         const account = this.$rootScope.hibachiScope.getAccount();
@@ -59,20 +62,24 @@ class swfAccountController {
             this.getOrdersOnAccount()
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            if(this.urlParams.get('orderid')){
+                this.getOrderItemsByOrderID();
+            }
+            
             this.loading = false;
         });
     }
     
-    public getOrdersOnAccount = () => {
+    public getOrdersOnAccount = (accountID = this.accountData.accountID) => {
         this.loading = true;
-        const accountID = this.accountData.accountID;
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {accountID}).then(result=>{
+        
+        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID}).then(result=>{
             this.ordersOnAccount = result.ordersOnAccount;
             this.loading = false;
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1, accountID=this.accountData.accountID) => {
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1, accountID = this.accountData.accountID) => {
         this.loading = true;
         return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
