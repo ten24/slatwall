@@ -1311,8 +1311,14 @@ public any function getPersonalVolume(){
 	}
 	
 	public any function getMainCreditCardExpirationDate(){
-	    var orderPayment = this.getOrder().getOrderPayments()[1];
-		var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    	    var orderPayment = orderPayments[1];
+		    var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
+	    }else{
+	        var mainCreditCardExpirationDate = "";
+	    }
+
 		return mainCreditCardExpirationDate;
 	}
 	
