@@ -1,4 +1,6 @@
 import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/frontend.module";
+import "angular-modal-service";
+
 //directives
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipDetail} from "./components/monatflexshipdetail";
@@ -24,7 +26,7 @@ import {OrderTemplateService} from "./services/ordertemplateservice";
 declare var $:any;
 
 var monatfrontendmodule = angular.module('monatfrontend',[
-  frontendmodule.name
+  frontendmodule.name, 'angularModalService'
 ])
 //constants
 .constant('monatFrontendBasePath','/Slatwall/custom/client/src')
@@ -48,6 +50,13 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 
 .service('monatService', MonatService)
 .service('orderTemplateService', OrderTemplateService)
+
+.config(["ModalServiceProvider", function(ModalServiceProvider) {
+
+   // to set a default close delay on modals
+  ModalServiceProvider.configureOptions({closeDelay:500});
+
+}])
 
 export{
     monatfrontendmodule

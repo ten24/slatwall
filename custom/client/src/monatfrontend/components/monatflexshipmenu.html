@@ -25,42 +25,45 @@
 		
 		<!-- TODO put it back -->
 		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
+		<!-- data-toggle="modal" data-target="#flexship-modal-cancel{{monatFlexshipMenu.orderTemplate.orderTemplateID}}" -->
 		<li  >
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-cancel{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Cancel Flexship</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()">Cancel Flexship</a>
 		</li>
 		
 	</ul>
 </div>
 
-<monat-flexship-shipping-method-modal data-account-addresses="monatFlexshipMenu.accountAddresses"
-									  data-order-template="monatFlexshipMenu.orderTemplate"
-									  data-state-code-options = "monatFlexshipMenu.stateCodeOptions"
-									  data-shipping-method-options = "monatFlexshipMenu.shippingMethodOptions"
-								> 
-</monat-flexship-shipping-method-modal>
 
-<monat-flexship-payment-method-modal 
-									data-order-template="monatFlexshipMenu.orderTemplate" 
-									data-account-addresses="monatFlexshipMenu.accountAddresses"
-									data-state-code-options = "monatFlexshipMenu.stateCodeOptions"
-									data-account-payment-methods="monatFlexshipMenu.accountPaymentMethods"
-									data-expiration-month-options="monatFlexshipMenu.expirationMonthOptions"
-                        			data-expiration-year-options="monatFlexshipMenu.expirationYearOptions"
-								> 
-</monat-flexship-payment-method-modal>
 
-<!-- TODO put it back -->
-<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
-<monat-flexship-change-or-skip-order-modal
-										   data-order-template="monatFlexshipMenu.orderTemplate"
-										   data-schedule-date-change-reason-type-options="monatFlexshipMenu.scheduleDateChangeReasonTypeOptions"
-									> 
-</monat-flexship-change-or-skip-order-modal> 
+<!--<monat-flexship-shipping-method-modal data-account-addresses="monatFlexshipMenu.accountAddresses"-->
+<!--									  data-order-template="monatFlexshipMenu.orderTemplate"-->
+<!--									  data-state-code-options = "monatFlexshipMenu.stateCodeOptions"-->
+<!--									  data-shipping-method-options = "monatFlexshipMenu.shippingMethodOptions"-->
+<!--								> -->
+<!--</monat-flexship-shipping-method-modal>-->
+
+<!--<monat-flexship-payment-method-modal -->
+<!--									data-order-template="monatFlexshipMenu.orderTemplate" -->
+<!--									data-account-addresses="monatFlexshipMenu.accountAddresses"-->
+<!--									data-state-code-options = "monatFlexshipMenu.stateCodeOptions"-->
+<!--									data-account-payment-methods="monatFlexshipMenu.accountPaymentMethods"-->
+<!--									data-expiration-month-options="monatFlexshipMenu.expirationMonthOptions"-->
+<!--                        			data-expiration-year-options="monatFlexshipMenu.expirationYearOptions"-->
+<!--								> -->
+<!--</monat-flexship-payment-method-modal>-->
 
 <!-- TODO put it back -->
 <!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
-<monat-flexship-cancel-modal 
-							 data-order-template="monatFlexshipMenu.orderTemplate"
-							 data-cancellation-reason-type-options="monatFlexshipMenu.cancellationReasonTypeOptions"
-                        > 
-</monat-flexship-cancel-modal> 
+<!--<monat-flexship-change-or-skip-order-modal-->
+<!--										   data-order-template="monatFlexshipMenu.orderTemplate"-->
+<!--										   data-schedule-date-change-reason-type-options="monatFlexshipMenu.scheduleDateChangeReasonTypeOptions"-->
+<!--									> -->
+<!--</monat-flexship-change-or-skip-order-modal> -->
+
+<!-- TODO put it back -->
+<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
+<!--<monat-flexship-cancel-modal -->
+<!--							 data-order-template="monatFlexshipMenu.orderTemplate"-->
+<!--							 data-cancellation-reason-type-options="monatFlexshipMenu.cancellationReasonTypeOptions"-->
+<!--                        > -->
+<!--</monat-flexship-cancel-modal> -->
