@@ -43,11 +43,12 @@ component extends="HibachiService" accessors="true" output="false" {
         var objectTranslationData = arguments.processObject.getTranslationData();
         if (isArray(objectTranslationData)) {
             
-            objectTranslationData = arrayFilter(objectTranslationData, function(translation) {
-                return !isNull(translation) && structKeyExists(translation, 'locale');
-            });
-            
             for (var translationData in objectTranslationData) {
+                
+                // Default Locale will contain a null value
+                if (isNull(translationData)) {
+                    continue;
+                }
                 
                 var translation = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
                 
