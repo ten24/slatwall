@@ -235,10 +235,10 @@ component {
 	    var promotionCodes = this.getOrder().getPromotionCodes();
 	    if(arrayLen(promotionCodes)){
     	    var mainPromotionOnOrder = promotionCodes[1].getPromotion().getPromotionName();
-    	    return mainPromotionOnOrder;
     	} else{
     	    var mainPromotionOnOrder = "";
-            return mainPromotionOnOrder;
     	}
+    	
+    	return mainPromotionOnOrder;
 	}
 }
