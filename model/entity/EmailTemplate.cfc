@@ -53,7 +53,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	property name="emailTemplateName" ormtype="string";
 	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select" index="PI_EMAIL_TEMPLATE_OBJECT";
 	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
-	property name="emailBodyHTML" ormtype="string" length="4000";
+	property name="emailBodyHTML" ormtype="string" length="4000" hb_translate="true" hb_formFieldType="wysiwyg";
 	property name="emailBodyText" ormtype="string" length="4000";
 	property name="logEmailFlag" ormtype="boolean";
 
