@@ -59535,6 +59535,7 @@ var swfAccountController = /** @class */ (function () {
                 if (_this.urlParams.get('orderid')) {
                     _this.getOrderItemsByOrderID();
                 }
+                ;
                 _this.loading = false;
             });
         };

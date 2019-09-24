@@ -64,7 +64,7 @@ class swfAccountController {
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }
+            };
             
             this.loading = false;
         });
