@@ -59535,17 +59535,18 @@ var swfAccountController = /** @class */ (function () {
         this.getOrdersOnAccount = function () {
             _this.loading = true;
             var accountID = _this.accountData.accountID;
-            return _this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", { accountID: accountID }).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { accountID: accountID }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount;
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, accountID) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
             if (currentPage === void 0) { currentPage = 1; }
+            if (accountID === void 0) { accountID = _this.accountData.accountID; }
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, currentPage: currentPage, pageRecordsShow: pageRecordsShow }).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
                 });
@@ -59956,10 +59957,10 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
+    .directive('swfAccount', swfmyaccount_1.swfAccount.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .service('monatService', monatservice_1.MonatService)
-    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
-    .directive('swfAccount', swfmyaccount_1.swfAccount.Factory());
+    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService);
 exports.monatfrontendmodule = monatfrontendmodule;
 
 

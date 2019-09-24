@@ -66,15 +66,15 @@ class swfAccountController {
     public getOrdersOnAccount = () => {
         this.loading = true;
         const accountID = this.accountData.accountID;
-        return this.$rootScope.hibachiScope.doAction("getOrdersOnAccount", {accountID}).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {accountID}).then(result=>{
             this.ordersOnAccount = result.ordersOnAccount;
             this.loading = false;
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1, accountID=this.accountData.accountID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,currentPage,pageRecordsShow }).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
             });

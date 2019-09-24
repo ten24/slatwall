@@ -1810,7 +1810,7 @@ component  accessors="true" output="false"
         
     }
     
-    public void function getOrdersOnAccount(required any data){
+    public void function getAllOrdersOnAccount(required any data){
         var accountOrders = getOrderService().getOrdersOnAccount({accountID: arguments.data.accountID});
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }

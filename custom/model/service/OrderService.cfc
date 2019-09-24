@@ -105,43 +105,10 @@ component extends="Slatwall.model.service.OrderService" {
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
-    
-	public any function getOrdersOnAccount(struct data={}) {
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default="";
-        param name="arguments.data.orderID" default= false;
-        
-		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
-
-		ordersList.addOrderBy('orderOpenDateTime|DESC');
-		ordersList.setDisplayProperties('
-			orderID,
-			orderNumber,
-			orderStatusType.typeName,
-			orderFulfillments.shippingAddress.streetAddress,
-			orderFulfillments.shippingAddress.street2Address,
-			orderFulfillments.shippingAddress.city,
-			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
-		');
-		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
-		
-		if(arguments.data.orderID != false){
-		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
-		}
-		
-		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
-		return ordersList.getPageRecords();
-	}
 	
 	public any function getOrderItemsByOrderID(struct data={}) {
         param name="arguments.data.orderID" default="";
+        param name="arguments.data.accountID" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         
@@ -151,6 +118,7 @@ component extends="Slatwall.model.service.OrderService" {
 		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
