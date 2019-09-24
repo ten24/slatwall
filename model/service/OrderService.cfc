@@ -2126,11 +2126,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					// If the process object was set to automatically receive these items, then we will do that
-					if((arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())){
+					if(!isNull(arguments.processObject.getReceiveItemsFlag()) && arguments.processObject.getReceiveItemsFlag()){
 						var receiveData = {};
 						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
 						receiveData.orderReturnItems = [];
-						receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
 						for(var returnItem in orderReturn.getOrderReturnItems()) {
 							var thisData = {};
 							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();

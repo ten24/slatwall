@@ -87,7 +87,22 @@ Notes:
 			<cfif rc.order.getOrderType().getSystemCode() EQ 'otSalesOrder'>
 				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
 			</cfif>
-			<cfif listFindNoCase("otReturnOrder,otRefundOrder",rc.order.getOrderType().getSystemCode()) >
+			<cfif listFindNoCase("otReturnOrder,otRefundOrder",rc.order.getOrderType().getSystemCode())
+					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived' >
+				<cfset local.inputNeeded = false />
+				<cfloop array=#rc.order.getOrderItems()# index="orderItem">
+				    <cfif orderItem.getQuantity() NEQ orderItem.getQuantityReceived()>
+				        <cfset local.inputNeeded = true >
+			        </cfif>
+		        </cfloop>
+		        <cfif local.inputNeeded>
+					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="approveReturn" type="list" modal="true"/>
+				<cfelse>
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="approveReturn" type="list"/>
+				</cfif>
+			</cfif>
+			<cfif listFindNoCase("otReturnOrder,otRefundOrder",rc.order.getOrderType().getSystemCode())
+					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved' >
 				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="releaseCredits" type="list" modal="true"/>
 			</cfif>
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />

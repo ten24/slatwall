@@ -239,7 +239,21 @@ component extends="Slatwall.model.service.OrderService" {
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
         }
 	    
-	    return super.processOrder_releaseCredits(argumentCollection=arguments);
+	    arguments.order = super.processOrder_releaseCredits(argumentCollection=arguments);
+	    arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    return order;
+	}
+	
+	public any function processOrder_approveReturn(required any order, any processObject, struct data){
+	    
+	    if(!isNull(arguments.processObject.getOrderItems()) &&arrayLen(arguments.processObject.getOrderItems())){
+	        for(var orderItem in arguments.processObject.getOrderItem()){
+	            orderItem = this.getOrderItem(orderItem.orderItemID);
+	            orderItem.setQuantity(orderItem.quantity);
+	        }
+	    }
+	    order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaApproved'));
+	    return order;
 	}
 
 }

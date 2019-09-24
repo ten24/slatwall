@@ -165,7 +165,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function getReceiveItemsFlag() {
 		if(!structKeyExists(variables, "receiveItemsFlag")) {
-			variables.receiveItemsFlag = getPropertySessionDefault("receiveItemsFlag");
+			variables.receiveItemsFlag = 0;
 		}
 		return variables.receiveItemsFlag;
 	}
