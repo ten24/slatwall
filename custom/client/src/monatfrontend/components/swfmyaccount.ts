@@ -99,7 +99,7 @@ class swfAccountController {
         this.loading = true;
         
         if(this.cachedCountryCode == countryCode ){
-            return this.stateCodeOptions
+            return this.stateCodeOptions;
         }
         
         this.cachedCountryCode = countryCode;
@@ -117,7 +117,7 @@ class swfAccountController {
     }
     
     public setPrimaryPaymentMethod = (methodID) => {
-        window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`
+        window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`;
     }
 }
 
