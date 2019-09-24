@@ -305,12 +305,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
 					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
 				// Login with two-factor authentication
-				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=rc.emailAddressOrUsername)) {
+				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
 					// Preserve login data and defer login process request
-					if (!structKeyExists(rc, "authenticationCode")) {
+					if (!structKeyExists(arguments.rc, "authenticationCode")) {
 						var preservedLoginData = {
-						username = rc.emailAddressOrUsername,
-						password = rc.password
+						username = arguments.rc.emailAddressOrUsername,
+						password = arguments.rc.password
 						};
 						
 						// Preserve data from last login attempt
@@ -322,14 +322,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						rc.twoFactorAuthenticationRequiredFlag = true;
 					// Process login with all required data
 					} else {
-						getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+						getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
 					}
 				}
 			}
 		// If emailAddressOrUsername setting is turned off
 		}else{
 			// Login without two-factor authentication
-			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=rc.emailAddress)) {
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddress)) {
 				getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
 			// Login with two-factor authentication
 			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddress)) {
