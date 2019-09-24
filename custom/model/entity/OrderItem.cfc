@@ -213,6 +213,8 @@ component {
 	    var orderPayments = this.getOrder().getOrderPayments();
 	    if(arrayLen(orderPayments)){
     		var mainCreditCardOnOrder = orderPayments[1].getCreditCardLastFour();
+	    }else{
+	        var mainCreditCardOnOrder = "";
 	    }
 		return mainCreditCardOnOrder;
 	}
