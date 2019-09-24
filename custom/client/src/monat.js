@@ -59500,10 +59500,11 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 Object.defineProperty(exports, "__esModule", { value: true });
 var swfAccountController = /** @class */ (function () {
     // @ngInject
-    function swfAccountController($rootScope, $scope) {
+    function swfAccountController($rootScope, $scope, observerService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        this.observerService = observerService;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
         this.stateCodeOptions = [];
@@ -59590,6 +59591,7 @@ var swfAccountController = /** @class */ (function () {
         do {
             this.yearOptions.push(manipulateableYear++);
         } while (this.yearOptions.length <= 9);
+        this.observerService.attach(this.getAccount, "loginSuccess");
     }
     return swfAccountController;
 }());
@@ -59956,11 +59958,10 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
-    .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
+    .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
-    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('swfAccount', swfmyaccount_1.swfAccount.Factory());
 exports.monatfrontendmodule = monatfrontendmodule;
 

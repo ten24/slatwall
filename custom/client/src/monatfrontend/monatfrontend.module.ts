@@ -33,16 +33,16 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatEnrollment', MonatEnrollment.Factory())
 .directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
 .directive('vipController', MonatEnrollmentVIPController.Factory())
-
+.directive('swfWishlist', SWFWishlist.Factory())
 
 
 
 .directive('swfReviewListing', SWFReviewListing.Factory())
-.directive('swfWishlist', SWFWishlist.Factory())
+
 
 .service('monatService', MonatService)
 .service('orderTemplateService', OrderTemplateService)
-.directive('swfWishlist', SWFWishlist.Factory())
+
 .directive('swfAccount', swfAccount.Factory());
 
 

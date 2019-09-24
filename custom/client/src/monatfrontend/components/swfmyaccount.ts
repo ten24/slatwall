@@ -26,6 +26,7 @@ class swfAccountController {
     constructor(
         public $rootScope,
         public $scope,
+        public observerService
     ){
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -35,6 +36,9 @@ class swfAccountController {
             this.yearOptions.push(manipulateableYear++)
         }
         while(this.yearOptions.length <= 9);
+        
+        this.observerService.attach(this.getAccount,"loginSuccess");        
+
     }
     // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
