@@ -43,15 +43,16 @@ class swfAccountController {
     // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
         if(this.accountData.createdDateTime){
-            let accountCreatedYear = Date.parse(this.accountData.createdDateTime).getFullYear();
+            const accountCreatedYear = Date.parse(this.accountData.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear
         }
     }
     
     public getAccount = () => {
         this.loading = true;
-        let account = this.$rootScope.hibachiScope.getAccount();
+        const account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
+        //Optimize when get orders on account is called, only needed on account overview and orders overview
         account.then((response)=>{
             this.accountData = response;
             this.checkAndApplyAccountAge();
@@ -85,14 +86,12 @@ class swfAccountController {
         this.loading = true;
         
         if(this.countryCodeOptions){
-            console.log(this.countryCodeOptions)
             return this.countryCodeOptions;
         }
     
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
-            console.log("it failed")
         });
     }
     
@@ -104,10 +103,8 @@ class swfAccountController {
         }
         
         this.cachedCountryCode = countryCode;
-        console.log(this.cachedCountryCode)
-        console.log(countryCode)
         return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
-            //Reset the state code options on each click so they dont add up incorrectly
+            //Resets the state code options on each click so they dont add up incorrectly
             if(this.stateCodeOptions.length){
                 this.stateCodeOptions = [];
             }

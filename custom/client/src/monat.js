@@ -59522,6 +59522,7 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
+            //Optimize when get orders on account is called, only needed on account overview and orders overview
             account.then(function (response) {
                 _this.accountData = response;
                 _this.checkAndApplyAccountAge();
@@ -59554,13 +59555,11 @@ var swfAccountController = /** @class */ (function () {
         this.getCountryCodeOptions = function () {
             _this.loading = true;
             if (_this.countryCodeOptions) {
-                console.log(_this.countryCodeOptions);
                 return _this.countryCodeOptions;
             }
             return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
                 _this.countryCodeOptions = result.countryCodeOptions;
                 _this.loading = false;
-                console.log("it failed");
             });
         };
         this.getStateCodeOptions = function (countryCode) {
@@ -59569,10 +59568,8 @@ var swfAccountController = /** @class */ (function () {
                 return _this.stateCodeOptions;
             }
             _this.cachedCountryCode = countryCode;
-            console.log(_this.cachedCountryCode);
-            console.log(countryCode);
             return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
-                //Reset the state code options on each click so they dont add up incorrectly
+                //Resets the state code options on each click so they dont add up incorrectly
                 if (_this.stateCodeOptions.length) {
                     _this.stateCodeOptions = [];
                 }
