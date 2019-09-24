@@ -732,11 +732,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Invalid Password
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
-					if(loginType == "emailAddress"){
-						arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
-					} else if(loginType == "username"){
-						arguments.processObject.addError('username', rbKey('validation.account_authorizeAccount.failure'));
-					}
+					arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+
 				}
 				
 				// Verify two-factor authentication as long as login process has not already failed before this point
@@ -763,11 +760,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		// Invalid email, no account authentication exists
 		} else {
-			if(loginType == "emailAddress"){
-				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
-			} else if(loginType == "username"){
-				arguments.processObject.addError('username', rbKey('validation.account_authorizeAccount.failure'));
-			}
+			arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login the account
