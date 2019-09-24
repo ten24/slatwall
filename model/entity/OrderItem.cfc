@@ -1301,7 +1301,10 @@ public any function getPersonalVolume(){
 	}
 	
 	public any function getMainCreditCardOnOrder(){
-		var mainCreditCardOnOrder = this.getOrder().getOrderPayments()[1].getCreditCardLastFour();
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    		var mainCreditCardOnOrder = orderPayments[1].getCreditCardLastFour();
+	    }
 		return mainCreditCardOnOrder;
 	}
 	

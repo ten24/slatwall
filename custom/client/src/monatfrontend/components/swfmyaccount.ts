@@ -128,7 +128,7 @@ class swfAccountController {
     }
 }
 
-class swfAccount  {
+class SWFAccount  {
     
     public bindToController = {
         currentAccountPayment:"@?"
@@ -139,13 +139,13 @@ class swfAccount  {
     public restrict         = "A";
     public scope            = true;
     public static Factory(){
-        var directive = () => new swfAccount();
+        var directive = () => new SWFAccount();
         directive.$inject = [];
         return directive;
     }
     
 }
 export{
-    swfAccount,
+    SWFAccount,
     swfAccountController
 }

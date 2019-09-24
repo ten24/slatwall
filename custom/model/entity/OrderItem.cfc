@@ -211,7 +211,9 @@ component {
 	
 	public any function getMainCreditCardOnOrder(){
 	    var orderPayments = this.getOrder().getOrderPayments();
-		var mainCreditCardOnOrder = arrayLen(orderPayments) ? orderPayments[1].getCreditCardLastFour() : "";
+	    if(arrayLen(orderPayments)){
+    		var mainCreditCardOnOrder = orderPayments[1].getCreditCardLastFour();
+	    }
 		return mainCreditCardOnOrder;
 	}
 	

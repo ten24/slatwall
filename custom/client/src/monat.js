@@ -59601,8 +59601,8 @@ var swfAccountController = /** @class */ (function () {
     return swfAccountController;
 }());
 exports.swfAccountController = swfAccountController;
-var swfAccount = /** @class */ (function () {
-    function swfAccount() {
+var SWFAccount = /** @class */ (function () {
+    function SWFAccount() {
         this.bindToController = {
             currentAccountPayment: "@?"
         };
@@ -59611,14 +59611,14 @@ var swfAccount = /** @class */ (function () {
         this.restrict = "A";
         this.scope = true;
     }
-    swfAccount.Factory = function () {
-        var directive = function () { return new swfAccount(); };
+    SWFAccount.Factory = function () {
+        var directive = function () { return new SWFAccount(); };
         directive.$inject = [];
         return directive;
     };
-    return swfAccount;
+    return SWFAccount;
 }());
-exports.swfAccount = swfAccount;
+exports.SWFAccount = SWFAccount;
 
 
 /***/ }),
@@ -59964,7 +59964,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
-    .directive('swfAccount', swfmyaccount_1.swfAccount.Factory())
+    .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService);
