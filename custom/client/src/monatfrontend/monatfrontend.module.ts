@@ -1,4 +1,5 @@
-import {frontendmodule} 	     from "../../../../org/Hibachi/client/src/frontend/frontend.module";
+import {frontendmodule} from "../../../../org/Hibachi/client/src/frontend/frontend.module";
+
 //directives
 import {MonatFlexshipCard} from "./components/monatflexshipcard";
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
@@ -7,6 +8,9 @@ import {SWFWishlist} from "./components/swfwishlist";
 import {swfAccount} from "./components/swfmyaccount";
 import {MonatEnrollment} from "./components/monatenrollment";
 import {MonatEnrollmentStep} from "./components/monatenrollmentstep";
+
+import {MonatEnrollmentVIPController} from "./components/monatenrollmentvip";
+
 import {SWFReviewListing} from "./components/swfreviewlisting";
 
 //services
@@ -28,6 +32,10 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .directive('monatEnrollment', MonatEnrollment.Factory())
 .directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
+.directive('vipController', MonatEnrollmentVIPController.Factory())
+
+
+
 
 .directive('swfReviewListing', SWFReviewListing.Factory())
 .directive('swfWishlist', SWFWishlist.Factory())
