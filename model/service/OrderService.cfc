@@ -3581,7 +3581,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipient);
 						giftCard_create.setOriginalOrderItem(orderItem);
-	
+						giftCard_create.setOrder(orderItem.getOrder());
 						// Manual gift card code
 						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
 							giftCardCodeIndex++;
