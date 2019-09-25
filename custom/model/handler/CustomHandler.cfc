@@ -4,7 +4,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         
         // Sets the actual order created site from the account.
         var account = order.getAccount();
-        var accountCreatedSite = account.getAccountCreatedSite();
+        if ( ! isNull( account ) ) {
+            var accountCreatedSite = account.getAccountCreatedSite();
+        }
         
         // If the account does not have a created site (which it will), set a default.
         // Otherwise, set the site on the order.

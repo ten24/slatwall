@@ -25,7 +25,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
-			var uri = setting('productImportURL') & arguments.endPoint;
+			var uri = setting('baseImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
 			var authKey = setting('authKey');
 		
@@ -36,15 +36,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 			};
 
-			if(arguments.endpoint == "queryItems"){
-				body = {
-					"PageSize": "#arguments.pageSize#",
-					"PageNumber": "#arguments.pageNumber#"
-				};
-			}
-
 			httpService = new http(method = "POST", charset = "utf-8", url = uri);
 			httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+			httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+			httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
 			httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
 			
 			try {
@@ -174,97 +169,96 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		abort;
 	}
 
-	private array function getSkuPriceDataFlattened(required struct skuPriceData, required struct skuData){ 
+	private array function getSkuPriceDataFlattened(required any skuPriceData, required struct skuData){ 
 		var skuPrices = [];
+		var sku = arguments.skuData;
 
-		StructEach(arguments.skuPriceData, function(key, value){
-			var countryCode = arguments.key;
-			var priceGroups = arguments.value;
-			StructEach(priceGroups, function(key, value){
-				var priceGroupCode = arguments.key;
-				var priceTypes = arguments.value;
-				var skuPrice = {};
+		ArrayEach(arguments.skuPriceData, function(item){
+			var skuPrice = {};
+			var itemData = arguments.item;
+			skuPrice["ItemCode"] = sku.ItemCode;
 
-				switch(countryCode){
-					case 'CAN':
-						skuPrice['CountryCode'] = 'CAD';
+			StructEach(itemData, function(key, value){
+				
+				switch(arguments.key){
+					case 'CommissionableVolume':
+						skuPrice['CommissionableVolume'] = arguments.value;
 						break;
-					case 'GBR':
-						skuPrice['CountryCode'] = 'GBP';
+					case 'QualifyingVolume':
+						skuPrice['QualifyingPrice'] = arguments.value;
 						break;
-					case 'USA':
-						skuPrice['CountryCode'] = 'USD';
+					case 'RetailProfit':
+						skuPrice['RetailsCommissions'] = arguments.value;
+						break;
+					case 'RetailVolume':
+						skuPrice['RetailValueVolume'] = arguments.value;
+						break;
+					case 'SellingPrice':
+						skuPrice['SellingPrice'] = arguments.value;
+						break;
+					case 'TaxablePrice':
+						skuPrice['TaxablePrice'] = arguments.value;
+						break;
+					case 'ProductPackVolume':
+						skuPrice['ProductPackBonus'] = arguments.value;
+						break;
+					case 'PriceLevelCode':
+						skuPrice['PriceLevel'] = arguments.value;
+						break;
+					case 'CountryCode':
+						switch (arguments.value){	
+							case 'CAN':
+								skuPrice['CountryCode'] = 'CAD';
+								break;
+							case 'GBR':
+								skuPrice['CountryCode'] = 'GBP';
+								break;
+							case 'USA':
+								skuPrice['CountryCode'] = 'USD';
+								break;
+						}
 						break;
 				}
-				skuPrice['PriceLevel'] = priceGroupCode;
-				skuPrice["ItemCode"] = skuData.ItemCode;
-
-				StructEach(priceTypes, function(key, value){
-					var priceType = arguments.key;
-					var priceValue = arguments.value;
-
-					switch(priceType){
-						case 'Commissionable Volume':
-							skuPrice['CommissionableVolume'] = priceValue;
-							break;
-						case 'Qualifying Volume':
-							skuPrice['QualifyingPrice'] = priceValue;
-							break;
-						case 'Retail Profit':
-							skuPrice['RetailsCommissions'] = priceValue;
-							break;
-						case 'Retail Volume':
-							skuPrice['RetailValueVolume'] = priceValue;
-							break;
-						case 'Selling Price':
-							skuPrice['SellingPrice'] = priceValue;
-							break;
-						case 'Taxable Price':
-							skuPrice['TaxablePrice'] = priceValue;
-							break;
-						case 'Product Pack Volume':
-							skuPrice['ProductPackBonus'] = priceValue;
-							break;
-					}
-				}, true, 10);
-
-				ArrayAppend(skuPrices, skuPrice);
 			}, true, 10);
-
+			
+			ArrayAppend(skuPrices, skuPrice);
 		}, true, 10);
-
+		
 		return skuPrices;
 	}
 
 	private any function populateSkuQuery( required any skuQuery, required struct skuData ){
 		var data = {};
 		var query = arguments.skuQuery;
-		var skuPriceData = {}
+		var skuPriceData = [];
 
-		if(structKeyExists(arguments.skuData, "PriceLevels") ){
-			var priceLevels = skuData.PriceLevels;
+		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
+			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
+			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
+										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+										
+				return hasDefaultSkuPrice; 
+			},true, 10);
 
-			for( var priceLevel in priceLevels ){
-				skuPriceData[Trim(priceLevel.CountryCode)][Trim(priceLevel.PriceLevelCode)][Trim(priceLevel.PriceVolumeTypeName)] = priceLevel.Amount;
+			if(ArrayLen(defaultSkuPrice)){
+				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
 			}
 		}
 
-		if(structKeyExists(skuPriceData, 'USA') && structKeyExists(skuPriceData['USA'], '2') && structKeyExists(skuPriceData['USA']['2'], 'Selling Price')){
-			data['Amount'] = skuPriceData['USA']['2']['Selling Price']; // this is the default sku price
-		}
-
 		StructEach(arguments.skuData, function(key, value){
-			var skuField = arguments.key;
+			var skuField = Trim(arguments.key);
 			var fieldValue = arguments.value;
+			if(isNull(fieldValue)){
+				continue;
+			}
 			switch(skuField){
 				case 'ItemCode':
-					data['SKUItemCode'] = fieldValue;
+					data['SKUItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
-					data['ItemName'] = fieldValue;
-					break;
-				case 'ItemName':
-					data['ItemName'] = fieldValue;
+					data['ItemName'] = Trim(fieldValue);
 					break;
 				case 'DisableOnRegularOrders':
 					data['DisableOnRegularOrders'] = fieldValue;
@@ -273,10 +267,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					data['DisableOnFlexShip'] = fieldValue;
 					break;
 				case 'ItemCategoryCode':
-					data['ItemCategoryAccounting'] = fieldValue;
+					data['ItemCategoryAccounting'] = Trim(fieldValue);
 					break;
 				case 'ItemCategoryName':
-					data['CategoryNameAccounting'] = fieldValue;
+					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
 			}
 		}, true, 10);
@@ -287,22 +281,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private any function populateSkuPriceQuery( required any skuPriceQuery, required struct skuData ){
-		var skuPriceData = {};
+		// var skuPriceData = {};
+		var skuPriceData = [];
 		var query = arguments.skuPriceQuery;
 		if(structKeyExists(arguments.skuData, "PriceLevels") ){
 			var priceLevels = skuData.PriceLevels;
-
-			for( var priceLevel in priceLevels ){
-				skuPriceData[Trim(priceLevel.CountryCode)][Trim(priceLevel.PriceLevelCode)][Trim(priceLevel.PriceVolumeTypeName)] = priceLevel.Amount;
-			}
-		}
-
-		if(structKeyExists(arguments.skuData, "ComponentsPriceLevel")){
-			var componentsPriceLevel = skuData.ComponentsPriceLevel;
-
-			for(var pricelevel in componentsPriceLevel){
-				skuPriceData[priceLevel.CountryCode][priceLevel.PriceLevelCode][priceLevel.PriceVolumeTypeName] = priceLevel.Amount;
-			}
+			skuPriceData = skuData.PriceLevels;
 		}
 
 		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
@@ -327,12 +311,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 
 		var pageNumber = rc.pageNumber?:1;
-		var pageSize = rc.pageSize?:20;
-		var pageMax = rc.pageMax?:1;
+		var pageSize = rc.pageSize?:25;
+		var totalPages = 1;
+		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
+		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
+			totalPages = initProductData['Data']['TotalPages'];
+		}
+		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
+
+		var skuColumns = this.getSkuColumnsList();
+		var skuColumnTypes = [];
+		ArraySet(skuColumnTypes, 1, ListLen(skuColumns), 'varchar');
+
+		var skuPriceColumns = this.getSkuPriceColumnsList();
+		skuPriceColumnTypes = [];
+		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
 
 
 		while( pageNumber <= pageMax ){
@@ -344,25 +341,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				continue;
 			}
 			//Set the pagination info.
-			var monatProducts = productResponse.Data?:[];
+			var monatProducts = productResponse.Data.Records?:[];
 
     		try{
-				var skuColumns = this.getSkuColumnsList();
-				var skuColumnsLength = ListLen(skuColumns);				
-				var columnTypes = [];
-				ArraySet(columnTypes, 1, skuColumnsLength, 'varchar');
-				var skuQuery = QueryNew(skuColumns, columnTypes);
-
-				var skuPriceColumns = this.getSkuPriceColumnsList();
-				var columnTypes = [];
-				ArraySet(columnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-				var skuPriceQuery = QueryNew(skuPriceColumns, columnTypes);
+				
+				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
 				for (var skuData in monatProducts){
-
+					
 					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
 
-					if(structKeyExists(skuData, 'PriceLevels') || structKeyExists(skuData, 'ComponentsPriceLevel')){
+					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
 						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
 					}
 				}

@@ -109,8 +109,16 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	public void function addForm(required any form) {
 		arguments.form.setEmailTemplate( this );
 	}
+	
 	public void function removeForm(required any form) {
 		arguments.form.removeEmailTemplate( this );
+	}
+	
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setEmailTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeEmailTemplate( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

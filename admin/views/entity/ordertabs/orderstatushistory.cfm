@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,16 +45,15 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	// Injected Property
-	property name="account";
+<cfparam name="rc.order" type="any" />
 
-	// Data Properties
-	property name="authenticationCode";
-	property name="emailAddress";
-	property name="password";
-	property name="emailAddressOrUsername";
-	
-}
+<cfoutput>
+	<hb:HibachiListingDisplay smartList="#rc.order.getOrderStatusHistorySmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderStatusHistoryType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="changeDateTime" />
+	</hb:HibachiListingDisplay>
+</cfoutput>
