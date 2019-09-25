@@ -35,7 +35,7 @@ class MonatFlexshipPaymentMethodModalController {
     	 * Find and set old payment-method if any
     	*/
     	this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
-    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; //
+    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
     	});
     	
     	if(!!this.existingAccountPaymentMethod && !!this.existingAccountPaymentMethod.accountPaymentMethodID){

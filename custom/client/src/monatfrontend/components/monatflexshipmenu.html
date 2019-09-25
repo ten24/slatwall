@@ -1,43 +1,35 @@
 <div class="manage">
-	<a href="##" class="flexs">Manage my Flexship <i class="fas fa-chevron-down"></i></a>
+	<a href="##" class="flexs">Manage my Flexship ` <i class="fas fa-chevron-down"></i></a>
 	<ul>
 		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstDraft'" >
-		    <a href="##"  ng-click="monatFlexshipMenu.activateFlexship()">Activate Flexship</a>
+		    <a href="##"  ng-click="monatFlexshipMenu.activateFlexship()">Activate Flexship `</a>
 		</li>
 		
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-shipping-method{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Edit delivery address</a>
+		    <a href="##" data-toggle="modal" ng-click="monatFlexshipMenu.showFlexshipEditShippingMethodModal()">Edit delivery address `</a>
 		</li>
 		
 		<li>
-		    <a href="/flexship-detail">Add or remove items</a>
+		    <a href="/flexship-detail">Add or remove items `</a>
 		</li>
 		
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()">Edit payment method</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()">Edit payment method `</a>
 		</li>
 		
 		<!-- TODO put it back -->
 		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
 		<li  >
-		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()">Delay or skip order</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()">Delay or skip order `</a>
 		</li>
 		
 		<!-- TODO put it back -->
 		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
 		<li  >
-		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()">Cancel Flexship</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()">Cancel Flexship `</a>
 		</li>
 		
 	</ul>
 </div>
 
-
-
-<!--<monat-flexship-shipping-method-modal data-account-addresses="monatFlexshipMenu.accountAddresses"-->
-<!--									  data-order-template="monatFlexshipMenu.orderTemplate"-->
-<!--									  data-state-code-options = "monatFlexshipMenu.stateCodeOptions"-->
-<!--									  data-shipping-method-options = "monatFlexshipMenu.shippingMethodOptions"-->
-<!--								> -->
-<!--</monat-flexship-shipping-method-modal>-->
 

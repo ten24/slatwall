@@ -76,10 +76,9 @@
                 		<div class="form-group">
                 			<select type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.stateCode"
+            			    ng-options="state as state.name for state in monatFlexshipShippingMethodModal.stateCodeOptions track by state.value"
                 			placeholder="State *">
                 			    <option value="">Select your State * `</option>
-                			    <option ng-repeat="x in monatFlexshipShippingMethodModal.stateCodeOptions" 
-                			            value={{x.value}}>{{x.name}}</option>
                 			</select>     
                 		</div>
                 		
@@ -97,8 +96,8 @@
                 </div>
 		
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()">Save changes</button>
-        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()">Save changes `</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close `</button>
 		    </div>
 		    
 		</div>

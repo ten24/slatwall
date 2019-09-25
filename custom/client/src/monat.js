@@ -59532,7 +59532,7 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
              * Find and set old payment-method if any
             */
             _this.existingAccountPaymentMethod = _this.accountPaymentMethods.find(function (item) {
-                return item.accountPaymentMethodID === _this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; //
+                return item.accountPaymentMethodID === _this.orderTemplate.accountPaymentMethod_accountPaymentMethodID;
             });
             if (!!_this.existingAccountPaymentMethod && !!_this.existingAccountPaymentMethod.accountPaymentMethodID) {
                 _this.setSelectedAccountPaymentMethodID(_this.existingAccountPaymentMethod.accountPaymentMethodID);
@@ -59646,7 +59646,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
-        this.newAddress = { 'countryCode': 'US' }; // hard-coded default
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
         this.$onInit = function () {
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
@@ -59655,7 +59655,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
                 _this.setSelectedAccountAddressID(_this.existingAccountAddress.accountAddressID);
             }
             _this.existingShippingMethod = _this.shippingMethodOptions.find(function (item) {
-                return item.value === _this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shipping-method-name, "value":"shipping-method-ID" }
+                return item.value === _this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shippingMethodName, "value":"shippingMethodID" }
             });
             if (!!_this.existingShippingMethod && !!_this.existingShippingMethod.value) {
                 _this.setSelectedShippingMethodID(_this.existingShippingMethod.value);
@@ -59664,11 +59664,9 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
     }
     MonatFlexshipShippingMethodModalController.prototype.setSelectedAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
-        console.warn("selected address id :" + accountAddressID);
         this.selectedShippingAddress.accountAddressID = accountAddressID;
     };
     MonatFlexshipShippingMethodModalController.prototype.setSelectedShippingMethodID = function (shippingMethodID) {
-        console.warn("selected shipping method id :" + shippingMethodID);
         this.selectedShippingMethod.shippingMethodID = shippingMethodID;
     };
     MonatFlexshipShippingMethodModalController.prototype.updateShippingAddress = function () {
@@ -59684,7 +59682,6 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
             payload['newAccountAddress'] = this.newAccountAddress;
         }
         payload = this.orderTemplateService.getFlattenObject(payload);
-        //return;
         // make api request
         this.orderTemplateService.updateShipping(payload).then(function (response) {
             if (response.orderTemplate) {
@@ -60134,7 +60131,29 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     accountPaymentMethods: _this.accountPaymentMethods,
                     stateCodeOptions: _this.stateCodeOptions,
                     expirationMonthOptions: _this.expirationMonthOptions,
-                    expirationYearOptions: _this.expirationYearOptions,
+                    expirationYearOptions: _this.expirationYearOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showFlexshipEditShippingMethodModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipShippingMethodModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    accountAddresses: _this.accountAddresses,
+                    shippingMethodOptions: _this.shippingMethodOptions,
+                    stateCodeOptions: _this.stateCodeOptions
                 },
                 preClose: function (modal) { modal.element.modal('hide'); }
             }).then(function (modal) {

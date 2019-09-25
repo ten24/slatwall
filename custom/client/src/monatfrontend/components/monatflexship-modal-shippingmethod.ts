@@ -10,7 +10,7 @@ class MonatFlexshipShippingMethodModalController {
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
-	public newAddress = {'countryCode':'US'}; // hard-coded default
+	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default
 
     constructor(public orderTemplateService, public observerService) {}
     
@@ -23,7 +23,7 @@ class MonatFlexshipShippingMethodModalController {
     	}
     	
     	this.existingShippingMethod = this.shippingMethodOptions.find( item => {
-    		return item.value === this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shipping-method-name, "value":"shipping-method-ID" }
+    		return item.value === this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shippingMethodName, "value":"shippingMethodID" }
     	});
     	if(!!this.existingShippingMethod && !!this.existingShippingMethod.value){
 	    	this.setSelectedShippingMethodID(this.existingShippingMethod.value);
@@ -31,12 +31,10 @@ class MonatFlexshipShippingMethodModalController {
     };
     
     public setSelectedAccountAddressID(accountAddressID:any = 'new') {
-    	console.warn("selected address id :" + accountAddressID);
     	this.selectedShippingAddress.accountAddressID = accountAddressID;
     }
     
     public setSelectedShippingMethodID(shippingMethodID?) {
-    	console.warn("selected shipping method id :" + shippingMethodID);
     	this.selectedShippingMethod.shippingMethodID = shippingMethodID;
     }
     
@@ -53,7 +51,7 @@ class MonatFlexshipShippingMethodModalController {
     	}
  
     	payload = this.orderTemplateService.getFlattenObject(payload);
-    	//return;
+
     	// make api request
         this.orderTemplateService.updateShipping(payload).then(
             (response) => {
