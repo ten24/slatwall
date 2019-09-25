@@ -21,6 +21,17 @@ component extends="Slatwall.model.service.OrderService" {
         return arguments.newOrderItem;
     }
     
+    public any function copyToNewOrderItem(required any orderItem){
+	    var newOrderItem = super.copyToNewOrderItem(orderItem);
+	     for(var priceField in variables.customPriceFields){
+            var price = arguments.orderItem.invokeMethod('get#priceField#',{1=priceField});
+            if(!isNull(price)){
+                newOrderItem.invokeMethod('set#priceField#',{1=price});
+            }
+        }
+        return newOrderItem;
+	}
+    
     public any function addExchangeOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
 			var returnOrderItem = addReturnOrderItemSetup(argumentCollection=arguments);
 			var replacementOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);

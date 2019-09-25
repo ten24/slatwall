@@ -2102,7 +2102,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
 
