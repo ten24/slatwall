@@ -36,12 +36,9 @@ class MonatEnrollmentController{
 	}
 	
 	public handleCreateAccount = () => {
-		console.log( this.$rootScope );
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
 		if ( this.currentAccountID.length ) {
 			this.next();
-		} else {
-			console.log('Error getting account ID');
 		}
 	}
 	
