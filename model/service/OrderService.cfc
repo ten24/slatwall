@@ -4889,6 +4889,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 		return arguments.order;
 	}
+	
 
 	// ===================  END: Deprecated Functions =========================
 
