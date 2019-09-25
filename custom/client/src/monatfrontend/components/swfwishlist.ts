@@ -49,12 +49,6 @@ class SWFWishlistController {
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             this.orderTemplateItems = result['orderTemplateItems'];
-            if(this.orderTemplateItems.length){
-                if(this.orderTemplateItems[0].accountPriceGroup.includes(3)){
-                    this.isVIPAccount = true;                   
-                }
-            }
-
             this.loading = false;
         });
     }
@@ -67,6 +61,7 @@ class SWFWishlistController {
             
             this.orderTemplateItems.splice(index, 1);
             this.refreshList(this.currentList);
+            this.loading = false;
             return result;
             
         });

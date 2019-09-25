@@ -233,8 +233,10 @@ component  accessors="true" output="false"
         if(account.hasErrors()){
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
-
+        
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+        getHibachiScope().getSession().setAccount( account );
+
     }
     
     public any function updatePrimaryEmailAddress(required struct data) {
@@ -1729,7 +1731,7 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.orderTemplateTypeID" default=""; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
 		
@@ -1738,6 +1740,20 @@ component  accessors="true" output="false"
 		if (len(arguments.data.orderTemplateID)){
 		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
 		}
+		
+		if(){
+		    
+		}
+		
+	    /*****
+	    <cfset local.currencyCode = $.slatwall.getCurrentRequestSite().setting('skuCurrency')>
+	    <cfset local.productCollectionList.addFilter('listingPages.content.contentID',$.slatwall.getContent().getContentID()) />
+        <cfset local.productCollectionList.addFilter('activeFlag',1) />
+        <cfset local.productCollectionList.addFilter('publishedFlag',1) />
+        <cfset local.productCollectionList.addFilter('skus.activeFlag',1) />
+        <cfset local.productCollectionList.addFilter('skus.publishedFlag',1) />
+        <cfset local.productCollectionList.addFilter('skus.skuPrices.currencyCode', local.currencyCode) />
+	    ****/
 		
 		var scrollableSession = ormGetSessionFactory().openSession();
 		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
@@ -1750,16 +1766,22 @@ component  accessors="true" output="false"
 			    var wishlistItem = wishlistsItems.get(0);
 			    
 			    var wishListItemStruct={
-			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:""
+			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
+			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
+			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
+			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
+			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
+			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
+			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
+			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
+			      "skuID"                       :       wishListItem.getSku().getSkuID()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 		    }
 		}catch (e){
-
+            throw(e)
 		}finally{
 			if (scrollableSession.isOpen()){
 				scrollableSession.close();
@@ -1809,15 +1831,4 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID});
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-    }
-    
-    public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow = arguments.data.pageRecordsShow });
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
-    }
-    
 }
