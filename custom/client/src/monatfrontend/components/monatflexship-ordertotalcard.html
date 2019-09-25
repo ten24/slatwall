@@ -1,11 +1,10 @@
 	<div class="order-total">
-		<h3 >Order Total `</h3>
-		<!--<span sw-rbkey="'entity.order.billing'"></span>-->
+		<h3><span sw-rbkey="'frontend.flexshipDetails.orderTotal'"></span></h3>
 
 		<ul>
 			<li>
 				<div class="left">
-					<span class="title-sm">Subtotal `</span>
+					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.subtotal'"></span>
 				</div>
 				<div class="right">
 					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.subtotal | currency}}</span>
@@ -13,7 +12,7 @@
 			</li>
 			<li>
 				<div class="left">
-					<span class="title-sm">Shipping `</span>
+					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.shipping'"></span>
 				</div>
 				<div class="right">
 					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.fulfillmentTotal | currency}}</span>
@@ -39,7 +38,7 @@
 			-->
 			<li class="total">
 				<div class="left">
-					<h4>Total `</h4>
+					<h4> <span sw-rbkey="'frontend.flexshipDetails.total'"></span> </h4>
 				</div>
 				<div class="right">
 					<h4>{{monatFlexshipOrderTotalCard.orderTemplate.total | currency}}</h4>
