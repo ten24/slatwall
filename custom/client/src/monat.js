@@ -59738,15 +59738,17 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService) {
+    function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService, rbkeyService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
         this.$onInit = function () {
+            _this.makeTranslations();
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
                 return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
             });
@@ -59759,6 +59761,23 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
             if (!!_this.existingShippingMethod && !!_this.existingShippingMethod.value) {
                 _this.setSelectedShippingMethodID(_this.existingShippingMethod.value);
             }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['shippingMethod'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingMethod');
+            _this.translations['shippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingAddress');
+            _this.translations['addNewShippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.addNewShippingAddress');
+            _this.translations['newShippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.newShippingAddress');
+            _this.translations['newAddress_nickName'] = _this.rbkeyService.rbKey('frontend.newAddress.nickName');
+            _this.translations['newAddress_name'] = _this.rbkeyService.rbKey('frontend.newAddress.name');
+            _this.translations['newAddress_address'] = _this.rbkeyService.rbKey('frontend.newAddress.address');
+            _this.translations['newAddress_address2'] = _this.rbkeyService.rbKey('frontend.newAddress.address2');
+            _this.translations['newAddress_country'] = _this.rbkeyService.rbKey('frontend.newAddress.country');
+            _this.translations['newAddress_state'] = _this.rbkeyService.rbKey('frontend.newAddress.state');
+            _this.translations['newAddress_selectYourState'] = _this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+            _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
+            _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
     }
     MonatFlexshipShippingMethodModalController.prototype.setSelectedAccountAddressID = function (accountAddressID) {

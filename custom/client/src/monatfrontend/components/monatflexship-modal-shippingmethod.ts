@@ -13,9 +13,10 @@ class MonatFlexshipShippingMethodModalController {
 	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService) {}
     
     public $onInit = () => {
+    	this.makeTranslations();
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
@@ -30,6 +31,26 @@ class MonatFlexshipShippingMethodModalController {
 	    	this.setSelectedShippingMethodID(this.existingShippingMethod.value);
     	}
     };
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	this.translations['shippingMethod'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingMethod');
+    	this.translations['shippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingAddress');
+    	this.translations['addNewShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.addNewShippingAddress');
+    	this.translations['newShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.newShippingAddress');
+
+    	this.translations['newAddress_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
+    	this.translations['newAddress_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
+    	this.translations['newAddress_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');
+    	this.translations['newAddress_address2'] = this.rbkeyService.rbKey('frontend.newAddress.address2');
+    	this.translations['newAddress_country'] = this.rbkeyService.rbKey('frontend.newAddress.country');
+    	this.translations['newAddress_state'] = this.rbkeyService.rbKey('frontend.newAddress.state');
+    	this.translations['newAddress_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+    	this.translations['newAddress_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
+    	this.translations['newAddress_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+
+    }
     
     public setSelectedAccountAddressID(accountAddressID:any = 'new') {
     	this.selectedShippingAddress.accountAddressID = accountAddressID;
