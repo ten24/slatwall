@@ -59454,19 +59454,66 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var MonatProductCardController = /** @class */ (function () {
+    // @ngInject
+    function MonatProductCardController(
+    //inject modal service
+    orderTemplateService, $rootScope) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$rootScope = $rootScope;
+        this.pageRecordsShow = 5;
+        this.currentPage = 1;
+        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
+            _this.loading = true;
+            _this.orderTemplateService
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .then(function (result) {
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                }
+                _this.loading = false;
+            });
+        };
+        this.deleteItem = function (index) {
+            _this.loading = true;
+            debugger;
+            var item = _this.allProducts[index];
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: item.orderItemID }).then(function (result) {
+                _this.allProducts.splice(index, 1);
+                _this.loading = false;
+                return result;
+            });
+        };
+    }
+    return MonatProductCardController;
+}());
+exports.MonatProductCardController = MonatProductCardController;
 var MonatProductCard = /** @class */ (function () {
     function MonatProductCard(monatFrontendBasePath) {
         this.monatFrontendBasePath = monatFrontendBasePath;
         this.restrict = 'EA';
-        this.replace = true;
-        this.transclude = true;
-        this.scope = {
-            productInfo: '=product',
-            isWishlist: '=wishlist',
-            isLoggedIn: '=loggedIn',
-            loopIndex: '=currentLoopIndex'
+        this.scope = true;
+        this.bindToController = {
+            product: '=',
+            type: '@',
+            index: '@',
+            loggedIn: '=',
+            allProducts: '<?',
+            cartButtonAction: '&',
+            modalButtonAction: '&',
+            cartButtonText: '@'
         };
-        this.require = '^monatProductCard';
+        this.require = '^swfWishlist';
+        this.controller = MonatProductCardController;
+        this.controllerAs = "monatProductCard";
         this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
     }
     MonatProductCard.Factory = function () {
@@ -59666,17 +59713,17 @@ var SWFWishlistController = /** @class */ (function () {
         this.deleteItem = function (index) {
             _this.loading = true;
             var item = _this.orderTemplateItems[index];
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: item.orderItemID }).then(function (result) {
                 _this.orderTemplateItems.splice(index, 1);
                 _this.refreshList(_this.currentList);
                 _this.loading = false;
                 return result;
             });
         };
-        this.addWishlistItem = function () {
+        this.addWishlistItem = function (skuID) {
             _this.loading = true;
             _this.setSkuIDFromAttribute();
-            _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
+            _this.orderTemplateService.addOrderTemplateItem(_this.skuID ? _this.skuID : skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
@@ -59734,7 +59781,7 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addToCart = function (index) {
         };
-        this.search = function (index) {
+        this.search = function () {
         };
         if (!this.pageRecordsShow) {
             this.pageRecordsShow = 6;

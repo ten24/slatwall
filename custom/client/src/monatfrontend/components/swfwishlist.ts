@@ -57,7 +57,7 @@ class SWFWishlistController {
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",item).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",{orderTemplateItemID: item.orderItemID}).then(result=>{
             
             this.orderTemplateItems.splice(index, 1);
             this.refreshList(this.currentList);
@@ -67,10 +67,11 @@ class SWFWishlistController {
         });
     }
     
-    public addWishlistItem =()=>{ 
+    
+    public addWishlistItem =(skuID)=>{ 
         this.loading = true;
         this.setSkuIDFromAttribute();
-        this.orderTemplateService.addOrderTemplateItem(this.skuID, this.wishlistTemplateID)
+        this.orderTemplateService.addOrderTemplateItem(this.skuID ? this.skuID : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
             return result;
@@ -137,8 +138,7 @@ class SWFWishlistController {
         
     }
     
-    public search =(index)=>{
-        
+    public search =()=>{
     }
 
 }
