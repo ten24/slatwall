@@ -1,10 +1,10 @@
 
 class MonatFlexshipPaymentMethodModalController {
     public orderTemplate; 
-    public accountPaymentMethods: Array<{}>;
-    public accountAddresses: Array<{}>;
-    public expirationMonthOptions: Array<{}>;
-	public expirationYearOptions: Array<{}>;
+    public accountPaymentMethods: Array<any>;
+    public accountAddresses: Array<any>;
+    public expirationMonthOptions: Array<any>;
+	public expirationYearOptions: Array<any>;
     
     
     public existingBillingAccountAddress; 

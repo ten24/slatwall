@@ -131,4 +131,5 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
 	} 
 	
+
 }

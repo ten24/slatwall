@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="phoneNumber";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
+	property name="username" hb_rbKey="entity.account.username";
 	property name="createAuthenticationFlag" hb_sessionDefault="1";
 	property name="password";
 	property name="passwordConfirm";
