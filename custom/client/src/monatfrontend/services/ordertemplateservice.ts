@@ -11,7 +11,7 @@ export class OrderTemplateService {
    } 
    
    /**
-    * This function is being used to fetch flexShips and wishLists 
+    * This function is being used to fetch flexships and wishLists 
     * 
     * 
    */
@@ -123,6 +123,25 @@ export class OrderTemplateService {
                   .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
                   .promise;
     }
+    
+    
+    /**
+     * 
+       'orderTemplateItemID',
+       'quantity'
+     * 
+    */ 
+    public editOrderTemplateItem = (orderTemplateItemID:string, newQuantity:number=1) => {
+        let payload = {
+			'orderTemplateItemID': orderTemplateItemID,
+			'quantity': newQuantity
+		};
+		
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.editOrderTemplateItem',payload)
+                  .promise;
+    }
+    
     
     /**
      * orderTemplateItemID

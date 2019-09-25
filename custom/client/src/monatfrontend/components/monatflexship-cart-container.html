@@ -5,7 +5,7 @@
 			<i class="fas fa-chevron-up"></i>
 			</a>
 			<span class="qty-and-price">
-				<span ng-bind="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount"></span> Items` /  Total` <span ng-bind="monatFlexshipCartContainer.orderTemplate.total"></span></span>
+				{{monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount}} Items` /  Total` {{ monatFlexshipCartContainer.orderTemplate.total | currency}}</span>
 		</div>
 		<span class="steps">Step 1 of 2 ``</span>
 		<div class="go-to-cart">
@@ -24,22 +24,24 @@
 					</button>
 					<div class="img">
 						<a href="#">
-						<!--TODO <img src="{{::item.skuImagePath}}" alt="">-->
-						<img src="common/images/product-1.png">
+							<img ng-src="item.skuImagePath" alt="">
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a href="{{::item.skuProductURL}}"><span ng-bind="item.sku_product_productName"></span></a>
+						<a ng-href="item.skuProductURL"> <span ng-bind="item.sku_product_productName"></span> </a>
 					</h6>
 					<div class="product-bottom">
 						<div class="qty">
-							<button type="button" class="minus" ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)">-</button>
+							<button type="button" class="minus" 
+									ng-disable="item.quantity <== 1"
+									ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)"
+								>-</button>
 							<input type="text" id="qty" name="quantity" class="form-control" ng-model="item.quantity">
 							<button type="button" class="plus" ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item)">+</button>
 						</div>
 						<div class="price-block">
-							<!--TODO calc actual price-->
-							<span class="price" ng-bind="item.sku_priceByCurrencyCode"></span>
+							<!--TODO calc actual price => price*qty -->
+							<span class="price"> {{item.sku_priceByCurrencyCode | currency}}</span>
 						</div>
 					</div>
 				</li>

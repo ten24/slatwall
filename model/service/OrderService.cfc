@@ -1925,7 +1925,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return;
 		} 
 		
-		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateID)
+		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateItemID)
 		
 		if( isNull(orderTemplateItem) ){
 			ArrayAppend(arguments.data.messages, 'no orderTemplateItem found for orderTemplateItemID: #arguments.data.orderTemplateItemID#');
@@ -1937,7 +1937,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return; 
 		}
 	
-		return orderTemplate; 
+		return orderTemplateItem; 
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
@@ -1954,7 +1954,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return response;
 	}
 
-	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
@@ -1984,7 +1984,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return []; 
 		}
 
-		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
+		return this.getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
 	
 	

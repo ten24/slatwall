@@ -1962,6 +1962,14 @@ component  accessors="true" output="false"
 	} 
 	
 	
+	private void function setOrderTemplateItemAjaxResponse(required any data) {
+	    
+		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionForAccount(argumentCollection = arguments); 
+	    orderTemplateItemCollection.addFilter("orderTemplateItemID", arguments.data.orderTemplateItemID); // filter with our-order-template-item
+	    
+ 		arguments.data['ajaxResponse']['orderTemplateItem'] = orderTemplateItemCollection.getPageRecords()[1]; // there should be only one record;  
+	}
+	
 	public void function addOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
         param name="data.skuID" default="";
@@ -1979,8 +1987,11 @@ component  accessors="true" output="false"
             
             orderTemplate.clearProcessObject("addOrderTemplateItem");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-            //TODO: see if we need to return the updaed item/items
+            
+            //TODO ???
+            arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(argumentCollection=arguments);
+
+    // 		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
@@ -1991,18 +2002,21 @@ component  accessors="true" output="false"
         param name="data.orderTemplateItemID" default="";
         param name="data.quantity" default=1;
         
-        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( arguments.data.orderTemplateItemID );
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
         if( isNull(orderTemplateItem) ) {
 			return;
 		}
 		
 		orderTemplateItem.setQuantity(arguments.data.quantity); 
-
         var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
-        getHibachiScope().addActionResult( "public:editOrderTemplateItem", orderTemplateItem.hasErrors() );
+        
+        getHibachiScope().addActionResult( "public:orderTemplate.editItem", orderTemplateItem.hasErrors() );
             
         if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            //TODO: see if we need to return any data...            
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+            //return ordertemplateItem 
+            arguments.data.orderTemplateID = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+    		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
         } else {
             ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
         }
@@ -2012,7 +2026,7 @@ component  accessors="true" output="false"
 	public void function removeOrderTemplateItem(required any data) {
         param name="data.orderTemplateItemID" default="";
         
-        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( arguments.data.orderTemplateItemID );
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
         if( isNull(orderTemplateItem) ) {
 			return;
 		}
@@ -2021,11 +2035,8 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-                        //TODO: see if we need to return any data...            
-
-    //         orderTemplate.clearProcessObject("removeOrderTemplateItem");
-    //         getHibachiScope().flushORMSession(); //flushing to make new data availble
-    // 		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+            //TODO: see if we need to return any data...            
+            orderTemplate.clearProcessObject("removeOrderTemplateItem");
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }

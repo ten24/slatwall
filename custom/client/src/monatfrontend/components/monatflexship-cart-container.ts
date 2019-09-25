@@ -13,6 +13,7 @@ class MonatFlexshipCartContainerController {
 	            (response) => {
 	                this.orderTemplate = response.orderTemplate;
 	                console.log('FLX cart container ot: ', this.orderTemplate); 
+	                //TODO handle errors / success
 	            }, 
 	            (reason) => {
 	                throw (reason);
@@ -23,15 +24,59 @@ class MonatFlexshipCartContainerController {
     };
     
     public removeOrderTemplateItem = (item) => {
-    	console.warn('removeOrderTemplateItem :', item);
+    	
+    	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
+            (data) => {
+            	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
+            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === item.orderTemplateItemID); //find index in your array
+    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems.splice(index, 1).splice(index, 1);//remove element from array
+ 
+        		} else {
+                	console.log('removeOrderTemplateItem res: ', data); 
+            	}
+            	//TODO handle errors / success
+            	
+            }, (reason) => {
+                throw (reason);
+            }
+        );
     }
     
     public increaseOrderTemplateItemQuantity = (item) => {
-    	console.warn('increaseOrderTemplateItemQuantity :', item);
+
+    	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(
+            (data) => {
+            	console.log('increaseOrderTemplateItemQuantity res: ', data); 
+            	if(data.orderTemplateItem) {
+            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
+    				this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
+    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems; 
+        		} else {
+            	}
+            	//TODO handle errors / success
+            	
+            }, (reason) => {
+                throw (reason);
+            }
+        );
     }
     
      public decreaseOrderTemplateItemQuantity = (item) => {
-    	console.warn('decreaseOrderTemplateItemQuantity :', item);
+    	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(
+            (data) => {
+            	console.log('decreaseOrderTemplateItemQuantity res: ', data); 
+            	if(data.orderTemplateItem) {
+            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
+    				this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
+    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems; 
+        		} else {
+            	}
+            	//TODO handle errors / success
+            	
+            }, (reason) => {
+                throw (reason);
+            }
+        );
     }
 }
 

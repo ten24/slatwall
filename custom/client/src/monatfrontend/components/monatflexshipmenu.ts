@@ -53,9 +53,7 @@ class MonatFlexshipMenuController{
  
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
- 
     	payload = this.orderTemplateService.getFlattenObject(payload);
-    	//return;
     	// make api request
         this.orderTemplateService.activate(payload).then(
             (data) => {
