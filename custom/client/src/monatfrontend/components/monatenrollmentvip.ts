@@ -1,11 +1,41 @@
 class VIPController {
     public Account_CreateAccount;
+    public countryCodeOptions:any = [];
+    public stateCodeOptions:any = [];
+    public currentCountryCode:string;
+    public currentStateCode:string;
 
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
     ){}
+    
+    public $onInit = () => {
+        this.getCountryCodeOptions();
+    }
+    
+    public getCountryCodeOptions = () => {
+        if ( this.countryCodeOptions.length ) {
+            return this.countryCodeOptions;
+        }
+        
+        this.$rootScope.slatwall.getCountries().then( data => {
+            this.countryCodeOptions = data.countryCodeOptions;
+        });
+    }
+    
+    public getStateCodeOptions = countryCode => {
+        if ( this.countryCodeOptions.length && countryCode === this.currentCountryCode ) {
+            return this.countryCodeOptions;
+        }
+        
+        this.currentCountryCode = countryCode;
+        
+        this.$rootScope.slatwall.getStates( countryCode ).then( data => {
+            this.stateCodeOptions = data.stateCodeOptions;
+        });
+    }
     
 }
 

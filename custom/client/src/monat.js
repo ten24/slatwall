@@ -59314,8 +59314,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var VIPController = /** @class */ (function () {
     // @ngInject
     function VIPController($rootScope, $scope) {
+        var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        this.countryCodeOptions = [];
+        this.stateCodeOptions = [];
+        this.$onInit = function () {
+            _this.getCountryCodeOptions();
+        };
+        this.getCountryCodeOptions = function () {
+            if (_this.countryCodeOptions.length) {
+                return _this.countryCodeOptions;
+            }
+            _this.$rootScope.slatwall.getCountries().then(function (data) {
+                _this.countryCodeOptions = data.countryCodeOptions;
+            });
+        };
+        this.getStateCodeOptions = function (countryCode) {
+            if (_this.countryCodeOptions.length && countryCode === _this.currentCountryCode) {
+                return _this.countryCodeOptions;
+            }
+            _this.currentCountryCode = countryCode;
+            _this.$rootScope.slatwall.getStates(countryCode).then(function (data) {
+                _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
     }
     return VIPController;
 }());

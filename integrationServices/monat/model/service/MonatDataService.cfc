@@ -19,6 +19,7 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
         param name="arguments.data.stateCode" default="";
+        param name="arguments.data.countryCode" default="";
         param name="arguments.data.accountTypeCode" default="false";
         
         if(isNull(arguments.data.search) && isNull(arguments.data.stateCode)){
@@ -35,6 +36,7 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
         param name="arguments.data.stateCode" default="";
+        param name="arguments.data.countryCode" default="";
         param name="arguments.data.accountTypeCode" default="false";
 
         var accountCollection = getService('productService').getAccountCollectionList();
@@ -49,6 +51,14 @@ component extends="Slatwall.model.service.HibachiService" {
         
         if(arguments.data.accountTypeCode != false){
           accountCollection.addFilter("accountTypeCode", arguments.data.accountTypeCode, "=");  
+        }
+        
+        if ( len( arguments.data.countryCode ) ) {
+            accountCollection.addFilter( 'primaryAddress.address.countryCode', arguments.data.countryCode );
+        }
+        
+        if ( len( arguments.data.stateCode ) ) {
+            accountCollection.addFilter( 'primaryAddress.address.stateCode', arguments.data.stateCode );
         }
 
         accountCollection.setKeywords(arguments.data.search);
