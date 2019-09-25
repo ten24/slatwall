@@ -27,7 +27,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     public translations = {};
     private makeTranslations = () => {
     	//TODO make translations for success/failure alert messages
-    	
     	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
     	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 45 });
     	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
@@ -36,7 +35,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	this.translations['whyAreYouCancellingFlexship'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
     	this.translations['flexshipCancelOtherReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
 
-    	
     }
     
     

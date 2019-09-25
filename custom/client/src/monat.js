@@ -59580,16 +59580,18 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService) {
+    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService, rbkeyService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
         this.selectedBillingAccountAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedAccountPaymentMethod = { accountPaymentMethodID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.newAddress = { 'countryCode': 'US' }; // hard-coded default
         this.newAccountPaymentMethod = {};
         this.$onInit = function () {
+            _this.makeTranslations();
             /**
              * Find and set old billing-address if any
             */
@@ -59608,6 +59610,31 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
             if (!!_this.existingAccountPaymentMethod && !!_this.existingAccountPaymentMethod.accountPaymentMethodID) {
                 _this.setSelectedAccountPaymentMethodID(_this.existingAccountPaymentMethod.accountPaymentMethodID);
             }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['billingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.billingAddress');
+            _this.translations['addNewBillingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewBillingAddress');
+            _this.translations['newBillingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
+            _this.translations['paymentMethod'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
+            _this.translations['addNewCreditCard'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
+            _this.translations['newCreditCard'] = _this.rbkeyService.rbKey('frontend.newCreditCard');
+            _this.translations['newCreditCard_nickName'] = _this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
+            _this.translations['newCreditCard_creditCardNumber'] = _this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
+            _this.translations['newCreditCard_nameOnCard'] = _this.rbkeyService.rbKey('frontend.newCreditCard.nameOnCard');
+            _this.translations['newCreditCard_expirationMonth'] = _this.rbkeyService.rbKey('frontend.newCreditCard.expirationMonth');
+            _this.translations['newCreditCard_expirationYear'] = _this.rbkeyService.rbKey('frontend.newCreditCard.expirationYear');
+            _this.translations['newCreditCard_securityCode'] = _this.rbkeyService.rbKey('frontend.newCreditCard.securityCode');
+            _this.translations['newAddress_nickName'] = _this.rbkeyService.rbKey('frontend.newAddress.nickName');
+            _this.translations['newAddress_name'] = _this.rbkeyService.rbKey('frontend.newAddress.name');
+            _this.translations['newAddress_address'] = _this.rbkeyService.rbKey('frontend.newAddress.address');
+            _this.translations['newAddress_address2'] = _this.rbkeyService.rbKey('frontend.newAddress.address2');
+            _this.translations['newAddress_country'] = _this.rbkeyService.rbKey('frontend.newAddress.country');
+            _this.translations['newAddress_state'] = _this.rbkeyService.rbKey('frontend.newAddress.state');
+            _this.translations['newAddress_selectYourState'] = _this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+            _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
+            _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
     }
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {

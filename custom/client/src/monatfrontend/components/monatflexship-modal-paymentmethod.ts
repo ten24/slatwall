@@ -18,10 +18,11 @@ class MonatFlexshipPaymentMethodModalController {
 	public newAccountPaymentMethod = {};
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService) {
+    constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
+    	this.makeTranslations();
     	/**
     	 * Find and set old billing-address if any
     	*/ 
@@ -44,6 +45,35 @@ class MonatFlexshipPaymentMethodModalController {
 	    	this.setSelectedAccountPaymentMethodID(this.existingAccountPaymentMethod.accountPaymentMethodID);
     	}
     	
+    }
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	this.translations['billingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.billingAddress');
+    	this.translations['addNewBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewBillingAddress');
+    	this.translations['newBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
+    	this.translations['paymentMethod'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
+    	this.translations['addNewCreditCard'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
+
+    	this.translations['newCreditCard'] = this.rbkeyService.rbKey('frontend.newCreditCard');
+    	this.translations['newCreditCard_nickName'] = this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
+    	this.translations['newCreditCard_creditCardNumber'] = this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
+    	this.translations['newCreditCard_nameOnCard'] = this.rbkeyService.rbKey('frontend.newCreditCard.nameOnCard');
+    	this.translations['newCreditCard_expirationMonth'] = this.rbkeyService.rbKey('frontend.newCreditCard.expirationMonth');
+    	this.translations['newCreditCard_expirationYear'] = this.rbkeyService.rbKey('frontend.newCreditCard.expirationYear');
+    	this.translations['newCreditCard_securityCode'] = this.rbkeyService.rbKey('frontend.newCreditCard.securityCode');
+
+    	this.translations['newAddress_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
+    	this.translations['newAddress_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
+    	this.translations['newAddress_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');
+    	this.translations['newAddress_address2'] = this.rbkeyService.rbKey('frontend.newAddress.address2');
+    	this.translations['newAddress_country'] = this.rbkeyService.rbKey('frontend.newAddress.country');
+    	this.translations['newAddress_state'] = this.rbkeyService.rbKey('frontend.newAddress.state');
+    	this.translations['newAddress_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+    	this.translations['newAddress_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
+    	this.translations['newAddress_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+
     }
     
     public setSelectedBillingAccountAddressID(accountAddressID:any = 'new') {
