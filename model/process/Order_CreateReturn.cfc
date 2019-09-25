@@ -147,7 +147,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
 			if(!getPreProcessDisplayedFlag()) {
-				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeNotRefunded();	
 			}
 		}
 		return variables.fulfillmentRefundAmount;
