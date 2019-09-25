@@ -15,14 +15,12 @@ class MonatFlexshipMenuController{
 	constructor( 
 		public orderTemplateService,
 		public observerService,
-		public $window,
 		public ModalService
 	){
 
 	}
 	
 	public $onInit = () =>{
-		console.log('flexship menue: ', this);
 	}
 	
 	public showCancelFlexshipModal = () => {
@@ -33,14 +31,14 @@ class MonatFlexshipMenuController{
 			    orderTemplate: this.orderTemplate,
 			    cancellationReasonTypeOptions: this.cancellationReasonTypeOptions
 			  },
-		      preClose: (modal) => { modal.element.modal('hide'); console.log("preclosing ") }
+		      preClose: (modal) => { modal.element.modal('hide'); }
 		}).then( 
 			(modal) => {
 				  //it's a bootstrap element, use 'modal' to show it
 			      modal.element.modal();
 			      
-			      modal.close.then(function(result) {
-			      	console.log("modal closed", result);
+			      modal.close.then(function(result) { 
+			      	//....
 			      });
 			}, 
 			(error) => {

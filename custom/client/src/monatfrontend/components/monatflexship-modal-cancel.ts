@@ -9,21 +9,20 @@ class MonatFlexshipCancelModalController {
     }
     
     public $onInit = () => {
-    	console.log('flexship modal cancel: ', this);
     };
     
     public cancelFlexship() {
 
     	//TODO frontend validation
-    	let payload = {'orderTemplateCancellationReasonType' : this.formData};
-    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload = this.orderTemplateService.getFlattenObject(payload);
 
-     	console.log(payload);
     	// make api request
-        this.orderTemplateService.cancel(payload).then(
+        this.orderTemplateService.cancelOrderTemplate(
+        	this.orderTemplate.orderTemplateID, 
+	        this.formData['typeID'], 
+	        this.formData['typeIDOther'] 
+	    ).then(
             (data) => {
-            	if(angular.isDefined(data.orderTemplate)) {
+            	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             	} else {

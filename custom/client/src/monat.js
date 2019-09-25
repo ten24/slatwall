@@ -59325,24 +59325,18 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCancelModalController = /** @class */ (function () {
     function MonatFlexshipCancelModalController(orderTemplateService, observerService) {
-        var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.formData = {}; // {typeID:'', typeIDOther: '' }
         this.$onInit = function () {
-            console.log('flexship modal cancel: ', _this);
         };
     }
     MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
-        var _this = this;
         //TODO frontend validation
-        var payload = { 'orderTemplateCancellationReasonType': this.formData };
-        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-        payload = this.orderTemplateService.getFlattenObject(payload);
-        console.log(payload);
+        var _this = this;
         // make api request
-        this.orderTemplateService.cancel(payload).then(function (data) {
-            if (angular.isDefined(data.orderTemplate)) {
+        this.orderTemplateService.cancelOrderTemplate(this.orderTemplate.orderTemplateID, this.formData['typeID'], this.formData['typeIDOther']).then(function (data) {
+            if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
@@ -60084,14 +60078,12 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
-    function MonatFlexshipMenuController(orderTemplateService, observerService, $window, ModalService) {
+    function MonatFlexshipMenuController(orderTemplateService, observerService, ModalService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
-        this.$window = $window;
         this.ModalService = ModalService;
         this.$onInit = function () {
-            console.log('flexship menue: ', _this);
         };
         this.showCancelFlexshipModal = function () {
             _this.ModalService.closeModals();
@@ -60101,12 +60093,12 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     orderTemplate: _this.orderTemplate,
                     cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
                 },
-                preClose: function (modal) { modal.element.modal('hide'); console.log("preclosing "); }
+                preClose: function (modal) { modal.element.modal('hide'); }
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) {
-                    console.log("modal closed", result);
+                    //....
                 });
             }, function (error) {
                 console.error("model error", error);
@@ -60635,14 +60627,26 @@ var OrderTemplateService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateBilling', data)
                 .promise;
         };
-        this.activate = function (data) {
+        this.activateOrderTemplate = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
                 .promise;
         };
-        this.cancel = function (data) {
+        /**
+         * orderTemplateID:string,
+         * typeID:string,  => OrderTEmplateCancellationReasonTypeID
+         * typeIDOther?:string => other reason text from user
+         */
+        this.cancelOrderTemplate = function (orderTemplateID, typeID, typeIDOther) {
+            if (typeIDOther === void 0) { typeIDOther = ""; }
+            var payload = {};
+            payload['orderTemplateID'] = orderTemplateID;
+            payload['orderTemplateCancellationReasonType'] = {};
+            payload['orderTemplateCancellationReasonType']['typeID'] = typeID;
+            payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
+            payload = _this.getFlattenObject(payload);
             return _this.requestService
-                .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
+                .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
                 .promise;
         };
         this.updateSchedule = function (data) {

@@ -8,12 +8,12 @@
 	        </button>
 	
             <div class="cancel-flexship">
-                <h6 class="title-with-line mb-5">Cancel </h6>
+                <h6 class="title-with-line mb-5">Cancel `</h6>
  
                 <select type="text" class="form-control" 
         			ng-model="monatFlexshipCancelModal.formData.typeID"
         			placeholder="Flexship cancel reason *">
-                	<option value="">Why are you canceling your flexship?</option>
+                	<option value="">Why are you canceling your flexship? `</option>
     			    <option ng-repeat="x in monatFlexshipCancelModal.cancellationReasonTypeOptions" 
     			            value={{x.value}}>{{x.name}}</option>
     			</select> 
@@ -26,8 +26,8 @@
        		</div>
 
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">Save changes</button>
-        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">Save changes `</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close `</button>
 		    </div>
 		    
 		</div>
