@@ -56,6 +56,7 @@ Notes:
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
+	
 	<hb:HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderItem#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"

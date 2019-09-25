@@ -21,11 +21,13 @@ component extends="Slatwall.model.service.HibachiService" {
             'pl'='Polish',
             'ga'='Gaelic'
         };
-        var sites = getService('siteService').getSiteSmartList().getRecords();
+        var siteCollectionList = getService('siteService').getSiteCollectionList();
+        siteCollectionList.setDisplayProperties('siteCode,siteName,siteAvailableLocales,flagImageFilename');
+        var sites = siteCollectionList.getRecords();
         for(var site in sites){
-            var siteCode = site.getSiteCode();
-            var regionName = right(site.getSiteName(), len(site.getSiteName()) - 6);
-            var languages = site.setting('siteAvailableLocales');
+            var siteCode = site.siteCode;
+            var regionName = right(site.siteName, len(site.siteName) - 6);
+            var languages = listToArray( site.siteAvailableLocales );
             var languageArray = [];
             var href = '/'&right(siteCode,len(siteCode) - 5)&'/';
             if(href == '/default'){
@@ -38,7 +40,7 @@ component extends="Slatwall.model.service.HibachiService" {
                 };
                 arrayAppend(languageArray, languageInfo);
             }
-            var flagImagePath = '/assets/images/' & site.getFlagImageFilename();
+            var flagImagePath = '/assets/images/' & site.flagImageFilename;
             
             var siteInfo = {
                 languages=languageArray,

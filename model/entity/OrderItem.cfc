@@ -172,13 +172,14 @@ property name="personalVolume" ormtype="big_decimal";
     property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
-    property name="extendedPersonalVolumeAfterAllDiscounts" persistent="false";
-    property name="extendedTaxableAmountAfterAllDiscounts" persistent="false";
-    property name="extendedCommissionableVolumeAfterAllDiscounts" persistent="false";
-    property name="extendedRetailCommissionAfterAllDiscounts" persistent="false";
-    property name="extendedProductPackVolumeAfterAllDiscounts" persistent="false";
-    property name="extendedRetailValueVolumeAfterAllDiscounts" persistent="false";
-    
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+	property name="mainCreditCardOnOrder" persistent="false";
+	property name="mainCreditCardExpirationDate" persistent="false";
+	property name="mainPromotionOnOrder" persistent="false";
+
+
+	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
@@ -1402,7 +1403,51 @@ public any function getPersonalVolume(){
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
 	}
 	
-	public numeric function getCustomExtendedPriceAfterAllDiscounts(required string priceField, boolean forceCalculationFlag = false) {
-		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments) - getAllocatedOrderCustomPriceFieldDiscountAmount(arguments.priceField));
+	public any function getSkuProductURL(){
+		var skuProductURL = this.getSku().getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getMainCreditCardOnOrder(){
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    		var mainCreditCardOnOrder = orderPayments[1].getCreditCardLastFour();
+	    }else{
+	        var mainCreditCardOnOrder = "";
+	    }
+		return mainCreditCardOnOrder;
+	}
+	
+	public any function getMainCreditCardExpirationDate(){
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    	    var orderPayment = orderPayments[1];
+		    var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
+	    }else{
+	        var mainCreditCardExpirationDate = "";
+	    }
+
+		return mainCreditCardExpirationDate;
+	}
+	
+	public any function getMainPromotionOnOrder(){
+	    var promotionCodes = this.getOrder().getPromotionCodes();
+	    if(arrayLen(promotionCodes)){
+    	    var mainPromotionOnOrder = promotionCodes[1].getPromotion().getPromotionName();
+    	} else{
+    	    var mainPromotionOnOrder = "";
+    	}
+    	
+    	return mainPromotionOnOrder;
 	}//CUSTOM FUNCTIONS END
 }

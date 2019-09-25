@@ -9,7 +9,7 @@
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
-
+			
 			<!--- Account --->
 			
 			<cfif rc.edit>
@@ -34,11 +34,15 @@
 			
 			<!--- Adds account type from the order. --->
 			<cfif !isNull(rc.order.getAccountType())>
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="accountType">
+				<cfset local.accountType = $.slatwall.getService("TypeService").getTypeByTypeCode(rc.order.getAccountType())>
+				<cfif !isNull(accountType)>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="accountType" value="#accountType.getTypeName()#">
+				</cfif>
 			</cfif>
 			
 			<!--- Origin --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
+			
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
 
 			<!--- Order Type --->
@@ -95,12 +99,12 @@
 			</hb:HibachiPropertyTable>
 		
 			<div class="table-responsive">
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedPersonalVolumeSubtotal" currency-flag="true" title="Personal Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" currency-flag="true" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedPersonalVolumeSubtotal" title="Personal Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true" title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true" title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true"  title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true"  title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" default="#rc.order.getTotal()#" currency-flag="true" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 			</div>
 				

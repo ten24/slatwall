@@ -32,7 +32,6 @@ var hibachimodule = angular.module('hibachi',[
 .run(['$rootScope','publicService','$hibachi','localStorageService','isAdmin', ($rootScope, publicService, $hibachi, localStorageService, isAdmin)=> {
     $rootScope.hibachiScope = publicService;
     $rootScope.hasAccount = publicService.hasAccount;
-
     if(localStorageService.hasItem('selectedPersonalCollection')){
         $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
     }

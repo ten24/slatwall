@@ -68,6 +68,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="typeService" type="any";
 	property name="validationService" type="any";
 	property name="hibachiEventService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -90,8 +91,13 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddressOrUsername) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddressOrUsername);
+		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
+	}
+	
+	public boolean function verifyTwoFactorAuthenticationRequiredByUsername(required string emailAddressOrUsername) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=arguments.emailAddressOrUsername);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
@@ -372,6 +378,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
+			arguments.account.setUsername( processObject.getUsername() );
 			
 			if(!isNull(arguments.processObject.getOrganizationFlag())){
 				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
@@ -681,12 +688,33 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
-		var emailAddress = arguments.processObject.getEmailAddress();;
+		var emailAddressOrUsername = arguments.processObject.getEmailAddressOrUsername();
 		var password = arguments.processObject.getPassword();
 		var authenticationCode = arguments.processObject.getAuthenticationCode();
 		
-		// Attempt to load the account authentication by emailAddress
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		var loginType = "";
+		
+		// If emailAddressOrUsername is an email
+		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUsername', 'email')){
+			loginType = "emailAddress";
+			
+			if(!isNull(arguments.processObject.getEmailAddress())){
+				var emailAddress = arguments.processObject.getEmailAddress();
+			}else{
+				var emailAddress = arguments.processObject.getEmailAddressOrUsername();
+			}
+			
+			// Attempt to load the account authentication by emailAddress
+			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		
+		// If emailAddressOrUsername is a username
+		}else {
+			loginType = "username";
+			var username = arguments.processObject.getEmailAddressOrUsername();
+			
+			// Attempt to load the account authentication by username
+			var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=username);
+		}
 		
 		// Account exists
 		if (!isNull(accountAuthentication)) {
@@ -705,7 +733,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Invalid Password
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
-					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+					arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+
 				}
 				
 				// Verify two-factor authentication as long as login process has not already failed before this point
@@ -732,7 +761,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		// Invalid email, no account authentication exists
 		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login the account
@@ -742,7 +771,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 		// Login was invalid
 		} else {
-			var invalidLoginData = {emailAddress=emailAddress};
+			var invalidLoginData = {};
+			if(loginType == "emailAddress"){
+				invalidLoginData = {emailAddress=emailAddress};
+			} else if(loginType == "username"){
+				invalidLoginData = {username=username};
+			}
 			
 			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();
@@ -826,8 +860,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
         return arguments.account;
     }
-
-
 
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
 
@@ -1281,7 +1313,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountLoyalty;
 	}
 	
-	
 	public void function redeemLoyaltyRedemptions(required any accountLoyalty){
 		// Loop over account loyalty redemptions
 		for(var loyaltyRedemption in arguments.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {
@@ -1298,7 +1329,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 	}
-
 
 	public any function createPointsLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
 		
@@ -1910,6 +1940,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPhoneNumber", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPaymentMethod", "left");
+
 
 		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
@@ -1917,6 +1949,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.addKeywordProperty(propertyIdentifier="primaryEmailAddress.emailAddress", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryPhoneNumber.phoneNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryAddress.streetAddress", weight=1);
+
 
 		return smartList;
 	}

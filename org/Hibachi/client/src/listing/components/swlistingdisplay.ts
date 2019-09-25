@@ -116,6 +116,7 @@ class SWListingDisplayController{
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
+    public currencyCode:string;
 
     public selections;
     public multiselectCount;
@@ -176,6 +177,7 @@ class SWListingDisplayController{
     * collection on demand (refresh).
     **/
     public initListingDisplay = ($q, $rootScope, initial) => {
+        
         //setup a listener for refreshing this listing based on a refrsh event string 
         if (this.refreshEvent && initial){
             this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
@@ -959,7 +961,8 @@ class SWListingDisplay implements ng.IDirective{
             createAction:"@?",
             createQueryString:"@?",
             exportAction:"@?",
-
+            
+            currencyCode:"@?",
             getChildCount:"<?",
             hasSearch:"<?",
             hasActionBar:"<?",

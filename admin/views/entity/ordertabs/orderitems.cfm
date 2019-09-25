@@ -78,7 +78,8 @@ Notes:
 		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
 		recordDeleteActionProperty="orderItemID"
 		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#"
-		refreshEvent="refreshOrderItemListing">
+		refreshEvent="refreshOrderItemListing"
+		currencyCode="#rc.order.getCurrencyCode()#">
 	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->

@@ -99,7 +99,7 @@ Notes:
 	<hb:HibachiPropertyRow>
 		
 		<!--- Government Identifications --->
-		<hb:HibachiPropertyList divClass="col-md-4">
+		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountGovernmentIdentification_plural')#" smartList="#rc.account.getAccountGovernmentIdentificationsSmartList()#"
 									  recordEditAction="admin:entity.editaccountgovernmentidentification"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"

@@ -6,7 +6,6 @@ component {
 	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
-	property name="username" ormtype="string"; 
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
 

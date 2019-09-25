@@ -229,9 +229,11 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
-    
+    property name="personalVolumeByCurrencyCode" persistent="false";
+    property name="comissionablelVolumeByCurrencyCode" persistent="false";
     
    
+ property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();

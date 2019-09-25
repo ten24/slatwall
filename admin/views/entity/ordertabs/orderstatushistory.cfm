@@ -49,8 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.order" type="any" />
 
-<cfparam name="rc.emailTemplate" type="any" />
-
-
-<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailBodyHTML" edit="#rc.edit#" fieldtype="wysiwyg" >
+<cfoutput>
+	<hb:HibachiListingDisplay smartList="#rc.order.getOrderStatusHistorySmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderStatusHistoryType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="changeDateTime" />
+	</hb:HibachiListingDisplay>
+</cfoutput>
