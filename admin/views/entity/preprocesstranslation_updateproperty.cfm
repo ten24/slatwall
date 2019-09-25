@@ -87,9 +87,22 @@ Notes:
         
             <cfloop from="1" to="#local.localeOptionsLength#" index="local.i">
                 <cfif local.defaultLocale neq rc.localeOptions[local.i].value>
-                    <cfset local.translation = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([rc.processObject.getBaseObject(), rc.processObject.getBaseID(), rc.processObject.getBasePropertyName(), rc.localeOptions[local.i].value], true)>
+                    
+                    <cfset local.translationValue = "">
+                    <cfif NOT isNull(rc.procesObject.baseObject) AND NOT isNull(rc.processObject.getBaseID()) AND NOT isNull(rc.procesObject.getBasePropertyName())>
+                        <cfset local.translation = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([
+                            rc.processObject.getBaseObject(), 
+                            rc.processObject.getBaseID(), 
+                            rc.processObject.getBasePropertyName(), 
+                            rc.localeOptions[local.i].value], 
+                            true)>
+                        <cfif NOT isNull(local.translation)>
+                            <cfset local.translationValue = local.translation.getValue()>
+                        </cfif>
+                    </cfif>
+                    
                     <input type="hidden" name="translationData[#local.i#].locale" value="#rc.localeOptions[local.i].value#">
-                    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="#local.translation.getValue()#" edit="#rc.edit#" title="#rc.localeOptions[local.i].name#" fieldType="#local.fieldType#">
+                    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="#local.translationValue#" edit="#rc.edit#" title="#rc.localeOptions[local.i].name#" fieldType="#local.fieldType#">
                 </cfif>
             </cfloop>
 		</hb:HibachiPropertyList>
