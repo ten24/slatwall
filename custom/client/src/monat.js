@@ -59898,6 +59898,9 @@ var MonatFlexshipCardController = /** @class */ (function () {
         this.$onInit = function () {
             _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
         };
+        this.$onDestroy = function () {
+            _this.observerService.detachById("orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+        };
         this.updateOrderTemplate = function (orderTemplate) {
             _this.orderTemplate = orderTemplate;
         };

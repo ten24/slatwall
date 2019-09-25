@@ -22,6 +22,10 @@ class MonatFlexshipCardController{
 		this.observerService.attach(this.updateOrderTemplate, "orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
 	}
 	
+	public $onDestroy = () =>{
+		this.observerService.detachById("orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
+	}
+	
 	public updateOrderTemplate = (orderTemplate?) => {
 		this.orderTemplate = orderTemplate;
 	}
