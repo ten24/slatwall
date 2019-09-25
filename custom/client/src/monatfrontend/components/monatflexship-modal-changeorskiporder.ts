@@ -14,13 +14,11 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	}; 
 	
 	public selectedReason;
-	// payload :: {orderTemplateScheduleDateChangeReasonTypeID:'', otherScheduleDateChangeReasonNotes: '', nextPlaceDateTime: '' }
 
     constructor(public orderTemplateService, public observerService) {
     }
     
     public $onInit = () => {
-    	console.log('flexship modal update schedule : ', this);
     	this.calculateNextPlacedDateTime();
     };
     
@@ -32,7 +30,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	    this.endDayOfTheMonth = 25;
 	    // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDate = Date.parse(`${(date.getMonth() + 1 +3)}/${date.getDate()}/${date.getFullYear()}`);
-	    console.log('startDate, endDate: ', this.startDate, this.endDate);
     }
     
     public updateDelayOrSkip = (val:string) =>{
@@ -40,23 +37,32 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     }
     
     public selectedReasonChanged = () => {
-    	console.log('reason changed ', this.selectedReason);
     	if(!!this.selectedReason && !!this.selectedReason.value) {
     		this.formData.showOtherReasonNotes = this.selectedReason.systemCode === 'otsdcrtOther';
     	} else {
 	    	this.formData.showOtherReasonNotes = false;
-    		//disable form
+    		//TODO disable the form
     	}
     }
     
     public updateSchedule() {
 
     	//TODO frontend validation
+    	
+    	/** 
+    	 * payload => { 
+    		orderTemplateID:string'', 
+    		orderTemplateScheduleDateChangeReasonTypeID:string'', 
+    		otherScheduleDateChangeReasonNotes?:string '', 
+    		scheduleOrderNextPlaceDateTime?:string '',
+    		skipNextMonthFlag?: boolean;
+    	   }
+    	 */
+
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
     	
-    	//HardCoded sysCode for "Other reason"
     	if(this.formData.showOtherReasonNotes) {
 		   	payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
     	}
@@ -67,19 +73,16 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     		payload['skipNextMonthFlag'] = 1;
     	}
     	
-    	
     	payload = this.orderTemplateService.getFlattenObject(payload);
-     	console.log('updateSchedule :', payload);
-     	
-     	// return;
+
     	// make api request
-        this.orderTemplateService.updateSchedule(payload).then(
+        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(
             (data) => {
             	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             	} else {
-            		console.error(JSON.stringify(data));
+            		console.error(data);
             		//TODO handle errors
             	}
             	// TODO: show alert

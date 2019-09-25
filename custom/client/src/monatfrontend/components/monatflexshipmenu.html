@@ -20,12 +20,11 @@
 		<!-- TODO put it back -->
 		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
 		<li  >
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal-change-or-skip-order{{monatFlexshipMenu.orderTemplate.orderTemplateID}}">Delay or skip order</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()">Delay or skip order</a>
 		</li>
 		
 		<!-- TODO put it back -->
 		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
-		<!-- data-toggle="modal" data-target="#flexship-modal-cancel{{monatFlexshipMenu.orderTemplate.orderTemplateID}}" -->
 		<li  >
 		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()">Cancel Flexship</a>
 		</li>
@@ -51,19 +50,3 @@
 <!--                        			data-expiration-year-options="monatFlexshipMenu.expirationYearOptions"-->
 <!--								> -->
 <!--</monat-flexship-payment-method-modal>-->
-
-<!-- TODO put it back -->
-<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
-<!--<monat-flexship-change-or-skip-order-modal-->
-<!--										   data-order-template="monatFlexshipMenu.orderTemplate"-->
-<!--										   data-schedule-date-change-reason-type-options="monatFlexshipMenu.scheduleDateChangeReasonTypeOptions"-->
-<!--									> -->
-<!--</monat-flexship-change-or-skip-order-modal> -->
-
-<!-- TODO put it back -->
-<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
-<!--<monat-flexship-cancel-modal -->
-<!--							 data-order-template="monatFlexshipMenu.orderTemplate"-->
-<!--							 data-cancellation-reason-type-options="monatFlexshipMenu.cancellationReasonTypeOptions"-->
-<!--                        > -->
-<!--</monat-flexship-cancel-modal> -->

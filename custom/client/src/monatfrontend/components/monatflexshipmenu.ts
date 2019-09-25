@@ -23,8 +23,10 @@ class MonatFlexshipMenuController{
 	public $onInit = () =>{
 	}
 	
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
 	public showCancelFlexshipModal = () => {
 		this.ModalService.closeModals();
+		
 		this.ModalService.showModal({
 		      component: 'monatFlexshipCancelModal',
 			  bindings: {
@@ -42,10 +44,37 @@ class MonatFlexshipMenuController{
 			      });
 			}, 
 			(error) => {
-			    console.error("model error",error);	
+			    console.error("unable to open model :",error);	
 			}
 		);
 	}
+	
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+	public showDelayOrSkipFlexshipModal = () => {
+		this.ModalService.closeModals();
+		
+		this.ModalService.showModal({
+		      component: 'monatFlexshipChangeOrSkipOrderModal',
+			  bindings: {
+			    orderTemplate: this.orderTemplate,
+			    scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions
+			  },
+		      preClose: (modal) => { modal.element.modal('hide'); }
+		}).then( 
+			(modal) => {
+				  //it's a bootstrap element, use 'modal' to show it
+			      modal.element.modal();
+			      
+			      modal.close.then(function(result) { 
+			      	//....
+			      });
+			}, 
+			(error) => {
+			    console.error("unable to open model :",error);	
+			}
+		);
+	}
+	
 	
    public activateFlexship() {
  

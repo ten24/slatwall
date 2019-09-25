@@ -84,13 +84,13 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public updateSchedule = (data) => {
+    public updateOrderTemplateSchedule = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                   .promise;
     }
     
-    public updateFrequency = (data) => {
+    public updateOrderTemplateFrequency = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
                   .promise;

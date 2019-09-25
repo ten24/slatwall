@@ -59393,7 +59393,6 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
-    // payload :: {orderTemplateScheduleDateChangeReasonTypeID:'', otherScheduleDateChangeReasonNotes: '', nextPlaceDateTime: '' }
     function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -59404,7 +59403,6 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             showOtherReasonNotes: false,
         };
         this.$onInit = function () {
-            console.log('flexship modal update schedule : ', _this);
             _this.calculateNextPlacedDateTime();
         };
         this.calculateNextPlacedDateTime = function () {
@@ -59414,29 +59412,35 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             _this.endDayOfTheMonth = 25;
             // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
             _this.endDate = Date.parse((date.getMonth() + 1 + 3) + "/" + date.getDate() + "/" + date.getFullYear());
-            console.log('startDate, endDate: ', _this.startDate, _this.endDate);
         };
         this.updateDelayOrSkip = function (val) {
             _this.formData.delayOrSkip = val;
         };
         this.selectedReasonChanged = function () {
-            console.log('reason changed ', _this.selectedReason);
             if (!!_this.selectedReason && !!_this.selectedReason.value) {
                 _this.formData.showOtherReasonNotes = _this.selectedReason.systemCode === 'otsdcrtOther';
             }
             else {
                 _this.formData.showOtherReasonNotes = false;
-                //disable form
+                //TODO disable the form
             }
         };
     }
     MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
-        var _this = this;
         //TODO frontend validation
+        var _this = this;
+        /**
+         * payload => {
+            orderTemplateID:string'',
+            orderTemplateScheduleDateChangeReasonTypeID:string'',
+            otherScheduleDateChangeReasonNotes?:string '',
+            scheduleOrderNextPlaceDateTime?:string '',
+            skipNextMonthFlag?: boolean;
+           }
+         */
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
-        //HardCoded sysCode for "Other reason"
         if (this.formData.showOtherReasonNotes) {
             payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
         }
@@ -59447,16 +59451,14 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             payload['skipNextMonthFlag'] = 1;
         }
         payload = this.orderTemplateService.getFlattenObject(payload);
-        console.log('updateSchedule :', payload);
-        // return;
         // make api request
-        this.orderTemplateService.updateSchedule(payload).then(function (data) {
+        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
             else {
-                console.error(JSON.stringify(data));
+                console.error(data);
                 //TODO handle errors
             }
             // TODO: show alert
@@ -60085,6 +60087,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         this.ModalService = ModalService;
         this.$onInit = function () {
         };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showCancelFlexshipModal = function () {
             _this.ModalService.closeModals();
             _this.ModalService.showModal({
@@ -60101,7 +60104,27 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     //....
                 });
             }, function (error) {
-                console.error("model error", error);
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showDelayOrSkipFlexshipModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipChangeOrSkipOrderModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
             });
         };
     }
@@ -60649,12 +60672,12 @@ var OrderTemplateService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
                 .promise;
         };
-        this.updateSchedule = function (data) {
+        this.updateOrderTemplateSchedule = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                 .promise;
         };
-        this.updateFrequency = function (data) {
+        this.updateOrderTemplateFrequency = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
                 .promise;
