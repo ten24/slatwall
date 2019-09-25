@@ -14,11 +14,11 @@ class MonatFlexshipCardController{
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
 	
+    //@ngInject
 	constructor(public observerService){
 	}
 	
 	public $onInit = () =>{
-		console.log('flexship card: ', this);
 		this.observerService.attach(this.updateOrderTemplate, "orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
 	}
 	

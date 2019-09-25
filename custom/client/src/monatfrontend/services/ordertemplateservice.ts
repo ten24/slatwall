@@ -1,5 +1,6 @@
 export class OrderTemplateService { 
    
+   //@ngInject
    constructor(
         public requestService,
         public $hibachi

@@ -17,8 +17,10 @@ class MonatFlexshipPaymentMethodModalController {
 
 	public newAccountPaymentMethod = {};
 
+	//@ngInject
     constructor(public orderTemplateService, public observerService) {
     }
+    
     public $onInit = () => {
     	/**
     	 * Find and set old billing-address if any

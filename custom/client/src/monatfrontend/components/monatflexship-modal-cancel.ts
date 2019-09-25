@@ -5,6 +5,7 @@ class MonatFlexshipCancelModalController {
 	
 	public formData = {}; // {typeID:'', typeIDOther: '' }
 
+    //@ngInject
 	constructor(public orderTemplateService, public observerService) {
     }
     
@@ -73,6 +74,7 @@ class MonatFlexshipCancelModal {
         return directive;
     }
 
+	//@ngInject
 	constructor(private monatFrontendBasePath, 
 				private slatwallPathBuilder, 
 				private $hibachi,

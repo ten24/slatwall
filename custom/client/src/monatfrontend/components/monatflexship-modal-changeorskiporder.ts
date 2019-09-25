@@ -14,7 +14,8 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	}; 
 	
 	public selectedReason;
-
+	
+	//@ngInject
     constructor(public orderTemplateService, public observerService) {
     }
     

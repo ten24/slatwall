@@ -1,7 +1,9 @@
 
 class MonatFlexshipOrderItemController {
     public orderItem;
-    constructor(public orderTemplateService) {
+    
+    //@ngInject
+    constructor() {
     }
     public $onInit = () => {};
 }

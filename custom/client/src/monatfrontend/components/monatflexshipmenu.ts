@@ -11,14 +11,13 @@ class MonatFlexshipMenuController{
 	
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
-
+    
+    //@ngInject
 	constructor( 
 		public orderTemplateService,
 		public observerService,
 		public ModalService
-	){
-
-	}
+	){ }
 	
 	public $onInit = () =>{
 	}

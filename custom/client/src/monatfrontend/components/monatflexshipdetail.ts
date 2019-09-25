@@ -2,8 +2,11 @@
 class MonatFlexshipDetailController {
     public orderTemplateId: string;
     public orderTemplate: {};
+    
+    //@ngInject
     constructor(public orderTemplateService) {
     }
+    
     public $onInit = () => {
         if (this.orderTemplate == null) {
             this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateId)

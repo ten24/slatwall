@@ -12,6 +12,7 @@ class MonatFlexshipShippingMethodModalController {
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default
 
+	//@ngInject
     constructor(public orderTemplateService, public observerService) {}
     
     public $onInit = () => {

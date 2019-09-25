@@ -59324,6 +59324,7 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCancelModalController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipCancelModalController(orderTemplateService, observerService) {
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
@@ -59353,6 +59354,7 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
     return MonatFlexshipCancelModalController;
 }());
 var MonatFlexshipCancelModal = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipCancelModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
         this.monatFrontendBasePath = monatFrontendBasePath;
         this.slatwallPathBuilder = slatwallPathBuilder;
@@ -59393,6 +59395,7 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -59509,6 +59512,7 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -59639,6 +59643,7 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -59748,8 +59753,8 @@ exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipOrderItemController = /** @class */ (function () {
-    function MonatFlexshipOrderItemController(orderTemplateService) {
-        this.orderTemplateService = orderTemplateService;
+    //@ngInject
+    function MonatFlexshipOrderItemController() {
         this.$onInit = function () { };
     }
     return MonatFlexshipOrderItemController;
@@ -59794,8 +59799,8 @@ exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipOrderTotalCardController = /** @class */ (function () {
-    function MonatFlexshipOrderTotalCardController(orderTemplateService) {
-        this.orderTemplateService = orderTemplateService;
+    //@ngInject
+    function MonatFlexshipOrderTotalCardController() {
         this.$onInit = function () { };
     }
     return MonatFlexshipOrderTotalCardController;
@@ -59840,11 +59845,8 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipShippingAndBillingCardController = /** @class */ (function () {
-    function MonatFlexshipShippingAndBillingCardController(orderTemplateService) {
-        var _this = this;
-        this.orderTemplateService = orderTemplateService;
+    function MonatFlexshipShippingAndBillingCardController() {
         this.$onInit = function () {
-            console.log('ot', _this.orderTemplate);
         };
     }
     return MonatFlexshipShippingAndBillingCardController;
@@ -59889,11 +59891,11 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipCardController(observerService) {
         var _this = this;
         this.observerService = observerService;
         this.$onInit = function () {
-            console.log('flexship card: ', _this);
             _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
         };
         this.updateOrderTemplate = function (orderTemplate) {
@@ -59950,6 +59952,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipDetailController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipDetailController(orderTemplateService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -60008,6 +60011,7 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipListingController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipListingController(orderTemplateService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -60027,8 +60031,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
                 console.error(reason);
-            })
-                .finally(function () {
+            }).finally(function () {
                 _this.initialized = true;
             });
         };
@@ -60073,6 +60076,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipMenuController(orderTemplateService, observerService, ModalService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
@@ -60237,6 +60241,7 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFReviewListingController = /** @class */ (function () {
+    //@ngInject
     function SWFReviewListingController($hibachi, $scope, requestService) {
         var _this = this;
         this.$hibachi = $hibachi;
@@ -60637,6 +60642,7 @@ exports.MonatService = MonatService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
+    //@ngInject
     function OrderTemplateService(requestService, $hibachi) {
         var _this = this;
         this.requestService = requestService;
