@@ -2,8 +2,10 @@ class VIPController {
     public Account_CreateAccount;
     public countryCodeOptions:any = [];
     public stateCodeOptions:any = [];
-    public currentCountryCode:string;
-    public currentStateCode:string;
+    public currentCountryCode:string = '';
+    public currentStateCode:string = '';
+    public mpSearchText:string = '';
+    public currentMpPage:number = 1;
 
     // @ngInject
     constructor(
@@ -26,15 +28,22 @@ class VIPController {
     }
     
     public getStateCodeOptions = countryCode => {
-        if ( this.countryCodeOptions.length && countryCode === this.currentCountryCode ) {
-            return this.countryCodeOptions;
-        }
-        
         this.currentCountryCode = countryCode;
         
         this.$rootScope.slatwall.getStates( countryCode ).then( data => {
             this.stateCodeOptions = data.stateCodeOptions;
         });
+    }
+    
+    public getMpResults = () => {
+        this.$rootScope.slatwall.marketPartnerResults = this.$rootScope.slatwall.doAction(
+            '/?slatAction=monat:public.getmarketpartners'
+			+ '&search='+ this.mpSearchText 
+			+ '&currentPage='+ this.currentMpPage 
+			+ '&accountTypeCode=D'
+			+ '&countryCode=' + this.currentCountryCode
+			+ '&stateCode=' + this.currentStateCode
+		);
     }
     
 }

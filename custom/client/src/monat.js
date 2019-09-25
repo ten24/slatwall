@@ -59319,6 +59319,10 @@ var VIPController = /** @class */ (function () {
         this.$scope = $scope;
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
+        this.currentCountryCode = '';
+        this.currentStateCode = '';
+        this.mpSearchText = '';
+        this.currentMpPage = 1;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
@@ -59331,13 +59335,18 @@ var VIPController = /** @class */ (function () {
             });
         };
         this.getStateCodeOptions = function (countryCode) {
-            if (_this.countryCodeOptions.length && countryCode === _this.currentCountryCode) {
-                return _this.countryCodeOptions;
-            }
             _this.currentCountryCode = countryCode;
             _this.$rootScope.slatwall.getStates(countryCode).then(function (data) {
                 _this.stateCodeOptions = data.stateCodeOptions;
             });
+        };
+        this.getMpResults = function () {
+            _this.$rootScope.slatwall.marketPartnerResults = _this.$rootScope.slatwall.doAction('/?slatAction=monat:public.getmarketpartners'
+                + '&search=' + _this.mpSearchText
+                + '&currentPage=' + _this.currentMpPage
+                + '&accountTypeCode=D'
+                + '&countryCode=' + _this.currentCountryCode
+                + '&stateCode=' + _this.currentStateCode);
         };
     }
     return VIPController;
