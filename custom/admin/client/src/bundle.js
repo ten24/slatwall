@@ -71107,10 +71107,24 @@ var ReturnOrderItem = /** @class */ (function () {
             }
             return 0;
         };
+        this.getAllocatedRefundOrderPVDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * 100 / _this.pvTotal) / 100;
+            }
+            return 0;
+        };
+        this.getAllocatedRefundOrderCVDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * 100 / _this.cvTotal) / 100;
+            }
+            return 0;
+        };
         obj && Object.assign(this, obj);
         this.refundTotal = 0;
         this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
         this.total = this.calculatedExtendedPriceAfterDiscount;
+        this.pvTotal = this.calculatedExtendedPersonalVolumeAfterDiscount;
+        this.cvTotal = this.calculatedExtendedCommissionableVolumeAfterDiscount;
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
@@ -71126,6 +71140,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.orderPayments = [];
         this.refundSubtotal = 0;
         this.refundTotal = 0;
+        this.refundPVTotal = 0;
+        this.refundCVTotal = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
             for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
@@ -71142,13 +71158,15 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             });
         };
         this.getDisplayPropertiesList = function () {
-            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns".replace(/\s+/gi, '');
-            // calculatedExtendedPersonalVolumeAfterDiscount,
-            // calculatedExtendedCommissionableVolumeAfterDiscount,
+            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
         };
         this.updateOrderItem = function (orderItem) {
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
+            orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
+            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
+            orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
+            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
             _this.validateRefundItemAmount(orderItem);
             orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
             if ((orderItem.refundTotal > orderItem.total) && _this.orderType != 'otRefundOrder') {
@@ -71186,14 +71204,26 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.updateRefundTotals = function () {
             var refundSubtotal = 0;
+            var refundPVTotal = 0;
+            var refundCVTotal = 0;
             var allocatedOrderDiscountAmountTotal = 0;
+            var allocatedOrderPVDiscountAmountTotal = 0;
+            var allocatedOrderCVDiscountAmountTotal = 0;
             _this.orderItems.forEach(function (item) {
                 refundSubtotal += item.refundTotal + item.taxRefundAmount;
+                refundPVTotal += item.refundPVTotal;
+                refundCVTotal += item.refundCVTotal;
                 allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
+                allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount();
+                allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount();
             });
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+            _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
+            _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
             _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
+            _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
         this.updatePaymentTotals = function () {
             for (var i = _this.orderPayments.length - 1; i >= 0; i--) {

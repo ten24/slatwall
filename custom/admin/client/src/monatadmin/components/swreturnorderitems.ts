@@ -4,15 +4,23 @@ class ReturnOrderItem{
     public sku_calculatedSkuDefinition:string;
     public calculatedDiscountAmount:number;
     public calculatedExtendedPriceAfterDiscount:number;
+    public calculatedExtendedPersonalVolumeAfterDiscount:number;
+    public calculatedExtendedCommissionableVolumeAfterDiscount:number;
     public calculatedExtendedUnitPriceAfterDiscount:number;
     public calculatedTaxAmount:number;
     public allocatedOrderDiscountAmount:number;
+    public allocatedOrderPersonalVolumeDiscountAmount:number;
+    public allocatedOrderCommissionableVolumeDiscountAmount:number;
     public sku_skuCode:string;
     public sku_product_calculatedTitle:string;
     public calculatedQuantityDeliveredMinusReturns:number;
     public refundTotal:number;
+    public refundPVTotal:number;
+    public refundCVTotal:number;
     public returnQuantityMaximum:number;
     public total:number;
+    public pvTotal:number;
+    public cvTotal:number;
     public refundUnitPrice:number;
     public taxTotal:number;
     public taxRefundAmount:number;
@@ -23,6 +31,8 @@ class ReturnOrderItem{
         this.refundTotal=0;
         this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
         this.total = this.calculatedExtendedPriceAfterDiscount;
+        this.pvTotal = this.calculatedExtendedPersonalVolumeAfterDiscount;
+        this.cvTotal = this.calculatedExtendedCommissionableVolumeAfterDiscount;
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
@@ -33,6 +43,20 @@ class ReturnOrderItem{
     public getAllocatedRefundOrderDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
             return Math.round(this.allocatedOrderDiscountAmount * this.refundTotal * 100 / this.total) / 100;
+        }
+        return 0;
+    }
+    
+    public getAllocatedRefundOrderPVDiscountAmount = ()=>{
+        if(this.returnQuantity >= 0){
+            return Math.round(this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * 100 / this.pvTotal) / 100;
+        }
+        return 0;
+    }
+    
+    public getAllocatedRefundOrderCVDiscountAmount = ()=>{
+        if(this.returnQuantity >= 0){
+            return Math.round(this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * 100 / this.cvTotal) / 100;
         }
         return 0;
     }
@@ -51,10 +75,14 @@ class SWReturnOrderItemsController{
     public orderPayments:Array<Object> = [];
     public refundSubtotal:number=0;
     public refundTotal:number=0;
+    public refundPVTotal:number=0;
+    public refundCVTotal:number=0;
     public initialFulfillmentRefundAmount:string;
     public fulfillmentRefundAmount:number;
     public maxFulfillmentRefundAmount:number;
     public allocatedOrderDiscountAmountTotal;
+    public allocatedOrderPVDiscountAmountTotal;
+    public allocatedOrderCVDiscountAmountTotal;
     public currencySymbol:string;
 
     public setupOrderItemCollectionList = () =>{
@@ -83,12 +111,13 @@ class SWReturnOrderItemsController{
                 calculatedExtendedUnitPriceAfterDiscount,
                 calculatedTaxAmount,
                 allocatedOrderDiscountAmount,
+                allocatedOrderPersonalVolumeDiscountAmount,
+                allocatedOrderCommissionableVolumeDiscountAmount,
                 sku.skuCode,
                 sku.product.calculatedTitle,
-                calculatedQuantityDeliveredMinusReturns`.replace(/\s+/gi,'');
-                
-                // calculatedExtendedPersonalVolumeAfterDiscount,
-                // calculatedExtendedCommissionableVolumeAfterDiscount,
+                calculatedQuantityDeliveredMinusReturns,
+                calculatedExtendedPersonalVolumeAfterDiscount,
+                calculatedExtendedCommissionableVolumeAfterDiscount`.replace(/\s+/gi,'');
                 
     }
     
@@ -116,6 +145,10 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
+       orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
+       orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
+       orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
+       orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
         
        this.validateRefundItemAmount(orderItem);
        
@@ -161,17 +194,29 @@ class SWReturnOrderItemsController{
    
     private updateRefundTotals = () =>{
        let refundSubtotal = 0;
+       let refundPVTotal = 0;
+       let refundCVTotal = 0;
        let allocatedOrderDiscountAmountTotal = 0;
+       let allocatedOrderPVDiscountAmountTotal = 0;
+       let allocatedOrderCVDiscountAmountTotal = 0;
         
         this.orderItems.forEach((item:any)=>{
             refundSubtotal += item.refundTotal + item.taxRefundAmount;
+            refundPVTotal += item.refundPVTotal;
+            refundCVTotal += item.refundCVTotal;
             allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
+            allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount();
+            allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount();
         })
         this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+        this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
+        this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
 
         this.refundSubtotal = refundSubtotal;
 
         this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundAmount - this.allocatedOrderDiscountAmountTotal).toFixed(2));
+        this.refundPVTotal = Number(refundPVTotal.toFixed(2));
+        this.refundCVTotal = Number(refundCVTotal.toFixed(2));
     }
    
    private updatePaymentTotals = ()=>{

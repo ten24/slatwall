@@ -62,6 +62,27 @@ component extends="Slatwall.model.service.OrderService" {
         }
         return replacementOrderItem;
     }
+    
+    public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
+		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
+		var allocatedOrderPVDiscountAmount = arguments.processObject.getAllocatedOrderPVDiscountAmountTotal();
+		var allocatedOrderCVDiscountAmount = arguments.processObject.getAllocatedOrderCVDiscountAmountTotal();
+		
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+			var promotionApplied = getService('PromotionService').newPromotionApplied();
+			promotionApplied.setOrder(returnOrder);
+			if(arguments.order.hasAppliedPromotion()){
+				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
+			}
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setPersonalVolumeDiscountAmount(allocatedOrderPVDiscountAmount * -1);
+			promotionApplied.setCommissionableVolumeDiscountAmount(allocatedOrderCVDiscountAmount * -1);
+			
+			promotionApplied.setManualDiscountAmountFlag(true);
+			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
+		}
+		return returnOrder;
+	}
 
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;

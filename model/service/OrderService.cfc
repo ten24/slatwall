@@ -2152,7 +2152,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return returnOrder;
 	}
 	
-	private any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
+	public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
 		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
@@ -4062,6 +4062,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
 						newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
 						newOrderReturnItem.setOrderReturn(arguments.orderReturn);
+						newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
 						orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
 						newOrderReturnItem.setQuantity(thisRecord.stockLoss);
 						this.saveOrderItem(orderReturnItem);
