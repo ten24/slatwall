@@ -1,7 +1,7 @@
 
 class MonatFlexshipDetailController {
     public orderTemplateId: string;
-    public orderTemplate: {};
+    public orderTemplate: any;
     
     //@ngInject
     constructor(public orderTemplateService) {
@@ -13,7 +13,6 @@ class MonatFlexshipDetailController {
             .then(
 	            (response) => {
 	                this.orderTemplate = response.orderTemplate;
-	                console.log('ot', this.orderTemplate); 
 	            }, 
 	            (reason) => {
 	                throw (reason);

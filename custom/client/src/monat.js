@@ -59958,8 +59958,22 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipShippingAndBillingCardController = /** @class */ (function () {
-    function MonatFlexshipShippingAndBillingCardController() {
+    //@ngInject
+    function MonatFlexshipShippingAndBillingCardController(rbkeyService) {
+        var _this = this;
+        this.rbkeyService = rbkeyService;
         this.$onInit = function () {
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['creditCardInfoLastFourDigit'] = _this.rbkeyService.rbKey('frontend.flexshipDetails.creditCardInfoLastFourDigit', { 'lastFourDigit': _this.orderTemplate.accountPaymentMethod_creditCardLastFour });
+            var creditCardInfoExpirationReplaceStringData = {
+                'month': _this.orderTemplate.accountPaymentMethod_expirationMonth,
+                'year': _this.orderTemplate.accountPaymentMethod_expirationYear
+            };
+            _this.translations['creditCardInfoExpiration'] = _this.rbkeyService.rbKey('frontend.flexshipDetails.creditCardInfoExpiration', creditCardInfoExpirationReplaceStringData);
         };
     }
     return MonatFlexshipShippingAndBillingCardController;
@@ -60077,7 +60091,6 @@ var MonatFlexshipDetailController = /** @class */ (function () {
                 _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
                     .then(function (response) {
                     _this.orderTemplate = response.orderTemplate;
-                    console.log('ot', _this.orderTemplate);
                 }, function (reason) {
                     throw (reason);
                 });

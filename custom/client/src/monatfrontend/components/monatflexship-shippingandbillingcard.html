@@ -37,11 +37,11 @@
 		</li>
 		<li>
 			<h6 class="title-sm"> <span sw-rbkey="'frontend.flexshipDetails.deliveryMethod'"></span> </h6>
-			<p>Standard shipping `<br> $5.95</p>
+			<p> {{monatFlexshipShippingAndBillingCard.orderTemplate.shippingMethod_shippingMethodName}} <br> {{monatFlexshipShippingAndBillingCard.orderTemplate.fulfillmentTotal | currency}}</p>
 		</li>
 		<li>
-			<h6 class="title-sm"><span sw-rbkey="'flexshipDetails.creditCard'"></span></h6>
-			<p>Ending in 7589 `<br> Exp 11/2020</p>
+			<h6 class="title-sm"><span sw-rbkey="'frontend.flexshipDetails.creditCard'"></span></h6>
+			<p>{{monatFlexshipShippingAndBillingCard.translations.creditCardInfoLastFourDigit}} <br> {{monatFlexshipShippingAndBillingCard.translations.creditCardInfoExpiration}}</p>
 		</li>
 	</ul>
 </div>

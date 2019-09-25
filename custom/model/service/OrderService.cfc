@@ -28,8 +28,8 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
-		
+		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
