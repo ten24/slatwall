@@ -6,11 +6,20 @@ class MonatFlexshipCancelModalController {
 	public formData = {}; // {typeID:'', typeIDOther: '' }
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService) {
+	constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
+    	this.makeTranslations();
     };
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	 this.translations['whyAreYouCancelling'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.whyAreYouCancelling');
+    	 this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
+    	 this.translations['flexshipCancelOtherReasonNotes'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
+    }
     
     public cancelFlexship() {
 

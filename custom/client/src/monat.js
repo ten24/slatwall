@@ -59369,11 +59369,21 @@ exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCancelModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipCancelModalController(orderTemplateService, observerService) {
+    function MonatFlexshipCancelModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
         this.formData = {}; // {typeID:'', typeIDOther: '' }
         this.$onInit = function () {
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['whyAreYouCancelling'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.whyAreYouCancelling');
+            _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
+            _this.translations['flexshipCancelOtherReasonNotes'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
         };
     }
     MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
@@ -59440,17 +59450,30 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService) {
+    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService, rbkeyService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
         this.endDayOfTheMonth = 25;
         this.formData = {
             delayOrSkip: '',
             showOtherReasonNotes: false,
         };
         this.$onInit = function () {
+            _this.makeTranslations();
             _this.calculateNextPlacedDateTime();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['changeOrSkip'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
+            _this.translations['delayOrSkipMessage'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days: 45 });
+            _this.translations['delayThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
+            _this.translations['skipThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
+            _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
+            _this.translations['whyAreYouCancellingFlexship'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
+            _this.translations['flexshipCancelOtherReason'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
         };
         this.calculateNextPlacedDateTime = function () {
             //format mm/dd/yyyy
@@ -77166,6 +77189,17 @@ var RbKeyService = /** @class */ (function () {
             ////$log.debug(this.getConfig().rbLocale);
             var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
             ////$log.debug(keyValue);
+            /**
+             * const templateString = "Hello ${this.name}!";
+               const replaceStringData = {
+                    name: "world"
+                }
+             *
+             */
+            if (replaceStringData) {
+                //coppied from  https://github.com/mikemaccana/dynamic-template
+                keyValue = keyValue.replace(/\${(.*?)}/g, function (_, g) { return replaceStringData[g]; });
+            }
             return keyValue;
         };
         this.getRBKey = function (key, locale, checkedKeys, originalKey) {

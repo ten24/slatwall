@@ -16,12 +16,28 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public selectedReason;
 	
 	//@ngInject
-    constructor(public orderTemplateService, public observerService) {
+    constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
+    	this.makeTranslations();
     	this.calculateNextPlacedDateTime();
     };
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	
+    	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
+    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 45 });
+    	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
+    	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
+    	this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
+    	this.translations['whyAreYouCancellingFlexship'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
+    	this.translations['flexshipCancelOtherReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
+
+    	
+    }
     
     
     private calculateNextPlacedDateTime = () => {
