@@ -1,16 +1,16 @@
 
 class MonatFlexshipPaymentMethodModalController {
     public orderTemplate; 
-    public accountPaymentMethods: any[];
-    public accountAddresses: any[];
-    public expirationMonthOptions: any[];
-	public expirationYearOptions: any[];
+    public accountPaymentMethods: Array<{}>;
+    public accountAddresses: Array<{}>;
+    public expirationMonthOptions: Array<{}>;
+	public expirationYearOptions: Array<{}>;
     
     
     public existingBillingAccountAddress; 
 	public selectedBillingAccountAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingAccountPaymentMethod; 
-	public selectedAccountPaymentMethod = { accountPaymentMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public selectedAccountPaymentMethod = { accountPaymentMethodID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; // hard-coded default
@@ -20,8 +20,6 @@ class MonatFlexshipPaymentMethodModalController {
     constructor(public orderTemplateService, public observerService) {
     }
     public $onInit = () => {
-    	console.log('monatFlexshipPaymentMethodModal', this);
-    	
     	/**
     	 * Find and set old billing-address if any
     	*/ 
@@ -47,12 +45,10 @@ class MonatFlexshipPaymentMethodModalController {
     }
     
     public setSelectedBillingAccountAddressID(accountAddressID:any = 'new') {
-    	console.warn("selected billing address id :", accountAddressID);
     	this.selectedBillingAccountAddress.accountAddressID = accountAddressID;
     }
     
     public setSelectedAccountPaymentMethodID(accountPaymentMethodID:any = 'new') {
-    	console.warn("selected account-payment-method id :", accountPaymentMethodID);
     	this.selectedAccountPaymentMethod.accountPaymentMethodID = accountPaymentMethodID;
     }
     
@@ -73,9 +69,9 @@ class MonatFlexshipPaymentMethodModalController {
     		payload['newAccountPaymentMethod'] = this.newAccountPaymentMethod;
     	}
  
+		//flattning it for hibachi
     	payload = this.orderTemplateService.getFlattenObject(payload);
-    	console.log("updateBilling", payload);
-    	
+
     	// make api request
         this.orderTemplateService.updateBilling(payload).then(
             (response) => {

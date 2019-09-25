@@ -12,10 +12,9 @@
  
                 <select type="text" class="form-control" 
         			ng-model="monatFlexshipCancelModal.formData.typeID"
+        			ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions track by reason.value"
         			placeholder="Flexship cancel reason *">
                 	<option value="">Why are you canceling your flexship? `</option>
-    			    <option ng-repeat="x in monatFlexshipCancelModal.cancellationReasonTypeOptions" 
-    			            value={{x.value}}>{{x.name}}</option>
     			</select> 
     			<br/>
     			<div class="form-group">

@@ -66,10 +66,9 @@
             		<div class="form-group">
             			<select type="text" class="form-control" 
             			ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
+            			ng-options="state as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions track by state.value"
             			placeholder="State *">
             			    <option value="">Select your State * `</option>
-            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.stateCodeOptions" 
-            			            value={{x.value}}>{{x.name}}</option>
             			</select>     
             		</div>
             		
@@ -87,7 +86,7 @@
         		
         		<br/> <!-- end select billing address-->
 	    	
-			    <h6 class="title-with-line mb-5">Payment Method</h6>
+			    <h6 class="title-with-line mb-5">Payment Method `</h6>
 			    
 			    <div class="custom-radio form-group" 
 			    	 ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
@@ -138,20 +137,18 @@
 		    		<div class="form-group">
             			<select type="text" class="form-control" 
             			ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
-            			placeholder="Expiration Month *">
+            			ng-options="month for month in monatFlexshipPaymentMethodModal.expirationMonthOptions"
+            			placeholder="Expiration Month * `">
             			    <option value="">Expiration Month * `</option>
-            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.expirationMonthOptions" 
-            			            value={{x}}>{{x}}</option>
             			</select>     
             		</div>
             		
             		<div class="form-group">
             			<select type="text" class="form-control" 
             			ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+            			ng-options="year as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions track by year.VALUE"
             			placeholder="Expiration Year *">
             			    <option value="">Expiration Year * `</option>
-            			    <option ng-repeat="x in monatFlexshipPaymentMethodModal.expirationYearOptions" 
-            			            value={{x.VALUE}}>{{x.NAME}}</option>
             			</select>     
             		</div>
             		

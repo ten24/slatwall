@@ -75,6 +75,36 @@ class MonatFlexshipMenuController{
 		);
 	}
 	
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+	public showFlexshipEditPaymentMethodModal = () => {
+		this.ModalService.closeModals();
+		
+		this.ModalService.showModal({
+		      component: 'monatFlexshipPaymentMethodModal',
+			  bindings: {
+			    orderTemplate: this.orderTemplate,
+			    accountAddresses: this.accountAddresses,
+			    accountPaymentMethods: this.accountPaymentMethods
+			    stateCodeOptions: this.stateCodeOptions,
+			    expirationMonthOptions: this.expirationMonthOptions,
+			    expirationYearOptions: this.expirationYearOptions,
+			  },
+		      preClose: (modal) => { modal.element.modal('hide'); }
+		}).then( 
+			(modal) => {
+				  //it's a bootstrap element, use 'modal' to show it
+			      modal.element.modal();
+			      
+			      modal.close.then(function(result) { 
+			      	//....
+			      });
+			}, 
+			(error) => {
+			    console.error("unable to open model :",error);	
+			}
+		);
+	}
+	
 	
    public activateFlexship() {
  

@@ -59410,7 +59410,6 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             var date = new Date(Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime));
             _this.nextPlaceDateTime = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             _this.endDayOfTheMonth = 25;
-            // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
             _this.endDate = Date.parse((date.getMonth() + 1 + 3) + "/" + date.getDate() + "/" + date.getFullYear());
         };
         this.updateDelayOrSkip = function (val) {
@@ -59515,12 +59514,11 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.selectedBillingAccountAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
-        this.selectedAccountPaymentMethod = { accountPaymentMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.selectedAccountPaymentMethod = { accountPaymentMethodID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
         this.newAddress = { 'countryCode': 'US' }; // hard-coded default
         this.newAccountPaymentMethod = {};
         this.$onInit = function () {
-            console.log('monatFlexshipPaymentMethodModal', _this);
             /**
              * Find and set old billing-address if any
             */
@@ -59543,12 +59541,10 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
     }
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
-        console.warn("selected billing address id :", accountAddressID);
         this.selectedBillingAccountAddress.accountAddressID = accountAddressID;
     };
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedAccountPaymentMethodID = function (accountPaymentMethodID) {
         if (accountPaymentMethodID === void 0) { accountPaymentMethodID = 'new'; }
-        console.warn("selected account-payment-method id :", accountPaymentMethodID);
         this.selectedAccountPaymentMethod.accountPaymentMethodID = accountPaymentMethodID;
     };
     MonatFlexshipPaymentMethodModalController.prototype.updateBilling = function () {
@@ -59568,8 +59564,8 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
         else {
             payload['newAccountPaymentMethod'] = this.newAccountPaymentMethod;
         }
+        //flattning it for hibachi
         payload = this.orderTemplateService.getFlattenObject(payload);
-        console.log("updateBilling", payload);
         // make api request
         this.orderTemplateService.updateBilling(payload).then(function (response) {
             if (response.orderTemplate) {
@@ -60115,6 +60111,30 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showFlexshipEditPaymentMethodModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipPaymentMethodModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    accountAddresses: _this.accountAddresses,
+                    accountPaymentMethods: _this.accountPaymentMethods,
+                    stateCodeOptions: _this.stateCodeOptions,
+                    expirationMonthOptions: _this.expirationMonthOptions,
+                    expirationYearOptions: _this.expirationYearOptions,
                 },
                 preClose: function (modal) { modal.element.modal('hide'); }
             }).then(function (modal) {

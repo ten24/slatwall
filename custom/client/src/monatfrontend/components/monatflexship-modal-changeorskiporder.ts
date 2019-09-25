@@ -28,7 +28,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
-	    // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDate = Date.parse(`${(date.getMonth() + 1 +3)}/${date.getDate()}/${date.getFullYear()}`);
     }
     
