@@ -33,20 +33,13 @@ class MonatFlexshipMenuController{
 			    orderTemplate: this.orderTemplate,
 			    cancellationReasonTypeOptions: this.cancellationReasonTypeOptions
 			  },
-		      preClose: (modal) => { modal.element.modal('hide'); }
-		}).then( 
-			(modal) => {
-				  //it's a bootstrap element, use 'modal' to show it
-			      modal.element.modal();
-			      
-			      modal.close.then(function(result) { 
-			      	//....
-			      });
-			}, 
-			(error) => {
-			    console.error("unable to open model :",error);	
-			}
-		);
+		}).then((modal) => {
+			  //it's a bootstrap element, use 'modal' to show it
+		      modal.element.modal();
+		      modal.close.then((result) => {});
+		}).catch((error) => {
+		    console.error("unable to open model :",error);	
+		});
 	}
 	
 	
@@ -59,21 +52,14 @@ class MonatFlexshipMenuController{
 			  bindings: {
 			    orderTemplate: this.orderTemplate,
 			    scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions
-			  },
-		      preClose: (modal) => { modal.element.modal('hide'); }
-		}).then( 
-			(modal) => {
-				  //it's a bootstrap element, use 'modal' to show it
-			      modal.element.modal();
-			      
-			      modal.close.then(function(result) { 
-			      	//....
-			      });
-			}, 
-			(error) => {
-			    console.error("unable to open model :",error);	
-			}
-		);
+			  }
+		}).then((modal) => {
+			  //it's a bootstrap element, use 'modal' to show it
+		      modal.element.modal();
+		      modal.close.then((result) => {});
+		}).catch((error) => {
+		    console.error("unable to open model :",error);	
+		});
 	}
 	
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -90,26 +76,18 @@ class MonatFlexshipMenuController{
 			    expirationMonthOptions: this.expirationMonthOptions,
 			    expirationYearOptions: this.expirationYearOptions
 			  },
-		      preClose: (modal) => { modal.element.modal('hide'); }
-		}).then( 
-			(modal) => {
-				  //it's a bootstrap element, use 'modal' to show it
-			      modal.element.modal();
-			      
-			      modal.close.then(function(result) { 
-			      	//....
-			      });
-			}, 
-			(error) => {
-			    console.error("unable to open model :",error);	
-			}
-		);
+		}).then((modal) => {
+			  //it's a bootstrap element, use 'modal' to show it
+		      modal.element.modal();
+		      modal.close.then((result) => {});
+		}).catch((error) => {
+		    console.error("unable to open model :",error);	
+		});
 	}
 	
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
 	public showFlexshipEditShippingMethodModal = () => {
 		this.ModalService.closeModals();
-		
 		this.ModalService.showModal({
 		      component: 'monatFlexshipShippingMethodModal',
 			  bindings: {
@@ -118,65 +96,49 @@ class MonatFlexshipMenuController{
 			    shippingMethodOptions: this.shippingMethodOptions,
 			    stateCodeOptions: this.stateCodeOptions
 			  },
-		      preClose: (modal) => { modal.element.modal('hide'); }
-		}).then( 
-			(modal) => {
-				  //it's a bootstrap element, use 'modal' to show it
-			      modal.element.modal();
-			      
-			      modal.close.then(function(result) { 
-			      	//....
-			      });
-			}, 
-			(error) => {
-			    console.error("unable to open model :",error);	
-			}
-		);
+		}).then((modal) => {
+			  //it's a bootstrap element, use 'modal' to show it
+		      modal.element.modal();
+		      modal.close.then((result) => {});
+		}).catch((error) => {
+		    console.error("unable to open model :",error);	
+		});
 	}
 	
 	
    public activateFlexship() {
  
-    	let payload = {};
-    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload = this.orderTemplateService.getFlattenObject(payload);
     	// make api request
-        this.orderTemplateService.activate(payload).then(
-            (data) => {
-            	if(data.orderTemplate) {
-	                this.orderTemplate = data.orderTemplate;
-	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
-            	} else{
-            		console.error(data);
-            	}
-            	// TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        );
+        this.orderTemplateService.activateOrderTemplate(this.orderTemplate.orderTemplateID)
+        .then((data) => {
+        	if(data.orderTemplate) {
+                this.orderTemplate = data.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+        	} else {
+        		console.error(data);
+        	}
+        	// TODO: show alert
+        }).catch((reason) => {
+            throw (reason);
+            // TODO: show alert
+        });
     }
     
     public setAsCurrentFlexship() {
-    	let payload = {};
-    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
- 
-    	payload = this.orderTemplateService.getFlattenObject(payload);
-    	//return;
+    	
     	// make api request
-        this.orderTemplateService.setAsCurrentFlexship(payload).then(
-            (data) => {
-            	console.warn('setAsCurrentFlexship :',data);
-            	if(data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
-            		this.$window.location.href = '/shop';
-            	}
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        );
+        this.orderTemplateService.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
+        .then((data) => {
+        	if(data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+        		this.$window.location.href = '/shop';
+        	} else {
+        		// TODO: show alert
+        		console.error("setAsCurrentFlexship :",data);	
+        	}
+        }).catch((reason) => {
+            throw (reason);
+            // TODO: show alert
+        });
     }
 
 }

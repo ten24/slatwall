@@ -66,9 +66,13 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public setAsCurrentFlexship = (data) => {
+    public setAsCurrentFlexship = (orderTemplateID) => {
+        let payload = {
+            'orderTemplateID' : orderTemplateID
+        };
+        
        return this.requestService
-                  .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', data)
+                  .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', payload)
                   .promise;
     }
     
