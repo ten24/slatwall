@@ -237,27 +237,6 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
     }
     
-    public any function createWishlist( required struct data ) {
-        param name="arguments.data.orderTemplateName";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
-        
-        if(getHibachiScope().getAccount().isNew()){
-            return;
-        }
-        
-        var orderTemplate = getOrderService().newOrderTemplate();
-        var processObject = orderTemplate.getProcessObject("createWishlist");
-        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-    
-        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setSiteID(arguments.data.siteID);
-        processObject.setOrderTemplateTypeID(wishlistTypeID);
-        
-        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
-        
-        getHibachiScope().addActionResult( "public:order.createWishlist", orderTemplate.hasErrors() );
-    }
-    
     public any function updatePrimaryEmailAddress(required struct data) {
         var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'updatePrimaryEmailAddress');
         if (account.hasErrors()) {
@@ -1774,13 +1753,7 @@ component  accessors="true" output="false"
 			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
 			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
 			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"   :   wishListItem.getSkuAdjustedPricing().personalVolume?:"",
-			      "accountPriceGroup"   :   wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuURL"   :    wishlistItem.getSkuProductURL()?:"",
-			      "skuImage"   :    wishlistItem.getSkuImagePath()?:"",
-			      "skuProductName"   :    wishlistItem.getSku().getProduct().getProductName()?:"",
-			      
+			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
@@ -1836,4 +1809,15 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
+    
+    public void function getAllOrdersOnAccount(required any data){
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID});
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+    
+    public void function getOrderItemsByOrderID(required any data){
+        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow = arguments.data.pageRecordsShow });
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
+    }
+    
 }

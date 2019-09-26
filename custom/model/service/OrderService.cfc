@@ -105,6 +105,26 @@ component extends="Slatwall.model.service.OrderService" {
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
+	
+	public any function getOrderItemsByOrderID(struct data={}) {
+        param name="arguments.data.orderID" default="";
+        param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=10;
+        
+
+		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
+		
+		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
+		
+		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return ordersItemsList.getPageRecords();
+
+    }
     
     public string function getSimpleRepresentation(required any order){
 		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
@@ -135,3 +155,4 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.orderDelivery;
 	}
 }
+
