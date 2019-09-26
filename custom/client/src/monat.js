@@ -59476,7 +59476,7 @@ var MonatFlexshipConfirmController = /** @class */ (function () {
             _this.makeTranslations();
         };
         this.cancel = function () {
-            _this.close(null, 100); // close, but give 100ms to animate
+            _this.close(null); // close, but give 100ms to animate
         };
         this.translations = {};
         this.makeTranslations = function () {
@@ -59487,7 +59487,7 @@ var MonatFlexshipConfirmController = /** @class */ (function () {
                 'selectedFreq': "1 month",
                 'selectedDate': "14",
             };
-            _this.close(result, 100);
+            _this.close(result);
         };
     }
     return MonatFlexshipConfirmController;

@@ -16,7 +16,7 @@ class MonatFlexshipConfirmController {
     };
     
     public cancel = () => {
-     	this.close(null, 100); // close, but give 100ms to animate
+     	this.close(null); // close, but give 100ms to animate
      };
     
     public translations = {};
@@ -29,7 +29,7 @@ class MonatFlexshipConfirmController {
     	    'selectedFreq' : "1 month", 
     	    'selectedDate' : "14", 
     	};
-    	this.close(result, 100);
+    	this.close(result);
     }
 }
 
