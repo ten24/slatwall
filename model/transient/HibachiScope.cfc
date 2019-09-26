@@ -384,9 +384,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
 			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName
-			,accountAddresses.address.emailAddress,accountAddresses.accountAddressName,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,
+			,accountAddresses.address.emailAddress,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,
 			accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,
-			accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,
+			accountAddresses.address.company,accountAddresses.accountAddressName,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,
 			accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,
 			primaryAddress.address.countrycode,primaryAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.accountPaymentMethodName,accountPaymentMethods.activeFlag","[[:space:]]","","all");
 	}
