@@ -4,8 +4,8 @@ class MonatProductCardController {
 	public loading:boolean;
 	public newTemplateID:string;
 	public orderTemplates:Array<any>;
-	public pageRecordsShow = 5;
-	public currentPage = 1;
+	public pageRecordsShow:number = 5;
+	public currentPage:number = 1;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public allProducts:Array<any>;
     private wishlistTemplateID:string;
