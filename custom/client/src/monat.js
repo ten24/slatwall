@@ -59377,6 +59377,7 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
                     .then(function (response) {
                     _this.orderTemplate = response.orderTemplate;
+                    _this.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
                     console.log('FLX cart container ot: ', _this.orderTemplate);
                     //TODO handle errors / success
                 }, function (reason) {
@@ -59387,8 +59388,8 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
         this.removeOrderTemplateItem = function (item) {
             _this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(function (data) {
                 if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
-                    var index = _this.orderTemplate.orderTemplateItems.findIndex(function (it) { return it.id === item.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplate.orderTemplateItems = _this.orderTemplate.orderTemplateItems.splice(index, 1).splice(index, 1); //remove element from array
+                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === item.orderTemplateItemID; }); //find index in your array
+                    _this.orderTemplateItems = _this.orderTemplateItems.splice(index, 1).splice(index, 1); //remove element from array
                 }
                 else {
                     console.log('removeOrderTemplateItem res: ', data);
@@ -59402,9 +59403,8 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
             _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(function (data) {
                 console.log('increaseOrderTemplateItemQuantity res: ', data);
                 if (data.orderTemplateItem) {
-                    var index = _this.orderTemplate.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
-                    _this.orderTemplate.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
+                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
+                    _this.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
                 }
                 else {
                 }
@@ -59417,9 +59417,8 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
             _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(function (data) {
                 console.log('decreaseOrderTemplateItemQuantity res: ', data);
                 if (data.orderTemplateItem) {
-                    var index = _this.orderTemplate.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
-                    _this.orderTemplate.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
+                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
+                    _this.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
                 }
                 else {
                 }

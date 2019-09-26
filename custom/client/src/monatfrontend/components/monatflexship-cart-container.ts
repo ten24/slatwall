@@ -2,6 +2,7 @@
 class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
+    public orderTemplateItems: any[];
     constructor(public orderTemplateService) {
     }
     public $onInit = () => {
@@ -12,6 +13,7 @@ class MonatFlexshipCartContainerController {
             .then(
 	            (response) => {
 	                this.orderTemplate = response.orderTemplate;
+	                this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
 	                console.log('FLX cart container ot: ', this.orderTemplate); 
 	                //TODO handle errors / success
 	            }, 
@@ -28,8 +30,8 @@ class MonatFlexshipCartContainerController {
     	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
             (data) => {
             	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
-            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === item.orderTemplateItemID); //find index in your array
-    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems.splice(index, 1).splice(index, 1);//remove element from array
+            		let index = this.orderTemplateItems.findIndex(it => it.id === item.orderTemplateItemID); //find index in your array
+    				this.orderTemplateItems = this.orderTemplateItems.splice(index, 1).splice(index, 1);//remove element from array
  
         		} else {
                 	console.log('removeOrderTemplateItem res: ', data); 
@@ -48,9 +50,8 @@ class MonatFlexshipCartContainerController {
             (data) => {
             	console.log('increaseOrderTemplateItemQuantity res: ', data); 
             	if(data.orderTemplateItem) {
-            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
-    				this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
-    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems; 
+            		let index = this.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
+    				this.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
         		} else {
             	}
             	//TODO handle errors / success
@@ -66,9 +67,8 @@ class MonatFlexshipCartContainerController {
             (data) => {
             	console.log('decreaseOrderTemplateItemQuantity res: ', data); 
             	if(data.orderTemplateItem) {
-            		let index = this.orderTemplate.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
-    				this.orderTemplate.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
-    				this.orderTemplate.orderTemplateItems = this.orderTemplate.orderTemplateItems; 
+            		let index = this.orderTemplateItems.findIndex(it => it.id === data.orderTemplateItem.orderTemplateItemID); //find index in your array
+    				this.orderTemplateItems[index] = data.orderTemplateItem;//replace element from array
         		} else {
             	}
             	//TODO handle errors / success
