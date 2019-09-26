@@ -20,7 +20,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 				// pathInfo is bogus so ignore it:
 				pathInfo = '';
 			}
-		   
+			
 			//take path and  parse it
 			var pathArray = listToArray(pathInfo,'/');
 
