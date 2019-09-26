@@ -59354,8 +59354,18 @@ exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
-    function MonatFlexshipCardController() {
+    //@ngInject
+    function MonatFlexshipCardController(observerService) {
+        var _this = this;
+        this.observerService = observerService;
         this.$onInit = function () {
+            _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+        };
+        this.$onDestroy = function () {
+            _this.observerService.detachById("orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+        };
+        this.updateOrderTemplate = function (orderTemplate) {
+            _this.orderTemplate = orderTemplate;
         };
     }
     return MonatFlexshipCardController;
@@ -59368,7 +59378,15 @@ var MonatFlexshipCard = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '<'
+            orderTemplate: '<',
+            accountAddresses: '<',
+            accountPaymentMethods: '<',
+            shippingMethodOptions: '<',
+            stateCodeOptions: '<',
+            cancellationReasonTypeOptions: '<',
+            scheduleDateChangeReasonTypeOptions: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = "monatFlexshipCard";
@@ -59400,13 +59418,28 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipListingController = /** @class */ (function () {
+    //@ngInject
     function MonatFlexshipListingController(orderTemplateService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.initialized = false;
         this.$onInit = function () {
-            _this.orderTemplateService.getOrderTemplates().then(function (data) {
+            _this.orderTemplateService.getOrderTemplates()
+                .then(function (data) {
+                _this.accountAddresses = data.accountAddresses;
+                _this.accountPaymentMethods = data.accountPaymentMethods;
+                _this.shippingMethodOptions = data.shippingMethodOptions;
+                _this.stateCodeOptions = data.stateCodeOptions;
+                _this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
+                _this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+                _this.expirationMonthOptions = data.expirationMonthOptions;
+                _this.expirationYearOptions = data.expirationYearOptions;
+                //set this last so that ng repeat inits with all needed data
                 _this.orderTemplates = data.orderTemplates;
             }, function (reason) {
+                console.error(reason);
+            }).finally(function () {
+                _this.initialized = true;
             });
         };
     }
@@ -59450,11 +59483,121 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
-    function MonatFlexshipMenuController(orderTemplateService) {
+    //@ngInject
+    function MonatFlexshipMenuController(orderTemplateService, observerService, ModalService) {
+        var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.ModalService = ModalService;
         this.$onInit = function () {
         };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showCancelFlexshipModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipCancelModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showDelayOrSkipFlexshipModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipChangeOrSkipOrderModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showFlexshipEditPaymentMethodModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipPaymentMethodModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    accountAddresses: _this.accountAddresses,
+                    accountPaymentMethods: _this.accountPaymentMethods,
+                    stateCodeOptions: _this.stateCodeOptions,
+                    expirationMonthOptions: _this.expirationMonthOptions,
+                    expirationYearOptions: _this.expirationYearOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showFlexshipEditShippingMethodModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipShippingMethodModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    accountAddresses: _this.accountAddresses,
+                    shippingMethodOptions: _this.shippingMethodOptions,
+                    stateCodeOptions: _this.stateCodeOptions
+                },
+                preClose: function (modal) { modal.element.modal('hide'); }
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) {
+                    //....
+                });
+            }, function (error) {
+                console.error("unable to open model :", error);
+            });
+        };
     }
+    MonatFlexshipMenuController.prototype.activateFlexship = function () {
+        var _this = this;
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        // make api request
+        this.orderTemplateService.activate(payload).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(data);
+            }
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipMenuController;
 }());
 var MonatFlexshipMenu = /** @class */ (function () {
@@ -59465,7 +59608,15 @@ var MonatFlexshipMenu = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '<'
+            orderTemplate: '<',
+            accountAddresses: '<',
+            accountPaymentMethods: '<',
+            shippingMethodOptions: '<',
+            stateCodeOptions: '<',
+            cancellationReasonTypeOptions: '<',
+            scheduleDateChangeReasonTypeOptions: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = "monatFlexshipMenu";
@@ -59629,6 +59780,7 @@ exports.SWFAccount = SWFAccount;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFReviewListingController = /** @class */ (function () {
+    //@ngInject
     function SWFReviewListingController($hibachi, $scope, requestService) {
         var _this = this;
         this.$hibachi = $hibachi;
@@ -59937,9 +60089,18 @@ exports.SWFWishlist = SWFWishlist;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(851);
 var frontend_module_1 = __webpack_require__(784);
 //directives
 var monatflexshipcard_1 = __webpack_require__(606);
+var monatflexshipdetail_1 = __webpack_require__(849);
+var monatflexship_orderitem_1 = __webpack_require__(846);
+var monatflexship_shippingandbillingcard_1 = __webpack_require__(848);
+var monatflexship_ordertotalcard_1 = __webpack_require__(847);
+var monatflexship_modal_paymentmethod_1 = __webpack_require__(844);
+var monatflexship_modal_shippingmethod_1 = __webpack_require__(845);
+var monatflexship_modal_changeorskiporder_1 = __webpack_require__(843);
+var monatflexship_modal_cancel_1 = __webpack_require__(842);
 var monatflexshiplisting_1 = __webpack_require__(607);
 var monatflexshipmenu_1 = __webpack_require__(608);
 var swfwishlist_1 = __webpack_require__(611);
@@ -59952,13 +60113,21 @@ var swfreviewlisting_1 = __webpack_require__(610);
 var monatservice_1 = __webpack_require__(613);
 var ordertemplateservice_1 = __webpack_require__(614);
 var monatfrontendmodule = angular.module('monatfrontend', [
-    frontend_module_1.frontendmodule.name
+    frontend_module_1.frontendmodule.name, 'angularModalService'
 ])
     //constants
     .constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
     //directives
     .directive('monatFlexshipListing', monatflexshiplisting_1.MonatFlexshipListing.Factory())
     .directive('monatFlexshipCard', monatflexshipcard_1.MonatFlexshipCard.Factory())
+    .directive('monatFlexshipDetail', monatflexshipdetail_1.MonatFlexshipDetail.Factory())
+    .directive('monatFlexshipOrderItem', monatflexship_orderitem_1.MonatFlexshipOrderItem.Factory())
+    .directive('monatFlexshipShippingAndBillingCard', monatflexship_shippingandbillingcard_1.MonatFlexshipShippingAndBillingCard.Factory())
+    .directive('monatFlexshipOrderTotalCard', monatflexship_ordertotalcard_1.MonatFlexshipOrderTotalCard.Factory())
+    .directive('monatFlexshipPaymentMethodModal', monatflexship_modal_paymentmethod_1.MonatFlexshipPaymentMethodModal.Factory())
+    .directive('monatFlexshipShippingMethodModal', monatflexship_modal_shippingmethod_1.MonatFlexshipShippingMethodModal.Factory())
+    .directive('monatFlexshipChangeOrSkipOrderModal', monatflexship_modal_changeorskiporder_1.MonatFlexshipChangeOrSkipOrderModal.Factory())
+    .directive('monatFlexshipCancelModal', monatflexship_modal_cancel_1.MonatFlexshipCancelModal.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
@@ -59967,7 +60136,11 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .service('monatService', monatservice_1.MonatService)
-    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService);
+    .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
+    .config(["ModalServiceProvider", function (ModalServiceProvider) {
+        // to set a default close delay on modals
+        ModalServiceProvider.configureOptions({ closeDelay: 500 });
+    }]);
 exports.monatfrontendmodule = monatfrontendmodule;
 
 
@@ -60012,32 +60185,90 @@ exports.MonatService = MonatService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
+    //@ngInject
     function OrderTemplateService(requestService, $hibachi) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
+        /**
+         * This function is being used to fetch flexShips and wishLists
+         *
+         *
+        */
         this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             var data = {
                 currentPage: currentPage,
                 pageRecordsShow: pageRecordsShow,
-                orderTemplateTypeID: orderTemplateTypeID
             };
+            if (orderTemplateTypeID) {
+                data['orderTemplateTypeID'] = orderTemplateTypeID;
+            }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
         };
         this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             var data = {
-                orderTemplateID: orderTemplateID,
-                currentPage: currentPage,
-                pageRecordsShow: pageRecordsShow
+                'orderTemplateID': orderTemplateID,
+                'currentPage': currentPage,
+                'pageRecordsShow': pageRecordsShow
             };
             if (orderTemplateTypeID) {
                 data['orderTemplateTypeID'] = orderTemplateTypeID;
             }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems', data).promise;
+        };
+        this.getOrderTemplateDetails = function (orderTemplateID) {
+            var data = {
+                "orderTemplateID": orderTemplateID
+            };
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
+                .promise;
+        };
+        this.updateShipping = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateShipping', data)
+                .promise;
+        };
+        this.updateBilling = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateBilling', data)
+                .promise;
+        };
+        this.activateOrderTemplate = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
+                .promise;
+        };
+        /**
+         * orderTemplateID:string,
+         * typeID:string,  => OrderTEmplateCancellationReasonTypeID
+         * typeIDOther?:string => other reason text from user
+         */
+        this.cancelOrderTemplate = function (orderTemplateID, typeID, typeIDOther) {
+            if (typeIDOther === void 0) { typeIDOther = ""; }
+            var payload = {};
+            payload['orderTemplateID'] = orderTemplateID;
+            payload['orderTemplateCancellationReasonType'] = {};
+            payload['orderTemplateCancellationReasonType']['typeID'] = typeID;
+            payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
+            payload = _this.getFlattenObject(payload);
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
+                .promise;
+        };
+        this.updateOrderTemplateSchedule = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
+                .promise;
+        };
+        this.updateOrderTemplateFrequency = function (data) {
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+                .promise;
         };
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
@@ -60064,6 +60295,43 @@ var OrderTemplateService = /** @class */ (function () {
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
+        };
+        /**
+        * for more details https://gist.github.com/penguinboy/762197
+        */
+        this.getFlattenObject = function (inObject, delimiter) {
+            if (delimiter === void 0) { delimiter = '.'; }
+            var objectToReturn = {};
+            for (var key in inObject) {
+                if (!inObject.hasOwnProperty(key))
+                    continue;
+                if ((typeof inObject[key]) == 'object' && inObject[key] !== null) {
+                    var flatObject = _this.getFlattenObject(inObject[key]);
+                    for (var x in flatObject) {
+                        if (!flatObject.hasOwnProperty(x))
+                            continue;
+                        objectToReturn[key + delimiter + x] = flatObject[x];
+                    }
+                }
+                else {
+                    objectToReturn[key] = inObject[key];
+                }
+            }
+            return objectToReturn;
+        };
+        /**
+         * for more details  https://stackoverflow.com/a/42696154
+        */
+        this.getUnflattenObject = function (inObject, delimiter) {
+            if (delimiter === void 0) { delimiter = '_'; }
+            var objectToReturn = {};
+            for (var flattenkey in inObject) {
+                var keys = flattenkey.split(delimiter);
+                keys.reduce(function (r, e, j) {
+                    return r[e] || (r[e] = isNaN(Number(keys[j + 1])) ? (keys.length - 1 == j ? inObject[flattenkey] : {}) : []);
+                }, objectToReturn);
+            }
+            return objectToReturn;
         };
     }
     return OrderTemplateService;
@@ -76258,6 +76526,17 @@ var RbKeyService = /** @class */ (function () {
             ////$log.debug(this.getConfig().rbLocale);
             var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
             ////$log.debug(keyValue);
+            /**
+             * const templateString = "Hello ${this.name}!";
+               const replaceStringData = {
+                    name: "world"
+                }
+             *
+             */
+            if (replaceStringData) {
+                //coppied from  https://github.com/mikemaccana/dynamic-template
+                keyValue = keyValue.replace(/\${(.*?)}/g, function (_, g) { return replaceStringData[g]; });
+            }
             return keyValue;
         };
         this.getRBKey = function (key, locale, checkedKeys, originalKey) {
@@ -87317,6 +87596,731 @@ module.exports = function(module) {
 
 module.exports = __webpack_require__(302);
 
+
+/***/ }),
+/* 842 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipCancelModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipCancelModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.formData = {}; // {typeID:'', typeIDOther: '' }
+        this.$onInit = function () {
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['whyAreYouCancelling'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.whyAreYouCancelling');
+            _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
+            _this.translations['flexshipCancelOtherReasonNotes'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
+        };
+    }
+    MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
+        //TODO frontend validation
+        var _this = this;
+        // make api request
+        this.orderTemplateService.cancelOrderTemplate(this.orderTemplate.orderTemplateID, this.formData['typeID'], this.formData['typeIDOther']).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(data);
+                //TODO handle errors
+            }
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
+    return MonatFlexshipCancelModalController;
+}());
+var MonatFlexshipCancelModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipCancelModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            cancellationReasonTypeOptions: '<'
+        };
+        this.controller = MonatFlexshipCancelModalController;
+        this.controllerAs = "monatFlexshipCancelModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-cancel.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipCancelModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipCancelModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipCancelModal;
+}());
+exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
+
+
+/***/ }),
+/* 843 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.endDayOfTheMonth = 25;
+        this.formData = {
+            delayOrSkip: '',
+            showOtherReasonNotes: false,
+        };
+        this.$onInit = function () {
+            _this.calculateNextPlacedDateTime();
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['changeOrSkip'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
+            //TODO business-logic
+            _this.translations['delayOrSkipMessage'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days: 1234 });
+            _this.translations['delayThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
+            _this.translations['skipThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
+            _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
+            _this.translations['whyAreYouCancellingFlexship'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
+            _this.translations['flexshipCancelOtherReason'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
+        };
+        this.calculateNextPlacedDateTime = function () {
+            //format mm/dd/yyyy
+            var date = new Date(Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime));
+            _this.nextPlaceDateTime = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+            _this.endDayOfTheMonth = 25;
+            //TODO business-logic
+            _this.endDate = new Date(date.setMonth(date.getMonth() + 2));
+            console.log(_this);
+        };
+        this.updateDelayOrSkip = function (val) {
+            _this.formData.delayOrSkip = val;
+        };
+        this.selectedReasonChanged = function () {
+            if (!!_this.selectedReason && !!_this.selectedReason.value) {
+                _this.formData.showOtherReasonNotes = _this.selectedReason.systemCode === 'otsdcrtOther';
+            }
+            else {
+                _this.formData.showOtherReasonNotes = false;
+                //TODO disable the form
+            }
+        };
+    }
+    MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
+        //TODO frontend validation
+        var _this = this;
+        /**
+         * payload => {
+            orderTemplateID:string'',
+            orderTemplateScheduleDateChangeReasonTypeID:string'',
+            otherScheduleDateChangeReasonNotes?:string '',
+            scheduleOrderNextPlaceDateTime?:string '',
+            skipNextMonthFlag?: boolean;
+           }
+         */
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
+        if (this.formData.showOtherReasonNotes) {
+            payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
+        }
+        if (this.formData.delayOrSkip === 'delay') {
+            payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
+        }
+        else {
+            payload['skipNextMonthFlag'] = 1;
+        }
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        // make api request
+        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                console.error(data);
+                //TODO handle errors
+            }
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
+    return MonatFlexshipChangeOrSkipOrderModalController;
+}());
+var MonatFlexshipChangeOrSkipOrderModal = /** @class */ (function () {
+    function MonatFlexshipChangeOrSkipOrderModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            scheduleDateChangeReasonTypeOptions: '<'
+        };
+        this.controller = MonatFlexshipChangeOrSkipOrderModalController;
+        this.controllerAs = "monatFlexshipChangeOrSkipOrderModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-changeorskiporder.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipChangeOrSkipOrderModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipChangeOrSkipOrderModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipChangeOrSkipOrderModal;
+}());
+exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModal;
+
+
+/***/ }),
+/* 844 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.selectedBillingAccountAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.selectedAccountPaymentMethod = { accountPaymentMethodID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.newAccountAddress = {};
+        this.newAddress = { 'countryCode': 'US' }; // hard-coded default
+        this.newAccountPaymentMethod = {};
+        this.$onInit = function () {
+            _this.makeTranslations();
+            /**
+             * Find and set old billing-address if any
+            */
+            _this.existingBillingAccountAddress = _this.accountAddresses.find(function (item) {
+                return item.accountAddressID === _this.orderTemplate.billingAccountAddress_accountAddressID;
+            });
+            if (!!_this.existingBillingAccountAddress && !!_this.existingBillingAccountAddress.accountAddressID) {
+                _this.setSelectedBillingAccountAddressID(_this.existingBillingAccountAddress.accountAddressID);
+            }
+            /**
+             * Find and set old payment-method if any
+            */
+            _this.existingAccountPaymentMethod = _this.accountPaymentMethods.find(function (item) {
+                return item.accountPaymentMethodID === _this.orderTemplate.accountPaymentMethod_accountPaymentMethodID;
+            });
+            if (!!_this.existingAccountPaymentMethod && !!_this.existingAccountPaymentMethod.accountPaymentMethodID) {
+                _this.setSelectedAccountPaymentMethodID(_this.existingAccountPaymentMethod.accountPaymentMethodID);
+            }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['billingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.billingAddress');
+            _this.translations['addNewBillingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewBillingAddress');
+            _this.translations['newBillingAddress'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
+            _this.translations['paymentMethod'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
+            _this.translations['addNewCreditCard'] = _this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
+            _this.translations['newCreditCard'] = _this.rbkeyService.rbKey('frontend.newCreditCard');
+            _this.translations['newCreditCard_nickName'] = _this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
+            _this.translations['newCreditCard_creditCardNumber'] = _this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
+            _this.translations['newCreditCard_nameOnCard'] = _this.rbkeyService.rbKey('frontend.newCreditCard.nameOnCard');
+            _this.translations['newCreditCard_expirationMonth'] = _this.rbkeyService.rbKey('frontend.newCreditCard.expirationMonth');
+            _this.translations['newCreditCard_expirationYear'] = _this.rbkeyService.rbKey('frontend.newCreditCard.expirationYear');
+            _this.translations['newCreditCard_securityCode'] = _this.rbkeyService.rbKey('frontend.newCreditCard.securityCode');
+            _this.translations['newAddress_nickName'] = _this.rbkeyService.rbKey('frontend.newAddress.nickName');
+            _this.translations['newAddress_name'] = _this.rbkeyService.rbKey('frontend.newAddress.name');
+            _this.translations['newAddress_address'] = _this.rbkeyService.rbKey('frontend.newAddress.address');
+            _this.translations['newAddress_address2'] = _this.rbkeyService.rbKey('frontend.newAddress.address2');
+            _this.translations['newAddress_country'] = _this.rbkeyService.rbKey('frontend.newAddress.country');
+            _this.translations['newAddress_state'] = _this.rbkeyService.rbKey('frontend.newAddress.state');
+            _this.translations['newAddress_selectYourState'] = _this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+            _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
+            _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+        };
+    }
+    MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
+        if (accountAddressID === void 0) { accountAddressID = 'new'; }
+        this.selectedBillingAccountAddress.accountAddressID = accountAddressID;
+    };
+    MonatFlexshipPaymentMethodModalController.prototype.setSelectedAccountPaymentMethodID = function (accountPaymentMethodID) {
+        if (accountPaymentMethodID === void 0) { accountPaymentMethodID = 'new'; }
+        this.selectedAccountPaymentMethod.accountPaymentMethodID = accountPaymentMethodID;
+    };
+    MonatFlexshipPaymentMethodModalController.prototype.updateBilling = function () {
+        var _this = this;
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        if (this.selectedBillingAccountAddress.accountAddressID !== 'new') {
+            payload['billingAccountAddress.value'] = this.selectedBillingAccountAddress.accountAddressID;
+        }
+        else {
+            this.newAccountAddress['address'] = this.newAddress;
+            payload['newAccountAddress'] = this.newAccountAddress;
+        }
+        if (this.selectedAccountPaymentMethod.accountPaymentMethodID !== 'new') {
+            payload['accountPaymentMethod.value'] = this.selectedAccountPaymentMethod.accountPaymentMethodID;
+        }
+        else {
+            payload['newAccountPaymentMethod'] = this.newAccountPaymentMethod;
+        }
+        //flattning it for hibachi
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        // make api request
+        this.orderTemplateService.updateBilling(payload).then(function (response) {
+            if (response.orderTemplate) {
+                _this.orderTemplate = response.orderTemplate;
+                if (response.newAccountAddress) {
+                    _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
+                    _this.accountAddresses.push(response.newAccountAddress);
+                }
+                if (response.newAccountPaymentMethod) {
+                    _this.observerService.notify("newAccountPaymentMethodAdded", response.newAccountPaymentMethod);
+                    _this.accountPaymentMethods.push(response.newAccountPaymentMethod);
+                }
+                _this.setSelectedBillingAccountAddressID(_this.orderTemplate.billingAccountAddress_accountAddressID);
+                _this.setSelectedAccountPaymentMethodID(_this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
+                _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+            }
+            else {
+                //TODO handle errors
+                console.error(response);
+            }
+            // TODO: show alerts
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
+    return MonatFlexshipPaymentMethodModalController;
+}());
+var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
+    function MonatFlexshipPaymentMethodModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            accountPaymentMethods: '<',
+            stateCodeOptions: '<',
+            accountAddresses: '<',
+            orderTemplate: '<',
+            expirationMonthOptions: '<',
+            expirationYearOptions: '<'
+        };
+        this.controller = MonatFlexshipPaymentMethodModalController;
+        this.controllerAs = "monatFlexshipPaymentMethodModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-paymentmethod.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipPaymentMethodModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipPaymentMethodModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipPaymentMethodModal;
+}());
+exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
+
+
+/***/ }),
+/* 845 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+        this.newAccountAddress = {};
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
+                return item.accountAddressID === _this.orderTemplate.shippingAccountAddress_accountAddressID;
+            });
+            if (!!_this.existingAccountAddress && !!_this.existingAccountAddress.accountAddressID) {
+                _this.setSelectedAccountAddressID(_this.existingAccountAddress.accountAddressID);
+            }
+            _this.existingShippingMethod = _this.shippingMethodOptions.find(function (item) {
+                return item.value === _this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shippingMethodName, "value":"shippingMethodID" }
+            });
+            if (!!_this.existingShippingMethod && !!_this.existingShippingMethod.value) {
+                _this.setSelectedShippingMethodID(_this.existingShippingMethod.value);
+            }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['shippingMethod'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingMethod');
+            _this.translations['shippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingAddress');
+            _this.translations['addNewShippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.addNewShippingAddress');
+            _this.translations['newShippingAddress'] = _this.rbkeyService.rbKey('frontend.shippingMethodModal.newShippingAddress');
+            _this.translations['newAddress_nickName'] = _this.rbkeyService.rbKey('frontend.newAddress.nickName');
+            _this.translations['newAddress_name'] = _this.rbkeyService.rbKey('frontend.newAddress.name');
+            _this.translations['newAddress_address'] = _this.rbkeyService.rbKey('frontend.newAddress.address');
+            _this.translations['newAddress_address2'] = _this.rbkeyService.rbKey('frontend.newAddress.address2');
+            _this.translations['newAddress_country'] = _this.rbkeyService.rbKey('frontend.newAddress.country');
+            _this.translations['newAddress_state'] = _this.rbkeyService.rbKey('frontend.newAddress.state');
+            _this.translations['newAddress_selectYourState'] = _this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+            _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
+            _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+        };
+    }
+    MonatFlexshipShippingMethodModalController.prototype.setSelectedAccountAddressID = function (accountAddressID) {
+        if (accountAddressID === void 0) { accountAddressID = 'new'; }
+        this.selectedShippingAddress.accountAddressID = accountAddressID;
+    };
+    MonatFlexshipShippingMethodModalController.prototype.setSelectedShippingMethodID = function (shippingMethodID) {
+        this.selectedShippingMethod.shippingMethodID = shippingMethodID;
+    };
+    MonatFlexshipShippingMethodModalController.prototype.updateShippingAddress = function () {
+        var _this = this;
+        var payload = {};
+        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
+        payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+        if (this.selectedShippingAddress.accountAddressID !== 'new') {
+            payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
+        }
+        else {
+            this.newAccountAddress['address'] = this.newAddress;
+            payload['newAccountAddress'] = this.newAccountAddress;
+        }
+        payload = this.orderTemplateService.getFlattenObject(payload);
+        // make api request
+        this.orderTemplateService.updateShipping(payload).then(function (response) {
+            if (response.orderTemplate) {
+                _this.orderTemplate = response.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                if (response.newAccountAddress) {
+                    _this.observerService.notify("newAccountAddressAdded", response.newAccountAddress);
+                    _this.accountAddresses.push(response.newAccountAddress);
+                }
+                _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
+                _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
+            }
+            else {
+                console.error(response); //
+            }
+            // TODO: show alert
+        }, function (reason) {
+            throw (reason);
+            // TODO: show alert
+        });
+    };
+    return MonatFlexshipShippingMethodModalController;
+}());
+var MonatFlexshipShippingMethodModal = /** @class */ (function () {
+    function MonatFlexshipShippingMethodModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            accountAddresses: '<',
+            shippingMethodOptions: '<',
+            stateCodeOptions: '<'
+        };
+        this.controller = MonatFlexshipShippingMethodModalController;
+        this.controllerAs = "monatFlexshipShippingMethodModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-shippingmethod.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipShippingMethodModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipShippingMethodModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipShippingMethodModal;
+}());
+exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
+
+
+/***/ }),
+/* 846 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipOrderItemController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipOrderItemController() {
+        this.$onInit = function () { };
+    }
+    return MonatFlexshipOrderItemController;
+}());
+var MonatFlexshipOrderItem = /** @class */ (function () {
+    function MonatFlexshipOrderItem(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderItem: '<'
+        };
+        this.controller = MonatFlexshipOrderItemController;
+        this.controllerAs = "monatFlexshipOrderItem";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-orderitem.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipOrderItem.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipOrderItem(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipOrderItem;
+}());
+exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
+
+
+/***/ }),
+/* 847 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipOrderTotalCardController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipOrderTotalCardController() {
+        this.$onInit = function () { };
+    }
+    return MonatFlexshipOrderTotalCardController;
+}());
+var MonatFlexshipOrderTotalCard = /** @class */ (function () {
+    function MonatFlexshipOrderTotalCard(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '='
+        };
+        this.controller = MonatFlexshipOrderTotalCardController;
+        this.controllerAs = "monatFlexshipOrderTotalCard";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-ordertotalcard.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipOrderTotalCard.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipOrderTotalCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipOrderTotalCard;
+}());
+exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
+
+
+/***/ }),
+/* 848 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipShippingAndBillingCardController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipShippingAndBillingCardController(rbkeyService) {
+        var _this = this;
+        this.rbkeyService = rbkeyService;
+        this.$onInit = function () {
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['creditCardInfoLastFourDigit'] = _this.rbkeyService.rbKey('frontend.flexshipDetails.creditCardInfoLastFourDigit', { 'lastFourDigit': _this.orderTemplate.accountPaymentMethod_creditCardLastFour });
+            var creditCardInfoExpirationReplaceStringData = {
+                'month': _this.orderTemplate.accountPaymentMethod_expirationMonth,
+                'year': _this.orderTemplate.accountPaymentMethod_expirationYear
+            };
+            _this.translations['creditCardInfoExpiration'] = _this.rbkeyService.rbKey('frontend.flexshipDetails.creditCardInfoExpiration', creditCardInfoExpirationReplaceStringData);
+        };
+    }
+    return MonatFlexshipShippingAndBillingCardController;
+}());
+var MonatFlexshipShippingAndBillingCard = /** @class */ (function () {
+    function MonatFlexshipShippingAndBillingCard(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<'
+        };
+        this.controller = MonatFlexshipShippingAndBillingCardController;
+        this.controllerAs = "monatFlexshipShippingAndBillingCard";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-shippingandbillingcard.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipShippingAndBillingCard.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipShippingAndBillingCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipShippingAndBillingCard;
+}());
+exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCard;
+
+
+/***/ }),
+/* 849 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipDetailController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipDetailController(orderTemplateService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$onInit = function () {
+            if (_this.orderTemplate == null) {
+                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
+                    .then(function (response) {
+                    _this.orderTemplate = response.orderTemplate;
+                }, function (reason) {
+                    throw (reason);
+                });
+            }
+        };
+    }
+    return MonatFlexshipDetailController;
+}());
+var MonatFlexshipDetail = /** @class */ (function () {
+    function MonatFlexshipDetail(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplateId: '@',
+            orderTemplate: '<'
+        };
+        this.controller = MonatFlexshipDetailController;
+        this.controllerAs = "monatFlexshipDetail";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipdetail.html";
+        this.restrict = "EA";
+    }
+    MonatFlexshipDetail.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipDetail(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipDetail;
+}());
+exports.MonatFlexshipDetail = MonatFlexshipDetail;
+
+
+/***/ }),
+/* 850 */
+/***/ (function(module, exports) {
+
+!function(e){var n={};function o(t){if(n[t])return n[t].exports;var l=n[t]={i:t,l:!1,exports:{}};return e[t].call(l.exports,l,l.exports,o),l.l=!0,l.exports}o.m=e,o.c=n,o.d=function(e,n,t){o.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:t})},o.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},o.t=function(e,n){if(1&n&&(e=o(e)),8&n)return e;if(4&n&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(o.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var l in e)o.d(t,l,function(n){return e[n]}.bind(null,l));return t},o.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(n,"a",n),n},o.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},o.p="",o(o.s=0)}([function(e,n,o){"use strict";angular.module("angularModalService",[]).provider("ModalService",function(){var e={closeDelay:0};this.configureOptions=function(n){angular.extend(e,n)},this.$get=["$animate","$document","$compile","$controller","$http","$rootScope","$q","$templateRequest","$timeout",function(n,o,t,l,r,c,i,s,u){return new function(e){var r=this;r.configOptions=e,r.openModals=[],r.closeModals=function(e,n){for(n=n||r.configOptions.closeDelay;r.openModals.length;)r.openModals[0].close(e,n),r.openModals.splice(0,1)};var a=function(e){e.controller=function(e){return["$scope","close",function(n,o){n.close=o,n.bindings=e.bindings}]}(e),e.template=function(e){var n=function(e){return e.replace(/([a-z0-9])([A-Z])/g,function(e,n,o){return[n,o].join("-").toLowerCase()})},o=n(e.component),t="<"+o+' close="close"',l=Object.keys(e.bindings||{});return l.length>0&&(t+=" "+l.map(function(e){return n(e)+'="bindings.'+e+'"'}).join(" ")),t+="></"+o+">"}(e)};r.showModal=function(e){e.component&&a(e);var p=angular.element(o[0].body),f=i.defer();return e.controller?(function(e,n){var o=i.defer();return e?o.resolve(e):n?s(n,!0).then(function(e){o.resolve(e)},function(e){o.reject(e)}):o.reject("No template or templateUrl has been specified."),o.promise}(e.template,e.templateUrl).then(function(s){var a={},d=(e.scope||c).$new(),m=null,g=e.locationChangeSuccess;!1===g?m=angular.noop:angular.isNumber(g)&&g>=0?u(function(){m=c.$on("$locationChangeSuccess",h.close)},g):u(function(){m=c.$on("$locationChangeSuccess",h.close)},r.configOptions.closeDelay);var v=i.defer(),b=i.defer(),y=!1,h={$scope:d,close:function(o,t){y||(y=!0,t=t||r.configOptions.closeDelay,"function"==typeof e.preClose&&e.preClose(a,o,t),void 0!==t&&null!==t||(t=0),u(function(){!function(o){v.resolve(o),e.bodyClass&&p[0].classList.remove(e.bodyClass),n.leave($).then(function(){if($){b.resolve(o),d.$destroy();for(var e=0;e<r.openModals.length;e++)if(r.openModals[e].modal===a){r.openModals.splice(e,1);break}h.close=null,f=null,v=null,a=null,h=null,$=null,d=null}}),m&&m()}(o)},t))}};e.inputs&&angular.extend(h,e.inputs);var $=t(s)(d);h.$element=$;var M=d[e.controllerAs],j=l(e.controller,h,!1,e.controllerAs);e.controllerAs&&M&&angular.extend(j,M);var O=p;angular.isString(e.appendElement)?O=angular.element(o[0].querySelector(e.appendElement)):e.appendElement&&(O=e.appendElement),function(e,o){var t=e.children();t.length>0?n.enter(o,e,t[t.length-1]):n.enter(o,e)}(O,$),e.bodyClass&&p[0].classList.add(e.bodyClass),a.controller=j,a.scope=d,a.element=$,a.close=v.promise,a.closed=b.promise,angular.isFunction(a.controller.$onInit)&&a.controller.$onInit(),f.resolve(a),document.activeElement.blur(),r.openModals.push({modal:a,close:h.close})}).then(null,function(e){f.reject(e)}),f.promise):(f.reject("No controller has been specified."),f.promise)}}(e)}]})}]);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL2FuZ3VsYXItbW9kYWwtc2VydmljZS5qcyJdLCJuYW1lcyI6WyJpbnN0YWxsZWRNb2R1bGVzIiwiX193ZWJwYWNrX3JlcXVpcmVfXyIsIm1vZHVsZUlkIiwiZXhwb3J0cyIsIm1vZHVsZSIsImkiLCJsIiwibW9kdWxlcyIsImNhbGwiLCJtIiwiYyIsImQiLCJuYW1lIiwiZ2V0dGVyIiwibyIsIk9iamVjdCIsImRlZmluZVByb3BlcnR5IiwiZW51bWVyYWJsZSIsImdldCIsInIiLCJTeW1ib2wiLCJ0b1N0cmluZ1RhZyIsInZhbHVlIiwidCIsIm1vZGUiLCJfX2VzTW9kdWxlIiwibnMiLCJjcmVhdGUiLCJrZXkiLCJiaW5kIiwibiIsIm9iamVjdCIsInByb3BlcnR5IiwicHJvdG90eXBlIiwiaGFzT3duUHJvcGVydHkiLCJwIiwicyIsImFuZ3VsYXIiLCJwcm92aWRlciIsIl9vcHRpb25zIiwiY2xvc2VEZWxheSIsInRoaXMiLCJjb25maWd1cmVPcHRpb25zIiwiY29uZmlnIiwiZXh0ZW5kIiwiJGdldCIsIiRhbmltYXRlIiwiJGRvY3VtZW50IiwiJGNvbXBpbGUiLCIkY29udHJvbGxlciIsIiRodHRwIiwiJHJvb3RTY29wZSIsIiRxIiwiJHRlbXBsYXRlUmVxdWVzdCIsIiR0aW1lb3V0IiwiY29uZmlnT3B0aW9ucyIsInNlbGYiLCJvcGVuTW9kYWxzIiwiY2xvc2VNb2RhbHMiLCJyZXN1bHQiLCJkZWxheSIsImxlbmd0aCIsImNsb3NlIiwic3BsaWNlIiwic2V0dXBDb21wb25lbnRPcHRpb25zIiwib3B0aW9ucyIsImNvbnRyb2xsZXIiLCIkc2NvcGUiLCJiaW5kaW5ncyIsImJ1aWxkQ29tcG9uZW50Q29udHJvbGxlciIsInRlbXBsYXRlIiwia2ViYWJDYXNlIiwiY2FtZWxDYXNlIiwicmVwbGFjZSIsIl9tIiwiYzEiLCJjMiIsImpvaW4iLCJ0b0xvd2VyQ2FzZSIsImNvbXBvbmVudEhhbmRsZSIsImNvbXBvbmVudCIsImlucHV0S2V5cyIsImtleXMiLCJtYXAiLCJpbnB1dEtleSIsImJ1aWxkQ29tcG9uZW50VGVtcGxhdGUiLCJzaG93TW9kYWwiLCJib2R5IiwiZWxlbWVudCIsImRlZmVycmVkIiwiZGVmZXIiLCJ0ZW1wbGF0ZVVybCIsInJlc29sdmUiLCJ0aGVuIiwiZXJyb3IiLCJyZWplY3QiLCJwcm9taXNlIiwiZ2V0VGVtcGxhdGUiLCJtb2RhbCIsIm1vZGFsU2NvcGUiLCJzY29wZSIsIiRuZXciLCJyb290U2NvcGVPbkNsb3NlIiwibG9jYXRpb25DaGFuZ2VTdWNjZXNzIiwibm9vcCIsImlzTnVtYmVyIiwiJG9uIiwiaW5wdXRzIiwiY2xvc2VEZWZlcnJlZCIsImNsb3NlZERlZmVycmVkIiwiaGFzQWxyZWFkeUJlZW5DbG9zZWQiLCJwcmVDbG9zZSIsInVuZGVmaW5lZCIsImJvZHlDbGFzcyIsImNsYXNzTGlzdCIsInJlbW92ZSIsImxlYXZlIiwibW9kYWxFbGVtZW50IiwiJGRlc3Ryb3kiLCJjbGVhblVwQ2xvc2UiLCJsaW5rRm4iLCIkZWxlbWVudCIsImNvbnRyb2xsZXJPYmpCZWZvcmUiLCJjb250cm9sbGVyQXMiLCJtb2RhbENvbnRyb2xsZXIiLCJhcHBlbmRUYXJnZXQiLCJpc1N0cmluZyIsImFwcGVuZEVsZW1lbnQiLCJxdWVyeVNlbGVjdG9yIiwicGFyZW50IiwiY2hpbGQiLCJjaGlsZHJlbiIsImVudGVyIiwiYXBwZW5kQ2hpbGQiLCJhZGQiLCJjbG9zZWQiLCJpc0Z1bmN0aW9uIiwiJG9uSW5pdCIsImRvY3VtZW50IiwiYWN0aXZlRWxlbWVudCIsImJsdXIiLCJwdXNoIl0sIm1hcHBpbmdzIjoiYUFDQSxJQUFBQSxLQUdBLFNBQUFDLEVBQUFDLEdBR0EsR0FBQUYsRUFBQUUsR0FDQSxPQUFBRixFQUFBRSxHQUFBQyxRQUdBLElBQUFDLEVBQUFKLEVBQUFFLElBQ0FHLEVBQUFILEVBQ0FJLEdBQUEsRUFDQUgsWUFVQSxPQU5BSSxFQUFBTCxHQUFBTSxL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aUYsY0FBYy9ELEVBQVE4RCxnQkFFM0Q5RCxFQUFROEQsZ0JBRWZGLEVBQWU1RCxFQUFROEQsZUFoTHJCLFNBQVVFLEVBQVFDLEdBQ2hDLElBQUlDLEVBQVdGLEVBQU9FLFdBQ2xCQSxFQUFTdEUsT0FBUyxFQUNYZixFQUFTc0YsTUFBTUYsRUFBT0QsRUFBUUUsRUFBU0EsRUFBU3RFLE9BQVMsSUFFN0RmLEVBQVNzRixNQUFNRixFQUFPRCxHQThLckJJLENBQVlSLEVBQWNSLEdBR3RCcEQsRUFBUWdELFdBQ1IxQixFQUFLLEdBQUcyQixVQUFVb0IsSUFBSXJFLEVBQVFnRCxXQUlsQ2YsRUFBTWhDLFdBQWEwRCxFQUNuQjFCLEVBQU1FLE1BQVFELEVBQ2RELEVBQU1WLFFBQVU2QixFQUNoQm5CLEVBQU1wQyxNQUFROEMsRUFBY1osUUFDNUJFLEVBQU1xQyxPQUFTMUIsRUFBZWIsUUFNMUIzRCxRQUFRbUcsV0FBV3RDLEVBQU1oQyxXQUFXdUUsVUFDcEN2QyxFQUFNaEMsV0FBV3VFLFVBSXJCaEQsRUFBU0csUUFBUU0sR0FHakJ3QyxTQUFTQyxjQUFjQyxPQUd2QnBGLEVBQUtDLFdBQVdvRixNQUFNM0MsTUFBT0EsRUFBT3BDLE1BQU82QyxFQUFPN0MsVUFtRHJEK0IsS0FBSyxLQUFNLFNBQVVDLEdBQ2xCTCxFQUFTTSxPQUFPRCxLQUdqQkwsRUFBU08sVUFwTFpQLEVBQVNNLE9BQU8scUNBQ1ROLEVBQVNPLFVBd0xyQixDQUFpQnpEIiwiZmlsZSI6ImFuZ3VsYXItbW9kYWwtc2VydmljZS5qcyIsInNvdXJjZXNDb250ZW50IjpbIiBcdC8vIFRoZSBtb2R1bGUgY2FjaGVcbiBcdHZhciBpbnN0YWxsZWRNb2R1bGVzID0ge307XG5cbiBcdC8vIFRoZSByZXF1aXJlIGZ1bmN0aW9uXG4gXHRmdW5jdGlvbiBfX3dlYnBhY2tfcmVxdWlyZV9fKG1vZHVsZUlkKSB7XG5cbiBcdFx0Ly8gQ2hlY2sgaWYgbW9kdWxlIGlzIGluIGNhY2hlXG4gXHRcdGlmKGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdKSB7XG4gXHRcdFx0cmV0dXJuIGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdLmV4cG9ydHM7XG4gXHRcdH1cbiBcdFx0Ly8gQ3JlYXRlIGEgbmV3IG1vZHVsZSAoYW5kIHB1dCBpdCBpbnRvIHRoZSBjYWNoZSlcbiBcdFx0dmFyIG1vZHVsZSA9IGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdID0ge1xuIFx0XHRcdGk6IG1vZHVsZUlkLFxuIFx0XHRcdGw6IGZhbHNlLFxuIFx0XHRcdGV4cG9ydHM6IHt9XG4gXHRcdH07XG5cbiBcdFx0Ly8gRXhlY3V0ZSB0aGUgbW9kdWxlIGZ1bmN0aW9uXG4gXHRcdG1vZHVsZXNbbW9kdWxlSWRdLmNhbGwobW9kdWxlLmV4cG9ydHMsIG1vZHVsZSwgbW9kdWxlLmV4cG9ydHMsIF9fd2VicGFja19yZXF1aXJlX18pO1xuXG4gXHRcdC8vIEZsYWcgdGhlIG1vZHVsZSBhcyBsb2FkZWRcbiBcdFx0bW9kdWxlLmwgPSB0cnVlO1xuXG4gXHRcdC8vIFJldHVybiB0aGUgZXhwb3J0cyBvZiB0aGUgbW9kdWxlXG4gXHRcdHJldHVybiBtb2R1bGUuZXhwb3J0cztcbiBcdH1cblxuXG4gXHQvLyBleHBvc2UgdGhlIG1vZHVsZXMgb2JqZWN0IChfX3dlYnBhY2tfbW9kdWxlc19fKVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5tID0gbW9kdWxlcztcblxuIFx0Ly8gZXhwb3NlIHRoZSBtb2R1bGUgY2FjaGVcbiBcdF9fd2VicGFja19yZXF1aXJlX18uYyA9IGluc3RhbGxlZE1vZHVsZXM7XG5cbiBcdC8vIGRlZmluZSBnZXR0ZXIgZnVuY3Rpb24gZm9yIGhhcm1vbnkgZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5kID0gZnVuY3Rpb24oZXhwb3J0cywgbmFtZSwgZ2V0dGVyKSB7XG4gXHRcdGlmKCFfX3dlYnBhY2tfcmVxdWlyZV9fLm8oZXhwb3J0cywgbmFtZSkpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgbmFtZSwgeyBlbnVtZXJhYmxlOiB0cnVlLCBnZXQ6IGdldHRlciB9KTtcbiBcdFx0fVxuIFx0fTtcblxuIFx0Ly8gZGVmaW5lIF9fZXNNb2R1bGUgb24gZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yID0gZnVuY3Rpb24oZXhwb3J0cykge1xuIFx0XHRpZih0eXBlb2YgU3ltYm9sICE9PSAndW5kZWZpbmVkJyAmJiBTeW1ib2wudG9TdHJpbmdUYWcpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgU3ltYm9sLnRvU3RyaW5nVGFnLCB7IHZhbHVlOiAnTW9kdWxlJyB9KTtcbiBcdFx0fVxuIFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgJ19fZXNNb2R1bGUnLCB7IHZhbHVlOiB0cnVlIH0pO1xuIFx0fTtcblxuIFx0Ly8gY3JlYXRlIGEgZmFrZSBuYW1lc3BhY2Ugb2JqZWN0XG4gXHQvLyBtb2RlICYgMTogdmFsdWUgaXMgYSBtb2R1bGUgaWQsIHJlcXVpcmUgaXRcbiBcdC8vIG1vZGUgJiAyOiBtZXJnZSBhbGwgcHJvcGVydGllcyBvZiB2YWx1ZSBpbnRvIHRoZSBuc1xuIFx0Ly8gbW9kZSAmIDQ6IHJldHVybiB2YWx1ZSB3aGVuIGFscmVhZHkgbnMgb2JqZWN0XG4gXHQvLyBtb2RlICYgOHwxOiBiZWhhdmUgbGlrZSByZXF1aXJlXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnQgPSBmdW5jdGlvbih2YWx1ZSwgbW9kZSkge1xuIFx0XHRpZihtb2RlICYgMSkgdmFsdWUgPSBfX3dlYnBhY2tfcmVxdWlyZV9fKHZhbHVlKTtcbiBcdFx0aWYobW9kZSAmIDgpIHJldHVybiB2YWx1ZTtcbiBcdFx0aWYoKG1vZGUgJiA0KSAmJiB0eXBlb2YgdmFsdWUgPT09ICdvYmplY3QnICYmIHZhbHVlICYmIHZhbHVlLl9fZXNNb2R1bGUpIHJldHVybiB2YWx1ZTtcbiBcdFx0dmFyIG5zID0gT2JqZWN0LmNyZWF0ZShudWxsKTtcbiBcdFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yKG5zKTtcbiBcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KG5zLCAnZGVmYXVsdCcsIHsgZW51bWVyYWJsZTogdHJ1ZSwgdmFsdWU6IHZhbHVlIH0pO1xuIFx0XHRpZihtb2RlICYgMiAmJiB0eXBlb2YgdmFsdWUgIT0gJ3N0cmluZycpIGZvcih2YXIga2V5IGluIHZhbHVlKSBfX3dlYnBhY2tfcmVxdWlyZV9fLmQobnMsIGtleSwgZnVuY3Rpb24oa2V5KSB7IHJldHVybiB2YWx1ZVtrZXldOyB9LmJpbmQobnVsbCwga2V5KSk7XG4gXHRcdHJldHVybiBucztcbiBcdH07XG5cbiBcdC8vIGdldERlZmF1bHRFeHBvcnQgZnVuY3Rpb24gZm9yIGNvbXBhdGliaWxpdHkgd2l0aCBub24taGFybW9ueSBtb2R1bGVzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm4gPSBmdW5jdGlvbihtb2R1bGUpIHtcbiBcdFx0dmFyIGdldHRlciA9IG1vZHVsZSAmJiBtb2R1bGUuX19lc01vZHVsZSA/XG4gXHRcdFx0ZnVuY3Rpb24gZ2V0RGVmYXVsdCgpIHsgcmV0dXJuIG1vZHVsZVsnZGVmYXVsdCddOyB9IDpcbiBcdFx0XHRmdW5jdGlvbiBnZXRNb2R1bGVFeHBvcnRzKCkgeyByZXR1cm4gbW9kdWxlOyB9O1xuIFx0XHRfX3dlYnBhY2tfcmVxdWlyZV9fLmQoZ2V0dGVyLCAnYScsIGdldHRlcik7XG4gXHRcdHJldHVybiBnZXR0ZXI7XG4gXHR9O1xuXG4gXHQvLyBPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGxcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubyA9IGZ1bmN0aW9uKG9iamVjdCwgcHJvcGVydHkpIHsgcmV0dXJuIE9iamVjdC5wcm90b3R5cGUuaGFzT3duUHJvcGVydHkuY2FsbChvYmplY3QsIHByb3BlcnR5KTsgfTtcblxuIFx0Ly8gX193ZWJwYWNrX3B1YmxpY19wYXRoX19cbiBcdF9fd2VicGFja19yZXF1aXJlX18ucCA9IFwiXCI7XG5cblxuIFx0Ly8gTG9hZCBlbnRyeSBtb2R1bGUgYW5kIHJldHVybiBleHBvcnRzXG4gXHRyZXR1cm4gX193ZWJwYWNrX3JlcXVpcmVfXyhfX3dlYnBhY2tfcmVxdWlyZV9fLnMgPSAwKTtcbiIsIid1c2Ugc3RyaWN0JztcblxudmFyIG1vZHVsZSA9IGFuZ3VsYXIubW9kdWxlKCdhbmd1bGFyTW9kYWxTZXJ2aWNlJywgW10pO1xuXG5tb2R1bGUucHJvdmlkZXIoJ01vZGFsU2VydmljZScsIGZ1bmN0aW9uIE1vZGFsU2VydmljZVByb3ZpZGVyKCkge1xuICAgIHZhciBfb3B0aW9ucyA9IHtcbiAgICAgICAgY2xvc2VEZWxheTogMFxuICAgIH07XG5cbiAgICB0aGlzLmNvbmZpZ3VyZU9wdGlvbnMgPSBmdW5jdGlvbiAoY29uZmlnKSB7XG4gICAgICAgIGFuZ3VsYXIuZXh0ZW5kKF9vcHRpb25zLCBjb25maWcpO1xuICAgIH07XG4gICAgdGhpcy4kZ2V0ID0gWyckYW5pbWF0ZScsICckZG9jdW1lbnQnLCAnJGNvbXBpbGUnLCAnJGNvbnRyb2xsZXInLCAnJGh0dHAnLCAnJHJvb3RTY29wZScsICckcScsICckdGVtcGxhdGVSZXF1ZXN0JywgJyR0aW1lb3V0JyxcbiAgICAgICAgZnVuY3Rpb24gKCRhbmltYXRlLCAkZG9jdW1lbnQsICRjb21waWxlLCAkY29udHJvbGxlciwgJGh0dHAsICRyb290U2NvcGUsICRxLCAkdGVtcGxhdGVSZXF1ZXN0LCAkdGltZW91dCkge1xuXG4gICAgICAgICAgICBmdW5jdGlvbiBNb2RhbFNlcnZpY2UoY29uZmlnT3B0aW9ucykge1xuXG4gICAgICAgICAgICAgICAgdmFyIHNlbGYgPSB0aGlzO1xuXG4gICAgICAgICAgICAgICAgLy9zdGFzaCBjb25maWdPcHRpb25zXG4gICAgICAgICAgICAgICAgc2VsZi5jb25maWdPcHRpb25zID0gY29uZmlnT3B0aW9ucztcblxuICAgICAgICAgICAgICAgIC8vICBUcmFjayBvcGVuIG1vZGFscy5cbiAgICAgICAgICAgICAgICBzZWxmLm9wZW5Nb2RhbHMgPSBbXTtcblxuICAgICAgICAgICAgICAgIC8vICBSZXR1cm5zIGEgcHJvbWlzZSB3aGljaCBnZXRzIHRoZSB0ZW1wbGF0ZSwgZWl0aGVyXG4gICAgICAgICAgICAgICAgLy8gIGZyb20gdGhlIHRlbXBsYXRlIHBhcmFtZXRlciBvciB2aWEgYSByZXF1ZXN0IHRvIHRoZVxuICAgICAgICAgICAgICAgIC8vICB0ZW1wbGF0ZSB1cmwgcGFyYW1ldGVyLlxuICAgICAgICAgICAgICAgIHZhciBnZXRUZW1wbGF0ZSA9IGZ1bmN0aW9uICh0ZW1wbGF0ZSwgdGVtcGxhdGVVcmwpIHtcbiAgICAgICAgICAgICAgICAgICAgdmFyIGRlZmVycmVkID0gJHEuZGVmZXIoKTtcbiAgICAgICAgICAgICAgICAgICAgaWYgKHRlbXBsYXRlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZXNvbHZlKHRlbXBsYXRlKTtcbiAgICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmICh0ZW1wbGF0ZVVybCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgJHRlbXBsYXRlUmVxdWVzdCh0ZW1wbGF0ZVVybCwgdHJ1ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAudGhlbihmdW5jdGlvbiAodGVtcGxhdGUpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQucmVzb2x2ZSh0ZW1wbGF0ZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwgZnVuY3Rpb24gKGVycm9yKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlZmVycmVkLnJlamVjdChlcnJvcik7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfSk7XG4gICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZWplY3QoXCJObyB0ZW1wbGF0ZSBvciB0ZW1wbGF0ZVVybCBoYXMgYmVlbiBzcGVjaWZpZWQuXCIpO1xuICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiBkZWZlcnJlZC5wcm9taXNlO1xuICAgICAgICAgICAgICAgIH07XG5cbiAgICAgICAgICAgICAgICAvLyAgQWRkcyBhbiBlbGVtZW50IHRvIHRoZSBET00gYXMgdGhlIGxhc3QgY2hpbGQgb2YgaXRzIGNvbnRhaW5lclxuICAgICAgICAgICAgICAgIC8vICBsaWtlIGFwcGVuZCwgYnV0IHVzZXMgJGFuaW1hdGUgdG8gaGFuZGxlIGFuaW1hdGlvbnMuIFJldHVybnMgYVxuICAgICAgICAgICAgICAgIC8vICBwcm9taXNlIHRoYXQgaXMgcmVzb2x2ZWQgb25jZSBhbGwgYW5pbWF0aW9uIGlzIGNvbXBsZXRlLlxuICAgICAgICAgICAgICAgIHZhciBhcHBlbmRDaGlsZCA9IGZ1bmN0aW9uIChwYXJlbnQsIGNoaWxkKSB7XG4gICAgICAgICAgICAgICAgICAgIHZhciBjaGlsZHJlbiA9IHBhcmVudC5jaGlsZHJlbigpO1xuICAgICAgICAgICAgICAgICAgICBpZiAoY2hpbGRyZW4ubGVuZ3RoID4gMCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuICRhbmltYXRlLmVudGVyKGNoaWxkLCBwYXJlbnQsIGNoaWxkcmVuW2NoaWxkcmVuLmxlbmd0aCAtIDFdKTtcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICByZXR1cm4gJGFuaW1hdGUuZW50ZXIoY2hpbGQsIHBhcmVudCk7XG4gICAgICAgICAgICAgICAgfTtcblxuICAgICAgICAgICAgICAgIC8vICBDbG9zZSBhbGwgbW9kYWxzLCBwcm92aWRpbmcgdGhlIGdpdmVuIHJlc3VsdCB0byB0aGUgY2xvc2UgcHJvbWlzZS5cbiAgICAgICAgICAgICAgICBzZWxmLmNsb3NlTW9kYWxzID0gZnVuY3Rpb24gKHJlc3VsdCwgZGVsYXkpIHtcbiAgICAgICAgICAgICAgICAgICAgZGVsYXkgPSBkZWxheSB8fCBzZWxmLmNvbmZpZ09wdGlvbnMuY2xvc2VEZWxheTtcbiAgICAgICAgICAgICAgICAgICAgd2hpbGUgKHNlbGYub3Blbk1vZGFscy5sZW5ndGgpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFsc1swXS5jbG9zZShyZXN1bHQsIGRlbGF5KTtcbiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFscy5zcGxpY2UoMCwgMSk7XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgLypcbiAgICAgICAgICAgICAgICAgKiAgQ3JlYXRlcyBhIGNvbnRyb2xsZXIgd2l0aCBzY29wZSBiaW5kaW5nc1xuICAgICAgICAgICAgICAgICAqL1xuICAgICAgICAgICAgICAgIHZhciBidWlsZENvbXBvbmVudENvbnRyb2xsZXIgPSBmdW5jdGlvbihvcHRpb25zKSB7XG4gICAgICAgICAgICAgICAgICByZXR1cm4gWyckc2NvcGUnLCAnY2xvc2UnLCBmdW5jdGlvbigkc2NvcGUsIGNsb3NlKSB7XG4gICAgICAgICAgICAgICAgICAgICRzY29wZS5jbG9zZSA9IGNsb3NlO1xuICAgICAgICAgICAgICAgICAgICAkc2NvcGUuYmluZGluZ3MgPSBvcHRpb25zLmJpbmRpbmdzO1xuICAgICAgICAgICAgICAgICAgfV07XG4gICAgICAgICAgICAgICAgfTtcblxuICAgICAgICAgICAgICAgIC8qXG4gICAgICAgICAgICAgICAgICogIENyZWF0ZXMgYSBjb21wb25lbnQgdGVtcGxhdGVcbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICBJbnB1dDpcbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICAgIHtcbiAgICAgICAgICAgICAgICAgKiAgICAgICBjb21wb25lbnQ6ICdteUNvbXBvbmVudCcsXG4gICAgICAgICAgICAgICAgICogICAgICAgYmluZGluZ3M6IHtcbiAgICAgICAgICAgICAgICAgKiAgICAgICAgIG5hbWU6ICdGb28nLFxuICAgICAgICAgICAgICAgICAqICAgICAgICAgcGhvbmVOdW1iZXI6ICcxMjMtNDU2LTc4OTAnXG4gICAgICAgICAgICAgICAgICogICAgICAgfVxuICAgICAgICAgICAgICAgICAqICAgIH1cbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICBPdXRwdXQ6XG4gICAgICAgICAgICAgICAgICpcbiAgICAgICAgICAgICAgICAgKiAgICAnPG15LWNvbXBvbmVudCBjbG9zZT1cImNsb3NlXCIgbmFtZT1cImJpbmRpbmdzLm5hbWVcIiBwaG9uZS1udW1iZXI9XCJiaW5kaW5ncy5waG9uZU51bWJlclwiPjwvbXktY29tcG9uZW50PidcbiAgICAgICAgICAgICAgICAgKi9cbiAgICAgICAgICAgICAgICB2YXIgYnVpbGRDb21wb25lbnRUZW1wbGF0ZSA9IGZ1bmN0aW9uKG9wdGlvbnMpIHtcbiAgICAgICAgICAgICAgICAgIHZhciBrZWJhYkNhc2UgPSBmdW5jdGlvbihjYW1lbENhc2UpIHtcbiAgICAgICAgICAgICAgICAgICAgdmFyIHNrZXdlciA9IGZ1bmN0aW9uKF9tLCBjMSwgYzIpIHsgcmV0dXJuIFtjMSwgYzJdLmpvaW4oJy0nKS50b0xvd2VyQ2FzZSgpOyB9O1xuICAgICAgICAgICAgICAgICAgICByZXR1cm4gY2FtZWxDYXNlLnJlcGxhY2UoLyhbYS16MC05XSkoW0EtWl0pL2csIHNrZXdlcik7XG4gICAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgICB2YXIgY29tcG9uZW50SGFuZGxlID0ga2ViYWJDYXNlKG9wdGlvbnMuY29tcG9uZW50KTtcbiAgICAgICAgICAgICAgICAgIHZhciB0ZW1wbGF0ZSA9ICc8JyArIGNvbXBvbmVudEhhbmRsZSArICcgY2xvc2U9XCJjbG9zZVwiJztcbiAgICAgICAgICAgICAgICAgIHZhciBpbnB1dEtleXMgPSBPYmplY3Qua2V5cyhvcHRpb25zLmJpbmRpbmdzIHx8IHt9KVxuICAgICAgICAgICAgICAgICAgaWYgKGlucHV0S2V5cy5sZW5ndGggPiAwKSB7XG4gICAgICAgICAgICAgICAgICAgIHZhciBiaW5kaW5nQXR0cmlidXRlcyA9IGlucHV0S2V5cy5tYXAoZnVuY3Rpb24oaW5wdXRLZXkpIHtcbiAgICAgICAgICAgICAgICAgICAgICByZXR1cm4ga2ViYWJDYXNlKGlucHV0S2V5KSArICc9XCJiaW5kaW5ncy4nICsgaW5wdXRLZXkgKyAnXCInO1xuICAgICAgICAgICAgICAgICAgICB9KTtcbiAgICAgICAgICAgICAgICAgICAgdGVtcGxhdGUgKz0gJyAnICsgYmluZGluZ0F0dHJpYnV0ZXMuam9pbignICcpO1xuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgdGVtcGxhdGUgKz0gJz48LycgKyBjb21wb25lbnRIYW5kbGUgKyAnPic7XG5cbiAgICAgICAgICAgICAgICAgIHJldHVybiB0ZW1wbGF0ZTtcbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgdmFyIHNldHVwQ29tcG9uZW50T3B0aW9ucyA9IGZ1bmN0aW9uKG9wdGlvbnMpIHtcbiAgICAgICAgICAgICAgICAgIG9wdGlvbnMuY29udHJvbGxlciA9IGJ1aWxkQ29tcG9uZW50Q29udHJvbGxlcihvcHRpb25zKTtcbiAgICAgICAgICAgICAgICAgIG9wdGlvbnMudGVtcGxhdGUgPSBidWlsZENvbXBvbmVudFRlbXBsYXRlKG9wdGlvbnMpO1xuICAgICAgICAgICAgICAgIH07XG5cbiAgICAgICAgICAgICAgICBzZWxmLnNob3dNb2RhbCA9IGZ1bmN0aW9uIChvcHRpb25zKSB7XG4gICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmNvbXBvbmVudCkge1xuICAgICAgICAgICAgICAgICAgICAgIHNldHVwQ29tcG9uZW50T3B0aW9ucyhvcHRpb25zKTtcbiAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgIC8vICBHZXQgdGhlIGJvZHkgb2YgdGhlIGRvY3VtZW50LCB3ZSdsbCBhZGQgdGhlIG1vZGFsIHRvIHRoaXMuXG4gICAgICAgICAgICAgICAgICAgIHZhciBib2R5ID0gYW5ndWxhci5lbGVtZW50KCRkb2N1bWVudFswXS5ib2R5KTtcblxuICAgICAgICAgICAgICAgICAgICAvLyAgQ3JlYXRlIGEgZGVmZXJyZWQgd2UnbGwgcmVzb2x2ZSB3aGVuIHRoZSBtb2RhbCBpcyByZWFkeS5cbiAgICAgICAgICAgICAgICAgICAgdmFyIGRlZmVycmVkID0gJHEuZGVmZXIoKTtcblxuICAgICAgICAgICAgICAgICAgICAvLyAgVmFsaWRhdGUgdGhlIGlucHV0IHBhcmFtZXRlcnMuXG4gICAgICAgICAgICAgICAgICAgIHZhciBjb250cm9sbGVyTmFtZSA9IG9wdGlvbnMuY29udHJvbGxlcjtcbiAgICAgICAgICAgICAgICAgICAgaWYgKCFjb250cm9sbGVyTmFtZSkge1xuICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQucmVqZWN0KFwiTm8gY29udHJvbGxlciBoYXMgYmVlbiBzcGVjaWZpZWQuXCIpO1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGRlZmVycmVkLnByb21pc2U7XG4gICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAvLyAgR2V0IHRoZSBhY3R1YWwgaHRtbCBvZiB0aGUgdGVtcGxhdGUuXG4gICAgICAgICAgICAgICAgICAgIGdldFRlbXBsYXRlKG9wdGlvbnMudGVtcGxhdGUsIG9wdGlvbnMudGVtcGxhdGVVcmwpXG4gICAgICAgICAgICAgICAgICAgICAgICAudGhlbihmdW5jdGlvbiAodGVtcGxhdGUpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUaGUgbWFpbiBtb2RhbCBvYmplY3Qgd2Ugd2lsbCBidWlsZC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgbW9kYWwgPSB7fTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBDcmVhdGUgYSBuZXcgc2NvcGUgZm9yIHRoZSBtb2RhbC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgbW9kYWxTY29wZSA9IChvcHRpb25zLnNjb3BlIHx8ICRyb290U2NvcGUpLiRuZXcoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm9vdFNjb3BlT25DbG9zZSA9IG51bGwsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvY2F0aW9uQ2hhbmdlU3VjY2VzcyA9IG9wdGlvbnMubG9jYXRpb25DaGFuZ2VTdWNjZXNzO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIEFsbG93IGxvY2F0aW9uQ2hhbmdlU3VjY2VzcyBldmVudCByZWdpc3RyYXRpb24gdG8gYmUgY29uZmlndXJhYmxlLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUcnVlIChkZWZhdWx0KSA9IGV2ZW50IHJlZ2lzdGVyZWQgd2l0aCBkZWZhdWx0Q2xvc2VEZWxheVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICAjIChncmVhdGVyIHRoYW4gMCkgPSBldmVudCByZWdpc3RlcmVkIHdpdGggZGVsYXlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgRmFsc2UgPSBkaXNhYmxlZFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MgPT09IGZhbHNlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvb3RTY29wZU9uQ2xvc2UgPSBhbmd1bGFyLm5vb3A7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVsc2UgaWYgKGFuZ3VsYXIuaXNOdW1iZXIobG9jYXRpb25DaGFuZ2VTdWNjZXNzKSAmJiBsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MgPj0gMCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAkdGltZW91dChmdW5jdGlvbiAoKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb290U2NvcGVPbkNsb3NlID0gJHJvb3RTY29wZS4kb24oJyRsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MnLCBpbnB1dHMuY2xvc2UpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LCBsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJHRpbWVvdXQoZnVuY3Rpb24gKCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm9vdFNjb3BlT25DbG9zZSA9ICRyb290U2NvcGUuJG9uKCckbG9jYXRpb25DaGFuZ2VTdWNjZXNzJywgaW5wdXRzLmNsb3NlKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwgc2VsZi5jb25maWdPcHRpb25zLmNsb3NlRGVsYXkpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIENyZWF0ZSB0aGUgaW5wdXRzIG9iamVjdCB0byB0aGUgY29udHJvbGxlciAtIHRoaXMgd2lsbCBpbmNsdWRlXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIHRoZSBzY29wZSwgYXMgd2VsbCBhcyBhbGwgaW5wdXRzIHByb3ZpZGVkLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBXZSB3aWxsIGFsc28gY3JlYXRlIGEgZGVmZXJyZWQgdGhhdCBpcyByZXNvbHZlZCB3aXRoIGEgcHJvdmlkZWRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgY2xvc2UgZnVuY3Rpb24uIFRoZSBjb250cm9sbGVyIGNhbiB0aGVuIGNhbGwgJ2Nsb3NlKHJlc3VsdCknLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUaGUgY29udHJvbGxlciBjYW4gYWxzbyBwcm92aWRlIGEgZGVsYXkgZm9yIGNsb3NpbmcgLSB0aGlzIGlzXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGhlbHBmdWwgaWYgdGhlcmUgYXJlIGNsb3NpbmcgYW5pbWF0aW9ucyB3aGljaCBtdXN0IGZpbmlzaCBmaXJzdC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgY2xvc2VEZWZlcnJlZCA9ICRxLmRlZmVyKCk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIGNsb3NlZERlZmVycmVkID0gJHEuZGVmZXIoKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgaGFzQWxyZWFkeUJlZW5DbG9zZWQgPSBmYWxzZTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBpbnB1dHMgPSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICRzY29wZTogbW9kYWxTY29wZSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2U6IGZ1bmN0aW9uIChyZXN1bHQsIGRlbGF5KSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoaGFzQWxyZWFkeUJlZW5DbG9zZWQpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoYXNBbHJlYWR5QmVlbkNsb3NlZCA9IHRydWU7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlbGF5ID0gZGVsYXkgfHwgc2VsZi5jb25maWdPcHRpb25zLmNsb3NlRGVsYXk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgSWYgd2UgaGF2ZSBhIHByZS1jbG9zZSBmdW5jdGlvbiwgY2FsbCBpdC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmICh0eXBlb2Ygb3B0aW9ucy5wcmVDbG9zZSA9PT0gJ2Z1bmN0aW9uJykgb3B0aW9ucy5wcmVDbG9zZShtb2RhbCwgcmVzdWx0LCBkZWxheSk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChkZWxheSA9PT0gdW5kZWZpbmVkIHx8IGRlbGF5ID09PSBudWxsKSBkZWxheSA9IDA7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICR0aW1lb3V0KGZ1bmN0aW9uICgpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuVXBDbG9zZShyZXN1bHQpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LCBkZWxheSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIElmIHdlIGhhdmUgcHJvdmlkZWQgYW55IGlucHV0cywgcGFzcyB0aGVtIHRvIHRoZSBjb250cm9sbGVyLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmlucHV0cykgYW5ndWxhci5leHRlbmQoaW5wdXRzLCBvcHRpb25zLmlucHV0cyk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgQ29tcGlsZSB0aGVuIGxpbmsgdGhlIHRlbXBsYXRlIGVsZW1lbnQsIGJ1aWxkaW5nIHRoZSBhY3R1YWwgZWxlbWVudC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgU2V0IHRoZSAkZWxlbWVudCBvbiB0aGUgaW5wdXRzIHNvIHRoYXQgaXQgY2FuIGJlIGluamVjdGVkIGlmIHJlcXVpcmVkLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBsaW5rRm4gPSAkY29tcGlsZSh0ZW1wbGF0ZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIG1vZGFsRWxlbWVudCA9IGxpbmtGbihtb2RhbFNjb3BlKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnB1dHMuJGVsZW1lbnQgPSBtb2RhbEVsZW1lbnQ7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgQ3JlYXRlIHRoZSBjb250cm9sbGVyLCBleHBsaWNpdGx5IHNwZWNpZnlpbmcgdGhlIHNjb3BlIHRvIHVzZS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgY29udHJvbGxlck9iakJlZm9yZSA9IG1vZGFsU2NvcGVbb3B0aW9ucy5jb250cm9sbGVyQXNdO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBtb2RhbENvbnRyb2xsZXIgPSAkY29udHJvbGxlcihvcHRpb25zLmNvbnRyb2xsZXIsIGlucHV0cywgZmFsc2UsIG9wdGlvbnMuY29udHJvbGxlckFzKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmNvbnRyb2xsZXJBcyAmJiBjb250cm9sbGVyT2JqQmVmb3JlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFuZ3VsYXIuZXh0ZW5kKG1vZGFsQ29udHJvbGxlciwgY29udHJvbGxlck9iakJlZm9yZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFRoZW4sIGFwcGVuZCB0aGUgbW9kYWwgdG8gdGhlIGRvbS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgYXBwZW5kVGFyZ2V0ID0gYm9keTsgLy8gYXBwZW5kIHRvIGJvZHkgd2hlbiBubyBjdXN0b20gYXBwZW5kIGVsZW1lbnQgaXMgc3BlY2lmaWVkXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGFuZ3VsYXIuaXNTdHJpbmcob3B0aW9ucy5hcHBlbmRFbGVtZW50KSkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBxdWVyeSB0aGUgZG9jdW1lbnQgZm9yIHRoZSBmaXJzdCBlbGVtZW50IHRoYXQgbWF0Y2hlcyB0aGUgc2VsZWN0b3JcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBhbmQgY3JlYXRlIGFuIGFuZ3VsYXIgZWxlbWVudCBvdXQgb2YgaXQuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFwcGVuZFRhcmdldCA9IGFuZ3VsYXIuZWxlbWVudCgkZG9jdW1lbnRbMF0ucXVlcnlTZWxlY3RvcihvcHRpb25zLmFwcGVuZEVsZW1lbnQpKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAob3B0aW9ucy5hcHBlbmRFbGVtZW50KSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGFwcGVuZCB0byBjdXN0b20gYXBwZW5kIGVsZW1lbnRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXBwZW5kVGFyZ2V0ID0gb3B0aW9ucy5hcHBlbmRFbGVtZW50O1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFwcGVuZENoaWxkKGFwcGVuZFRhcmdldCwgbW9kYWxFbGVtZW50KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEZpbmFsbHksIGFwcGVuZCBhbnkgY3VzdG9tIGNsYXNzZXMgdG8gdGhlIGJvZHlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAob3B0aW9ucy5ib2R5Q2xhc3MpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYm9keVswXS5jbGFzc0xpc3QuYWRkKG9wdGlvbnMuYm9keUNsYXNzKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUG9wdWxhdGUgdGhlIG1vZGFsIG9iamVjdC4uLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsLmNvbnRyb2xsZXIgPSBtb2RhbENvbnRyb2xsZXI7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuc2NvcGUgPSBtb2RhbFNjb3BlO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsLmVsZW1lbnQgPSBtb2RhbEVsZW1lbnQ7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY2xvc2UgPSBjbG9zZURlZmVycmVkLnByb21pc2U7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY2xvc2VkID0gY2xvc2VkRGVmZXJyZWQucHJvbWlzZTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICRvbkluaXQgaXMgcGFydCBvZiB0aGUgY29tcG9uZW50IGxpZmVjeWNsZSBpbnRyb2R1Y2VkIGluIEFuZ3VsYXJKUyAxLjYueFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEJlY2F1c2UgaXQgbWF5IG5vdCBiZSBkZWZpbmVkIG9uIGFsbCBjb250cm9sbGVycyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyB3ZSBtdXN0IGNoZWNrIGZvciBpdCBiZWZvcmUgYXR0ZW1wdGluZyB0byBpbnZva2UgaXQuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gaHR0cHM6Ly9kb2NzLmFuZ3VsYXJqcy5vcmcvZ3VpZGUvY29tcG9uZW50I2NvbXBvbmVudC1iYXNlZC1hcHBsaWNhdGlvbi1hcmNoaXRlY3R1cmVcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoYW5ndWxhci5pc0Z1bmN0aW9uKG1vZGFsLmNvbnRyb2xsZXIuJG9uSW5pdCkpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY29udHJvbGxlci4kb25Jbml0KCk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIC4uLndoaWNoIGlzIHBhc3NlZCB0byB0aGUgY2FsbGVyIHZpYSB0aGUgcHJvbWlzZS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZXNvbHZlKG1vZGFsKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIENsZWFyIHByZXZpb3VzIGlucHV0IGZvY3VzIHRvIGF2b2lkIG9wZW4gbXVsdGlwbGUgbW9kYWxzIG9uIGVudGVyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgZG9jdW1lbnQuYWN0aXZlRWxlbWVudC5ibHVyKCk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgV2UgY2FuIHRyYWNrIHRoaXMgbW9kYWwgaW4gb3VyIG9wZW4gbW9kYWxzLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFscy5wdXNoKHttb2RhbDogbW9kYWwsIGNsb3NlOiBpbnB1dHMuY2xvc2V9KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZ1bmN0aW9uIGNsZWFuVXBDbG9zZShyZXN1bHQpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUmVzb2x2ZSB0aGUgJ2Nsb3NlJyBwcm9taXNlLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZURlZmVycmVkLnJlc29sdmUocmVzdWx0KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUmVtb3ZlIHRoZSBjdXN0b20gY2xhc3MgZnJvbSB0aGUgYm9keVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAob3B0aW9ucy5ib2R5Q2xhc3MpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvZHlbMF0uY2xhc3NMaXN0LnJlbW92ZShvcHRpb25zLmJvZHlDbGFzcyk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgTGV0IGFuZ3VsYXIgcmVtb3ZlIHRoZSBlbGVtZW50IGFuZCB3YWl0IGZvciBhbmltYXRpb25zIHRvIGZpbmlzaC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJGFuaW1hdGUubGVhdmUobW9kYWxFbGVtZW50KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLnRoZW4oZnVuY3Rpb24gKCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIHByZXZlbnQgZXJyb3IgaWYgbW9kYWwgaXMgYWxyZWFkeSBkZXN0cm95ZWRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIW1vZGFsRWxlbWVudCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFJlc29sdmUgdGhlICdjbG9zZWQnIHByb21pc2UuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2VkRGVmZXJyZWQucmVzb2x2ZShyZXN1bHQpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFdlIGNhbiBub3cgY2xlYW4gdXAgdGhlIHNjb3BlXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWxTY29wZS4kZGVzdHJveSgpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFJlbW92ZSB0aGUgbW9kYWwgZnJvbSB0aGUgc2V0IG9mIG9wZW4gbW9kYWxzLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgc2VsZi5vcGVuTW9kYWxzLmxlbmd0aDsgaSsrKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzZWxmLm9wZW5Nb2RhbHNbaV0ubW9kYWwgPT09IG1vZGFsKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzZWxmLm9wZW5Nb2RhbHMuc3BsaWNlKGksIDEpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgVW5sZXNzIHdlIG51bGwgb3V0IGFsbCBvZiB0aGVzZSBvYmplY3RzIHdlIHNlZW0gdG8gc3VmZmVyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGZyb20gbWVtb3J5IGxlYWtzLCBpZiBhbnlvbmUgY2FuIGV4cGxhaW4gd2h5IHRoZW4gSSdkXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGJlIHZlcnkgaW50ZXJlc3RlZCB0byBrbm93LlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlucHV0cy5jbG9zZSA9IG51bGw7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3NlRGVmZXJyZWQgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsID0gbnVsbDtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnB1dHMgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsRWxlbWVudCA9IG51bGw7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWxTY29wZSA9IG51bGw7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0pO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyByZW1vdmUgZXZlbnQgd2F0Y2hlclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb290U2NvcGVPbkNsb3NlICYmIHJvb3RTY29wZU9uQ2xvc2UoKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgIH0pXG4gICAgICAgICAgICAgICAgICAgICAgICAudGhlbihudWxsLCBmdW5jdGlvbiAoZXJyb3IpIHsgLy8gJ2NhdGNoJyBkb2Vzbid0IHdvcmsgaW4gSUU4LlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlZmVycmVkLnJlamVjdChlcnJvcik7XG4gICAgICAgICAgICAgICAgICAgICAgICB9KTtcblxuICAgICAgICAgICAgICAgICAgICByZXR1cm4gZGVmZXJyZWQucHJvbWlzZTtcbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICB9XG5cbiAgICAgICAgICAgIHJldHVybiBuZXcgTW9kYWxTZXJ2aWNlKF9vcHRpb25zKTtcbiAgICAgICAgfV07XG4gICAgfSk7XG4iXSwic291cmNlUm9vdCI6IiJ9
+
+/***/ }),
+/* 851 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(850);
+module.exports = 'angularModalService';
 
 /***/ })
 /******/ ]);

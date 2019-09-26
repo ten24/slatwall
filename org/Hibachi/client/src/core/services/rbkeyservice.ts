@@ -30,7 +30,20 @@ class RbKeyService{
 
 		var keyValue = this.getRBKey(key,this.appConfig.rbLocale);
 		////$log.debug(keyValue);
-
+		
+		/**
+		 * const templateString = "Hello ${this.name}!";
+		   const replaceStringData = {
+			    name: "world"    
+			}
+		 * 
+		 */ 
+		
+		if(replaceStringData) {
+			//coppied from  https://github.com/mikemaccana/dynamic-template
+			keyValue = keyValue.replace(/\${(.*?)}/g, (_, g) => replaceStringData[g]);
+		}
+		
 		return keyValue;
 	}
 	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {

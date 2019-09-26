@@ -44,7 +44,7 @@ class swfAccountController {
     public checkAndApplyAccountAge = () => {
         if(this.accountData.ownerAccount.createdDateTime){
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
-            this.accountAge = this.currentYear - accountCreatedYear
+            this.accountAge = this.currentYear - accountCreatedYear;
         }
     }
 	public $onInit = () =>{
