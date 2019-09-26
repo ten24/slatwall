@@ -59928,7 +59928,6 @@ var SWFWishlistController = /** @class */ (function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
             var wishlistInnerText = document.getElementById("wishlistTextWrapper");
             wishlistAddAlertBox.style.display = "block";
-            wishlistInnerText.textContent += _this.wishlistTemplateName;
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;

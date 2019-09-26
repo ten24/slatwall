@@ -121,8 +121,6 @@ class SWFWishlistController {
         const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
         const wishlistInnerText = document.getElementById("wishlistTextWrapper");
         wishlistAddAlertBox.style.display = "block";
-        wishlistInnerText.textContent += this.wishlistTemplateName;
-
     }
     
     public setWishlistID = (newID) => {
