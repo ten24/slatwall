@@ -1,14 +1,33 @@
 class MonatFlexshipCardController{
     
-    public orderTemplate:any;
     public dayOfMonthFormatted:string;
-
-	constructor(){
-
+    
+	public orderTemplate:any; 
+	
+	public accountAddresses: any[];
+	public accountPaymentMethods: any[];
+	public shippingMethodOptions: any[]; 
+	public stateCodeOptions: any[];
+	public cancellationReasonTypeOptions: any[];
+	public scheduleDateChangeReasonTypeOptions: any[];
+	
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
+	
+    //@ngInject
+	constructor(public observerService){
 	}
 	
 	public $onInit = () =>{
-
+		this.observerService.attach(this.updateOrderTemplate, "orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
+	}
+	
+	public $onDestroy = () =>{
+		this.observerService.detachById("orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
+	}
+	
+	public updateOrderTemplate = (orderTemplate?) => {
+		this.orderTemplate = orderTemplate;
 	}
 
 }
@@ -19,7 +38,15 @@ class MonatFlexshipCard {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'<'
+	    orderTemplate:'<',
+	    accountAddresses:'<',
+	    accountPaymentMethods:'<',
+	    shippingMethodOptions: '<',
+	    stateCodeOptions:'<',
+	    cancellationReasonTypeOptions: '<',
+	    scheduleDateChangeReasonTypeOptions: '<',
+	    expirationMonthOptions: '<',
+		expirationYearOptions: '<'
 	};
 	public controller=MonatFlexshipCardController;
 	public controllerAs="monatFlexshipCard";

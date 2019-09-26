@@ -9,6 +9,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=listAppend(this.publicMethods, 'get');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
+    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateDetails');
+    
+    this.publicMethods=listAppend(this.publicMethods, 'getWishlistItems');
+    
+    this.publicMethods=listAppend(this.publicMethods, 'activateOrderTemplate');
+    this.publicMethods=listAppend(this.publicMethods, 'cancelOrderTemplate');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateShipping');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateBilling');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateSchedule');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateFrequency');
+    
+    
     this.publicMethods=listAppend(this.publicMethods, 'post');
 
     public void function init( required any fw ) {
@@ -98,8 +110,37 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().getOrderTemplateItems(arguments.rc); 
 	} 
 	
+	public any function getOrderTemplateDetails( required struct rc ){
+		getPublicService().getOrderTemplateDetails(arguments.rc); 
+	}	
+
 	public any function getWishlistItems( required struct rc ){
 		getPublicService().getWishlistItems(arguments.rc); 
 	} 
 	
+	public any function updateOrderTemplateShipping( required struct rc ){
+		getPublicService().updateOrderTemplateShipping(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateBilling(required struct rc){
+	    getPublicService().updateOrderTemplateBilling(arguments.rc);
+	}
+	
+	public any function activateOrderTemplate( required struct rc ){
+		getPublicService().activateOrderTemplate(arguments.rc); 
+	} 
+	
+	public any function cancelOrderTemplate( required struct rc ){
+		getPublicService().cancelOrderTemplate(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateSchedule( required struct rc ){
+		getPublicService().updateOrderTemplateSchedule(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateFrequency( required struct rc ){
+		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
+	} 
+	
+
 }

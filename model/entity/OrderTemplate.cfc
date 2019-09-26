@@ -126,8 +126,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	
-	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
-		var orderTemplateStruct = super.getStructRepresentation();
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total', string persistentProperties=''){ 
+		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
+
+		var orderTemplateStruct = super.getStructRepresentation(properties);
 
 		var propertiesToDisplay = listToArray(arguments.nonPersistentProperties);
 
@@ -237,7 +239,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateScheduleDateChangeReasonTypeOptions')){	
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value');
 			typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateScheduleDateChangeReasonTypeOptions = typeCollection.getRecords(); 
@@ -248,11 +250,11 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getOrderTemplateCancellationReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateCancellationReasonTypeOptions')){
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value'); 
 			typeCollection.addFilter('parentType.systemCode','orderTemplateCancellationReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateCancellationReasonTypeOptions = typeCollection.getRecords(); 
-		} 
+		}
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
 
