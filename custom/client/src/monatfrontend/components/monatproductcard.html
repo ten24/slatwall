@@ -3,7 +3,7 @@
     <!-- Product Card -->
     
         <!-- If the product is not being viewed as a wishlist item, show the button to launch add to wishlist modal -->
- 	    <button ng-if="monatProductCard.loggedIn==true " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
+ 	    <button ng-if="slatwall.account.userIsLoggedIn()" type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button ng-if="monatProductCard.type=='wishlist'" ng-click="monatProductCard.deleteItem(monatProductCard.index)" type="button" class="close"><i class="fas fa-times"></i></button>
@@ -12,7 +12,7 @@
         <figure class="quick-view">
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a href="#" ng-click="modalButtonAction" data-toggle="modal" data-target="#product-" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a href="#" ng-click="monatProductCard.launchModal()" data-toggle="modal" data-target="#product-" class="btn prod-btn ">Quick Shop</a></span>
                 </div>
             </div>
             <a class="d-block" ng-href="{{monatProductCard.product.skuProductURL}}">
@@ -49,7 +49,7 @@
    </div>
    
    <!-- Product Modal-->
-    <div ng-if="monatProductCard.loggedIn==true " class="modal wishlist-modal fade" id="wishlist-modal" tabindex="-1" aria-labelledby="product-title" aria-hidden="true">
+    <div ng-if="slatwall.account.userIsLoggedIn() " class="modal wishlist-modal fade" id="wishlist-modal" tabindex="-1" aria-labelledby="product-title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -67,7 +67,7 @@
                     > 
                         <li ng-repeat="wishlist in monatProductCard.orderTemplates track by $index" ng-cloak>
                             <div class="radio">
-                                <input ng-click="swfWishlist.setWishlistID(wishlist.orderTemplateID); swfWishlist.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
+                                <input ng-click="monatProductCard.setWishlistID(wishlist.orderTemplateID); monatProductCard.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
                                 <label for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
                             </div>
                         </li>
@@ -83,10 +83,10 @@
                         </li>
                         
                         <div class="text-center">
-                            <a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); " data-dismiss="modal" class="btn text-white bg-primary">
+                            <a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="monatProductCard.addItemAndCreateWishlist(createWishList.orderTemplateName, monatProductCard.product.skuID); " data-dismiss="modal" class="btn text-white bg-primary">
                                 Save Changes
                             </a>
-                            <a ng-if="createWishList.orderTemplateID" data-dismiss="modal" ng-click="swfWishlist.addWishlistItem(monatProductCard.product.skuID)" class="btn text-white bg-primary">
+                            <a ng-if="createWishList.orderTemplateID" data-dismiss="modal" ng-click="monatProductCard.addWishlistItem(monatProductCard.product.skuID)" class="btn text-white bg-primary">
                                 Save Changes
                             </a>
                         </div>
