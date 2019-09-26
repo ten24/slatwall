@@ -3,9 +3,10 @@ export class OrderTemplateService {
    //@ngInject
    constructor(
         public requestService,
-        public $hibachi
-    ) {
-       
+        public $hibachi,
+        public $rootScope
+       ){
+
    } 
    
    /**
@@ -104,6 +105,7 @@ export class OrderTemplateService {
     }
 	
 	public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
+
        var data = {
            orderTemplateID:orderTemplateID,
            currentPage:currentPage,
@@ -154,6 +156,21 @@ export class OrderTemplateService {
                   .promise;
     }
     
+
+   public addOrderTemplateItemAndCreateWishlist = (orderTemplateName:string, skuID, quantity:number = 1)=>{
+        const data = {
+           orderTemplateName:orderTemplateName,
+           skuID:skuID,
+           quantity:quantity
+        };
+        
+        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data);
+   }
+   
+    public deleteOrderTemplateItem = (orderTemplateItemID)=>{
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", {orderTemplateItemID: orderTemplateItemID});
+   }
+
     
     /**
      * orderTemplateItemID
@@ -201,6 +218,7 @@ export class OrderTemplateService {
       }
       return objectToReturn;
     }
+
    
 
 }

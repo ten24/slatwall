@@ -59325,48 +59325,6 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var VIPController = /** @class */ (function () {
-    // @ngInject
-    function VIPController($rootScope, $scope) {
-        this.$rootScope = $rootScope;
-        this.$scope = $scope;
-    }
-    return VIPController;
-}());
-exports.VIPController = VIPController;
-var MonatEnrollmentVIPController = /** @class */ (function () {
-    // @ngInject
-    function MonatEnrollmentVIPController() {
-        this.require = {
-            ngModel: '?^ngModel'
-        };
-        this.priority = 1000;
-        this.restrict = "A";
-        this.scope = true;
-        /**
-         * Binds all of our variables to the controller so we can access using this
-         */
-        this.bindToController = {};
-        this.controller = VIPController;
-        this.controllerAs = "vipController";
-    }
-    MonatEnrollmentVIPController.Factory = function () {
-        var directive = function () { return new MonatEnrollmentVIPController(); };
-        directive.$inject = [];
-        return directive;
-    };
-    return MonatEnrollmentVIPController;
-}());
-exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
-
-
-/***/ }),
-/* 608 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCartContainerController = /** @class */ (function () {
     //@ngInject
     function MonatFlexshipCartContainerController(orderTemplateService, rbkeyService, $scope) {
@@ -59484,7 +59442,7 @@ exports.MonatFlexshipCartContainer = MonatFlexshipCartContainer;
 
 
 /***/ }),
-/* 609 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59565,7 +59523,7 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 
 /***/ }),
-/* 610 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59698,7 +59656,7 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 
 
 /***/ }),
-/* 611 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59856,7 +59814,7 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 
 
 /***/ }),
-/* 612 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59985,7 +59943,7 @@ exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
 
 
 /***/ }),
-/* 613 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60031,7 +59989,7 @@ exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
 
 
 /***/ }),
-/* 614 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60077,7 +60035,7 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 
 /***/ }),
-/* 615 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60137,7 +60095,7 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 
 
 /***/ }),
-/* 616 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60201,7 +60159,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 
 /***/ }),
-/* 617 */
+/* 616 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60259,7 +60217,7 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 
 
 /***/ }),
-/* 618 */
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60324,7 +60282,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 
 /***/ }),
-/* 619 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60504,6 +60462,120 @@ var MonatFlexshipMenu = /** @class */ (function () {
     return MonatFlexshipMenu;
 }());
 exports.MonatFlexshipMenu = MonatFlexshipMenu;
+
+
+/***/ }),
+/* 619 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatProductCardController = /** @class */ (function () {
+    // @ngInject
+    function MonatProductCardController(
+    //inject modal service
+    orderTemplateService, $rootScope) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$rootScope = $rootScope;
+        this.pageRecordsShow = 5;
+        this.currentPage = 1;
+        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
+            _this.loading = true;
+            _this.orderTemplateService
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .then(function (result) {
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                }
+                _this.loading = false;
+            });
+        };
+        this.deleteItem = function (index) {
+            _this.loading = true;
+            var item = _this.allProducts[index];
+            debugger;
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
+                _this.allProducts.splice(index, 1);
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
+                _this.loading = false;
+                _this.getAllWishlists();
+                return result;
+            });
+        };
+        this.addWishlistItem = function (skuID) {
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
+                .then(function (result) {
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.launchModal = function (type) {
+            if (type === 'flexship') {
+                //launch flexship modal 
+            }
+            else {
+                //launch normal modal
+            }
+        };
+        this.addToCart = function (type) {
+            if (type === 'flexship') {
+                //flexship logic
+            }
+            else {
+                //normal product logic
+            }
+        };
+        this.setWishlistID = function (newID) {
+            _this.wishlistTemplateID = newID;
+        };
+        this.setWishlistName = function (newName) {
+            _this.wishlistTemplateName = newName;
+        };
+    }
+    return MonatProductCardController;
+}());
+exports.MonatProductCardController = MonatProductCardController;
+var MonatProductCard = /** @class */ (function () {
+    function MonatProductCard(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'EA';
+        this.scope = true;
+        this.bindToController = {
+            product: '=',
+            type: '@',
+            index: '@',
+            allProducts: '<?',
+        };
+        this.controller = MonatProductCardController;
+        this.controllerAs = "monatProductCard";
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
+    }
+    MonatProductCard.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return MonatProductCard;
+}());
+exports.MonatProductCard = MonatProductCard;
 
 
 /***/ }),
@@ -60804,9 +60876,8 @@ exports.SWFReviewListing = SWFReviewListing;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFWishlistController = /** @class */ (function () {
     // @ngInject
-    function SWFWishlistController($rootScope, $scope, observerService, $timeout, orderTemplateService) {
+    function SWFWishlistController($scope, observerService, $timeout, orderTemplateService) {
         var _this = this;
-        this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
         this.$timeout = $timeout;
@@ -60819,27 +60890,23 @@ var SWFWishlistController = /** @class */ (function () {
                 .getWishlistItems(option.value, _this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
                 _this.orderTemplateItems = result['orderTemplateItems'];
-                if (_this.orderTemplateItems.length) {
-                    if (_this.orderTemplateItems[0].accountPriceGroup.includes(3)) {
-                        _this.isVIPAccount = true;
-                    }
-                }
                 _this.loading = false;
             });
         };
         this.deleteItem = function (index) {
             _this.loading = true;
             var item = _this.orderTemplateItems[index];
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
                 _this.orderTemplateItems.splice(index, 1);
                 _this.refreshList(_this.currentList);
+                _this.loading = false;
                 return result;
             });
         };
-        this.addWishlistItem = function () {
+        this.addWishlistItem = function (skuID) {
             _this.loading = true;
             _this.setSkuIDFromAttribute();
-            _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
+            _this.orderTemplateService.addOrderTemplateItem(_this.skuID ? _this.skuID : skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
@@ -60849,13 +60916,8 @@ var SWFWishlistController = /** @class */ (function () {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
             _this.setSkuIDFromAttribute();
-            var data = {
-                orderTemplateName: orderTemplateName,
-                skuID: _this.skuID,
-                quantity: quantity
-            };
             _this.setWishlistName(orderTemplateName);
-            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data).then(function (result) {
+            return _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(_this.wishlistTemplateName, _this.skuID, quantity).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 _this.observerService.attach(_this.successfulAlert, "createWishlistSuccess");
@@ -60887,7 +60949,6 @@ var SWFWishlistController = /** @class */ (function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
             var wishlistInnerText = document.getElementById("wishlistTextWrapper");
             wishlistAddAlertBox.style.display = "block";
-            wishlistInnerText.textContent += _this.wishlistTemplateName;
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
@@ -60897,7 +60958,7 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addToCart = function (index) {
         };
-        this.search = function (index) {
+        this.search = function () {
         };
         if (!this.pageRecordsShow) {
             this.pageRecordsShow = 6;
@@ -60958,24 +61019,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(304);
 var frontend_module_1 = __webpack_require__(795);
 //directives
-var monatflexshipcard_1 = __webpack_require__(616);
-var monatflexshipdetail_1 = __webpack_require__(617);
-var monatflexship_orderitem_1 = __webpack_require__(613);
-var monatflexship_shippingandbillingcard_1 = __webpack_require__(615);
-var monatflexship_ordertotalcard_1 = __webpack_require__(614);
-var monatflexship_modal_paymentmethod_1 = __webpack_require__(611);
-var monatflexship_modal_shippingmethod_1 = __webpack_require__(612);
-var monatflexship_modal_changeorskiporder_1 = __webpack_require__(610);
-var monatflexship_modal_cancel_1 = __webpack_require__(609);
-var monatflexship_cart_container_1 = __webpack_require__(608);
-var monatflexshiplisting_1 = __webpack_require__(618);
-var monatflexshipmenu_1 = __webpack_require__(619);
-var swfwishlist_1 = __webpack_require__(622);
-var swfmyaccount_1 = __webpack_require__(620);
+var monatflexshipcard_1 = __webpack_require__(615);
+var monatflexshipdetail_1 = __webpack_require__(616);
+var monatflexship_orderitem_1 = __webpack_require__(612);
+var monatflexship_shippingandbillingcard_1 = __webpack_require__(614);
+var monatflexship_ordertotalcard_1 = __webpack_require__(613);
+var monatflexship_modal_paymentmethod_1 = __webpack_require__(610);
+var monatflexship_modal_shippingmethod_1 = __webpack_require__(611);
+var monatflexship_modal_changeorskiporder_1 = __webpack_require__(609);
+var monatflexship_modal_cancel_1 = __webpack_require__(608);
+var monatflexship_cart_container_1 = __webpack_require__(607);
+var monatflexshiplisting_1 = __webpack_require__(617);
+var monatflexshipmenu_1 = __webpack_require__(618);
 var monatenrollment_1 = __webpack_require__(605);
 var monatenrollmentstep_1 = __webpack_require__(606);
-var monatenrollmentvip_1 = __webpack_require__(607);
 var swfreviewlisting_1 = __webpack_require__(621);
+var swfwishlist_1 = __webpack_require__(622);
+var swfmyaccount_1 = __webpack_require__(620);
+var monatproductcard_1 = __webpack_require__(619);
 //services
 var monatservice_1 = __webpack_require__(624);
 var ordertemplateservice_1 = __webpack_require__(625);
@@ -60999,10 +61060,10 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
-    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
-    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
-    .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
+    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
+    .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
+    .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
     .config(["ModalServiceProvider", function (ModalServiceProvider) {
@@ -61054,10 +61115,11 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
+        this.$rootScope = $rootScope;
         /**
          * This function is being used to fetch flexships and wishLists
          *
@@ -61189,6 +61251,18 @@ var OrderTemplateService = /** @class */ (function () {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.editOrderTemplateItem', payload)
                 .promise;
+        };
+        this.addOrderTemplateItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            var data = {
+                orderTemplateName: orderTemplateName,
+                skuID: skuID,
+                quantity: quantity
+            };
+            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data);
+        };
+        this.deleteOrderTemplateItem = function (orderTemplateItemID) {
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: orderTemplateItemID });
         };
         /**
          * orderTemplateItemID
