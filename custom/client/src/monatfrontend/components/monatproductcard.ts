@@ -7,7 +7,7 @@ class MonatProductCardController {
 	public pageRecordsShow = 5;
 	public currentPage = 1;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
-    private allProducts:Array<any>;
+    public allProducts:Array<any>;
     private wishlistTemplateID:string;
     private wishlistTemplateName:string;
     
@@ -39,7 +39,7 @@ class MonatProductCardController {
     public deleteItem =(index)=>{
         this.loading = true;
         const item = this.allProducts[index];
-        
+        debugger;
         this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             this.allProducts.splice(index, 1);
             this.loading = false;
