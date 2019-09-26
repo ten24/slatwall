@@ -2,8 +2,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     property name="MonatDataService";
     property name="publicService";
     
-    this.publicMethods = 'getProductReviews';
-    this.publicMethods &= 'getMarketPartners';
+    this.publicMethods = '';
+    this.publicMethods=ListAppend(this.publicMethods, 'getProductReviews');
+    this.publicMethods=ListAppend(this.publicMethods, 'getMarketPartners');
+    this.publicMethods=ListAppend(this.publicMethods, 'setAsCurrentFlexship');
+
 
     public any function before(required struct rc){
         arguments.rc.ajaxRequest = true;

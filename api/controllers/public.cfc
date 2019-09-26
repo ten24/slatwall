@@ -6,23 +6,27 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     property name="publicService" type="any";
 
     this.publicMethods='';
-    this.publicMethods=listAppend(this.publicMethods, 'get');
-    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
-    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
-    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateDetails');
+    this.publicMethods=ListAppend(this.publicMethods, 'get');
+    this.publicMethods=ListAppend(this.publicMethods, 'post');
     
-    this.publicMethods=listAppend(this.publicMethods, 'getWishlistItems');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplates');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplateItems');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplateDetails');
     
-    this.publicMethods=listAppend(this.publicMethods, 'activateOrderTemplate');
-    this.publicMethods=listAppend(this.publicMethods, 'cancelOrderTemplate');
-    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateShipping');
-    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateBilling');
-    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateSchedule');
-    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateFrequency');
+    this.publicMethods=ListAppend(this.publicMethods, 'getWishlistItems');
     
-    
-    this.publicMethods=listAppend(this.publicMethods, 'post');
+    this.publicMethods=ListAppend(this.publicMethods, 'activateOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'cancelOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateShipping');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateBilling');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateFrequency');
 
+    this.publicMethods=ListAppend(this.publicMethods, 'addOrderTemplateItem');
+    this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplateItem');
+    this.publicMethods=ListAppend(this.publicMethods, 'removeOrderTemplateItem');
+    
+    
     public void function init( required any fw ) {
         setFW( arguments.fw );
     }
