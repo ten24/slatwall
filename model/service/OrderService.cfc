@@ -1958,7 +1958,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return response;
 	}
 
-	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
@@ -1966,8 +1966,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
-		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.product.productName,sku.skuDefinition';  
-
+		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
+		displayProperties &= 'sku.priceByCurrencyCode';
+		
 		orderTemplateItemCollection.setDisplayProperties(displayProperties)
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
@@ -1988,7 +1989,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return []; 
 		}
 
-		return this.getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
+		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
 	
 	

@@ -20,13 +20,13 @@ component extends="Slatwall.model.service.OrderService" {
         return order;
     }
     
-    public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+    private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
-		var orderTemplateItemCollection = super.getOrderTemplateItemCollectionForAccount(argumentCollection = arguments);
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionForAccount(argumentCollection = arguments);
 		
 		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
