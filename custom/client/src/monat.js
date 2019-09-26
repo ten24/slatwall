@@ -59461,14 +59461,15 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             showOtherReasonNotes: false,
         };
         this.$onInit = function () {
-            _this.makeTranslations();
             _this.calculateNextPlacedDateTime();
+            _this.makeTranslations();
         };
         this.translations = {};
         this.makeTranslations = function () {
             //TODO make translations for success/failure alert messages
             _this.translations['changeOrSkip'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
-            _this.translations['delayOrSkipMessage'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days: 45 });
+            //TODO business-logic
+            _this.translations['delayOrSkipMessage'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days: 1234 });
             _this.translations['delayThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
             _this.translations['skipThisMonthsOrder'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
             _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
@@ -59480,7 +59481,9 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             var date = new Date(Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime));
             _this.nextPlaceDateTime = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
             _this.endDayOfTheMonth = 25;
-            _this.endDate = Date.parse((date.getMonth() + 1 + 3) + "/" + date.getDate() + "/" + date.getFullYear());
+            //TODO business-logic
+            _this.endDate = new Date(date.setMonth(date.getMonth() + 2));
+            console.log(_this);
         };
         this.updateDelayOrSkip = function (val) {
             _this.formData.delayOrSkip = val;
