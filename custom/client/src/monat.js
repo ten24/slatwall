@@ -59516,6 +59516,14 @@ var MonatProductCardController = /** @class */ (function () {
                 //launch normal modal
             }
         };
+        this.addToCart = function (type) {
+            if (type === 'flexship') {
+                //flexship logic
+            }
+            else {
+                //normal product logic
+            }
+        };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
         };

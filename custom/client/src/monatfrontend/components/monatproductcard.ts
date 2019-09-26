@@ -76,6 +76,15 @@ class MonatProductCardController {
         
     }
     
+    public addToCart =(type)=>{
+        if(type === 'flexship'){
+            //flexship logic
+      
+        }else{
+            //normal product logic
+        }
+    }
+    
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
         
@@ -94,7 +103,7 @@ class MonatProductCard {
 	public templateUrl:string;
     public scope:boolean = true;
 	
-  public bindToController = {
+    public bindToController = {
 		product: '=',
 		type: '@',
 		index: '@',
