@@ -59368,28 +59368,48 @@ exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCartContainerController = /** @class */ (function () {
-    function MonatFlexshipCartContainerController(orderTemplateService) {
+    //@ngInject
+    function MonatFlexshipCartContainerController(orderTemplateService, rbkeyService, $scope) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.rbkeyService = rbkeyService;
+        this.$scope = $scope;
         this.$onInit = function () {
-            console.warn('FLX cart', _this);
+            _this.makeTranslations();
             if (_this.orderTemplate == null) {
                 _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
                     .then(function (response) {
                     _this.orderTemplate = response.orderTemplate;
                     _this.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
-                    console.log('FLX cart container ot: ', _this.orderTemplate);
                     //TODO handle errors / success
                 }, function (reason) {
                     throw (reason);
                 });
             }
         };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.makeCurrentStepTranslation();
+        };
+        this.makeCurrentStepTranslation = function (currentStep, totalSteps) {
+            if (currentStep === void 0) { currentStep = 1; }
+            if (totalSteps === void 0) { totalSteps = 2; }
+            //TODO BL?
+            var stepsPlaceHolderData = {
+                'currentStep': currentStep,
+                'totalSteps': totalSteps,
+            };
+            _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+        };
+        this.getOrderTemplateItemIndexByID = function (orderTemplateItemID) {
+            return _this.orderTemplateItems.findIndex(function (it) { return it.orderTemplateItemID === orderTemplateItemID; });
+        };
         this.removeOrderTemplateItem = function (item) {
             _this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(function (data) {
                 if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
-                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === item.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplateItems = _this.orderTemplateItems.splice(index, 1).splice(index, 1); //remove element from array
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems.splice(index, 1);
                 }
                 else {
                     console.log('removeOrderTemplateItem res: ', data);
@@ -59401,12 +59421,12 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
         };
         this.increaseOrderTemplateItemQuantity = function (item) {
             _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(function (data) {
-                console.log('increaseOrderTemplateItemQuantity res: ', data);
                 if (data.orderTemplateItem) {
-                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems[index] = data.orderTemplateItem;
                 }
                 else {
+                    console.error('increaseOrderTemplateItemQuantity res: ', data);
                 }
                 //TODO handle errors / success
             }, function (reason) {
@@ -59415,12 +59435,12 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
         };
         this.decreaseOrderTemplateItemQuantity = function (item) {
             _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(function (data) {
-                console.log('decreaseOrderTemplateItemQuantity res: ', data);
                 if (data.orderTemplateItem) {
-                    var index = _this.orderTemplateItems.findIndex(function (it) { return it.id === data.orderTemplateItem.orderTemplateItemID; }); //find index in your array
-                    _this.orderTemplateItems[index] = data.orderTemplateItem; //replace element from array
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems[index] = data.orderTemplateItem;
                 }
                 else {
+                    console.error('decreaseOrderTemplateItemQuantity res: ', data);
                 }
                 //TODO handle errors / success
             }, function (reason) {
