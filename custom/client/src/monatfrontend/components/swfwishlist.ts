@@ -22,7 +22,6 @@ class SWFWishlistController {
     
     // @ngInject
     constructor(
-        public $rootScope,
         public $scope,
         public observerService,
         public $timeout,
@@ -52,21 +51,20 @@ class SWFWishlistController {
             this.loading = false;
         });
     }
-    
-    public deleteItem =(index):Promise<any>=>{
+
+    public deleteItem =(index)=>{
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",{orderTemplateItemID: item.orderItemID}).then(result=>{
+        this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             
             this.orderTemplateItems.splice(index, 1);
             this.refreshList(this.currentList);
             this.loading = false;
             return result;
-            
         });
     }
-    
+
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
@@ -77,18 +75,13 @@ class SWFWishlistController {
             return result;
         });
     }
-    
+
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
         this.setSkuIDFromAttribute();
-        const data = {
-           orderTemplateName:orderTemplateName,
-           skuID:this.skuID,
-           quantity:quantity
-        };
         this.setWishlistName(orderTemplateName)
         
-        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data).then(result=>{
+        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.skuID, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
