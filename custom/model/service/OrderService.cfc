@@ -103,8 +103,8 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
-		
+		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -331,4 +331,19 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 
+	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
+		
+		var orderDeliveryStatusType = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
+		
+		if (structKeyExists(data, "undeliverableOrderReason") && !isNull(orderDeliveryStatusType)){
+		    arguments.orderDelivery.setUndeliverableOrderReason(data.undeliverableOrderReason);
+		    arguments.orderDelivery.setOrderDeliveryStatusType(orderDeliveryStatusType);
+		}
+		
+		arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
+		getHibachiScope().flushORMSession();
+		
+		return arguments.orderDelivery;
+	}
 }
+

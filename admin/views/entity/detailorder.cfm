@@ -151,6 +151,9 @@ Notes:
 
 			<!--- Promotions --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#arrayLen(rc.order.getAllAppliedPromotions())#" />
+			
+				<!--- Promotion Rewards --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotionrewards" />
 
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>

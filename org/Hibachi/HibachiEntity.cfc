@@ -120,8 +120,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
 	} 
 
-	public struct function getStructRepresentation(){
-		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	public struct function getStructRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties') && len(arguments.properties)){
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(),2=arguments.properties});	
+		} 
+		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()}); 
 	}
 
 	public string function getJsonRepresentation(){

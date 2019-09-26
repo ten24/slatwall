@@ -405,30 +405,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 
 	public array function getExpirationMonthOptions() {
-		return [
-			'01',
-			'02',
-			'03',
-			'04',
-			'05',
-			'06',
-			'07',
-			'08',
-			'09',
-			'10',
-			'11',
-			'12'
-		];
+		return getService('paymentService').getCardExpirationMonthOptions();
 	}
 
 	public array function getExpirationYearOptions() {
-		var yearOptions = [];
-		var currentYear = year(now());
-		for(var i = 0; i < 20; i++) {
-			var thisYear = currentYear + i;
-			arrayAppend(yearOptions,{name=thisYear, value=right(thisYear,2)});
-		}
-		return yearOptions;
+		return getService('paymentService').getCardExpirationYearOptions();
 	}
 
 	public boolean function hasGiftCard(){
