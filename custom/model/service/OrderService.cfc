@@ -26,7 +26,7 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
-		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionForAccount(argumentCollection = arguments);
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
 		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
