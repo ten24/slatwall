@@ -8,7 +8,7 @@ class MonatFlexshipCartContainerController {
     constructor(
     	public orderTemplateService, 
     	public rbkeyService,
-    	public $scope
+    	public ModalService
     ) { }
     
     public $onInit = () => {
@@ -31,12 +31,31 @@ class MonatFlexshipCartContainerController {
         
     };
     
-     public translations = {};
+    public translations = {};
     private makeTranslations = () => {
     	//TODO make translations for success/failure alert messages
     	this.makeCurrentStepTranslation();
     }
     
+    public showFlexshipConfirmStep = () => {
+        this.ModalService.closeModals();
+		this.ModalService.showModal({
+		      component: 'monatFlexshipConfirm',
+			  bindings: {
+			    orderTemplate: this.orderTemplate,
+			  },
+			  bodyClass: 'overlay'
+		}).then((modal) => {
+				  //it's not a bootstrap modal
+			      modal.close.then(function(result) { 
+			      	console.log("closing modal awesome, result: ", result);
+			      });
+			} 
+		).catch((error) => {
+			    console.error("unable to open model :",error);	
+		});
+        
+    }
 
     private makeCurrentStepTranslation = ( currentStep:number=1, totalSteps:number=2 ) => {
     	 //TODO BL?

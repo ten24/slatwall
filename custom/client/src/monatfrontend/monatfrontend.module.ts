@@ -13,6 +13,7 @@ import {MonatFlexshipShippingMethodModal} from "./components/monatflexship-modal
 import {MonatFlexshipChangeOrSkipOrderModal} from "./components/monatflexship-modal-changeorskiporder";
 import {MonatFlexshipCancelModal} from "./components/monatflexship-modal-cancel";
 import {MonatFlexshipCartContainer} from "./components/monatflexship-cart-container";
+import {MonatFlexshipConfirm} from "./components/monatflexship-confirm"
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 import {MonatEnrollment} from "./components/monatenrollment";
@@ -48,6 +49,7 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipChangeOrSkipOrderModal',MonatFlexshipChangeOrSkipOrderModal.Factory())
 .directive('monatFlexshipCancelModal',MonatFlexshipCancelModal.Factory())
 .directive('monatFlexshipCartContainer',MonatFlexshipCartContainer.Factory())
+.directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .directive('monatEnrollment', MonatEnrollment.Factory())
 .directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
