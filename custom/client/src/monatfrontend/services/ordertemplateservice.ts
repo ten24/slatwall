@@ -2,7 +2,8 @@ export class OrderTemplateService {
    
    constructor(
         public requestService,
-        public $hibachi
+        public $hibachi,
+        public $rootScope
        ){
        
    } 
@@ -30,6 +31,7 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
    }
    
+   //TODO: Consolidate these ^
    public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {
            orderTemplateID:orderTemplateID,
@@ -60,5 +62,19 @@ export class OrderTemplateService {
 		
 		return adminRequest.promise
     }
+    
+   public addOrderTemplateItemAndCreateWishlist = (orderTemplateName:string, skuID, quantity:number = 1)=>{
+        const data = {
+           orderTemplateName:orderTemplateName,
+           skuID:skuID,
+           quantity:quantity
+        };
+        
+        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data);
+   }
+   
+    public deleteOrderTemplateItem = (orderTemplateItemID)=>{
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", {orderTemplateItemID: orderTemplateItemID});
+   }
    
 }

@@ -59485,7 +59485,7 @@ var MonatProductCardController = /** @class */ (function () {
         this.deleteItem = function (index) {
             _this.loading = true;
             var item = _this.allProducts[index];
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: item.orderItemID }).then(function (result) {
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
                 _this.allProducts.splice(index, 1);
                 _this.loading = false;
                 return result;
@@ -59494,12 +59494,7 @@ var MonatProductCardController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            var data = {
-                orderTemplateName: orderTemplateName,
-                skuID: skuID,
-                quantity: quantity
-            };
-            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data).then(function (result) {
+            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 return result;
@@ -60076,10 +60071,11 @@ exports.MonatService = MonatService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
-    function OrderTemplateService(requestService, $hibachi) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
+        this.$rootScope = $rootScope;
         this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
@@ -60103,6 +60099,7 @@ var OrderTemplateService = /** @class */ (function () {
             }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems', data).promise;
         };
+        //TODO: Consolidate these ^
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
@@ -60128,6 +60125,18 @@ var OrderTemplateService = /** @class */ (function () {
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
+        };
+        this.addOrderTemplateItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            var data = {
+                orderTemplateName: orderTemplateName,
+                skuID: skuID,
+                quantity: quantity
+            };
+            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data);
+        };
+        this.deleteOrderTemplateItem = function (orderTemplateItemID) {
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: orderTemplateItemID });
         };
     }
     return OrderTemplateService;

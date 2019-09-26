@@ -36,27 +36,20 @@ class MonatProductCardController {
         });
     }
     
-    public deleteItem =(index):Promise<any>=>{
+    public deleteItem =(index)=>{
         this.loading = true;
         const item = this.allProducts[index];
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",{orderTemplateItemID: item.orderItemID}).then(result=>{
+        this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             this.allProducts.splice(index, 1);
             this.loading = false;
             return result;
-            
         });
     }
     
     public addItemAndCreateWishlist = (orderTemplateName:string, skuID, quantity:number = 1)=>{
         this.loading = true;
-        const data = {
-           orderTemplateName:orderTemplateName,
-           skuID:skuID,
-           quantity:quantity
-        };
-        
-        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data).then(result=>{
+        this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
             return result;
