@@ -1,13 +1,11 @@
 export class OrderTemplateService { 
    
+   //@ngInject
    constructor(
         public requestService,
-        public $hibachi,
-       public observerService
-
-       ){
-    // this.observerService.attach(this.refreshOrderTemplatesListing, 'OrderTemplateUpdateShippingSuccess');
-
+        public $hibachi
+    ) {
+       
    } 
    
    /**
@@ -61,7 +59,7 @@ export class OrderTemplateService {
                   .promise;
     }
 
-    public activate = (data) => {
+    public activateOrderTemplate = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
                   .promise;
@@ -73,19 +71,33 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public cancel = (data) => {
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', data)
+    /**
+     * orderTemplateID:string, 
+     * typeID:string,  => OrderTEmplateCancellationReasonTypeID
+     * typeIDOther?:string => other reason text from user
+     */ 
+    public cancelOrderTemplate = (orderTemplateID:string, typeID:string, typeIDOther:string = "") => {
+        
+        let payload = {};
+    	payload['orderTemplateID'] = orderTemplateID;
+    	payload['orderTemplateCancellationReasonType'] = {};
+    	payload['orderTemplateCancellationReasonType']['typeID'] =  typeID;
+    	payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
+    	
+    	payload = this.getFlattenObject(payload);
+    	
+        return this.requestService
+                  .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
                   .promise;
     }
     
-    public updateSchedule = (data) => {
+    public updateOrderTemplateSchedule = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                   .promise;
     }
     
-    public updateFrequency = (data) => {
+    public updateOrderTemplateFrequency = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
                   .promise;
@@ -104,7 +116,7 @@ export class OrderTemplateService {
        
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
     }
-    
+
     /**
      * 
        'orderTemplateID',
@@ -189,4 +201,6 @@ export class OrderTemplateService {
       }
       return objectToReturn;
     }
+   
+
 }

@@ -1,27 +1,28 @@
 
 class MonatFlexshipPaymentMethodModalController {
     public orderTemplate; 
-    public accountPaymentMethods: any[];
-    public accountAddresses: any[];
-    public expirationMonthOptions: any[];
-	public expirationYearOptions: any[];
+    public accountPaymentMethods: Array<any>;
+    public accountAddresses: Array<any>;
+    public expirationMonthOptions: Array<any>;
+	public expirationYearOptions: Array<any>;
     
     
     public existingBillingAccountAddress; 
 	public selectedBillingAccountAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingAccountPaymentMethod; 
-	public selectedAccountPaymentMethod = { accountPaymentMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public selectedAccountPaymentMethod = { accountPaymentMethodID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; // hard-coded default
 
 	public newAccountPaymentMethod = {};
 
-    constructor(public orderTemplateService, public observerService) {
+	//@ngInject
+    constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
+    
     public $onInit = () => {
-    	console.log('monatFlexshipPaymentMethodModal', this);
-    	
+    	this.makeTranslations();
     	/**
     	 * Find and set old billing-address if any
     	*/ 
@@ -37,7 +38,7 @@ class MonatFlexshipPaymentMethodModalController {
     	 * Find and set old payment-method if any
     	*/
     	this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
-    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; //
+    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
     	});
     	
     	if(!!this.existingAccountPaymentMethod && !!this.existingAccountPaymentMethod.accountPaymentMethodID){
@@ -46,13 +47,40 @@ class MonatFlexshipPaymentMethodModalController {
     	
     }
     
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	this.translations['billingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.billingAddress');
+    	this.translations['addNewBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewBillingAddress');
+    	this.translations['newBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
+    	this.translations['paymentMethod'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
+    	this.translations['addNewCreditCard'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
+
+    	this.translations['newCreditCard'] = this.rbkeyService.rbKey('frontend.newCreditCard');
+    	this.translations['newCreditCard_nickName'] = this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
+    	this.translations['newCreditCard_creditCardNumber'] = this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
+    	this.translations['newCreditCard_nameOnCard'] = this.rbkeyService.rbKey('frontend.newCreditCard.nameOnCard');
+    	this.translations['newCreditCard_expirationMonth'] = this.rbkeyService.rbKey('frontend.newCreditCard.expirationMonth');
+    	this.translations['newCreditCard_expirationYear'] = this.rbkeyService.rbKey('frontend.newCreditCard.expirationYear');
+    	this.translations['newCreditCard_securityCode'] = this.rbkeyService.rbKey('frontend.newCreditCard.securityCode');
+
+    	this.translations['newAddress_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
+    	this.translations['newAddress_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
+    	this.translations['newAddress_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');
+    	this.translations['newAddress_address2'] = this.rbkeyService.rbKey('frontend.newAddress.address2');
+    	this.translations['newAddress_country'] = this.rbkeyService.rbKey('frontend.newAddress.country');
+    	this.translations['newAddress_state'] = this.rbkeyService.rbKey('frontend.newAddress.state');
+    	this.translations['newAddress_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
+    	this.translations['newAddress_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
+    	this.translations['newAddress_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+
+    }
+    
     public setSelectedBillingAccountAddressID(accountAddressID:any = 'new') {
-    	console.warn("selected billing address id :", accountAddressID);
     	this.selectedBillingAccountAddress.accountAddressID = accountAddressID;
     }
     
     public setSelectedAccountPaymentMethodID(accountPaymentMethodID:any = 'new') {
-    	console.warn("selected account-payment-method id :", accountPaymentMethodID);
     	this.selectedAccountPaymentMethod.accountPaymentMethodID = accountPaymentMethodID;
     }
     
@@ -73,9 +101,9 @@ class MonatFlexshipPaymentMethodModalController {
     		payload['newAccountPaymentMethod'] = this.newAccountPaymentMethod;
     	}
  
+		//flattning it for hibachi
     	payload = this.orderTemplateService.getFlattenObject(payload);
-    	console.log("updateBilling", payload);
-    	
+
     	// make api request
         this.orderTemplateService.updateBilling(payload).then(
             (response) => {

@@ -7,16 +7,15 @@
 	            <i class="fas fa-times"></i>
 	        </button>
 	
-		    <!-- TODO: Add conditional logical logic to show Change Order -->
             <div class="change-order">
-                <h6 class="title-with-line mb-5">Change or skip order</h6>
+                <h6 class="title-with-line mb-5">{{monatFlexshipChangeOrSkipOrderModal.translations.changeOrSkip}}</h6>
                 
-                <p>You can either change your upcmoing order by 15 days or skip the month.</p>
+                <p>{{monatFlexshipChangeOrSkipOrderModal.translations.delayOrSkipMessage}}</p>
                 
                 <!-- Delay/Change Order -->
                 <div class="custom-radio form-group" ng-click="monatFlexshipChangeOrSkipOrderModal.updateDelayOrSkip('delay')">
                     <input type="radio" name="change-order" ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'delay'">
-                    <label for="change-order">Delay this months order</label>
+                    <label for="change-order">{{monatFlexshipChangeOrSkipOrderModal.translations.delayThisMonthsOrder}}</label>
                 </div>
         		
         		<!-- Delay/Change Order Datepicker -->
@@ -24,7 +23,7 @@
         		<div class="form-group">
             		<input type="text" id="scheduleOrderNextPlaceDateTime"
         				   name="scheduleOrderNextPlaceDateTime" 
-            		       placeholder="For how long?"
+            		       placeholder="{{monatFlexshipChangeOrSkipOrderModal.translations.forHowLong}}" 
             		       sw-date-picker
     				       data-end-day-of-the-month="monatFlexshipChangeOrSkipOrderModal.endDayOfTheMonth"
     				       data-end-date="monatFlexshipChangeOrSkipOrderModal.endDate"
@@ -37,7 +36,7 @@
         		<!-- Skip this month's order -->
                 <div class="custom-radio form-group mt-5" ng-click="monatFlexshipChangeOrSkipOrderModal.updateDelayOrSkip('skip')">
                     <input type="radio" name="change-order" ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'">
-                    <label for="change-order2">Skip this month's order</label>
+                    <label for="change-order2">{{monatFlexshipChangeOrSkipOrderModal.translations.skipThisMonthsOrder}}</label>
                 </div>
                 
                 <!-- Why are you pushing your flexship? -->
@@ -46,8 +45,8 @@
             			ng-model="monatFlexshipChangeOrSkipOrderModal.selectedReason"
             			ng-change="monatFlexshipChangeOrSkipOrderModal.selectedReasonChanged()"
             			ng-options="reason as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions track by reason.value"
-            			placeholder="Flexship cancel reason *">
-                    	<option value="">Why are you pushing your flexship?</option>
+            			placeholder="{{monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason}}">
+                    	<option value="">{{monatFlexshipChangeOrSkipOrderModal.translations.whyAreYouCancellingFlexship}}</option>
     			    </select> 
         		</div>
         		
@@ -56,14 +55,19 @@
         		    >
         			<input type="text" class="form-control" 
                 		   ng-model="monatFlexshipChangeOrSkipOrderModal.formData.otherReasonNotes"
-                		   placeholder="Other reason `">                 
+                		   placeholder="{{monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason}}">  
+                    <!--TODO: RB-Keys text has extra chars on it-->
         		</div>
         		
             </div>
 
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()">Save changes</button>
-        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()">
+        			<span sw-rbkey="'frontend.modal.saveChangesButton'">
+        		</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">
+        			<span sw-rbkey="'frontend.modal.closeButton'">
+        	    </button>
 		    </div>
 
 		</div>

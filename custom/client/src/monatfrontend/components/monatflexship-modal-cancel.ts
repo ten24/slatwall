@@ -5,25 +5,34 @@ class MonatFlexshipCancelModalController {
 	
 	public formData = {}; // {typeID:'', typeIDOther: '' }
 
-	constructor(public orderTemplateService, public observerService) {
+    //@ngInject
+	constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
-    	console.log('flexship modal cancel: ', this);
+    	this.makeTranslations();
     };
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	 this.translations['whyAreYouCancelling'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.whyAreYouCancelling');
+    	 this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
+    	 this.translations['flexshipCancelOtherReasonNotes'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
+    }
     
     public cancelFlexship() {
 
     	//TODO frontend validation
-    	let payload = {'orderTemplateCancellationReasonType' : this.formData};
-    	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload = this.orderTemplateService.getFlattenObject(payload);
 
-     	console.log(payload);
     	// make api request
-        this.orderTemplateService.cancel(payload).then(
+        this.orderTemplateService.cancelOrderTemplate(
+        	this.orderTemplate.orderTemplateID, 
+	        this.formData['typeID'], 
+	        this.formData['typeIDOther'] 
+	    ).then(
             (data) => {
-            	if(angular.isDefined(data.orderTemplate)) {
+            	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             	} else {
@@ -74,6 +83,7 @@ class MonatFlexshipCancelModal {
         return directive;
     }
 
+	//@ngInject
 	constructor(private monatFrontendBasePath, 
 				private slatwallPathBuilder, 
 				private $hibachi,

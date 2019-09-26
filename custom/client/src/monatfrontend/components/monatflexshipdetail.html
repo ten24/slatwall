@@ -1,30 +1,8 @@
-	<!-- This was designed with Order we need to find out what to use for flexship
-	<div class="orderbox">
-		<div class="subtext">
-			<table>
-				<tbody>
-					<tr>
-						<td class="col1">
-							<h3>Order #631786432</h3>
-						</td>
-						<td class="col2">
-							<span class="status">Order Status</span>
-							<p class="broad">Shipped</p>
-						</td>
-						<td class="col3">
-							<span class="status">Shipping Address</span>
-							<p class="broad">Gabby Burleson, 34 Broad St.<br> New York, NY 123456</p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="btngroup">
-				<a href="#" class="btn bg-primary">track order</a>
-			</div>
-		</div>
-	</div>-->
+
 	<div class="order-details-box items-details" >
-		<h3><span ng-bind="monatFlexshipDetail.orderTemplate.calculatedOrderTemplateItemsCount.trim().length ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> items `</h3>
+		<h3><span ng-bind="monatFlexshipDetail.orderTemplate.calculatedOrderTemplateItemsCount.trim().length ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> 
+			<span sw-rbkey="'define.items'"></span>
+		</h3>
 		<table class="table items-details-table">
 			<tbody>
 				

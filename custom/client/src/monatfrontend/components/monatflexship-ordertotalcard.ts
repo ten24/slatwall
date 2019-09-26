@@ -1,6 +1,8 @@
 
 class MonatFlexshipOrderTotalCardController {
-    constructor(public orderTemplateService) {
+    
+    //@ngInject
+    constructor() {
     }
     public $onInit = () => {};
 }

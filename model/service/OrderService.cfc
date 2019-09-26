@@ -1943,9 +1943,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
-			
-		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		
+		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
+		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
+		
+		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
+		
+		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
@@ -4945,6 +4949,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 		return arguments.order;
 	}
+	
 
 	// ===================  END: Deprecated Functions =========================
 

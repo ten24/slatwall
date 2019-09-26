@@ -8,7 +8,9 @@
 	        </button>
 	
                 <div class="shipping">
-                    <h6 class="title-with-line mb-5">Shipping Method `</h6>
+                    
+                    <h6 class="title-with-line mb-5">{{monatFlexshipShippingMethodModal.translations.shippingMethod}}</h6>
+
                     <div class="custom-radio form-group" 
     			         ng-repeat="shippingMethod in monatFlexshipShippingMethodModal.shippingMethodOptions"
     			         ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedShippingMethodID(shippingMethod.value)"
@@ -21,7 +23,7 @@
                     </div>
 
                     <br/> 
-                    <h6 class="title-with-line mb-5">Shipping Address `</h6>
+                    <h6 class="title-with-line mb-5">{{monatFlexshipShippingMethodModal.translations.shippingAddress}}</h6>
 
     			    <div class="custom-radio form-group" 
     			         ng-repeat="accountAddress in monatFlexshipShippingMethodModal.accountAddresses"
@@ -40,65 +42,68 @@
                                 name="accountAddressID" 
                                 ng-checked="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
                         >                        
-                        <label for="accountAddressID">Add a new shipping address `</label>
+                        <label for="accountAddressID">{{monatFlexshipShippingMethodModal.translations.addNewShippingAddress}}</label>
                     </div>
                     <!--- Conditional: Add New Shipping Address form --->
                     <div ng-show="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID">
-                        <span class="label">New Shipping Address `</span>
+                        <span class="label">{{monatFlexshipShippingMethodModal.translations.newShippingAddress}}</span>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
-                			placeholder="Nick Name * `">
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_nickName}}">
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                    			ng-model="monatFlexshipShippingMethodModal.newAddress.name"
-                			placeholder="Name * `">
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_name}}">
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
-                			placeholder="Address `">       
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_address}}">
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.street2Address"
-                			placeholder="Address 2 `">                          
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_address2}}">
                 		</div>
                 		
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
                 			readonly
-                			placeholder="Country * `">                          
+            		    	placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_country}}">
                 		</div>
                 		
                 		<div class="form-group">
                 			<select type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.stateCode"
-                			placeholder="State *">
-                			    <option value="">Select your State * `</option>
-                			    <option ng-repeat="x in monatFlexshipShippingMethodModal.stateCodeOptions" 
-                			            value={{x.value}}>{{x.name}}</option>
+            			    ng-options="state as state.name for state in monatFlexshipShippingMethodModal.stateCodeOptions track by state.value"
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_state}}">
+            			        <option value="">{{monatFlexshipShippingMethodModal.translations.newAddress_selectYourState}} `</option>
                 			</select>     
                 		</div>
                 		
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.city"
-                			placeholder="City * `">                          
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_city}}">
                 		</div>
                 		<div class="form-group">
                 			<input type="text" class="form-control" 
                 			ng-model="monatFlexshipShippingMethodModal.newAddress.postalCode"
-                			placeholder="Zip Code * `">                          
+            			    placeholder="{{monatFlexshipShippingMethodModal.translations.newAddress_zipCode}}">
                 		</div>
             		</div>
                 </div>
 		
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()">Save changes</button>
-        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()">
+        			<span sw-rbkey="'frontend.modal.saveChangesButton'">
+        		</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">
+        			<span sw-rbkey="'frontend.modal.closeButton'">
+        	    </button>
 		    </div>
 		    
 		</div>

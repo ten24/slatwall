@@ -10,6 +10,17 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
     this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateDetails');
+    
+    this.publicMethods=listAppend(this.publicMethods, 'getWishlistItems');
+    
+    this.publicMethods=listAppend(this.publicMethods, 'activateOrderTemplate');
+    this.publicMethods=listAppend(this.publicMethods, 'cancelOrderTemplate');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateShipping');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateBilling');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateSchedule');
+    this.publicMethods=listAppend(this.publicMethods, 'updateOrderTemplateFrequency');
+    
+    
     this.publicMethods=listAppend(this.publicMethods, 'post');
 
     public void function init( required any fw ) {
@@ -145,4 +156,5 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	
 	
+
 }

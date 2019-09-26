@@ -76,6 +76,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
 		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
+		<swa:SlatwallSetting settingName="accountLoginEmailOrUserName" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalExtendedSessionAutoLogoutInDays" />

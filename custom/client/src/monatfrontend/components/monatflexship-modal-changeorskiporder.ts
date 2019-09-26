@@ -4,25 +4,40 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public scheduleDateChangeReasonTypeOptions;
 	
 	public endDayOfTheMonth = 25;
+	public endDateString;
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
-	
+
 	public formData = {
 		delayOrSkip : '',
 		showOtherReasonNotes: false,
 	}; 
 	
 	public selectedReason;
-	// payload :: {orderTemplateScheduleDateChangeReasonTypeID:'', otherScheduleDateChangeReasonNotes: '', nextPlaceDateTime: '' }
-
-    constructor(public orderTemplateService, public observerService) {
+	
+	//@ngInject
+    constructor(public orderTemplateService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
-    	console.log('flexship modal update schedule : ', this);
     	this.calculateNextPlacedDateTime();
+    	this.makeTranslations();
     };
+    
+    public translations = {};
+    private makeTranslations = () => {
+    	//TODO make translations for success/failure alert messages
+    	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
+        //TODO business-logic
+    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 1234 });
+    	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
+    	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
+    	this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
+    	this.translations['whyAreYouCancellingFlexship'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
+    	this.translations['flexshipCancelOtherReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
+
+    }
     
     
     private calculateNextPlacedDateTime = () => {
@@ -30,9 +45,9 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
-	    // this.startDate = `${(date.getMonth() +1)}/${date.getDate()}/${date.getFullYear()}`;
-	    this.endDate = Date.parse(`${(date.getMonth() + 1 +3)}/${date.getDate()}/${date.getFullYear()}`);
-	    console.log('startDate, endDate: ', this.startDate, this.endDate);
+	    //TODO business-logic
+	    this.endDate = new Date(date.setMonth(date.getMonth()+2));
+	    console.log(this);
     }
     
     public updateDelayOrSkip = (val:string) =>{
@@ -40,23 +55,32 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     }
     
     public selectedReasonChanged = () => {
-    	console.log('reason changed ', this.selectedReason);
     	if(!!this.selectedReason && !!this.selectedReason.value) {
     		this.formData.showOtherReasonNotes = this.selectedReason.systemCode === 'otsdcrtOther';
     	} else {
 	    	this.formData.showOtherReasonNotes = false;
-    		//disable form
+    		//TODO disable the form
     	}
     }
     
     public updateSchedule() {
 
     	//TODO frontend validation
+    	
+    	/** 
+    	 * payload => { 
+    		orderTemplateID:string'', 
+    		orderTemplateScheduleDateChangeReasonTypeID:string'', 
+    		otherScheduleDateChangeReasonNotes?:string '', 
+    		scheduleOrderNextPlaceDateTime?:string '',
+    		skipNextMonthFlag?: boolean;
+    	   }
+    	 */
+
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
     	
-    	//HardCoded sysCode for "Other reason"
     	if(this.formData.showOtherReasonNotes) {
 		   	payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
     	}
@@ -67,19 +91,16 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     		payload['skipNextMonthFlag'] = 1;
     	}
     	
-    	
     	payload = this.orderTemplateService.getFlattenObject(payload);
-     	console.log('updateSchedule :', payload);
-     	
-     	// return;
+
     	// make api request
-        this.orderTemplateService.updateSchedule(payload).then(
+        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(
             (data) => {
             	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
             	} else {
-            		console.error(JSON.stringify(data));
+            		console.error(data);
             		//TODO handle errors
             	}
             	// TODO: show alert

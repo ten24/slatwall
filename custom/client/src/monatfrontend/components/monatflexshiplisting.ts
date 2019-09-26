@@ -11,16 +11,15 @@ class MonatFlexshipListingController{
 	public expirationYearOptions: any[];
 	
 	public initialized=false; 
-	constructor( public orderTemplateService
-	){
-
+	
+    //@ngInject
+	constructor( public orderTemplateService){
+		
 	}
 	
 	public $onInit = () => {
 	    this.orderTemplateService.getOrderTemplates()
-	    .then(
-	    	(data) => {
-
+	    .then( (data) => {
 	            this.accountAddresses = data.accountAddresses;
 	            this.accountPaymentMethods = data.accountPaymentMethods;
 	            this.shippingMethodOptions = data.shippingMethodOptions;
@@ -32,12 +31,9 @@ class MonatFlexshipListingController{
 	            
 	            //set this last so that ng repeat inits with all needed data
 	        	this.orderTemplates = data.orderTemplates; 
- 	        },
-	        (reason) => {
+ 	        }, (reason) => {
 	            console.error(reason);
-	        }
-	    )
-	    .finally(()=>{
+	    }).finally(()=>{
 	    	this.initialized=true; 
 	    });
 	}

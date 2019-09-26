@@ -8,26 +8,31 @@
 	        </button>
 	
             <div class="cancel-flexship">
-                <h6 class="title-with-line mb-5">Cancel </h6>
+                <h6 class="title-with-line mb-5">
+                	<span sw-rbkey="'frontend.cancelFlexshipModal.cancel'"></span>
+                </h6>
  
                 <select type="text" class="form-control" 
         			ng-model="monatFlexshipCancelModal.formData.typeID"
-        			placeholder="Flexship cancel reason *">
-                	<option value="">Why are you canceling your flexship?</option>
-    			    <option ng-repeat="x in monatFlexshipCancelModal.cancellationReasonTypeOptions" 
-    			            value={{x.value}}>{{x.name}}</option>
+        			ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions track by reason.value"
+        			placeholder="{{monatFlexshipCancelModal.translations.flexshipCancelReason}}">
+                	<option value="">{{monatFlexshipCancelModal.translations.whyAreYouCancelling}}</option>
     			</select> 
     			<br/>
     			<div class="form-group">
         			<input type="text" class="form-control" 
         			ng-model="monatFlexshipCancelModal.formData.typeIDOther"
-        			placeholder="Other reason `">                          
+        			placeholder="{{monatFlexshipCancelModal.translations.flexshipCancelOtherReasonNotes}}">    
         		</div>
        		</div>
 
 			<div class="footer">
-        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">Save changes</button>
-        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">
+        			<span sw-rbkey="'frontend.modal.saveChangesButton'">
+        		</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">
+        	         <span sw-rbkey="'frontend.modal.closeButton'">
+        	    </button>
 		    </div>
 		    
 		</div>
