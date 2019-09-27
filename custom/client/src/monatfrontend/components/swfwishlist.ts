@@ -22,7 +22,6 @@ class SWFWishlistController {
     
     // @ngInject
     constructor(
-        public $rootScope,
         public $scope,
         public observerService,
         public $timeout,
@@ -49,50 +48,40 @@ class SWFWishlistController {
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             this.orderTemplateItems = result['orderTemplateItems'];
-            if(this.orderTemplateItems.length){
-                if(this.orderTemplateItems[0].accountPriceGroup.includes(3)){
-                    this.isVIPAccount = true;                   
-                }
-            }
-
             this.loading = false;
         });
     }
-    
-    public deleteItem =(index):Promise<any>=>{
+
+    public deleteItem =(index)=>{
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",item).then(result=>{
+        this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             
             this.orderTemplateItems.splice(index, 1);
             this.refreshList(this.currentList);
+            this.loading = false;
             return result;
-            
         });
     }
+
     
-    public addWishlistItem =()=>{ 
+    public addWishlistItem =(skuID)=>{ 
         this.loading = true;
         this.setSkuIDFromAttribute();
-        this.orderTemplateService.addOrderTemplateItem(this.skuID, this.wishlistTemplateID)
+        this.orderTemplateService.addOrderTemplateItem(this.skuID ? this.skuID : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
             return result;
         });
     }
-    
+
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
         this.setSkuIDFromAttribute();
-        const data = {
-           orderTemplateName:orderTemplateName,
-           skuID:this.skuID,
-           quantity:quantity
-        };
         this.setWishlistName(orderTemplateName)
         
-        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data).then(result=>{
+        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.skuID, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
@@ -125,8 +114,6 @@ class SWFWishlistController {
         const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
         const wishlistInnerText = document.getElementById("wishlistTextWrapper");
         wishlistAddAlertBox.style.display = "block";
-        wishlistInnerText.textContent += this.wishlistTemplateName;
-
     }
     
     public setWishlistID = (newID) => {
@@ -142,8 +129,7 @@ class SWFWishlistController {
         
     }
     
-    public search =(index)=>{
-        
+    public search =()=>{
     }
 
 }
