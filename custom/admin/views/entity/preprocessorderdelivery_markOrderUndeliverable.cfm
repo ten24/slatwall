@@ -51,32 +51,13 @@ Notes:
 
 
 <cfparam name="rc.orderDelivery" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-			    
-			    <cfif !isNull(rc.orderDelivery.getOrderDeliveryStatusType())>
-			        <!--- Status Type --->
-			        <hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrderDeliveryStatusType()#" property="typeName" edit="false" title="Status">
-			        <!--- Status Reason --->
-			        <cfif !isNull(rc.orderDelivery.getUndeliverableOrderReason()) && !isNull(rc.$.slatwall.getService("typeService").getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason()))>
-			            <hb:HibachiPropertyDisplay object="#rc.$.slatwall.getService('typeService').getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason())#" property="typeName" edit="false" title="Undeliverable Reason">
-			        </cfif>
-			    </cfif>
-			    
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
-				    
-				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
-				</cfif>
-				<cfif !isNull(rc.orderDelivery.getLocation())>
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+	<hb:HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#">
+		<hb:HibachiPropertyDisplay object="#rc.processObject#" property="markUndeliverable" edit="#rc.edit#">
+		<hb:HibachiPropertyDisplay object="#rc.processObject#" property="undeliverableOrderReason" edit="#rc.edit#">
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
+

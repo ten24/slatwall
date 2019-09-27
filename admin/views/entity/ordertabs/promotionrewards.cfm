@@ -49,34 +49,53 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.orderDelivery" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.order" type="any" />
 
 <cfoutput>
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-			    
-			    <cfif !isNull(rc.orderDelivery.getOrderDeliveryStatusType())>
-			        <!--- Status Type --->
-			        <hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrderDeliveryStatusType()#" property="typeName" edit="false" title="Status">
-			        <!--- Status Reason --->
-			        <cfif !isNull(rc.orderDelivery.getUndeliverableOrderReason()) && !isNull(rc.$.slatwall.getService("typeService").getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason()))>
-			            <hb:HibachiPropertyDisplay object="#rc.$.slatwall.getService('typeService').getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason())#" property="typeName" edit="false" title="Undeliverable Reason">
-			        </cfif>
-			    </cfif>
-			    
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
-				    
-				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
-				</cfif>
-				<cfif !isNull(rc.orderDelivery.getLocation())>
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+	<cfset local.qualifiedPromotionRewards = rc.$.slatwall.getService('promotionService').getQualifiedPromotionRewardsForOrder(rc.order)>
+	
+	<cfif arrayLen(local.qualifiedPromotionRewards)>
+		
+		<table class="table table-bordered table-hover">
+			<tr>
+				<th>#$.slatwall.rbKey('entity.promotion')#</th>
+				<th>#$.slatwall.rbKey('entity.amount')#</th>
+				<th>#$.slatwall.rbKey('entity.amountType')#</th>
+				<th>#$.slatwall.rbKey('entity.rewardType')#</th>
+				<th>#$.slatwall.rbKey('define.currencyCode')#</th>
+				<th></th>
+			</tr>
+			<cfloop array="#local.qualifiedPromotionRewards#" index="local.promotionReward">
+				<cfset promotion = local.promotionReward.getPromotionPeriod().getPromotion()>
+				<tr>
+					<td class="primary">#promotion.getPromotionName()#</td>
+					<td class="primary">#promotionReward.getAmount()#</td>
+					<td class="primary">#promotionReward.getAmountType()#</td>
+					<td class="primary">#promotionReward.getRewardType()#</td>
+					<td class="primary">#promotionReward.getCurrencyCode()#</td>
+					
+					<td class="admin admin2">
+						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#promotion.getPromotionID()#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true"  />
+					</td>
+				</tr>
+			</cfloop>
+		</table>
+	<cfelse>
+		<table class="table table-bordered table-hover">
+			<tr>
+				<th>#$.slatwall.rbKey('entity.amountType')#</th>
+				<th>#$.slatwall.rbKey('entity.rewardType')#</th>
+				<th>#$.slatwall.rbKey('entity.amount')#</th>
+				<th>#$.slatwall.rbKey('define.currencyCode')#</th>
+				<th></th>
+			</tr>
+				<tr>
+					<td class="primary"></td>
+					<td class="primary"></td>
+					<td class="primary"></td>
+					<td class="primary"></td>
+					<td class="admin admin2"></td>
+				</tr>
+		</table>
+	</cfif>
 </cfoutput>
