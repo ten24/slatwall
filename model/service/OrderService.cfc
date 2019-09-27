@@ -2068,6 +2068,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 
+				}else if(orderTypeCode == 'otRefundOrder'){
+					var orderItem = addReturnOrderItemSetup(returnOrder,{},arguments.processObject,orderItemStruct);
 				}
 
 			}
@@ -2140,10 +2142,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
-
 				if(!returnOrder.hasErrors()) {
 					//if no errors and the order has a product with deferred revenue then check if we need to record a subscriptionOrderDeliveryItem
 					for(var orderItem in returnOrder.getOrderItems()){
@@ -2167,9 +2168,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
-					
+
 					// If the process object was set to automatically receive these items, then we will do that
-					if(!isNull(arguments.processObject.getReceiveItemsFlag()) && arguments.processObject.getReceiveItemsFlag()){
+					if( (arguments.processObject.getOrderTypeCode() == 'otRefundOrder' 
+						|| (!isNull(arguments.processObject.getReceiveItemsFlag()) && arguments.processObject.getReceiveItemsFlag()))
+						&& returnOrder.hasOrderReturn()){
+						var orderReturn = returnOrder.getOrderReturns()[1];
 						var receiveData = {};
 						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
 						receiveData.orderReturnItems = [];
@@ -2177,6 +2181,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var thisData = {};
 							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
 							thisData.quantity = returnItem.getQuantity();
+							thisData.unreceivedQuantity = returnItem.getQuantity();
 							arrayAppend(receiveData.orderReturnItems, thisData);
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
@@ -2185,7 +2190,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
-
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
 	}
@@ -2261,7 +2265,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
-		
+		var originalOrderItemExists = !(isStruct(arguments.originalOrderItem) && structIsEmpty(arguments.originalOrderItem));
+
 		// Create OrderReturn entity (to save the fulfillment amount)
 		if(returnOrder.hasOrderReturn()){
 			var orderReturn = returnOrder.getOrderReturns()[1];
@@ -2282,13 +2287,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 
 		// Add needed references
-		returnOrderItem.setReferencedOrderItem( originalOrderItem );
 		returnOrderItem.setOrderReturn( orderReturn );
 		returnOrderItem.setOrder( returnOrder );
-
-		returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-		returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
-		returnOrderItem.setSku( originalOrderItem.getSku() );
+		if(originalOrderItemExists){
+			returnOrderItem.setReferencedOrderItem( originalOrderItem );
+			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+			returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+			returnOrderItem.setSku( originalOrderItem.getSku() );
+		}else{
+			returnOrderItem.setSku(getService('skuService').getSku(arguments.orderItemStruct.sku.skuID));
+			returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
+		}
 		returnOrderItem.setPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
 		
@@ -4071,9 +4080,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// Process: Order Return
-	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
-		
-		// this.copyToNewOrderItem()
+	public any function processOrderReturn_receive(required any orderReturn, required any processObject, struct data) {
 		
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "order" );
@@ -4085,13 +4092,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(processObject.getBoxCount())) {
 			stockReceiver.setBoxCount( processObject.getBoxCount() );
 		}
-
+		
 		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
 
 		for(var thisRecord in arguments.data.orderReturnItems) {
-
 			if(val(thisRecord.quantity) gt 0) {
-
 				var orderReturnItem = this.getOrderItem( thisRecord.orderReturnItem.orderItemID );
 
 				if(!isNull(orderReturnItem)) {
@@ -4135,13 +4140,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						stockAdjustment = getStockService().processStockAdjustment(stockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
 						
 					}
-					
 					this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
 
 				}
 			}
 		}
-
 
 		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
 		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
@@ -4178,10 +4181,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived');
 		}
 
-
 		// Update the orderStatus
 		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
-
 		if(structKeyExists(local,'stockAdjustment')){
 			getHibachiScope().flushORMSession();
 			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');

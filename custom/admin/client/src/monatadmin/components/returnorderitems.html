@@ -25,6 +25,8 @@
 		
 		<input type="hidden" name="orderItems[{{$index+1}}].orderItemID" value="" />
 		<input type="hidden" name="orderItems[{{$index+1}}].referencedOrderItem.orderItemID" value="{{orderItem.orderItemID}}" />
+		<input ng-if="swReturnOrderItems.orderType == 'otRefundOrder'" type="hidden" name="orderItems[{{$index+1}}].quantity" value="{{orderItem.returnQuantity}}" />
+		<input ng-if="swReturnOrderItems.orderType == 'otRefundOrder'" type="hidden" name="orderItems[{{$index+1}}].sku.skuID" value="{{orderItem.sku_skuID}}" />
 		
 		<td>{{orderItem.sku_skuCode}}</td>
 		<td>{{orderItem.sku_product_calculatedTitle}}</td>

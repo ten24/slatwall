@@ -40,18 +40,14 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
-        var sku = returnOrderItem.getSku();
-        var account = returnOrderItem.getOrder().getAccount();
-        if(isNull(account)){
-            account = getService('AccountService').newAccount();
-        }
-        
-        for(var priceField in variables.customPriceFields){
-            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
-            if(!isNull(price)){
-                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
-                returnOrderItem.invokeMethod('set#priceField#',{1=price});
-            }
+        if(!isStruct(originalOrderItem)){
+	        for(var priceField in variables.customPriceFields){
+	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
+	            if(!isNull(price)){
+	                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
+	            }
+	        }
         }
         return returnOrderItem;
     }

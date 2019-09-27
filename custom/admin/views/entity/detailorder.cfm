@@ -87,8 +87,9 @@ Notes:
 			<cfif rc.order.getOrderType().getSystemCode() EQ 'otSalesOrder'>
 				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
 			</cfif>
-			<cfif listFindNoCase("otReturnOrder,otRefundOrder",rc.order.getOrderType().getSystemCode())
-					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived' >
+			<cfif (rc.order.getOrderType().getSystemCode() eq "otReturnOrder"
+					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived')
+					OR rc.order.getOrderType().getSystemCode() eq "otRefundOrder">
 				<cfset local.inputNeeded = false />
 				<cfloop array=#rc.order.getOrderItems()# index="orderItem">
 				    <cfif orderItem.getQuantity() NEQ orderItem.getQuantityReceived()>
@@ -153,7 +154,7 @@ Notes:
 			</cfif>
 
 			<!--- Returns / Receivers --->
-			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
+			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" or rc.order.getOrderType().getSystemCode() eq "otRefundOrder">
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
 			</cfif>

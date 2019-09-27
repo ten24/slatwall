@@ -1,7 +1,14 @@
 {
+	"conditions":{
+		"orderTypeNotRefund":{
+			"orderTypeCode":{
+				"neq":"otRefundOrder"
+			}
+		}
+	},
 	"properties":{
 		"fulfillmentRefundAmount":	[{"dataType":"numeric","minValue":0}],
-		"orderItems":				[{"method":"orderItemsWithinOriginalQuantity"}],
+		"orderItems":				[{"conditions":"orderTypeNotRefund","method":"orderItemsWithinOriginalQuantity"}],
 		"orderPayments":			[{"method":"paymentAmountsWithinAllowedAmount"}]
 	}
 }

@@ -71167,7 +71167,9 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-            _this.validateRefundItemAmount(orderItem);
+            if (_this.orderType == 'otRefundOrder') {
+                _this.validateRefundItemAmount(orderItem);
+            }
             orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
             if ((orderItem.refundTotal > orderItem.total) && _this.orderType != 'otRefundOrder') {
                 orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
@@ -71210,12 +71212,12 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var allocatedOrderPVDiscountAmountTotal = 0;
             var allocatedOrderCVDiscountAmountTotal = 0;
             _this.orderItems.forEach(function (item) {
-                refundSubtotal += item.refundTotal + item.taxRefundAmount;
+                refundSubtotal += item.refundTotal + (item.taxRefundAmount || 0);
                 refundPVTotal += item.refundPVTotal;
                 refundCVTotal += item.refundCVTotal;
-                allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount();
-                allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount();
-                allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount();
+                allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
+                allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
+                allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
             });
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
@@ -71255,6 +71257,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var maxRefund = _this.orderTotal - refundTotal;
             if (orderItem.refundTotal > maxRefund) {
                 orderItem.refundUnitPrice = Number((Math.max(maxRefund, 0)).toFixed(2));
+                orderItem.refundTotal = orderItem.refundUnitPrice;
             }
         };
         this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);

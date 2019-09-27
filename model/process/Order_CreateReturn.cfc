@@ -214,6 +214,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	                'calculatedExtendedUnitPriceAfterDiscount':sku.price,
 	                'calculatedTaxAmount':0,
 	                'allocatedOrderDiscountAmount':0,
+	                'sku_skuID':sku.skuID,
 	                'sku_skuCode':sku.skuCode,
 	                'sku_product_calculatedTitle':sku.product_calculatedTitle,
 	                'calculatedQuantityDeliveredMinusReturns':1
