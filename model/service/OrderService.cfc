@@ -1716,6 +1716,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 
 	}
 	
+	
+	public array function getOrderTemplateFrequencyTermOptions(){
+		var termCollection = getSettingService().getTermCollectionList();
+		termCollection.setDisplayProperties('termID|value,termName|name');
+		termCollection.addFilter('termID', getSettingService().getSettingValue('orderTemplateEligibleTerms'),'in');
+		return termCollection.getRecords();
+	} 
+	
+	public array function getOrderTemplateFrequencyDateOptions( yearsCount=20) {
+		var dateOptions = [];
+		for(var i = 1; i <= 25; i++) {
+			arrayAppend(dateOptions,{'name'= nth(i), 'value'=i});
+		}
+		return dateOptions;
+	}  
+	
+	private string function nth(d) {
+		if (arguments.d > 3 && arguments.d < 21) return arguments.d&"th";
+		switch (arguments.d % 10) {
+		    case 1:  return arguments.d&"st";
+		    case 2:  return arguments.d&"nd";
+		    case 3:  return arguments.d&"rd";
+		    default: return arguments.d&"th";
+		}
+	}
+	
 	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
 		
 		var account = arguments.orderTemplate.getAccount(); 

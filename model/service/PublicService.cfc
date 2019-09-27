@@ -2015,9 +2015,12 @@ component  accessors="true" output="false"
             
         if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return ordertemplateItem 
+            //return orderTemplate and updated-orderTemplateItem 
             arguments.data.orderTemplateID = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            
+            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
     		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
+            
         } else {
             ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
         }
@@ -2036,8 +2039,11 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            //TODO: see if we need to return any data...            
-            orderTemplate.clearProcessObject("removeOrderTemplateItem");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+            //return updated-orderTemplate 
+            arguments.data.orderTemplateID = orderTemplate.getOrderTemplateID();
+            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
+            
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
@@ -2095,6 +2101,53 @@ component  accessors="true" output="false"
     public void function getOrderItemsByOrderID(required any data){
         var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow = arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
+    }
+    
+    
+    ///    ############### .  getXXXOptions();  .  ###############   
+    
+    /**
+     *  data.optionsList = "frequencyTermOPtions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
+    */ 
+    public void function getOptions(required any data){
+        param name="data.optionsList" default=""; //option name
+        
+        for(var optionName in arguments.data.optionsList){
+            this.invokeMethod("get#optionName#", {'data' = arguments.data});
+        }
+    }
+    
+    public void function getFrequencyTermOptions(required any data) {
+		arguments.data['ajaxResponse']['frequencyTermOptions'] = getOrderService().getOrderTemplateFrequencyTermOptions();
+    }
+    
+    public void function getFrequencyDateOptions(required any data) {
+		arguments.data['ajaxResponse']['frequencyDateOptions'] = getOrderService().getOrderTemplateFrequencyDateOptions();
+    }
+    
+    public void function getShippingMethodOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+    }
+    
+    public void function getCancellationReasonTypeOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
+    }
+    
+    public void function getScheduleDateChangeReasonTypeOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+    }
+    
+    public void function getExpirationMonthOptions(required any data) {
+       	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
+    }
+    
+     public void function getExpirationYearOptions(required any data) {
+       	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
 

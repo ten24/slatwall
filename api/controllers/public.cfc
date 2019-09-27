@@ -160,5 +160,44 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	
 	
+	
+	
+	///    ############### .  getXXXOptions();  .  ###############   
+    
+    /**
+     *  rc.optionsList = "op1,op2,op3"; 
+    */ 
+    public void function getOptions(required any rc){
+        getPublicService().getOptions(arguments.rc);
+    }
+    
+    public void function getFrequencyTermOptions(required any rc) {
+        getPublicService().getFrequencyTermOptions(arguments.rc);
+	}
+
+    public void function getFrequencyDateOptions(required any data) {
+		getPublicService().getFrequencyDateOptions(arguments.rc);
+    }
+    
+    public void function getShippingMethodOptions(required any rc) {
+        getPublicService().getShippingMethodOptions(arguments.rc);
+	}
+    
+    public void function getCancellationReasonTypeOptions(required any rc) {
+        getPublicService().getCancellationReasonTypeOptions(arguments.rc);
+	}
+    
+    public void function getScheduleDateChangeReasonTypeOptions(required any rc) {
+        getPublicService().getScheduleDateChangeReasonTypeOptions(arguments.rc);
+	}
+    
+    public void function getExpirationMonthOptions(required any rc) {
+        getPublicService().getExpirationMonthOptions(arguments.rc);
+	}
+    
+    public void function getExpirationYearOptions(required any rc) {
+        getPublicService().getExpirationYearOptions(arguments.rc);
+	}
+	
 
 }
