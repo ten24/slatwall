@@ -59741,6 +59741,12 @@ var swfAccountController = /** @class */ (function () {
         this.setPrimaryPaymentMethod = function (methodID) {
             window.location.href += "?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=" + methodID;
         };
+        this.getDeleteItemPath = function (ID) {
+            return "?slatAction=public:account.deleteAccountAddress&accountAddressID=" + ID;
+        };
+        this.setEditAddress = function (address) {
+            _this.editAddress = address;
+        };
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;

@@ -21,6 +21,8 @@ class swfAccountController {
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
+    public editAddress;
+
     
     // @ngInject
     constructor(
@@ -91,11 +93,10 @@ class swfAccountController {
     
     public getCountryCodeOptions = ():Promise<any>=>{
         this.loading = true;
-        
         if(this.countryCodeOptions){
             return this.countryCodeOptions;
         }
-    
+
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
@@ -125,6 +126,14 @@ class swfAccountController {
     
     public setPrimaryPaymentMethod = (methodID) => {
         window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`;
+    }
+    
+    public getDeleteItemPath = (ID) => {
+       return `?slatAction=public:account.deleteAccountAddress&accountAddressID=${ID}`;
+    }
+    
+    public setEditAddress = (address) => {
+       this.editAddress = address;
     }
 }
 
