@@ -5541,11 +5541,10 @@ var coremodule = angular.module('hibachi.core', [
     'ngSanitize',
     //3rdParty modules
     'ui.bootstrap',
-    'angularModalService',
     alert_module_1.alertmodule.name,
     dialog_module_1.dialogmodule.name
 ])
-    .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', 'ModalServiceProvider', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig, ModalServiceProvider) {
+    .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig) {
         hibachiPathBuilder.setBaseURL(appConfig.baseURL);
         hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
         if (!appConfig.debugFlag) {
@@ -5618,8 +5617,6 @@ var coremodule = angular.module('hibachi.core', [
         $httpProvider.interceptors.push('hibachiInterceptor');
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
-        //uncomment this line to set a default close delay
-        ModalServiceProvider.configureOptions({ closeDelay: 500 });
     }])
     .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', function ($rootScope, $hibachi, $route, $location, rbkeyService) {
         $rootScope.buildUrl = $hibachi.buildUrl;
@@ -78777,8 +78774,6 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 var SWDatePicker = /** @class */ (function () {
     function SWDatePicker() {
         this.restrict = "A";
@@ -78788,7 +78783,9 @@ var SWDatePicker = /** @class */ (function () {
             startDayOfTheMonth: '<?',
             endDayOfTheMonth: '<?',
             startDate: '=?',
-            endDate: '=?'
+            startDateString: '@?',
+            endDate: '=?',
+            endDateString: '@?'
         };
         this.link = function ($scope, element, attrs, modelCtrl) {
             if (!$scope.options) {
@@ -78802,31 +78799,52 @@ var SWDatePicker = /** @class */ (function () {
                 $scope.startDayOfTheMonth = 1;
             }
             if (!$scope.endDayOfTheMonth) {
-                $scope.startDayOfTheMonth = 31;
+                $scope.endDayOfTheMonth = 31;
+            }
+            if ($scope.startDateString) {
+                $scope.startDate = Date.parse($scope.startDateString).getTime();
+            }
+            if ($scope.endDateString) {
+                $scope.endDate = Date.parse($scope.endDateString).getTime();
             }
             if (!$scope.startDate) {
                 $scope.startDate = Date.now();
             }
+            if (typeof $scope.startDate !== 'number') {
+                $scope.startDate = $scope.startDate.getTime();
+            }
+            if (typeof $scope.endDate !== 'number') {
+                $scope.endDate = $scope.endDate.getTime();
+            }
             if (!$scope.endDate) {
                 $scope.options.beforeShowDay = function (date) {
                     var dayOfMonth = date.getDate();
+                    var dateToCompare = date;
+                    if (typeof dateToCompare !== 'number') {
+                        dateToCompare = dateToCompare.getTime();
+                    }
                     return [dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            date >= $scope.startDate
+                            dateToCompare >= $scope.startDate
                     ];
                 };
             }
             else {
                 $scope.options.beforeShowDay = function (date) {
                     var dayOfMonth = date.getDate();
+                    var dateToCompare = date;
+                    if (typeof dateToCompare !== 'number') {
+                        dateToCompare = dateToCompare.getTime();
+                    }
                     return [dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            date >= $scope.startDate &&
-                            date < $scope.endDate
+                            dateToCompare >= $scope.startDate &&
+                            dateToCompare < $scope.endDate
                     ];
                 };
             }
             $(element).datepicker($scope.options);
+            console.log($scope);
         };
     }
     SWDatePicker.Factory = function () {
@@ -87505,6 +87523,17 @@ var RbKeyService = /** @class */ (function () {
             ////$log.debug(this.getConfig().rbLocale);
             var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
             ////$log.debug(keyValue);
+            /**
+             * const templateString = "Hello ${this.name}!";
+               const replaceStringData = {
+                    name: "world"
+                }
+             *
+             */
+            if (replaceStringData) {
+                //coppied from  https://github.com/mikemaccana/dynamic-template
+                keyValue = keyValue.replace(/\${(.*?)}/g, function (_, g) { return replaceStringData[g]; });
+            }
             return keyValue;
         };
         this.getRBKey = function (key, locale, checkedKeys, originalKey) {
