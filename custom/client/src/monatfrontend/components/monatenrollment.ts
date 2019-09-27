@@ -9,9 +9,10 @@ class MonatEnrollmentController{
 	public steps=[];
 	public onFinish;
 	public finishText;
+	public currentAccountID: string;
 
 	//@ngInject
-	constructor(public monatService, public observerService){
+	constructor(public monatService, public observerService, public $rootScope){
 		
 		if(hibachiConfig.baseSiteURL){
 			this.backUrl = hibachiConfig.baseSiteURL;
@@ -29,8 +30,16 @@ class MonatEnrollmentController{
 			this.cart = data;
 		});
 		
+    	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
 
+	}
+	
+	public handleCreateAccount = () => {
+		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
+		if ( this.currentAccountID.length ) {
+			this.next();
+		}
 	}
 	
 	public addStep = (step) =>{

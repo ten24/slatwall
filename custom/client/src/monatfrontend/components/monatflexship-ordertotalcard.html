@@ -1,0 +1,48 @@
+	<div class="order-total">
+		<h3><span sw-rbkey="'frontend.flexshipDetails.orderTotal'"></span></h3>
+
+		<ul>
+			<li>
+				<div class="left">
+					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.subtotal'"></span>
+				</div>
+				<div class="right">
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.subtotal | currency}}</span>
+				</div>
+			</li>
+			<li>
+				<div class="left">
+					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.shipping'"></span>
+				</div>
+				<div class="right">
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.fulfillmentTotal | currency}}</span>
+				</div>
+			</li>
+			<!--
+			<li>
+				<div class="left">
+					<span class="title-sm">Tax ``</span>
+				</div>
+				<div class="right">
+					<span class="price">$5.00</span>
+				</div>
+			</li>
+			<li>
+				<div class="left">
+					<span class="title-sm">Promo Code (20% off) ``</span>
+				</div>
+				<div class="right">
+					<span class="price">-$7.00</span>
+				</div>
+			</li>
+			-->
+			<li class="total">
+				<div class="left">
+					<h4> <span sw-rbkey="'frontend.flexshipDetails.total'"></span> </h4>
+				</div>
+				<div class="right">
+					<h4>{{monatFlexshipOrderTotalCard.orderTemplate.total | currency}}</h4>
+				</div>
+			</li>
+		</ul>
+	</div>

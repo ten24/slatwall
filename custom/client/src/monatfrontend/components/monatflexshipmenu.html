@@ -1,20 +1,35 @@
 <div class="manage">
-	<a href="##" class="flexs">Manage my Flexship <i class="fas fa-chevron-down"></i></a>
+	<a href="##" class="flexs"><span sw-rbkey="'frontend.flexshipCard.menu.manageMyFlexship'"></span> <i class="fas fa-chevron-down"></i></a>
 	<ul>
-		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal">Edit delivery address</a>
+		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstDraft'" >
+		    <a href="##"  ng-click="monatFlexshipMenu.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
 		</li>
+		
 		<li>
-		    <a href="/flexship-detail">Add or remove items</a>
+		    <a href="##" data-toggle="modal" ng-click="monatFlexshipMenu.showFlexshipEditShippingMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></span></a>
 		</li>
+		
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal">Edit payment method</a>
+		    <a href="/flexship-detail"><span sw-rbkey="'frontend.flexshipCard.menu.addOrRemoveItems'"></span></a>
 		</li>
+		
 		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal">Delay or skip order</a>
+		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
 		</li>
-		<li>
-		    <a href="##" data-toggle="modal" data-target="#flexship-modal">Cancel Flexship</a>
+		
+		<!-- TODO put it back -->
+		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
+		<li  >
+		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.delayOrSkipOrder'"></span></a>
 		</li>
+		
+		<!-- TODO put it back -->
+		<!-- ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" -->
+		<li  >
+		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
+		</li>
+		
 	</ul>
 </div>
+
+

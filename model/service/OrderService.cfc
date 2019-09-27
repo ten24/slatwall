@@ -1699,7 +1699,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
-
+		
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
@@ -1868,25 +1868,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,statusCode'
 		
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,'
-		displayProperties &= ',shippingAccountAddress.address.addressID';  
-		displayProperties &= ',shippingAccountAddress.address.name';  
-		displayProperties &= ',shippingAccountAddress.address.streetAddress';  
-		displayProperties &= ',shippingAccountAddress.address.street2Address';	
-		displayProperties &= ',shippingAccountAddress.address.city';	
-		displayProperties &= ',shippingAccountAddress.address.locality';	
-		displayProperties &= ',shippingAccountAddress.address.postalCode';	
-		displayProperties &= ',shippingAccountAddress.address.stateCode';	
-		displayProperties &= ',shippingAccountAddress.address.countryCode';	
-		displayProperties &= ',frequencyTerm.termName';	
+		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
+		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
+		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
+
+		displayProperties &= ',' & shippingAddressPropList; 
+		displayProperties &= ',' & billingAddressPropList;  
 	
 		orderTemplateCollection.setDisplayProperties(displayProperties);
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
-	    
 		return orderTemplateCollection; 
 	}  
 
@@ -1898,6 +1893,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	}  
+
+	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateID" default="";
+	
+		if(len(arguments.data.orderTemplateID) == 0) {
+			ArrayAppend(arguments.data.messages, 'data.orderTemplateID must be set');
+			return;
+		} 
+		
+		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
+		
+		if( isNull(orderTemplate) ){
+			ArrayAppend(arguments.data.messages, 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#');
+			return;
+		}  
+		
+		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
+			ArrayAppend(arguments.data.messages, "OrderTemplate doesn't belong to the User");
+			return; 
+		}
+	
+		return orderTemplate; 
+	} 
+	
+	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
+		//Making PropertiesList
+		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
+		
+		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
+		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
+		
+		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
+		
+		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
+		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+		
+		var response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
+		return response;
+	}
 
 	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
@@ -1932,6 +1968,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
+	
+	
 	//end order template functionality	
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
