@@ -56,13 +56,16 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#" backAction="admin:entity.detailorder" backQueryString="orderID=#rc.orderDelivery.getOrder().getOrderID()#">
-
+		
 		    <cfif
 		        isNull(rc.orderDelivery.getContainerLabel())
 		        and rc.orderDelivery.getOrderFulfillment().hasShippingIntegration() 
-		        and $.slatwall.setting('globalUseShippingIntegrationForTrackingNumberOption')
-		    >
+		        and $.slatwall.setting('globalUseShippingIntegrationForTrackingNumberOption')>
 			    <hb:HibachiProcessCaller entity="#rc.orderDelivery#" action="admin:entity.preprocessorderdelivery" processContext="generateShippingLabel" type="list" modal="true" />
+			</cfif>
+
+			<cfif rc.orderDelivery.getOrder().getQuantityUndelivered() EQ 0>
+				<hb:HibachiProcessCaller entity="#rc.orderDelivery#" action="admin:entity.preprocessorderdelivery" processContext="markOrderUndeliverable" queryString="sRedirectAction=admin:entity.detailOrderDelivery" type="list" modal="true" hideDisabled="false" />
 			</cfif>
 		</hb:HibachiEntityActionBar>
 		

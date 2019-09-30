@@ -1,0 +1,34 @@
+<header class="step-header">
+	<div class="container">
+		<div class="header-row">
+			<div class="left-nav">
+				<a data-ng-href="{{ monatEnrollment.backUrl }}" class="back" >
+					<i class='fas fa-angle-left'></i> <span>Back to Shop</span>
+				</a>
+			</div>
+			<a href="#" class="logo">
+				<img src="common/images/logo.svg"  alt="">
+			</a>
+			<div class="right-nav">          
+				<div class="header-cart" data-ng-if="monatEnrollment.cart">
+					<a href="#">Cart
+						<span class="cart-count" data-ng-bind="monatEnrollment.cart.totalItemQuantity"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+
+<ng-transclude></ng-transclude>
+
+<footer class="steps-footer">
+	<a href data-ng-click="monatEnrollment.previous()" class="back" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
+		<i class="fas fa-chevron-left"></i>
+	</a>
+	<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
+	<a href data-ng-click="monatEnrollment.next()" class="forward">
+		<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+		<i class="fas fa-chevron-right"></i>
+	</a>
+</footer>

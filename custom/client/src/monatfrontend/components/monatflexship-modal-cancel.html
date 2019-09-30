@@ -1,0 +1,40 @@
+<div class="modal" id="flexship-modal-cancel{{monatFlexshipCancelModal.orderTemplate.orderTemplateID}}">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	        
+	        <!-- Modal Close -->
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	            <i class="fas fa-times"></i>
+	        </button>
+	
+            <div class="cancel-flexship">
+                <h6 class="title-with-line mb-5">
+                	<span sw-rbkey="'frontend.cancelFlexshipModal.cancel'"></span>
+                </h6>
+ 
+                <select type="text" class="form-control" 
+        			ng-model="monatFlexshipCancelModal.formData.typeID"
+        			ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions track by reason.value"
+        			placeholder="{{monatFlexshipCancelModal.translations.flexshipCancelReason}}">
+                	<option value="">{{monatFlexshipCancelModal.translations.whyAreYouCancelling}}</option>
+    			</select> 
+    			<br/>
+    			<div class="form-group">
+        			<input type="text" class="form-control" 
+        			ng-model="monatFlexshipCancelModal.formData.typeIDOther"
+        			placeholder="{{monatFlexshipCancelModal.translations.flexshipCancelOtherReasonNotes}}">    
+        		</div>
+       		</div>
+
+			<div class="footer">
+        		<button type="button" class="btn btn-block bg-primary" ng-click="monatFlexshipCancelModal.cancelFlexship()">
+        			<span sw-rbkey="'frontend.modal.saveChangesButton'">
+        		</button>
+        	    <button type="button" class="btn btn-cancel cancel-dark" data-dismiss="modal">
+        	         <span sw-rbkey="'frontend.modal.closeButton'">
+        	    </button>
+		    </div>
+		    
+		</div>
+	</div>
+</div>

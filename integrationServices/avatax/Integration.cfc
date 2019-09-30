@@ -80,7 +80,9 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			companyCode = {fieldType="text"},
 			customerUsageTypePropertyIdentifier = {fieldType="text"},
 			taxExemptNumberPropertyIdentifier = {fieldType="text"},
-			debugModeFlag = {fieldType="yesno", defaultValue="0"}
+			debugModeFlag = {fieldType="yesno", defaultValue="0"},
+			testURL = {fieldType="text", defaultValue="https://development.avalara.net/1.0/tax/get"},
+			productionURL = {fieldType="text", defaultValue="https://avatax.avalara.net/1.0/tax/get"}
 		};
 
 		return settings;

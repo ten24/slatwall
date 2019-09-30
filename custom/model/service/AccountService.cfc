@@ -1,13 +1,12 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
-
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {
 
 		if (arguments.accountLoyalty.getLoyalty().getReferAFriendFlag()) {
-
+			
 			// If order status is closed
 			if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
 
@@ -33,6 +32,40 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	
 	public string function getSimpleRepresentation(required any account){
-		return arguments.account.getAccountNumber() & ' - ' & arguments.account.getFullName();
+		return arguments.account.getFullName() & ' - ' & arguments.account.getAccountNumber();
+	}
+	
+	public any function getAllOrdersOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        param name="arguments.data.orderID" default= false;
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			orderNumber,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
+		
+		if(arguments.data.orderID != false){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
+		}
+		
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return ordersList.getPageRecords();
 	}
 }

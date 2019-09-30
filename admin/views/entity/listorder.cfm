@@ -88,8 +88,6 @@ Notes:
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderOpenDateTime,"/>
 		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
-		
-		<cfset displayPropertyList &= "orderOpenDateTime,"/>
 	<cfelse>
 	</cfif>
 	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>

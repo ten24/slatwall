@@ -136,6 +136,11 @@ Notes:
 			<!--- Promotions --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#arrayLen(rc.order.getAllAppliedPromotions())#" />
 			
+			<!--- Promotion Rewards --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotionrewards" />
+
+			<!--- Order Status History --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderstatushistory" />
 			
 			<!--- Volume --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/volume" />

@@ -115,6 +115,7 @@ Notes:
 
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="frequencyTermID" 
+										valueDefault="#getHibachiScope().getService('settingService').getSettingValue('orderTemplateDefaultFrequencyTerm')#"
 										fieldtype="select" 
 										edit="#rc.edit#">
 			
