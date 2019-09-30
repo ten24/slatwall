@@ -129,9 +129,7 @@ class swfAccountController {
         window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`;
     }
     
-    public getDeleteItemPath = (ID) => {
-       return `?slatAction=public:account.deleteAccountAddress&accountAddressID=${ID}`;
-    }
+
     
     public setEditAddress = (newAddress = true, address) => {
        this.editAddress = address ? address : {};
