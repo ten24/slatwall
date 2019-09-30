@@ -28,18 +28,6 @@ export class MonatService {
 		}
 		return deferred.promise;
 	}
-
-	public testGetOptions() {
-		this.getOptions({"shippingMethodOptions":null,"frequencyDateOptions":undefined,"cancellationReasonTypeOptions":false})
-		.then(data => console.log("testGetOptions, success", data))
-		.catch(e => {throw(e) });
-	}
-	
-	public testGetOptionsRefresh() {
-		this.getOptions({"shippingMethodOptions":null,"cancellationReasonTypeOptions":false}, true)
-		.then(data => console.log("testGetOptions refresh, success", data))
-		.catch(e => {throw(e) });
-	}
 	
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}
@@ -52,10 +40,10 @@ export class MonatService {
 			this.requestService
                 .newPublicRequest('?slatAction=api:public.getOptions', {'optionsList' : optionsToFetch })
                 .promise.then((data) =>{
-                	console.warn('getOptions', data);
-                	var {messages, failureActions, successfulActions, ...realOptions} = data; //destructure we dont want unwanted keys in cached options
+                	var {messages, failureActions, successfulActions, ...realOptions} = data; //destructuring we dont want unwanted data in cached options
 					this.cachedOptions = {...this.cachedOptions, ...realOptions}; // override and merge with old options
-					this.sendOptionsBack(options,deferred);
+					this.sendOptionsBack(options, deferred);
+					//TODO handle errors
 				});
 		} else {
 			this.sendOptionsBack(options,deferred);
@@ -65,12 +53,15 @@ export class MonatService {
 	
 	private makeListOfOptionsToFetch(options:{}, refresh:boolean=false) {
 		return Object.keys(options)
-					.filter( key => refresh || !!options[key] || !this.cachedOptions[key] )
-					.reduce( (previous, current) => current ? previous +","+ current : previous );
+					.filter( key => refresh || !!options[key] || !(this.cachedOptions[key]) )
+					.reduce( (previous, current) => {
+						if(current) { previous = previous.length ? previous +","+ current : current; }
+						return previous;
+					}, "");
 	}
 
 	private sendOptionsBack(options:{}, deferred) {
-		let res = Object.keys(options).reduce( (result, key) => Object.assign(result, { [key]: this.cachedOptions[key] }), {});
+		let res = Object.keys(options).reduce( (result, key) => (<any>Object).assign(result, { [key]: this.cachedOptions[key] }), {});
 		deferred.resolve(res);
 	}
 	
