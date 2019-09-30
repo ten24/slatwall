@@ -96,6 +96,23 @@ export class OrderTemplateService {
                   .promise;
     }
     
+    /**
+     * 
+       'orderTemplateID',
+       'orderTemplateName'
+     * 
+    */ 
+    public editOrderTemplate = (orderTemplateID:string, orderTemplateName:string) => {
+        let payload = {
+			'orderTemplateID': orderTemplateID,
+			'orderTemplateName': orderTemplateName
+		};
+		
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.editOrderTemplate',payload)
+                  .promise;
+    }
+    
     public updateOrderTemplateSchedule = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)

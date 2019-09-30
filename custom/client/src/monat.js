@@ -60232,9 +60232,10 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipCardController(observerService) {
+    function MonatFlexshipCardController(observerService, ModalService) {
         var _this = this;
         this.observerService = observerService;
+        this.ModalService = ModalService;
         this.$onInit = function () {
             _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
         };
@@ -60243,6 +60244,22 @@ var MonatFlexshipCardController = /** @class */ (function () {
         };
         this.updateOrderTemplate = function (orderTemplate) {
             _this.orderTemplate = orderTemplate;
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showEditFlexshipNameModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipNameModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate
+                },
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
+                console.error("unable to open model :", error);
+            });
         };
     }
     return MonatFlexshipCardController;
@@ -61142,6 +61159,7 @@ var monatflexship_modal_paymentmethod_1 = __webpack_require__(611);
 var monatflexship_modal_shippingmethod_1 = __webpack_require__(612);
 var monatflexship_modal_changeorskiporder_1 = __webpack_require__(610);
 var monatflexship_modal_cancel_1 = __webpack_require__(609);
+var monatflexship_modal_name_1 = __webpack_require__(854);
 var monatflexship_cart_container_1 = __webpack_require__(607);
 var monatflexship_confirm_1 = __webpack_require__(608);
 var monatflexshiplisting_1 = __webpack_require__(618);
@@ -61171,6 +61189,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipShippingMethodModal', monatflexship_modal_shippingmethod_1.MonatFlexshipShippingMethodModal.Factory())
     .directive('monatFlexshipChangeOrSkipOrderModal', monatflexship_modal_changeorskiporder_1.MonatFlexshipChangeOrSkipOrderModal.Factory())
     .directive('monatFlexshipCancelModal', monatflexship_modal_cancel_1.MonatFlexshipCancelModal.Factory())
+    .directive('monatFlexshipNameModal', monatflexship_modal_name_1.MonatFlexshipNameModal.Factory())
     .directive('monatFlexshipCartContainer', monatflexship_cart_container_1.MonatFlexshipCartContainer.Factory())
     .directive('monatFlexshipConfirm', monatflexship_confirm_1.MonatFlexshipConfirm.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
@@ -61398,6 +61417,21 @@ var OrderTemplateService = /** @class */ (function () {
             payload = _this.getFlattenObject(payload);
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
+                .promise;
+        };
+        /**
+         *
+           'orderTemplateID',
+           'orderTemplateName'
+         *
+        */
+        this.editOrderTemplate = function (orderTemplateID, orderTemplateName) {
+            var payload = {
+                'orderTemplateID': orderTemplateID,
+                'orderTemplateName': orderTemplateName
+            };
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.editOrderTemplate', payload)
                 .promise;
         };
         this.updateOrderTemplateSchedule = function (data) {
@@ -88785,6 +88819,82 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 854 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipNameModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipNameModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['flexshipName'] = _this.rbkeyService.rbKey('frontend.nameFlexshipModal.flexshipName');
+        };
+    }
+    MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
+        //TODO frontend validation
+        var _this = this;
+        // make api request
+        this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            // TODO: show alert / handle error
+        });
+    };
+    return MonatFlexshipNameModalController;
+}());
+var MonatFlexshipNameModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipNameModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+        };
+        this.controller = MonatFlexshipNameModalController;
+        this.controllerAs = "monatFlexshipNameModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-name.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipNameModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipNameModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipNameModal;
+}());
+exports.MonatFlexshipNameModal = MonatFlexshipNameModal;
 
 
 /***/ })

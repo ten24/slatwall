@@ -2069,15 +2069,27 @@ component  accessors="true" output="false"
         param name="data.orderTemplateID" default="";
         param name="data.orderTemplateName" default="";
         
-        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+	    if(len(arguments.data.orderTemplateName)) {
+ 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
+	    }
+	    
+	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            getHibachiScope().flushORMSession(); 
+            //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
         
-        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
-            orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
-            orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
-            getHibachiScope().addActionResult( "public:order.editOrderTemplate", orderTemplate.hasErrors() );
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
-        
-        getHibachiScope().addActionResult( "public:order.editOrderTemplate", true );  
     }
     
     public void function deleteOrderTemplate(required any data){
