@@ -22,6 +22,7 @@ class swfAccountController {
     public cachedCountryCode;
     public accountPaymentMethods;
     public editAddress;
+    public isNewAddress:boolean;
 
     
     // @ngInject
@@ -132,8 +133,13 @@ class swfAccountController {
        return `?slatAction=public:account.deleteAccountAddress&accountAddressID=${ID}`;
     }
     
-    public setEditAddress = (address) => {
-       this.editAddress = address;
+    public setEditAddress = (newAddress = true, address) => {
+       this.editAddress = address ? address : {};
+       if(newAddress) {
+           this.isNewAddress = true;
+       }else{
+           this.isNewAddress = false;
+       }
     }
 }
 

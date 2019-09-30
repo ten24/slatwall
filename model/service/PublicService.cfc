@@ -472,9 +472,10 @@ component  accessors="true" output="false"
     }
     
     public void function addEditAccountAddress(required any data){
-        if(structKeyExists(data,'accountAddressID') && len(arguments.data['accountAddressID'])){
+
+
+        if(structKeyExists(arguments.data,'accountAddressID') && len(arguments.data['accountAddressID'])){
             param name="data.countrycode" default="US";
-     	
          	var accountAddress = getService("AccountService").getAccountAddress(data.accountAddressID);
          	if (structKeyExists(data, "accountAddressName")){
          		accountAddress.setAccountAddressName(data.accountAddressName);
