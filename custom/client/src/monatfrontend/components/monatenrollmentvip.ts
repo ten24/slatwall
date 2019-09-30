@@ -6,11 +6,11 @@ class VIPController {
     public currentStateCode:string = '';
     public mpSearchText:string = '';
     public currentMpPage:number = 1;
+    public test:number = 123;
 
     // @ngInject
     constructor(
-        public $rootScope,
-        public $scope,
+        public publicService
     ){}
     
     public $onInit = () => {
@@ -22,7 +22,7 @@ class VIPController {
             return this.countryCodeOptions;
         }
         
-        this.$rootScope.slatwall.getCountries().then( data => {
+        this.publicService.getCountries().then( data => {
             this.countryCodeOptions = data.countryCodeOptions;
         });
     }
@@ -30,13 +30,13 @@ class VIPController {
     public getStateCodeOptions = countryCode => {
         this.currentCountryCode = countryCode;
         
-        this.$rootScope.slatwall.getStates( countryCode ).then( data => {
+        this.publicService.getStates( countryCode ).then( data => {
             this.stateCodeOptions = data.stateCodeOptions;
         });
     }
     
     public getMpResults = () => {
-        this.$rootScope.slatwall.marketPartnerResults = this.$rootScope.slatwall.doAction(
+        this.publicService.marketPartnerResults = this.publicService.doAction(
             '/?slatAction=monat:public.getmarketpartners'
 			+ '&search='+ this.mpSearchText 
 			+ '&currentPage='+ this.currentMpPage 

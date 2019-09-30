@@ -60898,6 +60898,7 @@ var monatflexship_modal_cancel_1 = __webpack_require__(607);
 var monatflexshiplisting_1 = __webpack_require__(616);
 var monatflexshipmenu_1 = __webpack_require__(617);
 var monatenrollment_1 = __webpack_require__(605);
+var monatenrollmentvip_1 = __webpack_require__(852);
 var monatenrollmentstep_1 = __webpack_require__(606);
 var swfreviewlisting_1 = __webpack_require__(620);
 var swfwishlist_1 = __webpack_require__(621);
@@ -60925,6 +60926,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
+    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -88402,6 +88404,81 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 852 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var VIPController = /** @class */ (function () {
+    // @ngInject
+    function VIPController($rootScope, $scope) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+        this.countryCodeOptions = [];
+        this.stateCodeOptions = [];
+        this.currentCountryCode = '';
+        this.currentStateCode = '';
+        this.mpSearchText = '';
+        this.currentMpPage = 1;
+        this.test = 123;
+        this.$onInit = function () {
+            _this.getCountryCodeOptions();
+        };
+        this.getCountryCodeOptions = function () {
+            if (_this.countryCodeOptions.length) {
+                return _this.countryCodeOptions;
+            }
+            _this.$rootScope.slatwall.getCountries().then(function (data) {
+                _this.countryCodeOptions = data.countryCodeOptions;
+            });
+        };
+        this.getStateCodeOptions = function (countryCode) {
+            _this.currentCountryCode = countryCode;
+            _this.$rootScope.slatwall.getStates(countryCode).then(function (data) {
+                _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
+        this.getMpResults = function () {
+            _this.$rootScope.slatwall.marketPartnerResults = _this.$rootScope.slatwall.doAction('/?slatAction=monat:public.getmarketpartners'
+                + '&search=' + _this.mpSearchText
+                + '&currentPage=' + _this.currentMpPage
+                + '&accountTypeCode=D'
+                + '&countryCode=' + _this.currentCountryCode
+                + '&stateCode=' + _this.currentStateCode);
+        };
+    }
+    return VIPController;
+}());
+exports.VIPController = VIPController;
+var MonatEnrollmentVIPController = /** @class */ (function () {
+    // @ngInject
+    function MonatEnrollmentVIPController() {
+        this.require = {
+            ngModel: '?^ngModel'
+        };
+        this.priority = 1000;
+        this.restrict = "A";
+        this.scope = true;
+        /**
+         * Binds all of our variables to the controller so we can access using this
+         */
+        this.bindToController = {};
+        this.controller = VIPController;
+        this.controllerAs = "vipController";
+    }
+    MonatEnrollmentVIPController.Factory = function () {
+        var directive = function () { return new MonatEnrollmentVIPController(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatEnrollmentVIPController;
+}());
+exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 
 /***/ })
