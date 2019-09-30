@@ -34,6 +34,9 @@ component extends="Slatwall.model.service.HibachiService" {
                 href = '';
             }
             for(var language in languages){
+                if(!structKeyExists(languageMap, left(language,2))){
+                    continue;
+                }
                 var languageInfo = {
                     'name'=languageMap[left(language,2)],
                     'value'=language
