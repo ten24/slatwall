@@ -59335,37 +59335,13 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.orderTemplate == null) {
-                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
-                    .then(function (response) {
-                    _this.orderTemplate = response.orderTemplate;
-                    _this.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
-                    //TODO handle errors / success
-                }, function (reason) {
-                    throw (reason);
-                });
+                _this.fetchOrderTemplate();
             }
         };
         this.translations = {};
         this.makeTranslations = function () {
             //TODO make translations for success/failure alert messages
             _this.makeCurrentStepTranslation();
-        };
-        this.showFlexshipConfirmStep = function () {
-            _this.ModalService.closeModals();
-            _this.ModalService.showModal({
-                component: 'monatFlexshipConfirm',
-                bindings: {
-                    orderTemplate: _this.orderTemplate,
-                },
-                bodyClass: 'overlay'
-            }).then(function (modal) {
-                //it's not a bootstrap modal
-                modal.close.then(function (result) {
-                    console.log("closing modal awesome, result: ", result);
-                });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
-            });
         };
         this.makeCurrentStepTranslation = function (currentStep, totalSteps) {
             if (currentStep === void 0) { currentStep = 1; }
@@ -59377,6 +59353,25 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
             };
             _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
         };
+        this.fetchOrderTemplate = function () {
+            _this.orderTemplateService
+                .getOrderTemplateDetails(_this.orderTemplateId)
+                .then(function (data) {
+                if (data.orderTemplate) {
+                    _this.orderTemplate = data.orderTemplate;
+                    _this.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
+                    //TODO handle errors / success
+                }
+                else {
+                    throw (data);
+                }
+            }).catch(function (error) {
+                //TODO deal with the error
+                throw (error);
+            }).finally(function () {
+                //TODO deal with the loader ui
+            });
+        };
         this.getOrderTemplateItemIndexByID = function (orderTemplateItemID) {
             return _this.orderTemplateItems.findIndex(function (it) { return it.orderTemplateItemID === orderTemplateItemID; });
         };
@@ -59385,6 +59380,9 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
                     var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
                     _this.orderTemplateItems.splice(index, 1);
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
                 }
                 else {
                     console.log('removeOrderTemplateItem res: ', data);
@@ -59399,6 +59397,9 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 if (data.orderTemplateItem) {
                     var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
                     _this.orderTemplateItems[index] = data.orderTemplateItem;
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
                 }
                 else {
                     console.error('increaseOrderTemplateItemQuantity res: ', data);
@@ -59413,6 +59414,9 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 if (data.orderTemplateItem) {
                     var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
                     _this.orderTemplateItems[index] = data.orderTemplateItem;
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
                 }
                 else {
                     console.error('decreaseOrderTemplateItemQuantity res: ', data);
@@ -59420,6 +59424,20 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 //TODO handle errors / success
             }, function (reason) {
                 throw (reason);
+            });
+        };
+        this.showFlexshipConfirmModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipConfirm',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                }
+            }).then(function (modal) {
+                //it's not a bootstrap modal
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
+                console.error("unable to open showFlexshipConfirmModal :", error);
             });
         };
     }
@@ -59467,13 +59485,22 @@ exports.MonatFlexshipCartContainer = MonatFlexshipCartContainer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipConfirmController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipConfirmController(orderTemplateService, rbkeyService, $scope) {
+    function MonatFlexshipConfirmController(monatService, orderTemplateService, rbkeyService, $scope, $window) {
         var _this = this;
+        this.monatService = monatService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.$scope = $scope;
+        this.$window = $window;
         this.$onInit = function () {
             _this.makeTranslations();
+            _this.monatService.getOptions({ "frequencyTermOptions": false, "frequencyDateOptions": false })
+                .then(function (data) {
+                _this.frequencyTermOptions = data.frequencyTermOptions;
+                _this.frequencyDateOptions = data.frequencyDateOptions;
+                _this.selectedFrequencyTermID = _this.orderTemplate.frequencyTerm_termID;
+                _this.selectedFrequencyDate = _this.orderTemplate.scheduleOrderDayOfTheMonth;
+            });
         };
         this.cancel = function () {
             _this.close(null); // close, but give 100ms to animate
@@ -59483,11 +59510,21 @@ var MonatFlexshipConfirmController = /** @class */ (function () {
             _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipConfirm.currentStepOfTtotalSteps');
         };
         this.confirm = function () {
-            var result = {
-                'selectedFreq': "1 month",
-                'selectedDate': "14",
-            };
-            _this.close(result);
+            //TODO frontend validation, success/failure alert    
+            _this.orderTemplateService
+                .updateOrderTemplateFrequency(_this.orderTemplate.orderTemplateID, _this.selectedFrequencyTermID, _this.selectedFrequencyDate)
+                .then(function (data) {
+                if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
+                    _this.$window.location.href = '/my-account/flexships/';
+                }
+                else {
+                    throw (data);
+                }
+            }).catch(function (error) {
+                console.error("setAsCurrentFlexship :", error);
+                // TODO: handle errors
+            }).finally(function () {
+            });
         };
     }
     return MonatFlexshipConfirmController;
@@ -60484,11 +60521,10 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 _this.$window.location.href = '/shop';
             }
             else {
-                // TODO: show alert
-                console.error("setAsCurrentFlexship :", data);
+                throw (data);
             }
-        }).catch(function (reason) {
-            throw (reason);
+        }).catch(function (error) {
+            console.error("setAsCurrentFlexship :", error);
             // TODO: show alert
         });
     };
@@ -61140,7 +61176,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
     .config(["ModalServiceProvider", function (ModalServiceProvider) {
         // to set a default close delay on modals
-        ModalServiceProvider.configureOptions({ closeDelay: 500 });
+        ModalServiceProvider.configureOptions({ closeDelay: 100 });
     }]);
 exports.monatfrontendmodule = monatfrontendmodule;
 
@@ -61151,12 +61187,38 @@ exports.monatfrontendmodule = monatfrontendmodule;
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatService = /** @class */ (function () {
     //@ngInject
-    function MonatService(publicService, $q) {
+    function MonatService(publicService, $q, requestService) {
         this.publicService = publicService;
         this.$q = $q;
+        this.requestService = requestService;
+        this.cachedOptions = {
+            frequencyTermOptions: null,
+        };
     }
     MonatService.prototype.getCart = function (refresh) {
         var _this = this;
@@ -61170,6 +61232,66 @@ var MonatService = /** @class */ (function () {
         }
         else {
             deferred.resolve(this.cart);
+        }
+        return deferred.promise;
+    };
+    /**
+     * options = {optionName:refresh, ---> option2:true, o3:false}
+    */
+    MonatService.prototype.getOptions = function (options, refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
+        if (refresh || (optionsToFetch && optionsToFetch.length)) {
+            this.requestService
+                .newPublicRequest('?slatAction=api:public.getOptions', { 'optionsList': optionsToFetch })
+                .promise.then(function (data) {
+                var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
+                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
+                _this.sendOptionsBack(options, deferred);
+                //TODO handle errors
+            });
+        }
+        else {
+            this.sendOptionsBack(options, deferred);
+        }
+        return deferred.promise;
+    };
+    MonatService.prototype.makeListOfOptionsToFetch = function (options, refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        return Object.keys(options)
+            .filter(function (key) { return refresh || !!options[key] || !(_this.cachedOptions[key]); })
+            .reduce(function (previous, current) {
+            if (current) {
+                previous = previous.length ? previous + "," + current : current;
+            }
+            return previous;
+        }, "");
+    };
+    MonatService.prototype.sendOptionsBack = function (options, deferred) {
+        var _this = this;
+        var res = Object.keys(options).reduce(function (result, key) {
+            var _a;
+            return Object.assign(result, (_a = {}, _a[key] = _this.cachedOptions[key], _a));
+        }, {});
+        deferred.resolve(res);
+    };
+    MonatService.prototype.getFrequencyTermOptions = function (refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        if (refresh || !this.cachedOptions.frequencyTermOptions) {
+            this.requestService
+                .newPublicRequest('?slatAction=api:public.getFrequencyTermOptions')
+                .promise.then(function (data) {
+                _this.cachedOptions.frequencyTermOptions = data.frequencyTermOptions;
+                deferred.resolve(_this.cachedOptions.frequencyTermOptions);
+            });
+        }
+        else {
+            deferred.resolve(this.cachedOptions.frequencyTermOptions);
         }
         return deferred.promise;
     };
@@ -61275,9 +61397,16 @@ var OrderTemplateService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                 .promise;
         };
-        this.updateOrderTemplateFrequency = function (data) {
+        this.updateOrderTemplateFrequency = function (orderTemplateID, frequencyTermID, scheduleOrderDayOfTheMonth) {
+            var payload = {
+                'orderTemplateID': orderTemplateID,
+                'frequencyTerm.value': frequencyTermID
+            };
+            if (scheduleOrderDayOfTheMonth) {
+                payload['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
+            }
             return _this.requestService
-                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', payload)
                 .promise;
         };
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {

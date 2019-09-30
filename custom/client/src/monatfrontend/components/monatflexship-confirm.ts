@@ -1,18 +1,34 @@
 
 class MonatFlexshipConfirmController {
     public orderTemplate:any; // orderTemplateDetails
+    public frequencyTermOptions: any[]; // termName|name,termID|value
+    public frequencyDateOptions: any[];
     public close; // injected from angularModalService
+    
+    public selectedFrequencyTermID;
+    public selectedFrequencyDate;
     //@ngInject
     constructor(
+    	public monatService, 
     	public orderTemplateService, 
     	public rbkeyService,
     	public $scope, 
+    	public $window
     ) { 
         
     }
     
     public $onInit = () => {
     	this.makeTranslations();
+	
+		this.monatService.getOptions({"frequencyTermOptions":false,"frequencyDateOptions":false})
+		.then(data => {
+			this.frequencyTermOptions = data.frequencyTermOptions;
+			this.frequencyDateOptions = data.frequencyDateOptions;
+			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
+			this.selectedFrequencyDate = this.orderTemplate.scheduleOrderDayOfTheMonth;
+		});
+	
     };
     
     public cancel = () => {
@@ -25,11 +41,24 @@ class MonatFlexshipConfirmController {
     }
 
     public confirm = () => {
-    	let result = {
-    	    'selectedFreq' : "1 month", 
-    	    'selectedDate' : "14", 
-    	};
-    	this.close(result);
+    	
+    	//TODO frontend validation, success/failure alert    
+    	this.orderTemplateService
+    	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
+    	.then( data => { 
+    		
+    		if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
+        		this.$window.location.href = '/my-account/flexships/';
+        	} else {
+	            throw(data);
+        	}
+    	}).catch(error => {
+    		console.error("setAsCurrentFlexship :",error);	
+            // TODO: handle errors
+    	}).finally(() => { 
+    		
+    	});
+    	
     }
 }
 

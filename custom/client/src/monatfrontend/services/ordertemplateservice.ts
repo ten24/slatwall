@@ -102,9 +102,19 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public updateOrderTemplateFrequency = (data) => {
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+    public updateOrderTemplateFrequency = (orderTemplateID:string, frequencyTermID:string, scheduleOrderDayOfTheMonth?:number ) => {
+       
+        let payload = {
+    		'orderTemplateID' : orderTemplateID,
+    		'frequencyTerm.value' : frequencyTermID
+    	};
+    	
+    	if(scheduleOrderDayOfTheMonth) {
+    	    payload['scheduleOrderDayOfTheMonth'] =  scheduleOrderDayOfTheMonth;
+    	}
+    	
+        return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', payload)
                   .promise;
     }
 	

@@ -132,11 +132,10 @@ class MonatFlexshipMenuController{
         	if(data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
         		this.$window.location.href = '/shop';
         	} else {
-        		// TODO: show alert
-        		console.error("setAsCurrentFlexship :",data);	
+	            throw (data);
         	}
-        }).catch((reason) => {
-            throw (reason);
+        }).catch((error) => {
+       		console.error("setAsCurrentFlexship :",error);	
             // TODO: show alert
         });
     }

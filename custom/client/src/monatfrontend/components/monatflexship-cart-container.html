@@ -9,13 +9,13 @@
 		</div>
 		<span class="steps" ng-bind-html="monatFlexshipCartContainer.translations.currentStepOfTtotalSteps"></span>
 		<div class="go-to-cart">
-			<a href="#" ng-click="monatFlexshipCartContainer.showFlexshipConfirmStep()"><span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span></a>
+			<a href="#" ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"><span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span></a>
 		</div>
 	</div>
 	
 	<div class="flexship-container">
 		<!--TODO conditional logic to show hide message-->
-		<p><i class="fas fa-info-circle"></i> Your Flexship must be a minimum of $84.00 before you save any changes. `</p>
+		<p><i class="fas fa-info-circle"></i> Your Flexship must be a minimum of $84.00 before you save any changes. ``</p>
 		<div class="product-container">
 			<ul>
 				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems">
@@ -48,7 +48,7 @@
 			</ul>
 		</div>
 		<p class="more"><a href="#">+ 4 More Items ``</a></p>
-		<a href="#" class="btn bg-primary btn-block" ng-click="monatFlexshipCartContainer.showFlexshipConfirmStep()"><span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span></a>
+		<a href="#" class="btn bg-primary btn-block" ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"><span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span></a>
 	</div>
 </div>
 	

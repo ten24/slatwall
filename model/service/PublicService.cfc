@@ -1954,8 +1954,9 @@ component  accessors="true" output="false"
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("updateFrequency");
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+    //  TODO : see if we need to send any data ?
+    //         getHibachiScope().flushORMSession(); //flushing to make new data availble
+    // 		setOrderTemplateAjaxResponse(argumentCollection = arguments);
         
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);

@@ -1710,7 +1710,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_updateFrequency(required any orderTemplate, required any processObject, required struct data={}){
 
 		arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTerm().value));
-
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(arguments.processObject.getScheduleOrderDayOfTheMonth());
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 
@@ -1968,7 +1969,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
+		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termID,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");

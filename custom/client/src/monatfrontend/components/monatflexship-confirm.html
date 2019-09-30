@@ -1,12 +1,28 @@
 <div class="flexship-confirm">
     <div class="container">
-	    <h6 class="title-with-line">My Hair Flexship</h6>
+	    <h6 class="title-with-line"><span ng-bind="monatFlexshipConfirm.orderTemplate.orderTemplateName"></span></h6>
 	    
-    	<h3>You'll still receive your items every <span class="date">1 Month</span> on the <span class="date">17th.</span></h3>
+    	<h3>You'll still receive your items every` 
+	    	<span class="date">
+				<select type="text"
+            			ng-model="monatFlexshipConfirm.selectedFrequencyTermID"
+            			ng-options="term.value as term.name for term in monatFlexshipConfirm.frequencyTermOptions"
+            			placeholder="Frequency">
+            	</select> 	    	
+           </span> 
+	    	on the` 
+	    	<span class="date">
+	    		<select type="text"
+            			ng-model="monatFlexshipConfirm.selectedFrequencyDate"
+            			ng-options="date.value as date.name for date in monatFlexshipConfirm.frequencyDateOptions"
+            			placeholder="Frequency">
+            	</select> 	
+	    	</span>
+    	</h3>
     	
     	<div class="total">
-    		<span>Total:</span>
-    		<span>$255</span>
+			<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>    		
+			<span>{{monatFlexshipConfirm.orderTemplate.total | currency}}</span>
     	</div>
 
 	    <div class="confirm-footer">
