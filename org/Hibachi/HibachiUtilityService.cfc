@@ -1171,6 +1171,14 @@
 			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
+		
+		
+		public string function prefixListItem(required string list, required string prefix) {
+			var prefix = arguments.prefix;
+			return ListMap(arguments.list , function(item){
+				return prefix & arguments.item; //beware of scope
+			})
+		}
 
 	</cfscript>
 
