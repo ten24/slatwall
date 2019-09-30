@@ -1952,8 +1952,14 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:orderTemplate.updateFrequency", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+       
+       // TODO     
+        // orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
+        // {
             
-            orderTemplate.clearProcessObject("updateFrequency");
+        // }
+
+        orderTemplate.clearProcessObject("updateFrequency");
     //  TODO : see if we need to send any data ?
     //         getHibachiScope().flushORMSession(); //flushing to make new data availble
     // 		setOrderTemplateAjaxResponse(argumentCollection = arguments);
@@ -2125,8 +2131,10 @@ component  accessors="true" output="false"
     public void function getOptions(required any data){
         param name="data.optionsList" default=""; //option name
         
-        for(var optionName in arguments.data.optionsList){
-            this.invokeMethod("get#optionName#", {'data' = arguments.data});
+        for(var optionName in arguments.data.optionsList) {
+            if(right(optionName,7) == 'Options'){
+                this.invokeMethod("get#optionName#", {'data' = arguments.data});
+            }
         }
     }
     
