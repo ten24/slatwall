@@ -1951,21 +1951,25 @@ component  accessors="true" output="false"
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateFrequency'); 
         getHibachiScope().addActionResult( "public:orderTemplate.updateFrequency", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-       
-       // TODO     
-        // orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-        // {
-            
-        // }
-
-        orderTemplate.clearProcessObject("updateFrequency");
-    //  TODO : see if we need to send any data ?
-    //         getHibachiScope().flushORMSession(); //flushing to make new data availble
-    // 		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-        
-        } else {
+        if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }
+        orderTemplate.clearProcessObject("updateFrequency");
+        
+        //try to activate if possible
+        if(orderTemplate.getCanPlaceOrderFlag()) {
+            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
+            getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
+            
+            if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
+                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+                return;
+            }
+            orderTemplate.clearProcessObject("activate");
+            
+            //Clear the currentFlexship from session
+            getHibachiScope().getSession().setCurrentFlexship(JavaCast("null",''));
         }
 	} 
 	
