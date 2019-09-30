@@ -68,4 +68,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		
 		return ordersList.getPageRecords();
 	}
+	
+
 }

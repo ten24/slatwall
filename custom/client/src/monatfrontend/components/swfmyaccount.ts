@@ -37,8 +37,8 @@ class swfAccountController {
         }
         while(this.yearOptions.length <= 9);
         
-        this.observerService.attach(this.getAccount,"loginSuccess");        
-
+        this.observerService.attach(this.getAccount,"loginSuccess"); 
+        
     }
     // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
@@ -53,13 +53,15 @@ class swfAccountController {
 	
     public getAccount = () => {
         this.loading = true;
+        this.accountData = {};
+        this.accountPaymentMethods = [];
         const account = this.$rootScope.hibachiScope.getAccount();
         //Do this when then account data returns
         //Optimize when get orders on account is called, only needed on account overview and orders overview
         account.then((response)=>{
             this.accountData = response;
             this.checkAndApplyAccountAge();
-            this.getOrdersOnAccount()
+            this.getOrdersOnAccount();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             if(this.urlParams.get('orderid')){
@@ -73,7 +75,7 @@ class swfAccountController {
     public getOrdersOnAccount = (accountID = this.accountData.accountID) => {
         this.loading = true;
         
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID}).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': 2}).then(result=>{
             this.ordersOnAccount = result.ordersOnAccount;
             this.loading = false;
         });
@@ -124,7 +126,34 @@ class swfAccountController {
     }
     
     public setPrimaryPaymentMethod = (methodID) => {
-        window.location.href+=`?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=${methodID}`;
+        this.loading = true;
+        return this.$rootScope.hibachiScope.doAction("setPrimaryPaymentMethod",{accountPaymentMethodID: methodID} ).then(result=>{
+            this.loading = false;
+        });
+    }
+    
+    public toggleClass =()=>{
+        const icon = document.getElementById('toggle-icon');
+        const list = document.getElementById('toggle-list');
+        
+        if(list.classList.contains('active')){
+            list.classList.remove('active');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        } else{
+            list.classList.add('active');
+            icon.classList.add('fa-chevron-down');
+            icon.classList.remove('fa-chevron-up');
+        }
+    }
+    
+    public deletePaymentMethod = (paymentMethodID, index) => {
+        this.loading = true;
+        return this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
+            this.accountPaymentMethods.splice(index, 1);
+            this.loading = false;
+            return this.accountPaymentMethods
+        });
     }
 }
 
