@@ -59327,8 +59327,7 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 
 
 /***/ }),
-/* 607 */,
-/* 608 */
+/* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59409,7 +59408,7 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 
 /***/ }),
-/* 609 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59542,7 +59541,7 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 
 
 /***/ }),
-/* 610 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59700,7 +59699,7 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 
 
 /***/ }),
-/* 611 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59829,7 +59828,7 @@ exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
 
 
 /***/ }),
-/* 612 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59875,7 +59874,7 @@ exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
 
 
 /***/ }),
-/* 613 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59921,7 +59920,7 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 
 /***/ }),
-/* 614 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59981,7 +59980,7 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 
 
 /***/ }),
-/* 615 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60045,7 +60044,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 
 /***/ }),
-/* 616 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60103,7 +60102,7 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 
 
 /***/ }),
-/* 617 */
+/* 616 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60168,7 +60167,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 
 /***/ }),
-/* 618 */
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60333,6 +60332,120 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
+/* 618 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatProductCardController = /** @class */ (function () {
+    // @ngInject
+    function MonatProductCardController(
+    //inject modal service
+    orderTemplateService, $rootScope) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$rootScope = $rootScope;
+        this.pageRecordsShow = 5;
+        this.currentPage = 1;
+        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
+            _this.loading = true;
+            _this.orderTemplateService
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .then(function (result) {
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                }
+                _this.loading = false;
+            });
+        };
+        this.deleteItem = function (index) {
+            _this.loading = true;
+            var item = _this.allProducts[index];
+            debugger;
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
+                _this.allProducts.splice(index, 1);
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
+                _this.loading = false;
+                _this.getAllWishlists();
+                return result;
+            });
+        };
+        this.addWishlistItem = function (skuID) {
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
+                .then(function (result) {
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.launchModal = function (type) {
+            if (type === 'flexship') {
+                //launch flexship modal 
+            }
+            else {
+                //launch normal modal
+            }
+        };
+        this.addToCart = function (type) {
+            if (type === 'flexship') {
+                //flexship logic
+            }
+            else {
+                //normal product logic
+            }
+        };
+        this.setWishlistID = function (newID) {
+            _this.wishlistTemplateID = newID;
+        };
+        this.setWishlistName = function (newName) {
+            _this.wishlistTemplateName = newName;
+        };
+    }
+    return MonatProductCardController;
+}());
+exports.MonatProductCardController = MonatProductCardController;
+var MonatProductCard = /** @class */ (function () {
+    function MonatProductCard(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'EA';
+        this.scope = true;
+        this.bindToController = {
+            product: '=',
+            type: '@',
+            index: '@',
+            allProducts: '<?',
+        };
+        this.controller = MonatProductCardController;
+        this.controllerAs = "monatProductCard";
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
+    }
+    MonatProductCard.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return MonatProductCard;
+}());
+exports.MonatProductCard = MonatProductCard;
+
+
+/***/ }),
 /* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -60445,6 +60558,12 @@ var swfAccountController = /** @class */ (function () {
             else {
                 _this.isNewAddress = false;
             }
+        };
+        this.setPrimaryAddress = function (addressID) {
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
+                _this.loading = false;
+            });
         };
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -60786,23 +60905,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(304);
 var frontend_module_1 = __webpack_require__(794);
 //directives
-var monatflexshipcard_1 = __webpack_require__(615);
-var monatflexshipdetail_1 = __webpack_require__(616);
-var monatflexship_orderitem_1 = __webpack_require__(612);
-var monatflexship_shippingandbillingcard_1 = __webpack_require__(614);
-var monatflexship_ordertotalcard_1 = __webpack_require__(613);
-var monatflexship_modal_paymentmethod_1 = __webpack_require__(610);
-var monatflexship_modal_shippingmethod_1 = __webpack_require__(611);
-var monatflexship_modal_changeorskiporder_1 = __webpack_require__(609);
-var monatflexship_modal_cancel_1 = __webpack_require__(608);
-var monatflexshiplisting_1 = __webpack_require__(617);
-var monatflexshipmenu_1 = __webpack_require__(618);
+var monatflexshipcard_1 = __webpack_require__(614);
+var monatflexshipdetail_1 = __webpack_require__(615);
+var monatflexship_orderitem_1 = __webpack_require__(611);
+var monatflexship_shippingandbillingcard_1 = __webpack_require__(613);
+var monatflexship_ordertotalcard_1 = __webpack_require__(612);
+var monatflexship_modal_paymentmethod_1 = __webpack_require__(609);
+var monatflexship_modal_shippingmethod_1 = __webpack_require__(610);
+var monatflexship_modal_changeorskiporder_1 = __webpack_require__(608);
+var monatflexship_modal_cancel_1 = __webpack_require__(607);
+var monatflexshiplisting_1 = __webpack_require__(616);
+var monatflexshipmenu_1 = __webpack_require__(617);
 var monatenrollment_1 = __webpack_require__(605);
 var monatenrollmentstep_1 = __webpack_require__(606);
 var swfreviewlisting_1 = __webpack_require__(620);
 var swfwishlist_1 = __webpack_require__(621);
 var swfmyaccount_1 = __webpack_require__(619);
-var monatproductcard_1 = __webpack_require__(852);
+var monatproductcard_1 = __webpack_require__(618);
 //services
 var monatservice_1 = __webpack_require__(623);
 var ordertemplateservice_1 = __webpack_require__(624);
@@ -88302,120 +88421,6 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
-
-
-/***/ }),
-/* 852 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatProductCardController = /** @class */ (function () {
-    // @ngInject
-    function MonatProductCardController(
-    //inject modal service
-    orderTemplateService, $rootScope) {
-        var _this = this;
-        this.orderTemplateService = orderTemplateService;
-        this.$rootScope = $rootScope;
-        this.pageRecordsShow = 5;
-        this.currentPage = 1;
-        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
-        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
-            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
-            if (setNewTemplates === void 0) { setNewTemplates = true; }
-            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
-            _this.loading = true;
-            _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
-                .then(function (result) {
-                if (setNewTemplates) {
-                    _this.orderTemplates = result['orderTemplates'];
-                }
-                else if (setNewTemplateID) {
-                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
-                }
-                _this.loading = false;
-            });
-        };
-        this.deleteItem = function (index) {
-            _this.loading = true;
-            var item = _this.allProducts[index];
-            debugger;
-            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
-                _this.allProducts.splice(index, 1);
-                _this.loading = false;
-                return result;
-            });
-        };
-        this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
-            if (quantity === void 0) { quantity = 1; }
-            _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
-                _this.loading = false;
-                _this.getAllWishlists();
-                return result;
-            });
-        };
-        this.addWishlistItem = function (skuID) {
-            _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
-                .then(function (result) {
-                _this.loading = false;
-                return result;
-            });
-        };
-        this.launchModal = function (type) {
-            if (type === 'flexship') {
-                //launch flexship modal 
-            }
-            else {
-                //launch normal modal
-            }
-        };
-        this.addToCart = function (type) {
-            if (type === 'flexship') {
-                //flexship logic
-            }
-            else {
-                //normal product logic
-            }
-        };
-        this.setWishlistID = function (newID) {
-            _this.wishlistTemplateID = newID;
-        };
-        this.setWishlistName = function (newName) {
-            _this.wishlistTemplateName = newName;
-        };
-    }
-    return MonatProductCardController;
-}());
-exports.MonatProductCardController = MonatProductCardController;
-var MonatProductCard = /** @class */ (function () {
-    function MonatProductCard(monatFrontendBasePath) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.restrict = 'EA';
-        this.scope = true;
-        this.bindToController = {
-            product: '=',
-            type: '@',
-            index: '@',
-            allProducts: '<?',
-        };
-        this.controller = MonatProductCardController;
-        this.controllerAs = "monatProductCard";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
-    }
-    MonatProductCard.Factory = function () {
-        var _this = this;
-        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
-        directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    };
-    return MonatProductCard;
-}());
-exports.MonatProductCard = MonatProductCard;
 
 
 /***/ })

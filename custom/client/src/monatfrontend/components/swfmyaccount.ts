@@ -141,6 +141,13 @@ class swfAccountController {
            this.isNewAddress = false;
        }
     }
+    
+    public setPrimaryAddress = (addressID) => {
+        this.loading = true;
+        return this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
+            this.loading = false;
+        });
+    }
 }
 
 class SWFAccount  {
