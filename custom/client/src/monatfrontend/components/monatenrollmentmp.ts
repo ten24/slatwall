@@ -1,4 +1,4 @@
-class VIPController {
+class EnrollmentMPController {
     public Account_CreateAccount;
 
     // @ngInject
@@ -9,8 +9,9 @@ class VIPController {
     
 }
 
-class MonatEnrollmentVIP {
-
+class MonatEnrollmentMP {
+    
+    
     public require          = {
         ngModel:'?^ngModel'    
     };
@@ -22,19 +23,19 @@ class MonatEnrollmentVIP {
     */
     public bindToController = {
     };
-    public controller       = VIPController;
-    public controllerAs     = "vipController";
+    public controller       = EnrollmentMPController;
+    public controllerAs     = "enrollmentMp";
     // @ngInject
     constructor() {
     }
 
     public static Factory(){
-        var directive = () => new MonatEnrollmentVIP();
+        var directive = () => new MonatEnrollmentMP();
         directive.$inject = [];
         return directive;
     }
     
 }
 export{
-    MonatEnrollmentVIP
+    MonatEnrollmentMP
 }
