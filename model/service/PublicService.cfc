@@ -1740,11 +1740,11 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
 
-	public void function getWishlistItems(required any data){
+		public void function getWishlistItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.orderTemplateTypeID" default=""; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
 		
@@ -1765,16 +1765,23 @@ component  accessors="true" output="false"
 			    var wishlistItem = wishlistsItems.get(0);
 			    
 			    var wishListItemStruct={
-			      "vipPrice"   :   wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "MPPrice"   :   wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"   :   wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"   :   wishListItem.getSkuAdjustedPricing().retailPrice?:""
+			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
+			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
+			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
+			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
+			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
+			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
+			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
+			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
+			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
+			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()        
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 		    }
 		}catch (e){
-
+            throw(e)
 		}finally{
 			if (scrollableSession.isOpen()){
 				scrollableSession.close();
@@ -2001,14 +2008,15 @@ component  accessors="true" output="false"
     }
     
     public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID});
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
     
     public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow = arguments.data.pageRecordsShow });
+        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
 
+    
 }
