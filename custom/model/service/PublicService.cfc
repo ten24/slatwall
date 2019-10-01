@@ -33,4 +33,61 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //add item to template
         
     }
+    
+    public void function updatePrimaryPaymentMethod(required any data){
+        param name="data.paymentMethodID" default="";
+
+        var account = getHibachiScope().getAccount();
+        var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
+
+        account.setPrimaryPaymentMethod(paymentMethod);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+    }
+    
+    public any function updateProfile( required struct data ) {
+        var account = getHibachiScope().getAccount();
+        if (structKeyExists(data, "firstName") && len(data.firstName)){
+            account.setFirstName(data.firstName);
+        }
+        
+        if (structKeyExists(data, "lastName") && len(data.lastName)){
+            account.setLastName(data.lastName);
+        }
+        
+        if (structKeyExists(data, "userName") && len(data.userName)){
+            account.setUserName(data.userName);
+        }
+        
+        if (structKeyExists(data, "phoneNumber") && len(data.phoneNumber)){
+            var primaryPhone = account.getPrimaryPhoneNumber();
+            primaryPhone.setPhoneNumber( data.phoneNumber );
+        }
+        
+        if (structKeyExists(data, "emailAddress") && len(data.emailAddress)){
+            var primaryEmail = account.getPrimaryEmailAddress();
+            primaryEmail.setEmailAddress( data.emailAddress );
+        }
+        
+        if (structKeyExists(data, "allowUplineEmails") && len(data.allowUplineEmails)){
+            account.setAllowUplineEmails(data.allowUplineEmails);
+        }
+        
+        getService("AccountService").saveAccount(account);
+        
+        getHibachiScope().addActionResult( "public:order.updateProfile", account.hasErrors() );
+    }
+    
+    public void function updatePrimaryAccountShippingAddress(required any data){
+        param name="data.accountAddressID" default="";
+        
+        var account = getHibachiScope().getAccount();
+        var shippingAddress = getAccountService().getAccountAddress(arguments.data.accountAddressID);
+        
+        account.setPrimaryShippingAddress(shippingAddress);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
+        
+
+    }
 }
