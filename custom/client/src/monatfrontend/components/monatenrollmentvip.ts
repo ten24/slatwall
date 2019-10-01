@@ -39,7 +39,7 @@ class VIPController {
             '/?slatAction=monat:public.getmarketpartners'
 			+ '&search='+ this.mpSearchText 
 			+ '&currentPage='+ this.currentMpPage 
-			+ '&accountTypeCode=D'
+			+ '&accountSearchType=VIP'
 			+ '&countryCode=' + this.currentCountryCode
 			+ '&stateCode=' + this.currentStateCode
 		);
