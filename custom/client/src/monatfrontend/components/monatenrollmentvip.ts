@@ -6,7 +6,6 @@ class VIPController {
     public currentStateCode:string = '';
     public mpSearchText:string = '';
     public currentMpPage:number = 1;
-    public test:number = 123;
 
     // @ngInject
     constructor(
