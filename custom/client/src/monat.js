@@ -59440,6 +59440,7 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 component: 'monatFlexshipConfirm',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
+                    redirectUrl: '/my-account/flexships/'
                 }
             }).then(function (modal) {
                 //it's not a bootstrap modal
@@ -59523,7 +59524,7 @@ var MonatFlexshipConfirmController = /** @class */ (function () {
                 .updateOrderTemplateFrequency(_this.orderTemplate.orderTemplateID, _this.selectedFrequencyTermID, _this.selectedFrequencyDate)
                 .then(function (data) {
                 if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
-                    _this.$window.location.href = '/my-account/flexships/';
+                    _this.$window.location.href = _this.redirectUrl;
                 }
                 else {
                     throw (data);
@@ -59545,7 +59546,8 @@ var MonatFlexshipConfirm = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.scope = {};
         this.bindToController = {
-            orderTemplate: '<?',
+            orderTemplate: '<',
+            redirectUrl: '@',
             close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipConfirmController;
