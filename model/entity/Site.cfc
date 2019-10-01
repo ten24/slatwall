@@ -220,7 +220,8 @@ property name="siteAvailableLocales" persistent="false";
 	// ================== START: Deprecated Methods ========================
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
-	public string function getSiteAvailableLocales() {
+
+public string function getSiteAvailableLocales() {
 		if ( ! structKeyExists( variables, 'siteAvailableLocales' ) ) {
 			variables.siteAvailableLocales = getHibachiScope().setting('siteAvailableLocales');
 		}
@@ -234,6 +235,5 @@ property name="siteAvailableLocales" persistent="false";
 	public any function getDefaultCollectionProperties(){
 		var includesList = this.getDefaultCollectionPropertiesList();
 		return super.getDefaultCollectionProperties( includesList, '' );
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }

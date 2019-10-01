@@ -60469,8 +60469,8 @@ var swfAccountController = /** @class */ (function () {
         this.pageTracker = 1;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
-            if (_this.accountData.createdDateTime) {
-                var accountCreatedYear = Date.parse(_this.accountData.createdDateTime).getFullYear();
+            if (_this.accountData.ownerAccount.createdDateTime) {
+                var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
                 _this.accountAge = _this.currentYear - accountCreatedYear;
             }
         };
