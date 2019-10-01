@@ -6,7 +6,7 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
         
-        if(isNull(arguments.data.orderTemplateName)) {
+        if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
 		}
         
