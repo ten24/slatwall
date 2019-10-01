@@ -60524,11 +60524,10 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, next) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
             if (currentPage === void 0) { currentPage = 0; }
-            if (next === void 0) { next = false; }
             _this.loading = true;
             var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {

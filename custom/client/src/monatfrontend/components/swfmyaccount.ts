@@ -112,7 +112,7 @@ class swfAccountController {
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 0, next = false) => {
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 0) => {
         this.loading = true;
         
         const accountID = this.accountData.accountID
