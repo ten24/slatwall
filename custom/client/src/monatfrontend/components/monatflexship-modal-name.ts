@@ -3,7 +3,6 @@ class MonatFlexshipNameModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
 
-	
 	public orderTemplateName;
 
     //@ngInject
@@ -56,7 +55,7 @@ class MonatFlexshipNameModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    close:'=' //injected by angularModalService;
+	    close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipNameModalController;
 	public controllerAs="monatFlexshipNameModal";

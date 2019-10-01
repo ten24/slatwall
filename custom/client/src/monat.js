@@ -59597,6 +59597,9 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
             _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
             _this.translations['flexshipCancelOtherReasonNotes'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
         //TODO frontend validation
@@ -59606,6 +59609,7 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
             }
             else {
                 console.error(data);
@@ -59629,7 +59633,8 @@ var MonatFlexshipCancelModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            cancellationReasonTypeOptions: '<'
+            cancellationReasonTypeOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipCancelModalController;
         this.controllerAs = "monatFlexshipCancelModal";
@@ -59709,6 +59714,9 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
                 //TODO disable the form
             }
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
         //TODO frontend validation
@@ -59740,6 +59748,7 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
             }
             else {
                 console.error(data);
@@ -59762,7 +59771,8 @@ var MonatFlexshipChangeOrSkipOrderModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            scheduleDateChangeReasonTypeOptions: '<'
+            scheduleDateChangeReasonTypeOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipChangeOrSkipOrderModalController;
         this.controllerAs = "monatFlexshipChangeOrSkipOrderModal";
@@ -59843,7 +59853,7 @@ var MonatFlexshipNameModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            close: '=' //injected by angularModalService;
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipNameModalController;
         this.controllerAs = "monatFlexshipNameModal";
@@ -59932,6 +59942,9 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
             _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
             _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
@@ -59975,6 +59988,7 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
                 _this.setSelectedBillingAccountAddressID(_this.orderTemplate.billingAccountAddress_accountAddressID);
                 _this.setSelectedAccountPaymentMethodID(_this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
                 _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                _this.closeModal();
             }
             else {
                 //TODO handle errors
@@ -60001,7 +60015,8 @@ var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
             accountAddresses: '<',
             orderTemplate: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipPaymentMethodModalController;
         this.controllerAs = "monatFlexshipPaymentMethodModal";
@@ -60075,6 +60090,9 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
             _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
             _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipShippingMethodModalController.prototype.setSelectedAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
@@ -60107,6 +60125,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
                 }
                 _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
                 _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
+                _this.closeModal();
             }
             else {
                 console.error(response); //
@@ -60130,7 +60149,8 @@ var MonatFlexshipShippingMethodModal = /** @class */ (function () {
             orderTemplate: '<',
             accountAddresses: '<',
             shippingMethodOptions: '<',
-            stateCodeOptions: '<'
+            stateCodeOptions: '<',
+            close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipShippingMethodModalController;
         this.controllerAs = "monatFlexshipShippingMethodModal";
@@ -60537,6 +60557,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     orderTemplate: _this.orderTemplate,
                     cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
                 },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
@@ -60553,7 +60574,8 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
-                }
+                },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
@@ -60575,6 +60597,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     expirationMonthOptions: _this.expirationMonthOptions,
                     expirationYearOptions: _this.expirationYearOptions
                 },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
@@ -60594,6 +60617,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     shippingMethodOptions: _this.shippingMethodOptions,
                     stateCodeOptions: _this.stateCodeOptions
                 },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
