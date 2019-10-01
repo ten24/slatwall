@@ -59809,6 +59809,9 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
             //TODO make translations for success/failure alert messages
             _this.translations['flexshipName'] = _this.rbkeyService.rbKey('frontend.nameFlexshipModal.flexshipName');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
         //TODO frontend validation
@@ -59818,6 +59821,7 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
             }
             else {
                 throw (data);
@@ -59839,6 +59843,7 @@ var MonatFlexshipNameModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
+            close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipNameModalController;
         this.controllerAs = "monatFlexshipNameModal";
@@ -60331,6 +60336,7 @@ var MonatFlexshipCardController = /** @class */ (function () {
                 bindings: {
                     orderTemplate: _this.orderTemplate
                 },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();

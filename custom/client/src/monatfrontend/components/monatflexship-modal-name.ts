@@ -1,6 +1,9 @@
 
 class MonatFlexshipNameModalController {
 	public orderTemplate; 
+	public close; // injected from angularModalService
+
+	
 	public orderTemplateName;
 
     //@ngInject
@@ -30,6 +33,7 @@ class MonatFlexshipNameModalController {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                this.closeModal();
         	} else {
         		throw(data);
         	}
@@ -38,6 +42,10 @@ class MonatFlexshipNameModalController {
             // TODO: show alert / handle error
         });
     }
+    
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
 }
 
 class MonatFlexshipNameModal {
@@ -48,6 +56,7 @@ class MonatFlexshipNameModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
+	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipNameModalController;
 	public controllerAs="monatFlexshipNameModal";

@@ -36,7 +36,7 @@ class MonatFlexshipConfirmController {
     
     public cancel = () => {
      	this.close(null); // close, but give 100ms to animate
-     };
+    };
     
     public translations = {};
     private makeTranslations = () => {
