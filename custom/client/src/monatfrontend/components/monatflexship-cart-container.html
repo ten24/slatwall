@@ -9,11 +9,11 @@
 		</div>
 		<span class="steps" ng-bind-html="monatFlexshipCartContainer.translations.currentStepOfTtotalSteps"></span>
 		<div class="go-to-cart">
-			<a href="#"
-				ng-if="monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
+			<button class="btn bg-primary btn-block"
+				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()">
 					<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
-			</a>
+			</button>
 		</div>
 	</div>
 	
@@ -55,11 +55,11 @@
 		</div>
 		<!--TODO logic-->
 		<p class="more"><a href="#">+ 4 More Items ``</a></p>
-		<a href="#" class="btn bg-primary btn-block" 
-			ng-if="monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
+		<button class="btn bg-primary btn-block" 
+			ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 			ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()">
 			<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
-		</a>
+		</button>
 	</div>
 </div>
 	
