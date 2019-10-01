@@ -2133,7 +2133,7 @@ component  accessors="true" output="false"
      *  data.optionsList = "frequencyTermOPtions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
     */ 
     public void function getOptions(required any data){
-        param name="data.optionsList" default="" pattern="^[\w,]+$"; //option name
+        param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
         
         for(var optionName in arguments.data.optionsList) {
             if(right(optionName,7) == 'Options'){
