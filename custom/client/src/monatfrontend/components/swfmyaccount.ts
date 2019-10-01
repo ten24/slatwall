@@ -74,7 +74,7 @@ class swfAccountController {
         });
     }
     
-    public getOrdersOnAccount = ( pageRecordsShow = 1, pageNumber = 1, direction:any = false) => {
+    public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
         
         this.loading = true;
         const accountID = this.accountData.accountID;
@@ -100,11 +100,10 @@ class swfAccountController {
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             const holdingArray = [];
             const pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
-            console.log(pages)
-            
+ 
+
             for(var i = 0; i <= pages -1; i++){
                 holdingArray.push(i);
-                console.log(i)
             }
             
             this.totalPages = holdingArray;

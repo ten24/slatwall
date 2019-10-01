@@ -60490,7 +60490,7 @@ var swfAccountController = /** @class */ (function () {
             });
         };
         this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
-            if (pageRecordsShow === void 0) { pageRecordsShow = 1; }
+            if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
             if (pageNumber === void 0) { pageNumber = 1; }
             if (direction === void 0) { direction = false; }
             _this.loading = true;
@@ -60516,10 +60516,8 @@ var swfAccountController = /** @class */ (function () {
                 _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
                 var holdingArray = [];
                 var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
-                console.log(pages);
                 for (var i = 0; i <= pages - 1; i++) {
                     holdingArray.push(i);
-                    console.log(i);
                 }
                 _this.totalPages = holdingArray;
                 _this.pageTracker = pageNumber;
