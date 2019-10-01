@@ -386,8 +386,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			,accountAddresses.address.emailAddress,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,
 			accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,
 			accountAddresses.address.company,accountAddresses.accountAddressName,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,
-			accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,
-			primaryAddress.address.countrycode,primaryAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.shippingAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag","[[:space:]]","","all");
+			accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryShippingAddress.address.streetAddress,primaryShippingAddress.address.street2Address,primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,
+			primaryShippingAddress.address.countrycode,primaryShippingAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag","[[:space:]]","","all");
 	}
 	
 	public any function getAccountData(string propertyList) {
@@ -449,8 +449,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
 				orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
 				orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
-				orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
-				orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.stateCode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
+				orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryShippingAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryShippingAddress.address.street2Address,
+				orderFulfillments.pickupLocation.primaryShippingAddress.address.city, orderFulfillments.pickupLocation.primaryShippingAddress.address.stateCode, orderFulfillments.pickupLocation.primaryShippingAddress.address.postalCode,
 			";	
 		}
 		//orderPaymentData

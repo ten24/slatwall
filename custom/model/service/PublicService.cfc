@@ -81,11 +81,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function updatePrimaryAccountShippingAddress(required any data){
         param name="data.accountAddressID" default="";
         
-        var accountAddressId = arguments.data.accountAddressID;
         var account = getHibachiScope().getAccount();
-        var shippingMethod = getAccountService().getAccountAddress(accountAddressId);
+        var shippingAddress = getAccountService().getAccountAddress(arguments.data.accountAddressID);
         
-        account.setPrimaryShippingAddress(shippingMethod);
+        account.setPrimaryShippingAddress(shippingAddress);
         account = getAccountService().saveAccount(account);
         getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
         
