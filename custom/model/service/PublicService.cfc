@@ -96,6 +96,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
     
 
+    public void function updatePrimaryPaymentMethod(required any data){
+        param name="data.paymentMethodID" default="";
+
+        var account = getHibachiScope().getAccount();
+        var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
+
+        account.setPrimaryPaymentMethod(paymentMethod);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+    }
+    
     public any function updateProfile( required struct data ) {
         var account = getHibachiScope().getAccount();
         if (structKeyExists(data, "firstName") && len(data.firstName)){
@@ -127,5 +138,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getService("AccountService").saveAccount(account);
         
         getHibachiScope().addActionResult( "public:order.updateProfile", account.hasErrors() );
+    }
+    
+    public void function updatePrimaryAccountShippingAddress(required any data){
+        param name="data.accountAddressID" default="";
+        
+        var account = getHibachiScope().getAccount();
+        var shippingAddress = getAccountService().getAccountAddress(arguments.data.accountAddressID);
+        
+        account.setPrimaryShippingAddress(shippingAddress);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
+        
+
     }
 }
