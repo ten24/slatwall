@@ -60458,6 +60458,7 @@ var swfAccountController = /** @class */ (function () {
         this.userIsLoggedIn = false;
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
+        this.pageTracker = 1;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {
@@ -60488,20 +60489,50 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.getOrdersOnAccount = function (accountID) {
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+        this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
+            if (pageRecordsShow === void 0) { pageRecordsShow = 1; }
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': 2 }).then(function (result) {
-                _this.ordersOnAccount = result.ordersOnAccount;
+            var accountID = _this.accountData.accountID;
+            if (direction === 'prev') {
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                if (_this.pageTracker >= _this.totalPages.length) {
+                    pageNumber = _this.totalPages.length;
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
+                _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
+                var holdingArray = [];
+                var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
+                console.log(pages);
+                for (var i = 0; i <= pages - 1; i++) {
+                    holdingArray.push(i);
+                    console.log(i);
+                }
+                _this.totalPages = holdingArray;
+                _this.pageTracker = pageNumber;
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, accountID) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, next) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
-            if (currentPage === void 0) { currentPage = 1; }
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+            if (currentPage === void 0) { currentPage = 0; }
+            if (next === void 0) { next = false; }
             _this.loading = true;
+            var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
@@ -60538,7 +60569,7 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setPrimaryPaymentMethod = function (methodID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("setPrimaryPaymentMethod", { accountPaymentMethodID: methodID }).then(function (result) {
+            return _this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
                 _this.loading = false;
             });
         };

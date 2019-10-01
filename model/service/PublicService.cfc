@@ -2008,7 +2008,7 @@ component  accessors="true" output="false"
     }
     
     public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow });
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
     
@@ -2017,15 +2017,6 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
-    public void function setPrimaryPaymentMethod() {
-        param name="data.accountPaymentMethodID" default="";
-        if(!isNull(data.accountPaymentMethodID)){
-            var accountPaymentMethod = getAccountService().getAccountPaymentMethod( data.accountPaymentMethodID );
-            var account = getHibachiSCope().getAccount();
-            account.setPrimaryPaymentMethod(accountPaymentMethod);   
-            
-        }
 
-    }
     
 }

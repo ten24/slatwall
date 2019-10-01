@@ -21,6 +21,8 @@ class swfAccountController {
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
+    public totalPages:Array<number>;
+    public pageTracker:number = 1;
     
     // @ngInject
     constructor(
@@ -72,17 +74,49 @@ class swfAccountController {
         });
     }
     
-    public getOrdersOnAccount = (accountID = this.accountData.accountID) => {
-        this.loading = true;
+    public getOrdersOnAccount = ( pageRecordsShow = 1, pageNumber = 1, direction:any = false) => {
         
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': 2}).then(result=>{
-            this.ordersOnAccount = result.ordersOnAccount;
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        if(direction === 'prev'){
+            if(this.pageTracker === 1){
+                return pageNumber;
+            }else{
+                pageNumber = this.pageTracker -1;
+            }
+        }else if(direction === 'next'){
+            if(this.pageTracker >= this.totalPages.length){
+                pageNumber = this.totalPages.length;
+                return pageNumber;
+            }else{
+                pageNumber = this.pageTracker +1;
+            }
+        }
+
+        
+        
+        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
+            
+            this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
+            const holdingArray = [];
+            const pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
+            console.log(pages)
+            
+            for(var i = 0; i <= pages -1; i++){
+                holdingArray.push(i);
+                console.log(i)
+            }
+            
+            this.totalPages = holdingArray;
+            this.pageTracker = pageNumber;
             this.loading = false;
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1, accountID = this.accountData.accountID) => {
+    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 0, next = false) => {
         this.loading = true;
+        
+        const accountID = this.accountData.accountID
         return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
@@ -127,7 +161,7 @@ class swfAccountController {
     
     public setPrimaryPaymentMethod = (methodID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("setPrimaryPaymentMethod",{accountPaymentMethodID: methodID} ).then(result=>{
+        return this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
             this.loading = false;
         });
     }

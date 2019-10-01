@@ -66,7 +66,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return ordersList.getPageRecords();
+		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
 
