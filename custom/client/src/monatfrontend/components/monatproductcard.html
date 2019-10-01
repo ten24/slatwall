@@ -6,9 +6,15 @@
  	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist'" type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
-        <button ng-if="monatProductCard.type=='wishlist'" ng-click="monatProductCard.deleteItem(monatProductCard.index)"  class="close"><i class="fas fa-times"></i></button>
+        <button 
+            ng-if="monatProductCard.type=='wishlist'" 
+            ng-click="slatwall.currentProductCardIndex = monatProductCard.index"
+            data-toggle="modal" 
+            data-target="#delete-item-modal"
+            class="close"
+        ><i class="fas fa-times"></i></button>
         
-       <!-- Product Image Block -->
+        <!-- Product Image Block -->
         <figure class="quick-view">
             <div class="overlay">
                 <div class="overlay-inner">
@@ -95,4 +101,38 @@
             </div>
         </div>
     </div>            
+</div>
+
+<!--- Delete Wishlist Item Modal ---> 
+<div class="modal fade" id="delete-item-modal" tabindex="-1" role="dialog" aria-hidden="true" ng-if="0 == monatProductCard.index">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row mt-2 mb-4">
+					<div class="col-12">
+						<p class="text-center h6" ng-bind="rbKey('frontend.wishlist.areYouSureProduct')"></p>
+					</div>
+				</div>
+				<div class="row short-width">
+					<div class="col-md-6">
+						<button 
+                            data-dismiss="modal" 
+                            aria-label="No" 
+                            class="btn bg-primary w-100 mb-3" 
+                            ng-bind="rbKey('define.no')"
+				        ></button>
+					</div>
+					<div class="col-md-6">
+						<input id="orderTemplateID" type="hidden" name="orderTemplateID"  class="form-control success" ng-model="swfSelect.selectedOption.value">
+						<button 
+                            class="btn bg-primary w-100" 
+                            data-dismiss="modal" 
+                            ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
+                            ng-bind="rbKey('define.yes')"
+						></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
