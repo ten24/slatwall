@@ -27,6 +27,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplateItem');
     this.publicMethods=ListAppend(this.publicMethods, 'removeOrderTemplateItem');
     
+    //get-xxx-options
+    this.publicMethods=ListAppend(this.publicMethods, 'getOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyTermOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyDateOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getShippingMethodOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getCancellationReasonTypeOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getScheduleDateChangeReasonTypeOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getExpirationMonthOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getExpirationYearOptions');
+
+    
+    
     
     public void function init( required any fw ) {
         setFW( arguments.fw );
