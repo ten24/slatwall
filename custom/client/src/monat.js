@@ -59351,6 +59351,9 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
             _this.translations['flexshipCancelReason'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelReason');
             _this.translations['flexshipCancelOtherReasonNotes'] = _this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipCancelModalController.prototype.cancelFlexship = function () {
         //TODO frontend validation
@@ -59360,6 +59363,7 @@ var MonatFlexshipCancelModalController = /** @class */ (function () {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
             }
             else {
                 console.error(data);
@@ -59383,7 +59387,8 @@ var MonatFlexshipCancelModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            cancellationReasonTypeOptions: '<'
+            cancellationReasonTypeOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipCancelModalController;
         this.controllerAs = "monatFlexshipCancelModal";
@@ -59463,6 +59468,9 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
                 //TODO disable the form
             }
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
         //TODO frontend validation
@@ -59494,6 +59502,7 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
             }
             else {
                 console.error(data);
@@ -59516,7 +59525,8 @@ var MonatFlexshipChangeOrSkipOrderModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            scheduleDateChangeReasonTypeOptions: '<'
+            scheduleDateChangeReasonTypeOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipChangeOrSkipOrderModalController;
         this.controllerAs = "monatFlexshipChangeOrSkipOrderModal";
@@ -59605,6 +59615,9 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
             _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
             _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
@@ -59648,6 +59661,7 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
                 _this.setSelectedBillingAccountAddressID(_this.orderTemplate.billingAccountAddress_accountAddressID);
                 _this.setSelectedAccountPaymentMethodID(_this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
                 _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+                _this.closeModal();
             }
             else {
                 //TODO handle errors
@@ -59674,7 +59688,8 @@ var MonatFlexshipPaymentMethodModal = /** @class */ (function () {
             accountAddresses: '<',
             orderTemplate: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
+            close: '=' //injected by angularModalService
         };
         this.controller = MonatFlexshipPaymentMethodModalController;
         this.controllerAs = "monatFlexshipPaymentMethodModal";
@@ -59748,6 +59763,9 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
             _this.translations['newAddress_city'] = _this.rbkeyService.rbKey('frontend.newAddress.city');
             _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
     }
     MonatFlexshipShippingMethodModalController.prototype.setSelectedAccountAddressID = function (accountAddressID) {
         if (accountAddressID === void 0) { accountAddressID = 'new'; }
@@ -59780,6 +59798,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
                 }
                 _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
                 _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
+                _this.closeModal();
             }
             else {
                 console.error(response); //
@@ -59803,7 +59822,8 @@ var MonatFlexshipShippingMethodModal = /** @class */ (function () {
             orderTemplate: '<',
             accountAddresses: '<',
             shippingMethodOptions: '<',
-            stateCodeOptions: '<'
+            stateCodeOptions: '<',
+            close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipShippingMethodModalController;
         this.controllerAs = "monatFlexshipShippingMethodModal";
@@ -59988,9 +60008,10 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipCardController(observerService) {
+    function MonatFlexshipCardController(observerService, ModalService) {
         var _this = this;
         this.observerService = observerService;
+        this.ModalService = ModalService;
         this.$onInit = function () {
             _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
         };
@@ -59999,6 +60020,23 @@ var MonatFlexshipCardController = /** @class */ (function () {
         };
         this.updateOrderTemplate = function (orderTemplate) {
             _this.orderTemplate = orderTemplate;
+        };
+        //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+        this.showEditFlexshipNameModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipNameModal',
+                bindings: {
+                    orderTemplate: _this.orderTemplate
+                },
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
+            }).then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
+                console.error("unable to open model :", error);
+            });
         };
     }
     return MonatFlexshipCardController;
@@ -60175,10 +60213,11 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipMenuController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipMenuController(orderTemplateService, observerService, ModalService) {
+    function MonatFlexshipMenuController(orderTemplateService, observerService, $window, ModalService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
+        this.$window = $window;
         this.ModalService = ModalService;
         this.$onInit = function () {
         };
@@ -60191,14 +60230,12 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     orderTemplate: _this.orderTemplate,
                     cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
                 },
-                preClose: function (modal) { modal.element.modal('hide'); }
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
-                modal.close.then(function (result) {
-                    //....
-                });
-            }, function (error) {
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
                 console.error("unable to open model :", error);
             });
         };
@@ -60211,14 +60248,12 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     orderTemplate: _this.orderTemplate,
                     scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
                 },
-                preClose: function (modal) { modal.element.modal('hide'); }
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
-                modal.close.then(function (result) {
-                    //....
-                });
-            }, function (error) {
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
                 console.error("unable to open model :", error);
             });
         };
@@ -60235,14 +60270,12 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     expirationMonthOptions: _this.expirationMonthOptions,
                     expirationYearOptions: _this.expirationYearOptions
                 },
-                preClose: function (modal) { modal.element.modal('hide'); }
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
-                modal.close.then(function (result) {
-                    //....
-                });
-            }, function (error) {
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
                 console.error("unable to open model :", error);
             });
         };
@@ -60257,25 +60290,21 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                     shippingMethodOptions: _this.shippingMethodOptions,
                     stateCodeOptions: _this.stateCodeOptions
                 },
-                preClose: function (modal) { modal.element.modal('hide'); }
+                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
             }).then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
-                modal.close.then(function (result) {
-                    //....
-                });
-            }, function (error) {
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
                 console.error("unable to open model :", error);
             });
         };
     }
     MonatFlexshipMenuController.prototype.activateFlexship = function () {
         var _this = this;
-        var payload = {};
-        payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-        payload = this.orderTemplateService.getFlattenObject(payload);
         // make api request
-        this.orderTemplateService.activate(payload).then(function (data) {
+        this.orderTemplateService.activateOrderTemplate(this.orderTemplate.orderTemplateID)
+            .then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
@@ -60284,8 +60313,24 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 console.error(data);
             }
             // TODO: show alert
-        }, function (reason) {
+        }).catch(function (reason) {
             throw (reason);
+            // TODO: show alert
+        });
+    };
+    MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
+        var _this = this;
+        // make api request
+        this.orderTemplateService.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
+            .then(function (data) {
+            if (data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+                _this.$window.location.href = '/shop';
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error("setAsCurrentFlexship :", error);
             // TODO: show alert
         });
     };
@@ -60961,6 +61006,9 @@ var monatflexship_modal_paymentmethod_1 = __webpack_require__(609);
 var monatflexship_modal_shippingmethod_1 = __webpack_require__(610);
 var monatflexship_modal_changeorskiporder_1 = __webpack_require__(608);
 var monatflexship_modal_cancel_1 = __webpack_require__(607);
+var monatflexship_modal_name_1 = __webpack_require__(855);
+var monatflexship_cart_container_1 = __webpack_require__(853);
+var monatflexship_confirm_1 = __webpack_require__(854);
 var monatflexshiplisting_1 = __webpack_require__(616);
 var monatflexshipmenu_1 = __webpack_require__(617);
 var monatenrollment_1 = __webpack_require__(605);
@@ -60989,6 +61037,9 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipShippingMethodModal', monatflexship_modal_shippingmethod_1.MonatFlexshipShippingMethodModal.Factory())
     .directive('monatFlexshipChangeOrSkipOrderModal', monatflexship_modal_changeorskiporder_1.MonatFlexshipChangeOrSkipOrderModal.Factory())
     .directive('monatFlexshipCancelModal', monatflexship_modal_cancel_1.MonatFlexshipCancelModal.Factory())
+    .directive('monatFlexshipNameModal', monatflexship_modal_name_1.MonatFlexshipNameModal.Factory())
+    .directive('monatFlexshipCartContainer', monatflexship_cart_container_1.MonatFlexshipCartContainer.Factory())
+    .directive('monatFlexshipConfirm', monatflexship_confirm_1.MonatFlexshipConfirm.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
@@ -61001,7 +61052,7 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
     .config(["ModalServiceProvider", function (ModalServiceProvider) {
         // to set a default close delay on modals
-        ModalServiceProvider.configureOptions({ closeDelay: 500 });
+        ModalServiceProvider.configureOptions({ closeDelay: 100 });
     }]);
 exports.monatfrontendmodule = monatfrontendmodule;
 
@@ -61012,12 +61063,38 @@ exports.monatfrontendmodule = monatfrontendmodule;
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatService = /** @class */ (function () {
     //@ngInject
-    function MonatService(publicService, $q) {
+    function MonatService(publicService, $q, requestService) {
         this.publicService = publicService;
         this.$q = $q;
+        this.requestService = requestService;
+        this.cachedOptions = {
+            frequencyTermOptions: null,
+        };
     }
     MonatService.prototype.getCart = function (refresh) {
         var _this = this;
@@ -61031,6 +61108,66 @@ var MonatService = /** @class */ (function () {
         }
         else {
             deferred.resolve(this.cart);
+        }
+        return deferred.promise;
+    };
+    /**
+     * options = {optionName:refresh, ---> option2:true, o3:false}
+    */
+    MonatService.prototype.getOptions = function (options, refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
+        if (refresh || (optionsToFetch && optionsToFetch.length)) {
+            this.requestService
+                .newPublicRequest('?slatAction=api:public.getOptions', { 'optionsList': optionsToFetch })
+                .promise.then(function (data) {
+                var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
+                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
+                _this.sendOptionsBack(options, deferred);
+                //TODO handle errors
+            });
+        }
+        else {
+            this.sendOptionsBack(options, deferred);
+        }
+        return deferred.promise;
+    };
+    MonatService.prototype.makeListOfOptionsToFetch = function (options, refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        return Object.keys(options)
+            .filter(function (key) { return refresh || !!options[key] || !(_this.cachedOptions[key]); })
+            .reduce(function (previous, current) {
+            if (current) {
+                previous = previous.length ? previous + "," + current : current;
+            }
+            return previous;
+        }, "");
+    };
+    MonatService.prototype.sendOptionsBack = function (options, deferred) {
+        var _this = this;
+        var res = Object.keys(options).reduce(function (result, key) {
+            var _a;
+            return Object.assign(result, (_a = {}, _a[key] = _this.cachedOptions[key], _a));
+        }, {});
+        deferred.resolve(res);
+    };
+    MonatService.prototype.getFrequencyTermOptions = function (refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        if (refresh || !this.cachedOptions.frequencyTermOptions) {
+            this.requestService
+                .newPublicRequest('?slatAction=api:public.getFrequencyTermOptions')
+                .promise.then(function (data) {
+                _this.cachedOptions.frequencyTermOptions = data.frequencyTermOptions;
+                deferred.resolve(_this.cachedOptions.frequencyTermOptions);
+            });
+        }
+        else {
+            deferred.resolve(this.cachedOptions.frequencyTermOptions);
         }
         return deferred.promise;
     };
@@ -61054,7 +61191,7 @@ var OrderTemplateService = /** @class */ (function () {
         this.$hibachi = $hibachi;
         this.$rootScope = $rootScope;
         /**
-         * This function is being used to fetch flexShips and wishLists
+         * This function is being used to fetch flexships and wishLists
          *
          *
         */
@@ -61106,6 +61243,14 @@ var OrderTemplateService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
                 .promise;
         };
+        this.setAsCurrentFlexship = function (orderTemplateID) {
+            var payload = {
+                'orderTemplateID': orderTemplateID
+            };
+            return _this.requestService
+                .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', payload)
+                .promise;
+        };
         /**
          * orderTemplateID:string,
          * typeID:string,  => OrderTEmplateCancellationReasonTypeID
@@ -61123,14 +61268,36 @@ var OrderTemplateService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.cancelOrderTemplate', payload)
                 .promise;
         };
+        /**
+         *
+           'orderTemplateID',
+           'orderTemplateName'
+         *
+        */
+        this.editOrderTemplate = function (orderTemplateID, orderTemplateName) {
+            var payload = {
+                'orderTemplateID': orderTemplateID,
+                'orderTemplateName': orderTemplateName
+            };
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.editOrderTemplate', payload)
+                .promise;
+        };
         this.updateOrderTemplateSchedule = function (data) {
             return _this.requestService
                 .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                 .promise;
         };
-        this.updateOrderTemplateFrequency = function (data) {
+        this.updateOrderTemplateFrequency = function (orderTemplateID, frequencyTermID, scheduleOrderDayOfTheMonth) {
+            var payload = {
+                'orderTemplateID': orderTemplateID,
+                'frequencyTerm.value': frequencyTermID
+            };
+            if (scheduleOrderDayOfTheMonth) {
+                payload['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
+            }
             return _this.requestService
-                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+                .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', payload)
                 .promise;
         };
         this.getWishlistItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
@@ -61146,18 +61313,39 @@ var OrderTemplateService = /** @class */ (function () {
             }
             return _this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems', data).promise;
         };
+        /**
+         *
+           'orderTemplateID',
+           'skuID',
+           'quantity'
+         *
+        */
         this.addOrderTemplateItem = function (skuID, orderTemplateID, quantity) {
             if (quantity === void 0) { quantity = 1; }
-            var formDataToPost = {
-                entityID: orderTemplateID,
-                entityName: 'OrderTemplate',
-                context: 'addOrderTemplateItem',
-                skuID: skuID,
-                quantity: quantity
+            var payload = {
+                'orderTemplateID': orderTemplateID,
+                'skuID': skuID,
+                'quantity': quantity
             };
-            var processUrl = _this.$hibachi.buildUrl('api:main.post');
-            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
-            return adminRequest.promise;
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.addOrderTemplateItem', payload)
+                .promise;
+        };
+        /**
+         *
+           'orderTemplateItemID',
+           'quantity'
+         *
+        */
+        this.editOrderTemplateItem = function (orderTemplateItemID, newQuantity) {
+            if (newQuantity === void 0) { newQuantity = 1; }
+            var payload = {
+                'orderTemplateItemID': orderTemplateItemID,
+                'quantity': newQuantity
+            };
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.editOrderTemplateItem', payload)
+                .promise;
         };
         this.addOrderTemplateItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
             if (quantity === void 0) { quantity = 1; }
@@ -61172,7 +61360,17 @@ var OrderTemplateService = /** @class */ (function () {
             return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: orderTemplateItemID });
         };
         /**
-        * for more details https://gist.github.com/penguinboy/762197
+         * orderTemplateItemID
+         *
+        */
+        this.removeOrderTemplateItem = function (orderTemplateItemID) {
+            var payload = { 'orderTemplateItemID': orderTemplateItemID };
+            return _this.requestService
+                .newPublicRequest('?slatAction=api:public.removeOrderTemplateItem', payload)
+                .promise;
+        };
+        /**
+         * for more details https://gist.github.com/penguinboy/762197
         */
         this.getFlattenObject = function (inObject, delimiter) {
             if (delimiter === void 0) { delimiter = '.'; }
@@ -88543,6 +88741,333 @@ var MonatEnrollmentVIPController = /** @class */ (function () {
     return MonatEnrollmentVIPController;
 }());
 exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
+
+
+/***/ }),
+/* 853 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipCartContainerController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipCartContainerController(orderTemplateService, rbkeyService, ModalService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.rbkeyService = rbkeyService;
+        this.ModalService = ModalService;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            if (_this.orderTemplate == null) {
+                _this.fetchOrderTemplate();
+            }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.makeCurrentStepTranslation();
+        };
+        this.makeCurrentStepTranslation = function (currentStep, totalSteps) {
+            if (currentStep === void 0) { currentStep = 1; }
+            if (totalSteps === void 0) { totalSteps = 2; }
+            //TODO BL?
+            var stepsPlaceHolderData = {
+                'currentStep': currentStep,
+                'totalSteps': totalSteps,
+            };
+            _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+        };
+        this.fetchOrderTemplate = function () {
+            _this.orderTemplateService
+                .getOrderTemplateDetails(_this.orderTemplateId)
+                .then(function (data) {
+                if (data.orderTemplate) {
+                    _this.orderTemplate = data.orderTemplate;
+                    _this.orderTemplateItems = _this.orderTemplate.orderTemplateItems;
+                    //TODO handle errors / success
+                }
+                else {
+                    throw (data);
+                }
+            }).catch(function (error) {
+                //TODO deal with the error
+                throw (error);
+            }).finally(function () {
+                //TODO deal with the loader ui
+            });
+        };
+        this.getOrderTemplateItemIndexByID = function (orderTemplateItemID) {
+            return _this.orderTemplateItems.findIndex(function (it) { return it.orderTemplateItemID === orderTemplateItemID; });
+        };
+        this.removeOrderTemplateItem = function (item) {
+            _this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(function (data) {
+                if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems.splice(index, 1);
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
+                }
+                else {
+                    console.log('removeOrderTemplateItem res: ', data);
+                }
+                //TODO handle errors / success
+            }, function (reason) {
+                throw (reason);
+            });
+        };
+        this.increaseOrderTemplateItemQuantity = function (item) {
+            _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(function (data) {
+                if (data.orderTemplateItem) {
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems[index] = data.orderTemplateItem;
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
+                }
+                else {
+                    console.error('increaseOrderTemplateItemQuantity res: ', data);
+                }
+                //TODO handle errors / success
+            }, function (reason) {
+                throw (reason);
+            });
+        };
+        this.decreaseOrderTemplateItemQuantity = function (item) {
+            _this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(function (data) {
+                if (data.orderTemplateItem) {
+                    var index = _this.getOrderTemplateItemIndexByID(item.orderTemplateItemID);
+                    _this.orderTemplateItems[index] = data.orderTemplateItem;
+                    if (data.ordertemplate) {
+                        _this.orderTemplate = data.orderTemplate;
+                    }
+                }
+                else {
+                    console.error('decreaseOrderTemplateItemQuantity res: ', data);
+                }
+                //TODO handle errors / success
+            }, function (reason) {
+                throw (reason);
+            });
+        };
+        this.showFlexshipConfirmModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipConfirm',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                    redirectUrl: '/my-account/flexships/'
+                }
+            }).then(function (modal) {
+                //it's not a bootstrap modal
+                modal.close.then(function (result) { });
+            }).catch(function (error) {
+                console.error("unable to open showFlexshipConfirmModal :", error);
+            });
+        };
+    }
+    return MonatFlexshipCartContainerController;
+}());
+var MonatFlexshipCartContainer = /** @class */ (function () {
+    function MonatFlexshipCartContainer(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplateId: '@',
+            orderTemplate: '<?'
+        };
+        this.controller = MonatFlexshipCartContainerController;
+        this.controllerAs = "monatFlexshipCartContainer";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-cart-container.html";
+        this.restrict = "EA";
+    }
+    MonatFlexshipCartContainer.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipCartContainer(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipCartContainer;
+}());
+exports.MonatFlexshipCartContainer = MonatFlexshipCartContainer;
+
+
+/***/ }),
+/* 854 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipConfirmController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipConfirmController(monatService, orderTemplateService, rbkeyService, $scope, $window) {
+        var _this = this;
+        this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
+        this.rbkeyService = rbkeyService;
+        this.$scope = $scope;
+        this.$window = $window;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.monatService.getOptions({ "frequencyTermOptions": false, "frequencyDateOptions": false })
+                .then(function (data) {
+                _this.frequencyTermOptions = data.frequencyTermOptions;
+                _this.frequencyDateOptions = data.frequencyDateOptions;
+                _this.selectedFrequencyTermID = _this.orderTemplate.frequencyTerm_termID;
+                _this.selectedFrequencyDate = _this.orderTemplate.scheduleOrderDayOfTheMonth;
+            });
+        };
+        this.cancel = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipConfirm.currentStepOfTtotalSteps');
+        };
+        this.confirm = function () {
+            //TODO frontend validation, success/failure alert    
+            _this.orderTemplateService
+                .updateOrderTemplateFrequency(_this.orderTemplate.orderTemplateID, _this.selectedFrequencyTermID, _this.selectedFrequencyDate)
+                .then(function (data) {
+                if (data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
+                    _this.$window.location.href = _this.redirectUrl;
+                }
+                else {
+                    throw (data);
+                }
+            }).catch(function (error) {
+                console.error("setAsCurrentFlexship :", error);
+                // TODO: handle errors
+            }).finally(function () {
+            });
+        };
+    }
+    return MonatFlexshipConfirmController;
+}());
+var MonatFlexshipConfirm = /** @class */ (function () {
+    function MonatFlexshipConfirm(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            redirectUrl: '@',
+            close: '=' //injected by angularModalService;
+        };
+        this.controller = MonatFlexshipConfirmController;
+        this.controllerAs = "monatFlexshipConfirm";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-confirm.html";
+        this.restrict = "EA";
+    }
+    MonatFlexshipConfirm.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipConfirm(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipConfirm;
+}());
+exports.MonatFlexshipConfirm = MonatFlexshipConfirm;
+
+
+/***/ }),
+/* 855 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipNameModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipNameModalController(orderTemplateService, observerService, rbkeyService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['flexshipName'] = _this.rbkeyService.rbKey('frontend.nameFlexshipModal.flexshipName');
+        };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
+    }
+    MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
+        //TODO frontend validation
+        var _this = this;
+        // make api request
+        this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.closeModal();
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            // TODO: show alert / handle error
+        });
+    };
+    return MonatFlexshipNameModalController;
+}());
+var MonatFlexshipNameModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipNameModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            close: '=' //injected by angularModalService
+        };
+        this.controller = MonatFlexshipNameModalController;
+        this.controllerAs = "monatFlexshipNameModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-name.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipNameModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipNameModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipNameModal;
+}());
+exports.MonatFlexshipNameModal = MonatFlexshipNameModal;
 
 
 /***/ })

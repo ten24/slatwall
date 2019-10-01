@@ -44,7 +44,6 @@ class VIPController {
 			+ '&stateCode=' + this.currentStateCode
 		);
     }
-    
 }
 
 class MonatEnrollmentVIPController  {
