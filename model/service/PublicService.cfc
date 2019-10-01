@@ -1714,20 +1714,21 @@ component  accessors="true" output="false"
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
-		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
-		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
-		var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
-		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
-		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+// 		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
+// 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
-		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
-		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
+// 		var tmpOrderTemplate = getOrderService().newOrderTemplate();
+// 		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+// 		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
+// 		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+		
+// 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+// 		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
+// 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
 		
 		//this function will set the stateCodeOptions in ajaxResponce
-		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
+// 		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
 	}
 	
@@ -2052,6 +2053,8 @@ component  accessors="true" output="false"
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             getHibachiScope().flushORMSession(); //flushing to make new data availble
             //return updated-orderTemplate 
+            
+            //TODO, figure out a way to get updated calculated prop in ordertemplate
             arguments.data.orderTemplateID = orderTemplate.getOrderTemplateID();
             this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
             
