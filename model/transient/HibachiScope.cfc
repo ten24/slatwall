@@ -385,9 +385,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName
 			,accountAddresses.address.emailAddress,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,
 			accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,
-			accountAddresses.address.company,accountAddresses.accountAddressName,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,
-			accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryShippingAddress.address.streetAddress,primaryShippingAddress.address.street2Address,primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,
-			primaryShippingAddress.address.countrycode,primaryShippingAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag","[[:space:]]","","all");
+			accountAddresses.address.company,accountAddresses.accountAddressName,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,
+			accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryShippingAddress.address.streetAddress,primaryShippingAddress.address.street2Address,
+			primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,primaryShippingAddress.address.countrycode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,
+			accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag,ownerAccount.firstName,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,
+			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
+			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,primaryAddress.address.countrycode","[[:space:]]","","all");
+
 	}
 	
 	public any function getAccountData(string propertyList) {
