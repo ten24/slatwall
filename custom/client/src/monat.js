@@ -59195,13 +59195,20 @@ exports.toSubscriber = toSubscriber;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatEnrollmentController = /** @class */ (function () {
     //@ngInject
-    function MonatEnrollmentController(monatService, observerService) {
+    function MonatEnrollmentController(monatService, observerService, $rootScope) {
         var _this = this;
         this.monatService = monatService;
         this.observerService = observerService;
+        this.$rootScope = $rootScope;
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
+        this.handleCreateAccount = function () {
+            _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
+            if (_this.currentAccountID.length) {
+                _this.next();
+            }
+        };
         this.addStep = function (step) {
             if (_this.steps.length == 0) {
                 step.selected = true;
@@ -59226,6 +59233,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         monatService.getCart().then(function (data) {
             _this.cart = data;
         });
+        this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
     }
     MonatEnrollmentController.prototype.next = function () {
