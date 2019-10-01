@@ -59195,13 +59195,20 @@ exports.toSubscriber = toSubscriber;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatEnrollmentController = /** @class */ (function () {
     //@ngInject
-    function MonatEnrollmentController(monatService, observerService) {
+    function MonatEnrollmentController(monatService, observerService, $rootScope) {
         var _this = this;
         this.monatService = monatService;
         this.observerService = observerService;
+        this.$rootScope = $rootScope;
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
+        this.handleCreateAccount = function () {
+            _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
+            if (_this.currentAccountID.length) {
+                _this.next();
+            }
+        };
         this.addStep = function (step) {
             if (_this.steps.length == 0) {
                 step.selected = true;
@@ -59226,6 +59233,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         monatService.getCart().then(function (data) {
             _this.cart = data;
         });
+        this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
     }
     MonatEnrollmentController.prototype.next = function () {
@@ -60324,7 +60332,119 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
-/* 618 */,
+/* 618 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatProductCardController = /** @class */ (function () {
+    // @ngInject
+    function MonatProductCardController(
+    //inject modal service
+    orderTemplateService, $rootScope) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$rootScope = $rootScope;
+        this.pageRecordsShow = 5;
+        this.currentPage = 1;
+        this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
+            if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
+            if (setNewTemplates === void 0) { setNewTemplates = true; }
+            if (setNewTemplateID === void 0) { setNewTemplateID = false; }
+            _this.loading = true;
+            _this.orderTemplateService
+                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .then(function (result) {
+                if (setNewTemplates) {
+                    _this.orderTemplates = result['orderTemplates'];
+                }
+                else if (setNewTemplateID) {
+                    _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+                }
+                _this.loading = false;
+            });
+        };
+        this.deleteItem = function (index) {
+            _this.loading = true;
+            var item = _this.allProducts[index];
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
+                _this.allProducts.splice(index, 1);
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
+                _this.loading = false;
+                _this.getAllWishlists();
+                return result;
+            });
+        };
+        this.addWishlistItem = function (skuID) {
+            _this.loading = true;
+            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
+                .then(function (result) {
+                _this.loading = false;
+                return result;
+            });
+        };
+        this.launchModal = function (type) {
+            if (type === 'flexship') {
+                //launch flexship modal 
+            }
+            else {
+                //launch normal modal
+            }
+        };
+        this.addToCart = function (type) {
+            if (type === 'flexship') {
+                //flexship logic
+            }
+            else {
+                //normal product logic
+            }
+        };
+        this.setWishlistID = function (newID) {
+            _this.wishlistTemplateID = newID;
+        };
+        this.setWishlistName = function (newName) {
+            _this.wishlistTemplateName = newName;
+        };
+    }
+    return MonatProductCardController;
+}());
+exports.MonatProductCardController = MonatProductCardController;
+var MonatProductCard = /** @class */ (function () {
+    function MonatProductCard(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'EA';
+        this.scope = true;
+        this.bindToController = {
+            product: '=',
+            type: '@',
+            index: '@',
+            allProducts: '<?',
+        };
+        this.controller = MonatProductCardController;
+        this.controllerAs = "monatProductCard";
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
+    }
+    MonatProductCard.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return MonatProductCard;
+}());
+exports.MonatProductCard = MonatProductCard;
+
+
+/***/ }),
 /* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -60346,6 +60466,7 @@ var swfAccountController = /** @class */ (function () {
         this.userIsLoggedIn = false;
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
+        this.pageTracker = 1;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.ownerAccount.createdDateTime) {
@@ -60358,6 +60479,8 @@ var swfAccountController = /** @class */ (function () {
         };
         this.getAccount = function () {
             _this.loading = true;
+            _this.accountData = {};
+            _this.accountPaymentMethods = [];
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             //Optimize when get orders on account is called, only needed on account overview and orders overview
@@ -60374,20 +60497,47 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.getOrdersOnAccount = function (accountID) {
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+        this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
+            if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID }).then(function (result) {
-                _this.ordersOnAccount = result.ordersOnAccount;
+            var accountID = _this.accountData.accountID;
+            if (direction === 'prev') {
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                if (_this.pageTracker >= _this.totalPages.length) {
+                    pageNumber = _this.totalPages.length;
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
+                _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
+                var holdingArray = [];
+                var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
+                for (var i = 0; i <= pages - 1; i++) {
+                    holdingArray.push(i);
+                }
+                _this.totalPages = holdingArray;
+                _this.pageTracker = pageNumber;
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, accountID) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
             if (currentPage === void 0) { currentPage = 1; }
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
             _this.loading = true;
+            var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
@@ -60423,7 +60573,32 @@ var swfAccountController = /** @class */ (function () {
             });
         };
         this.setPrimaryPaymentMethod = function (methodID) {
-            window.location.href += "?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=" + methodID;
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
+                _this.loading = false;
+            });
+        };
+        this.toggleClass = function () {
+            var icon = document.getElementById('toggle-icon');
+            var list = document.getElementById('toggle-list');
+            if (list.classList.contains('active')) {
+                list.classList.remove('active');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+            else {
+                list.classList.add('active');
+                icon.classList.add('fa-chevron-down');
+                icon.classList.remove('fa-chevron-up');
+            }
+        };
+        this.deletePaymentMethod = function (paymentMethodID, index) {
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
+                _this.accountPaymentMethods.splice(index, 1);
+                _this.loading = false;
+                return _this.accountPaymentMethods;
+            });
         };
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -60622,14 +60797,14 @@ exports.SWFReviewListing = SWFReviewListing;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWFWishlistController = /** @class */ (function () {
     // @ngInject
-    function SWFWishlistController($rootScope, $scope, observerService, $timeout, orderTemplateService) {
+    function SWFWishlistController($scope, observerService, $timeout, orderTemplateService) {
         var _this = this;
-        this.$rootScope = $rootScope;
         this.$scope = $scope;
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.orderTemplateService = orderTemplateService;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.showTemplateList = false;
         this.refreshList = function (option) {
             _this.loading = true;
             _this.currentList = option;
@@ -60637,27 +60812,23 @@ var SWFWishlistController = /** @class */ (function () {
                 .getWishlistItems(option.value, _this.pageRecordsShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
                 _this.orderTemplateItems = result['orderTemplateItems'];
-                if (_this.orderTemplateItems.length) {
-                    if (_this.orderTemplateItems[0].accountPriceGroup.includes(3)) {
-                        _this.isVIPAccount = true;
-                    }
-                }
                 _this.loading = false;
             });
         };
         this.deleteItem = function (index) {
             _this.loading = true;
             var item = _this.orderTemplateItems[index];
-            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", item).then(function (result) {
+            _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
                 _this.orderTemplateItems.splice(index, 1);
                 _this.refreshList(_this.currentList);
+                _this.loading = false;
                 return result;
             });
         };
-        this.addWishlistItem = function () {
+        this.addWishlistItem = function (skuID) {
             _this.loading = true;
             _this.setSkuIDFromAttribute();
-            _this.orderTemplateService.addOrderTemplateItem(_this.skuID, _this.wishlistTemplateID)
+            _this.orderTemplateService.addOrderTemplateItem(_this.skuID ? _this.skuID : skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
@@ -60667,13 +60838,8 @@ var SWFWishlistController = /** @class */ (function () {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
             _this.setSkuIDFromAttribute();
-            var data = {
-                orderTemplateName: orderTemplateName,
-                skuID: _this.skuID,
-                quantity: quantity
-            };
             _this.setWishlistName(orderTemplateName);
-            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data).then(function (result) {
+            return _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(_this.wishlistTemplateName, _this.skuID, quantity).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 _this.observerService.attach(_this.successfulAlert, "createWishlistSuccess");
@@ -60705,7 +60871,6 @@ var SWFWishlistController = /** @class */ (function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
             var wishlistInnerText = document.getElementById("wishlistTextWrapper");
             wishlistAddAlertBox.style.display = "block";
-            wishlistInnerText.textContent += _this.wishlistTemplateName;
         };
         this.setWishlistID = function (newID) {
             _this.wishlistTemplateID = newID;
@@ -60715,7 +60880,7 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addToCart = function (index) {
         };
-        this.search = function (index) {
+        this.search = function () {
         };
         if (!this.pageRecordsShow) {
             this.pageRecordsShow = 6;
@@ -60787,12 +60952,12 @@ var monatflexship_modal_changeorskiporder_1 = __webpack_require__(608);
 var monatflexship_modal_cancel_1 = __webpack_require__(607);
 var monatflexshiplisting_1 = __webpack_require__(616);
 var monatflexshipmenu_1 = __webpack_require__(617);
-var swfwishlist_1 = __webpack_require__(621);
-var swfmyaccount_1 = __webpack_require__(619);
 var monatenrollment_1 = __webpack_require__(605);
 var monatenrollmentstep_1 = __webpack_require__(606);
-var monatenrollmentvip_1 = __webpack_require__(852);
 var swfreviewlisting_1 = __webpack_require__(620);
+var swfwishlist_1 = __webpack_require__(621);
+var swfmyaccount_1 = __webpack_require__(619);
+var monatproductcard_1 = __webpack_require__(618);
 //services
 var monatservice_1 = __webpack_require__(623);
 var ordertemplateservice_1 = __webpack_require__(624);
@@ -60815,10 +60980,10 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
-    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
-    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
-    .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
+    .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
+    .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
+    .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
     .config(["ModalServiceProvider", function (ModalServiceProvider) {
@@ -60870,10 +61035,11 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
+        this.$rootScope = $rootScope;
         /**
          * This function is being used to fetch flexShips and wishLists
          *
@@ -60979,6 +61145,18 @@ var OrderTemplateService = /** @class */ (function () {
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
+        };
+        this.addOrderTemplateItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            var data = {
+                orderTemplateName: orderTemplateName,
+                skuID: skuID,
+                quantity: quantity
+            };
+            return _this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist", data);
+        };
+        this.deleteOrderTemplateItem = function (orderTemplateItemID) {
+            return _this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", { orderTemplateItemID: orderTemplateItemID });
         };
         /**
         * for more details https://gist.github.com/penguinboy/762197
@@ -88279,48 +88457,6 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
-
-
-/***/ }),
-/* 852 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var VIPController = /** @class */ (function () {
-    // @ngInject
-    function VIPController($rootScope, $scope) {
-        this.$rootScope = $rootScope;
-        this.$scope = $scope;
-    }
-    return VIPController;
-}());
-exports.VIPController = VIPController;
-var MonatEnrollmentVIPController = /** @class */ (function () {
-    // @ngInject
-    function MonatEnrollmentVIPController() {
-        this.require = {
-            ngModel: '?^ngModel'
-        };
-        this.priority = 1000;
-        this.restrict = "A";
-        this.scope = true;
-        /**
-         * Binds all of our variables to the controller so we can access using this
-         */
-        this.bindToController = {};
-        this.controller = VIPController;
-        this.controllerAs = "vipController";
-    }
-    MonatEnrollmentVIPController.Factory = function () {
-        var directive = function () { return new MonatEnrollmentVIPController(); };
-        directive.$inject = [];
-        return directive;
-    };
-    return MonatEnrollmentVIPController;
-}());
-exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
 
 
 /***/ })

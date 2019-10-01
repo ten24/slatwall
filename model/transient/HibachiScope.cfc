@@ -85,7 +85,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// ================= Overrides =================================
 	
 	public any function getCurrentRequestSite() {
-		
 		if(!structKeyExists(variables,'currentRequestSite')){
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
@@ -388,8 +387,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,
 			accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,ownerAccount.firstName,
 			accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,
-			ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,primaryAddress.address.countrycode,
-			primaryAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.accountPaymentMethodName,accountPaymentMethods.activeFlag","[[:space:]]","","all");
+			ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,primaryAddress.address.countrycode,primaryAddress.address.stateCode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.accountPaymentMethodName,accountPaymentMethods.activeFlag","[[:space:]]","","all");
+
 	}
 	
 	public any function getAccountData(string propertyList) {
