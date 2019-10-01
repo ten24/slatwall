@@ -60369,7 +60369,6 @@ var MonatProductCardController = /** @class */ (function () {
         this.deleteItem = function (index) {
             _this.loading = true;
             var item = _this.allProducts[index];
-            debugger;
             _this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(function (result) {
                 _this.allProducts.splice(index, 1);
                 _this.loading = false;
@@ -60467,6 +60466,7 @@ var swfAccountController = /** @class */ (function () {
         this.userIsLoggedIn = false;
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
+        this.pageTracker = 1;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
             if (_this.accountData.createdDateTime) {
@@ -60479,6 +60479,8 @@ var swfAccountController = /** @class */ (function () {
         };
         this.getAccount = function () {
             _this.loading = true;
+            _this.accountData = {};
+            _this.accountPaymentMethods = [];
             var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
             //Optimize when get orders on account is called, only needed on account overview and orders overview
@@ -60495,20 +60497,47 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.getOrdersOnAccount = function (accountID) {
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
+        this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
+            if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID }).then(function (result) {
-                _this.ordersOnAccount = result.ordersOnAccount;
+            var accountID = _this.accountData.accountID;
+            if (direction === 'prev') {
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                if (_this.pageTracker >= _this.totalPages.length) {
+                    pageNumber = _this.totalPages.length;
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
+                _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
+                var holdingArray = [];
+                var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
+                for (var i = 0; i <= pages - 1; i++) {
+                    holdingArray.push(i);
+                }
+                _this.totalPages = holdingArray;
+                _this.pageTracker = pageNumber;
                 _this.loading = false;
             });
         };
-        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage, accountID) {
+        this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
             if (orderID === void 0) { orderID = _this.urlParams.get('orderid'); }
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
             if (currentPage === void 0) { currentPage = 1; }
-            if (accountID === void 0) { accountID = _this.accountData.accountID; }
             _this.loading = true;
+            var accountID = _this.accountData.accountID;
             return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
@@ -60544,17 +60573,37 @@ var swfAccountController = /** @class */ (function () {
             });
         };
         this.setPrimaryPaymentMethod = function (methodID) {
-            window.location.href += "?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=" + methodID;
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
+                _this.loading = false;
+            });
+        };
+        this.toggleClass = function () {
+            var icon = document.getElementById('toggle-icon');
+            var list = document.getElementById('toggle-list');
+            if (list.classList.contains('active')) {
+                list.classList.remove('active');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+            else {
+                list.classList.add('active');
+                icon.classList.add('fa-chevron-down');
+                icon.classList.remove('fa-chevron-up');
+            }
+        };
+        this.deletePaymentMethod = function (paymentMethodID, index) {
+            _this.loading = true;
+            return _this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
+                _this.accountPaymentMethods.splice(index, 1);
+                _this.loading = false;
+                return _this.accountPaymentMethods;
+            });
         };
         this.setEditAddress = function (newAddress, address) {
             if (newAddress === void 0) { newAddress = true; }
             _this.editAddress = address ? address : {};
-            if (newAddress) {
-                _this.isNewAddress = true;
-            }
-            else {
-                _this.isNewAddress = false;
-            }
+            _this.isNewAddress = newAddress;
         };
         this.setPrimaryAddress = function (addressID) {
             _this.loading = true;
@@ -60766,6 +60815,7 @@ var SWFWishlistController = /** @class */ (function () {
         this.$timeout = $timeout;
         this.orderTemplateService = orderTemplateService;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.showTemplateList = false;
         this.refreshList = function (option) {
             _this.loading = true;
             _this.currentList = option;

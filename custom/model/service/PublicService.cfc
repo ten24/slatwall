@@ -34,6 +34,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     }
     
+    public void function updatePrimaryPaymentMethod(required any data){
+        param name="data.paymentMethodID" default="";
+
+        var account = getHibachiScope().getAccount();
+        var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
+
+        account.setPrimaryPaymentMethod(paymentMethod);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+    }
+    
     public any function updateProfile( required struct data ) {
         var account = getHibachiScope().getAccount();
         if (structKeyExists(data, "firstName") && len(data.firstName)){
