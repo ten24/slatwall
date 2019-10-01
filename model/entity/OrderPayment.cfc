@@ -112,8 +112,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="amountUncaptured" persistent="false" hb_formatType="currency";
 	property name="amountUnreceived" persistent="false" hb_formatType="currency";
 	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
+	property name="totalAmountReceivedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="availableAmountToRefund" persistent="false" hb_formatType="currency";
+	property name="refundableAmount" persistent="false" hb_formatType="currency";
 	property name="bankRoutingNumber" persistent="false" hb_populateEnabled="public";
 	property name="bankAccountNumber" persistent="false" hb_populateEnabled="public";
 	property name="checkNumber" persistent="false" hb_populateEnabled="public";
@@ -400,8 +401,20 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return amount;
 	}
 	
-	public numeric function getAvailableAmountToRefund(){
-		return getAmountReceived() - getTotalAmountCreditedIncludingReferencingPayments();
+	public numeric function getTotalAmountReceivedIncludingReferencingPayments(){
+		return getAmountReceived() + getReferencingPaymentAmountReceivedTotal();
+	}
+	
+	public numeric function getReferencingPaymentAmountReceivedTotal(){
+		var amount = 0;
+		for(var referencingOrderPayment in getReferencingOrderPayments()){
+			amount += referencingOrderPayment.getAmountReceived();
+		}
+		return amount;
+	}
+	
+	public numeric function getRefundableAmount(){
+		return getTotalAmountReceivedIncludingReferencingPayments() - getTotalAmountCreditedIncludingReferencingPayments();
 	}
 
 	public array function getExpirationMonthOptions() {

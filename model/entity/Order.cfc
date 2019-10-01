@@ -163,6 +163,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="refundableAmount" persistent="false" hb_formatType="currency";
 	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
 	property name="rootOrderItems" persistent="false";
 	property name="saleItemSmartList" persistent="false";
@@ -1040,6 +1041,17 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	
 	public numeric function getTotalAmountCreditedIncludingReferencingPayments(){
 		return getPaymentAmountCreditedTotal() + getReferencingPaymentAmountCreditedTotal();
+	}
+	
+	public numeric function getRefundableAmount(){
+		if(!structKeyExists(variables,'refundableAmount')){
+			var refundableAmount = 0;
+			for(var orderPayment in getOrderPayments()){
+				refundableAmount += orderPayment.getRefundableAmount();
+			}
+			variables.refundableAmount = refundableAmount;
+		}
+		return variables.refundableAmount;
 	}
 
 	public any function getPaymentMethodOptionsSmartList() {

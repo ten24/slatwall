@@ -71101,21 +71101,22 @@ var ReturnOrderItem = /** @class */ (function () {
     function ReturnOrderItem(obj) {
         var _this = this;
         this.returnQuantity = 0;
+        //  Following equations have a (this.maxRefund / this.total) term included in order to get the remaining values
         this.getAllocatedRefundOrderDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderDiscountAmount * _this.refundTotal * 100 / _this.total) / 100;
+                return Math.round(_this.allocatedOrderDiscountAmount * _this.refundTotal * 100 * _this.maxRefund / Math.pow(_this.total, 2)) / 100;
             }
             return 0;
         };
         this.getAllocatedRefundOrderPVDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * 100 / _this.pvTotal) / 100;
+                return Math.round(_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * 100 * _this.maxRefund / (_this.pvTotal * _this.total)) / 100;
             }
             return 0;
         };
         this.getAllocatedRefundOrderCVDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * 100 / _this.cvTotal) / 100;
+                return Math.round(_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * 100 * _this.maxRefund / (_this.cvTotal * _this.total)) / 100;
             }
             return 0;
         };
@@ -71128,6 +71129,7 @@ var ReturnOrderItem = /** @class */ (function () {
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
+        this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
         return this;
     }
     return ReturnOrderItem;
@@ -71160,20 +71162,26 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.getDisplayPropertiesList = function () {
             return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
         };
-        this.updateOrderItem = function (orderItem) {
+        this.updateOrderItem = function (orderItem, maxRefund) {
+            var orderMaxRefund;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
             orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-            if (_this.orderType == 'otRefundOrder') {
-                _this.validateRefundItemAmount(orderItem);
-            }
             orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
-            if ((orderItem.refundTotal > orderItem.total) && _this.orderType != 'otRefundOrder') {
-                orderItem.refundUnitPrice = orderItem.total / orderItem.returnQuantity;
-                _this.updateOrderItem(orderItem);
+            if (maxRefund == undefined) {
+                var refundTotal = _this.orderItems.reduce(function (total, item) {
+                    return (item == orderItem) ? total : total += item.refundTotal;
+                }, 0);
+                orderMaxRefund = _this.orderTotal - refundTotal;
+            }
+            maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
+            if ((orderItem.refundTotal > maxRefund)) {
+                orderItem.refundUnitPrice = Math.max(maxRefund, 0) / orderItem.returnQuantity;
+                orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
+                _this.updateOrderItem(orderItem, maxRefund);
             }
             else {
                 _this.updateTotals();
@@ -71248,16 +71256,6 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             }
             if (orderPayment.amount > maxRefund) {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
-            }
-        };
-        this.validateRefundItemAmount = function (orderItem) {
-            var refundTotal = _this.orderItems.reduce(function (total, item) {
-                return (item == orderItem) ? total : total += item.refundTotal;
-            }, 0);
-            var maxRefund = _this.orderTotal - refundTotal;
-            if (orderItem.refundTotal > maxRefund) {
-                orderItem.refundUnitPrice = Number((Math.max(maxRefund, 0)).toFixed(2));
-                orderItem.refundTotal = orderItem.refundUnitPrice;
             }
         };
         this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);

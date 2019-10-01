@@ -2992,7 +2992,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			){
 				this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 			}
-
 		}
 
 		// If we are supposed to update the items as well, loop over all items and pass to 'updateItemStatus'

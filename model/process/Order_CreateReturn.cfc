@@ -103,9 +103,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for(var orderPayment in opSmartList.getRecords()) {
 				arrayAppend(variables.refundOrderPaymentIDOptions, 
 					{
-						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('availableAmountToRefund'),
+						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
 						"value"=orderPayment.getOrderPaymentID(),
-						"amountToRefund"=orderPayment.getAvailableAmountToRefund(),
+						"amountToRefund"=orderPayment.getRefundableAmount(),
 						"amount"=0
 					}
 				);
@@ -146,7 +146,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public numeric function getFulfillmentRefundAmount() {
 		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
-			if(!getPreProcessDisplayedFlag()) {
+			if(!getPreProcessDisplayedFlag() && getOrderTypeCode() == 'otReturnOrder') {
 				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeNotRefunded();	
 			}
 		}
@@ -247,7 +247,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!isNull(this.getOrderPayments())){
 			for( var orderPayment in this.getOrderPayments() ){
 				var originalOrderPayment = getService('orderService').getOrderPayment(orderPayment.originalOrderPaymentID);
-				if(isNull(originalOrderPayment) || orderPayment.amount > originalOrderPayment.getAvailableAmountToRefund()){
+				if(isNull(originalOrderPayment) || orderPayment.amount > originalOrderPayment.getRefundableAmount()){
 					return false;
 				}
 				amount += orderPayment.amount;

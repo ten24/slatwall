@@ -154,7 +154,7 @@ Notes:
 			</cfif>
 
 			<!--- Returns / Receivers --->
-			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" or rc.order.getOrderType().getSystemCode() eq "otRefundOrder">
+			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
 			</cfif>
