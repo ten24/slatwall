@@ -18,7 +18,6 @@
 	</div>
 	
 	<div class="flexship-container">
-		<!--TODO conditional logic to show hide message-->
 		<p ng-if="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag">
 			<i class="fas fa-info-circle"></i>
 			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessage'"></span>
@@ -54,6 +53,7 @@
 				</li>
 			</ul>
 		</div>
+		<!--TODO logic-->
 		<p class="more"><a href="#">+ 4 More Items ``</a></p>
 		<a href="#" class="btn bg-primary btn-block" 
 			ng-if="monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
