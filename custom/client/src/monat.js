@@ -69329,9 +69329,6 @@ var SWDatePicker = /** @class */ (function () {
             if (!$scope.startDate) {
                 $scope.startDate = Date.now();
             }
-            if (!$scope.startDate) {
-                $scope.startDate = Date.now();
-            }
             if (typeof $scope.startDate !== 'number') {
                 $scope.startDate = $scope.startDate.getTime();
             }
