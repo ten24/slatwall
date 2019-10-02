@@ -110,7 +110,7 @@
 			<div class="modal-body">
 				<div class="row mt-2 mb-4">
 					<div class="col-12">
-						<p class="text-center h6" ng-bind="rbKey('frontend.wishlist.areYouSureProduct')"></p>
+						<p class="text-center h6" sw-rbkey="'frontend.wishlist.areYouSureProduct'"></p>
 					</div>
 				</div>
 				<div class="row short-width">
@@ -119,7 +119,7 @@
                             data-dismiss="modal" 
                             aria-label="No" 
                             class="btn bg-primary w-100 mb-3" 
-                            ng-bind="rbKey('define.no')"
+                           sw-rbkey="'define.no'"
 				        ></button>
 					</div>
 					<div class="col-md-6">
@@ -128,7 +128,7 @@
                             class="btn bg-primary w-100" 
                             data-dismiss="modal" 
                             ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
-                            ng-bind="rbKey('define.yes')"
+                           sw-rbKey="'define.yes'"
 						></button>
 					</div>
 				</div>
