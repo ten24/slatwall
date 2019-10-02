@@ -49,7 +49,16 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="orderTemplate";
+	property name="scheduleOrderDayOfTheMonth";
 	
 	property name="frequencyTerm" fieldType="struct" hb_populateStruct="true"; 
+	
+	public numeric function getScheduleOrderDayOfTheMonth() {
+	    //TODO validation for allowed-date-range
+	    if(IsNull(variables.scheduleOrderDayOfTheMonth) && !IsNumeric(variables.cheduleOrderDayOfTheMonth)) {
+	        variables.scheduleOrderDayOfTheMonth = variables.orderTemplate.getScheduleOrderDayOfTheMonth();
+	    }
+	    return variables.scheduleOrderDayOfTheMonth;
+	}
 
 }
