@@ -59235,6 +59235,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         });
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
+        this.observerService.attach(this.next.bind(this), "updateSuccess");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
