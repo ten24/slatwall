@@ -1,0 +1,65 @@
+<div class="flexship-block">
+	<div class="flexship-bar">
+		<div class="open-flexship">
+			<a href="#">
+			<i class="fas fa-chevron-up"></i>
+			</a>
+			<span class="qty-and-price">
+				{{monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount}} <span sw-rbkey="'frontend.flexshipCartContainer.items'"></span> / <span sw-rbkey="'frontend.flexshipCartContainer.total'"></span> {{ monatFlexshipCartContainer.orderTemplate.total | currency}}</span>
+		</div>
+		<span class="steps" ng-bind-html="monatFlexshipCartContainer.translations.currentStepOfTtotalSteps"></span>
+		<div class="go-to-cart">
+			<button class="btn bg-primary btn-block"
+				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
+				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()">
+					<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
+			</button>
+		</div>
+	</div>
+	
+	<div class="flexship-container">
+		<p ng-if="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag">
+			<i class="fas fa-info-circle"></i>
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessage'"></span>
+		</p>
+		<div class="product-container">
+			<ul>
+				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems">
+					<button class="close" type="button" ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item)">
+					<i class="fas fa-times"></i>
+					</button>
+					<div class="img">
+						<a href="#">
+							<img ng-src="item.sku_imagePath" alt="">
+						</a>
+					</div>
+					<h6 class="title-sm">
+						<a ng-href="item.skuProductURL"> <span ng-bind="item.sku_product_productName"></span> </a>
+					</h6>
+					<div class="product-bottom">
+						<div class="qty">
+							<button type="button" class="minus" 
+									ng-disabled="item.quantity <= 1"
+									ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)"
+								>-</button>
+							<input type="text" id="qty" name="quantity" class="form-control" ng-model="item.quantity">
+							<button type="button" class="plus" ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item)">+</button>
+						</div>
+						<div class="price-block">
+							<!--TODO calc actual price => price*qty -->
+							<span class="price"> {{item.sku_priceByCurrencyCode | currency}}</span>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--TODO logic-->
+		<p class="more"><a href="#">+ 4 More Items ``</a></p>
+		<button class="btn bg-primary btn-block" 
+			ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
+			ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()">
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
+		</button>
+	</div>
+</div>
+	

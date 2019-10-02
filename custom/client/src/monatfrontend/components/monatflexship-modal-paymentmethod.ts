@@ -5,7 +5,8 @@ class MonatFlexshipPaymentMethodModalController {
     public accountAddresses: Array<any>;
     public expirationMonthOptions: Array<any>;
 	public expirationYearOptions: Array<any>;
-    
+	public close; // injected from angularModalService
+
     
     public existingBillingAccountAddress; 
 	public selectedBillingAccountAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
@@ -125,6 +126,7 @@ class MonatFlexshipPaymentMethodModalController {
 	                this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
 	                
 	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+	                this.closeModal();
                } else {
                		//TODO handle errors
 	               	console.error(response); 
@@ -138,6 +140,10 @@ class MonatFlexshipPaymentMethodModalController {
             }
         );
     }
+    
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
 
 }
 
@@ -153,7 +159,8 @@ class MonatFlexshipPaymentMethodModal {
 	    accountAddresses:'<',
 	    orderTemplate:'<',
 	    expirationMonthOptions: '<',
-		expirationYearOptions: '<'
+		expirationYearOptions: '<',
+		close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipPaymentMethodModalController;
 	public controllerAs="monatFlexshipPaymentMethodModal";

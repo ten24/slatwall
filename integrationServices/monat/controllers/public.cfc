@@ -1,9 +1,13 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
     property name="MonatDataService";
+    property name="publicService";
     
-    this.publicMethods = 'getProductReviews';
-    this.publicMethods = 'getMarketPartners';
-    
+    this.publicMethods = '';
+    this.publicMethods=ListAppend(this.publicMethods, 'getProductReviews');
+    this.publicMethods=ListAppend(this.publicMethods, 'getMarketPartners');
+    this.publicMethods=ListAppend(this.publicMethods, 'setAsCurrentFlexship');
+
+
     public any function before(required struct rc){
         arguments.rc.ajaxRequest = true;
         arguments.rc.ajaxResponse = {};
@@ -26,5 +30,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         arguments.rc.ajaxResponse['pageRecords'] = marketPartners;
         
     }
+    
+    	
+	/**
+	 * Custom api-end-points
+	*/ 
+	public any function setAsCurrentFlexship(required struct rc) {
+	    getPublicService().setAsCurrentFlexship(arguments.rc); 
+	}
     
 }

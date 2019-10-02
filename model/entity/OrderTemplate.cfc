@@ -291,11 +291,12 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 
 	public array function getFrequencyTermOptions(){
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termID|value,termName|name');
-		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
-		return termCollection.getRecords();
+		return getService("OrderService").getOrderTemplateFrequencyTermOptions();
 	} 
+	
+	public array function getFrequencyDateOptions() {
+		getService('OrderService').getOrderTemplateFrequencyDateOptions();
+	}
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {
