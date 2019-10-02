@@ -4,6 +4,7 @@ class EnrollmentMPController {
     public countryCodeOptions:any = [];
     public stateCodeOptions:any = [];
     public currentCountryCode:string = '';
+    public loading:boolean;
 
     // @ngInject
     constructor(
@@ -22,7 +23,7 @@ class EnrollmentMPController {
             '/?slatAction=monat:public.getmarketpartners'
 			+ '&search='+ model.mpSearchText 
 			+ '&currentPage='+ 1 
-			+ '&accountTypeCode=D'
+			+ '&accountSearchType=marketPartner'
 			+ '&countryCode=' + model.currentCountryCode
 			+ '&stateCode=' + model.currentStateCode
 		);
@@ -38,11 +39,19 @@ class EnrollmentMPController {
         });
     }
     
-    public getStateCodeOptions = countryCode => {
+    public getStateCodeOptions = (countryCode) => {
         this.currentCountryCode = countryCode;
         
         this.publicService.getStates( countryCode ).then( data => {
             this.stateCodeOptions = data.stateCodeOptions;
+        });
+    }
+    
+    public setOwnerAccount = (ownerAccountID) => {
+        this.loading = true;
+        this.publicService.doAction('setOwnerAccountOnAccount', {'ownerAccountID': ownerAccountID}).then(result => {
+            console.log(result);
+            this.loading = false;
         });
     }
     

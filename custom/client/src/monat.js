@@ -59312,7 +59312,7 @@ var EnrollmentMPController = /** @class */ (function () {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
                 + '&search=' + model.mpSearchText
                 + '&currentPage=' + 1
-                + '&accountTypeCode=D'
+                + '&accountSearchType=marketPartner'
                 + '&countryCode=' + model.currentCountryCode
                 + '&stateCode=' + model.currentStateCode);
         };
@@ -59328,6 +59328,13 @@ var EnrollmentMPController = /** @class */ (function () {
             _this.currentCountryCode = countryCode;
             _this.publicService.getStates(countryCode).then(function (data) {
                 _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
+        this.setOwnerAccount = function (ownerAccountID) {
+            _this.loading = true;
+            _this.publicService.doAction('setOwnerAccountOnAccount', { 'ownerAccountID': ownerAccountID }).then(function (result) {
+                console.log(result);
+                _this.loading = false;
             });
         };
     }
@@ -59439,7 +59446,7 @@ var VIPController = /** @class */ (function () {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
                 + '&search=' + _this.mpSearchText
                 + '&currentPage=' + _this.currentMpPage
-                + '&accountTypeCode=D'
+                + '&accountSearchType=VIP'
                 + '&countryCode=' + _this.currentCountryCode
                 + '&stateCode=' + _this.currentStateCode);
         };
