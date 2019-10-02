@@ -73,6 +73,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function createOrderTemplate( required struct data ) {
 
         param name="arguments.data.orderTemplateSystemCode";
+        param name="arguments.data.frequencyTermID" default="23c6a8c4e605d0586869d7f3a8b36ba7";
+        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#DateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
         
         if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
@@ -85,10 +87,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         processObject.setSiteID(arguments.data.siteID);
         processObject.setOrderTemplateTypeID(orderTypeID);
-        processObject.setFrequencyTermID('23c6a8c4e605d0586869d7f3a8b36ba7');
+        processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         
         if(arguments.data.orderTemplateSystemCode == 'otstDraft'){
-            processObject.setScheduleOrderNextPlaceDateTime(DateAdd("m",1,dateFormat(now())));
+            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
