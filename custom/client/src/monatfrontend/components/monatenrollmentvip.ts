@@ -46,9 +46,8 @@ class VIPController {
     }
 }
 
-class MonatEnrollmentVIPController  {
-    
-    
+class MonatEnrollmentVIP {
+
     public require          = {
         ngModel:'?^ngModel'    
     };
@@ -67,13 +66,12 @@ class MonatEnrollmentVIPController  {
     }
 
     public static Factory(){
-        var directive = () => new MonatEnrollmentVIPController();
+        var directive = () => new MonatEnrollmentVIP();
         directive.$inject = [];
         return directive;
     }
     
 }
 export{
-    MonatEnrollmentVIPController,
-    VIPController
+    MonatEnrollmentVIP
 }

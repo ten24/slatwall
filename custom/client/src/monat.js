@@ -59235,6 +59235,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         });
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
+        this.observerService.attach(this.next.bind(this), "updateSuccess");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
@@ -59287,7 +59288,47 @@ exports.MonatEnrollment = MonatEnrollment;
 
 
 /***/ }),
-/* 606 */,
+/* 606 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EnrollmentMPController = /** @class */ (function () {
+    // @ngInject
+    function EnrollmentMPController($rootScope, $scope) {
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+    }
+    return EnrollmentMPController;
+}());
+var MonatEnrollmentMP = /** @class */ (function () {
+    // @ngInject
+    function MonatEnrollmentMP() {
+        this.require = {
+            ngModel: '?^ngModel'
+        };
+        this.priority = 1000;
+        this.restrict = "A";
+        this.scope = true;
+        /**
+         * Binds all of our variables to the controller so we can access using this
+         */
+        this.bindToController = {};
+        this.controller = EnrollmentMPController;
+        this.controllerAs = "enrollmentMp";
+    }
+    MonatEnrollmentMP.Factory = function () {
+        var directive = function () { return new MonatEnrollmentMP(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatEnrollmentMP;
+}());
+exports.MonatEnrollmentMP = MonatEnrollmentMP;
+
+
+/***/ }),
 /* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -59345,6 +59386,7 @@ var VIPController = /** @class */ (function () {
         this.currentStateCode = '';
         this.mpSearchText = '';
         this.currentMpPage = 1;
+        this.isVIPEnrollment = false;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
@@ -59366,17 +59408,16 @@ var VIPController = /** @class */ (function () {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
                 + '&search=' + _this.mpSearchText
                 + '&currentPage=' + _this.currentMpPage
-                + '&accountSearchType=VIP'
+                + '&accountTypeCode=D'
                 + '&countryCode=' + _this.currentCountryCode
                 + '&stateCode=' + _this.currentStateCode);
         };
     }
     return VIPController;
 }());
-exports.VIPController = VIPController;
-var MonatEnrollmentVIPController = /** @class */ (function () {
+var MonatEnrollmentVIP = /** @class */ (function () {
     // @ngInject
-    function MonatEnrollmentVIPController() {
+    function MonatEnrollmentVIP() {
         this.require = {
             ngModel: '?^ngModel'
         };
@@ -59390,14 +59431,14 @@ var MonatEnrollmentVIPController = /** @class */ (function () {
         this.controller = VIPController;
         this.controllerAs = "vipController";
     }
-    MonatEnrollmentVIPController.Factory = function () {
-        var directive = function () { return new MonatEnrollmentVIPController(); };
+    MonatEnrollmentVIP.Factory = function () {
+        var directive = function () { return new MonatEnrollmentVIP(); };
         directive.$inject = [];
         return directive;
     };
-    return MonatEnrollmentVIPController;
+    return MonatEnrollmentVIP;
 }());
-exports.MonatEnrollmentVIPController = MonatEnrollmentVIPController;
+exports.MonatEnrollmentVIP = MonatEnrollmentVIP;
 
 
 /***/ }),
@@ -61419,6 +61460,7 @@ var swfreviewlisting_1 = __webpack_require__(625);
 var swfwishlist_1 = __webpack_require__(626);
 var swfmyaccount_1 = __webpack_require__(624);
 var monatproductcard_1 = __webpack_require__(623);
+var monatenrollmentmp_1 = __webpack_require__(606);
 //services
 var monatservice_1 = __webpack_require__(628);
 var ordertemplateservice_1 = __webpack_require__(629);
@@ -61443,8 +61485,9 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('monatFlexshipConfirm', monatflexship_confirm_1.MonatFlexshipConfirm.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
     .directive('monatEnrollment', monatenrollment_1.MonatEnrollment.Factory())
+    .directive('enrollmentMp', monatenrollmentmp_1.MonatEnrollmentMP.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
-    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIPController.Factory())
+    .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
