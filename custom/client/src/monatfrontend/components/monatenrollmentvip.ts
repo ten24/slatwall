@@ -6,10 +6,12 @@ class VIPController {
     public currentStateCode:string = '';
     public mpSearchText:string = '';
     public currentMpPage:number = 1;
+    public loading:boolean = false;
 
     // @ngInject
     constructor(
-        public publicService
+        public publicService,
+        public orderTemplateService
     ){}
     
     public $onInit = () => {
@@ -43,6 +45,14 @@ class VIPController {
 			+ '&countryCode=' + this.currentCountryCode
 			+ '&stateCode=' + this.currentStateCode
 		);
+    }
+    
+    public createOrderTemplate = (orderTemplateSystemCode:string) => {
+        this.loading = true;
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+            this.loading = false;
+            console.log(result)
+        });
     }
     
 }

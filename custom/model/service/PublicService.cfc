@@ -70,6 +70,34 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return orderTemplate;
     }
     
+    public any function createOrderTemplate( required struct data ) {
+
+        param name="arguments.data.orderTemplateSystemCode";
+        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        
+        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("create");
+        var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        
+        processObject.setSiteID(arguments.data.siteID);
+        processObject.setOrderTemplateTypeID(orderTypeID);
+        processObject.setFrequencyTermID('23c6a8c4e605d0586869d7f3a8b36ba7');
+        
+        if(arguments.data.orderTemplateSystemCode == 'otstDraft'){
+            processObject.setScheduleOrderNextPlaceDateTime(DateAdd("m",1,dateFormat(now())));
+        }
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        
+        getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
+        
+        arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
+    }
+    
     public any function addItemAndCreateWishlist( required struct data ) {
         var orderTemplate = this.createWishlist(argumentCollection=arguments);
         var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
@@ -152,4 +180,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
 
     }
+    
+    
 }
