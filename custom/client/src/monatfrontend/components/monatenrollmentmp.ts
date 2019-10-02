@@ -1,11 +1,50 @@
 class EnrollmentMPController {
     public Account_CreateAccount;
+    public isMPEnrollment:boolean = false;
+    public countryCodeOptions:any = [];
+    public stateCodeOptions:any = [];
+    public currentCountryCode:string = '';
 
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
+        public publicService
     ){}
+    
+    public $onInit = () => {
+        this.getCountryCodeOptions();
+    }
+    
+    public getMpResults = (model) => {
+        
+        this.publicService.marketPartnerResults = this.publicService.doAction(
+            '/?slatAction=monat:public.getmarketpartners'
+			+ '&search='+ model.mpSearchText 
+			+ '&currentPage='+ 1 
+			+ '&accountTypeCode=D'
+			+ '&countryCode=' + model.currentCountryCode
+			+ '&stateCode=' + model.currentStateCode
+		);
+    }
+    
+    public getCountryCodeOptions = () => {
+        if ( this.countryCodeOptions.length ) {
+            return this.countryCodeOptions;
+        }
+        
+        this.publicService.getCountries().then( data => {
+            this.countryCodeOptions = data.countryCodeOptions;
+        });
+    }
+    
+    public getStateCodeOptions = countryCode => {
+        this.currentCountryCode = countryCode;
+        
+        this.publicService.getStates( countryCode ).then( data => {
+            this.stateCodeOptions = data.stateCodeOptions;
+        });
+    }
     
 }
 

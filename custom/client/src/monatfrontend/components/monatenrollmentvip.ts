@@ -6,6 +6,7 @@ class VIPController {
     public currentStateCode:string = '';
     public mpSearchText:string = '';
     public currentMpPage:number = 1;
+    public isVIPEnrollment:boolean = false;
 
     // @ngInject
     constructor(
