@@ -59375,7 +59375,6 @@ var VIPController = /** @class */ (function () {
             _this.loading = true;
             _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
                 _this.loading = false;
-                console.log(result);
             });
         };
     }

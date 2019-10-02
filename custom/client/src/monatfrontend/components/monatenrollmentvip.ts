@@ -51,7 +51,6 @@ class VIPController {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
             this.loading = false;
-            console.log(result)
         });
     }
     
