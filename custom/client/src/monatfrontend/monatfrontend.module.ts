@@ -18,12 +18,14 @@ import {MonatFlexshipConfirm} from "./components/monatflexship-confirm"
 import {MonatFlexshipListing} from "./components/monatflexshiplisting"; 
 import {MonatFlexshipMenu} from "./components/monatflexshipmenu";
 import {MonatEnrollment} from "./components/monatenrollment";
+import {MonatEnrollmentVIP} from "./components/monatenrollmentvip";
 import {MonatEnrollmentStep} from "./components/monatenrollmentstep";
 
 import {SWFReviewListing} from "./components/swfreviewlisting";
 import {SWFWishlist} from "./components/swfwishlist";
 import {SWFAccount} from "./components/swfmyaccount";
 import {MonatProductCard} from "./components/monatproductcard";
+import {MonatEnrollmentMP} from "./components/monatenrollmentmp";
 
 
 //services
@@ -54,7 +56,9 @@ var monatfrontendmodule = angular.module('monatfrontend',[
 .directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 .directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
 .directive('monatEnrollment', MonatEnrollment.Factory())
+.directive('enrollmentMp', MonatEnrollmentMP.Factory())
 .directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
+.directive('vipController', MonatEnrollmentVIP.Factory())
 
 .directive('swfReviewListing', SWFReviewListing.Factory())
 .directive('swfWishlist', SWFWishlist.Factory())

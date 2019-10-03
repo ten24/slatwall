@@ -128,6 +128,7 @@ class MonatFlexshipCartContainerController {
 		      component: 'monatFlexshipConfirm',
 			  bindings: {
 			    orderTemplate: this.orderTemplate,
+			    redirectUrl: '/my-account/flexships/'
 			  }
 		}).then((modal) => {
 			//it's not a bootstrap modal

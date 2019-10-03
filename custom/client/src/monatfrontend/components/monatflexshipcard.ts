@@ -34,10 +34,11 @@ class MonatFlexshipCardController{
 	public showEditFlexshipNameModal = () => {
 		this.ModalService.closeModals();
 		this.ModalService.showModal({
-		      component: 'monatFlexshipNameModal',
-			  bindings: {
-			    orderTemplate: this.orderTemplate
-			  },
+			component: 'monatFlexshipNameModal',
+			bindings: {
+				orderTemplate: this.orderTemplate
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
 		}).then((modal) => {
 			  //it's a bootstrap element, use 'modal' to show it
 		      modal.element.modal();

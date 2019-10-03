@@ -4,6 +4,15 @@ component extends="Slatwall.model.service.OrderService" {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
     }
     
+    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+        
+        if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
+		}
+        
+        return super.processOrderTemplate_create(argumentCollection = arguments);
+    }
+    
     public any function processOrder_addOrderItem(required any order, required any processObject){
         var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
         arguments.order = super.processOrder_addOrderItem(argumentCollection=arguments);

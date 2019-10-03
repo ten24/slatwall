@@ -18,6 +18,7 @@ class SWFWishlistController {
     public wishlistTemplateName:string;
     public skuID:string;
     public newTemplateID:string;
+    public showTemplateList:boolean = false;
 
     
     // @ngInject
@@ -131,7 +132,7 @@ class SWFWishlistController {
     
     public search =()=>{
     }
-
+    
 }
 
 class SWFWishlist  {

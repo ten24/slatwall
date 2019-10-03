@@ -1,9 +1,12 @@
 
 class MonatFlexshipConfirmController {
     public orderTemplate:any; // orderTemplateDetails
+    public redirectUrl:string;
+    
+    public close; // injected from angularModalService
+    
     public frequencyTermOptions: any[]; // termName|name,termID|value
     public frequencyDateOptions: any[];
-    public close; // injected from angularModalService
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
@@ -33,7 +36,7 @@ class MonatFlexshipConfirmController {
     
     public cancel = () => {
      	this.close(null); // close, but give 100ms to animate
-     };
+    };
     
     public translations = {};
     private makeTranslations = () => {
@@ -48,7 +51,7 @@ class MonatFlexshipConfirmController {
     	.then( data => { 
     		
     		if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
-        		this.$window.location.href = '/my-account/flexships/';
+        		this.$window.location.href = this.redirectUrl;
         	} else {
 	            throw(data);
         	}
@@ -69,7 +72,8 @@ class MonatFlexshipConfirm {
 	
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'<?',
+	    orderTemplate:'<',
+	    redirectUrl: '@',
 	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipConfirmController;

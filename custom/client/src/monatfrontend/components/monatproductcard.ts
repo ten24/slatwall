@@ -39,7 +39,6 @@ class MonatProductCardController {
     public deleteItem =(index)=>{
         this.loading = true;
         const item = this.allProducts[index];
-        debugger;
         this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             this.allProducts.splice(index, 1);
             this.loading = false;

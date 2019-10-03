@@ -28,11 +28,12 @@ class MonatFlexshipMenuController{
 		this.ModalService.closeModals();
 		
 		this.ModalService.showModal({
-		      component: 'monatFlexshipCancelModal',
-			  bindings: {
-			    orderTemplate: this.orderTemplate,
-			    cancellationReasonTypeOptions: this.cancellationReasonTypeOptions
-			  },
+			component: 'monatFlexshipCancelModal',
+			bindings: {
+			orderTemplate: this.orderTemplate,
+				cancellationReasonTypeOptions: this.cancellationReasonTypeOptions
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
 		}).then((modal) => {
 			  //it's a bootstrap element, use 'modal' to show it
 		      modal.element.modal();
@@ -48,11 +49,12 @@ class MonatFlexshipMenuController{
 		this.ModalService.closeModals();
 		
 		this.ModalService.showModal({
-		      component: 'monatFlexshipChangeOrSkipOrderModal',
-			  bindings: {
-			    orderTemplate: this.orderTemplate,
-			    scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions
-			  }
+			component: 'monatFlexshipChangeOrSkipOrderModal',
+			bindings: {
+			orderTemplate: this.orderTemplate,
+				scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
 		}).then((modal) => {
 			  //it's a bootstrap element, use 'modal' to show it
 		      modal.element.modal();
@@ -67,15 +69,16 @@ class MonatFlexshipMenuController{
 		this.ModalService.closeModals();
 		
 		this.ModalService.showModal({
-		      component: 'monatFlexshipPaymentMethodModal',
-			  bindings: {
-			    orderTemplate: this.orderTemplate,
+			component: 'monatFlexshipPaymentMethodModal',
+			bindings: {
+				orderTemplate: this.orderTemplate,
 			    accountAddresses: this.accountAddresses,
 			    accountPaymentMethods: this.accountPaymentMethods,
 			    stateCodeOptions: this.stateCodeOptions,
 			    expirationMonthOptions: this.expirationMonthOptions,
 			    expirationYearOptions: this.expirationYearOptions
-			  },
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
 		}).then((modal) => {
 			  //it's a bootstrap element, use 'modal' to show it
 		      modal.element.modal();
@@ -89,13 +92,14 @@ class MonatFlexshipMenuController{
 	public showFlexshipEditShippingMethodModal = () => {
 		this.ModalService.closeModals();
 		this.ModalService.showModal({
-		      component: 'monatFlexshipShippingMethodModal',
-			  bindings: {
-			    orderTemplate: this.orderTemplate,
-			    accountAddresses: this.accountAddresses,
-			    shippingMethodOptions: this.shippingMethodOptions,
-			    stateCodeOptions: this.stateCodeOptions
-			  },
+			component: 'monatFlexshipShippingMethodModal',
+			bindings: {
+			orderTemplate: this.orderTemplate,
+			accountAddresses: this.accountAddresses,
+			shippingMethodOptions: this.shippingMethodOptions,
+				stateCodeOptions: this.stateCodeOptions
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
 		}).then((modal) => {
 			  //it's a bootstrap element, use 'modal' to show it
 		      modal.element.modal();
