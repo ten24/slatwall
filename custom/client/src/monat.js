@@ -59296,9 +59296,18 @@ exports.MonatEnrollment = MonatEnrollment;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EnrollmentMPController = /** @class */ (function () {
     // @ngInject
-    function EnrollmentMPController($rootScope, $scope) {
-        this.$rootScope = $rootScope;
-        this.$scope = $scope;
+    function EnrollmentMPController(publicService) {
+        var _this = this;
+        this.publicService = publicService;
+        this.$onInit = function () {
+            console.log(_this.contentId);
+            _this.getStarterPacks();
+        };
+        this.getStarterPacks = function () {
+            _this.publicService.doAction('getStarterPackBundleStruct', { contentId: _this.contentId }).then(function (data) {
+                console.log(data);
+            });
+        };
     }
     return EnrollmentMPController;
 }());
@@ -59314,7 +59323,9 @@ var MonatEnrollmentMP = /** @class */ (function () {
         /**
          * Binds all of our variables to the controller so we can access using this
          */
-        this.bindToController = {};
+        this.bindToController = {
+            contentId: '@'
+        };
         this.controller = EnrollmentMPController;
         this.controllerAs = "enrollmentMp";
     }
@@ -59386,7 +59397,6 @@ var VIPController = /** @class */ (function () {
         this.currentStateCode = '';
         this.mpSearchText = '';
         this.currentMpPage = 1;
-        this.isVIPEnrollment = false;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
@@ -59408,7 +59418,7 @@ var VIPController = /** @class */ (function () {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
                 + '&search=' + _this.mpSearchText
                 + '&currentPage=' + _this.currentMpPage
-                + '&accountTypeCode=D'
+                + '&accountSearchType=VIP'
                 + '&countryCode=' + _this.currentCountryCode
                 + '&stateCode=' + _this.currentStateCode);
         };

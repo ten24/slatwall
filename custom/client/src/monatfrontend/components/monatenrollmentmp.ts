@@ -1,16 +1,27 @@
 class EnrollmentMPController {
     public Account_CreateAccount;
+    public contentId;
+    public bundles = [];
+    
 
     // @ngInject
     constructor(
-        public $rootScope,
-        public $scope,
+        public publicService
     ){}
     
+    public $onInit = () => {
+        console.log( this.contentId );
+        this.getStarterPacks();
+    }
+    
+    public getStarterPacks = () => {
+        this.publicService.doAction('getStarterPackBundleStruct', { contentId: this.contentId }).then( data => {
+            this.bundles = data.bundles;
+        })
+    }
 }
 
 class MonatEnrollmentMP {
-    
     
     public require          = {
         ngModel:'?^ngModel'    
@@ -22,6 +33,7 @@ class MonatEnrollmentMP {
     * Binds all of our variables to the controller so we can access using this
     */
     public bindToController = {
+        contentId: '@'
     };
     public controller       = EnrollmentMPController;
     public controllerAs     = "enrollmentMp";
