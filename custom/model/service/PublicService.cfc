@@ -154,16 +154,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getStarterPackBundleStruct( required any data ) {
-        param name="arguments.data.contentId" default="";
+        param name="arguments.data.contentID" default="";
         
-        if ( ! len( arguments.data.contentId ) ) {
+        if ( ! len( arguments.data.contentID ) ) {
             return;
         }
         
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundleCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundleCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentId );
+		bundleCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundleCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		bundleCollectionList.setDisplayProperties('
@@ -211,7 +211,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				name: skuBundle.bundledSku_product_productName,
 				price: skuBundle.bundledSku_product_calculatedSalePrice,
 				image: baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-			})
+			});
 		}
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;

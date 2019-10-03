@@ -2,22 +2,20 @@ class EnrollmentMPController {
     public Account_CreateAccount;
     public contentId;
     public bundles = [];
-    
 
     // @ngInject
     constructor(
         public publicService
     ){}
-    
+
     public $onInit = () => {
-        console.log( this.contentId );
         this.getStarterPacks();
     }
-    
+
     public getStarterPacks = () => {
-        this.publicService.doAction('getStarterPackBundleStruct', { contentId: this.contentId }).then( data => {
+        this.publicService.doAction('getStarterPackBundleStruct', { contentID: this.contentId }).then( data => {
             this.bundles = data.bundles;
-        })
+        });
     }
 }
 

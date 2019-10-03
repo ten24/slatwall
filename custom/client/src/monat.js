@@ -59299,13 +59299,13 @@ var EnrollmentMPController = /** @class */ (function () {
     function EnrollmentMPController(publicService) {
         var _this = this;
         this.publicService = publicService;
+        this.bundles = [];
         this.$onInit = function () {
-            console.log(_this.contentId);
             _this.getStarterPacks();
         };
         this.getStarterPacks = function () {
-            _this.publicService.doAction('getStarterPackBundleStruct', { contentId: _this.contentId }).then(function (data) {
-                console.log(data);
+            _this.publicService.doAction('getStarterPackBundleStruct', { contentID: _this.contentId }).then(function (data) {
+                _this.bundles = data.bundles;
             });
         };
     }
