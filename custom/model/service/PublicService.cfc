@@ -154,7 +154,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function setOwnerAccountOnAccount(required struct data){
         param name="arguments.data.ownerAccountID" default="";
-        
+        /** TODO: Once miguel's account type work goes add if statement to only run this if account type enrollment **/
         var account = getHibachiScope().getAccount();
         var ownerAccount = getAccountService().getAccount(arguments.data.ownerAccountID);
         account.setOwnerAccount(ownerAccount);
