@@ -1,16 +1,98 @@
-<div class="modal" id="flexship-product-modal{{monatProductlModal.orderTemplate.orderTemplateID}}">
-	<div class="modal-dialog">
-	    <div class="modal-content">
-	        
-	        <!-- Modal Close -->
+<div
+	class="modal product-details-modal fade"
+	id="flexship-product-modal{{ monatProductlModal.orderTemplate.orderTemplateID }}"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Close -->
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	            <i class="fas fa-times"></i>
-	        </button>
-	
-		<!---->
-		<!--    body    -->
-		<!---->
-		    
+				<i class="fas fa-times"></i>
+			</button>
+
+			<!--product image-->
+			<div class="product-img">
+				<img src="#local.productImageURL#" alt="#local.productName#" />
+			</div>
+			<!-- end product image-->
+
+			<!--product details-->
+			<div class="product-details">
+				<h2 class="modal-title" id="product-#local.productDefaultSkuID#-details">
+					<a href="#local.productUrl#">
+						#local.productName#
+					</a>
+				</h2>
+
+				<!-- star-rating	
+  				<cfif ! isNull( local.averageRating ) AND local.reviewCount>
+  					<sw:ReviewStars
+						rating="#local.averageRating#"
+						reviewCount="#local.reviewCount#"
+						reviewText="#attributes.slatwallScope.rbKey('frontend.product.reviews')#"
+						isProductPage="false"
+					>
+  				</cfif>
+  			-->
+
+				<!-- In this system
+  				
+  				<cfif len( local.productBundledSkus )>
+                    <p class="system">In this system</p>
+                    <p class="features">
+                        <cfloop array="#local.productBundledSkus#" item="item">
+                            <span class="feature">
+                                <cfset item.productUrl = attributes.slatwallScope.getService('ProductService').getProductUrlByUrlTitle( item.bundledSku_product_urlTitle ) />
+                                <a href="#item.productUrl#">#item.bundledSku_product_productName#</a>
+                            </span>
+                        </cfloop>
+                    </p>
+                </cfif>
+  			
+  			-->
+
+				<!--price group
+  			
+  				<div class="price-block">
+	                <cfif attributes.slatwallScope.account().hasPriceGroup( local.priceGroups[3] )>
+	                    <div class="price">
+	                    	#local.formattedVipPrice# 
+	                    	<span class="vip-price">
+	                    		#attributes.slatwallScope.rbKey('frontend.global.retail')# 
+	                    		#local.formattedRetailPrice#
+	                    	</span>
+	                   	</div>
+		                <cfelseif attributes.slatwallScope.account().hasPriceGroup( local.priceGroups[1] )>
+		                    <div class="price">
+		                        #local.formattedMpPrice# 
+		                        <span class="vip-price">
+		                        	#attributes.slatwallScope.rbKey('frontend.global.retail')# 
+		                        	#local.formattedRetailPrice#
+		                        </span>
+		                    </div>
+		                <cfelse>
+	                    <div class="price">#local.formattedRetailPrice# <span class="vip-price">#attributes.slatwallScope.rbKey('frontend.global.vip')# #local.formattedVipPrice#</span></div>
+	                </cfif>
+	  				<cfset local.productTooltipBean = attributes.muraScope.getBean('contentBean').loadBy(urltitle = 'Product Details: Tooltip')>
+					<button class="info tooltip-onclick" data-toggle="tooltip" data-placement="left" title="#encodeForHTML( #local.productTooltipBean.getComponentTitle()# )#">
+						<i class="far fa-question-circle"></i>
+					</button>
+	  			</div>
+	  		
+	  		end price group-->
+
+				<div class="qty-block">
+					<label sw-rbkey="'frontend.global.quantity'"></label>
+					<div class="qty">
+						<button type="button" class="minus">-</button>
+						<input class="form-control qty-input" type="text" name="quantity" value="1" />
+						<button type="button" class="plus">+</button>
+					</div>
+				</div>
+
+				<button class="btn bg-primary"><span sw-rbkey="'frontend.global.addToCart'"></span></button>
+
+				<!--end product details -->
+			</div>
 		</div>
 	</div>
 </div>
