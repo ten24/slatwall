@@ -67,9 +67,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		if(!structKeyExists(arguments, 'addressZoneID')){
 			arguments.addressZoneID = arguments.addressZone.getAddresssZoneID(); 	
-		} else {
-			arguments.addressZone = this.getAddressZone(arguments.addressZoneID);
-		}
+		}//addressZone not used beloww  
  
 		var cacheKey = "isAddressInZoneByZoneID" & arguments.addressZoneID;
 		if(!isNull(arguments.address.getPostalCode())){
