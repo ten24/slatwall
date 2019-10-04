@@ -53,9 +53,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="countryCodeOptions" type="array";
 	
 	// ===================== START: Logical Methods ===========================
-	
-	public boolean function isAddressInZone(required any address, required any addressZone) {
-		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
+	public boolean function isAddressInZone(required any address, required any addressZone){
+		return isAddressInZoneByZoneID(arguments.addressZone.getAddressZoneID(), arguments.address);
+	}
+
+
+	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
+		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZoneID;
 		if(!isNull(arguments.address.getPostalCode())){
 			cacheKey &= arguments.address.getPostalCode();
 		}
@@ -79,7 +83,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
 				",
 				{
-					addressZoneID=arguments.addressZone.getAddressZoneID(),
+					addressZoneID=arguments.addressZoneID,
 					postalCode=arguments.address.getPostalCode(),
 					city=arguments.address.getCity(),
 					stateCode=arguments.address.getStateCode(),
