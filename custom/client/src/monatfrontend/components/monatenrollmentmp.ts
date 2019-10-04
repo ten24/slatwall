@@ -1,11 +1,15 @@
 class EnrollmentMPController {
     public Account_CreateAccount;
-    public contentId;
-    public bundles = [];
+    public contentId:string;
+    public bundleHasErrors:boolean = false;
+    public openedBundle:any;
+    public selectedBundleID:string = '';
+    public bundles:any = [];
 
     // @ngInject
     constructor(
-        public publicService
+        public publicService,
+        public observerService,
     ){}
 
     public $onInit = () => {
@@ -16,6 +20,26 @@ class EnrollmentMPController {
         this.publicService.doAction('getStarterPackBundleStruct', { contentID: this.contentId }).then( data => {
             this.bundles = data.bundles;
         });
+    }
+    
+    public submitStarterPack = () => {
+        if ( this.selectedBundleID.length ) {
+            this.observerService.notify('onNext');
+        } else {
+            this.bundleHasErrors = true;
+        }
+    }
+    
+    public selectBundle = bundleID => {
+        this.selectedBundleID = bundleID;
+        this.bundleHasErrors = false;
+        this.openedBundle = null;
+    }
+    
+    private stripHtml = html => {
+       let tmp = document.createElement('div');
+       tmp.innerHTML = html;
+       return tmp.textContent || tmp.innerText || '';
     }
 }
 

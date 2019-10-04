@@ -59296,9 +59296,12 @@ exports.MonatEnrollment = MonatEnrollment;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EnrollmentMPController = /** @class */ (function () {
     // @ngInject
-    function EnrollmentMPController(publicService) {
+    function EnrollmentMPController(publicService, observerService) {
         var _this = this;
         this.publicService = publicService;
+        this.observerService = observerService;
+        this.bundleHasErrors = false;
+        this.selectedBundleID = '';
         this.bundles = [];
         this.$onInit = function () {
             _this.getStarterPacks();
@@ -59307,6 +59310,24 @@ var EnrollmentMPController = /** @class */ (function () {
             _this.publicService.doAction('getStarterPackBundleStruct', { contentID: _this.contentId }).then(function (data) {
                 _this.bundles = data.bundles;
             });
+        };
+        this.submitStarterPack = function () {
+            if (_this.selectedBundleID.length) {
+                _this.observerService.notify('onNext');
+            }
+            else {
+                _this.bundleHasErrors = true;
+            }
+        };
+        this.selectBundle = function (bundleID) {
+            _this.selectedBundleID = bundleID;
+            _this.bundleHasErrors = false;
+            _this.openedBundle = null;
+        };
+        this.stripHtml = function (html) {
+            var tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
         };
     }
     return EnrollmentMPController;

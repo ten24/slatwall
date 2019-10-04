@@ -168,13 +168,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundleCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		bundleCollectionList.setDisplayProperties('
 			bundledSku.product.productName,
-			bundledSku.product.productName,
 			bundledSku.product.calculatedSalePrice,
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
 			sku.product.productID,
 			sku.product.productName,
+			sku.product.productDescription,
 			sku.product.calculatedSalePrice,
 			sku.product.defaultSku.imageFile
 		');
@@ -191,26 +191,28 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			// If this is the first time the parent product is looped over, setup the product.
 			if ( ! structKeyExists( bundles, productID ) ) {
 				bundles[ productID ] = {
-					name: skuBundle.sku_product_productName,
-					price: skuBundle.sku_product_calculatedSalePrice,
-					image: baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					productTypes: {}
+					'ID': skuBundle.sku_product_productID,
+					'name': skuBundle.sku_product_productName,
+					'price': skuBundle.sku_product_calculatedSalePrice,
+					'description': skuBundle.sku_product_productDescription,
+					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+					'productTypes': {}
 				};
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
 			if ( ! structKeyExists( bundles[ productID ].productTypes, subProductTypeID ) ) {
 				bundles[ productID ].productTypes[ subProductTypeID ] = {
-					name: skuBundle.bundledSku_product_productType_productTypeName,
-					products: []
+					'name': skuBundle.bundledSku_product_productType_productTypeName,
+					'products': []
 				};
 			}
 		
 			// Add sub product to the struct.
 			arrayAppend( bundles[ productID ].productTypes[ subProductTypeID ].products, {
-				name: skuBundle.bundledSku_product_productName,
-				price: skuBundle.bundledSku_product_calculatedSalePrice,
-				image: baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
+				'name': skuBundle.bundledSku_product_productName,
+				'price': skuBundle.bundledSku_product_calculatedSalePrice,
+				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
 			});
 		}
 		
