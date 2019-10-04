@@ -11,6 +11,7 @@ class SWTooltipController {
 	constructor(public rbkeyService){
         if(angular.isDefined(this.rbKey)){
             this.text = rbkeyService.getRBKey(this.rbKey);
+            this.text = this.text.replace(RegExp("\n","g"), "\n");
         }
         if(angular.isUndefined(this.position)){
             this.position = "top";
@@ -51,6 +52,7 @@ class SWTooltip implements ng.IDirective{
       var tooltip = element.find(".tooltip");
       var elementPosition= element.position(); 
       var tooltipStyle = tooltip[0].style; 
+      
       if(attrs && attrs.position){
           switch(attrs.position.toLowerCase()){
               case 'top':

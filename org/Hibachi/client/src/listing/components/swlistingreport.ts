@@ -36,7 +36,10 @@ class SWListingReportController {
     public swListingDisplay:any;
     public isPublic:boolean;
     public accountOwnerID:string;
-    
+    public initchartobj:any;
+    public comparechartobj: any;
+    public chartcolors=["F78F1E","4F667E","62B7C4","173040","f15532", "ffc515", "469E52", "497350", "284030", "719499", "03A6A6", "173040", "57225B", "933B8F", "DA92AA", "634635"];
+
     
     //@ngInject
     constructor(
@@ -64,6 +67,7 @@ class SWListingReportController {
         }else{
             this.getPeriodColumns();
             this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
+            $("#get-started-report").removeClass("hide");
         }
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
@@ -83,6 +87,12 @@ class SWListingReportController {
     
     
     public saveReportCollection = (collectionName?)=>{
+        //Prevent saving report if no aggregate column is selected
+        if(!this.hasMetric) 
+        {
+            this.hasMetric = false;
+            return;
+        }
         if(collectionName || this.collectionId){
             
             
@@ -133,9 +143,12 @@ class SWListingReportController {
         this.collectionNameSaveIsOpen = true;
     }
     
-    private random_rgba = ()=>{
-        let o = Math.round, r = Math.random, s = 255;
-        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
+    private assign_color = (index)=>{
+        if( (index +1) > this.chartcolors.length )
+        {
+            index = 0;
+        }
+        return '#'+this.chartcolors[index];
     }
     
     //decides if report comes from persisted collection or transient
@@ -231,21 +244,24 @@ class SWListingReportController {
             
             this.endDate = new Date(this.endDate);
             this.endDate.setHours(23,59,59,999);
-            //if date is in the wrong format then update those dates
-            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
-            }
+            
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
                 this.tempEndDate = this.endDate;
-                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.startDate).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
             }else if(this.tempEndDate){
                 this.endDate = this.tempEndDate;
                 delete this.tempEndDate;
             }
+            
+            //if date is in the wrong format then update those dates
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+            }
+            
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
@@ -312,18 +328,18 @@ class SWListingReportController {
         this.endDateCompare = new Date(this.endDateCompare);
         this.endDateCompare.setHours(23,59,59,999);
         
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
+        }
+        
         //if date is in the wrong format then update those dates
         if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
             this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
             this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-        }
-        
-        if(this.selectedPeriodInterval.value=='hour'){
-            this.tempEndDateCompare= this.endDateCompare
-            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-        }else if (this.tempEndDateCompare){
-            this.endDateCompare = this.tempEndDateCompare;
-            delete this.tempEndDateCompare;
         }
         
         this.compareReportCollectionConfig = this.collectionConfig.clone();
@@ -355,14 +371,21 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		
+		
+        
 		if(ctx.is($("#myChartCompare"))){
 		    var chart = this.compareChart; 
+		    var oldchart = this.comparechartobj;
 		    this.compareReportingData=reportingData;
 		}else{
+		    var oldchart = this.initchartobj;
 		    var chart = this.chart;
 		}
 		
-		
+		//check and destroy old chart
+		if(oldchart){
+            oldchart.destroy();
+	    }
 		
 		this.reportingData.records.forEach(element=>{
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
@@ -373,9 +396,10 @@ class SWListingReportController {
 		    dates.push(value);
 		});
 		
+		var colorcount = 0;
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
-		        let color = this.random_rgba();
+		        let color = this.assign_color(colorcount++);
 		        let title = column.displayTitle || column.title;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
@@ -399,9 +423,13 @@ class SWListingReportController {
 		    }
 		});
 		//used to clear old rendered charts before adding new ones
-		if(chart!=null){
-            chart.destroy();
-        }
+		
+		if(ctx.is($("#myChartCompare"))){
+		    var chart_label = `${this.startDateCompare.toDateString ? this.startDateCompare.toDateString():this.startDate} - ${this.endDateCompare.toDateString?this.endDateCompare.toDateString():this.endDateCompare}`;
+		}
+		else{
+		    var chart_label = `${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate}`;
+		}
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -413,7 +441,7 @@ class SWListingReportController {
                 responsive: true,
                 title:{
                   display:true,
-                  text:`(${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`
+                  text:'('+chart_label+')'
                 },
                 scales: {
                     yAxes: [{
@@ -455,6 +483,14 @@ class SWListingReportController {
             }
         });
         chart.draw();
+        //assign chart object to global variables
+        if(ctx.is($("#myChartCompare")))
+        {
+            this.comparechartobj = chart;
+        }
+        else{
+            this.initchartobj = chart;
+        }
         this.observerService.notifyById('swListingReport_DrawChart',this.tableId,chart);
     }
     
@@ -605,6 +641,10 @@ class SWListingReport  implements ng.IDirective{
 			$event.stopPropagation();
 		    scope.swListingReport.openedCalendarEndCompare = true;
 		};
+		
+		scope.swListingReport.removeInfoWIndow = function(event) {
+		   $("#get-started-report").remove();
+        };
     }
 }
 

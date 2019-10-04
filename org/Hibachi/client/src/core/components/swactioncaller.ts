@@ -15,12 +15,15 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
+    
     public eventListeners:any;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
     public formController:any;
     public form:ng.IFormController;
+    public authenticateActionByAccount:any;
+    public actionAuthenticated:boolean;
     //@ngInject
     constructor(
         private $scope,
@@ -33,7 +36,9 @@ class SWActionCallerController{
         private observerService,
         private $hibachi,
         private rbkeyService,
+        private hibachiAuthenticationService,
         hibachiPathBuilder
+        
     ){
         this.$scope = $scope;
         this.$element = $element;
@@ -44,6 +49,7 @@ class SWActionCallerController{
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
+        this.hibachiAuthenticationService = hibachiAuthenticationService;
 
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
@@ -52,10 +58,12 @@ class SWActionCallerController{
             //need to perform init after promise completes
             //this.init();
         });
+        
+        this.authenticateActionByAccount = this.hibachiAuthenticationService.autheticateActionByAccount;
     }
-
-
+    
     public $onInit = ():void =>{
+        this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){

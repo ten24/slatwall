@@ -63,35 +63,28 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createpromotion" entity="promotion" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.promotionSmartList#"
-							   recorddetailaction="admin:entity.detailpromotion"
-							   recordEditAction="admin:entity.editpromotion">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'Promotion'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editpromotion"
-		record-detail-action="admin:entity.detailpromotion"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset promotionCollectionList = getHibachiScope().getService('promotionService').getPromotionCollectionList()>
+	<cfset serchableDisplayProperties = "promotionName,createdDateTime,modifiedDateTime,activeFlag,currentFlag"/>
+	<cfset promotionCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset promotionCollectionList.addDisplayProperty(displayProperty='promotionID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#promotionCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(promotionCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(promotionCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="promotionID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="promotionName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="modifiedDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currentFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

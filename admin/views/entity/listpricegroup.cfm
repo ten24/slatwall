@@ -61,30 +61,28 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createpricegroup" entity="pricegroup" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.priceGroupSmartList#"
-								recordDetailAction="admin:entity.detailpricegroup"
-								recordEditAction="admin:entity.editpricegroup">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
-		<hb:HibachiListingColumn propertyIdentifier="priceGroupCode" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'PriceGroup'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editpricegroup"
-		record-detail-action="admin:entity.detailpricegroup"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset priceGroupCollectionList = getHibachiScope().getService('priceGroupService').getPriceGroupCollectionList()>
+	<cfset serchableDisplayProperties = "priceGroupName,priceGroupCode,activeFlag"/>
+	<cfset priceGroupCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset priceGroupCollectionList.addDisplayProperty(displayProperty='priceGroupID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#priceGroupCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(priceGroupCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(priceGroupCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="priceGroupID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="priceGroupName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="priceGroupCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

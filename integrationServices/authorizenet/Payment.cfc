@@ -179,9 +179,9 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 	private any function getResponseBean(required struct rawResponse, required any requestData, required any requestBean){
 
 		var response = getTransient('CreditCardTransactionResponseBean');
-		arguments.requestData = deserializeJSON(arguments.requestData);
+		arguments.requestData = deserializeJSON(REReplace(trim(arguments.requestData), '[^\x00-\x7F]', '', "ALL"));
 
-		var responseData = deserializeJSON(arguments.rawResponse.fileContent).transactionResponse;
+		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL")).transactionResponse;
 
 
 		// Populate the data with the raw response & request
@@ -205,7 +205,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			}else if (structKeyExists(responseData, 'messages')){
 				response.addError(responseData.messages.message[1].code, responseData.messages.message[1].text);
 			}else{
-				var allresponse = deserializeJSON(arguments.rawResponse.fileContent);
+				var allresponse = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL"));
 				if(structKeyExists(allresponse, 'messages')) {
 					response.addError(allresponse.messages.message[1].code, allresponse.messages.message[1].text);
 				}else{
@@ -303,7 +303,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		var response = getTransient('CreditCardTransactionResponseBean');
 		requestData = deserializeJSON(requestData);
 
-		var responseData = deserializeJSON(rawResponse.fileContent);
+		var responseData = deserializeJSON( REReplace(trim(rawResponse.filecontent), '[^\x00-\x7F]', '', "ALL"));
 
 		// Populate the data with the raw response & request
 		var data = {
@@ -342,4 +342,3 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 	}
 
 }
-

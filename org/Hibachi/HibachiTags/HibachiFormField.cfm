@@ -23,23 +23,24 @@
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<!---
-		attributes.fieldType have the following options:
+	attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
 		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		date				|	This is still just a textbox, but it adds the jQuery date picker
 		dateTime			|	This is still just a textbox, but it adds the jQuery date & time picker
 		file				|	No value can be passed in
+		hidden				|	This is used mostly for processing
 		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		password			|	No Value can be passed in
 		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+		readOnly			|	No value can be passed in
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
 		time				|	This is still just a textbox, but it adds the jQuery time picker
+		typeahead			|	This is used for working with the angular typeahead functionality
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-		hidden				|	This is used mostly for processing
-		typeahead			|	This is used for working with the angular typeahead functionality
 	--->
 
 	<cfsilent>
@@ -215,6 +216,11 @@
 				</cfloop>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnly">
+			<cfoutput>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
@@ -249,105 +255,52 @@
 				</cfif>
 			</cfoutput>
 		</cfcase>
-		<cfcase value="text">
+		<cfcase value="text,email">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
-		<cfcase value="textautocomplete">
-			<cfoutput>
-			
-				<cfscript>
-					if(attributes.object.isPersistent()){
-						lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
-						propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
-					}else{
-						lastEntityName = attributes.object.getClassName();
-						propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
-					}
-					
-					relatedEntity = listLast(attributes.property,'.');
-					propertyMetaData = propsStruct[relatedEntity];
-					if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
-						primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
-						simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
-					}else{
-					}
-					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
-				</cfscript>
+		<cfcase value="textautocomplete,typeahead">
+			<cfscript>
+				if(attributes.object.isPersistent()){
+					lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+				}else{
+					lastEntityName = attributes.object.getClassName();
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
+				}
 				
-				<sw-typeahead-input-field
-					data-entity-name="#propertyMetaData.cfc#"
-			        data-property-to-save="#primaryIDName#"
-			        data-property-to-show="#simpleRepresentationName#"
-			        data-properties-to-load="#primaryIDName#,#simpleRepresentationName#"
-			        data-show-add-button="true"
-			        data-show-view-button="true"
-			        data-placeholder-rb-key="#propertynamerbkey#"
-			        data-placeholder-text="Search #propertynamerbkey#"
-			        data-multiselect-mode="false"
-			        data-filter-flag="false"
-			        data-selected-format-string="##"
-			        data-field-name="#attributes.fieldName#"
-			        data-initial-entity-id="#attributes.value#"
-			        data-max-records="20"
-			        data-order-by-list="#simpleRepresentationName#|ASC">
-			
-
-
-					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
-	
-				</sw-typeahead-input-field>
-			</cfoutput>
-		</cfcase>
-		<cfcase value="typeahead">
+				relatedEntity = listLast(attributes.property,'.');
+				propertyMetaData = propsStruct[relatedEntity];
+				if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+					primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+					simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+				}else{
+				}
+				propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
+			</cfscript>
+			<cfset typeAheadCollectionListMethodName = 'get#attributes.property#TypeAheadCollectionList'/>
+			<cfif attributes.object.isPersistent() OR (
+				!attributes.object.isPersistent() 
+				AND structKeyExists(attributes.object,typeAheadCollectionListMethodName)
+			)>
+				<cfset entityCollectionList=attributes.object.invokeMethod(typeAheadCollectionListMethodName)/>
+			<cfelse>
+				<cfset entityCollectionList=attributes.hibachiScope.getService('hibachiService').invokeMethod('get#propertyMetaData.cfc#CollectionList')/>
+			</cfif>
+			<cfset entityCollectionList.setDisplayProperties('#primaryIDName#',{isVisible=false,isSearchable=false})/>
+			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			<cfoutput>
 				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
-					<!--- Generic Configured brand --->
-					<sw-typeahead-input-field
-							data-entity-name="#attributes.autocompleteDataEntity#"
-					        data-property-to-save="#attributes.autocompleteValueProperty#"
-					        data-property-to-show="#attributes.autocompleteNameProperty#"
-					        data-properties-to-load="#attributes.autocompletePropertyIdentifiers#"
-					        data-show-add-button="true"
-					        data-show-view-button="true"
-					        data-placeholder-rb-key=""
-					        data-placeholder-text="Search #attributes.autocompleteDataEntity#"
-					        data-multiselect-mode="false"
-					        data-filter-flag="true"
-					        data-field-name="#attributes.fieldName#"
-					        data-initial-entity-id="#attributes.value#"
-					        data-max-records="#attributes.maxrecords#"
-					        data-order-by-list="#attributes.autocompleteNameProperty#|ASC">
-
-					    <sw-collection-config
-					            data-entity-name="#attributes.autocompleteDataEntity#"
-					            data-collection-config-property="typeaheadCollectionConfig"
-					            data-parent-directive-controller-as-name="swTypeaheadInputField"
-					            data-all-records="true">
-					    	
-					    	<!--- Columns --->
- 							<sw-collection-columns>
- 								<sw-collection-column data-property-identifier="#attributes.autocompleteNameProperty#" is-searchable="true"></sw-collection-column>
- 								<sw-collection-column data-property-identifier="#attributes.autocompleteValueProperty#" is-searchable="false"></sw-collection-column>
- 							</sw-collection-columns>
- 							
- 							<!--- Order By --->
- 					    	<sw-collection-order-bys>
- 					        	<sw-collection-order-by data-order-by="#attributes.autocompleteNameProperty#|ASC"></sw-collection-order-by>
- 					    	</sw-collection-order-bys>
-
-					    	<!--- Filters --->
-					    	<cfif attributes.showActiveFlag EQ true>
-						    	<sw-collection-filters>
-		                            <sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
-		                        </sw-collection-filters>
-					    	</cfif>
-					    </sw-collection-config>
-
-						<span sw-typeahead-search-line-item data-property-identifier="#attributes.autocompleteNameProperty#" dropdownOpen="false" is-searchable="true"></span><br>
-
-					</sw-typeahead-input-field>
+					<hb:HibachiTypeahead 
+						edit="#attributes.edit#" 
+						collectionList="#entityCollectionList#"
+						fieldName="#attributes.fieldName#"
+						labelText=""
+						placeholder="Search #propertynamerbkey#"
+						initialEntityID="#attributes.value#"
+						data-max-records="20"
+					></hb:HibachiTypeahead>
 				</div>
 			</cfoutput>
 		</cfcase>

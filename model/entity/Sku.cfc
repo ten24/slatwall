@@ -1907,7 +1907,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function updateCalculatedProperties(boolean runAgain=false) {
 		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
 			super.updateCalculatedProperties(argumentCollection=arguments);
-			getHibachiScope().flushORMSession();
+			getHibachiScope().flushORMSession(arguments.runAgain);
 			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
 		}
 	}

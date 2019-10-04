@@ -72,7 +72,11 @@ component output="false" accessors="true" extends="HibachiService"  {
  		return arguments.rc;	
 	}
 	
-	public void function setProperSession() {
+	public void function setProperSession(boolean stateless=false) {
+		if(arguments.stateless){
+			getHibachiScope().setSession(this.newSession());
+			return;
+		}
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank

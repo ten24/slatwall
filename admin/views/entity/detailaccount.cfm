@@ -86,7 +86,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/termpaymentdetails" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
-			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="accountPaymentMethods" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" count="#rc.account.getGiftCardsCount()#" />
 			<hb:HibachiEntityDetailItem property="priceGroups" />
 			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />

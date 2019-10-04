@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.subscriptionBenefitSmartList" type="any" />
 
 <cfoutput>
@@ -61,29 +60,29 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
-							   recordDetailAction="admin:entity.detailsubscriptionbenefit"
-							   recordEditAction="admin:entity.editsubscriptionbenefit">
-
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
-
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'SubscriptionBenefit'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editsubscriptionbenefit"
-		record-detail-action="admin:entity.detailsubscriptionbenefit"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset subscriptionBenefitCollectionList = getHibachiScope().getService('subscriptionService').getSubscriptionBenefitCollectionList()>
+	<cfset serchableDisplayProperties = "subscriptionBenefitName"/>
+	<cfset subscriptionBenefitCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset subscriptionBenefitCollectionList.addDisplayProperty(displayProperty='subscriptionBenefitID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#subscriptionBenefitCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(subscriptionBenefitCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(subscriptionBenefitCollectionList.getCollectionObject())#"
 	>
-		<sw-listing-column data-property-identifier="subscriptionBenefitID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="subscriptionBenefitName" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

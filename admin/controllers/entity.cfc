@@ -264,7 +264,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 private void function populateWithAddressVerification(required struct rc){
+		
 		if(
+			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
+			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
 			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
 			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
 		){
@@ -313,16 +316,6 @@ private void function populateWithAddressVerification(required struct rc){
 		sites.addFilter('activeFlag', 1);
 		arguments.rc.sitesArray = sites.getRecords();
 		super.before(rc);
-	}
-	
-	public void function after(required struct rc){
-		if(structKeyExists(rc,'viewPath')){
-			request.layout = false;
-			getFW().setView("admin:entity.ajax");
-
-			rc.templatePath = "./#rc.viewPath#.cfm";
-
-		}
 	}
 	
 	//Account

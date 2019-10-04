@@ -56,50 +56,29 @@ Notes:
 <cfset rc.vendorOrderItemSmartList.addOrder("vendorOrder.createdDateTime|DESC") />
 
 <cfoutput>
-	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
+    <hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
+	
+    <cfset vendororderitemCollectionList = getHibachiScope().getService('vendorOrderService').getVendorOrderItemCollectionList()>
+	<cfset serchableDisplayProperties = "vendorOrder.vendor.vendorName,vendorOrder.vendorOrderNumber,vendorOrder.vendorOrderStatusType.typeName,stock.sku.product.brand.brandName,stock.sku.product.calculatedTitle,stock.sku.skuCode,stock.calculatedCurrentMargin,currencyCode,quantity,cost"/>
+	<cfset vendororderitemCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset vendororderitemCollectionList.addDisplayProperty( displayProperty='vendorOrderItemID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
-							   recorddetailaction="admin:entity.detailvendororderitem"
-							   recorddetailmodal="true"
-							   recordeditaction="admin:entity.editvendororderitem"
-							   recordEditQueryString="redirectAction=admin:entity.listVendorOrderItem"
-							   recordeditmodal="true">
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuName" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="stock.sku.price" />
-		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-    <hb:HibachiListingColumn propertyIdentifier="cost" />
+    <hb:HibachiListingDisplay 
+    		collectionList="#vendororderitemCollectionList#"
+    		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+    		recordEditAction="admin:entity.edit#lcase(vendororderitemCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(vendororderitemCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-		data-collection="'VendorOrderItem'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editvendororderitem"
-		record-edit-modal="true"
-		record-edit-query-string="redirectAction=admin:entity.listVendorOrderItem"
-		record-detail-action="admin:entity.detailvendororderitem"
-		record-detail-modal="true"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="vendorOrderItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrder.vendor.vendorName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderStatusType.typeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="stock.sku.product.brand.brandName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="stock.sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="stock.sku.skuCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="stock.calculatedCurrentMargin" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
-	    <sw-listing-column data-property-identifier="cost" ></sw-listing-column>
-	</sw-listing-display>
 </cfoutput>

@@ -190,7 +190,7 @@
                     <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenueLeftToBeRecognized,'currency')#</td>
                     <cfset totalDeferredRevenueLeftToBeRecognized+=deferredRevenueData[key].deferredRevenueLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredRevenueLeftToBeRecognized,'currency')#</td>
+                <td></td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
@@ -206,7 +206,7 @@
                     <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTaxLeftToBeRecognized,'currency')#</td>
                     <cfset totalDeferredTaxLeftToBeRecognized+=deferredRevenueData[key].deferredTaxLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTaxLeftToBeRecognized,'currency')#</td>
+                <td></td>
             </tr>
             <tr>
                 <cfset currentMonth = Month(rc.minDate)/>
@@ -222,7 +222,7 @@
                     <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotalLeftToBeRecognized,'currency')#</td>
                     <cfset totalDeferredTotalLeftToBeRecognized+=deferredRevenueData[key].deferredTotalLeftToBeRecognized/>
                 </cfloop>
-                <td>#$.slatwall.getService('HibachiUtilityService').formatValue(totalDeferredTotalLeftToBeRecognized,'currency')#</td>
+                <td></td>
             </tr>
         </tbody>
     </table>

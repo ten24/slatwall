@@ -53,8 +53,8 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="referenceNumber" ormtype="integer" generator="increment";
 	
 	// Related Object Properties (many-to-one)
-	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
-	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="toLocationID";
+	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID" hb_formFieldType="typeahead";
+	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="toLocationID" hb_formFieldType="typeahead";
 	property name="stockAdjustmentType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentType";
 	property name="stockAdjustmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentStatusType";
 	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";

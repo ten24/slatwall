@@ -65,25 +65,24 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
 </hb:HibachiListingDisplay> --->
 
-    <cfset rc.categoryCollectionList.addFilter('parentCategory','null','is')/>
+    <cfset rc.categoryCollectionList.addFilter(propertyIdentifier='parentCategory', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.categoryCollectionList.setDisplayProperties(displayPropertiesList='restrictAccessFlag,allowProductAssignmentFlag',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true"
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryName',columnConfig={
-		isSearchable="true",
-		isVisible="true",
-		isDeletable="true",
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
 		tdclass="primary"
 	},prepend=true)/>
 	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryID',columnConfig={
-		isSearchable="false",
-		isVisible="false",
-		isDeletable="false"
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayAggregate('childCategories','COUNT','childCategoriesCount')/>
-	
 	<hb:HibachiListingDisplay collectionList="#rc.categoryCollectionList#"
 		recordEditAction="admin:entity.edit#lcase(rc.categoryCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.categoryCollectionList.getCollectionObject())#"

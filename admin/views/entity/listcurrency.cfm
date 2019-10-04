@@ -49,44 +49,32 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.currencySmartList" type="any" />
+<cfparam name="rc.currencySmartList" type="any" />	
 
 <cfoutput>
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.currencySmartList#" showCreate="false">
-
-		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCaller action="admin:entity.createcurrency" entity="currency" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.currencySmartList#"
-							   recordDetailAction="admin:entity.detailcurrency"
-							   recordEditAction="admin:entity.editcurrency">
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="currencyName" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="currencyCode" />
-		<hb:HibachiListingColumn propertyIdentifier="formattedExample" />
-	</hb:HibachiListingDisplay> --->
+    <cfset currencyCollectionList = getHibachiScope().getService('currencyService').getCurrencyCollectionList()>
+	<cfset serchableDisplayProperties = "currencyCode,currencyName,formattedExample,activeFlag"/>
+	<cfset currencyCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
 
-	<sw-listing-display data-using-personal-collection="true"
-	    data-collection="'Currency'"
-	    data-edit="false"
-	    data-has-search="true"
-	    record-edit-action="admin:entity.editcurrency"
-	    record-detail-action="admin:entity.detailcurrency"
-	    data-is-angular-route="false"
-	    data-angular-links="false"
-	    data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="currencyCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currencyName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="formattedExample" ></sw-listing-column>
-	</sw-listing-display>
+    <hb:HibachiListingDisplay 
+    		collectionList="#currencyCollectionList#"
+    		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+    		recordEditAction="admin:entity.edit#lcase(currencyCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(currencyCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

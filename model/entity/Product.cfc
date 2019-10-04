@@ -60,7 +60,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
-	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
  
 	// Calculated Properties
@@ -71,11 +70,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
 
 	// Related Object Properties (many-to-one)
-	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_formFieldType="typeahead" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
-
+	property name="nextDeliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="many-to-one" fkcolumn="nextDeliveryScheduleDateID";
+	
 	// Related Object Properties (one-to-many)
 	property name="listingPages" singularname="listingPage" cfc="ProductListingPage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -152,20 +152,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-		//CUSTOM PROPERTIES BEGIN
 		
-		//CUSTOM PROPERTIES END
-
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
-			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
-			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
-			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
-			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
-			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
+			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
 			
-			if(arrayLen(deliveryScheduleDateValueRecords)){
-				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
+			deliveryScheduleDateSmartList.addOrder('deliveryScheduleDateValue');
+			deliveryScheduleDateSmartList.setPageRecordsShow(1);
+			var deliveryScheduleDate= deliveryScheduleDateSmartList.getPageRecords();
+			
+			if(arrayLen(deliveryScheduleDate)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDate[1];
 			}
 			
 		}
@@ -437,35 +434,35 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
-			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
-				ArrayAppend(filenames, skuData['imageFile']);
-				
-				var thisImage = {};
-				thisImage.originalFilename = skuData['imageFile'];
-				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-				thisImage.type = "skuDefaultImage";
-				thisImage.productID = getProductID();
-				thisImage.name = getTitle();
-				thisImage.description = getProductDescription();
-				thisImage.resizedImagePaths = [];
-				var resizeSizesCount = arrayLen(arguments.resizeSizes);
-				for(var s=1; s<=resizeSizesCount; s++) {
 
-					var resizeImageData = arguments.resizeSizes[s];
-					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-					resizeImageData.missingImagePath = missingImagePath;
-					arrayAppend(
-						thisImage.resizedImagePaths, 
-						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
-					);
-				}
-				//let's make sure the default sku image always comes first
-				if(skuData['skuID'] == getDefaultSku().getSkuID()){
-					arrayPrepend(imageGalleryArray, thisImage);
-				} else {
-					arrayAppend(imageGalleryArray, thisImage);
-				}
+			ArrayAppend(filenames, skuData['imageFile']);
+
+			var thisImage = {};
+			thisImage.originalFilename = skuData['imageFile'];
+			thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+			thisImage.type = "skuDefaultImage";
+			thisImage.productID = getProductID();
+			thisImage.name = getTitle();
+			thisImage.description = getProductDescription();
+			thisImage.resizedImagePaths = [];
+			var resizeSizesCount = arrayLen(arguments.resizeSizes);
+			for(var s=1; s<=resizeSizesCount; s++) {
+
+				var resizeImageData = arguments.resizeSizes[s];
+				resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+				resizeImageData.missingImagePath = missingImagePath;
+				arrayAppend(
+					thisImage.resizedImagePaths, 
+					getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+				);
 			}
+			//let's make sure the default sku image always comes first
+			if(!isNull(getDefaultSku()) && skuData['skuID'] == getDefaultSku().getSkuID()){
+				arrayPrepend(imageGalleryArray, thisImage);
+			} else {
+				arrayAppend(imageGalleryArray, thisImage);
+			}
+			
 		}
 
 		// Add all alternate image paths
@@ -496,6 +493,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
+				thisImage.modifiedDateTime = getModifiedDateTime();
 		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {

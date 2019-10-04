@@ -233,7 +233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var l = len(trim(arguments.creditCardNumber));
 			if( (l == 13 || l == 16) && left(n,1) == 4 ) {
 				return 'Visa';
-			} else if ( l == 16 && left(n,2) >= 51 && left(n,2) <= 55 ) {
+			} else if ( l == 16 && ((left(n,2) >= 51 && left(n,2) <= 55) || (left(n,4) >= 2221 && left(n,4) <= 2720)) ) {
 				return 'MasterCard';
 			} else if ( l == 16 && left(n,2) == 35 ) {
 				return 'JCB';

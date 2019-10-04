@@ -79,7 +79,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
 	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
