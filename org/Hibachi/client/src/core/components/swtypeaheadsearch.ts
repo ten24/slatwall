@@ -468,7 +468,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                     `
                 }
 
-                anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
+                
                 var listItemTemplate = angular.element(listItemTemplateString);
                 var anchorTemplate = angular.element(anchorTemplateString);
                
