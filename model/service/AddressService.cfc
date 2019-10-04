@@ -55,12 +55,23 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
-		var addressZone = this.getAddressZoneByAddressZoneID(arguments.addressZoneID);
-		return this.isAddressInZone(arguments.address, addressZone);
+		arguments.addressZone = this.getAddressZoneByAddressZoneID(arguments.addressZoneID);
+		return this.isAddressInZone(argumentCollection=arguments);
 	}
 
-	public boolean function isAddressInZone(required any address, required any addressZone) {
-		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
+	public boolean function isAddressInZone(required any address, any addressZone, string addressZoneID) {
+	
+		if(!structKeyExists(arguments, 'addressZone') && !structKeyExists(arguments, 'addressZoneID')){
+			return false; //assuming failure
+		} 
+
+		if(!structKeyExists(arguments, 'addressZoneID')){
+			arguments.addressZoneID=arguments.addressZone.getAddresssZoneID(); 	
+		} else if(!structKeyExists(arguments, 'addressZone') && structKeyExists(arguments, 'addressZoneID')){
+			arguments.addressZoneID=arguments.addressZone.getAddresssZoneID(); 	
+		}
+
+		var cacheKey = "isAddressInZoneByZoneID" & arguments.addressZoneID;
 		if(!isNull(arguments.address.getPostalCode())){
 			cacheKey &= arguments.address.getPostalCode();
 		}
