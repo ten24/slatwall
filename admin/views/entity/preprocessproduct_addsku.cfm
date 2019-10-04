@@ -79,7 +79,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="#rc.edit#">
                 <div class="giftCardPriceInfo">
 				    <hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmountType"  fieldName="newSku.redemptionAmountType" edit="#rc.edit#">
-				    <hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmount" fieldName="newSku.redemptionAmount" edit="#rc.edit#" value="0">
+				    <hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="baseRedemptionAmount" fieldName="newSku.baseRedemptionAmount" edit="#rc.edit#" value="0">
                 </div>
                 <script type="text/javascript">
                     jQuery("label[for='newSku.userDefinedPriceFlagYes']").click(function(){
@@ -92,18 +92,18 @@ Notes:
 
                     jQuery("select[name='newSku.redemptionAmountType']").change(function(){
                         if( jQuery("select[name='newSku.redemptionAmountType']").val() == "sameAsPrice"){
-                            jQuery("input[name='newSku.redemptionAmount']").hide();
-                            jQuery("label[for='newSku.redemptionAmount']").hide();
+                            jQuery("input[name='newSku.baseRedemptionAmount']").hide();
+                            jQuery("label[for='newSku.baseRedemptionAmount']").hide();
                         } else {
-                            jQuery("input[name='newSku.redemptionAmount']").show();
-                            jQuery("label[for='newSku.redemptionAmount']").show();
+                            jQuery("input[name='newSku.baseRedemptionAmount']").show();
+                            jQuery("label[for='newSku.baseRedemptionAmount']").show();
                         }
                     });
 
                     //init to hidden
                     if( jQuery("select[name='newSku.redemptionAmountType']").val() == "sameAsPrice"){
-                    	jQuery("input[name='newSku.redemptionAmount']").hide();
-                    	jQuery("label[for='newSku.redemptionAmount']").hide();
+                    	jQuery("input[name='newSku.baseRedemptionAmount']").hide();
+                    	jQuery("label[for='newSku.baseRedemptionAmount']").hide();
                     }
                 </script>
 			</cfif>
