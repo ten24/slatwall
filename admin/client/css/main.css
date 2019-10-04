@@ -8642,8 +8642,25 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   display: inline-block;
 }
+
+
+
+#reporting-top .btn-group button:focus {
+  outline: none !important;
+}
+.s-search-wrapper button:focus {
+  outline-style: none !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+
+
+.col span .save-icon {
+  margin: 0 5px;
+  font-size: 16px;
+
 #navTabs-Container {
   padding: 2em 1em;
+
 }
 #navTabs-Container .nav-tabs {
   padding-left: 0;
@@ -8683,6 +8700,7 @@ table.s-detail-content-table tbody tr.s-done {
   color: #a2a2a2;
   font-weight: 400;
 }
+
 .Mcard-wrapper {
   padding: 1em;
 }
@@ -8757,6 +8775,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .Mbtn-round {
   border-radius: 17px;
+
 }
 #hibachi-report-disable-compare {
   position: absolute;
