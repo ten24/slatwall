@@ -66,11 +66,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		} 
 
 		if(!structKeyExists(arguments, 'addressZoneID')){
-			arguments.addressZoneID=arguments.addressZoneID; 	
-		} else if(!structKeyExists(arguments, 'addressZone') && structKeyExists(arguments, 'addressZoneID')){
 			arguments.addressZoneID=arguments.addressZone.getAddresssZoneID(); 	
 		}
-
+ 
 		var cacheKey = "isAddressInZoneByZoneID" & arguments.addressZoneID;
 		if(!isNull(arguments.address.getPostalCode())){
 			cacheKey &= arguments.address.getPostalCode();
@@ -85,6 +83,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			cacheKey &= arguments.address.getCountryCode();
 		}
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+
 			var isAddressInZone = ORMExecuteQuery("
 				Select COUNT(azl) FROM SlatwallAddressZone az 
 				LEFT JOIN az.addressZoneLocations azl
@@ -95,7 +94,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
 				",
 				{
-					addressZoneID=arguments.addressZone.getAddressZoneID(),
+					addressZoneID=arguments.addressZoneID,
 					postalCode=arguments.address.getPostalCode(),
 					city=arguments.address.getCity(),
 					stateCode=arguments.address.getStateCode(),
