@@ -17,6 +17,7 @@
 <cfset local.ordersCollection.addDisplayProperty('calculatedTotal') />
 <cfset local.ordersCollection.addDisplayProperty('createdDateTime|DESC') />
 <cfset local.ordersCollection.applyData()>
+
 <cfset local.ordersCollection.setPageRecordsShow(10)>
 
 <cfset local.orders = local.ordersCollection.getPageRecords() />
