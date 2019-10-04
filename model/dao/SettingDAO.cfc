@@ -77,8 +77,8 @@ Notes:
 		<cfset var comparisonValue =""/>
 		<cfif getApplicationValue("databaseType") eq "Oracle10g">
 			<cfset comparisonValue = "LOWER(settingName)"/>
-		<cfelse>
-			<cfset comparisonValue = "settingName"/>
+			<cfset arguments.settingName = lcase(arguments.settingName) />
+			<cfset arguments.settingValue = lcase(arguments.settingValue) />
 		</cfif>
 		
 		<cfquery name="rs" maxrows="1">
@@ -87,10 +87,10 @@ Notes:
 			FROM
 				SwSetting
 			WHERE
-			  	#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
+			  	#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#">
 		  		<cfif structKeyExists(arguments, "settingValue")>
 			  	  		AND
-			  		#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingValue)#">  
+			  		#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#">  
 		  		</cfif>
 		</cfquery>
 		
@@ -105,11 +105,10 @@ Notes:
 		<cfset var relationship = "">
 		<cfset var rs = "">
 		
-		<cfset var comparisonValue =""/>
+		<cfset var comparisonValue ="settingName"/>
 		<cfif getApplicationValue("databaseType") eq "Oracle10g">
 			<cfset comparisonValue = "LOWER(settingName)"/>
-		<cfelse>
-			<cfset comparisonValue = "settingName"/>
+			<cfset arguments.settingName = lcase(arguments.settingName) />
 		</cfif>
 		
 		<cfquery name="rs" >
@@ -120,7 +119,7 @@ Notes:
 			FROM
 				SwSetting
 			WHERE
-				#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
+				#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#">
 				<cfloop list="#potentialRelationships#" index="local.relationship">
 					<cfif structKeyExists(arguments.settingRelationships, relationship)>
 						AND #relationship# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingRelationships[ relationship ]#" > 
