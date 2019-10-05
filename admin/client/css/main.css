@@ -3173,8 +3173,9 @@ table .s-table-header .table-section a.s-hint {
   padding: 3px 18px 0px 76px !important;
 }
 .s-titled-select-wrapper.s-site select {
-  padding: 3px 18px 0px 44px !important;
-  margin-top: 5px;
+  padding: 0px 18px 0px 47px !important;
+  height: 32px !important;
+  margin-top: 1px;
 }
 .s-titled-select-wrapper select {
   -webkit-appearance: none;
