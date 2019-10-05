@@ -19,6 +19,9 @@
 	        "orderFulfillmentID":{"eq":""},
 	        "shippingAccountAddressID":{"eq":"new"}
 	    },
+	    "noShippingOrderFulfillment":{
+	        "fulfillmentMethodType":{"neq":"shipping"}
+	    },
 	    "existingOrderFulfillment":{
 	        "orderFulfillment":{"null":false}
 	    },
@@ -67,6 +70,7 @@
 	"populatedPropertyValidation":{
 	    "shippingAddress":[
 	    	{"conditions":"existingOrderFulfillment","validate":false},
+	    	{"conditions":"noShippingOrderFulfillment","validate":false},
 	    	{"conditions":"newShippingOrderFulfillmentWithNewAddress","validate":"full"}
 	    ]
 	}
