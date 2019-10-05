@@ -284,6 +284,7 @@ class SWTypeaheadSearchController {
 
    public updateSelections = () =>{
        this.typeaheadService.updateSelections(this.typeaheadDataKey);
+       this.hideSearch = true;
    }
 
     public updateSearchableProperties = (column) =>{
