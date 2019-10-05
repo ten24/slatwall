@@ -626,6 +626,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			optionCode,
 			optionDescription,
 			sortOrder,
+			optionGroup.imageGroupFlag,
 			optionGroup.optionGroupName,
 			optionGroup.optionGroupCode,
 			optionGroup.optionGroupID,
@@ -691,6 +692,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
 				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
 				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
+				skuOptionDetails[ ogCode ][ "optionGroupImageGroupFlag" ] = optionData['optionGroup_imageGroupFlag'];
 				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
 			}
 
