@@ -10,6 +10,9 @@ component {
     property name="retailValueVolume" ormtype="big_decimal";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+	property name="skuAdjustedPricing" persistent="false";
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
@@ -146,4 +149,48 @@ component {
 			return variables[cacheKey];
 		}
     }
+    
+	public any function getSkuProductURL(){
+		var skuProductURL = this.getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getSkuAdjustedPricing(){
+			
+		var pricegroups = getHibachiScope().getAccount().getPriceGroups();
+		var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
+		/*** TODO: FIGURE OUT HOW TO GET SITE SETTING FOR THIS AND WISHLIST AS WELL ***/
+		var currencyCode = 'usd';//getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
+		var vipPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(3);
+		var retailPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(2);
+		var MPPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+
+		var adjustedAccountPrice = this.getPriceByCurrencyCode(currencyCode);
+		var adjustedVipPrice = this.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
+		var adjustedRetailPrice = this.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
+		var adjustedMPPrice = this.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+		var mPPersonalVolume = this.getPersonalVolumeByCurrencyCode()?:0;
+		
+		var formattedAccountPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+		var formattedVipPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+		var formattedRetailPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+		var formattedMPPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
+		var formattedPersonalVolume = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(mPPersonalVolume, {currencyCode:currencyCode});
+		
+		var skuAdjustedPricing = {
+			adjustedPriceForAccount = formattedAccountPricing,
+			vipPrice = formattedVipPricing,
+			retailPrice = formattedRetailPricing,
+			MPPrice = formattedMPPricing,
+			personalVolume = formattedPersonalVolume,
+			accountPriceGroup = priceGroupCode
+		};
+
+		return skuAdjustedPricing;
+	}
 }

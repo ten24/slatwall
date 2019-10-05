@@ -1,12 +1,23 @@
 class EnrollmentMPController {
     public Account_CreateAccount;
-
+    public loading:boolean = false;
+    public productList
     // @ngInject
     constructor(
         public $rootScope,
         public $scope,
+        public publicService
+
     ){}
-    
+    public $onInit = () =>{
+        this.getProductList();
+    }
+    public getProductList = ()=>{
+        this.loading = true;
+        this.publicService.doAction("getproducts", {pageRecordsShow: 1, currentPage: 5}).then(result => {
+            this.productList = result.productListing;
+        });
+   }
 }
 
 class MonatEnrollmentMP {

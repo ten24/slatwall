@@ -59296,9 +59296,21 @@ exports.MonatEnrollment = MonatEnrollment;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EnrollmentMPController = /** @class */ (function () {
     // @ngInject
-    function EnrollmentMPController($rootScope, $scope) {
+    function EnrollmentMPController($rootScope, $scope, publicService) {
+        var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        this.publicService = publicService;
+        this.loading = false;
+        this.$onInit = function () {
+            _this.getProductList();
+        };
+        this.getProductList = function () {
+            _this.loading = true;
+            _this.publicService.doAction("getproducts", { pageRecordsShow: 1, currentPage: 5 }).then(function (result) {
+                _this.productList = result.productListing;
+            });
+        };
     }
     return EnrollmentMPController;
 }());
@@ -59386,7 +59398,6 @@ var VIPController = /** @class */ (function () {
         this.currentStateCode = '';
         this.mpSearchText = '';
         this.currentMpPage = 1;
-        this.isVIPEnrollment = false;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
@@ -59408,7 +59419,7 @@ var VIPController = /** @class */ (function () {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
                 + '&search=' + _this.mpSearchText
                 + '&currentPage=' + _this.currentMpPage
-                + '&accountTypeCode=D'
+                + '&accountSearchType=VIP'
                 + '&countryCode=' + _this.currentCountryCode
                 + '&stateCode=' + _this.currentStateCode);
         };
@@ -60829,10 +60840,11 @@ var MonatProductCardController = /** @class */ (function () {
     // @ngInject
     function MonatProductCardController(
     //inject modal service
-    orderTemplateService, $rootScope) {
+    orderTemplateService, $rootScope, publicService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$rootScope = $rootScope;
+        this.publicService = publicService;
         this.pageRecordsShow = 5;
         this.currentPage = 1;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
@@ -60887,12 +60899,15 @@ var MonatProductCardController = /** @class */ (function () {
                 //launch normal modal
             }
         };
-        this.addToCart = function (type) {
-            if (type === 'flexship') {
+        this.addToCart = function (skuID, skuCode) {
+            _this.loading = true;
+            if (_this.type === 'flexship') {
                 //flexship logic
             }
             else {
-                //normal product logic
+                _this.publicService.doAction('addOrderItem', { skuID: skuID, skuCode: skuCode, quantities: 1 }).then(function (result) {
+                    _this.loading = false;
+                });
             }
         };
         this.setWishlistID = function (newID) {
