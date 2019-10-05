@@ -59302,13 +59302,42 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$scope = $scope;
         this.publicService = publicService;
         this.loading = false;
+        this.pageTracker = 1;
         this.$onInit = function () {
             _this.getProductList();
         };
-        this.getProductList = function () {
+        this.getProductList = function (pageNumber, direction) {
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
             _this.loading = true;
-            _this.publicService.doAction("getproducts", { pageRecordsShow: 1, currentPage: 5 }).then(function (result) {
+            var pageRecordsShow = 12;
+            if (direction === 'prev') {
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                if (_this.pageTracker >= _this.totalPages.length) {
+                    pageNumber = _this.totalPages.length;
+                    return pageNumber;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            _this.publicService.doAction("getproducts", { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then(function (result) {
                 _this.productList = result.productListing;
+                var holdingArray = [];
+                var pages = Math.ceil(result.recordsCount / pageRecordsShow);
+                for (var i = 0; i <= pages - 1; i++) {
+                    holdingArray.push(i);
+                }
+                _this.totalPages = holdingArray;
+                _this.pageTracker = pageNumber;
+                _this.loading = false;
             });
         };
     }
@@ -61368,8 +61397,7 @@ var SWFWishlistController = /** @class */ (function () {
             if (setNewTemplates === void 0) { setNewTemplates = true; }
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
-            _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+            _this.orderTemplateService.getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];

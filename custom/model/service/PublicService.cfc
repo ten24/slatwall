@@ -157,10 +157,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
 		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
-        // scrollableSmartList.setPageRecordsShow(5);
         
 	    scrollableSmartList.addFilter('activeFlag', true);
 	    scrollableSmartList.addFilter('publishedFlag', true);
+	    
+        var recordsCount = scrollableSmartList.getRecordsCount();
+        
+        scrollableSmartList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        scrollableSmartList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 
 		var scrollableSession = ormGetSessionFactory().openSession();
 		var productList = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
@@ -185,11 +190,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			      "productName"                 :       product.getProduct().getProductName()?:"",
 			      "skuID"                       :       product.getSkuID()?:"",
   			      "skuCode"                     :       product.getSkuCode()?:""
-
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
 		    }
+		    
+		    arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+		    
 		}catch (e){
             throw(e)
 		}finally{
