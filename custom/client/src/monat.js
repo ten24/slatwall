@@ -59302,40 +59302,63 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$scope = $scope;
         this.publicService = publicService;
         this.loading = false;
-        this.pageTracker = 1;
         this.$onInit = function () {
             _this.getProductList();
         };
-        this.getProductList = function (pageNumber, direction) {
+        this.getProductList = function (pageNumber, direction, newPages) {
             if (pageNumber === void 0) { pageNumber = 1; }
             if (direction === void 0) { direction = false; }
+            if (newPages === void 0) { newPages = false; }
             _this.loading = true;
             var pageRecordsShow = 12;
+            var setNew;
+            if (pageNumber === 1) {
+                setNew = true;
+            }
+            //Pagination logic TODO: abstract into a more reusable method
             if (direction === 'prev') {
+                setNew = false;
                 if (_this.pageTracker === 1) {
                     return pageNumber;
+                }
+                else if (_this.pageTracker === _this.totalPages[0] + 1) {
+                    var q = _this.totalPages[0];
+                    pageNumber = q;
+                    _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
                 }
                 else {
                     pageNumber = _this.pageTracker - 1;
                 }
             }
             else if (direction === 'next') {
+                setNew = false;
                 if (_this.pageTracker >= _this.totalPages.length) {
                     pageNumber = _this.totalPages.length;
                     return pageNumber;
+                }
+                else if (_this.pageTracker === _this.totalPages[9] + 1) {
+                    debugger;
+                    newPages = true;
                 }
                 else {
                     pageNumber = _this.pageTracker + 1;
                 }
             }
+            if (newPages) {
+                pageNumber = _this.totalPages[10] + 1;
+                _this.totalPages.splice(0, 10);
+                setNew = false;
+            }
             _this.publicService.doAction("getproducts", { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then(function (result) {
                 _this.productList = result.productListing;
-                var holdingArray = [];
-                var pages = Math.ceil(result.recordsCount / pageRecordsShow);
-                for (var i = 0; i <= pages - 1; i++) {
-                    holdingArray.push(i);
+                if (setNew) {
+                    var holdingArray = [];
+                    var pages = Math.ceil(result.recordsCount / pageRecordsShow);
+                    for (var i = 0; i <= pages - 1; i++) {
+                        holdingArray.push(i);
+                    }
+                    _this.totalPages = holdingArray;
                 }
-                _this.totalPages = holdingArray;
                 _this.pageTracker = pageNumber;
                 _this.loading = false;
             });
