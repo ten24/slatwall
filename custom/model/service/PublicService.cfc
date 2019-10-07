@@ -46,7 +46,7 @@ Notes:
 
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
-    
+
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
@@ -94,7 +94,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
 
 	}
-    
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";
@@ -149,7 +148,64 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         account.setPrimaryShippingAddress(shippingAddress);
         account = getAccountService().saveAccount(account);
         getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
-        
-
     }
+    
+	public void function getproducts(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+
+		arguments.data['ajaxResponse']['productListing'] = [];
+		
+		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
+        
+	    scrollableSmartList.addFilter('activeFlag', true);
+	    scrollableSmartList.addFilter('publishedFlag', true);
+	    scrollableSmartList.addWhereCondition("price <> 0.00");
+	    scrollableSmartList.addWhereCondition("personalVolume <> 'NULL'");
+	    
+        var recordsCount = scrollableSmartList.getRecordsCount();
+        
+        scrollableSmartList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        scrollableSmartList.setCurrentPageDeclaration(arguments.data.currentPage);
+
+		var scrollableSession = ormGetSessionFactory().openSession();
+		var productList = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
+		
+		//now iterate over all the objects
+		
+		try{
+		    while(productList.next()){
+		        
+			    var product = productList.get(0);
+			    var adjustedPricing = product.getSkuAdjustedPricing();
+			    
+			    var productStruct={
+			      "vipPrice"                    :       adjustedPricing.vipPrice?:"",
+			      "marketPartnerPrice"          :       adjustedPricing.MPPrice?:"",
+			      "adjustedPriceForAccount"     :       adjustedPricing.adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       adjustedPricing.retailPrice?:"",
+			      "personalVolume"              :       adjustedPricing.personalVolume?:"",
+			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
+			      "skuImagePath"                :       product.getSkuImagePath()?:"",
+			      "skuProductURL"               :       product.getSkuProductURL()?:"",
+			      "productName"                 :       product.getProduct().getProductName()?:"",
+			      "skuID"                       :       product.getSkuID()?:"",
+  			      "skuCode"                     :       product.getSkuCode()?:""
+			    };
+
+			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
+		    }
+		    
+		    arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+		    
+		}catch (e){
+            throw(e)
+		}finally{
+			if (scrollableSession.isOpen()){
+				scrollableSession.close();
+			}
+		}
+	} 
+	
+
 }
