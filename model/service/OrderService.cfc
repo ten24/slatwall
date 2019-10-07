@@ -1177,17 +1177,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	//begin order template functionality
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 
-		var ormSession = ormGetSessionFactory().openSession();
-	    var tx = ormSession.beginTransaction();
+		var fulfillmentCharge = 0; 
 
-		try{
-			var fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
-		} catch (any e) {
-			//if we have any error we probably don't have the required data for returning the total
-			var fulfillmentCharge = 0; 
-		} finally { 
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplate = arguments.orderTemplate; 	
+		
+		thread name="#threadName#"
+			   action="run" 
+		{	
+			var ormSession = ormGetSessionFactory().openSession();
+	    	var tx = ormSession.beginTransaction();
+			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
 			tx.commit();
 			ormSession.close();
+			
+		}
+		
+		//join thread so we can return synchronously
+		threadJoin(threadName);
+		
+		//if we have any error we probably don't have the required data for returning the total
+		if(!structKeyExists(evaluate(threadName), "ERROR")){
+			fulfillmentCharge = evaluate(threadName).fulfillmentCharge; 
+		} else {
+			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 
 		return fulfillmentCharge; 
@@ -1710,10 +1723,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_updateFrequency(required any orderTemplate, required any processObject, required struct data={}){
 
 		arguments.orderTemplate.setFrequencyTerm(getSettingService().getTerm(arguments.processObject.getFrequencyTerm().value));
-
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(arguments.processObject.getScheduleOrderDayOfTheMonth());
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate; 
+	}
+	
+	
+	public array function getOrderTemplateFrequencyTermOptions(){
+		var termCollection = getSettingService().getTermCollectionList();
+		termCollection.setDisplayProperties('termID|value,termName|name');
+		termCollection.addFilter('termID', getSettingService().getSettingValue('orderTemplateEligibleTerms'),'in');
+		return termCollection.getRecords();
+	} 
+	
+	public array function getOrderTemplateFrequencyDateOptions( yearsCount=20) {
+		var dateOptions = [];
+		for(var i = 1; i <= 25; i++) {
+			arrayAppend(dateOptions,{'name'= nth(i), 'value'=i});
+		}
+		return dateOptions;
+	}  
+	
+	private string function nth(d) {
+		if (arguments.d > 3 && arguments.d < 21) return arguments.d&"th";
+		switch (arguments.d % 10) {
+		    case 1:  return arguments.d&"st";
+		    case 2:  return arguments.d&"nd";
+		    case 3:  return arguments.d&"rd";
+		    default: return arguments.d&"th";
+		}
 	}
 	
 	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
@@ -1868,7 +1908,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,statusCode'
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
@@ -1917,10 +1958,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderTemplate; 
 	} 
 	
+	public any function getOrderTemplateItemForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateItemID" default="";
+	
+		if(len(arguments.data.orderTemplateItemID) == 0) {
+			ArrayAppend(arguments.data.messages, 'data.orderTemplateItemID must be set');
+			return;
+		} 
+		
+		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateItemID)
+		
+		if( isNull(orderTemplateItem) ){
+			ArrayAppend(arguments.data.messages, 'no orderTemplateItem found for orderTemplateItemID: #arguments.data.orderTemplateItemID#');
+			return;
+		}  
+		
+		if( arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
+			ArrayAppend(arguments.data.messages, "orderTemplateItem doesn't belong to the User");
+			return; 
+		}
+	
+		return orderTemplateItem; 
+	} 
+	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "scheduleOrderNextPlaceDateTime,scheduleOrderDayOfTheMonth,calculatedOrderTemplateItemsCount,frequencyTerm.termName,subtotal,fulfillmentTotal,total,shippingMethod.shippingMethodName,statusCode"; //extra prop we need
-		
+		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
 		
@@ -1935,7 +1999,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return response;
 	}
 
-	private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
@@ -1945,7 +2009,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
 		displayProperties &= 'sku.priceByCurrencyCode';
-
+		
 		orderTemplateItemCollection.setDisplayProperties(displayProperties)
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 

@@ -2,6 +2,7 @@
 class MonatFlexshipCancelModalController {
 	public orderTemplate; 
 	public cancellationReasonTypeOptions: any[];
+	public close; // injected from angularModalService
 	
 	public formData = {}; // {typeID:'', typeIDOther: '' }
 
@@ -35,6 +36,7 @@ class MonatFlexshipCancelModalController {
             	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+	                this.closeModal();
             	} else {
             		console.error(data);
             		//TODO handle errors
@@ -47,6 +49,10 @@ class MonatFlexshipCancelModalController {
             }
         );
     }
+    
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
 }
 
 class MonatFlexshipCancelModal {
@@ -57,7 +63,8 @@ class MonatFlexshipCancelModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    cancellationReasonTypeOptions:'<'
+	    cancellationReasonTypeOptions:'<',
+	    close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipCancelModalController;
 	public controllerAs="monatFlexshipCancelModal";

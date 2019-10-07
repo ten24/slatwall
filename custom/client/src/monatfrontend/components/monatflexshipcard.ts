@@ -15,7 +15,7 @@ class MonatFlexshipCardController{
 	public expirationYearOptions: any[];
 	
     //@ngInject
-	constructor(public observerService){
+	constructor(public observerService, public ModalService){
 	}
 	
 	public $onInit = () =>{
@@ -28,6 +28,24 @@ class MonatFlexshipCardController{
 	
 	public updateOrderTemplate = (orderTemplate?) => {
 		this.orderTemplate = orderTemplate;
+	}
+	
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+	public showEditFlexshipNameModal = () => {
+		this.ModalService.closeModals();
+		this.ModalService.showModal({
+			component: 'monatFlexshipNameModal',
+			bindings: {
+				orderTemplate: this.orderTemplate
+			},
+			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
+		}).then((modal) => {
+			  //it's a bootstrap element, use 'modal' to show it
+		      modal.element.modal();
+		      modal.close.then((result) => {});
+		}).catch((error) => {
+		    console.error("unable to open model :",error);	
+		});
 	}
 
 }

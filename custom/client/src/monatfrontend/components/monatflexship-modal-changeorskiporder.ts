@@ -1,7 +1,8 @@
 
 class MonatFlexshipChangeOrSkipOrderModalController {
-	public orderTemplate; 
-	public scheduleDateChangeReasonTypeOptions;
+	public orderTemplate:any; 
+	public scheduleDateChangeReasonTypeOptions:any[];
+	public close; // injected from angularModalService
 	
 	public endDayOfTheMonth = 25;
 	public endDateString;
@@ -99,6 +100,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
             	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+	                this.closeModal();
             	} else {
             		console.error(data);
             		//TODO handle errors
@@ -112,6 +114,9 @@ class MonatFlexshipChangeOrSkipOrderModalController {
         );
     }
 
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
 }
 
 class MonatFlexshipChangeOrSkipOrderModal {
@@ -122,7 +127,8 @@ class MonatFlexshipChangeOrSkipOrderModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    scheduleDateChangeReasonTypeOptions:'<'
+	    scheduleDateChangeReasonTypeOptions:'<',
+	    close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipChangeOrSkipOrderModalController;
 	public controllerAs="monatFlexshipChangeOrSkipOrderModal";

@@ -1,17 +1,53 @@
 class VIPController {
     public Account_CreateAccount;
+    public countryCodeOptions:any = [];
+    public stateCodeOptions:any = [];
+    public currentCountryCode:string = '';
+    public currentStateCode:string = '';
+    public mpSearchText:string = '';
+    public currentMpPage:number = 1;
 
     // @ngInject
     constructor(
-        public $rootScope,
-        public $scope,
+        public publicService
     ){}
     
+    public $onInit = () => {
+        this.getCountryCodeOptions();
+    }
+    
+    public getCountryCodeOptions = () => {
+        if ( this.countryCodeOptions.length ) {
+            return this.countryCodeOptions;
+        }
+        
+        this.publicService.getCountries().then( data => {
+            this.countryCodeOptions = data.countryCodeOptions;
+        });
+    }
+    
+    public getStateCodeOptions = countryCode => {
+        this.currentCountryCode = countryCode;
+        
+        this.publicService.getStates( countryCode ).then( data => {
+            this.stateCodeOptions = data.stateCodeOptions;
+        });
+    }
+    
+    public getMpResults = () => {
+        this.publicService.marketPartnerResults = this.publicService.doAction(
+            '/?slatAction=monat:public.getmarketpartners'
+			+ '&search='+ this.mpSearchText 
+			+ '&currentPage='+ this.currentMpPage 
+			+ '&accountSearchType=VIP'
+			+ '&countryCode=' + this.currentCountryCode
+			+ '&stateCode=' + this.currentStateCode
+		);
+    }
 }
 
-class MonatEnrollmentVIPController  {
-    
-    
+class MonatEnrollmentVIP {
+
     public require          = {
         ngModel:'?^ngModel'    
     };
@@ -30,13 +66,12 @@ class MonatEnrollmentVIPController  {
     }
 
     public static Factory(){
-        var directive = () => new MonatEnrollmentVIPController();
+        var directive = () => new MonatEnrollmentVIP();
         directive.$inject = [];
         return directive;
     }
     
 }
 export{
-    MonatEnrollmentVIPController,
-    VIPController
+    MonatEnrollmentVIP
 }
