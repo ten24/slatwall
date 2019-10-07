@@ -60935,11 +60935,11 @@ var MonatProductCardController = /** @class */ (function () {
     // @ngInject
     function MonatProductCardController(
     //inject modal service
-    orderTemplateService, $rootScope, publicService) {
+    orderTemplateService, $rootScope, monatService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$rootScope = $rootScope;
-        this.publicService = publicService;
+        this.monatService = monatService;
         this.pageRecordsShow = 5;
         this.currentPage = 1;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
@@ -61000,7 +61000,7 @@ var MonatProductCardController = /** @class */ (function () {
                 //flexship logic
             }
             else {
-                _this.publicService.doAction('addOrderItem', { skuID: skuID, skuCode: skuCode, quantities: 1 }).then(function (result) {
+                _this.monatService.addToCart(skuID, 1).then(function (result) {
                     _this.loading = false;
                 });
             }
@@ -89288,11 +89288,12 @@ module.exports = __webpack_require__(302);
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatMiniCartController = /** @class */ (function () {
     //@ngInject
-    function MonatMiniCartController(monatService, rbkeyService, ModalService) {
+    function MonatMiniCartController(monatService, rbkeyService, ModalService, observerService) {
         var _this = this;
         this.monatService = monatService;
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
+        this.observerService = observerService;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -89372,6 +89373,7 @@ var MonatMiniCartController = /** @class */ (function () {
                 //TODO hide loader...
             });
         };
+        this.observerService.attach(this.fetchCart, "addOrderItemSuccess");
     }
     return MonatMiniCartController;
 }());

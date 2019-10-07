@@ -29,7 +29,7 @@
 				<i class="fas fa-chevron-left"></i>
 			</a>
 			
-			<span ng-init="myStyle='position:static;' " class="qty-and-price text-white">
+			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 1" ng-init="myStyle='position:static;' " class="qty-and-price text-white">
 				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
 				<small ng-click="myStyle=='position:static; display:block' ? myStyle='position:static; display:none' : myStyle='position:static; display:block' " class="border-bottom ml-3">Show Cart</small>
 			</span>			
@@ -44,7 +44,7 @@
 		
 	</div>
 	
-	<div class="w-100">
+	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 1" class="w-100">
 		<!--- Mini cart ---> 
 	    <monat-mini-cart type="enrollment" data-style="{{myStyle}}"> </monat-mini-cart>		
 	</div>
