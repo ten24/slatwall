@@ -41,10 +41,10 @@ class EnrollmentMPController {
         }else if(direction === 'next'){
             setNew = false;
             if(this.pageTracker >= this.totalPages.length){
+                debugger;
                 pageNumber = this.totalPages.length;
                 return pageNumber;
             } else if(this.pageTracker === this.totalPages[9] + 1){
-                debugger
                 newPages = true;
             } else{
                 pageNumber = this.pageTracker +1;

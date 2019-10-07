@@ -59333,11 +59333,11 @@ var EnrollmentMPController = /** @class */ (function () {
             else if (direction === 'next') {
                 setNew = false;
                 if (_this.pageTracker >= _this.totalPages.length) {
+                    debugger;
                     pageNumber = _this.totalPages.length;
                     return pageNumber;
                 }
                 else if (_this.pageTracker === _this.totalPages[9] + 1) {
-                    debugger;
                     newPages = true;
                 }
                 else {
