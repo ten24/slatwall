@@ -177,6 +177,24 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	
 	
+	/// . ############# .     cart .   ################
+	
+	
+	public any function addOrderItem(required struct rc) {
+	    getPublicService().addOrderItem(arguments.rc);
+	}
+	
+	public any function removeOrderItem(required struct rc) {
+	    getPublicService().removeOrderItem(arguments.rc);
+	}
+	
+	public any function updateOrderItemQuantity(required struct rc) {
+	    getPublicService().updateOrderItemQuantity(arguments.rc);
+	}
+	
+	
+	//////////////////////////////////////////////
+	
 	
 	
 	///    ############### .  getXXXOptions();  .  ###############   
