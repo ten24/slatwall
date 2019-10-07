@@ -45,12 +45,6 @@ export class MonatService {
 			.newPublicRequest('?slatAction=api:public.' + action, payload)
 			.promise.then((data) => {
 				if (data.cart) {
-					/**
-	               		 * TODO
-		               	&& data.successfulActions 
-		               	&& data.successfulActions.indexOf('public:cart.'+action) > -1
-	               		 */
-
 					this.cart = data.cart;
 					deferred.resolve(data.cart);
 				} else {

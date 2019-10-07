@@ -59234,11 +59234,12 @@ var MonatMiniCartController = /** @class */ (function () {
                 throw error;
             })
                 .finally(function () {
-                //TODO deal with the loader 
+                //TODO deal with the loader
             });
         };
         this.removeItem = function (item) {
-            _this.monatService.removeFromCart(item.orderItemID)
+            _this.monatService
+                .removeFromCart(item.orderItemID)
                 .then(function (data) {
                 _this.cart = data;
             })
@@ -61670,25 +61671,19 @@ var MonatService = /** @class */ (function () {
         /**
          * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
          *
-        */
+         */
         this.updateCart = function (action, payload) {
             var deferred = _this.$q.defer();
             payload['returnJSONObjects'] = 'cart';
             _this.requestService
                 .newPublicRequest('?slatAction=api:public.' + action, payload)
-                .promise
-                .then(function (data) {
+                .promise.then(function (data) {
                 if (data.cart) {
-                    /**
-                     * TODO
-                    && data.successfulActions
-                    && data.successfulActions.indexOf('public:cart.'+action) > -1
-                     */
                     _this.cart = data.cart;
                     deferred.resolve(data.cart);
                 }
                 else {
-                    throw (data);
+                    throw data;
                 }
             })
                 .catch(function (e) {
@@ -61702,7 +61697,8 @@ var MonatService = /** @class */ (function () {
         if (refresh === void 0) { refresh = false; }
         var deferred = this.$q.defer();
         if (refresh || angular.isUndefined(this.cart)) {
-            this.publicService.getCart(refresh)
+            this.publicService
+                .getCart(refresh)
                 .then(function (data) {
                 _this.cart = data;
                 deferred.resolve(_this.cart);
@@ -61719,14 +61715,14 @@ var MonatService = /** @class */ (function () {
     MonatService.prototype.addToCart = function (skuID, qunatity) {
         if (qunatity === void 0) { qunatity = 1; }
         var payload = {
-            'skuID': skuID,
-            'qunatity': qunatity,
+            skuID: skuID,
+            qunatity: qunatity,
         };
         return this.updateCart('addOrderItem', payload);
     };
     MonatService.prototype.removeFromCart = function (orderItemID) {
         var payload = {
-            'orderItemID': orderItemID,
+            orderItemID: orderItemID,
         };
         return this.updateCart('removeOrderItem', payload);
     };
