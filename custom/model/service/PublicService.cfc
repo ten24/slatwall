@@ -161,4 +161,70 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         account = getAccountService().saveAccount(account);
         getHibachiScope().addActionResult( "public:account.setOwnerAccountOnAccount", account.hasErrors());
     }
+    
+    public void function getStarterPackBundleStruct( required any data ) {
+        param name="arguments.data.contentID" default="";
+        
+        if ( ! len( arguments.data.contentID ) ) {
+            return;
+        }
+        
+        var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
+		
+		var bundleCollectionList = getService('HibachiService').getSkuBundleCollectionList();
+		bundleCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+		bundleCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
+		bundleCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundleCollectionList.setDisplayProperties('
+			bundledSku.product.productName,
+			bundledSku.product.calculatedSalePrice,
+			bundledSku.product.defaultSku.imageFile,
+			bundledSku.product.productType.productTypeID,
+			bundledSku.product.productType.productTypeName,
+			sku.product.productID,
+			sku.product.productName,
+			sku.product.productDescription,
+			sku.product.calculatedSalePrice,
+			sku.product.defaultSku.imageFile
+		');
+		
+		var skuBundles = bundleCollectionList.getRecords();
+		
+		// Build out bundles struct
+		var bundles = {};
+		for ( var skuBundle in skuBundles ) {
+		
+			var productID = skuBundle.sku_product_productID
+			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID
+		
+			// If this is the first time the parent product is looped over, setup the product.
+			if ( ! structKeyExists( bundles, productID ) ) {
+				bundles[ productID ] = {
+					'ID': skuBundle.sku_product_productID,
+					'name': skuBundle.sku_product_productName,
+					'price': skuBundle.sku_product_calculatedSalePrice,
+					'description': skuBundle.sku_product_productDescription,
+					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+					'productTypes': {}
+				};
+			}
+			
+			// If this is the first product type of it's kind, setup the product type.
+			if ( ! structKeyExists( bundles[ productID ].productTypes, subProductTypeID ) ) {
+				bundles[ productID ].productTypes[ subProductTypeID ] = {
+					'name': skuBundle.bundledSku_product_productType_productTypeName,
+					'products': []
+				};
+			}
+		
+			// Add sub product to the struct.
+			arrayAppend( bundles[ productID ].productTypes[ subProductTypeID ].products, {
+				'name': skuBundle.bundledSku_product_productName,
+				'price': skuBundle.bundledSku_product_calculatedSalePrice,
+				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
+			});
+		}
+		
+		arguments.data['ajaxResponse']['bundles'] = bundles;
+    }
 }
