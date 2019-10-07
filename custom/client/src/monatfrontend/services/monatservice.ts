@@ -58,10 +58,10 @@ export class MonatService {
 		return deferred.promise;
 	};
 
-	public addToCart(skuID: string, qunatity: number = 1) {
+	public addToCart(skuID: string, quantity: number = 1) {
 		let payload = {
 			skuID: skuID,
-			qunatity: qunatity,
+			quantity: quantity,
 		};
 
 		return this.updateCart('addOrderItem', payload);

@@ -94,7 +94,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
 
 	}
-    
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";
@@ -151,5 +150,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
         
 
+    }
+    
+    public void function setOwnerAccountOnAccount(required struct data){
+        param name="arguments.data.ownerAccountID" default="";
+        /** TODO: Once miguel's account type work goes add if statement to only run this if account type enrollment **/
+        var account = getHibachiScope().getAccount();
+        var ownerAccount = getAccountService().getAccount(arguments.data.ownerAccountID);
+        account.setOwnerAccount(ownerAccount);
+        account = getAccountService().saveAccount(account);
+        getHibachiScope().addActionResult( "public:account.setOwnerAccountOnAccount", account.hasErrors());
     }
 }

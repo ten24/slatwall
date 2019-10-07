@@ -59421,9 +59421,47 @@ exports.MonatEnrollment = MonatEnrollment;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EnrollmentMPController = /** @class */ (function () {
     // @ngInject
-    function EnrollmentMPController($rootScope, $scope) {
+    function EnrollmentMPController($rootScope, $scope, publicService) {
+        var _this = this;
         this.$rootScope = $rootScope;
         this.$scope = $scope;
+        this.publicService = publicService;
+        this.isMPEnrollment = false;
+        this.countryCodeOptions = [];
+        this.stateCodeOptions = [];
+        this.currentCountryCode = '';
+        this.$onInit = function () {
+            _this.getCountryCodeOptions();
+        };
+        this.getMpResults = function (model) {
+            _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
+                + '&search=' + model.mpSearchText
+                + '&currentPage=' + 1
+                + '&accountSearchType=marketPartner'
+                + '&countryCode=' + model.currentCountryCode
+                + '&stateCode=' + model.currentStateCode);
+        };
+        this.getCountryCodeOptions = function () {
+            if (_this.countryCodeOptions.length) {
+                return _this.countryCodeOptions;
+            }
+            _this.publicService.getCountries().then(function (data) {
+                _this.countryCodeOptions = data.countryCodeOptions;
+            });
+        };
+        this.getStateCodeOptions = function (countryCode) {
+            _this.currentCountryCode = countryCode;
+            _this.publicService.getStates(countryCode).then(function (data) {
+                _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
+        this.setOwnerAccount = function (ownerAccountID) {
+            _this.loading = true;
+            _this.publicService.doAction('setOwnerAccountOnAccount', { 'ownerAccountID': ownerAccountID }).then(function (result) {
+                console.log(result);
+                _this.loading = false;
+            });
+        };
     }
     return EnrollmentMPController;
 }());
@@ -59511,6 +59549,7 @@ var VIPController = /** @class */ (function () {
         this.currentStateCode = '';
         this.mpSearchText = '';
         this.currentMpPage = 1;
+        this.isVIPEnrollment = false;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
