@@ -59322,6 +59322,7 @@ var EnrollmentMPController = /** @class */ (function () {
                     return pageNumber;
                 }
                 else if (_this.pageTracker === _this.totalPages[0] + 1) {
+                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
                     var q = _this.totalPages[0];
                     pageNumber = q;
                     _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
@@ -59344,6 +59345,7 @@ var EnrollmentMPController = /** @class */ (function () {
                 }
             }
             if (newPages) {
+                // If user is at the end of 10 page length display, get next 10 pages
                 pageNumber = _this.totalPages[10] + 1;
                 _this.totalPages.splice(0, 10);
                 setNew = false;
