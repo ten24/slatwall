@@ -59430,6 +59430,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.stateCodeOptions = [];
         this.currentCountryCode = '';
         this.bundleHasErrors = false;
+        this.sponsorHasErrors = false;
         this.selectedBundleID = '';
         this.bundles = [];
         this.$onInit = function () {
@@ -59447,6 +59448,14 @@ var EnrollmentMPController = /** @class */ (function () {
             }
             else {
                 _this.bundleHasErrors = true;
+            }
+        };
+        this.submitSponsor = function () {
+            if (_this.selectedMP) {
+                _this.observerService.notify('onNext');
+            }
+            else {
+                _this.sponsorHasErrors = true;
             }
         };
         this.selectBundle = function (bundleID) {

@@ -6,7 +6,9 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean;
     public contentId:string;
+    public selectedMP:any;
     public bundleHasErrors:boolean = false;
+    public sponsorHasErrors:boolean = false;
     public openedBundle:any;
     public selectedBundleID:string = '';
     public bundles:any = [];
@@ -34,6 +36,14 @@ class EnrollmentMPController {
         } else {
             this.bundleHasErrors = true;
         }
+    }
+    
+    public submitSponsor = () => {
+    	if ( this.selectedMP ) {
+            this.observerService.notify('onNext');
+    	} else {
+    		this.sponsorHasErrors = true;
+    	}
     }
     
     public selectBundle = bundleID => {
