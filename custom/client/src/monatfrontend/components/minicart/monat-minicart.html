@@ -5,7 +5,7 @@
 				<i class="fas fa-chevron-up"></i>
 			</a>
 			<span class="qty-and-price">
-				{{ monatMiniCart.cart.calculatedItemsCount }}
+				{{ monatMiniCart.cart.totalItemQuantity }}
 				<span sw-rbkey="'frontend.miniCart.items'"></span>
 				/
 				<span sw-rbkey="'frontend.miniCart.total'"></span>
@@ -23,18 +23,18 @@
 	<div class="flexship-container">
 		<div class="product-container">
 			<ul>
-				<li ng-repeat="item in monatMiniCart.cart.items">
+				<li ng-repeat="item in monatMiniCart.cart.orderItems">
 					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="item.sku_imagePath" alt="" />
+							<img ng-src="item.sku.imagePath" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
 						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku_product_productName"></span>
+							<span ng-bind="item.sku.skuDefinition"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">
@@ -64,7 +64,7 @@
 						</div>
 						<div class="price-block">
 							<!--TODO calc actual price => price*qty -->
-							<span class="price">{{ item.sku_priceByCurrencyCode | currency }}</span>
+							<span class="price">{{ item.price | currency }}</span>
 						</div>
 					</div>
 				</li>

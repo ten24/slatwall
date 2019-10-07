@@ -17,30 +17,75 @@ export class MonatService {
 	public getCart(refresh = false) {
 		var deferred = this.$q.defer();
 		if (refresh || angular.isUndefined(this.cart)) {
-			this.publicService.getCart(refresh).then((data) => {
-				this.cart = data;
-				deferred.resolve(this.cart);
-			});
+			this.publicService
+				.getCart(refresh)
+				.then((data) => {
+					this.cart = data;
+					deferred.resolve(this.cart);
+				})
+				.catch((e) => {
+					deferred.reject(e);
+				});
 		} else {
 			deferred.resolve(this.cart);
 		}
 		return deferred.promise;
 	}
 
-	public addToCart() {
-		//TODO
+	/**
+	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
+	 *
+	 */
+
+	private updateCart = (action: string, payload): Promise<any> => {
+		let deferred = this.$q.defer();
+		payload['returnJSONObjects'] = 'cart';
+
+		this.requestService
+			.newPublicRequest('?slatAction=api:public.' + action, payload)
+			.promise.then((data) => {
+				if (data.cart) {
+					/**
+	               		 * TODO
+		               	&& data.successfulActions 
+		               	&& data.successfulActions.indexOf('public:cart.'+action) > -1
+	               		 */
+
+					this.cart = data.cart;
+					deferred.resolve(data.cart);
+				} else {
+					throw data;
+				}
+			})
+			.catch((e) => {
+				deferred.reject(e);
+			});
+
+		return deferred.promise;
+	};
+
+	public addToCart(skuID: string, qunatity: number = 1) {
+		let payload = {
+			skuID: skuID,
+			qunatity: qunatity,
+		};
+
+		return this.updateCart('addOrderItem', payload);
 	}
 
-	public removeCartItem() {
-		//TODO
+	public removeFromCart(orderItemID: string) {
+		let payload = {
+			orderItemID: orderItemID,
+		};
+		return this.updateCart('removeOrderItem', payload);
 	}
 
-	public increaseCartItemQuantity() {
-		//TODO
-	}
-
-	public decreaseCartItemQuantity() {
-		//TODO
+	public updateCartItemQuantity(orderItemID: string, quantity: number = 1) {
+		let payload = {
+			'orderItem.orderItemID': orderItemID,
+			'orderItem.quantity': quantity,
+		};
+		return this.updateCart('updateOrderItemQuantity', payload);
 	}
 
 	/**

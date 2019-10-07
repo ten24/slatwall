@@ -25,7 +25,7 @@ class MonatMiniCartController {
 			totalSteps: totalSteps,
 		};
 		this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey(
-			'frontend.MiniCart.currentStepOfTtotalSteps',
+			'frontend.miniCart.currentStepOfTtotalSteps',
 			stepsPlaceHolderData,
 		);
 	};
@@ -34,11 +34,8 @@ class MonatMiniCartController {
 		this.monatService
 			.getCart()
 			.then((data) => {
-				if (data.cart) {
-					this.cart = data.cart;
-					//TODO handle errors / success
-				} else {
-					throw data;
+				if (data) {
+					this.cart = data;
 				}
 			})
 			.catch((error) => {
@@ -46,60 +43,53 @@ class MonatMiniCartController {
 				throw error;
 			})
 			.finally(() => {
-				//TODO deal with the loader ui
+				//TODO deal with the loader
 			});
 	};
 
-	private getCartItemIndexByID = (cartItemID: string) => {
-		return this.cart.items.findIndex((it) => it.cartItemID === cartItemID);
+	public removeItem = (item) => {
+		this.monatService
+			.removeFromCart(item.orderItemID)
+			.then((data) => {
+				this.cart = data;
+			})
+			.catch((reason) => {
+				throw reason;
+				//TODO handle errors / success
+			})
+			.finally(() => {
+				//TODO hide loader...
+			});
 	};
 
-	public removeCartItem = (item) => {
-		this.monatService.removeOrderTemplateItem(item.cartItemID).then(
-			(data) => {
-				if (data.successfulActions && data.successfulActions.indexOf('public:cart.removeItem') > -1) {
-					this.cart = data.cart;
-				} else {
-					console.log('removeCartItem res: ', data);
-				}
-				//TODO handle errors / success
-			},
-			(reason) => {
-				throw reason;
-			},
-		);
+	public increaseItemQuantity = (item) => {
+		this.monatService
+			.updateCartItemQuantity(item.orderItemID, item.quantity + 1)
+			.then((data) => {
+				this.cart = data;
+			})
+			.catch((reason) => {
+				throw reason; //TODO handle errors / success alerts
+			})
+			.finally(() => {
+				//TODO hide loader...
+			});
 	};
 
-	public increaseCartItemQuantity = (item) => {
-		this.monatService.editCartItem(item.cartID, item.quantity + 1).then(
-			(data) => {
-				if (data.cart) {
-					this.cart = data.cart;
-				} else {
-					console.error('increaseCartItemQuantity res: ', data);
-				}
-				//TODO handle errors / success
-			},
-			(reason) => {
-				throw reason;
-			},
-		);
-	};
+	public decreaseItemQuantity = (item) => {
+		if (item.quantity <= 1) return;
 
-	public decreaseOrderTemplateItemQuantity = (item) => {
-		this.monatService.editCartItem(item.cartID, item.quantity - 1).then(
-			(data) => {
-				if (data.cart) {
-					this.cart = data.cart;
-				} else {
-					console.error('decreaseOrderTemplateItemQuantity res: ', data);
-				}
-				//TODO handle errors / success
-			},
-			(reason) => {
-				throw reason;
-			},
-		);
+		this.monatService
+			.updateCartItemQuantity(item.orderItemID, item.quantity - 1)
+			.then((data) => {
+				this.cart = data;
+			})
+			.catch((reason) => {
+				throw reason; //TODO handle errors / success
+			})
+			.finally(() => {
+				//TODO hide loader...
+			});
 	};
 }
 
