@@ -8,6 +8,7 @@ class EnrollmentMPController {
     public countryCodeOptions:any = [];
     public stateCodeOptions:any = [];
     public currentCountryCode:string = '';
+    public step:any;
 
     // @ngInject
     constructor(
@@ -62,7 +63,7 @@ class EnrollmentMPController {
     public getProductList = (pageNumber = 1, direction:any = false, newPages = false )=>{
         this.loading = true;
         const pageRecordsShow = 12;
-        let setNew 
+        let setNew;
         
         if(pageNumber === 1){
             setNew = true;            
@@ -77,11 +78,12 @@ class EnrollmentMPController {
                 // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
                 let q = this.totalPages[0];
                 pageNumber = q;
+                //its not beautiful but it works 
                 this.totalPages.unshift(q - 10,q - 9,q - 8,q - 7,q - 6,q - 5,q - 4,q - 3,q - 2,q - 1);
             }else{
                 pageNumber = this.pageTracker -1;
             }
-        }else if(direction === 'next'){
+        } else if(direction === 'next'){
             setNew = false;
             if(this.pageTracker >= this.totalPages[this.totalPages.length - 1]){
                 pageNumber = this.totalPages.length;
@@ -113,13 +115,11 @@ class EnrollmentMPController {
                 
                 this.totalPages = holdingArray;
             }
-
             this.pageTracker = pageNumber;
             this.loading = false;
         });
     }
 }
-
 
 class MonatEnrollmentMP {
 	public require = {
@@ -131,7 +131,9 @@ class MonatEnrollmentMP {
 	/**
 	 * Binds all of our variables to the controller so we can access using this
 	 */
-	public bindToController = {};
+	public bindToController = {
+	    step: '@?'
+	};
 	public controller = EnrollmentMPController;
 	public controllerAs = 'enrollmentMp';
 	// @ngInject
@@ -142,6 +144,5 @@ class MonatEnrollmentMP {
 		directive.$inject = [];
 		return directive;
 	}
-
 }
 export { MonatEnrollmentMP };

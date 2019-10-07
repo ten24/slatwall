@@ -1,5 +1,5 @@
-<div class="flexship-block">
-	<div class="flexship-bar">
+<div class="flexship-block" style="{{monatMiniCart.style}}" >
+	<div ng-if="monatMiniCart.type != 'enrollment' " class="flexship-bar">
 		<div class="open-flexship">
 			<a href="#">
 				<i class="fas fa-chevron-up"></i>
@@ -12,7 +12,9 @@
 				{{ monatMiniCart.cart.total | currency }}
 			</span>
 		</div>
+		
 		<span class="steps" ng-bind-html="monatMiniCart.translations.currentStepOfTtotalSteps"></span>
+		
 		<div class="go-to-cart">
 			<a href="/shopping-cart" class="btn bg-primary btn-block">
 				<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
@@ -20,7 +22,7 @@
 		</div>
 	</div>
 
-	<div class="flexship-container">
+	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.style}}">
 		<div class="product-container">
 			<ul class="item-slider">
 				<li ng-repeat="item in monatMiniCart.cart.orderItems">
@@ -34,7 +36,7 @@
 					</div>
 					<h6 class="title-sm">
 						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku.skuDefinition"></span>
+							<span class="product-name" ng-bind="item.sku.skuDefinition"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">
@@ -73,5 +75,6 @@
 		<a href="/shopping-cart" class="btn bg-primary btn-block">
 			<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
 		</a>
+
 	</div>
 </div>

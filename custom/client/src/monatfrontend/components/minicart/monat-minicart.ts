@@ -1,6 +1,7 @@
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
-
+	public type:any;
+	
 	//@ngInject
 	constructor(public monatService, public rbkeyService, public ModalService) {}
 
@@ -101,6 +102,8 @@ class MonatMiniCart {
 	public bindToController = {
 		orderTemplateId: '@',
 		orderTemplate: '<?',
+		type: '@?',
+		style:'@?'
 	};
 	public controller = MonatMiniCartController;
 	public controllerAs = 'monatMiniCart';

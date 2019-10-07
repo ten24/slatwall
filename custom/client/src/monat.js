@@ -59359,6 +59359,7 @@ var EnrollmentMPController = /** @class */ (function () {
                     // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
                     var q = _this.totalPages[0];
                     pageNumber = q;
+                    //its not beautiful but it works 
                     _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
                 }
                 else {
@@ -59413,7 +59414,9 @@ var MonatEnrollmentMP = /** @class */ (function () {
         /**
          * Binds all of our variables to the controller so we can access using this
          */
-        this.bindToController = {};
+        this.bindToController = {
+            step: '@?'
+        };
         this.controller = EnrollmentMPController;
         this.controllerAs = 'enrollmentMp';
     }
@@ -59442,7 +59445,7 @@ var MonatEnrollmentStep = /** @class */ (function () {
         this.transclude = true;
         this.scope = {
             stepClass: '@',
-            onNext: '=?'
+            onNext: '=?',
         };
         this.require = '^monatEnrollment';
         this.link = function (scope, element, attrs, monatEnrollment) {
@@ -89382,6 +89385,8 @@ var MonatMiniCart = /** @class */ (function () {
         this.bindToController = {
             orderTemplateId: '@',
             orderTemplate: '<?',
+            type: '@?',
+            style: '@?'
         };
         this.controller = MonatMiniCartController;
         this.controllerAs = 'monatMiniCart';
