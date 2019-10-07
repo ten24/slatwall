@@ -40,8 +40,7 @@ class EnrollmentMPController {
             }
         }else if(direction === 'next'){
             setNew = false;
-            if(this.pageTracker >= this.totalPages.length){
-                debugger;
+            if(this.pageTracker >= this.totalPages[this.totalPages.length - 1]){
                 pageNumber = this.totalPages.length;
                 return pageNumber;
             } else if(this.pageTracker === this.totalPages[9] + 1){
