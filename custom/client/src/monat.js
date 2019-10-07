@@ -59405,17 +59405,17 @@ var MonatEnrollmentMP = /** @class */ (function () {
     // @ngInject
     function MonatEnrollmentMP() {
         this.require = {
-            ngModel: '?^ngModel'
+            ngModel: '?^ngModel',
         };
         this.priority = 1000;
-        this.restrict = "A";
+        this.restrict = 'A';
         this.scope = true;
         /**
          * Binds all of our variables to the controller so we can access using this
          */
         this.bindToController = {};
         this.controller = EnrollmentMPController;
-        this.controllerAs = "enrollmentMp";
+        this.controllerAs = 'enrollmentMp';
     }
     MonatEnrollmentMP.Factory = function () {
         var directive = function () { return new MonatEnrollmentMP(); };
@@ -59504,12 +59504,16 @@ var VIPController = /** @class */ (function () {
             });
         };
         this.getMpResults = function () {
-            _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
-                + '&search=' + _this.mpSearchText
-                + '&currentPage=' + _this.currentMpPage
-                + '&accountSearchType=VIP'
-                + '&countryCode=' + _this.currentCountryCode
-                + '&stateCode=' + _this.currentStateCode);
+            _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners' +
+                '&search=' +
+                _this.mpSearchText +
+                '&currentPage=' +
+                _this.currentMpPage +
+                '&accountSearchType=VIP' +
+                '&countryCode=' +
+                _this.currentCountryCode +
+                '&stateCode=' +
+                _this.currentStateCode);
         };
     }
     return VIPController;
@@ -59518,17 +59522,17 @@ var MonatEnrollmentVIP = /** @class */ (function () {
     // @ngInject
     function MonatEnrollmentVIP() {
         this.require = {
-            ngModel: '?^ngModel'
+            ngModel: '?^ngModel',
         };
         this.priority = 1000;
-        this.restrict = "A";
+        this.restrict = 'A';
         this.scope = true;
         /**
          * Binds all of our variables to the controller so we can access using this
          */
         this.bindToController = {};
         this.controller = VIPController;
-        this.controllerAs = "vipController";
+        this.controllerAs = 'vipController';
     }
     MonatEnrollmentVIP.Factory = function () {
         var directive = function () { return new MonatEnrollmentVIP(); };
@@ -61564,12 +61568,12 @@ var swfwishlist_1 = __webpack_require__(626);
 var swfmyaccount_1 = __webpack_require__(624);
 var monatproductcard_1 = __webpack_require__(623);
 var monatenrollmentmp_1 = __webpack_require__(606);
+var monat_minicart_1 = __webpack_require__(857);
 //services
 var monatservice_1 = __webpack_require__(628);
 var ordertemplateservice_1 = __webpack_require__(629);
-var monatfrontendmodule = angular.module('monatfrontend', [
-    frontend_module_1.frontendmodule.name, 'angularModalService'
-])
+var monatfrontendmodule = angular
+    .module('monatfrontend', [frontend_module_1.frontendmodule.name, 'angularModalService'])
     //constants
     .constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
     //directives
@@ -61595,12 +61599,16 @@ var monatfrontendmodule = angular.module('monatfrontend', [
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
     .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
+    .directive('monatMiniCart', monat_minicart_1.MonatMiniCart.Factory())
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
-    .config(["ModalServiceProvider", function (ModalServiceProvider) {
+    .config([
+    'ModalServiceProvider',
+    function (ModalServiceProvider) {
         // to set a default close delay on modals
         ModalServiceProvider.configureOptions({ closeDelay: 100 });
-    }]);
+    },
+]);
 exports.monatfrontendmodule = monatfrontendmodule;
 
 
@@ -61636,11 +61644,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var MonatService = /** @class */ (function () {
     //@ngInject
     function MonatService(publicService, $q, requestService) {
+        var _this = this;
         this.publicService = publicService;
         this.$q = $q;
         this.requestService = requestService;
         this.cachedOptions = {
             frequencyTermOptions: null,
+        };
+        /**
+         * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
+         *
+         */
+        this.updateCart = function (action, payload) {
+            var deferred = _this.$q.defer();
+            payload['returnJSONObjects'] = 'cart';
+            _this.requestService
+                .newPublicRequest('?slatAction=api:public.' + action, payload)
+                .promise.then(function (data) {
+                if (data.cart) {
+                    _this.cart = data.cart;
+                    deferred.resolve(data.cart);
+                }
+                else {
+                    throw data;
+                }
+            })
+                .catch(function (e) {
+                deferred.reject(e);
+            });
+            return deferred.promise;
         };
     }
     MonatService.prototype.getCart = function (refresh) {
@@ -61648,9 +61680,14 @@ var MonatService = /** @class */ (function () {
         if (refresh === void 0) { refresh = false; }
         var deferred = this.$q.defer();
         if (refresh || angular.isUndefined(this.cart)) {
-            this.publicService.getCart(refresh).then(function (data) {
+            this.publicService
+                .getCart(refresh)
+                .then(function (data) {
                 _this.cart = data;
                 deferred.resolve(_this.cart);
+            })
+                .catch(function (e) {
+                deferred.reject(e);
             });
         }
         else {
@@ -61658,9 +61695,31 @@ var MonatService = /** @class */ (function () {
         }
         return deferred.promise;
     };
+    MonatService.prototype.addToCart = function (skuID, quantity) {
+        if (quantity === void 0) { quantity = 1; }
+        var payload = {
+            skuID: skuID,
+            quantity: quantity,
+        };
+        return this.updateCart('addOrderItem', payload);
+    };
+    MonatService.prototype.removeFromCart = function (orderItemID) {
+        var payload = {
+            orderItemID: orderItemID,
+        };
+        return this.updateCart('removeOrderItem', payload);
+    };
+    MonatService.prototype.updateCartItemQuantity = function (orderItemID, quantity) {
+        if (quantity === void 0) { quantity = 1; }
+        var payload = {
+            'orderItem.orderItemID': orderItemID,
+            'orderItem.quantity': quantity,
+        };
+        return this.updateCart('updateOrderItemQuantity', payload);
+    };
     /**
      * options = {optionName:refresh, ---> option2:true, o3:false}
-    */
+     */
     MonatService.prototype.getOptions = function (options, refresh) {
         var _this = this;
         if (refresh === void 0) { refresh = false; }
@@ -61668,7 +61727,7 @@ var MonatService = /** @class */ (function () {
         var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
         if (refresh || (optionsToFetch && optionsToFetch.length)) {
             this.requestService
-                .newPublicRequest('?slatAction=api:public.getOptions', { 'optionsList': optionsToFetch })
+                .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
                 _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
@@ -61685,13 +61744,13 @@ var MonatService = /** @class */ (function () {
         var _this = this;
         if (refresh === void 0) { refresh = false; }
         return Object.keys(options)
-            .filter(function (key) { return refresh || !!options[key] || !(_this.cachedOptions[key]); })
+            .filter(function (key) { return refresh || !!options[key] || !_this.cachedOptions[key]; })
             .reduce(function (previous, current) {
             if (current) {
-                previous = previous.length ? previous + "," + current : current;
+                previous = previous.length ? previous + ',' + current : current;
             }
             return previous;
-        }, "");
+        }, '');
     };
     MonatService.prototype.sendOptionsBack = function (options, deferred) {
         var _this = this;
@@ -89215,6 +89274,131 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 857 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatMiniCartController = /** @class */ (function () {
+    //@ngInject
+    function MonatMiniCartController(monatService, rbkeyService, ModalService) {
+        var _this = this;
+        this.monatService = monatService;
+        this.rbkeyService = rbkeyService;
+        this.ModalService = ModalService;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            if (_this.cart == null) {
+                _this.fetchCart();
+            }
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.makeCurrentStepTranslation();
+        };
+        this.makeCurrentStepTranslation = function (currentStep, totalSteps) {
+            if (currentStep === void 0) { currentStep = 1; }
+            if (totalSteps === void 0) { totalSteps = 2; }
+            //TODO BL?
+            var stepsPlaceHolderData = {
+                currentStep: currentStep,
+                totalSteps: totalSteps,
+            };
+            _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.miniCart.currentStepOfTtotalSteps', stepsPlaceHolderData);
+        };
+        this.fetchCart = function () {
+            _this.monatService
+                .getCart()
+                .then(function (data) {
+                if (data) {
+                    _this.cart = data;
+                }
+            })
+                .catch(function (error) {
+                //TODO deal with the error
+                throw error;
+            })
+                .finally(function () {
+                //TODO deal with the loader
+            });
+        };
+        this.removeItem = function (item) {
+            _this.monatService
+                .removeFromCart(item.orderItemID)
+                .then(function (data) {
+                _this.cart = data;
+            })
+                .catch(function (reason) {
+                throw reason;
+                //TODO handle errors / success
+            })
+                .finally(function () {
+                //TODO hide loader...
+            });
+        };
+        this.increaseItemQuantity = function (item) {
+            _this.monatService
+                .updateCartItemQuantity(item.orderItemID, item.quantity + 1)
+                .then(function (data) {
+                _this.cart = data;
+            })
+                .catch(function (reason) {
+                throw reason; //TODO handle errors / success alerts
+            })
+                .finally(function () {
+                //TODO hide loader...
+            });
+        };
+        this.decreaseItemQuantity = function (item) {
+            if (item.quantity <= 1)
+                return;
+            _this.monatService
+                .updateCartItemQuantity(item.orderItemID, item.quantity - 1)
+                .then(function (data) {
+                _this.cart = data;
+            })
+                .catch(function (reason) {
+                throw reason; //TODO handle errors / success
+            })
+                .finally(function () {
+                //TODO hide loader...
+            });
+        };
+    }
+    return MonatMiniCartController;
+}());
+var MonatMiniCart = /** @class */ (function () {
+    function MonatMiniCart(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplateId: '@',
+            orderTemplate: '<?',
+        };
+        this.controller = MonatMiniCartController;
+        this.controllerAs = 'monatMiniCart';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/minicart/monat-minicart.html';
+        this.restrict = 'EA';
+    }
+    MonatMiniCart.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatMiniCart(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
+        return directive;
+    };
+    return MonatMiniCart;
+}());
+exports.MonatMiniCart = MonatMiniCart;
 
 
 /***/ })
