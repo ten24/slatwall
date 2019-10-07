@@ -32,6 +32,10 @@
           "propertyIdentifier":"disableOnFlexshipFlag"
         },
         {
+          "sourceColumn":"EntryDate",
+          "propertyIdentifier":"createdDateTime"
+        },
+        {
           "sourceColumn":"ImageFile",
           "sourceColumnDataGenerator":"lCase(SKUItemCode) + '.jpg'",
           "propertyIdentifier":"imageFile"
@@ -49,6 +53,10 @@
         {
           "sourceColumn":"ItemName",
           "propertyIdentifier":"product.productName"
+        },
+        {
+          "sourceColumn":"EntryDate",
+          "propertyIdentifier":"product.createdDateTime"
         },
         {
           "sourceColumn":"ItemCategoryAccounting",

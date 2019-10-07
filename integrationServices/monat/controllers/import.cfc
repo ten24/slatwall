@@ -234,17 +234,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
-			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
-										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-										
-				return hasDefaultSkuPrice; 
-			},true, 10);
-
-			if(ArrayLen(defaultSkuPrice)){
-				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-			}
 		}
 
 		StructEach(arguments.skuData, function(key, value){
@@ -260,7 +249,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
 					break;
-				case 'DisableOnRegularOrders':
+				case 'DisableInDTX':
 					data['DisableOnRegularOrders'] = fieldValue;
 					break;
 				case 'DisableInFlexShip':
@@ -272,10 +261,78 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemCategoryName':
 					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
+				case 'EntryDate':
+					data['EntryDate'] = fieldValue;
+					break;
 			}
 		}, true, 10);
 
-		QueryAddRow(query, data);
+		// create skubundle data
+		if(ArrayLen(arguments.skuData['KitLines'])){
+			var currentCountryCode = "";
+			var previousCountryCode = "";
+			var index = 0;
+
+			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				switch (arguments.item['CountryCode']){	
+					case 'CAN':
+						currentCountryCode = 'CAD';
+						break;
+					case 'GBR':
+						currentCountryCode = 'GBP';
+						break;
+					case 'USA':
+						currentCountryCode = 'USD';
+						break;
+				}
+
+				if(!arrayIsEmpty(skuPriceData) && currentCountryCode != previousCountryCode){
+
+					var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+						var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
+												(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+												(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+												
+						return hasDefaultSkuPrice; 
+					},true, 10);
+
+					if(ArrayLen(defaultSkuPrice)){
+						data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+					}
+
+					if(index > 0){
+						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
+						data['SKUItemCode'] &= currentCountryCode;
+					} else {
+						data['SKUItemCode'] &= currentCountryCode;
+					}
+					
+					QueryAddRow(query, data);
+					index++;
+				}
+
+				previousCountryCode = currentCountryCode;
+			});
+
+		} else {
+
+			if(!arrayIsEmpty(skuPriceData)){
+				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+					var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
+											(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+											(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+											
+					return hasDefaultSkuPrice; 
+				},true, 10);
+
+				if(ArrayLen(defaultSkuPrice)){
+					data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+				}
+			}
+
+			QueryAddRow(query, data);
+		}
 
 		return query;
 	}
@@ -298,12 +355,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return arguments.skuPriceQuery;
 	}
 
+	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
+		
+	}
+
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
+		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
 	}
 
 	private string function getSkuPriceColumnsList(){
 		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
+	}
+	
+	private string function getSkuBundleColumnsList(){
+		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 
 	public void function importMonatProducts(){
@@ -313,12 +378,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var totalPages = 1;
+
 		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			totalPages = initProductData['Data']['TotalPages'];
 		}
+		writedump(initProductData);abort;
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
+		var importSkuBundles = rc.importSkuBundles?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -330,7 +398,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var skuPriceColumns = this.getSkuPriceColumnsList();
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-
+		
+		// var skuBundleColumns = this.getSkuBundleColumnsList();
+		// skuBundleColumnTypes = [];
+		// ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
+		// writeDump(skuBundleColumnTypes);abort;
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -342,28 +414,47 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
+			writedump(monatProducts);abort;
 
-    		try{
-				
-				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
-				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
+			if(!importSkuBundles){
 
-				for (var skuData in monatProducts){
+				try{
 					
-					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
+					var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+					var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
-					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+					for (var skuData in monatProducts){
+						
+						skuQuery = this.populateSkuQuery(skuQuery, skuData);
+
+						if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
+							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+						}
 					}
-				}
-				
-				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+					
+					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
-				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-			} catch (any e){
-    			writeDump(e); // rollback the tx
+					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+			} else {
+
+				try{
+					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+					for (var skuData in monatProducts){
+						if(arrayLen(skuData['KitLines'])){
+							// skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+							writedump(skuData);
+						}
+					}
+				
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
 			}
 			pageNumber++
 		}
