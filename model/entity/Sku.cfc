@@ -630,11 +630,14 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 					var prices = [];
-					for(var i=1; i <= arrayLen(skuPriceResults); i++){
-						ArrayAppend(prices, skuPriceResults[i]['price']);
-					}
-					ArraySort(prices, "numeric","asc");
-					variables[cacheKey]= prices[1];
+						for(var i=1; i <= arrayLen(skuPriceResults); i++){
+							if(isNull(skuPriceResults[i]['price'])){
+								skuPriceResults[i]['price'] = 0;
+							}
+							ArrayAppend(prices, skuPriceResults[i]['price']);
+						}
+						ArraySort(prices, "numeric","asc");
+						variables[cacheKey]= prices[1];
 				}
 				
 				if(structKeyExists(variables,cacheKey)){
@@ -2121,6 +2124,14 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
+				   	if(isNull(a['price'])){
+						a['price'] = 0;
+					}
+					
+					if(isNull(b['price'])){
+						b['price'] = 0;
+					}
+				   
 				    if(a['price'] < b['price']){ return -1;}
 				    else if (a['price'] > b['price']){ return 1; }
 				    else{ return 0; }

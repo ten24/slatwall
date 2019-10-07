@@ -117,6 +117,14 @@ component {
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
+				   	if(isNull(a['price'])){
+						a['price'] = 0;
+					}
+					
+					if(isNull(b['price'])){
+						b['price'] = 0;
+					}
+				   
 				    if(a['price'] < b['price']){ return -1;}
 				    else if (a['price'] > b['price']){ return 1; }
 				    else{ return 0; }
