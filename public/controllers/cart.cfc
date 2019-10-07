@@ -148,23 +148,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	//temp for demo only
-	public void function addOrderTemplateItem(required any data) {
-        param name="data.orderTemplateID" default="";
-        param name="data.skuID" default="";
-        param name="data.quantity" default=1;
+	public void function addOrderTemplateItem(required any rc) {
+        param name="rc.orderTemplateID" default="";
+        param name="rc.skuID" default="";
+        param name="rc.quantity" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(data=arguments.rc);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
 	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.rc, 'addOrderTemplateItem'); 
         getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
             
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             orderTemplate.clearProcessObject("addOrderTemplateItem");
+             getHibachiScope().flushORMSession(); //flushing to make new data availble
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            ArrayAppend(arguments.data.messages , orderTemplate.getErrors(), true);
         }
     }
 	
