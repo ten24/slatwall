@@ -282,4 +282,31 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
+    
+    public any function createAccount(required struct data){
+        var account = super.createAccount(arguments.data);
+        if(!account.hasErrors()){
+            if(!isNull(arguments.data['accountStatusName'])){
+                account.setAccountStatusName(arguments.data['accountStatusName']);
+            }
+        }
+        return account;
+    }
+    
+    public any function updateAccount(required struct data){
+        var account = super.updateAccount(arguments.data);
+        if(!account.hasErrors()){
+            if(!isNull(arguments.data['governmentIDNumber'])){
+                var accountGovernmentIdentification = getService('AccountService').newAccountGovernmentIdentification();
+                accountGovernmentIdentification.setGovernmentIdentificationNumber(arguments.data['governmentIDNumber']);
+                accountGovernmentIdentification.setAccount(account);
+                accountGovernmentIdentification = getService('AccountService').saveAccountGovernmentIdentification(accountGovernmentIdentification);
+                if(accountGovernmentIdentification.hasErrors()){
+                    addErrors(arguments.data,accountGovernmentIdentification.getErrors());
+                }
+                getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
+            }
+        }
+        return account;
+    }
 }
