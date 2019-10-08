@@ -9,7 +9,6 @@ class MonatEnrollmentController{
 	public steps=[];
 	public onFinish;
 	public finishText;
-	public isMiniCartOpen: boolean = false;
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
@@ -59,8 +58,8 @@ class MonatEnrollmentController{
 		}
 	}
 	
-	public toggleMiniCart = () => {
-		this.isMiniCartOpen = !this.isMiniCartOpen;
+	public toggleMiniCart = () =>{
+		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
 	}
 	
 	public next(){

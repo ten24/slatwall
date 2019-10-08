@@ -59332,7 +59332,6 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
-        this.isMiniCartOpen = false;
         this.showMiniCart = false;
         this.style = 'position:static; display:none';
         this.handleCreateAccount = function () {
@@ -59354,7 +59353,7 @@ var MonatEnrollmentController = /** @class */ (function () {
             }
         };
         this.toggleMiniCart = function () {
-            _this.isMiniCartOpen = !_this.isMiniCartOpen;
+            _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
         };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
