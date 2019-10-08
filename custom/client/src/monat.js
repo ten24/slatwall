@@ -59201,10 +59201,14 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
+        this.cartAsAttribute = false;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
                 _this.fetchCart();
+            }
+            else {
+                _this.cartAsAttribute = true;
             }
         };
         this.translations = {};
@@ -59223,20 +59227,22 @@ var MonatMiniCartController = /** @class */ (function () {
             _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.miniCart.currentStepOfTtotalSteps', stepsPlaceHolderData);
         };
         this.fetchCart = function () {
-            _this.monatService
-                .getCart()
-                .then(function (data) {
-                if (data) {
-                    _this.cart = data;
-                }
-            })
-                .catch(function (error) {
-                //TODO deal with the error
-                throw error;
-            })
-                .finally(function () {
-                //TODO deal with the loader
-            });
+            if (!_this.cartAsAttribute) {
+                _this.monatService
+                    .getCart()
+                    .then(function (data) {
+                    if (data) {
+                        _this.cart = data;
+                    }
+                })
+                    .catch(function (error) {
+                    //TODO deal with the error
+                    throw error;
+                })
+                    .finally(function () {
+                    //TODO deal with the loader
+                });
+            }
         };
         this.removeItem = function (item) {
             _this.monatService
@@ -59295,7 +59301,8 @@ var MonatMiniCart = /** @class */ (function () {
             orderTemplateId: '@',
             orderTemplate: '<?',
             type: '@?',
-            customStyle: '<?'
+            customStyle: '<?',
+            cart: '<?'
         };
         this.controller = MonatMiniCartController;
         this.controllerAs = 'monatMiniCart';
@@ -59333,11 +59340,18 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.position = 0;
         this.steps = [];
         this.style = 'position:static; display:none';
+        this.cartText = 'Show Cart';
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
             if (_this.currentAccountID.length) {
                 _this.next();
             }
+        };
+        this.getCart = function (refresh) {
+            if (refresh === void 0) { refresh = true; }
+            _this.monatService.getCart(refresh).then(function (data) {
+                _this.cart = data;
+            });
         };
         this.addStep = function (step) {
             if (_this.steps.length == 0) {
@@ -59353,6 +59367,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         };
         this.toggleMiniCart = function () {
             _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+            _this.cartText = _this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
         };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
@@ -59363,12 +59378,12 @@ var MonatEnrollmentController = /** @class */ (function () {
         if (angular.isUndefined(this.finishText)) {
             this.finishText = 'Finish';
         }
-        monatService.getCart().then(function (data) {
-            _this.cart = data;
-        });
+        this.getCart();
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
+        this.observerService.attach(this.getCart, "addOrderItemSuccess");
+        this.observerService.attach(this.getCart, "removeOrderItemSuccess");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);

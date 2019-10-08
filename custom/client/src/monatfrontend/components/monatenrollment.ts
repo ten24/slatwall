@@ -11,6 +11,7 @@ class MonatEnrollmentController{
 	public finishText;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
+	public cartText:string = 'Show Cart'
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope){
@@ -27,14 +28,13 @@ class MonatEnrollmentController{
 			this.finishText = 'Finish';
 		}
 
-		monatService.getCart().then(data =>{
-			this.cart = data;
-		});
+		this.getCart();
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
-
+		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
+		this.observerService.attach(this.getCart,"removeOrderItemSuccess"); 
 	}
 	
 	public handleCreateAccount = () => {
@@ -42,6 +42,12 @@ class MonatEnrollmentController{
 		if ( this.currentAccountID.length ) {
 			this.next();
 		}
+	}
+	
+	public getCart = (refresh = true) => {
+		this.monatService.getCart(refresh).then(data =>{
+			this.cart = data;
+		});
 	}
 	
 	public addStep = (step) =>{
@@ -60,6 +66,7 @@ class MonatEnrollmentController{
 	
 	public toggleMiniCart = () =>{
 		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+		this.cartText = this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
 	}
 	
 	public next(){

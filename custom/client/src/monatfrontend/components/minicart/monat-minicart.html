@@ -25,13 +25,13 @@
 	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatMiniCart.cart.orderItems">
+				<li ng-repeat="item in monatMiniCart.cart.orderItems track by item.sku.skuDefinition">
 					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="item.sku.imagePath" alt="" />
+							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
 					</div>
 					<h6 class="title-sm">
