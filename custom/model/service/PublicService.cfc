@@ -236,7 +236,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.product.productID,
+			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
 			sku.product.calculatedSalePrice,
@@ -249,13 +249,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var bundles = {};
 		for ( var skuBundle in skuBundles ) {
 		
-			var productID = skuBundle.sku_product_productID
-			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID
+			var skuID = skuBundle.sku_product_defaultSku_skuID;
+			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
 		
 			// If this is the first time the parent product is looped over, setup the product.
-			if ( ! structKeyExists( bundles, productID ) ) {
-				bundles[ productID ] = {
-					'ID': skuBundle.sku_product_productID,
+			if ( ! structKeyExists( bundles, skuID ) ) {
+				bundles[ skuID ] = {
+					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
 					'price': skuBundle.sku_product_calculatedSalePrice,
 					'description': skuBundle.sku_product_productDescription,
@@ -265,15 +265,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
-			if ( ! structKeyExists( bundles[ productID ].productTypes, subProductTypeID ) ) {
-				bundles[ productID ].productTypes[ subProductTypeID ] = {
+			if ( ! structKeyExists( bundles[ skuID ].productTypes, subProductTypeID ) ) {
+				bundles[ skuID ].productTypes[ subProductTypeID ] = {
 					'name': skuBundle.bundledSku_product_productType_productTypeName,
 					'products': []
 				};
 			}
 		
 			// Add sub product to the struct.
-			arrayAppend( bundles[ productID ].productTypes[ subProductTypeID ].products, {
+			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
 				'name': skuBundle.bundledSku_product_productName,
 				'price': skuBundle.bundledSku_product_calculatedSalePrice,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile

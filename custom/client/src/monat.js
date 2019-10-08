@@ -59431,10 +59431,11 @@ exports.MonatEnrollment = MonatEnrollment;
 Object.defineProperty(exports, "__esModule", { value: true });
 var EnrollmentMPController = /** @class */ (function () {
     // @ngInject
-    function EnrollmentMPController(publicService, observerService) {
+    function EnrollmentMPController(publicService, observerService, monatService) {
         var _this = this;
         this.publicService = publicService;
         this.observerService = observerService;
+        this.monatService = monatService;
         this.isMPEnrollment = false;
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
@@ -59456,7 +59457,10 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
-                _this.observerService.notify('onNext');
+                _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
+                    console.log(data);
+                    _this.observerService.notify('onNext');
+                });
             }
             else {
                 _this.bundleHasErrors = true;

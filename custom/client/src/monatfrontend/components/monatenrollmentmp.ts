@@ -17,10 +17,12 @@ class EnrollmentMPController {
     public productList;
     public pageTracker:number;
     public totalPages:Array<number>;
+    
 	// @ngInject
 	constructor(
 	    public publicService,
-	    public observerService
+	    public observerService,
+	    public monatService
 	) {}
 
 	public $onInit = () => {
@@ -37,7 +39,10 @@ class EnrollmentMPController {
     
     public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
-            this.observerService.notify('onNext');
+        	this.monatService.addToCart( this.selectedBundleID, 1 ).then(data => {
+        		console.log( data );
+            	this.observerService.notify('onNext');
+        	})
         } else {
             this.bundleHasErrors = true;
         }
