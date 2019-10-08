@@ -59195,11 +59195,12 @@ exports.toSubscriber = toSubscriber;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatMiniCartController = /** @class */ (function () {
     //@ngInject
-    function MonatMiniCartController(monatService, rbkeyService, ModalService) {
+    function MonatMiniCartController(monatService, rbkeyService, ModalService, observerService) {
         var _this = this;
         this.monatService = monatService;
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
+        this.observerService = observerService;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59279,6 +59280,7 @@ var MonatMiniCartController = /** @class */ (function () {
                 //TODO hide loader...
             });
         };
+        this.observerService.attach(this.fetchCart, "addOrderItemSuccess");
     }
     return MonatMiniCartController;
 }());
@@ -59292,6 +59294,8 @@ var MonatMiniCart = /** @class */ (function () {
         this.bindToController = {
             orderTemplateId: '@',
             orderTemplate: '<?',
+            type: '@?',
+            customStyle: '<?'
         };
         this.controller = MonatMiniCartController;
         this.controllerAs = 'monatMiniCart';
@@ -59328,6 +59332,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
+        this.style = 'position:static; display:none';
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
             if (_this.currentAccountID.length) {
@@ -59345,6 +59350,9 @@ var MonatEnrollmentController = /** @class */ (function () {
             if (index > 0) {
                 _this.steps.splice(index, 1);
             }
+        };
+        this.toggleMiniCart = function () {
+            _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
         };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
@@ -59429,17 +59437,18 @@ var EnrollmentMPController = /** @class */ (function () {
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
         this.currentCountryCode = '';
+        this.loading = false;
         this.bundleHasErrors = false;
+        this.sponsorHasErrors = false;
         this.selectedBundleID = '';
         this.bundles = [];
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
+            _this.getProductList();
         };
         this.getStarterPacks = function () {
-            _this.publicService
-                .doAction('getStarterPackBundleStruct', { contentID: _this.contentId })
-                .then(function (data) {
+            _this.publicService.doAction('getStarterPackBundleStruct', { contentID: _this.contentId }).then(function (data) {
                 _this.bundles = data.bundles;
             });
         };
@@ -59449,6 +59458,14 @@ var EnrollmentMPController = /** @class */ (function () {
             }
             else {
                 _this.bundleHasErrors = true;
+            }
+        };
+        this.submitSponsor = function () {
+            if (_this.selectedMP) {
+                _this.observerService.notify('onNext');
+            }
+            else {
+                _this.sponsorHasErrors = true;
             }
         };
         this.selectBundle = function (bundleID) {
@@ -59489,10 +59506,68 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.setOwnerAccount = function (ownerAccountID) {
             _this.loading = true;
-            _this.publicService
-                .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
-                .then(function (result) {
+            _this.publicService.doAction('setOwnerAccountOnAccount', { 'ownerAccountID': ownerAccountID }).then(function (result) {
                 console.log(result);
+                _this.loading = false;
+            });
+        };
+        this.getProductList = function (pageNumber, direction, newPages) {
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
+            if (newPages === void 0) { newPages = false; }
+            _this.loading = true;
+            var pageRecordsShow = 12;
+            var setNew;
+            if (pageNumber === 1) {
+                setNew = true;
+            }
+            //Pagination logic TODO: abstract into a more reusable method
+            if (direction === 'prev') {
+                setNew = false;
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else if (_this.pageTracker === _this.totalPages[0] + 1) {
+                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
+                    var q = _this.totalPages[0];
+                    pageNumber = q;
+                    //its not beautiful but it works 
+                    _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                setNew = false;
+                if (_this.pageTracker >= _this.totalPages[_this.totalPages.length - 1]) {
+                    pageNumber = _this.totalPages.length;
+                    return pageNumber;
+                }
+                else if (_this.pageTracker === _this.totalPages[9] + 1) {
+                    newPages = true;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            if (newPages) {
+                // If user is at the end of 10 page length display, get next 10 pages
+                pageNumber = _this.totalPages[10] + 1;
+                _this.totalPages.splice(0, 10);
+                setNew = false;
+            }
+            _this.publicService.doAction("getproducts", { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then(function (result) {
+                _this.productList = result.productListing;
+                if (setNew) {
+                    var holdingArray = [];
+                    var pages = Math.ceil(result.recordsCount / pageRecordsShow);
+                    for (var i = 0; i <= pages - 1; i++) {
+                        holdingArray.push(i);
+                    }
+                    _this.totalPages = holdingArray;
+                }
+                _this.pageTracker = pageNumber;
                 _this.loading = false;
             });
         };
@@ -59512,7 +59587,8 @@ var MonatEnrollmentMP = /** @class */ (function () {
          * Binds all of our variables to the controller so we can access using this
          */
         this.bindToController = {
-            contentId: '@',
+            step: '@?',
+            contentId: '@'
         };
         this.controller = EnrollmentMPController;
         this.controllerAs = 'enrollmentMp';
@@ -61054,10 +61130,11 @@ var MonatProductCardController = /** @class */ (function () {
     // @ngInject
     function MonatProductCardController(
     //inject modal service
-    orderTemplateService, $rootScope) {
+    orderTemplateService, $rootScope, monatService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$rootScope = $rootScope;
+        this.monatService = monatService;
         this.pageRecordsShow = 5;
         this.currentPage = 1;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
@@ -61112,12 +61189,15 @@ var MonatProductCardController = /** @class */ (function () {
                 //launch normal modal
             }
         };
-        this.addToCart = function (type) {
-            if (type === 'flexship') {
+        this.addToCart = function (skuID, skuCode) {
+            _this.loading = true;
+            if (_this.type === 'flexship') {
                 //flexship logic
             }
             else {
-                //normal product logic
+                _this.monatService.addToCart(skuID, 1).then(function (result) {
+                    _this.loading = false;
+                });
             }
         };
         this.setWishlistID = function (newID) {
