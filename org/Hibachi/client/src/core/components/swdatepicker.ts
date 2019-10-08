@@ -45,12 +45,11 @@ class SWDatePicker {
             $scope.startDate = Date.now();   
         }
 	
-	
 	    if(typeof $scope.startDate !== 'number'){
 	        $scope.startDate = $scope.startDate.getTime();
 	    }
 	    
-	    if(typeof $scope.endDate !== 'number'){
+	    if($scope.endDate && typeof $scope.endDate !== 'number'){
 	         $scope.endDate = $scope.endDate.getTime();
 	    }
 	

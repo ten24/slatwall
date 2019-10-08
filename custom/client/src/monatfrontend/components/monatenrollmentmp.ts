@@ -1,36 +1,70 @@
 class EnrollmentMPController {
-    public Account_CreateAccount;
+
+	public Account_CreateAccount;
+	public isMPEnrollment: boolean = false;
+	public countryCodeOptions: any = [];
+	public stateCodeOptions: any = [];
+	public currentCountryCode: string = '';
     public loading:boolean = false;
+    public contentId:string;
+    public bundleHasErrors:boolean = false;
+    public openedBundle:any;
+    public selectedBundleID:string = '';
+    public bundles:any = [];
+    public step:any;
     public productList;
     public pageTracker:number;
     public totalPages:Array<number>;
-    public isMPEnrollment:boolean = false;
-    public countryCodeOptions:any = [];
-    public stateCodeOptions:any = [];
-    public currentCountryCode:string = '';
-    public step:any;
+	// @ngInject
+	constructor(
+	    public publicService,
+	    public observerService
+	) {}
 
-    // @ngInject
-    constructor(
-        public $rootScope,
-        public $scope,
-        public publicService
-    ){}
-    
-    public $onInit = () => {
-        this.getCountryCodeOptions();
+	public $onInit = () => {
+		this.getCountryCodeOptions();
+        this.getStarterPacks();
         this.getProductList();
     }
+
+    public getStarterPacks = () => {
+        this.publicService.doAction('getStarterPackBundleStruct', { contentID: this.contentId }).then( data => {
+            this.bundles = data.bundles;
+        });
+    }
     
-    public getMpResults = (model) => {
-        
-        this.publicService.marketPartnerResults = this.publicService.doAction(
-            '/?slatAction=monat:public.getmarketpartners'
-			+ '&search='+ model.mpSearchText 
-			+ '&currentPage='+ 1 
-			+ '&accountSearchType=marketPartner'
-			+ '&countryCode=' + model.currentCountryCode
-			+ '&stateCode=' + model.currentStateCode
+    public submitStarterPack = () => {
+        if ( this.selectedBundleID.length ) {
+            this.observerService.notify('onNext');
+        } else {
+            this.bundleHasErrors = true;
+        }
+    }
+    
+    public selectBundle = bundleID => {
+        this.selectedBundleID = bundleID;
+        this.bundleHasErrors = false;
+        this.openedBundle = null;
+    }
+	
+	private stripHtml = html => {
+       let tmp = document.createElement('div');
+       tmp.innerHTML = html;
+       return tmp.textContent || tmp.innerText || '';
+    }
+
+	public getMpResults = (model) => {
+		this.publicService.marketPartnerResults = this.publicService.doAction(
+			'/?slatAction=monat:public.getmarketpartners' +
+				'&search=' +
+				model.mpSearchText +
+				'&currentPage=' +
+				1 +
+				'&accountSearchType=marketPartner' +
+				'&countryCode=' +
+				model.currentCountryCode +
+				'&stateCode=' +
+				model.currentStateCode,
 		);
     }
     
@@ -131,9 +165,12 @@ class MonatEnrollmentMP {
 	/**
 	 * Binds all of our variables to the controller so we can access using this
 	 */
+
 	public bindToController = {
-	    step: '@?'
+	    step: '@?',
+	    contentId: '@'
 	};
+
 	public controller = EnrollmentMPController;
 	public controllerAs = 'enrollmentMp';
 	// @ngInject

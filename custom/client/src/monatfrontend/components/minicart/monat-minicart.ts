@@ -99,13 +99,13 @@ class MonatMiniCartController {
 class MonatMiniCart {
 	public restrict: string;
 	public templateUrl: string;
-
+	
 	public scope = {};
 	public bindToController = {
 		orderTemplateId: '@',
 		orderTemplate: '<?',
 		type: '@?',
-		style:'@?'
+		customStyle:'<?'
 	};
 	public controller = MonatMiniCartController;
 	public controllerAs = 'monatMiniCart';

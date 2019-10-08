@@ -1,15 +1,15 @@
-<div class="flexship-block" style="{{monatMiniCart.style}}" >
+<div class="flexship-block" style="{{monatMiniCart.customStyle}}" >
 	<div ng-if="monatMiniCart.type != 'enrollment' " class="flexship-bar">
 		<div class="open-flexship">
 			<a href="#">
 				<i class="fas fa-chevron-up"></i>
 			</a>
 			<span class="qty-and-price">
-				{{ monatMiniCart.cart.totalItemQuantity }}
+				{{ monatMiniCart.cart.totalItemQuantity }} 
 				<span sw-rbkey="'frontend.miniCart.items'"></span>
 				/
 				<span sw-rbkey="'frontend.miniCart.total'"></span>
-				{{ monatMiniCart.cart.total | currency }}
+				{{ monatMiniCart.cart.total | currency }} 
 			</span>
 		</div>
 		
@@ -22,7 +22,7 @@
 		</div>
 	</div>
 
-	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.style}}">
+	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
 				<li ng-repeat="item in monatMiniCart.cart.orderItems">
@@ -47,7 +47,7 @@
 								ng-disabled="item.quantity <= 1"
 								ng-click="$parent.monatMiniCart.decreaseItemQuantity(item)"
 							>
-								-
+								- 
 							</button>
 							<input
 								type="text"
