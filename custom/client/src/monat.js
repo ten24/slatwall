@@ -60741,10 +60741,10 @@ var MonatFlexshipCardController = /** @class */ (function () {
         this.observerService = observerService;
         this.ModalService = ModalService;
         this.$onInit = function () {
-            _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+            _this.observerService.attach(_this.updateOrderTemplate, 'orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
         };
         this.$onDestroy = function () {
-            _this.observerService.detachById("orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+            _this.observerService.detachById('orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
         };
         this.updateOrderTemplate = function (orderTemplate) {
             _this.orderTemplate = orderTemplate;
@@ -60754,16 +60754,22 @@ var MonatFlexshipCardController = /** @class */ (function () {
             _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipNameModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
-                    orderTemplate: _this.orderTemplate
+                    orderTemplate: _this.orderTemplate,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
     }
@@ -60785,23 +60791,19 @@ var MonatFlexshipCard = /** @class */ (function () {
             cancellationReasonTypeOptions: '<',
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
         };
         this.controller = MonatFlexshipCardController;
-        this.controllerAs = "monatFlexshipCard";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipcard.html";
-        this.restrict = "EA";
+        this.controllerAs = 'monatFlexshipCard';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
+        this.restrict = 'EA';
     }
     MonatFlexshipCard.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
         return directive;
     };
     return MonatFlexshipCard;
@@ -60947,118 +60949,142 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         this.observerService = observerService;
         this.$window = $window;
         this.ModalService = ModalService;
-        this.$onInit = function () {
-        };
+        this.$onInit = function () { };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showCancelFlexshipModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipCancelModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
-                    cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
+                    cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showDelayOrSkipFlexshipModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipChangeOrSkipOrderModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
-                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
+                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showFlexshipEditPaymentMethodModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipPaymentMethodModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     accountAddresses: _this.accountAddresses,
                     accountPaymentMethods: _this.accountPaymentMethods,
                     stateCodeOptions: _this.stateCodeOptions,
                     expirationMonthOptions: _this.expirationMonthOptions,
-                    expirationYearOptions: _this.expirationYearOptions
+                    expirationYearOptions: _this.expirationYearOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showFlexshipEditShippingMethodModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipShippingMethodModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     accountAddresses: _this.accountAddresses,
                     shippingMethodOptions: _this.shippingMethodOptions,
-                    stateCodeOptions: _this.stateCodeOptions
+                    stateCodeOptions: _this.stateCodeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
     }
     MonatFlexshipMenuController.prototype.activateFlexship = function () {
         var _this = this;
         // make api request
-        this.orderTemplateService.activateOrderTemplate(this.orderTemplate.orderTemplateID)
+        this.orderTemplateService
+            .activateOrderTemplate(this.orderTemplate.orderTemplateID)
             .then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
-                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.observerService.notify('orderTemplateUpdated' + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
             else {
                 console.error(data);
             }
             // TODO: show alert
-        }).catch(function (reason) {
-            throw (reason);
+        })
+            .catch(function (reason) {
+            throw reason;
             // TODO: show alert
         });
     };
     MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
         var _this = this;
         // make api request
-        this.orderTemplateService.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
+        this.orderTemplateService
+            .setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
             .then(function (data) {
-            if (data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+            if (data.successfulActions &&
+                data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
                 _this.$window.location.href = '/shop';
             }
             else {
-                throw (data);
+                throw data;
             }
-        }).catch(function (error) {
-            console.error("setAsCurrentFlexship :", error);
+        })
+            .catch(function (error) {
+            console.error('setAsCurrentFlexship :', error);
             // TODO: show alert
         });
     };
@@ -61080,23 +61106,19 @@ var MonatFlexshipMenu = /** @class */ (function () {
             cancellationReasonTypeOptions: '<',
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
         };
         this.controller = MonatFlexshipMenuController;
-        this.controllerAs = "monatFlexshipMenu";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipmenu.html";
-        this.restrict = "EA";
+        this.controllerAs = 'monatFlexshipMenu';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipmenu.html';
+        this.restrict = 'EA';
     }
     MonatFlexshipMenu.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipMenu(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatFlexshipMenu(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
         return directive;
     };
     return MonatFlexshipMenu;
@@ -61789,7 +61811,7 @@ var monatfrontendmodule = angular
     'ModalServiceProvider',
     function (ModalServiceProvider) {
         // to set a default close delay on modals
-        ModalServiceProvider.configureOptions({ closeDelay: 100 });
+        ModalServiceProvider.configureOptions({ closeDelay: 0 });
     },
 ]);
 exports.monatfrontendmodule = monatfrontendmodule;
@@ -69641,8 +69663,8 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWDatePicker = /** @class */ (function () {
     function SWDatePicker() {
-        this.restrict = "A";
-        this.require = "ngModel";
+        this.restrict = 'A';
+        this.require = 'ngModel';
         this.scope = {
             options: '<?',
             startDayOfTheMonth: '<?',
@@ -69650,13 +69672,13 @@ var SWDatePicker = /** @class */ (function () {
             startDate: '=?',
             startDateString: '@?',
             endDate: '=?',
-            endDateString: '@?'
+            endDateString: '@?',
         };
         this.link = function ($scope, element, attrs, modelCtrl) {
             if (!$scope.options) {
                 $scope.options = {
                     autoclose: true,
-                    format: "mm/dd/yyyy",
+                    format: 'mm/dd/yyyy',
                     setDate: new Date(),
                 };
             }
@@ -69688,9 +69710,10 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            dateToCompare >= $scope.startDate
+                            dateToCompare >= $scope.startDate,
                     ];
                 };
             }
@@ -69701,10 +69724,11 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
                             dateToCompare >= $scope.startDate &&
-                            dateToCompare < $scope.endDate
+                            dateToCompare < $scope.endDate,
                     ];
                 };
             }

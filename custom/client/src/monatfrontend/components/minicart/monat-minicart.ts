@@ -1,10 +1,10 @@
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
-	public type:any;
-	
+	public type: any;
+
 	//@ngInject
 	constructor(public monatService, public rbkeyService, public ModalService, public observerService) {
-        this.observerService.attach(this.fetchCart,"addOrderItemSuccess"); 
+		this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
 	}
 
 	public $onInit = () => {
@@ -99,13 +99,13 @@ class MonatMiniCartController {
 class MonatMiniCart {
 	public restrict: string;
 	public templateUrl: string;
-	
+
 	public scope = {};
 	public bindToController = {
 		orderTemplateId: '@',
 		orderTemplate: '<?',
 		type: '@?',
-		customStyle:'<?'
+		customStyle: '<?',
 	};
 	public controller = MonatMiniCartController;
 	public controllerAs = 'monatMiniCart';
