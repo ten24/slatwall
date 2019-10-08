@@ -25,17 +25,17 @@
 	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatMiniCart.cart.orderItems">
+				<li ng-repeat="item in monatMiniCart.cart.orderItems track by item.orderItemID">
 					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="item.sku.imagePath" alt="" />
+							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a ng-href="item.skuProductURL">
+						<a ng-href="{{item.skuProductURL}}">
 							<span class="product-name" ng-bind="item.sku.skuDefinition"></span>
 						</a>
 					</h6>
@@ -65,8 +65,7 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<!--TODO calc actual price => price*qty -->
-							<span class="price">{{ item.price | currency }}</span>
+							<span class="price">{{ item.extendedPriceAfterDiscount | currency }} </span>
 						</div>
 					</div>
 				</li>

@@ -59201,10 +59201,14 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
+        this.cartAsAttribute = false; //declares if cart data is being bound through attribute binding or not
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
                 _this.fetchCart();
+            }
+            else {
+                _this.cartAsAttribute = true;
             }
         };
         this.translations = {};
@@ -59223,20 +59227,22 @@ var MonatMiniCartController = /** @class */ (function () {
             _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.miniCart.currentStepOfTtotalSteps', stepsPlaceHolderData);
         };
         this.fetchCart = function () {
-            _this.monatService
-                .getCart()
-                .then(function (data) {
-                if (data) {
-                    _this.cart = data;
-                }
-            })
-                .catch(function (error) {
-                //TODO deal with the error
-                throw error;
-            })
-                .finally(function () {
-                //TODO deal with the loader
-            });
+            if (!_this.cartAsAttribute) {
+                _this.monatService
+                    .getCart()
+                    .then(function (data) {
+                    if (data) {
+                        _this.cart = data;
+                    }
+                })
+                    .catch(function (error) {
+                    //TODO deal with the error
+                    throw error;
+                })
+                    .finally(function () {
+                    //TODO deal with the loader
+                });
+            }
         };
         this.removeItem = function (item) {
             _this.monatService
@@ -59280,7 +59286,7 @@ var MonatMiniCartController = /** @class */ (function () {
                 //TODO hide loader...
             });
         };
-        this.observerService.attach(this.fetchCart, "addOrderItemSuccess");
+        this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
     }
     return MonatMiniCartController;
 }());
@@ -59295,7 +59301,8 @@ var MonatMiniCart = /** @class */ (function () {
             orderTemplateId: '@',
             orderTemplate: '<?',
             type: '@?',
-            customStyle: '<?'
+            customStyle: '<?',
+            cart: '<?'
         };
         this.controller = MonatMiniCartController;
         this.controllerAs = 'monatMiniCart';
@@ -59334,11 +59341,18 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.steps = [];
         this.showMiniCart = false;
         this.style = 'position:static; display:none';
+        this.cartText = 'Show Cart';
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
             if (_this.currentAccountID.length) {
                 _this.next();
             }
+        };
+        this.getCart = function (refresh) {
+            if (refresh === void 0) { refresh = true; }
+            _this.monatService.getCart(refresh).then(function (data) {
+                _this.cart = data;
+            });
         };
         this.addStep = function (step) {
             if (_this.steps.length == 0) {
@@ -59354,6 +59368,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         };
         this.toggleMiniCart = function () {
             _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+            _this.cartText = _this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
         };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
@@ -59364,12 +59379,13 @@ var MonatEnrollmentController = /** @class */ (function () {
         if (angular.isUndefined(this.finishText)) {
             this.finishText = 'Finish';
         }
-        monatService.getCart().then(function (data) {
-            _this.cart = data;
-        });
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
+        this.observerService.attach(this.getCart, "addOrderItemSuccess");
+        this.observerService.attach(this.getCart, "removeOrderItemSuccess");
+        this.observerService.attach(this.getCart, "updateOrderItemSuccess");
+        this.getCart();
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
@@ -59405,11 +59421,11 @@ var MonatEnrollment = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             finishText: '@',
-            onFinish: '=?'
+            onFinish: '=?',
         };
         this.controller = MonatEnrollmentController;
-        this.controllerAs = "monatEnrollment";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollment.html";
+        this.controllerAs = 'monatEnrollment';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
     }
     MonatEnrollment.Factory = function () {
         var _this = this;
@@ -59451,7 +59467,9 @@ var EnrollmentMPController = /** @class */ (function () {
             _this.getProductList();
         };
         this.getStarterPacks = function () {
-            _this.publicService.doAction('getStarterPackBundleStruct', { contentID: _this.contentId }).then(function (data) {
+            _this.publicService
+                .doAction('getStarterPackBundleStruct', { contentID: _this.contentId })
+                .then(function (data) {
                 _this.bundles = data.bundles;
             });
         };
@@ -59512,7 +59530,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.setOwnerAccount = function (ownerAccountID) {
             _this.loading = true;
-            _this.publicService.doAction('setOwnerAccountOnAccount', { 'ownerAccountID': ownerAccountID }).then(function (result) {
+            _this.publicService
+                .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
+                .then(function (result) {
                 console.log(result);
                 _this.loading = false;
             });
@@ -59534,10 +59554,10 @@ var EnrollmentMPController = /** @class */ (function () {
                     return pageNumber;
                 }
                 else if (_this.pageTracker === _this.totalPages[0] + 1) {
-                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
+                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages
                     var q = _this.totalPages[0];
                     pageNumber = q;
-                    //its not beautiful but it works 
+                    //its not beautiful but it works
                     _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
                 }
                 else {
@@ -59563,7 +59583,9 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.totalPages.splice(0, 10);
                 setNew = false;
             }
-            _this.publicService.doAction("getproducts", { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then(function (result) {
+            _this.publicService
+                .doAction('getproducts', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber })
+                .then(function (result) {
                 _this.productList = result.productListing;
                 if (setNew) {
                     var holdingArray = [];
@@ -59594,7 +59616,7 @@ var MonatEnrollmentMP = /** @class */ (function () {
          */
         this.bindToController = {
             step: '@?',
-            contentId: '@'
+            contentId: '@',
         };
         this.controller = EnrollmentMPController;
         this.controllerAs = 'enrollmentMp';
@@ -61174,7 +61196,9 @@ var MonatProductCardController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
+            _this.orderTemplateService
+                .addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
+                .then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 return result;
@@ -61182,15 +61206,14 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addWishlistItem = function (skuID) {
             _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
-                .then(function (result) {
+            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID).then(function (result) {
                 _this.loading = false;
                 return result;
             });
         };
         this.launchModal = function (type) {
             if (type === 'flexship') {
-                //launch flexship modal 
+                //launch flexship modal
             }
             else {
                 //launch normal modal
@@ -61229,8 +61252,8 @@ var MonatProductCard = /** @class */ (function () {
             allProducts: '<?',
         };
         this.controller = MonatProductCardController;
-        this.controllerAs = "monatProductCard";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
+        this.controllerAs = 'monatProductCard';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatproductcard.html';
     }
     MonatProductCard.Factory = function () {
         var _this = this;

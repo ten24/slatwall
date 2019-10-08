@@ -14,14 +14,14 @@
 			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
 				<i class="fas fa-chevron-left"></i>
 			</a>
-			
+
 			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
 				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
 				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">Show Cart</small>
 			</span>
 		</div>
 		
-		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
+		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
 		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
@@ -33,7 +33,7 @@
 	
 	<!--- Mini cart ---> 	
 	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
-	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style"></monat-mini-cart>		
+	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style"></monat-mini-cart>
 	</div>
 
 </footer>

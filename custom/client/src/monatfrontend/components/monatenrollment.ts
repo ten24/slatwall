@@ -10,7 +10,9 @@ class MonatEnrollmentController {
 	public finishText;
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
-	public style: string = 'position:static; display:none';
+	public style:string = 'position:static; display:none';
+	public cartText:string = 'Show Cart'
+
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope) {
@@ -25,14 +27,15 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
+		
+    	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
+    	this.observerService.attach(this.next.bind(this),"onNext");
+    	this.observerService.attach(this.next.bind(this),"updateSuccess");
+		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
+		this.observerService.attach(this.getCart,"removeOrderItemSuccess");
+		this.observerService.attach(this.getCart,"updateOrderItemSuccess");
 
-		monatService.getCart().then((data) => {
-			this.cart = data;
-		});
-
-		this.observerService.attach(this.handleCreateAccount.bind(this), 'createSuccess');
-		this.observerService.attach(this.next.bind(this), 'onNext');
-		this.observerService.attach(this.next.bind(this), 'updateSuccess');
+		this.getCart();
 	}
 
 	public handleCreateAccount = () => {
@@ -40,7 +43,13 @@ class MonatEnrollmentController {
 		if (this.currentAccountID.length) {
 			this.next();
 		}
-	};
+	}
+	
+	public getCart = (refresh = true) => {
+		this.monatService.getCart(refresh).then(data =>{
+			this.cart = data;
+		});
+	}
 
 	public addStep = (step) => {
 		if (this.steps.length == 0) {
@@ -54,14 +63,12 @@ class MonatEnrollmentController {
 		if (index > 0) {
 			this.steps.splice(index, 1);
 		}
-	};
-
-	public toggleMiniCart = () => {
-		this.style =
-			this.style == 'position:static; display:block'
-				? 'position:static; display:none'
-				: 'position:static; display:block';
-	};
+	}
+	
+	public toggleMiniCart = () =>{
+		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+		this.cartText = this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
+	}
 
 	public next() {
 		this.navigate(this.position + 1);
