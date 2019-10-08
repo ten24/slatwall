@@ -228,11 +228,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
     
-    public any function createAccount(required struct data){
+    public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             if(!isNull(arguments.data['accountStatusName'])){
-                account.setAccountStatusName(arguments.data['accountStatusName']);
+                account.setAccountStatusType(getService('TypeService').getTypeByTypeCode('astEnrollmentPending'));
             }
         }
         return account;
