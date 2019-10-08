@@ -16,7 +16,8 @@ class MonatProductCardController {
     constructor(
     	//inject modal service
     	public orderTemplateService,
-    	public $rootScope
+    	public $rootScope,
+    	public monatService
     ){
     }
     
@@ -75,12 +76,14 @@ class MonatProductCardController {
         
     }
     
-    public addToCart =(type)=>{
-        if(type === 'flexship'){
+    public addToCart = (skuID, skuCode) =>{
+        this.loading = true;
+        if(this.type === 'flexship'){
             //flexship logic
-      
         }else{
-            //normal product logic
+           this.monatService.addToCart(skuID, 1).then(result => {
+               this.loading = false;
+           });
         }
     }
     

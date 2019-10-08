@@ -22,14 +22,31 @@
 
 <ng-transclude></ng-transclude>
 
-<footer class="steps-footer">
-	<a href data-ng-click="monatEnrollment.previous()" class="back" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
-		<i class="fas fa-chevron-left"></i>
-	</a>
-	<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
-	<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
-		<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
-		<i class="fas fa-chevron-right"></i>
-	</a>
-	<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
+<footer class="steps-footer d-flex flex-column">
+	<div class="w-100 d-flex justify-content-between align-items-center">
+		<div class="d-flex align-items-center">
+			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
+				<i class="fas fa-chevron-left"></i>
+			</a>
+			
+			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 6" class="qty-and-price text-white">
+				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
+				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">Show Cart</small>
+			</span>			
+		</div>
+		
+		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
+		
+		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
+			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</a>
+		
+	</div>
+	
+	<!--- Mini cart ---> 	
+	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 6" class="w-100">
+	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style"></monat-mini-cart>		
+	</div>
+
 </footer>

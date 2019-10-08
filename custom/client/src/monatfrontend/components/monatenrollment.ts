@@ -10,6 +10,7 @@ class MonatEnrollmentController{
 	public onFinish;
 	public finishText;
 	public currentAccountID: string;
+	public style:string = 'position:static; display:none';
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope){
@@ -55,6 +56,10 @@ class MonatEnrollmentController{
 		if (index > 0) {
 			this.steps.splice(index, 1);
 		}
+	}
+	
+	public toggleMiniCart = () =>{
+		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
 	}
 	
 	public next(){
