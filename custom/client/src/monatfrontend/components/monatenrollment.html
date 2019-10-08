@@ -35,9 +35,9 @@
 			</span>			
 		</div>
 		
-		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
+		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<a href data-ng-click="monatEnrollment.next()" class="forward">
+		<a href data-ng-click="monatEnrollment.next()" class="forward"> 
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</a>

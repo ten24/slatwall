@@ -34,7 +34,8 @@ class MonatEnrollmentController{
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
 		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
-		this.observerService.attach(this.getCart,"removeOrderItemSuccess"); 
+		this.observerService.attach(this.getCart,"removeOrderItemSuccess");
+		this.observerService.attach(this.getCart,"updateOrderItemSuccess");
 	}
 	
 	public handleCreateAccount = () => {

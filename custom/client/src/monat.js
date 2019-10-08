@@ -59384,6 +59384,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.next.bind(this), "updateSuccess");
         this.observerService.attach(this.getCart, "addOrderItemSuccess");
         this.observerService.attach(this.getCart, "removeOrderItemSuccess");
+        this.observerService.attach(this.getCart, "updateOrderItemSuccess");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
