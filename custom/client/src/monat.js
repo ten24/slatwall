@@ -59332,6 +59332,8 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
+        this.isMiniCartOpen = false;
+        this.showMiniCart = false;
         this.style = 'position:static; display:none';
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
@@ -59352,7 +59354,7 @@ var MonatEnrollmentController = /** @class */ (function () {
             }
         };
         this.toggleMiniCart = function () {
-            _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+            _this.isMiniCartOpen = !_this.isMiniCartOpen;
         };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
@@ -59388,6 +59390,7 @@ var MonatEnrollmentController = /** @class */ (function () {
             return this.onFinish();
         }
         this.position = index;
+        this.showMiniCart = (this.steps[this.position].showMiniCart == 'true');
         angular.forEach(this.steps, function (step) {
             step.selected = false;
         });
@@ -59618,6 +59621,7 @@ var MonatEnrollmentStep = /** @class */ (function () {
         this.transclude = true;
         this.scope = {
             stepClass: '@',
+            showMiniCart: '@',
             onNext: '=?'
         };
         this.require = '^monatEnrollment';

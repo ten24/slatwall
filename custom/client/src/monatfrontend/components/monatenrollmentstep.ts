@@ -6,8 +6,8 @@ class MonatEnrollmentStep {
 	public transclude:boolean = true;
 	public scope ={
 		stepClass : '@',
+		showMiniCart : '@',
 		onNext : '=?'
-		
 	}
 	public require = '^monatEnrollment';
 

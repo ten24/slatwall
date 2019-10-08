@@ -9,6 +9,8 @@ class MonatEnrollmentController{
 	public steps=[];
 	public onFinish;
 	public finishText;
+	public isMiniCartOpen: boolean = false;
+	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
 
@@ -34,7 +36,6 @@ class MonatEnrollmentController{
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
-
 	}
 	
 	public handleCreateAccount = () => {
@@ -58,8 +59,8 @@ class MonatEnrollmentController{
 		}
 	}
 	
-	public toggleMiniCart = () =>{
-		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
+	public toggleMiniCart = () => {
+		this.isMiniCartOpen = !this.isMiniCartOpen;
 	}
 	
 	public next(){
@@ -74,6 +75,7 @@ class MonatEnrollmentController{
 		if(index < 0 || index == this.position){
 			return;
 		}
+		
 		//If on next returns false, prevent it from navigating
 		if(index > this.position && !this.steps[this.position].onNext()){
 			return;
@@ -82,6 +84,9 @@ class MonatEnrollmentController{
 			return this.onFinish();
 		}
 		this.position = index;
+		
+		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		
 		angular.forEach(this.steps, (step)=> {
 			step.selected = false;
 		});
