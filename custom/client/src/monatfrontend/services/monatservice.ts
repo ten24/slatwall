@@ -41,7 +41,7 @@ export class MonatService {
 		let deferred = this.$q.defer();
 		payload['returnJSONObjects'] = 'cart';
 
-		this.publicService.doAction(`${action}`, payload)
+		this.publicService.doAction(action, payload)
 			.then((data) => {
 				if (data.cart) {
 					this.cart = data.cart;
