@@ -1,34 +1,31 @@
-declare var hibachiConfig:any;
-declare var angular:any;
+declare var hibachiConfig: any;
+declare var angular: any;
 
-class MonatEnrollmentController{
-
-	public cart:any;
-	public backUrl:string ='/';
-	public position:number=0;
-	public steps=[];
+class MonatEnrollmentController {
+	public cart: any;
+	public backUrl: string = '/';
+	public position: number = 0;
+	public steps = [];
 	public onFinish;
 	public finishText;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
 	public cartText:string = 'Show Cart'
 
+
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope){
-		
-		if(hibachiConfig.baseSiteURL){
+	constructor(public monatService, public observerService, public $rootScope) {
+		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
-		
-		if(angular.isUndefined(this.onFinish)){
+
+		if (angular.isUndefined(this.onFinish)) {
 			this.onFinish = () => console.log('Done!');
 		}
-		
-		if(angular.isUndefined(this.finishText)){
+
+		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
-
-		this.getCart();
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
@@ -36,11 +33,13 @@ class MonatEnrollmentController{
 		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
 		this.observerService.attach(this.getCart,"removeOrderItemSuccess");
 		this.observerService.attach(this.getCart,"updateOrderItemSuccess");
+
+		this.getCart();
 	}
-	
+
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		if ( this.currentAccountID.length ) {
+		if (this.currentAccountID.length) {
 			this.next();
 		}
 	}
@@ -50,15 +49,15 @@ class MonatEnrollmentController{
 			this.cart = data;
 		});
 	}
-	
-	public addStep = (step) =>{
-		if(this.steps.length == 0){
+
+	public addStep = (step) => {
+		if (this.steps.length == 0) {
 			step.selected = true;
 		}
 		this.steps.push(step);
-	}
-	
-	public removeStep = (step) =>{
+	};
+
+	public removeStep = (step) => {
 		var index = this.steps.indexOf(step);
 		if (index > 0) {
 			this.steps.splice(index, 1);
@@ -69,28 +68,28 @@ class MonatEnrollmentController{
 		this.style = this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
 		this.cartText = this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
 	}
-	
-	public next(){
+
+	public next() {
 		this.navigate(this.position + 1);
 	}
-	
-	public previous(){
+
+	public previous() {
 		this.navigate(this.position - 1);
 	}
-	
-	private navigate(index){
-		if(index < 0 || index == this.position){
+
+	private navigate(index) {
+		if (index < 0 || index == this.position) {
 			return;
 		}
 		//If on next returns false, prevent it from navigating
-		if(index > this.position && !this.steps[this.position].onNext()){
+		if (index > this.position && !this.steps[this.position].onNext()) {
 			return;
 		}
-		if(index >= this.steps.length){
+		if (index >= this.steps.length) {
 			return this.onFinish();
 		}
 		this.position = index;
-		angular.forEach(this.steps, (step)=> {
+		angular.forEach(this.steps, (step) => {
 			step.selected = false;
 		});
 		this.steps[this.position].selected = true;
@@ -98,30 +97,26 @@ class MonatEnrollmentController{
 }
 
 class MonatEnrollment {
-
-	public restrict:string = 'EA';
-	public transclude:boolean = true;
-	public templateUrl:string;
+	public restrict: string = 'EA';
+	public transclude: boolean = true;
+	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		finishText : '@',
-		onFinish : '=?'
+		finishText: '@',
+		onFinish: '=?',
 	};
 	public controller = MonatEnrollmentController;
-	public controllerAs = "monatEnrollment";
+	public controllerAs = 'monatEnrollment';
 
-	public static Factory(){
-		var directive:any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
+	public static Factory() {
+		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
 		directive.$inject = ['monatFrontendBasePath'];
 		return directive;
 	}
 
-	constructor( private monatFrontendBasePath ){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollment.html";
+	constructor(private monatFrontendBasePath) {
+		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
 	}
 }
 
-export {
-	MonatEnrollment
-};
-
+export { MonatEnrollment };

@@ -29,7 +29,7 @@
 				<i class="fas fa-chevron-left"></i>
 			</a>
 			
-			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 6" class="qty-and-price text-white">
+			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 5" class="qty-and-price text-white">
 				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
 				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{ monatEnrollment.cartText }} </small>
 			</span>			
@@ -37,7 +37,7 @@
 		
 		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<a href data-ng-click="monatEnrollment.next()" class="forward"> 
+		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</a>
@@ -45,7 +45,7 @@
 	</div>
 	
 	<!--- Mini cart ---> 	
-	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 6" class="w-100">
+	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.position + 1 == 5" class="w-100">
 	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
 	</div>
 

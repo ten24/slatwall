@@ -110,8 +110,15 @@
     </div>            
 </div>
 
-<!--- Delete Wishlist Item Modal ---> 
-<div class="modal fade" id="delete-item-modal" tabindex="-1" role="dialog" aria-hidden="true" ng-if="0 == monatProductCard.index">
+<!--- Delete Wishlist Item Modal --->
+<div
+	class="modal fade"
+	id="delete-item-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-hidden="true"
+	ng-if="0 == monatProductCard.index"
+>
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
@@ -122,20 +129,26 @@
 				</div>
 				<div class="row short-width">
 					<div class="col-md-6">
-						<button 
-                            data-dismiss="modal" 
-                            aria-label="No" 
-                            class="btn bg-primary w-100 mb-3" 
-                           sw-rbkey="'define.no'"
-				        ></button>
+						<button
+							data-dismiss="modal"
+							aria-label="No"
+							class="btn bg-primary w-100 mb-3"
+							sw-rbkey="'define.no'"
+						></button>
 					</div>
 					<div class="col-md-6">
-						<input id="orderTemplateID" type="hidden" name="orderTemplateID"  class="form-control success" ng-model="swfSelect.selectedOption.value">
-						<button 
-                            class="btn bg-primary w-100" 
-                            data-dismiss="modal" 
-                            ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
-                           sw-rbKey="'define.yes'"
+						<input
+							id="orderTemplateID"
+							type="hidden"
+							name="orderTemplateID"
+							class="form-control success"
+							ng-model="swfSelect.selectedOption.value"
+						/>
+						<button
+							class="btn bg-primary w-100"
+							data-dismiss="modal"
+							ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
+							sw-rbKey="'define.yes'"
 						></button>
 					</div>
 				</div>

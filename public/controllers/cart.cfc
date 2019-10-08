@@ -165,7 +165,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             orderTemplate.clearProcessObject("addOrderTemplateItem");
              getHibachiScope().flushORMSession(); //flushing to make new data availble
         } else {
-            ArrayAppend(arguments.data.messages , orderTemplate.getErrors(), true);
+            ArrayAppend(arguments.rc.messages , orderTemplate.getErrors(), true);
         }
     }
 	

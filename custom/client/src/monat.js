@@ -59201,7 +59201,7 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
-        this.cartAsAttribute = false;
+        this.cartAsAttribute = false; //declares if cart data is being bound through attribute binding or not
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59286,7 +59286,7 @@ var MonatMiniCartController = /** @class */ (function () {
                 //TODO hide loader...
             });
         };
-        this.observerService.attach(this.fetchCart, "addOrderItemSuccess");
+        this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
     }
     return MonatMiniCartController;
 }());
@@ -59378,13 +59378,13 @@ var MonatEnrollmentController = /** @class */ (function () {
         if (angular.isUndefined(this.finishText)) {
             this.finishText = 'Finish';
         }
-        this.getCart();
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
         this.observerService.attach(this.getCart, "addOrderItemSuccess");
         this.observerService.attach(this.getCart, "removeOrderItemSuccess");
         this.observerService.attach(this.getCart, "updateOrderItemSuccess");
+        this.getCart();
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
@@ -59419,11 +59419,11 @@ var MonatEnrollment = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             finishText: '@',
-            onFinish: '=?'
+            onFinish: '=?',
         };
         this.controller = MonatEnrollmentController;
-        this.controllerAs = "monatEnrollment";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatenrollment.html";
+        this.controllerAs = 'monatEnrollment';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
     }
     MonatEnrollment.Factory = function () {
         var _this = this;
@@ -59455,6 +59455,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.currentCountryCode = '';
         this.loading = false;
         this.bundleHasErrors = false;
+        this.sponsorHasErrors = false;
         this.selectedBundleID = '';
         this.bundles = [];
         this.$onInit = function () {
@@ -59463,7 +59464,9 @@ var EnrollmentMPController = /** @class */ (function () {
             _this.getProductList();
         };
         this.getStarterPacks = function () {
-            _this.publicService.doAction('getStarterPackBundleStruct', { contentID: _this.contentId }).then(function (data) {
+            _this.publicService
+                .doAction('getStarterPackBundleStruct', { contentID: _this.contentId })
+                .then(function (data) {
                 _this.bundles = data.bundles;
             });
         };
@@ -59473,6 +59476,14 @@ var EnrollmentMPController = /** @class */ (function () {
             }
             else {
                 _this.bundleHasErrors = true;
+            }
+        };
+        this.submitSponsor = function () {
+            if (_this.selectedMP) {
+                _this.observerService.notify('onNext');
+            }
+            else {
+                _this.sponsorHasErrors = true;
             }
         };
         this.selectBundle = function (bundleID) {
@@ -59513,7 +59524,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.setOwnerAccount = function (ownerAccountID) {
             _this.loading = true;
-            _this.publicService.doAction('setOwnerAccountOnAccount', { 'ownerAccountID': ownerAccountID }).then(function (result) {
+            _this.publicService
+                .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
+                .then(function (result) {
                 console.log(result);
                 _this.loading = false;
             });
@@ -59535,10 +59548,10 @@ var EnrollmentMPController = /** @class */ (function () {
                     return pageNumber;
                 }
                 else if (_this.pageTracker === _this.totalPages[0] + 1) {
-                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages 
+                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages
                     var q = _this.totalPages[0];
                     pageNumber = q;
-                    //its not beautiful but it works 
+                    //its not beautiful but it works
                     _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
                 }
                 else {
@@ -59564,7 +59577,9 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.totalPages.splice(0, 10);
                 setNew = false;
             }
-            _this.publicService.doAction("getproducts", { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then(function (result) {
+            _this.publicService
+                .doAction('getproducts', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber })
+                .then(function (result) {
                 _this.productList = result.productListing;
                 if (setNew) {
                     var holdingArray = [];
@@ -59595,7 +59610,7 @@ var MonatEnrollmentMP = /** @class */ (function () {
          */
         this.bindToController = {
             step: '@?',
-            contentId: '@'
+            contentId: '@',
         };
         this.controller = EnrollmentMPController;
         this.controllerAs = 'enrollmentMp';
@@ -60741,10 +60756,10 @@ var MonatFlexshipCardController = /** @class */ (function () {
         this.observerService = observerService;
         this.ModalService = ModalService;
         this.$onInit = function () {
-            _this.observerService.attach(_this.updateOrderTemplate, "orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+            _this.observerService.attach(_this.updateOrderTemplate, 'orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
         };
         this.$onDestroy = function () {
-            _this.observerService.detachById("orderTemplateUpdated" + _this.orderTemplate.orderTemplateID);
+            _this.observerService.detachById('orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
         };
         this.updateOrderTemplate = function (orderTemplate) {
             _this.orderTemplate = orderTemplate;
@@ -60754,16 +60769,22 @@ var MonatFlexshipCardController = /** @class */ (function () {
             _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipNameModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
-                    orderTemplate: _this.orderTemplate
+                    orderTemplate: _this.orderTemplate,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
     }
@@ -60785,23 +60806,19 @@ var MonatFlexshipCard = /** @class */ (function () {
             cancellationReasonTypeOptions: '<',
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
         };
         this.controller = MonatFlexshipCardController;
-        this.controllerAs = "monatFlexshipCard";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipcard.html";
-        this.restrict = "EA";
+        this.controllerAs = 'monatFlexshipCard';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
+        this.restrict = 'EA';
     }
     MonatFlexshipCard.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
         return directive;
     };
     return MonatFlexshipCard;
@@ -60947,118 +60964,142 @@ var MonatFlexshipMenuController = /** @class */ (function () {
         this.observerService = observerService;
         this.$window = $window;
         this.ModalService = ModalService;
-        this.$onInit = function () {
-        };
+        this.$onInit = function () { };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showCancelFlexshipModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipCancelModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
-                    cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions
+                    cancellationReasonTypeOptions: _this.cancellationReasonTypeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showDelayOrSkipFlexshipModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipChangeOrSkipOrderModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
-                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions
+                    scheduleDateChangeReasonTypeOptions: _this.scheduleDateChangeReasonTypeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showFlexshipEditPaymentMethodModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipPaymentMethodModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     accountAddresses: _this.accountAddresses,
                     accountPaymentMethods: _this.accountPaymentMethods,
                     stateCodeOptions: _this.stateCodeOptions,
                     expirationMonthOptions: _this.expirationMonthOptions,
-                    expirationYearOptions: _this.expirationYearOptions
+                    expirationYearOptions: _this.expirationYearOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showFlexshipEditShippingMethodModal = function () {
-            _this.ModalService.closeModals();
             _this.ModalService.showModal({
                 component: 'monatFlexshipShippingMethodModal',
+                bodyClass: 'angular-modal-service-active',
                 bindings: {
                     orderTemplate: _this.orderTemplate,
                     accountAddresses: _this.accountAddresses,
                     shippingMethodOptions: _this.shippingMethodOptions,
-                    stateCodeOptions: _this.stateCodeOptions
+                    stateCodeOptions: _this.stateCodeOptions,
                 },
-                preClose: function (modal) { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-            }).then(function (modal) {
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
                 //it's a bootstrap element, use 'modal' to show it
                 modal.element.modal();
                 modal.close.then(function (result) { });
-            }).catch(function (error) {
-                console.error("unable to open model :", error);
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
     }
     MonatFlexshipMenuController.prototype.activateFlexship = function () {
         var _this = this;
         // make api request
-        this.orderTemplateService.activateOrderTemplate(this.orderTemplate.orderTemplateID)
+        this.orderTemplateService
+            .activateOrderTemplate(this.orderTemplate.orderTemplateID)
             .then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
-                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.observerService.notify('orderTemplateUpdated' + data.orderTemplate.orderTemplateID, data.orderTemplate);
             }
             else {
                 console.error(data);
             }
             // TODO: show alert
-        }).catch(function (reason) {
-            throw (reason);
+        })
+            .catch(function (reason) {
+            throw reason;
             // TODO: show alert
         });
     };
     MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
         var _this = this;
         // make api request
-        this.orderTemplateService.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
+        this.orderTemplateService
+            .setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
             .then(function (data) {
-            if (data.successfulActions && data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+            if (data.successfulActions &&
+                data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
                 _this.$window.location.href = '/shop';
             }
             else {
-                throw (data);
+                throw data;
             }
-        }).catch(function (error) {
-            console.error("setAsCurrentFlexship :", error);
+        })
+            .catch(function (error) {
+            console.error('setAsCurrentFlexship :', error);
             // TODO: show alert
         });
     };
@@ -61080,23 +61121,19 @@ var MonatFlexshipMenu = /** @class */ (function () {
             cancellationReasonTypeOptions: '<',
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
-            expirationYearOptions: '<'
+            expirationYearOptions: '<',
         };
         this.controller = MonatFlexshipMenuController;
-        this.controllerAs = "monatFlexshipMenu";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipmenu.html";
-        this.restrict = "EA";
+        this.controllerAs = 'monatFlexshipMenu';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipmenu.html';
+        this.restrict = 'EA';
     }
     MonatFlexshipMenu.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipMenu(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatFlexshipMenu(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
         return directive;
     };
     return MonatFlexshipMenu;
@@ -61152,7 +61189,9 @@ var MonatProductCardController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, skuID, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity).then(function (result) {
+            _this.orderTemplateService
+                .addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
+                .then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 return result;
@@ -61160,15 +61199,14 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addWishlistItem = function (skuID) {
             _this.loading = true;
-            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID)
-                .then(function (result) {
+            _this.orderTemplateService.addOrderTemplateItem(skuID, _this.wishlistTemplateID).then(function (result) {
                 _this.loading = false;
                 return result;
             });
         };
         this.launchModal = function (type) {
             if (type === 'flexship') {
-                //launch flexship modal 
+                //launch flexship modal
             }
             else {
                 //launch normal modal
@@ -61207,8 +61245,8 @@ var MonatProductCard = /** @class */ (function () {
             allProducts: '<?',
         };
         this.controller = MonatProductCardController;
-        this.controllerAs = "monatProductCard";
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatproductcard.html";
+        this.controllerAs = 'monatProductCard';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatproductcard.html';
     }
     MonatProductCard.Factory = function () {
         var _this = this;
@@ -61789,7 +61827,7 @@ var monatfrontendmodule = angular
     'ModalServiceProvider',
     function (ModalServiceProvider) {
         // to set a default close delay on modals
-        ModalServiceProvider.configureOptions({ closeDelay: 100 });
+        ModalServiceProvider.configureOptions({ closeDelay: 0 });
     },
 ]);
 exports.monatfrontendmodule = monatfrontendmodule;
@@ -69641,8 +69679,8 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWDatePicker = /** @class */ (function () {
     function SWDatePicker() {
-        this.restrict = "A";
-        this.require = "ngModel";
+        this.restrict = 'A';
+        this.require = 'ngModel';
         this.scope = {
             options: '<?',
             startDayOfTheMonth: '<?',
@@ -69650,13 +69688,13 @@ var SWDatePicker = /** @class */ (function () {
             startDate: '=?',
             startDateString: '@?',
             endDate: '=?',
-            endDateString: '@?'
+            endDateString: '@?',
         };
         this.link = function ($scope, element, attrs, modelCtrl) {
             if (!$scope.options) {
                 $scope.options = {
                     autoclose: true,
-                    format: "mm/dd/yyyy",
+                    format: 'mm/dd/yyyy',
                     setDate: new Date(),
                 };
             }
@@ -69688,9 +69726,10 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            dateToCompare >= $scope.startDate
+                            dateToCompare >= $scope.startDate,
                     ];
                 };
             }
@@ -69701,10 +69740,11 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
                             dateToCompare >= $scope.startDate &&
-                            dateToCompare < $scope.endDate
+                            dateToCompare < $scope.endDate,
                     ];
                 };
             }
