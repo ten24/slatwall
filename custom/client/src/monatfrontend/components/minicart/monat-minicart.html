@@ -65,8 +65,7 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<!--TODO calc actual price => price*qty -->
-							<span class="price">{{ item.price | currency }}</span>
+							<span class="price">{{ item.price * item.quantity | currency }}</span>
 						</div>
 					</div>
 				</li>
