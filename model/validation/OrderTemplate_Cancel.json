@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"orderTemplateCancellationReasonType" : [{"required":true}]
+	}
+}
+
