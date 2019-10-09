@@ -16,12 +16,12 @@
           "propertyIdentifier":"skuName"
         },
         {
-          "sourceColumn":"Amount",
-          "propertyIdentifier":"price"
+          "sourceColumn":"ItemNote",
+          "propertyIdentifier":"skuDescription"
         },
         {
-          "sourceColumn":"SecondName",
-          "propertyIdentifier":"skuDescription"
+          "sourceColumn":"Amount",
+          "propertyIdentifier":"price"
         },
         {
           "sourceColumn":"DisableOnRegularOrders",
@@ -30,6 +30,10 @@
         {
           "sourceColumn":"DisableOnFlexship",
           "propertyIdentifier":"disableOnFlexshipFlag"
+        },
+        {
+          "sourceColumn":"SalesCategoryCode",
+          "propertyIdentifier":"salesCategoryCode"
         },
         {
           "sourceColumn":"EntryDate",

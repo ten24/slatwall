@@ -182,7 +182,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				
 				switch(arguments.key){
 					case 'CommissionableVolume':
-						skuPrice['CommissionableVolume'] = arguments.value;
+						skuPrice['Commission'] = arguments.value;
 						break;
 					case 'QualifyingVolume':
 						skuPrice['QualifyingPrice'] = arguments.value;
@@ -248,6 +248,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
+					break;
+				case 'ItemNote':
+					data['ItemNote'] = Trim(fieldValue);
+					break;
+				case 'SalesCategoryCode':
+					data['SalesCategoryCode'] = Trim(fieldValue);
 					break;
 				case 'DisableInDTX':
 					data['DisableOnRegularOrders'] = fieldValue;
@@ -356,11 +362,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
-		
+		var query = arguments.skuBundleQuery;
+		var skuData = arguments.skuData;
+		var skuBundles = [];
+		var currentCountryCode = "";
+		ArrayEach(arguments.skuData.KitLines, function(item){
+			var skuBundleData = {};
+			switch (arguments.item['CountryCode']){	
+				case 'CAN':
+					currentCountryCode = 'CAD';
+					break;
+				case 'GBR':
+					currentCountryCode = 'GBP';
+					break;
+				case 'USA':
+					currentCountryCode = 'USD';
+					break;
+			}
+
+			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
+
+			StructEach(arguments.item, function(key, value){
+				switch (arguments.key){
+					case 'OnTheFlyFlag':
+						skuBundleData['ontheflykit'] = arguments.value;
+						break;
+					case 'ComponentItemCode':
+						skuBundleData['ComponentItemCode'] = arguments.value;
+						break;
+					case 'ComponentQty':
+						skuBundleData['ComponentQuantity'] = arguments.value;
+						break;
+				}
+			}, true, 10);
+			if(StructIsEmpty(skuBundleData)){
+				continue;
+			}
+			QueryAddRow(query, skuBundleData);
+		}, true, 10);
+
+		return query;
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
+		return "SKUItemCode,ItemName,Amount,SalesCategoryCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -383,7 +428,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			totalPages = initProductData['Data']['TotalPages'];
 		}
-		writedump(initProductData);abort;
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
 		var importSkuBundles = rc.importSkuBundles?:false;
@@ -399,10 +443,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
 		
-		// var skuBundleColumns = this.getSkuBundleColumnsList();
-		// skuBundleColumnTypes = [];
-		// ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
-		// writeDump(skuBundleColumnTypes);abort;
+		var skuBundleColumns = this.getSkuBundleColumnsList();
+		skuBundleColumnTypes = [];
+		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -414,7 +457,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
-			writedump(monatProducts);abort;
 
 			if(!importSkuBundles){
 
@@ -447,8 +489,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 					for (var skuData in monatProducts){
 						if(arrayLen(skuData['KitLines'])){
-							// skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
-							writedump(skuData);
+							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+
+							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+
+							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
 						}
 					}
 				
