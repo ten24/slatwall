@@ -1,9 +1,9 @@
 component {
-	property name="siteAvailableLocales" type="string";
+	property name="siteAvailableLocales" persistent="false";
 	
 	public string function getSiteAvailableLocales() {
 		if ( ! structKeyExists( variables, 'siteAvailableLocales' ) ) {
-			variables.siteAvailableLocales = setting('siteAvailableLocales');
+			variables.siteAvailableLocales = setting( 'siteAvailableLocales' );
 		}
 		return variables.siteAvailableLocales;
 	}
