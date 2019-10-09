@@ -53,6 +53,9 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
 	property name="containerLabel" ormtype="text";
+	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
+	property name="undeliverableOrderReason" ormtype="string";
+	
 	// Related Object Properties (Many-To-One)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";

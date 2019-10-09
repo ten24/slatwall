@@ -4,6 +4,15 @@ component extends="Slatwall.model.service.OrderService" {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
     }
     
+    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+        
+        if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
+		}
+        
+        return super.processOrderTemplate_create(argumentCollection = arguments);
+    }
+    
     public any function processOrder_addOrderItem(required any order, required any processObject){
         var customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
         arguments.order = super.processOrder_addOrderItem(argumentCollection=arguments);
@@ -20,7 +29,7 @@ component extends="Slatwall.model.service.OrderService" {
         return order;
     }
     
-    private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+    public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
@@ -28,8 +37,8 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
-		
+		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
 		orderTemplateItemCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -105,6 +114,26 @@ component extends="Slatwall.model.service.OrderService" {
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
+	
+	public any function getOrderItemsByOrderID(struct data={}) {
+        param name="arguments.data.orderID" default="";
+        param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=10;
+        
+
+		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
+		
+		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
+		
+		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return ordersItemsList.getPageRecords();
+
+    }
     
     public string function getSimpleRepresentation(required any order){
 		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
@@ -119,5 +148,20 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return representation;
 	}
-
+	
+	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
+		
+		var orderDeliveryStatusType = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
+		
+		if (structKeyExists(data, "undeliverableOrderReason") && !isNull(orderDeliveryStatusType)){
+		    arguments.orderDelivery.setUndeliverableOrderReason(data.undeliverableOrderReason);
+		    arguments.orderDelivery.setOrderDeliveryStatusType(orderDeliveryStatusType);
+		}
+		
+		arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
+		getHibachiScope().flushORMSession();
+		
+		return arguments.orderDelivery;
+	}
 }
+

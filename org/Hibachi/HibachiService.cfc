@@ -541,10 +541,13 @@
 
 		private function onMissingGetEntityStructMethod( required string missingMethodName, required struct missingMethodArguments ){
 			var entityNameLength = len(arguments.missingMethodName) - 9;
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
-			var entityID = missingMethodArguments[ 1 ]; 
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityID = arguments.missingMethodArguments[ 1 ]; 
 			
-			var collection = getCollectionList(entityName=entityName); 
+			var collection = getCollectionList(entityName=entityName);
+			if(arrayLen(arguments.missingMethodArguments) == 2){
+				collection.setDisplayProperties(arguments.missingMethodArguments[2]);
+			}
 			collection.addFilter(getPrimaryIDPropertyNameByEntityName(entityName), entityID);
 			collection.setPageRecordsShow(1);
 			return collection.getPageRecords(formatRecords=false)[1];

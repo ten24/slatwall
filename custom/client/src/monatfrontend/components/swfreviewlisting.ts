@@ -8,6 +8,7 @@ class SWFReviewListingController{
     public pageNumberArray:Array<Object>;
     public pageCache:Object={};
 
+    //@ngInject
 	constructor( public $hibachi,
 				 public $scope,
 				 public requestService

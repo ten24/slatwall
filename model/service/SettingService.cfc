@@ -145,6 +145,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
+			accountLoginEmailOrUserName = {fieldType="select", defaultValue="email", valueOptions=[{name="Email",value="email"}, {name="Email or Username",value="emailOrUsername"}]},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},

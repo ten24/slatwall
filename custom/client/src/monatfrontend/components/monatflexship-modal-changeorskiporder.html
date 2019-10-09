@@ -1,0 +1,127 @@
+<div
+	class="modal"
+	role="dialog"
+	id="flexship-modal-change-or-skip-order{{
+		monatFlexshipChangeOrSkipOrderModal.orderTemplate.orderTemplateID
+	}}"
+>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipChangeOrSkipOrderModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="change-order">
+				<h6 class="title-with-line mb-5">
+					{{ monatFlexshipChangeOrSkipOrderModal.translations.changeOrSkip }}
+				</h6>
+
+				<p>{{ monatFlexshipChangeOrSkipOrderModal.translations.delayOrSkipMessage }}</p>
+
+				<!-- Delay/Change Order -->
+				<div
+					class="custom-radio form-group"
+					ng-click="monatFlexshipChangeOrSkipOrderModal.updateDelayOrSkip('delay')"
+				>
+					<input
+						type="radio"
+						name="change-order"
+						ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'delay'"
+					/>
+					<label for="change-order">
+						{{ monatFlexshipChangeOrSkipOrderModal.translations.delayThisMonthsOrder }}
+					</label>
+				</div>
+
+				<!-- Delay/Change Order Datepicker -->
+				<!--<span ng-init="endDate = Date.parse('#dateFormat(dateAdd('m', 3 ,now()),'mm/dd/yyyy')#')"></span>-->
+				<div class="form-group">
+					<input
+						type="text"
+						id="scheduleOrderNextPlaceDateTime"
+						name="scheduleOrderNextPlaceDateTime"
+						placeholder="{{ monatFlexshipChangeOrSkipOrderModal.translations.forHowLong }}"
+						sw-date-picker
+						data-end-day-of-the-month="monatFlexshipChangeOrSkipOrderModal.endDayOfTheMonth"
+						data-end-date="monatFlexshipChangeOrSkipOrderModal.endDate"
+						ng-disabled="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip !== 'delay'"
+						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
+						autocomplete="off"
+					/>
+				</div>
+
+				<!-- Skip this month's order -->
+				<div
+					class="custom-radio form-group mt-5"
+					ng-click="monatFlexshipChangeOrSkipOrderModal.updateDelayOrSkip('skip')"
+				>
+					<input
+						type="radio"
+						name="change-order"
+						ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'"
+					/>
+					<label for="change-order2">
+						{{ monatFlexshipChangeOrSkipOrderModal.translations.skipThisMonthsOrder }}
+					</label>
+				</div>
+
+				<!-- Why are you pushing your flexship? -->
+				<div class="form-group">
+					<select
+						type="text"
+						class="form-control"
+						id="change-flexship"
+						ng-model="monatFlexshipChangeOrSkipOrderModal.selectedReason"
+						ng-change="monatFlexshipChangeOrSkipOrderModal.selectedReasonChanged()"
+						ng-options="reason as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions track by reason.value"
+						placeholder="{{
+							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
+						}}"
+					>
+						<option value="">
+							{{ monatFlexshipChangeOrSkipOrderModal.translations.whyAreYouCancellingFlexship }}
+						</option>
+					</select>
+				</div>
+
+				<div
+					class="form-group"
+					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes"
+				>
+					<input
+						type="text"
+						class="form-control"
+						ng-model="monatFlexshipChangeOrSkipOrderModal.formData.otherReasonNotes"
+						placeholder="{{
+							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason
+						}}"
+					/>
+					<!--TODO: RB-Keys text has extra chars on it-->
+				</div>
+			</div>
+
+			<div class="footer">
+				<button
+					type="button"
+					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
+				>
+					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
+				</button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipChangeOrSkipOrderModal.closeModal()"
+				>
+					<span sw-rbkey="'frontend.modal.closeButton'"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

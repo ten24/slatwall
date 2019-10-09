@@ -276,6 +276,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return returnList;
 	}
+	
+	
+	public array function getCardExpirationMonthOptions() {
+		return [
+			'01',
+			'02',
+			'03',
+			'04',
+			'05',
+			'06',
+			'07',
+			'08',
+			'09',
+			'10',
+			'11',
+			'12'
+		];
+	}
+
+	public array function getCardExpirationYearOptions( yearsCount=20) {
+		var yearOptions = [];
+		var currentYear = year(now());
+		for(var i = 0; i < arguments.yearsCount; i++) {
+			var nextYear = currentYear + i;
+			arrayAppend(yearOptions,{name=nextYear, value=right(nextYear,2)});
+		}
+		return yearOptions;
+	}
 
 	public array function getActivePaymentMethodOptions() {
 		var paymentMethodCollection =  this.getPaymentMethodCollectionList();
