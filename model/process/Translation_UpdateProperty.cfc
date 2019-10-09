@@ -20,6 +20,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
     // Option Properties
     
     // Helper Properties
+    property name="translationValue";
     
     // ======================== START: Defaults ============================
     
@@ -30,6 +31,30 @@ component output="false" accessors="true" extends="HibachiProcess" {
     // ======================  END: Data Options ===========================
     
     // ================== START: New Property Helpers ======================
+    
+    /**
+     * Parameters:
+     * locale (string): the regions locale abbreviation (e.g. en_us)
+     * Returns:
+     * The translated string for the property is the provided locale
+     */ 
+    public string function getTranslationValue(string locale) {
+        var translatedValue = "";
+        var hasTranslatedPropertyObject = !isNull(this.getBaseObject()) && !isNull(this.getBaseID()) && !isNull(this.getBasePropertyName());
+        if (hasTranslatedPropertyObject) {
+            var translationEntity = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([
+                this.getBaseObject(),
+                this.getBaseID(),
+                this.getBasePropertyName(),
+                arguments.locale
+                ], true);
+                
+            if (!isNull(translationEntity) && len(translationEntity.getTranslationID())) {
+                translatedValue = translationEntity.getValue();
+            }
+        }
+        return translatedValue;
+    }
     
     // ==================  END: New Property Helpers =======================
     
