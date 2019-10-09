@@ -74,7 +74,7 @@ var monatfrontendmodule = angular
 		'ModalServiceProvider',
 		function(ModalServiceProvider) {
 			// to set a default close delay on modals
-			ModalServiceProvider.configureOptions({ closeDelay: 100 });
+			ModalServiceProvider.configureOptions({ closeDelay: 0 });
 		},
 	]);
 
