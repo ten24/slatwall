@@ -84,11 +84,11 @@ Notes:
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
-	    <cfset activeTab = "soiaddsku" />
+	    <cfset local.activeTab = "soiaddsku" />
 	    <cfif listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder', rc.order.getTypeCode())>
-	        <cfset activeTab = "soiaddreturnsku" />
+	        <cfset local.activeTab = "soiaddreturnsku" />
 	    </cfif>
-		<hb:HibachiTabGroup tabLocation="top" activeTab="#activeTab#">
+		<hb:HibachiTabGroup tabLocation="top" activeTab="#local.activeTab#">
 		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
     		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />

@@ -58,7 +58,6 @@ Notes:
 	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
 							  recordDetailAction="admin:entity.detailaccount"
 							  recordDetailModal="true"
-							  recordDetailQueryString="accountID=2c91808268c5b4840168de6171c70939"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=oitReturn"
 							  recordProcessContext="addOrderItem"

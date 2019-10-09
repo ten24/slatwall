@@ -716,7 +716,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
 	public numeric function getFulfillmentChargeTotal() {
 		var fulfillmentChargeTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+		var numFulfillments = arrayLen(getOrderFulfillments());
+		for(var i=1; i<=numFulfillments; i++) {
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getFulfillmentHandlingFeeTotal());
@@ -726,7 +727,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	
 	public numeric function getFulfillmentChargeTotalBeforeHandlingFees() {
 		var fulfillmentChargeTotalBeforeHandlingFees = 0;
-		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+		var numFulfillments = arrayLen(getOrderFulfillments());
+		for(var i=1; i<=numFulfillments; i++) {
 			fulfillmentChargeTotalBeforeHandlingFees = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotalBeforeHandlingFees + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		

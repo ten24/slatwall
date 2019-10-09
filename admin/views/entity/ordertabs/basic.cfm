@@ -61,8 +61,6 @@
 
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divclass="col-md-6">
-			
-			<p>Testing</p>
 
 			<!--- Totals --->
 			<hb:HibachiPropertyTable>

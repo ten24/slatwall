@@ -63,15 +63,15 @@ Notes:
 		<hb:HibachiPropertyList>
 		    <hb:HibachiPropertyTableBreak header="Order Item Quantities" />
 		    <cfset oiIndex=0 />
-			<cfloop array=#rc.order.getOrderItems()# index="orderItem">
+			<cfloop array=#rc.order.getOrderItems()# index="local.orderItem">
 			    <cfset oiIndex++ />
-			    <cfif orderItem.getQuantity() NEQ orderItem.getQuantityReceived()>
+			    <cfif local.orderItem.getQuantity() NEQ local.orderItem.getQuantityReceived()>
 			        
-			            <input type="hidden" name="orderItems[#oiIndex#].orderItemID" value="#orderItem.getOrderItemID()#">
+			            <input type="hidden" name="orderItems[#oiIndex#].orderItemID" value="#local.orderItem.getOrderItemID()#">
 			       
-			        <hb:HibachiPropertyDisplay object="#orderItem.getSku()#" property="skuCode" edit="false">
-			        <hb:HibachiPropertyDisplay object="#orderItem#" property="quantityReceived" edit="false">
-		            <hb:HibachiPropertyDisplay object="#orderItem#" fieldName="orderItems[#oiIndex#].quantity" property="quantity" edit="true">
+			        <hb:HibachiPropertyDisplay object="#local.orderItem.getSku()#" property="skuCode" edit="false">
+			        <hb:HibachiPropertyDisplay object="#local.orderItem#" property="quantityReceived" edit="false">
+		            <hb:HibachiPropertyDisplay object="#local.orderItem#" fieldName="orderItems[#oiIndex#].quantity" property="quantity" edit="true">
 		        </cfif>
 			</cfloop>
 		</hb:HibachiPropertyList>
