@@ -185,7 +185,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwAccountToIceDistributor(required any account){
 		
 		var distributorData = { 
-			//'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
+			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
@@ -230,10 +230,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
 			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			//'volume5'           = 0, // Sponsor Valume
+			'volume5'           = getAmount(arguments.order,'retailCommission'), // Sponsor Valume
 			'volume6'           = getAmount(arguments.order,'ProductPackVolumeTotal'), // Product Pack Volume
 			'volume7'           = getAmount(arguments.order,'RetailValueVolumeTotal'), // Retail Value Volume
-			//'volume8'           = 0,
+			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
 			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
