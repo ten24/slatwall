@@ -95,5 +95,8 @@ Notes:
 		<cfif rc.productType.getBaseProductType() eq "subscription">
 			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.productType#"/>
 		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "miscFee">
+			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.productType#"/>
+		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -886,6 +886,10 @@ component extends="HibachiService" accessors="true" {
 		//GENERATE - GIFT SKUS
 		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
 			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
+			
+		// GENERATE - FEE fi fo fum SKUS smell the blood of an englishman
+		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "miscFee") {
+			arguments.product = createSingleSku(arguments.product, arguments.processObject);
 		}
 
 		// Generate the URL Title
