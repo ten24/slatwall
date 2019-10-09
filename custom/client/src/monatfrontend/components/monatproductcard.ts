@@ -1,6 +1,6 @@
 class MonatProductCardController {
 	public product;
-	public type: string;
+	public type: string = '';
 	public loading: boolean;
 	public newTemplateID: string;
 	public orderTemplates: Array<any>;
@@ -17,6 +17,7 @@ class MonatProductCardController {
 		public orderTemplateService,
 		public $rootScope,
 		public monatService,
+		public ModalService,
 	) {}
 
 	public getAllWishlists = (
@@ -67,12 +68,36 @@ class MonatProductCardController {
 		});
 	};
 
-	public launchModal = (type) => {
-		if (type === 'flexship') {
-			//launch flexship modal
-		} else {
-			//launch normal modal
-		}
+	
+	public launchQuickShopModal = () => {
+		
+		this.ModalService.showModal({
+			component: 'monatProductModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				product: this.product,
+				type: this.type,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+				this.changeTypeForDemo(); //TODO remove
+			},
+		}).then((modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	
+	};
+	
+	//TODO remove
+	private changeTypeForDemo = () => {
+		let types = ['','flexship','wishlist','enrollment'];
+		let index = types.indexOf(this.type);
+		this.type = types[index++ % types.length];
 	};
 
 	public addToCart = (skuID, skuCode) => {

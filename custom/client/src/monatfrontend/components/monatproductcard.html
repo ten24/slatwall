@@ -19,7 +19,7 @@
             
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a href="#" ng-click="monatProductCard.launchModal()" data-toggle="modal" data-target="#product-" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a href="#" ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
                 </div>
             </div>
             
@@ -29,7 +29,7 @@
             </a>
             
             <!--- Launch quick shop modal if enrollment type --->
-            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
+            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchQuickShopModal()" ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
            
         </figure>
       

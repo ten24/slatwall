@@ -1,11 +1,8 @@
-<div
-	class="modal product-details-modal fade"
-	id="flexship-product-modal{{ monatProductlModal.orderTemplate.orderTemplateID }}"
->
+<div class="modal product-details-modal using-modal-service">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<!-- Modal Close -->
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<button type="button" class="close" ng-click="monatProductModal.closeModal()" aria-label="Close">
 				<i class="fas fa-times"></i>
 			</button>
 

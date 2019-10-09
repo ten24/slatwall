@@ -1,7 +1,10 @@
 
 class MonatProductModalController {
 	public product; 
-	public options;
+	public context;
+	
+	public close; // injected from angularModalService
+
 
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService) {
@@ -15,6 +18,11 @@ class MonatProductModalController {
     private makeTranslations = () => {
     	//TODO make translations for success/failure alert messages
     }
+    
+    public closeModal = () => {
+    	console.log("closing modal");
+     	this.close(null); // close, but give 100ms to animate
+    };
 
 }
 
@@ -26,7 +34,8 @@ class MonatProductModal {
 	public scope = {};
 	public bindToController = {
 	    product:'<',
-	    options:'<',
+	    context:'<',
+		close:'=' //injected by angularModalService
 	};
 	public controller=MonatProductModalController;
 	public controllerAs="monatProductModal";
