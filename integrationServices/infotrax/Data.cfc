@@ -90,6 +90,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = deserializeJson(rawRequest.fileContent);
 		
+		if(structKeyExists(arguments, 'jsessionid')){
+			writedump(requestData); 
+			writedump(response); abort;
+		}
 		if( structKeyExists(response, 'errors') && arrayLen(response.errors) ){
 			var errorMessages = '';
 			for(var error in response.errors){
@@ -99,7 +103,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				throw(errorMessages);
 			}
 		}
-		
 		
 		if( structKeyExists(response, 'ERRORCODE') ){
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
@@ -173,17 +176,19 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			arguments.entity.setLastSyncedDateTime(now());
 		}
 		
+		if(structKeyExists(iceResponse, 'recordNumber')){
+			arguments.entity.remoteID(iceResponse['recordNumber']);
+		}
+		
 	}
-	
-
-	
 	
 	public struct function createDistributor(required struct DTSArguments){
 		return postRequest('ICEDistributor.create', arguments.DTSArguments, getSessionToken());
 	}
 	
 	public struct function updateDistributor(required struct DTSArguments){
-		structDelete(arguments.DTSArguments, 'referralId')
+		structDelete(arguments.DTSArguments, 'referralId');
+		structDelete(arguments.DTSArguments, 'email');
 		return postRequest('ICEDistributor.update', arguments.DTSArguments, getSessionToken());
 	}
 	

@@ -116,7 +116,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'Customer'      = 'C'
 		};
 		
-		return mapping[accountType];
+		return structKeyExists(mapping, accountType) ? mapping[accountType] : 'C';
 	}
 	
 	private string function formatOrderType(required any order){
@@ -185,7 +185,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwAccountToIceDistributor(required any account){
 		
 		var distributorData = { 
-			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
+			//'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
@@ -196,10 +196,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
-			'email'       = left(arguments.account.getEmailAddress(), 60),
+			// 'email'       = left(arguments.account.getEmailAddress(), 60),
 			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
-			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			// 'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
+			// 'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
 		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
@@ -220,7 +220,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
 			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
-			'recordNumber'      = arguments.order.getOrderNumber(),
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
 			'transactionTime'   = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
@@ -231,11 +230,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
 			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'volume5'           = 0,
-			'volume6'           = 0,//PRODUCT PACK?
-			'volume7'           = 0,
-			'volume8'           = 0,
-			'volume9'           = 0,
+			//'volume5'           = 0, // Sponsor Valume
+			'volume6'           = getAmount(arguments.order,'ProductPackVolumeTotal'), // Product Pack Volume
+			'volume7'           = getAmount(arguments.order,'RetailValueVolumeTotal'), // Retail Value Volume
+			//'volume8'           = 0,
+			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
 			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
@@ -245,7 +244,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		
 		if( transactionData['orderType'] == 'C' ){
-			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getRemoteID();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+		}
+		
+		if(len(arguments.order.getRemoteID())){
+			transactionData['recordNumber'] = arguments.order.getOrderNumber()
 		}
 		
 		return transactionData;
