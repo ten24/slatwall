@@ -41,9 +41,8 @@ export class MonatService {
 		let deferred = this.$q.defer();
 		payload['returnJSONObjects'] = 'cart';
 
-		this.requestService
-			.newPublicRequest('?slatAction=api:public.' + action, payload)
-			.promise.then((data) => {
+		this.publicService.doAction(action, payload)
+			.then((data) => {
 				if (data.cart) {
 					this.cart = data.cart;
 					deferred.resolve(data.cart);
