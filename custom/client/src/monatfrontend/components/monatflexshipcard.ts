@@ -1,111 +1,97 @@
-class MonatFlexshipCardController{
-    
-    public dayOfMonthFormatted:string;
-    
-	public orderTemplate:any; 
-	
+class MonatFlexshipCardController {
+	public dayOfMonthFormatted: string;
+
+	public orderTemplate: any;
+
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
-	public shippingMethodOptions: any[]; 
+	public shippingMethodOptions: any[];
 	public stateCodeOptions: any[];
 	public cancellationReasonTypeOptions: any[];
 	public scheduleDateChangeReasonTypeOptions: any[];
-	
+
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
-	
-    //@ngInject
-	constructor(public observerService, public ModalService){
-	}
-	
-	public $onInit = () =>{
-		this.observerService.attach(this.updateOrderTemplate, "orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
-	}
-	
-	public $onDestroy = () =>{
-		this.observerService.detachById("orderTemplateUpdated" + this.orderTemplate.orderTemplateID);
-	}
-	
+
+	//@ngInject
+	constructor(public observerService, public ModalService) {}
+
+	public $onInit = () => {
+		this.observerService.attach(
+			this.updateOrderTemplate,
+			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
+		);
+	};
+
+	public $onDestroy = () => {
+		this.observerService.detachById('orderTemplateUpdated' + this.orderTemplate.orderTemplateID);
+	};
+
 	public updateOrderTemplate = (orderTemplate?) => {
 		this.orderTemplate = orderTemplate;
-	}
-	
+	};
+
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
 	public showEditFlexshipNameModal = () => {
 		this.ModalService.closeModals();
 		this.ModalService.showModal({
 			component: 'monatFlexshipNameModal',
+			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				orderTemplate: this.orderTemplate
+				orderTemplate: this.orderTemplate,
 			},
-			preClose: (modal) => { modal.element.modal('hide'); } // needed when not using 'data-dismiss' to clodse the modal
-		}).then((modal) => {
-			  //it's a bootstrap element, use 'modal' to show it
-		      modal.element.modal();
-		      modal.close.then((result) => {});
-		}).catch((error) => {
-		    console.error("unable to open model :",error);	
-		});
-	}
-
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
 }
 
 class MonatFlexshipCard {
-
-	public restrict:string;
-	public templateUrl:string;
+	public restrict: string;
+	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-	    orderTemplate:'<',
-	    accountAddresses:'<',
-	    accountPaymentMethods:'<',
-	    shippingMethodOptions: '<',
-	    stateCodeOptions:'<',
-	    cancellationReasonTypeOptions: '<',
-	    scheduleDateChangeReasonTypeOptions: '<',
-	    expirationMonthOptions: '<',
-		expirationYearOptions: '<'
+		orderTemplate: '<',
+		accountAddresses: '<',
+		accountPaymentMethods: '<',
+		shippingMethodOptions: '<',
+		stateCodeOptions: '<',
+		cancellationReasonTypeOptions: '<',
+		scheduleDateChangeReasonTypeOptions: '<',
+		expirationMonthOptions: '<',
+		expirationYearOptions: '<',
 	};
-	public controller=MonatFlexshipCardController;
-	public controllerAs="monatFlexshipCard";
+	public controller = MonatFlexshipCardController;
+	public controllerAs = 'monatFlexshipCard';
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipCard(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipcard.html";
-		this.restrict = "EA";
+	public static Factory() {
+		var directive: any = (monatFrontendBasePath, $hibachi, rbkeyService, requestService) =>
+			new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+		directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
+		return directive;
 	}
 
-	public link = (scope, element, attrs) =>{
-
+	constructor(
+		private monatFrontendBasePath,
+		private slatwallPathBuilder,
+		private $hibachi,
+		private rbkeyService,
+	) {
+		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
+		this.restrict = 'EA';
 	}
 
+	public link = (scope, element, attrs) => {};
 }
 
-export {
-	MonatFlexshipCard
-};
-
+export { MonatFlexshipCard };
