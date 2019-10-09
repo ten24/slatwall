@@ -61886,9 +61886,8 @@ var MonatService = /** @class */ (function () {
         this.updateCart = function (action, payload) {
             var deferred = _this.$q.defer();
             payload['returnJSONObjects'] = 'cart';
-            _this.requestService
-                .newPublicRequest('?slatAction=api:public.' + action, payload)
-                .promise.then(function (data) {
+            _this.publicService.doAction(action, payload)
+                .then(function (data) {
                 if (data.cart) {
                     _this.cart = data.cart;
                     deferred.resolve(data.cart);
