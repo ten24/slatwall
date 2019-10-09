@@ -63,7 +63,6 @@ component extends="Slatwall.model.service.OrderService" {
         return returnOrderItem;
     }
     
-<<<<<<< HEAD
     public any function addReplacementOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var replacementOrderItem = super.addReplacementOrderItemSetup(argumentCollection=arguments);
         var sku = replacementOrderItem.getSku();
@@ -104,9 +103,6 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
     private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
-=======
-    public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
->>>>>>> 4a545787d0984c009bd82796acac424b11b9dad9
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
