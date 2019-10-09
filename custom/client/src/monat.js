@@ -59331,17 +59331,33 @@ exports.MonatMiniCart = MonatMiniCart;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatProductModalController = /** @class */ (function () {
     //@ngInject
-    function MonatProductModalController(orderTemplateService, observerService, rbkeyService) {
+    function MonatProductModalController(monatService, observerService, rbkeyService) {
         var _this = this;
-        this.orderTemplateService = orderTemplateService;
+        this.monatService = monatService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.quantityToAdd = 1;
         this.$onInit = function () {
             _this.makeTranslations();
+            if (_this.type === 'flexship') {
+                _this.fetchCurrentFlexshipID();
+            }
         };
         this.translations = {};
         this.makeTranslations = function () {
+            if (_this.type === 'flexship') {
+                _this.translations['addButtonText'] = _this.rbkeyService.rbKey('frontend.global.addToFlexship');
+            }
+            else {
+                _this.translations['addButtonText'] = _this.rbkeyService.rbKey('frontend.global.addToCart');
+            }
             //TODO make translations for success/failure alert messages
+        };
+        this.fetchCurrentFlexshipID = function () {
+            _this.flexshipID = 'hsdgfgvwbwojfwbfiww78676';
+        };
+        this.onAddButtonClick = function () {
+            console.log('on add', _this);
         };
         this.closeModal = function () {
             console.log("closing modal");
@@ -59360,7 +59376,7 @@ var MonatProductModal = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             product: '<',
-            context: '<',
+            type: '<',
             close: '=' //injected by angularModalService
         };
         this.controller = MonatProductModalController;
@@ -61301,7 +61317,9 @@ var MonatProductCardController = /** @class */ (function () {
         this.changeTypeForDemo = function () {
             var types = ['', 'flexship', 'wishlist', 'enrollment'];
             var index = types.indexOf(_this.type);
-            _this.type = types[index++ % types.length];
+            index++;
+            _this.type = types[index % types.length];
+            console.log('changed type for demo :', _this.type);
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;

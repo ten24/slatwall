@@ -1,22 +1,41 @@
 
 class MonatProductModalController {
 	public product; 
-	public context;
+	public type:string; 
+	public flexshipID:string;
 	
 	public close; // injected from angularModalService
 
+	public quantityToAdd:number = 1;
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService) {
+	constructor(public monatService, public observerService, public rbkeyService) {
     }
     
     public $onInit = () => {
     	this.makeTranslations();
+    	if(this.type === 'flexship') {
+    		this.fetchCurrentFlexshipID();
+    	}
     };
     
     public translations = {};
     private makeTranslations = () => {
+    	if(this.type === 'flexship'){
+    		this.translations['addButtonText'] = this.rbkeyService.rbKey('frontend.global.addToFlexship');
+    	} else {
+    		this.translations['addButtonText'] = this.rbkeyService.rbKey('frontend.global.addToCart');
+    	}
+    	
     	//TODO make translations for success/failure alert messages
+    }
+    
+    private fetchCurrentFlexshipID = () => {
+    	this.flexshipID = 'hsdgfgvwbwojfwbfiww78676';
+    }
+    
+    public onAddButtonClick = () => {
+    	console.log('on add', this);
     }
     
     public closeModal = () => {
@@ -34,7 +53,7 @@ class MonatProductModal {
 	public scope = {};
 	public bindToController = {
 	    product:'<',
-	    context:'<',
+	    type:'<',
 		close:'=' //injected by angularModalService
 	};
 	public controller=MonatProductModalController;

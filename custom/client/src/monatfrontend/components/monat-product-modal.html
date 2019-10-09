@@ -8,86 +8,94 @@
 
 			<!--product image-->
 			<div class="product-img">
-				<img src="#local.productImageURL#" alt="#local.productName#" />
+				<img ng-src="monatProductModal.product.skuImagePath#" alt="{{monatProductModal.product.productName}}" />
 			</div>
 			<!-- end product image-->
 
 			<!--product details-->
 			<div class="product-details">
-				<h2 class="modal-title" id="product-#local.productDefaultSkuID#-details">
-					<a href="#local.productUrl#">
-						#local.productName#
+				<h2 class="modal-title">
+					<a ng-href="monatProductModal.product.skuProductUrl#">
+						{{monatProductModal.product.productName}}
 					</a>
 				</h2>
 
 				<!-- star-rating	
-  				<cfif ! isNull( local.averageRating ) AND local.reviewCount>
-  					<sw:ReviewStars
-						rating="#local.averageRating#"
-						reviewCount="#local.reviewCount#"
-						reviewText="#attributes.slatwallScope.rbKey('frontend.product.reviews')#"
-						isProductPage="false"
-					>
-  				</cfif>
-  			-->
+	  				<cfif ! isNull( local.averageRating ) AND local.reviewCount>
+	  					<sw:ReviewStars
+							rating="#local.averageRating#"
+							reviewCount="#local.reviewCount#"
+							reviewText="#attributes.slatwallScope.rbKey('frontend.product.reviews')#"
+							isProductPage="false"
+						>
+	  				</cfif>
+	  			-->
 
 				<!-- In this system
   				
-  				<cfif len( local.productBundledSkus )>
-                    <p class="system">In this system</p>
-                    <p class="features">
-                        <cfloop array="#local.productBundledSkus#" item="item">
-                            <span class="feature">
-                                <cfset item.productUrl = attributes.slatwallScope.getService('ProductService').getProductUrlByUrlTitle( item.bundledSku_product_urlTitle ) />
-                                <a href="#item.productUrl#">#item.bundledSku_product_productName#</a>
-                            </span>
-                        </cfloop>
-                    </p>
-                </cfif>
-  			
-  			-->
-
-				<!--price group
-  			
-  				<div class="price-block">
-	                <cfif attributes.slatwallScope.account().hasPriceGroup( local.priceGroups[3] )>
-	                    <div class="price">
-	                    	#local.formattedVipPrice# 
-	                    	<span class="vip-price">
-	                    		#attributes.slatwallScope.rbKey('frontend.global.retail')# 
-	                    		#local.formattedRetailPrice#
-	                    	</span>
-	                   	</div>
-		                <cfelseif attributes.slatwallScope.account().hasPriceGroup( local.priceGroups[1] )>
-		                    <div class="price">
-		                        #local.formattedMpPrice# 
-		                        <span class="vip-price">
-		                        	#attributes.slatwallScope.rbKey('frontend.global.retail')# 
-		                        	#local.formattedRetailPrice#
-		                        </span>
-		                    </div>
-		                <cfelse>
-	                    <div class="price">#local.formattedRetailPrice# <span class="vip-price">#attributes.slatwallScope.rbKey('frontend.global.vip')# #local.formattedVipPrice#</span></div>
+	  				<cfif len( local.productBundledSkus )>
+	                    <p class="system">In this system</p>
+	                    <p class="features">
+	                        <cfloop array="#local.productBundledSkus#" item="item">
+	                            <span class="feature">
+	                                <cfset item.productUrl = attributes.slatwallScope.getService('ProductService').getProductUrlByUrlTitle( item.bundledSku_product_urlTitle ) />
+	                                <a href="#item.productUrl#">#item.bundledSku_product_productName#</a>
+	                            </span>
+	                        </cfloop>
+	                    </p>
 	                </cfif>
-	  				<cfset local.productTooltipBean = attributes.muraScope.getBean('contentBean').loadBy(urltitle = 'Product Details: Tooltip')>
-					<button class="info tooltip-onclick" data-toggle="tooltip" data-placement="left" title="#encodeForHTML( #local.productTooltipBean.getComponentTitle()# )#">
+  			
+  				-->
+
+				<!--price group block-->
+  				<div class="price-block">
+  					
+			        <!-- Market Partner Pricing -->
+			        <div ng-if="monatProductModal.product.accountPriceGroup == 1" class="price">
+			            <strong>{{monatProductModal.product.marketPartnerPrice}} /</strong> <span class="vip-price">Retail {{monatProductModal.product.retailPrice}}</span>
+			            <br><strong>PV {{monatProductModal.product.personalVolume}}</strong>
+			        </div>
+			        
+			        <!-- VIP Pricing -->
+			        <div ng-if="monatProductModal.product.accountPriceGroup == 3" class="price">
+			            <strong>{{monatProductModal.product.vipPrice}} /</strong> <span class="vip-price">Retail {{monatProductModal.product.retailPrice}}</span>
+			        </div>
+			        
+			        <!-- Retail Pricing -->
+			        <div ng-if="monatProductModal.product.accountPriceGroup != 3 && monatProductModal.product.accountPriceGroup != 1" class="price">
+			            <strong>{{monatProductModal.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductModal.product.vipPrice}}</span>
+			        </div>
+	                
+	  				<!--<cfset local.productTooltipBean = attributes.muraScope.getBean('contentBean').loadBy(urltitle = 'Product Details: Tooltip')>-->
+					<button class="info tooltip-onclick" data-toggle="tooltip" data-placement="left" title="{{monatProductModal.product.productName}}">
 						<i class="far fa-question-circle"></i>
 					</button>
-	  			</div>
-	  		
-	  		end price group-->
+	  			</div> 
+	  			<!--- end price group block-->
 
 				<div class="qty-block">
 					<label sw-rbkey="'frontend.global.quantity'"></label>
 					<div class="qty">
-						<button type="button" class="minus">-</button>
-						<input class="form-control qty-input" type="text" name="quantity" value="1" />
-						<button type="button" class="plus">+</button>
+						<button type="button" 
+							ng-disabled="monatProductModal.quantityToAdd <= 1"
+							ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd -1" 
+							class="minus">
+							-
+						</button>
+						<input class="form-control qty-input" type="number" name="quantity"
+							ng-model="monatProductModal.quantityToAdd" />
+						<button type="button" 
+							ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd + 1 " 
+							class="plus">
+							+
+						</button>
 					</div>
 				</div>
 
-				<button class="btn bg-primary"><span sw-rbkey="'frontend.global.addToCart'"></span></button>
-
+				<button ng-click="monatProductModal.onAddButtonClick()" class="btn bg-primary">
+					{{ monatProductModal.translations.addButtonText }}
+				</button>
+		
 				<!--end product details -->
 			</div>
 		</div>

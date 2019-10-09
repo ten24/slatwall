@@ -70,6 +70,7 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
+
 		
 		this.ModalService.showModal({
 			component: 'monatProductModal',
@@ -97,7 +98,10 @@ class MonatProductCardController {
 	private changeTypeForDemo = () => {
 		let types = ['','flexship','wishlist','enrollment'];
 		let index = types.indexOf(this.type);
-		this.type = types[index++ % types.length];
+		index++;
+		this.type = types[index % types.length];
+		
+		console.log('changed type for demo :', this.type);
 	};
 
 	public addToCart = (skuID, skuCode) => {
