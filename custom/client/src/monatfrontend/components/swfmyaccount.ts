@@ -21,8 +21,13 @@ class swfAccountController {
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
+    public editAddress;
+    public isNewAddress:boolean;
+
+
     public totalPages:Array<number>;
     public pageTracker:number = 1;
+
     
     // @ngInject
     constructor(
@@ -126,11 +131,10 @@ class swfAccountController {
     
     public getCountryCodeOptions = ():Promise<any>=>{
         this.loading = true;
-        
         if(this.countryCodeOptions){
             return this.countryCodeOptions;
         }
-    
+
         return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
@@ -186,6 +190,20 @@ class swfAccountController {
             this.accountPaymentMethods.splice(index, 1);
             this.loading = false;
             return this.accountPaymentMethods
+        });
+    }
+    
+
+    
+    public setEditAddress = (newAddress = true, address) => {
+       this.editAddress = address ? address : {};
+       this.isNewAddress = newAddress;
+    }
+    
+    public setPrimaryAddress = (addressID) => {
+        this.loading = true;
+        return this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
+            this.loading = false;
         });
     }
 }
