@@ -196,10 +196,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
-			// 'email'       = left(arguments.account.getEmailAddress(), 60),
+			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
-			// 'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
-			// 'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
+			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
 		
 		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
