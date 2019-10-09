@@ -59365,18 +59365,21 @@ var MonatProductModalController = /** @class */ (function () {
             }
         };
         this.addToFlexship = function () {
-            // this.monatService
-            // 	.addToCart(this.product.skuID, this.quantityToAdd)
-            // 	.then((data) => {
-            // 		this.closeModal();
-            // 	})
-            // 	.catch((reason) => {
-            // 		throw reason;
-            // 		//TODO handle errors / success
-            // 	})
-            // 	.finally(() => {
-            // 		//TODO hide loader...
-            // 	});
+            console.log('add to flexship');
+            /*
+            this.monatService
+                .addToCart(this.product.skuID, this.quantityToAdd)
+                .then((data) => {
+                    this.closeModal();
+                })
+                .catch((reason) => {
+                    throw reason;
+                    //TODO handle errors / success
+                })
+                .finally(() => {
+                    //TODO hide loader...
+                });
+            */
         };
         this.addToCart = function () {
             _this.monatService
@@ -59393,7 +59396,7 @@ var MonatProductModalController = /** @class */ (function () {
             });
         };
         this.closeModal = function () {
-            console.log("closing modal");
+            console.log('closing modal');
             _this.close(null); // close, but give 100ms to animate
         };
     }
@@ -59410,23 +59413,19 @@ var MonatProductModal = /** @class */ (function () {
         this.bindToController = {
             product: '<',
             type: '<',
-            close: '=' //injected by angularModalService
+            close: '=',
         };
         this.controller = MonatProductModalController;
-        this.controllerAs = "monatProductModal";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monat-product-modal.html";
-        this.restrict = "E";
+        this.controllerAs = 'monatProductModal';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monat-product-modal.html';
+        this.restrict = 'E';
     }
     MonatProductModal.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatProductModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatProductModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
         return directive;
     };
     return MonatProductModal;
