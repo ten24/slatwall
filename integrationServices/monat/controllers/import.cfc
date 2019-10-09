@@ -4,6 +4,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
+	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -77,7 +78,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		if(listFindNoCase(arguments.rc.includeSegments,'sku')){
-    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
+    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varchar';
     		var skuCodeQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.skufileName, columnTypeList);
             
             // Sanitize names
@@ -366,6 +367,54 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			writeDump(e); // rollback the tx
 			}
 			pageNumber++
+		}
+		abort;
+	}
+
+	public void function importVibeAccounts(){
+		param name="arguments.rc.fileLocation" default="/var/www/app/Monat/Slatwall/custom/";
+		param name="arguments.rc.fileName" default="monat-prod-users-5-20-2019.csv";
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		var importSuccess = true;
+
+		try{
+			var columnTypeList = "varchar,varchar,varchar,varchar,varchar,varchar"
+			var accountQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.fileName, columnTypeList);
+			var index = 0;
+			QueryEach(accountQuery, function(row, rowNumber, query){
+				var userNameQuery = "UPDATE swaccount a SET a.userName = :userName WHERE a.accountNumber = :accountNumber";
+				var accountAuthQuery = "INSERT INTO swaccountauthentication (
+											accountAuthenticationID, 
+											password, 
+											activeFlag, 
+											createdDateTime, 
+											accountID, 
+											legacyPassword
+										) 
+										VALUES (
+											LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
+											'LEGACY',
+											1,
+											NOW(),
+											(SELECT a.accountID FROM swaccount a WHERE a.accountNumber = :accountNumber),
+											:legacyPassword
+										)";
+
+
+				QueryExecute(userNameQuery, {userName=arguments.row['username'], accountNumber=arguments.row['consultantid']});
+				QueryExecute(accountAuthQuery, {legacyPassword=arguments.row['encryptedpassword'], accountNumber=arguments.row['consultantid']});
+				index++;
+			});
+
+		} catch(any e){
+			importSuccess = false;
+			writeDump("Something Went Wrong!!!");
+			writeDump(var=e, label="ERROR");
+		}
+
+		if(importSuccess){
+			writeDump("Import Success!!!");
+			writeDump("Accounts Updated: #index#");
 		}
 		abort;
 	}
