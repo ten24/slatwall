@@ -59357,7 +59357,40 @@ var MonatProductModalController = /** @class */ (function () {
             _this.flexshipID = 'hsdgfgvwbwojfwbfiww78676';
         };
         this.onAddButtonClick = function () {
-            console.log('on add', _this);
+            if (_this.type === 'flexship') {
+                _this.addToFlexship();
+            }
+            else {
+                _this.addToCart();
+            }
+        };
+        this.addToFlexship = function () {
+            // this.monatService
+            // 	.addToCart(this.product.skuID, this.quantityToAdd)
+            // 	.then((data) => {
+            // 		this.closeModal();
+            // 	})
+            // 	.catch((reason) => {
+            // 		throw reason;
+            // 		//TODO handle errors / success
+            // 	})
+            // 	.finally(() => {
+            // 		//TODO hide loader...
+            // 	});
+        };
+        this.addToCart = function () {
+            _this.monatService
+                .addToCart(_this.product.skuID, _this.quantityToAdd)
+                .then(function (data) {
+                _this.closeModal();
+            })
+                .catch(function (reason) {
+                throw reason;
+                //TODO handle errors / success
+            })
+                .finally(function () {
+                //TODO hide loader...
+            });
         };
         this.closeModal = function () {
             console.log("closing modal");

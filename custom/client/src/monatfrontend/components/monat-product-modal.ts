@@ -35,8 +35,43 @@ class MonatProductModalController {
     }
     
     public onAddButtonClick = () => {
-    	console.log('on add', this);
+    	if(this.type === 'flexship'){
+    		this.addToFlexship();
+    	}else{
+    		this.addToCart();
+    	}
     }
+    
+    
+    public addToFlexship = () => {
+		// this.monatService
+		// 	.addToCart(this.product.skuID, this.quantityToAdd)
+		// 	.then((data) => {
+		// 		this.closeModal();
+		// 	})
+		// 	.catch((reason) => {
+		// 		throw reason;
+		// 		//TODO handle errors / success
+		// 	})
+		// 	.finally(() => {
+		// 		//TODO hide loader...
+		// 	});
+    };
+    
+    public addToCart = () => {
+		this.monatService
+			.addToCart(this.product.skuID, this.quantityToAdd)
+			.then((data) => {
+				this.closeModal();
+			})
+			.catch((reason) => {
+				throw reason;
+				//TODO handle errors / success
+			})
+			.finally(() => {
+				//TODO hide loader...
+			});
+    };
     
     public closeModal = () => {
     	console.log("closing modal");
