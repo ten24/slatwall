@@ -61288,6 +61288,8 @@ var swfAccountController = /** @class */ (function () {
         this.userIsLoggedIn = false;
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
+        this.newProductReview = {};
+        this.stars = ['', '', '', '', ''];
         this.pageTracker = 1;
         // Determine how many years old the account is
         this.checkAndApplyAccountAge = function () {
@@ -61432,6 +61434,14 @@ var swfAccountController = /** @class */ (function () {
             return _this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
                 _this.loading = false;
             });
+        };
+        this.setRating = function (rating) {
+            _this.newProductReview.rating = rating;
+            _this.stars = ['', '', '', '', ''];
+            for (var i = 0; i <= rating - 1; i++) {
+                _this.stars[i] = "color: #d0d00b";
+            }
+            ;
         };
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();

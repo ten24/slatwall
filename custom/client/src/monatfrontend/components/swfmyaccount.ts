@@ -23,7 +23,8 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-    public newProductReview:any;
+    public newProductReview:any = {};
+    public stars:Array<any> = ['','','','',''];
 
 
     public totalPages:Array<number>;
@@ -99,8 +100,6 @@ class swfAccountController {
             }
         }
 
-        
-        
         return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
@@ -207,6 +206,15 @@ class swfAccountController {
             this.loading = false;
         });
     }
+    
+    public setRating = (rating) => {
+        this.newProductReview.rating = rating;
+        this.stars = ['','','','',''];
+        for(let i = 0; i <= rating - 1; i++) {
+            this.stars[i] = "color: #d0d00b";
+        };
+    }
+    
 }
 
 class SWFAccount  {
