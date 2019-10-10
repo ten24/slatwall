@@ -287,6 +287,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account.setAccountType('marketPartner');
+            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('1');
             if(!isNull(arguments.data['accountStatusName'])){
                 account.setAccountStatusType(getService('TypeService').getTypeByTypeCode('astEnrollmentPending'));
             }
