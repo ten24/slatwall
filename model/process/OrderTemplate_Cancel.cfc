@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,24 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="orderTemplate" type="any";
+	
+	property name="orderTemplateCancellationReasonTypeOther" type="string";	
+	property name="orderTemplateCancellationReasonType" type="any";
 
 
-<cfparam name="rc.orderTemplate" type="any" />
-<cfparam name="rc.processObject" type="any" />
+	public any function getOrderTemplateCancellationReasonType(){
+		if( !structKeyExists(variables, 'orderTemplateCancellationReasonType') ){
+			return;
+		} 
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailordertemplate">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" 
-										property="orderTemplateCancellationReasonType" 
-										fieldName="orderTemplateCancellationReasonType" 
-										fieldType="radioGroup" 
-										edit="#rc.edit#" 
-										enableOtherInputForRadioGroupShowHide="false" />
-
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
+		if( isSimpleValue(variables.orderTemplateCancellationReasonType) ){
+			variables.orderTemplateCancellationReasonType = getService('TypeService').getType(orderTemplateCancellationReasonType);
+		}
+		return variables.orderTemplateCancellationReasonType;
+	} 
+}

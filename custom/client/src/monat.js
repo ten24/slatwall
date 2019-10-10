@@ -61221,6 +61221,7 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;
+            _this.lastAddedSkuID = skuID;
             if (_this.type === 'flexship') {
                 //flexship logic
             }
