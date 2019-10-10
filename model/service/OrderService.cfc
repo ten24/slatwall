@@ -1182,12 +1182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		thread name="#threadName#"
 			   action="run" 
 		{	
-			var ormSession = ormGetSessionFactory().openSession();
-	    	var tx = ormSession.beginTransaction();
-			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
-			tx.commit();
-			ormSession.close();
-			
+			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(request.orderTemplate).getFulfillmentCharge();
 		}
 		
 		//join thread so we can return synchronously
@@ -1395,9 +1390,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
 			return arguments.orderTemplate;
 		} 
-		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getType(arguments.data.orderTemplateCancellationReasonType.typeID));
-		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.data.orderTemplateCancellationReasonType.typeIDOther);  
+
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
+		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
+		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
 
@@ -1523,6 +1521,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = newOrder.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 			} 
 
 			if(newOrder.hasErrors()){
@@ -1537,7 +1536,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionCode in promotionCodes){
 			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
 			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
-			porcessOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);

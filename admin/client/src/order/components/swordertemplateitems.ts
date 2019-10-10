@@ -75,11 +75,12 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
+		additionalOrderTemplateItemPropertiesToDisplay: '@?',
+		currencyCode: '@?',
+		edit:"=?",
         orderTemplate: '<?', 
         skuPropertiesToDisplay: '@?',
-        skuPropertyColumnConfigs: '<?',//array of column configs
-        additionalOrderTemplateItemPropertiesToDisplay: '@?',
-        edit:"=?"
+        skuPropertyColumnConfigs: '<?'//array of column configs
 	};
 	public controller=SWOrderTemplateItemsController;
 	public controllerAs="swOrderTemplateItems";

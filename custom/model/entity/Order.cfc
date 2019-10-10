@@ -192,7 +192,7 @@ component {
 	        return variables.accountType;
 	    }
 	    
-	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
 	        variables.accountType = "";
