@@ -51,6 +51,7 @@ Notes:
 
 
 <cfparam name="rc.orderTemplate" type="any" />
+<cfparam name="rc.processObject" type="any" />
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailordertemplate">
@@ -60,8 +61,13 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateCancellationReasonType" fieldType="radioGroup" edit="#rc.edit#" enableOtherInputForRadioGroupShowHide="false" />
-				
+			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" 
+										property="orderTemplateCancellationReasonType" 
+										fieldName="orderTemplateCancellationReasonType" 
+										fieldType="radioGroup" 
+										edit="#rc.edit#" 
+										enableOtherInputForRadioGroupShowHide="false" />
+
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

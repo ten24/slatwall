@@ -1,5 +1,6 @@
 component {
 	property name="accountType" ormtype="string" hb_formFieldType="select";
+	property name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";

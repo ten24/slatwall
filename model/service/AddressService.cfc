@@ -58,6 +58,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return this.isAddressInZone(arguments.address, addressZone);
 	}
 	
+	public boolean function isAddressInZoneByZoneID(required any address, required any addressZoneID){
+		return isAddressInZone(address=arguments.address,addressZone=this.getAddressZoneByAddressZoneID(arguments.addressZoneID));
+	}
+	
 	public boolean function isAddressInZone(required any address, required any addressZone) {
 		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
 		if(!isNull(arguments.address.getPostalCode())){

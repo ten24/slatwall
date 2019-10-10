@@ -34176,7 +34176,11 @@ var __extends = (this && this.__extends) || (function () {
 /// <reference path='../typings/slatwallTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
+<<<<<<< HEAD
+var basebootstrap_1 = __webpack_require__(713);
+=======
 var basebootstrap_1 = __webpack_require__(712);
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var slatwalladmin_module_1 = __webpack_require__(701);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
@@ -66828,6 +66832,8 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
+=======
 var SWOrderItems = /** @class */ (function () {
     //@ngInject
     function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
@@ -66982,6 +66988,7 @@ exports.SWOrderItems = SWOrderItems;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var SWResizedImage = /** @class */ (function () {
     function SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
         return {
@@ -67027,11 +67034,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
+<<<<<<< HEAD
+var swchildorderitem_1 = __webpack_require__(664);
+var sworderitem_1 = __webpack_require__(666);
+var swoishippinglabelstamp_1 = __webpack_require__(665);
+var sworderitemdetailstamp_1 = __webpack_require__(667);
+var sworderitems_1 = __webpack_require__(707);
+=======
 var swchildorderitem_1 = __webpack_require__(663);
 var sworderitem_1 = __webpack_require__(665);
 var swoishippinglabelstamp_1 = __webpack_require__(664);
 var sworderitemdetailstamp_1 = __webpack_require__(666);
 var sworderitems_1 = __webpack_require__(667);
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var swresizedimage_1 = __webpack_require__(668);
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -70606,12 +70621,20 @@ var defaultskuservice_1 = __webpack_require__(697);
 var skupriceservice_1 = __webpack_require__(698);
 //controllers
 //directives
+<<<<<<< HEAD
+var swpricingmanager_1 = __webpack_require__(708);
+=======
 var swpricingmanager_1 = __webpack_require__(707);
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var swimagedetailmodallauncher_1 = __webpack_require__(688);
 var swaddskupricemodallauncher_1 = __webpack_require__(684);
 var swdeleteskupricemodallauncher_1 = __webpack_require__(686);
 var sweditskupricemodallauncher_1 = __webpack_require__(687);
+<<<<<<< HEAD
+var swskupricemodal_1 = __webpack_require__(709);
+=======
 var swskupricemodal_1 = __webpack_require__(708);
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var swskustockadjustmentmodallauncher_1 = __webpack_require__(695);
 var swdefaultskuradio_1 = __webpack_require__(685);
 var swskuimage_1 = __webpack_require__(691);
@@ -70702,10 +70725,17 @@ var formbuilder_module_1 = __webpack_require__(625);
 var giftcard_module_1 = __webpack_require__(637);
 var optiongroup_module_1 = __webpack_require__(641);
 var orderitem_module_1 = __webpack_require__(669);
+<<<<<<< HEAD
+var orderfulfillment_module_1 = __webpack_require__(663);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(627);
+var orderdeliverydetail_module_1 = __webpack_require__(661);
+var order_module_1 = __webpack_require__(658);
+=======
 var orderfulfillment_module_1 = __webpack_require__(662);
 var fulfillmentbatchdetail_module_1 = __webpack_require__(627);
 var orderdeliverydetail_module_1 = __webpack_require__(660);
 var order_module_1 = __webpack_require__(657);
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 var product_module_1 = __webpack_require__(674);
 var productbundle_module_1 = __webpack_require__(680);
 var site_module_1 = __webpack_require__(683);
@@ -71179,6 +71209,161 @@ exports.termmodule = termmodule;
 
 /***/ }),
 /* 707 */
+<<<<<<< HEAD
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWOrderItems = /** @class */ (function () {
+    //@ngInject
+    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
+        return {
+            restrict: 'E',
+            scope: {
+                orderId: "@"
+            },
+            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+            link: function (scope, element, attrs) {
+                var options = {};
+                scope.keywords = "";
+                scope.loadingCollection = false;
+                scope.$watch('recordsCount', function (newValue, oldValue, scope) {
+                    //Do anything with $scope.letters
+                    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length) {
+                        //refresh so order totals refresh.
+                        window.location.reload();
+                    }
+                });
+                var searchPromise;
+                scope.searchCollection = function () {
+                    if (searchPromise) {
+                        $timeout.cancel(searchPromise);
+                    }
+                    searchPromise = $timeout(function () {
+                        $log.debug('search with keywords');
+                        $log.debug(scope.keywords);
+                        //Set current page here so that the pagination does not break when getting collection
+                        scope.paginator.setCurrentPage(1);
+                        scope.loadingCollection = true;
+                        scope.getCollection();
+                    }, 500);
+                };
+                $log.debug('Init Order Item');
+                $log.debug(scope.orderId);
+                //Setup the data needed for each order item object.
+                scope.getCollection = function () {
+                    if (scope.pageShow === 'Auto') {
+                        scope.pageShow = 50;
+                    }
+                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
+                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
+                        .addFilter('order.orderID', scope.orderId)
+                        .addFilter('parentOrderItem', 'null', 'IS')
+                        .setKeywords(scope.keywords)
+                        .setPageShow(scope.paginator.getPageShow())
+                        .setCurrentPage(scope.paginator.getCurrentPage());
+                    //add attributes to the column config
+                    angular.forEach(scope.attributes, function (attribute) {
+                        var attributeColumn = {
+                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+                            attributeID: attribute.attributeID,
+                            attributeSetObject: "orderItem"
+                        };
+                        orderItemCollection.columns.push(attributeColumn);
+                    });
+                    var orderItemsPromise = orderItemCollection.getEntity();
+                    orderItemsPromise.then(function (value) {
+                        scope.collection = value;
+                        var collectionConfig = {};
+                        scope.recordsCount = value.pageRecords;
+                        scope.orderItems = $hibachi.populateCollection(value.pageRecords, orderItemCollection);
+                        for (var orderItem in scope.orderItems) {
+                            $log.debug("OrderItem Product Type");
+                            $log.debug(scope.orderItems);
+                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
+                        }
+                        scope.paginator.setPageRecordsInfo(scope.collection);
+                        scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
+                    });
+                };
+                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
+                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
+                    .addFilter('displayOnOrderDetailFlag', true)
+                    .addFilter('activeFlag', true)
+                    .setAllRecords(true);
+                var attItemsPromise = attributesCollection.getEntity();
+                attItemsPromise.then(function (value) {
+                    scope.attributes = [];
+                    angular.forEach(value.records, function (attributeItemData) {
+                        //Use that custom attribute name to get the value.
+                        scope.attributes.push(attributeItemData);
+                    });
+                    scope.getCollection();
+                });
+                //Add claim function and cancel function
+                /*scope.appendToCollection = function(){
+                    if(scope.pageShow === 'Auto'){
+                        $log.debug('AppendToCollection');
+                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
+                            scope.paginator.autoScrollDisabled = true;
+                            scope.paginator.autoScrollPage++;
+
+                            var appendOptions:any = {};
+                            angular.extend(appendOptions,options);
+                            appendOptions.pageShow = 50;
+                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+
+                            var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
+                            collectionListingPromise.then(function(value){
+                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+                                scope.autoScrollDisabled = false;
+                            },function(reason){
+                                scope.collection.pageRecords = [];
+                            });
+                        }
+                    }
+                };*/
+                scope.paginator = paginationService.createPagination();
+                scope.paginator.notifyById = false;
+                scope.paginator.collection = scope.collection;
+                scope.paginator.getCollection = scope.getCollection;
+                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
+                $(document).on("listingDisplayUpdate", {}, function (event, arg1, arg2) {
+                    scope.orderItems = undefined;
+                    scope.getCollection();
+                });
+                observerService.attach(scope.getCollection, 'swPaginationAction');
+            } //<--End link
+        };
+    }
+    SWOrderItems.Factory = function () {
+        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService); };
+        directive.$inject = [
+            '$log',
+            '$timeout',
+            '$location',
+            '$hibachi',
+            'collectionConfigService',
+            'formService',
+            'orderItemPartialsPath',
+            'slatwallPathBuilder',
+            'paginationService',
+            'observerService'
+        ];
+        return directive;
+    };
+    return SWOrderItems;
+}());
+exports.SWOrderItems = SWOrderItems;
+
+
+/***/ }),
+/* 708 */
+=======
+>>>>>>> 174ecb47cf8d0d90019e80a7f3911dd136a9540b
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

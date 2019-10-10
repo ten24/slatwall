@@ -219,7 +219,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-		//CUSTOM PROPERTIES BEGIN
+	//CUSTOM PROPERTIES BEGIN
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
@@ -2122,7 +2122,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 		}
-		
+
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
@@ -2145,7 +2145,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 				);
 				variables[cacheKey]= skuPriceResults[1];
 			} 
-
+			
 			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
 				return variables[cacheKey][customPriceField];
 			}
@@ -2160,8 +2160,9 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(structKeyExists(variables,cacheKey)){
 		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
-		    }
-			return variables[cacheKey];
+		    } else if (!isStruct(variables[cacheKey])){
+				return variables[cacheKey];
+			}	
 		}
     }
     
