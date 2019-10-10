@@ -286,6 +286,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
+            account.setAccountType('marketPartner');
             if(!isNull(arguments.data['accountStatusName'])){
                 account.setAccountStatusType(getService('TypeService').getTypeByTypeCode('astEnrollmentPending'));
             }
