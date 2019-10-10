@@ -14,11 +14,11 @@
 			
 			<cfif rc.edit>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
-				
-				<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
-					<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
-				</cfloop>
-					
+				<cfif rc.order.hasAccount() >
+					<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
+						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
+					</cfloop>
+				</cfif>	
 			<cfelseif !isNull(rc.order.getAccount()) && rc.order.getAccount().getOrganizationFlag()>
  				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company">	
 			<cfelseif !isNull(rc.order.getAccount())>
