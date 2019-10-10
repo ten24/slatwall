@@ -396,7 +396,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 											'LEGACY',
 											1,
 											NOW(),
-											(SELECT a.accountID FROM swaccount a WHERE a.accountNumber = :accountNumber),
+											(
+												SELECT a.accountID FROM swaccount a WHERE a.accountNumber = :accountNumber
+												ORDER BY a.createdDateTime DESC LIMIT 1
+											),
 											:legacyPassword
 										)";
 
