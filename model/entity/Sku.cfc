@@ -219,7 +219,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-		//CUSTOM PROPERTIES BEGIN
+	//CUSTOM PROPERTIES BEGIN
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
@@ -231,6 +231,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="retailValueVolume" ormtype="big_decimal";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+	property name="skuAdjustedPricing" persistent="false";
     
    
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
@@ -630,11 +633,14 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 					var prices = [];
-					for(var i=1; i <= arrayLen(skuPriceResults); i++){
-						ArrayAppend(prices, skuPriceResults[i]['price']);
-					}
-					ArraySort(prices, "numeric","asc");
-					variables[cacheKey]= prices[1];
+						for(var i=1; i <= arrayLen(skuPriceResults); i++){
+							if(isNull(skuPriceResults[i]['price'])){
+								skuPriceResults[i]['price'] = 0;
+							}
+							ArrayAppend(prices, skuPriceResults[i]['price']);
+						}
+						ArraySort(prices, "numeric","asc");
+						variables[cacheKey]= prices[1];
 				}
 				
 				if(structKeyExists(variables,cacheKey)){
@@ -2116,11 +2122,19 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 		}
-		
+
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
+				   	if(isNull(a['price'])){
+						a['price'] = 0;
+					}
+					
+					if(isNull(b['price'])){
+						b['price'] = 0;
+					}
+				   
 				    if(a['price'] < b['price']){ return -1;}
 				    else if (a['price'] > b['price']){ return 1; }
 				    else{ return 0; }
@@ -2131,7 +2145,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 				);
 				variables[cacheKey]= skuPriceResults[1];
 			} 
-
+			
 			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
 				return variables[cacheKey][customPriceField];
 			}
@@ -2146,8 +2160,56 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(structKeyExists(variables,cacheKey)){
 		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
-		    }
-			return variables[cacheKey];
+		    } else if (!isStruct(variables[cacheKey])){
+				return variables[cacheKey];
+			}	
 		}
-    }//CUSTOM FUNCTIONS END
+    }
+    
+	public any function getSkuProductURL(){
+		var skuProductURL = this.getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getSkuAdjustedPricing(){
+			
+		var pricegroups = getHibachiScope().getAccount().getPriceGroups();
+		var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
+		var priceGroupService = getHibachiScope().getService('PriceGroupService');
+		var utilityService = getHibachiScope().getService('hibachiUtilityService');
+		
+		/*** TODO: FIGURE OUT HOW TO GET SITE SETTING FOR THIS AND WISHLIST AS WELL ***/
+		var currencyCode = 'usd';//getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
+		var vipPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(3);
+		var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
+		var MPPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
+
+		var adjustedAccountPrice = this.getPriceByCurrencyCode(currencyCode);
+		var adjustedVipPrice = this.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
+		var adjustedRetailPrice = this.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
+		var adjustedMPPrice = this.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+		var mPPersonalVolume = this.getPersonalVolume()?:0;
+		
+		var formattedAccountPricing = utilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+		var formattedVipPricing = utilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+		var formattedRetailPricing = utilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+		var formattedMPPricing = utilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
+		var formattedPersonalVolume = utilityService.formatValue_currency(mPPersonalVolume, {currencyCode:currencyCode});
+		
+		var skuAdjustedPricing = {
+			adjustedPriceForAccount = formattedAccountPricing,
+			vipPrice = formattedVipPricing,
+			retailPrice = formattedRetailPricing,
+			MPPrice = formattedMPPricing,
+			personalVolume = formattedPersonalVolume,
+			accountPriceGroup = priceGroupCode
+		};
+
+		return skuAdjustedPricing;
+	}//CUSTOM FUNCTIONS END
 }

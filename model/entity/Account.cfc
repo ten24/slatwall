@@ -158,9 +158,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
-
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
+	property name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
@@ -170,7 +170,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
 
 
- property name="allowCorporateEmails" ormtype="boolean";
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
@@ -183,7 +182,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="businessAcc" ormtype="boolean";
- property name="isFlagged" ormtype="boolean";
  property name="dob" ormtype="string";
  property name="lastRenewDate" ormtype="string";
  property name="nextRenewDate" ormtype="string";
@@ -195,7 +193,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountTypeCode" ormtype="string";
  property name="accountStatusName" ormtype="string" hb_formFieldType="select";
  property name="businessName" ormtype="string";
- property name="flagDescription" ormtype="string" hb_formFieldType="select";
  property name="terminateDate" ormtype="string";
  property name="PayerAccountIdentification" ormtype="string";
  property name="payerName" ormtype="string";
@@ -203,6 +200,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="CareerTitle" ormtype="string";
  property name="GovermentTypeCode" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
+ property name="referType" ormtype="string" hb_formFieldType="select";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
@@ -1204,10 +1202,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
-
-
-
-		//CUSTOM FUNCTIONS BEGIN
+	//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){

@@ -215,6 +215,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Call the new method on that service to inject an object into the RC
 		if(!structKeyExists(rc, arguments.entityName)) {
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "new#arguments.entityName#" );
+			arguments.rc[ arguments.entityName ].populate(arguments.rc);
 		}
 
 		// Set the edit to true
