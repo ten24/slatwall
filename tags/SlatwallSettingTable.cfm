@@ -187,17 +187,20 @@ Notes:
 								</td>
 							</cfif>
 							<td>
-								<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
-								<cfif local.hasSettingID>
-									<hb:HibachiProcessCaller 
-										entity="Translation" 
-										action="admin:entity.preprocesstranslation"
-										processContext="updateProperty"
-										icon="globe"
-										iconOnly="true"
-										modal="true"
-										queryString = "baseObject=Setting&baseID=#thisSetting.settingDetails.settingID#&basePropertyName=settingValue"
-									/>
+								<cfset local.isTranslatable = listFindNoCase('text,email,wysiwyg',thisSetting.settingDetails.fieldType)>
+								<cfif local.isTranslatable>
+									<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
+									<cfif local.hasSettingID>
+										<hb:HibachiProcessCaller 
+											entity="Translation" 
+											action="admin:entity.preprocesstranslation"
+											processContext="updateProperty"
+											icon="globe"
+											iconOnly="true"
+											modal="true"
+											queryString="baseObject=Setting&baseID=#thisSetting.settingDetails.settingID#&basePropertyName=settingValue"
+										/>
+									</cfif>
 								</cfif>
 							</td>
 							
