@@ -64222,11 +64222,12 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+            additionalOrderTemplateItemPropertiesToDisplay: '@?',
+            currencyCode: '@?',
+            edit: "=?",
             orderTemplate: '<?',
             skuPropertiesToDisplay: '@?',
-            skuPropertyColumnConfigs: '<?',
-            additionalOrderTemplateItemPropertiesToDisplay: '@?',
-            edit: "=?"
+            skuPropertyColumnConfigs: '<?' //array of column configs
         };
         this.controller = SWOrderTemplateItemsController;
         this.controllerAs = "swOrderTemplateItems";
@@ -76943,7 +76944,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76956,6 +76956,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -79080,8 +79081,8 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWDatePicker = /** @class */ (function () {
     function SWDatePicker() {
-        this.restrict = "A";
-        this.require = "ngModel";
+        this.restrict = 'A';
+        this.require = 'ngModel';
         this.scope = {
             options: '<?',
             startDayOfTheMonth: '<?',
@@ -79089,13 +79090,13 @@ var SWDatePicker = /** @class */ (function () {
             startDate: '=?',
             startDateString: '@?',
             endDate: '=?',
-            endDateString: '@?'
+            endDateString: '@?',
         };
         this.link = function ($scope, element, attrs, modelCtrl) {
             if (!$scope.options) {
                 $scope.options = {
                     autoclose: true,
-                    format: "mm/dd/yyyy",
+                    format: 'mm/dd/yyyy',
                     setDate: new Date(),
                 };
             }
@@ -79117,7 +79118,7 @@ var SWDatePicker = /** @class */ (function () {
             if (typeof $scope.startDate !== 'number') {
                 $scope.startDate = $scope.startDate.getTime();
             }
-            if (typeof $scope.endDate !== 'number') {
+            if ($scope.endDate && typeof $scope.endDate !== 'number') {
                 $scope.endDate = $scope.endDate.getTime();
             }
             if (!$scope.endDate) {
@@ -79127,9 +79128,10 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            dateToCompare >= $scope.startDate
+                            dateToCompare >= $scope.startDate,
                     ];
                 };
             }
@@ -79140,10 +79142,11 @@ var SWDatePicker = /** @class */ (function () {
                     if (typeof dateToCompare !== 'number') {
                         dateToCompare = dateToCompare.getTime();
                     }
-                    return [dayOfMonth >= $scope.startDayOfTheMonth &&
+                    return [
+                        dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
                             dateToCompare >= $scope.startDate &&
-                            dateToCompare < $scope.endDate
+                            dateToCompare < $scope.endDate,
                     ];
                 };
             }
