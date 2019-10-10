@@ -55,7 +55,14 @@
    
    <!-- Add To Cart -->
    <div class="product-actions">
-         <button ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" type="submit" class="btn btn-border-primary add-to-cart" ng-class="{'bg-primary': monatProductCard.type == 'enrollment'}">
+         <button 
+            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
+            class="btn btn-border-primary add-to-cart" 
+            ng-class="{
+                'bg-primary': monatProductCard.type == 'enrollment',
+                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
+            }"
+        >
              <span ng-if="monatProductCard.type != 'flexship'" >Add To Cart</span>
              <span ng-if="monatProductCard.type == 'flexship'">Add To Flexship</span>
          </button>
