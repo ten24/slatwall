@@ -58,7 +58,7 @@ Notes:
 
 <hb:HibachiEntityProcessForm 
     entity="#getHibachiScope().getService('translationService').newTranslation()#" 
-    edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" >
+    edit="#rc.edit#">
 	
 	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
     <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
