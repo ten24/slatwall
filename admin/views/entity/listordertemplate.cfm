@@ -70,7 +70,7 @@ Notes:
 	</hb:HibachiEntityActionBar>
 
 	<hb:HibachiListingDisplay 
-		collectionList="#rc.orderTemplateCollectionlist#"
+		collectionList="#rc.orderTemplateCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.editordertemplate"
 		recordDetailAction="admin:entity.detailordertemplate"

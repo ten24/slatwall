@@ -134,11 +134,13 @@ class SWListingDisplayCellController{
                           this.column.arguments.currencyCode
                 ){
                     this.currencyCode = this.column.arguments.currencyCode;
-                } else {
-                    //set a default if one was not passed in to use...
-                    if (this.currencyCode == undefined || this.currencyCode == ""){
+                } else if(this.swListingDisplay.currencyCode != undefined && 
+                          this.swListingDisplay.currencyCode.length
+                ){
+                    this.currencyCode = this.swListingDisplay.currencyCode;
+                    
+                } else if (this.currencyCode == undefined || this.currencyCode == ""){
                         this.currencyCode = 'USD';
-                    }
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
@@ -188,7 +190,6 @@ class SWListingDisplayCell {
         pageRecord:"=?",
         value:"=?",
         cellView:"@?",
-        currencyCode:"@?",
         expandableRules:"=?"
     }
     public controller=SWListingDisplayCellController;
