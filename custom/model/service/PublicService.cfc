@@ -293,7 +293,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
             if(!isNull(accountStatusType)){
-                account.setAccountStatusType(getService('TypeService').getTypeByTypeCode('astEnrollmentPending'));
+                account.setAccountStatusType(accountStatusType);
             }
         }
         return account;
