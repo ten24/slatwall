@@ -65,6 +65,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
+	property name="rank" hb_populateEnabled="public" ormtype="string";
 	property name="username" hb_populateEnabled="public" ormtype="string";
 
 	//calucluated property
@@ -172,12 +173,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
@@ -190,8 +191,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
- property name="accountTypeCode" ormtype="string";
- property name="accountStatusName" ormtype="string" hb_formFieldType="select";
  property name="businessName" ormtype="string";
  property name="terminateDate" ormtype="string";
  property name="PayerAccountIdentification" ormtype="string";
@@ -199,6 +198,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="govermentNumber" ormtype="string";
  property name="CareerTitle" ormtype="string";
  property name="GovermentTypeCode" ormtype="string";
+ property name="rank" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
