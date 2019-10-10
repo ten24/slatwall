@@ -23,6 +23,7 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
+    public newProductReview:any;
 
 
     public totalPages:Array<number>;
