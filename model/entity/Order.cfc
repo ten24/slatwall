@@ -255,6 +255,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
+ property name="orderSource" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -1958,7 +1959,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	        return variables.accountType;
 	    }
 	    
-	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
 	        variables.accountType = "";
