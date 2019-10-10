@@ -56,22 +56,9 @@ Notes:
 
 <cfoutput>
 
-
-<!---
-<cfset local.sRedirectQS = "?slatAction=entity.detail#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#&#rc.processObject.getBaseObject()#ID=#rc.processObject.getBaseID()#"> 
-<cfif lCase(rc.processObject.getBaseObject()) EQ 'setting'>
-    <cfset local.sRedirectQS = "" />
-</cfif>
---->
-    
 <hb:HibachiEntityProcessForm 
     entity="#getHibachiScope().getService('translationService').newTranslation()#" 
-    edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" 
-    >
-    <!----
-</hb:HibachiEntityProcessForm>
-    sRedirectQS="local.sRedirectQS">
-    --->
+    edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" >
 	
 	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
     <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">

@@ -116,6 +116,7 @@ Notes:
 						<cfif attributes.showInheritance>
 							<th>#request.slatwallScope.rbKey('define.inheritance')#</th>
 						</cfif>
+						<th>#request.slatwallScope.rbKey('define.translation')#</th>
 						<th>&nbsp;</th>
 					</tr>
 				</thead>
@@ -185,6 +186,21 @@ Notes:
 									</cfif>
 								</td>
 							</cfif>
+							<td>
+								<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
+								<cfif local.hasSettingID>
+									<hb:HibachiProcessCaller 
+										entity="Translation" 
+										action="admin:entity.preprocesstranslation"
+										processContext="updateProperty"
+										icon="globe"
+										iconOnly="true"
+										modal="true"
+										queryString = "baseObject=Setting&baseID=#thisSetting.settingDetails.settingID#&basePropertyName=settingValue"
+									/>
+								</cfif>
+							</td>
+							
 							<td class="admin admin1">
 								<cfset objectHasDefinedSetting = false />
 								<cfif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
