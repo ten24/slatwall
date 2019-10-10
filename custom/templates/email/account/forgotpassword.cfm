@@ -11,7 +11,7 @@
 
 	<cfset resetLink = "http://" />
 	<cfset resetLink &= CGI.HTTP_HOST /> <!--- This adds the current domain name --->
-	<cfset resetLink &= '/my-account/?swprid=#account.getPasswordResetID()#' />
+	<cfset resetLink &= '/Slatwall/?swprid=#account.getPasswordResetID()#' />
 </cfsilent>
 
 <cfsavecontent variable="emailData.emailBodyHTML">

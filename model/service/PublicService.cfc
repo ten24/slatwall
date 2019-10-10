@@ -235,6 +235,7 @@ component  accessors="true" output="false"
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+        return account;
     }
     
     public any function updatePrimaryEmailAddress(required struct data) {

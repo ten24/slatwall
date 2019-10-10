@@ -1,14 +1,20 @@
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
+	public type:any;
+	public cartAsAttribute:boolean = false; //declares if cart data is being bound through attribute binding or not
 
 	//@ngInject
-	constructor(public monatService, public rbkeyService, public ModalService) {}
+	constructor(public monatService, public rbkeyService, public ModalService, public observerService) {
+		this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
+	}
 
 	public $onInit = () => {
 		this.makeTranslations();
 
 		if (this.cart == null) {
 			this.fetchCart();
+		}else{
+			this.cartAsAttribute = true;
 		}
 	};
 
@@ -31,20 +37,24 @@ class MonatMiniCartController {
 	};
 
 	private fetchCart = () => {
-		this.monatService
-			.getCart()
-			.then((data) => {
-				if (data) {
-					this.cart = data;
-				}
-			})
-			.catch((error) => {
-				//TODO deal with the error
-				throw error;
-			})
-			.finally(() => {
-				//TODO deal with the loader
-			});
+
+		if(!this.cartAsAttribute){
+			this.monatService
+				.getCart()
+				.then((data) => {
+					if (data) {
+						this.cart = data;
+					}
+					
+				})
+				.catch((error) => {
+					//TODO deal with the error
+					throw error;
+				})
+				.finally(() => {
+					//TODO deal with the loader
+				});	
+		}
 	};
 
 	public removeItem = (item) => {
@@ -101,7 +111,11 @@ class MonatMiniCart {
 	public bindToController = {
 		orderTemplateId: '@',
 		orderTemplate: '<?',
+		type: '@?',
+		customStyle:'<?',
+		cart:'<?'
 	};
+	
 	public controller = MonatMiniCartController;
 	public controllerAs = 'monatMiniCart';
 

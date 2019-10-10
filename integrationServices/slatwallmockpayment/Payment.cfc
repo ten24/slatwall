@@ -159,7 +159,7 @@ component accessors="true" output="false" displayname="Slatwall Mock Payment" im
 		
 		private void function sendRequestToCredit(required any requestBean, required any responseBean) {
 			
-			if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
+			//if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
 
 				var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean);
 
@@ -167,9 +167,9 @@ component accessors="true" output="false" displayname="Slatwall Mock Payment" im
 					arguments.responseBean.setProviderTransactionID(responseData.transactionID);
 					arguments.responseBean.setAmountCredited(responseData.transactionAmount);
 				}
-			} else {
-				throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
-			}
+			//} else {
+				//throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
+			//}
 		}
 		
 		private void function sendRequestToVoid(required any requestBean, required any responseBean) {

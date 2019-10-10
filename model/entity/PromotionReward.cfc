@@ -626,8 +626,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		}
 	}
 	
-	// =================  END: Deprecated Methods   ========================	
-		//CUSTOM FUNCTIONS BEGIN
+	// =================  END: Deprecated Methods   ========================		//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         arguments['customPriceField'] = 'personalVolume';
