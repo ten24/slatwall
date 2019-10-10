@@ -36,6 +36,10 @@
           "propertyIdentifier":"salesCategoryCode"
         },
         {
+          "sourceColumn":"SAPItemCode",
+          "propertyIdentifier":"SAPItemCode"
+        },
+        {
           "sourceColumn":"EntryDate",
           "propertyIdentifier":"createdDateTime"
         },
@@ -45,7 +49,7 @@
           "propertyIdentifier":"imageFile"
         },
         {
-          "sourceColumn":"SKUItemCode",
+          "sourceColumn":"PRODUCTItemCode",
           "propertyIdentifier":"product.productCode",
           "key":true
         },
