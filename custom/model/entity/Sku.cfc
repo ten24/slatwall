@@ -153,8 +153,9 @@ component {
 		if(structKeyExists(variables,cacheKey)){
 		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
-		    }
-			return variables[cacheKey];
+		    } else if (!isStruct(variables[cacheKey])){
+				return variables[cacheKey];
+			}	
 		}
     }
     

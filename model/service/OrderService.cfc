@@ -1182,12 +1182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		thread name="#threadName#"
 			   action="run" 
 		{	
-			var ormSession = ormGetSessionFactory().openSession();
-	    	var tx = ormSession.beginTransaction();
-			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
-			tx.commit();
-			ormSession.close();
-			
+			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(request.orderTemplate).getFulfillmentCharge();
 		}
 		
 		//join thread so we can return synchronously
@@ -1397,7 +1392,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
-		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReason());  
+		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
 		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
 		
@@ -1526,6 +1521,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = newOrder.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 			} 
 
 			if(newOrder.hasErrors()){

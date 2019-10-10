@@ -49,32 +49,20 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="orderTemplate";
+	property name="orderTemplate" type="any";
 	
-	property name="orderTemplateCancellationReasonType";
-	property name="orderTemplateCancellationReason"; 
+	property name="orderTemplateCancellationReasonTypeOther" type="string";	
+	property name="orderTemplateCancellationReasonType" type="any";
+
 
 	public any function getOrderTemplateCancellationReasonType(){
-		if( structKeyExists(variables, 'orderTemplateCancellationReasonType') && 
-			isStruct(variables.orderTemplateCancellationReasonType) &&
-			structKeyExists(variables.orderTemplateCancellationReasonType, 'typeID')  
-		){
-			var orderTemplateCancellationReasonTypeStruct = structCopy(variables.orderTemplateCancellationReasonType); 
-			variables.orderTemplateCancellationReasonType = getService('TypeService').getType(orderTemplateCancellationReasonTypeStruct.typeID);
-			variables.orderTemplateCancellationReason = '';
-			if(structKeyExists(orderTemplateCancellationReasonTypeStruct, 'typeIDOther')){
-				variables.orderTemplateCancellationReason = orderTemplateCancellationReasonTypeStruct.typeIDOther;
-			}		
-		}
-	} 
-
-	public any function getOrderTemplateCancellationReason(){
-		if( structKeyExists(variables, 'orderTemplateCancellationReasonType') && 
-			isStruct(variables.orderTemplateCancellationReasonType)
-		){
-			getOrderTemplateCacnellationReasonType();
+		if( !structKeyExists(variables, 'orderTemplateCancellationReasonType') ){
+			return;
 		} 
-		return variables.orderTemplateCancellationReason; 		
-	} 	
-}
 
+		if( isSimpleValue(variables.orderTemplateCancellationReasonType) ){
+			variables.orderTemplateCancellationReasonType = getService('TypeService').getType(orderTemplateCancellationReasonType);
+		}
+		return variables.orderTemplateCancellationReasonType;
+	} 
+}
