@@ -134,6 +134,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
+	property name="usernameNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
@@ -172,12 +173,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
@@ -190,8 +191,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
- property name="accountTypeCode" ormtype="string";
- property name="accountStatusName" ormtype="string" hb_formFieldType="select";
  property name="businessName" ormtype="string";
  property name="terminateDate" ormtype="string";
  property name="PayerAccountIdentification" ormtype="string";
@@ -294,6 +293,21 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
+	}
+	
+	public any function getUsernameNotInUseFlag() {
+		if(!structKeyExists(variables, "usernameNotInUseFlag")) {
+			variables.usernameNotInUseFlag = true;
+			if(len(getUsername())) {
+				if(getNewFlag()) {
+					variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
+				} else {
+					variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
+				}
+
+			}
+		}
+		return variables.usernameNotInUseFlag;
 	}
 
 	public any function getSaveablePaymentMethodsSmartList() {
