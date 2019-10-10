@@ -1536,7 +1536,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionCode in promotionCodes){
 			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
 			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
-			porcessOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
