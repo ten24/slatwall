@@ -7,4 +7,13 @@ component extends="Slatwall.model.service.SiteService" accessors="true" output="
 		
 		return siteCode;
 	}
+	
+	public any function getCountryNameByCurrentSite() {
+		var siteName = getCurrentRequestSite().getSiteName();
+		
+		// Trim out the word Monat
+		var countryName = right( siteName, len( siteName ) - 6 );
+		
+		return countryName;
+	}
 }
