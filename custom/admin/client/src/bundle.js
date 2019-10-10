@@ -64222,11 +64222,12 @@ var SWOrderTemplateItems = /** @class */ (function () {
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
+            additionalOrderTemplateItemPropertiesToDisplay: '@?',
+            currencyCode: '@?',
+            edit: "=?",
             orderTemplate: '<?',
             skuPropertiesToDisplay: '@?',
-            skuPropertyColumnConfigs: '<?',
-            additionalOrderTemplateItemPropertiesToDisplay: '@?',
-            edit: "=?"
+            skuPropertyColumnConfigs: '<?' //array of column configs
         };
         this.controller = SWOrderTemplateItemsController;
         this.controllerAs = "swOrderTemplateItems";
