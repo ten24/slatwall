@@ -53,6 +53,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="countryCodeOptions" type="array";
 	
 	// ===================== START: Logical Methods ===========================
+	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
+		var addressZone = this.getAddressZoneByAddressZoneID(addressZoneID);
+		return this.isAddressInZone(arguments.address, addressZone);
+	}
+	
+	public boolean function isAddressInZoneByZoneID(required any address, required any addressZoneID){
+		return isAddressInZone(address=arguments.address,addressZone=this.getAddressZoneByAddressZoneID(arguments.addressZoneID));
+	}
 	
 	public boolean function isAddressInZone(required any address, required any addressZone) {
 		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
@@ -64,11 +72,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		if(!isNull(arguments.address.getStateCode())){
 			cacheKey &= arguments.address.getStateCode();
-		}
+		} 
 		if(!isNull(arguments.address.getCountryCode())){
 			cacheKey &= arguments.address.getCountryCode();
 		}
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		//if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 			var isAddressInZone = ORMExecuteQuery("
 				Select COUNT(azl) FROM SlatwallAddressZone az 
 				LEFT JOIN az.addressZoneLocations azl
@@ -89,7 +97,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			);
 			//cache Address verification for 5 min
 			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
-		}
+		//}
 		
 		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}

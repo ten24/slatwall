@@ -1,0 +1,182 @@
+<div
+	class="modal"
+	role="dialog"
+	id="flexship-modal-shipping-method{{ monatFlexshipShippingMethodModal.orderTemplate.orderTemplateID }}"
+>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!--- Modal Close --->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipShippingMethodModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="shipping">
+				<h6 class="title-with-line mb-5">
+					{{ monatFlexshipShippingMethodModal.translations.shippingMethod }}
+				</h6>
+
+				<div
+					class="custom-radio form-group"
+					ng-repeat="shippingMethod in monatFlexshipShippingMethodModal.shippingMethodOptions"
+					ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedShippingMethodID(shippingMethod.value)"
+				>
+					<input
+						type="radio"
+						name="shippingMethodID"
+						ng-checked="shippingMethod.value === monatFlexshipShippingMethodModal.selectedShippingMethod.shippingMethodID"
+					/>
+					<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
+				</div>
+
+				<br />
+				<h6 class="title-with-line mb-5">
+					{{ monatFlexshipShippingMethodModal.translations.shippingAddress }}
+				</h6>
+
+				<div
+					class="custom-radio form-group"
+					ng-repeat="accountAddress in monatFlexshipShippingMethodModal.accountAddresses"
+					ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedAccountAddressID(accountAddress.accountAddressID)"
+				>
+					<input
+						type="radio"
+						name="accountAddressID"
+						ng-checked="accountAddress.accountAddressID === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
+					/>
+					<label
+						for="accountAddressID"
+						ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : '---'"
+					></label>
+				</div>
+
+				<div
+					class="custom-radio form-group"
+					ng-click="monatFlexshipShippingMethodModal.setSelectedAccountAddressID()"
+				>
+					<input
+						type="radio"
+						name="accountAddressID"
+						ng-checked="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
+					/>
+					<label for="accountAddressID">
+						{{ monatFlexshipShippingMethodModal.translations.addNewShippingAddress }}
+					</label>
+				</div>
+				<!--- Conditional: Add New Shipping Address form --->
+				<div
+					ng-show="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
+				>
+					<span class="label">
+						{{ monatFlexshipShippingMethodModal.translations.newShippingAddress }}
+					</span>
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
+							placeholder="{{
+								monatFlexshipShippingMethodModal.translations.newAddress_nickName
+							}}"
+						/>
+					</div>
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.name"
+							placeholder="{{ monatFlexshipShippingMethodModal.translations.newAddress_name }}"
+						/>
+					</div>
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
+							placeholder="{{
+								monatFlexshipShippingMethodModal.translations.newAddress_address
+							}}"
+						/>
+					</div>
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.street2Address"
+							placeholder="{{
+								monatFlexshipShippingMethodModal.translations.newAddress_address2
+							}}"
+						/>
+					</div>
+
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
+							readonly
+							placeholder="{{
+								monatFlexshipShippingMethodModal.translations.newAddress_country
+							}}"
+						/>
+					</div>
+
+					<div class="form-group">
+						<select
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.stateCode"
+							ng-options="state as state.name for state in monatFlexshipShippingMethodModal.stateCodeOptions track by state.value"
+							placeholder="{{ monatFlexshipShippingMethodModal.translations.newAddress_state }}"
+						>
+							<option value="">
+								{{ monatFlexshipShippingMethodModal.translations.newAddress_selectYourState }}
+								`
+							</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.city"
+							placeholder="{{ monatFlexshipShippingMethodModal.translations.newAddress_city }}"
+						/>
+					</div>
+					<div class="form-group">
+						<input
+							type="text"
+							class="form-control"
+							ng-model="monatFlexshipShippingMethodModal.newAddress.postalCode"
+							placeholder="{{
+								monatFlexshipShippingMethodModal.translations.newAddress_zipCode
+							}}"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer">
+				<button
+					type="button"
+					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()"
+				>
+					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
+				</button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipShippingMethodModal.closeModal()"
+				>
+					<span sw-rbkey="'frontend.modal.closeButton'"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

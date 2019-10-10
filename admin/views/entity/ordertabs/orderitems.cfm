@@ -56,7 +56,7 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode, price, quantity, calculatedDiscountAmount,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
+	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
 	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
@@ -78,13 +78,18 @@ Notes:
 		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
 		recordDeleteActionProperty="orderItemID"
 		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#"
-		refreshEvent="refreshOrderItemListing">
+		refreshEvent="refreshOrderItemListing"
+		currencyCode="#rc.order.getCurrencyCode()#">
 	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
-		<!--- Tabs for Adding Sale Order Items Sku and Stock --->
-		<hb:HibachiTabGroup tabLocation="top">
+	    <cfset local.activeTab = "soiaddsku" />
+	    <cfif listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder', rc.order.getTypeCode())>
+	        <cfset local.activeTab = "soiaddreturnsku" />
+	    </cfif>
+		<hb:HibachiTabGroup tabLocation="top" activeTab="#local.activeTab#">
+		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
     		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->

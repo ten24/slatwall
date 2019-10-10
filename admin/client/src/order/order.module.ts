@@ -17,7 +17,6 @@ import {SWOrderTemplateGiftCards} from "./components/swordertemplategiftcards";
 import {SWOrderTemplateItems} from "./components/swordertemplateitems";
 import {SWOrderTemplatePromotions} from "./components/swordertemplatepromotions";
 import {SWOrderTemplatePromotionItems} from "./components/swordertemplatepromotionitems";
-import {SWOrderTemplateTotal} from "./components/swordertemplatetotal";
 import {SWOrderTemplateUpcomingOrdersCard} from "./components/swordertemplateupcomingorderscard";
 import {SWOrderTemplateUpdateScheduleModal} from "./components/swordertemplateupdateschedulemodal";
 import {SWAddOrderItemsBySku} from "./components/swaddorderitemsbysku";
@@ -45,7 +44,6 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swOrderTemplateItems', SWOrderTemplateItems.Factory())
 .directive('swOrderTemplatePromotions', SWOrderTemplatePromotions.Factory())
 .directive('swOrderTemplatePromotionItems', SWOrderTemplatePromotionItems.Factory())
-.directive('swOrderTemplateTotal', SWOrderTemplateTotal.Factory())
 .directive('swOrderTemplateUpcomingOrdersCard', SWOrderTemplateUpcomingOrdersCard.Factory())
 .directive('swOrderTemplateUpdateScheduleModal', SWOrderTemplateUpdateScheduleModal.Factory())
 .directive('swAddOrderItemsBySku', SWAddOrderItemsBySku.Factory())

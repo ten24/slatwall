@@ -116,6 +116,7 @@ class SWListingDisplayController{
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
+    public currencyCode:string;
 
     public selections;
     public multiselectCount;
@@ -129,6 +130,7 @@ class SWListingDisplayController{
     public customEndpoint: string;
     public hideUnfilteredResults:boolean;
     public refreshEvent: string;
+    public loading: boolean;
     
     
     //@ngInject
@@ -161,14 +163,32 @@ class SWListingDisplayController{
         });
     }
     
+    public startLoading = () => {
+        this.loading = true;
+    }
+    
+    
+    public stopLoading = () => {
+        this.loading = false;
+    }
+    
    /**
     * I pulled the ctor logic into its own method so we can reinintialize the 
     * collection on demand (refresh).
     **/
     public initListingDisplay = ($q, $rootScope, initial) => {
+        
         //setup a listener for refreshing this listing based on a refrsh event string 
         if (this.refreshEvent && initial){
             this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
+        }
+        
+        if (initial){
+            this.observerService.attach(this.startLoading, "addOrderItemStartLoading");
+        }
+        
+        if (initial){
+            this.observerService.attach(this.stopLoading, "addOrderItemStopLoading");
         }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
@@ -941,7 +961,8 @@ class SWListingDisplay implements ng.IDirective{
             createAction:"@?",
             createQueryString:"@?",
             exportAction:"@?",
-
+            
+            currencyCode:"@?",
             getChildCount:"<?",
             hasSearch:"<?",
             hasActionBar:"<?",

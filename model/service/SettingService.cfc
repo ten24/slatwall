@@ -145,6 +145,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
+			accountLoginEmailOrUserName = {fieldType="select", defaultValue="email", valueOptions=[{name="Email",value="email"}, {name="Email or Username",value="emailOrUsername"}]},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},
@@ -290,6 +291,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			
 			
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -312,6 +314,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Order Template
 			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
+			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},
 			orderTemplateEligibleTerms = {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="Term"
@@ -407,6 +410,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
+			skuIsRefundFee = {fieldType="yesno", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
@@ -607,6 +611,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('unitName', 'name');
 				optionSL.addSelect('unitCode', 'value');
 				return optionSL.getRecords();
+			case "orderTemplateDefaultFrequencyTerm" :
+				var termCollection = this.getTermCollectionList();
+				termCollection.setDisplayProperties('termID|value,termName|name');
+				return termCollection.getRecords(); 
 			case "paymentMethodCheckoutTransactionType" :
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":

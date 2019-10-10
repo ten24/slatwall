@@ -77,7 +77,7 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 	// Non-Persistent Properties
 
 	// ============ START: Non-Persistent Property Methods =================
-		//CUSTOM PROPERTIES BEGIN
+	//CUSTOM PROPERTIES BEGIN
 property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";

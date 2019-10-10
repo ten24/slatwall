@@ -14,10 +14,15 @@ class SWFWishlistController {
     public loading:boolean;
     public isVIPAccount:boolean;
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
+    public wishlistTemplateID:string;
+    public wishlistTemplateName:string;
+    public skuID:string;
+    public newTemplateID:string;
+    public showTemplateList:boolean = false;
+
     
     // @ngInject
     constructor(
-        public $rootScope,
         public $scope,
         public observerService,
         public $timeout,
@@ -31,7 +36,9 @@ class SWFWishlistController {
             this.currentPage = 1;
         }
         
-        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");
+        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
+        this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
+
     }
     
     private refreshList = (option:Option)=>{
@@ -42,51 +49,90 @@ class SWFWishlistController {
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
             this.orderTemplateItems = result['orderTemplateItems'];
-            if(this.orderTemplateItems.length){
-                if(this.orderTemplateItems[0].accountPriceGroup.includes(3)){
-                    this.isVIPAccount = true;                   
-                }
-            }
-
             this.loading = false;
         });
     }
-    
-    public deleteItem =(index):Promise<any>=>{
+
+    public deleteItem =(index)=>{
         this.loading = true;
         const item = this.orderTemplateItems[index];
         
-        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem",item).then(result=>{
+        this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
             
             this.orderTemplateItems.splice(index, 1);
             this.refreshList(this.currentList);
+            this.loading = false;
             return result;
-            
+        });
+    }
+
+    
+    public addWishlistItem =(skuID)=>{ 
+        this.loading = true;
+        this.setSkuIDFromAttribute();
+        this.orderTemplateService.addOrderTemplateItem(this.skuID ? this.skuID : skuID, this.wishlistTemplateID)
+        .then(result=>{
+            this.loading = false;
+            return result;
+        });
+    }
+
+    public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
+        this.loading = true;
+        this.setSkuIDFromAttribute();
+        this.setWishlistName(orderTemplateName)
+        
+        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.skuID, quantity).then(result=>{
+            this.loading = false;
+            this.getAllWishlists();
+            this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
+            return result;
         });
     }
     
-    public getAllWishlists = () => {
+    public setSkuIDFromAttribute = ()=>{
+        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
+        this.skuID = newskuID;
+    }
+    
+    public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .getOrderTemplates(pageRecordsToShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplates = result['orderTemplates'];
+            
+            if(setNewTemplates){
+                this.orderTemplates = result['orderTemplates'];                
+            } else if(setNewTemplateID){
+                this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+            }
             this.loading = false;
         });
     }
     
+    public successfulAlert = () =>{
+        const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+        const wishlistInnerText = document.getElementById("wishlistTextWrapper");
+        wishlistAddAlertBox.style.display = "block";
+    }
     
+    public setWishlistID = (newID) => {
+        this.wishlistTemplateID = newID;
+        
+    }
     
+    public setWishlistName = (newName) => {
+        this.wishlistTemplateName = newName;
+    }
     
     public addToCart =(index)=>{
         
     }
     
-    public search =(index)=>{
-        
+    public search =()=>{
     }
-
+    
 }
 
 class SWFWishlist  {

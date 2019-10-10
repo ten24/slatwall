@@ -82,6 +82,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
+	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
@@ -113,9 +114,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="total" persistent="false" hb_formatType="currency";
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="accountRemoteID" ormtype="string"; 
-	property name="accountPaymentMethodRemoteID" ormtype="string"; 
-	property name="lastSyncedDateTime" ormtype="timestamp";
+property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
@@ -127,8 +126,10 @@ property name="accountRemoteID" ormtype="string";
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	
-	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
-		var orderTemplateStruct = super.getStructRepresentation();
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total', string persistentProperties=''){ 
+		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
+
+		var orderTemplateStruct = super.getStructRepresentation(properties);
 
 		var propertiesToDisplay = listToArray(arguments.nonPersistentProperties);
 
@@ -238,7 +239,7 @@ property name="accountRemoteID" ormtype="string";
 	public any function getOrderTemplateScheduleDateChangeReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateScheduleDateChangeReasonTypeOptions')){	
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value');
 			typeCollection.addFilter('parentType.systemCode','orderTemplateScheduleDateChangeReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateScheduleDateChangeReasonTypeOptions = typeCollection.getRecords(); 
@@ -249,11 +250,11 @@ property name="accountRemoteID" ormtype="string";
 	public any function getOrderTemplateCancellationReasonTypeOptions(){
 		if(!structKeyExists(variables, 'orderTemplateCancellationReasonTypeOptions')){
 			var typeCollection = getService('TypeService').getTypeCollectionList(); 
-			typeCollection.setDisplayProperties('typeDescription|name,typeID|value'); 
+			typeCollection.setDisplayProperties('systemCode,typeDescription|name,typeID|value'); 
 			typeCollection.addFilter('parentType.systemCode','orderTemplateCancellationReasonType');
 			typeCollection.addOrderBy('sortOrder'); 
 			variables.orderTemplateCancellationReasonTypeOptions = typeCollection.getRecords(); 
-		} 
+		}
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
 
@@ -290,11 +291,12 @@ property name="accountRemoteID" ormtype="string";
 	}
 
 	public array function getFrequencyTermOptions(){
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termID|value,termName|name');
-		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
-		return termCollection.getRecords();
+		return getService("OrderService").getOrderTemplateFrequencyTermOptions();
 	} 
+	
+	public array function getFrequencyDateOptions() {
+		getService('OrderService').getOrderTemplateFrequencyDateOptions();
+	}
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {

@@ -6,6 +6,20 @@ component {
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     
+    property name="manualPersonalVolume" ormtype="big_decimal";
+    property name="manualTaxableAmount" ormtype="big_decimal";
+    property name="manualCommissionableVolume" ormtype="big_decimal";
+    property name="manualRetailCommission" ormtype="big_decimal";
+    property name="manualProductPackVolume" ormtype="big_decimal";
+    property name="manualRetailValueVolume" ormtype="big_decimal";
+    
+    property name="allocatedOrderPersonalVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderTaxableAmountDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderCommissionableVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailCommissionDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderProductPackVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailValueVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";
@@ -18,7 +32,14 @@ component {
     property name="extendedRetailCommissionAfterDiscount" persistent="false";
     property name="extendedProductPackVolumeAfterDiscount" persistent="false";
     property name="extendedRetailValueVolumeAfterDiscount" persistent="false";
-    
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+	property name="mainCreditCardOnOrder" persistent="false";
+	property name="mainCreditCardExpirationDate" persistent="false";
+	property name="mainPromotionOnOrder" persistent="false";
+
+
+	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
@@ -146,8 +167,36 @@ component {
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
+    public any function getExtendedPersonalVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('personalVolume');
+    }
+    
+    public any function getExtendedTaxableAmountAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('taxableAmount');
+    }
+    
+    public any function getExtendedCommissionableVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('commissionableVolume');
+    }
+    
+    public any function getExtendedRetailCommissionAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailCommission');
+    }
+    
+    public any function getExtendedProductPackVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('productPackVolume');
+    }
+    
+    public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
     private numeric function getCustomPriceFieldAmount(required string priceField){
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+        var account = this.getOrder().getAccount();
+        if(isNull(account)){
+            account = getService('accountService').newAccount();
+        }
+        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode(),this.getQuantity(),account.getPriceGroups());
         if(isNull(amount)){
             amount = 0;
         }
@@ -169,13 +218,16 @@ component {
 		
 		return discountAmount;
 	}
-
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;
-		
-			if(!isNull(this.invokeMethod('get#priceField#'))){
+			
+			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
+			var manualPrice = this.invokeMethod('getManual#priceField#');
+		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
+				price = this.invokeMethod('getManual#priceField#');
+			} else if(!isNull(this.invokeMethod('get#priceField#'))){
 				price = this.invokeMethod('get#priceField#');
 			}
 			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
@@ -183,7 +235,59 @@ component {
 		return variables['extended#priceField#'];
 	}
 	
+	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){
+	    return this.invokeMethod('getAllocatedOrder#arguments.priceField#DiscountAmount')
+	}
+	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getCustomExtendedPrice(priceField) - getCustomDiscountAmount(argumentCollection=arguments));
+	}
+	
+	public any function getSkuProductURL(){
+		var skuProductURL = this.getSku().getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = this.getSku().getImagePath();
+		return skuImagePath;
+	}
+	
+	public any function getMainCreditCardOnOrder(){
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    		var mainCreditCardOnOrder = orderPayments[1].getCreditCardLastFour();
+	    }else{
+	        var mainCreditCardOnOrder = "";
+	    }
+		return mainCreditCardOnOrder;
+	}
+	
+	public any function getMainCreditCardExpirationDate(){
+	    var orderPayments = this.getOrder().getOrderPayments();
+	    if(arrayLen(orderPayments)){
+    	    var orderPayment = orderPayments[1];
+		    var mainCreditCardExpirationDate = toString(orderPayment.getExpirationMonth()) & "/" & toString(orderPayment.getExpirationYear());
+	    }else{
+	        var mainCreditCardExpirationDate = "";
+	    }
+
+		return mainCreditCardExpirationDate;
+	}
+	
+	public any function getMainPromotionOnOrder(){
+	    var promotionCodes = this.getOrder().getPromotionCodes();
+	    if(arrayLen(promotionCodes)){
+    	    var mainPromotionOnOrder = promotionCodes[1].getPromotion().getPromotionName();
+    	} else{
+    	    var mainPromotionOnOrder = "";
+    	}
+    	
+    	return mainPromotionOnOrder;
 	}
 }

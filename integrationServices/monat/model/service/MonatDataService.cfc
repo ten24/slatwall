@@ -19,6 +19,8 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
         param name="arguments.data.stateCode" default="";
+        param name="arguments.data.countryCode" default="";
+        param name="arguments.data.accountSearchType" default="false";
         
         if(isNull(arguments.data.search) && isNull(arguments.data.stateCode)){
             return [];
@@ -34,17 +36,46 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
         param name="arguments.data.stateCode" default="";
-        
+        param name="arguments.data.countryCode" default="";
+        param name="arguments.data.accountSearchType" default="false";
+
         var accountCollection = getService('productService').getAccountCollectionList();
         
         accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
         accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
-        
+
         accountCollection.setDisplayProperties("firstName,lastName,primaryAddress.address.stateCode", {isSearchable: true});
         accountCollection.addDisplayProperty('accountID');
         accountCollection.addDisplayProperty('primaryAddress.address.city');
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
         
+        if(arguments.data.accountSearchType == 'VIP'){
+            accountCollection.addFilter(
+                propertyIdentifier = 'accountType', 
+                value = 'VIP', 
+                filterGroupAlias = 'accountTypeFilter'
+            );
+            
+            accountCollection.addFilter(
+                propertyIdentifier = 'accountType', 
+                value = 'marketPartner', 
+                logicalOperator = 'OR',
+                filterGroupAlias = 'accountTypeFilter'
+            );
+        }
+
+        if(arguments.data.accountSearchType == 'marketPartner'){
+          accountCollection.addFilter('accountType', 'marketPartner', '=');  
+        }
+        
+        if ( len( arguments.data.countryCode ) ) {
+            accountCollection.addFilter( 'primaryAddress.address.countryCode', arguments.data.countryCode );
+        }
+        
+        if ( len( arguments.data.stateCode ) ) {
+            accountCollection.addFilter( 'primaryAddress.address.stateCode', arguments.data.stateCode );
+        }
+
         accountCollection.setKeywords(arguments.data.search);
         return accountCollection; 
     }

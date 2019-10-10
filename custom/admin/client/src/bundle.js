@@ -34175,7 +34175,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 /*jshint browser:true */
 var basebootstrap_1 = __webpack_require__(715);
-var monatadmin_module_1 = __webpack_require__(709);
+var monatadmin_module_1 = __webpack_require__(708);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -63496,7 +63496,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName,price";
+            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
             if (_this.skuPropertiesToDisplay != null) {
                 // join the two lists.
                 skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
@@ -63504,6 +63504,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('price', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
@@ -63578,11 +63579,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "/?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
             var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
+            _this.observerService.notify("addOrderItemStartLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
                 if (data.preProcessView) {
@@ -63599,7 +63601,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                     //now get the order values because we updated them and pass along to anything listening...
                     _this.$hibachi.getEntity("Order", _this.order).then(function (data) {
                         _this.observerService.notify("refreshOrder" + _this.order, data);
+                        _this.observerService.notify("addOrderItemStopLoading", {});
                     });
+                    _this.observerService.notify("addOrderItemStopLoading", {});
                     //(window as any).location.reload();
                 }
             }) // JSON-string from `response.json()` call
@@ -64414,61 +64418,6 @@ exports.SWOrderTemplatePromotions = SWOrderTemplatePromotions;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var SWOrderTemplateTotalController = /** @class */ (function () {
-    function SWOrderTemplateTotalController($hibachi, observerService, orderTemplateService, rbkeyService) {
-        var _this = this;
-        this.$hibachi = $hibachi;
-        this.observerService = observerService;
-        this.orderTemplateService = orderTemplateService;
-        this.rbkeyService = rbkeyService;
-        this.refreshTotal = function (data) {
-            _this.total = data.total;
-        };
-        this.observerService.attach(this.refreshTotal, 'OrderTemplateTotalUpdate');
-    }
-    return SWOrderTemplateTotalController;
-}());
-var SWOrderTemplateTotal = /** @class */ (function () {
-    function SWOrderTemplateTotal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.orderPartialsPath = orderPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.scope = {};
-        this.bindToController = {
-            orderTemplate: '<'
-        };
-        this.controller = SWOrderTemplateTotalController;
-        this.controllerAs = "swOrderTemplateTotal";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/ordertemplatefrequencycard.html";
-        this.restrict = "EA";
-    }
-    SWOrderTemplateTotal.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWOrderTemplateTotal(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
-        directive.$inject = [
-            'orderPartialsPath',
-            'slatwallPathBuilder',
-            '$hibachi',
-            'rbkeyService'
-        ];
-        return directive;
-    };
-    return SWOrderTemplateTotal;
-}());
-exports.SWOrderTemplateTotal = SWOrderTemplateTotal;
-
-
-/***/ }),
-/* 656 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderTemplateUpcomingOrdersCardController = /** @class */ (function () {
     function SWOrderTemplateUpcomingOrdersCardController($timeout, $hibachi, observerService, orderTemplateService, rbkeyService) {
         var _this = this;
@@ -64553,7 +64502,7 @@ exports.SWOrderTemplateUpcomingOrdersCard = SWOrderTemplateUpcomingOrdersCard;
 
 
 /***/ }),
-/* 657 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64644,7 +64593,7 @@ exports.SWOrderTemplateUpdateScheduleModal = SWOrderTemplateUpdateScheduleModal;
 
 
 /***/ }),
-/* 658 */
+/* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64655,7 +64604,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var ordertemplateservice_1 = __webpack_require__(659);
+var ordertemplateservice_1 = __webpack_require__(658);
 //components
 var swaccountpaymentmethodmodal_1 = __webpack_require__(642);
 var swaccountshippingaddresscard_1 = __webpack_require__(643);
@@ -64669,9 +64618,8 @@ var swordertemplategiftcards_1 = __webpack_require__(651);
 var swordertemplateitems_1 = __webpack_require__(652);
 var swordertemplatepromotions_1 = __webpack_require__(654);
 var swordertemplatepromotionitems_1 = __webpack_require__(653);
-var swordertemplatetotal_1 = __webpack_require__(655);
-var swordertemplateupcomingorderscard_1 = __webpack_require__(656);
-var swordertemplateupdateschedulemodal_1 = __webpack_require__(657);
+var swordertemplateupcomingorderscard_1 = __webpack_require__(655);
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(656);
 var swaddorderitemsbysku_1 = __webpack_require__(645);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
@@ -64694,7 +64642,6 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swOrderTemplateItems', swordertemplateitems_1.SWOrderTemplateItems.Factory())
     .directive('swOrderTemplatePromotions', swordertemplatepromotions_1.SWOrderTemplatePromotions.Factory())
     .directive('swOrderTemplatePromotionItems', swordertemplatepromotionitems_1.SWOrderTemplatePromotionItems.Factory())
-    .directive('swOrderTemplateTotal', swordertemplatetotal_1.SWOrderTemplateTotal.Factory())
     .directive('swOrderTemplateUpcomingOrdersCard', swordertemplateupcomingorderscard_1.SWOrderTemplateUpcomingOrdersCard.Factory())
     .directive('swOrderTemplateUpdateScheduleModal', swordertemplateupdateschedulemodal_1.SWOrderTemplateUpdateScheduleModal.Factory())
     .directive('swAddOrderItemsBySku', swaddorderitemsbysku_1.SWAddOrderItemsBySku.Factory());
@@ -64702,7 +64649,7 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
-/* 659 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64996,7 +64943,7 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
-/* 660 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65213,7 +65160,7 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
-/* 661 */
+/* 660 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65227,7 +65174,7 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
-var sworderdeliverydetail_1 = __webpack_require__(660);
+var sworderdeliverydetail_1 = __webpack_require__(659);
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -65242,7 +65189,7 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
-/* 662 */
+/* 661 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65903,7 +65850,7 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
-/* 663 */
+/* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65917,7 +65864,7 @@ var core_module_1 = __webpack_require__(6);
 var orderfulfillmentservice_1 = __webpack_require__(296);
 //controllers
 //directives
-var sworderfulfillmentlist_1 = __webpack_require__(662);
+var sworderfulfillmentlist_1 = __webpack_require__(661);
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -65934,7 +65881,7 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
-/* 664 */
+/* 663 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66225,7 +66172,7 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
-/* 665 */
+/* 664 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66269,7 +66216,7 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
-/* 666 */
+/* 665 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66757,7 +66704,7 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
-/* 667 */
+/* 666 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66871,161 +66818,7 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
-/* 668 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWOrderItems = /** @class */ (function () {
-    //@ngInject
-    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
-        return {
-            restrict: 'E',
-            scope: {
-                orderId: "@"
-            },
-            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
-            link: function (scope, element, attrs) {
-                var options = {};
-                scope.keywords = "";
-                scope.loadingCollection = false;
-                scope.$watch('recordsCount', function (newValue, oldValue, scope) {
-                    //Do anything with $scope.letters
-                    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length) {
-                        //refresh so order totals refresh.
-                        window.location.reload();
-                    }
-                });
-                var searchPromise;
-                scope.searchCollection = function () {
-                    if (searchPromise) {
-                        $timeout.cancel(searchPromise);
-                    }
-                    searchPromise = $timeout(function () {
-                        $log.debug('search with keywords');
-                        $log.debug(scope.keywords);
-                        //Set current page here so that the pagination does not break when getting collection
-                        scope.paginator.setCurrentPage(1);
-                        scope.loadingCollection = true;
-                        scope.getCollection();
-                    }, 500);
-                };
-                $log.debug('Init Order Item');
-                $log.debug(scope.orderId);
-                //Setup the data needed for each order item object.
-                scope.getCollection = function () {
-                    if (scope.pageShow === 'Auto') {
-                        scope.pageShow = 50;
-                    }
-                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
-                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
-                        .addFilter('order.orderID', scope.orderId)
-                        .addFilter('parentOrderItem', 'null', 'IS')
-                        .setKeywords(scope.keywords)
-                        .setPageShow(scope.paginator.getPageShow())
-                        .setCurrentPage(scope.paginator.getCurrentPage());
-                    //add attributes to the column config
-                    angular.forEach(scope.attributes, function (attribute) {
-                        var attributeColumn = {
-                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
-                            attributeID: attribute.attributeID,
-                            attributeSetObject: "orderItem"
-                        };
-                        orderItemCollection.columns.push(attributeColumn);
-                    });
-                    var orderItemsPromise = orderItemCollection.getEntity();
-                    orderItemsPromise.then(function (value) {
-                        scope.collection = value;
-                        var collectionConfig = {};
-                        scope.recordsCount = value.pageRecords;
-                        scope.orderItems = $hibachi.populateCollection(value.pageRecords, orderItemCollection);
-                        for (var orderItem in scope.orderItems) {
-                            $log.debug("OrderItem Product Type");
-                            $log.debug(scope.orderItems);
-                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
-                        }
-                        scope.paginator.setPageRecordsInfo(scope.collection);
-                        scope.loadingCollection = false;
-                    }, function (value) {
-                        scope.orderItems = [];
-                    });
-                };
-                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
-                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
-                    .addFilter('displayOnOrderDetailFlag', true)
-                    .addFilter('activeFlag', true)
-                    .setAllRecords(true);
-                var attItemsPromise = attributesCollection.getEntity();
-                attItemsPromise.then(function (value) {
-                    scope.attributes = [];
-                    angular.forEach(value.records, function (attributeItemData) {
-                        //Use that custom attribute name to get the value.
-                        scope.attributes.push(attributeItemData);
-                    });
-                    scope.getCollection();
-                });
-                //Add claim function and cancel function
-                /*scope.appendToCollection = function(){
-                    if(scope.pageShow === 'Auto'){
-                        $log.debug('AppendToCollection');
-                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
-                            scope.paginator.autoScrollDisabled = true;
-                            scope.paginator.autoScrollPage++;
-
-                            var appendOptions:any = {};
-                            angular.extend(appendOptions,options);
-                            appendOptions.pageShow = 50;
-                            appendOptions.currentPage = scope.paginator.autoScrollPage;
-
-                            var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
-                            collectionListingPromise.then(function(value){
-                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
-                                scope.autoScrollDisabled = false;
-                            },function(reason){
-                                scope.collection.pageRecords = [];
-                            });
-                        }
-                    }
-                };*/
-                scope.paginator = paginationService.createPagination();
-                scope.paginator.notifyById = false;
-                scope.paginator.collection = scope.collection;
-                scope.paginator.getCollection = scope.getCollection;
-                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
-                $(document).on("listingDisplayUpdate", {}, function (event, arg1, arg2) {
-                    scope.orderItems = undefined;
-                    scope.getCollection();
-                });
-                observerService.attach(scope.getCollection, 'swPaginationAction');
-            } //<--End link
-        };
-    }
-    SWOrderItems.Factory = function () {
-        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService); };
-        directive.$inject = [
-            '$log',
-            '$timeout',
-            '$location',
-            '$hibachi',
-            'collectionConfigService',
-            'formService',
-            'orderItemPartialsPath',
-            'slatwallPathBuilder',
-            'paginationService',
-            'observerService'
-        ];
-        return directive;
-    };
-    return SWOrderItems;
-}());
-exports.SWOrderItems = SWOrderItems;
-
-
-/***/ }),
-/* 669 */
+/* 667 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67068,7 +66861,7 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
-/* 670 */
+/* 668 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67078,12 +66871,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
-var swchildorderitem_1 = __webpack_require__(664);
-var sworderitem_1 = __webpack_require__(666);
-var swoishippinglabelstamp_1 = __webpack_require__(665);
-var sworderitemdetailstamp_1 = __webpack_require__(667);
-var sworderitems_1 = __webpack_require__(668);
-var swresizedimage_1 = __webpack_require__(669);
+var swchildorderitem_1 = __webpack_require__(663);
+var sworderitem_1 = __webpack_require__(665);
+var swoishippinglabelstamp_1 = __webpack_require__(664);
+var sworderitemdetailstamp_1 = __webpack_require__(666);
+var sworderitems_1 = __webpack_require__(709);
+var swresizedimage_1 = __webpack_require__(667);
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -67103,7 +66896,7 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
-/* 671 */
+/* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67207,7 +67000,7 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
-/* 672 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67269,7 +67062,7 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
-/* 673 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67332,7 +67125,7 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
-/* 674 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67436,7 +67229,7 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
-/* 675 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67448,12 +67241,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
-var preprocessproduct_create_1 = __webpack_require__(674);
+var preprocessproduct_create_1 = __webpack_require__(672);
 //filters
 //directives
-var swproductlistingpages_1 = __webpack_require__(672);
-var swrelatedproducts_1 = __webpack_require__(673);
-var swproductdeliveryscheduledates_1 = __webpack_require__(671);
+var swproductlistingpages_1 = __webpack_require__(670);
+var swrelatedproducts_1 = __webpack_require__(671);
+var swproductdeliveryscheduledates_1 = __webpack_require__(669);
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -67469,7 +67262,7 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
-/* 676 */
+/* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67814,7 +67607,7 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
-/* 677 */
+/* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68000,7 +67793,7 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
-/* 678 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68087,7 +67880,7 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
-/* 679 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68262,7 +68055,7 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
-/* 680 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68363,7 +68156,7 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
-/* 681 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68374,14 +68167,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var productbundleservice_1 = __webpack_require__(682);
+var productbundleservice_1 = __webpack_require__(680);
 //controllers
-var create_bundle_controller_1 = __webpack_require__(680);
+var create_bundle_controller_1 = __webpack_require__(678);
 //directives
-var swproductbundlegrouptype_1 = __webpack_require__(679);
-var swproductbundlegroups_1 = __webpack_require__(678);
-var swproductbundlegroup_1 = __webpack_require__(677);
-var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(676);
+var swproductbundlegrouptype_1 = __webpack_require__(677);
+var swproductbundlegroups_1 = __webpack_require__(676);
+var swproductbundlegroup_1 = __webpack_require__(675);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(674);
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -68400,7 +68193,7 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
-/* 682 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68486,7 +68279,7 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
-/* 683 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68560,7 +68353,7 @@ exports.SWSiteAndCurrencySelect = SWSiteAndCurrencySelect;
 
 
 /***/ }),
-/* 684 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68573,7 +68366,7 @@ var core_module_1 = __webpack_require__(6);
 //services
 //controllers
 //directives
-var swsiteandcurrencyselect_1 = __webpack_require__(683);
+var swsiteandcurrencyselect_1 = __webpack_require__(681);
 //filters
 var sitemodule = angular.module('hibachi.site', [core_module_1.coremodule.name]).config(function () {
 })
@@ -68587,7 +68380,7 @@ exports.sitemodule = sitemodule;
 
 
 /***/ }),
-/* 685 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68758,7 +68551,7 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 686 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68837,7 +68630,7 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
-/* 687 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68924,7 +68717,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 688 */
+/* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69147,7 +68940,7 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 689 */
+/* 687 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69284,7 +69077,7 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
-/* 690 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69393,7 +69186,7 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
-/* 691 */
+/* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69469,7 +69262,7 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
-/* 692 */
+/* 690 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69531,7 +69324,7 @@ exports.SWSkuImage = SWSkuImage;
 
 
 /***/ }),
-/* 693 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69720,7 +69513,7 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
-/* 694 */
+/* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69863,7 +69656,7 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
-/* 695 */
+/* 693 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69994,7 +69787,7 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
-/* 696 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70161,7 +69954,7 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
-/* 697 */
+/* 695 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70220,7 +70013,7 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
-/* 698 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70271,7 +70064,7 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
-/* 699 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70642,7 +70435,7 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
-/* 700 */
+/* 698 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70653,25 +70446,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var defaultskuservice_1 = __webpack_require__(698);
-var skupriceservice_1 = __webpack_require__(699);
+var defaultskuservice_1 = __webpack_require__(696);
+var skupriceservice_1 = __webpack_require__(697);
 //controllers
 //directives
 var swpricingmanager_1 = __webpack_require__(710);
-var swimagedetailmodallauncher_1 = __webpack_require__(689);
-var swaddskupricemodallauncher_1 = __webpack_require__(685);
-var swdeleteskupricemodallauncher_1 = __webpack_require__(687);
-var sweditskupricemodallauncher_1 = __webpack_require__(688);
+var swimagedetailmodallauncher_1 = __webpack_require__(687);
+var swaddskupricemodallauncher_1 = __webpack_require__(683);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(685);
+var sweditskupricemodallauncher_1 = __webpack_require__(686);
 var swskupricemodal_1 = __webpack_require__(711);
-var swskustockadjustmentmodallauncher_1 = __webpack_require__(696);
-var swdefaultskuradio_1 = __webpack_require__(686);
-var swskuimage_1 = __webpack_require__(692);
-var swskucurrencyselector_1 = __webpack_require__(691);
-var swskupriceedit_1 = __webpack_require__(693);
-var swskucodeedit_1 = __webpack_require__(690);
-var swskupricesedit_1 = __webpack_require__(695);
-var swskupricequantityedit_1 = __webpack_require__(694);
-var swskuthumbnail_1 = __webpack_require__(697);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(694);
+var swdefaultskuradio_1 = __webpack_require__(684);
+var swskuimage_1 = __webpack_require__(690);
+var swskucurrencyselector_1 = __webpack_require__(689);
+var swskupriceedit_1 = __webpack_require__(691);
+var swskucodeedit_1 = __webpack_require__(688);
+var swskupricesedit_1 = __webpack_require__(693);
+var swskupricequantityedit_1 = __webpack_require__(692);
+var swskuthumbnail_1 = __webpack_require__(695);
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -70701,7 +70494,7 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
-/* 701 */
+/* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70735,7 +70528,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
-/* 702 */
+/* 700 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70752,19 +70545,19 @@ var content_module_1 = __webpack_require__(623);
 var formbuilder_module_1 = __webpack_require__(625);
 var giftcard_module_1 = __webpack_require__(637);
 var optiongroup_module_1 = __webpack_require__(641);
-var orderitem_module_1 = __webpack_require__(670);
-var orderfulfillment_module_1 = __webpack_require__(663);
+var orderitem_module_1 = __webpack_require__(668);
+var orderfulfillment_module_1 = __webpack_require__(662);
 var fulfillmentbatchdetail_module_1 = __webpack_require__(627);
-var orderdeliverydetail_module_1 = __webpack_require__(661);
-var order_module_1 = __webpack_require__(658);
-var product_module_1 = __webpack_require__(675);
-var productbundle_module_1 = __webpack_require__(681);
-var site_module_1 = __webpack_require__(684);
-var sku_module_1 = __webpack_require__(700);
-var subscriptionusage_module_1 = __webpack_require__(704);
-var term_module_1 = __webpack_require__(707);
+var orderdeliverydetail_module_1 = __webpack_require__(660);
+var order_module_1 = __webpack_require__(657);
+var product_module_1 = __webpack_require__(673);
+var productbundle_module_1 = __webpack_require__(679);
+var site_module_1 = __webpack_require__(682);
+var sku_module_1 = __webpack_require__(698);
+var subscriptionusage_module_1 = __webpack_require__(702);
+var term_module_1 = __webpack_require__(705);
 //constant
-var slatwallpathbuilder_1 = __webpack_require__(701);
+var slatwallpathbuilder_1 = __webpack_require__(699);
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
     hibachi_module_1.hibachimodule.name,
@@ -70982,7 +70775,7 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
-/* 703 */
+/* 701 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71075,7 +70868,7 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
-/* 704 */
+/* 702 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71089,7 +70882,7 @@ var core_module_1 = __webpack_require__(6);
 //controllers
 //filters
 //directives
-var swscheduleddeliveriescard_1 = __webpack_require__(703);
+var swscheduleddeliveriescard_1 = __webpack_require__(701);
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -71102,7 +70895,7 @@ exports.subscriptionusagemodule = subscriptionusagemodule;
 
 
 /***/ }),
-/* 705 */
+/* 703 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71153,7 +70946,7 @@ exports.SWTermScheduleTable = SWTermScheduleTable;
 
 
 /***/ }),
-/* 706 */
+/* 704 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71204,7 +70997,7 @@ exports.TermService = TermService;
 
 
 /***/ }),
-/* 707 */
+/* 705 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71214,8 +71007,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swtermscheduletable_1 = __webpack_require__(705);
-var termservice_1 = __webpack_require__(706);
+var swtermscheduletable_1 = __webpack_require__(703);
+var termservice_1 = __webpack_require__(704);
 var termmodule = angular.module('term', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -71229,7 +71022,7 @@ exports.termmodule = termmodule;
 
 
 /***/ }),
-/* 708 */
+/* 706 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71298,23 +71091,394 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 
 
 /***/ }),
-/* 709 */
+/* 707 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var slatwalladmin_module_1 = __webpack_require__(702);
+var ReturnOrderItem = /** @class */ (function () {
+    function ReturnOrderItem(obj) {
+        var _this = this;
+        this.returnQuantity = 0;
+        //  Following equations have a (this.maxRefund / this.total) term included in order to get the remaining values
+        this.getAllocatedRefundOrderDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderDiscountAmount * _this.refundTotal * 100 * _this.maxRefund / Math.pow(_this.total, 2)) / 100;
+            }
+            return 0;
+        };
+        this.getAllocatedRefundOrderPVDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * 100 * _this.maxRefund / (_this.pvTotal * _this.total)) / 100;
+            }
+            return 0;
+        };
+        this.getAllocatedRefundOrderCVDiscountAmount = function () {
+            if (_this.returnQuantity >= 0) {
+                return Math.round(_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * 100 * _this.maxRefund / (_this.cvTotal * _this.total)) / 100;
+            }
+            return 0;
+        };
+        obj && Object.assign(this, obj);
+        this.refundTotal = 0;
+        this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
+        this.total = this.calculatedExtendedPriceAfterDiscount;
+        this.pvTotal = this.calculatedExtendedPersonalVolumeAfterDiscount;
+        this.cvTotal = this.calculatedExtendedCommissionableVolumeAfterDiscount;
+        this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
+        this.taxTotal = this.calculatedTaxAmount;
+        this.taxRefundAmount = 0;
+        this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        return this;
+    }
+    return ReturnOrderItem;
+}());
+var SWReturnOrderItemsController = /** @class */ (function () {
+    function SWReturnOrderItemsController($hibachi, collectionConfigService) {
+        var _this = this;
+        this.$hibachi = $hibachi;
+        this.collectionConfigService = collectionConfigService;
+        this.orderPayments = [];
+        this.refundSubtotal = 0;
+        this.refundTotal = 0;
+        this.refundPVTotal = 0;
+        this.refundCVTotal = 0;
+        this.setupOrderItemCollectionList = function () {
+            _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
+            for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
+                var displayProperty = _a[_i];
+                _this.orderItemCollectionList.addDisplayProperty(displayProperty);
+            }
+            _this.orderItemCollectionList.addFilter("order.orderID", _this.orderId, "=");
+            _this.orderItemCollectionList.setAllRecords(true);
+            _this.orderItemCollectionList.getEntity().then(function (result) {
+                for (var i = 0; i < result.records.length; i++) {
+                    result.records[i] = new ReturnOrderItem(result.records[i]);
+                }
+                _this.orderItems = result.records;
+            });
+        };
+        this.getDisplayPropertiesList = function () {
+            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
+        };
+        this.updateOrderItem = function (orderItem, maxRefund) {
+            var orderMaxRefund;
+            orderItem = _this.setValuesWithinConstraints(orderItem);
+            orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
+            orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
+            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
+            orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
+            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
+            if (maxRefund == undefined) {
+                var refundTotal = _this.orderItems.reduce(function (total, item) {
+                    return (item == orderItem) ? total : total += item.refundTotal;
+                }, 0);
+                orderMaxRefund = _this.orderTotal - refundTotal;
+            }
+            maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
+            if ((orderItem.refundTotal > maxRefund)) {
+                orderItem.refundUnitPrice = Math.max(maxRefund, 0) / orderItem.returnQuantity;
+                orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
+                _this.updateOrderItem(orderItem, maxRefund);
+            }
+            else {
+                _this.updateTotals();
+            }
+        };
+        this.setValuesWithinConstraints = function (orderItem) {
+            var returnQuantityMaximum = orderItem.returnQuantityMaximum;
+            if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
+                orderItem.returnQuantity = 0;
+            }
+            if (orderItem.returnQuantity > returnQuantityMaximum) {
+                orderItem.returnQuantity = returnQuantityMaximum;
+            }
+            if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
+                orderItem.refundUnitPrice = 0;
+            }
+            if (_this.orderType == 'otRefundOrder') {
+                if (orderItem.refundUnitPrice != 0) {
+                    orderItem.returnQuantity = 1;
+                }
+                else {
+                    orderItem.returnQuantity = 0;
+                }
+            }
+            return orderItem;
+        };
+        this.updateTotals = function () {
+            _this.updateRefundTotals();
+            _this.updatePaymentTotals();
+        };
+        this.updateRefundTotals = function () {
+            var refundSubtotal = 0;
+            var refundPVTotal = 0;
+            var refundCVTotal = 0;
+            var allocatedOrderDiscountAmountTotal = 0;
+            var allocatedOrderPVDiscountAmountTotal = 0;
+            var allocatedOrderCVDiscountAmountTotal = 0;
+            _this.orderItems.forEach(function (item) {
+                refundSubtotal += item.refundTotal + (item.taxRefundAmount || 0);
+                refundPVTotal += item.refundPVTotal;
+                refundCVTotal += item.refundCVTotal;
+                allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
+                allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
+                allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
+            });
+            _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+            _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
+            _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
+            _this.refundSubtotal = refundSubtotal;
+            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
+            _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
+        };
+        this.updatePaymentTotals = function () {
+            for (var i = _this.orderPayments.length - 1; i >= 0; i--) {
+                _this.validateAmount(_this.orderPayments[i]);
+            }
+        };
+        this.validateFulfillmentRefundAmount = function () {
+            if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
+                _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
+            }
+            _this.updateRefundTotals();
+        };
+        this.validateAmount = function (orderPayment) {
+            var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
+                return (payment == orderPayment) ? total : total += payment.amount;
+            }, 0);
+            var maxRefund = Math.min(orderPayment.amountToRefund, _this.refundTotal - paymentTotal);
+            if (orderPayment.amount == undefined) {
+                orderPayment.amount = 0;
+            }
+            if (orderPayment.amount > maxRefund) {
+                orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
+            }
+        };
+        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
+        if (this.refundOrderItems == undefined) {
+            this.displayPropertiesList = this.getDisplayPropertiesList();
+            this.setupOrderItemCollectionList();
+        }
+        else {
+            this.orderItems = this.refundOrderItems.map(function (item) { return new ReturnOrderItem(item); });
+        }
+        $hibachi.getCurrencies().then(function (result) {
+            _this.currencySymbol = result.data[_this.currencyCode];
+        });
+    }
+    return SWReturnOrderItemsController;
+}());
+var SWReturnOrderItems = /** @class */ (function () {
+    function SWReturnOrderItems($hibachi, monatBasePath) {
+        this.$hibachi = $hibachi;
+        this.monatBasePath = monatBasePath;
+        this.scope = true;
+        this.bindToController = {
+            orderId: '@',
+            currencyCode: '@',
+            initialFulfillmentRefundAmount: '@',
+            orderPayments: '<',
+            refundOrderItems: '<?',
+            orderType: '@',
+            orderTotal: '<?'
+        };
+        this.controller = SWReturnOrderItemsController;
+        this.controllerAs = "swReturnOrderItems";
+        this.link = function (scope, element, attrs) {
+        };
+        this.restrict = "E";
+        this.templateUrl = monatBasePath + "/monatadmin/components/returnorderitems.html";
+    }
+    SWReturnOrderItems.Factory = function () {
+        var directive = function ($hibachi, monatBasePath) { return new SWReturnOrderItems($hibachi, monatBasePath); };
+        directive.$inject = [
+            '$hibachi',
+            'monatBasePath'
+        ];
+        return directive;
+    };
+    return SWReturnOrderItems;
+}());
+exports.SWReturnOrderItems = SWReturnOrderItems;
+
+
+/***/ }),
+/* 708 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var slatwalladmin_module_1 = __webpack_require__(700);
 //directives
-var swflexshipsurveymodal_1 = __webpack_require__(708);
+var swflexshipsurveymodal_1 = __webpack_require__(706);
+var swreturnorderitems_1 = __webpack_require__(707);
 var monatadminmodule = angular.module('monatadmin', [
     slatwalladmin_module_1.slatwalladminmodule.name
 ])
     //constants
     .constant('monatBasePath', '/Slatwall/custom/admin/client/src')
     //directives
-    .directive('swFlexshipSurveyModal', swflexshipsurveymodal_1.SWFlexshipSurveyModal.Factory());
+    .directive('swFlexshipSurveyModal', swflexshipsurveymodal_1.SWFlexshipSurveyModal.Factory())
+    .directive('swReturnOrderItems', swreturnorderitems_1.SWReturnOrderItems.Factory());
 exports.monatadminmodule = monatadminmodule;
+
+
+/***/ }),
+/* 709 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWOrderItems = /** @class */ (function () {
+    //@ngInject
+    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
+        return {
+            restrict: 'E',
+            scope: {
+                orderId: "@"
+            },
+            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+            link: function (scope, element, attrs) {
+                var options = {};
+                scope.keywords = "";
+                scope.loadingCollection = false;
+                scope.$watch('recordsCount', function (newValue, oldValue, scope) {
+                    //Do anything with $scope.letters
+                    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length) {
+                        //refresh so order totals refresh.
+                        window.location.reload();
+                    }
+                });
+                var searchPromise;
+                scope.searchCollection = function () {
+                    if (searchPromise) {
+                        $timeout.cancel(searchPromise);
+                    }
+                    searchPromise = $timeout(function () {
+                        $log.debug('search with keywords');
+                        $log.debug(scope.keywords);
+                        //Set current page here so that the pagination does not break when getting collection
+                        scope.paginator.setCurrentPage(1);
+                        scope.loadingCollection = true;
+                        scope.getCollection();
+                    }, 500);
+                };
+                $log.debug('Init Order Item');
+                $log.debug(scope.orderId);
+                //Setup the data needed for each order item object.
+                scope.getCollection = function () {
+                    if (scope.pageShow === 'Auto') {
+                        scope.pageShow = 50;
+                    }
+                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
+                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
+                        .addFilter('order.orderID', scope.orderId)
+                        .addFilter('parentOrderItem', 'null', 'IS')
+                        .setKeywords(scope.keywords)
+                        .setPageShow(scope.paginator.getPageShow())
+                        .setCurrentPage(scope.paginator.getCurrentPage());
+                    //add attributes to the column config
+                    angular.forEach(scope.attributes, function (attribute) {
+                        var attributeColumn = {
+                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+                            attributeID: attribute.attributeID,
+                            attributeSetObject: "orderItem"
+                        };
+                        orderItemCollection.columns.push(attributeColumn);
+                    });
+                    var orderItemsPromise = orderItemCollection.getEntity();
+                    orderItemsPromise.then(function (value) {
+                        scope.collection = value;
+                        var collectionConfig = {};
+                        scope.recordsCount = value.pageRecords;
+                        scope.orderItems = $hibachi.populateCollection(value.pageRecords, orderItemCollection);
+                        for (var orderItem in scope.orderItems) {
+                            $log.debug("OrderItem Product Type");
+                            $log.debug(scope.orderItems);
+                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
+                        }
+                        scope.paginator.setPageRecordsInfo(scope.collection);
+                        scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
+                    });
+                };
+                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
+                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
+                    .addFilter('displayOnOrderDetailFlag', true)
+                    .addFilter('activeFlag', true)
+                    .setAllRecords(true);
+                var attItemsPromise = attributesCollection.getEntity();
+                attItemsPromise.then(function (value) {
+                    scope.attributes = [];
+                    angular.forEach(value.records, function (attributeItemData) {
+                        //Use that custom attribute name to get the value.
+                        scope.attributes.push(attributeItemData);
+                    });
+                    scope.getCollection();
+                });
+                //Add claim function and cancel function
+                /*scope.appendToCollection = function(){
+                    if(scope.pageShow === 'Auto'){
+                        $log.debug('AppendToCollection');
+                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
+                            scope.paginator.autoScrollDisabled = true;
+                            scope.paginator.autoScrollPage++;
+
+                            var appendOptions:any = {};
+                            angular.extend(appendOptions,options);
+                            appendOptions.pageShow = 50;
+                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+
+                            var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
+                            collectionListingPromise.then(function(value){
+                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+                                scope.autoScrollDisabled = false;
+                            },function(reason){
+                                scope.collection.pageRecords = [];
+                            });
+                        }
+                    }
+                };*/
+                scope.paginator = paginationService.createPagination();
+                scope.paginator.notifyById = false;
+                scope.paginator.collection = scope.collection;
+                scope.paginator.getCollection = scope.getCollection;
+                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
+                $(document).on("listingDisplayUpdate", {}, function (event, arg1, arg2) {
+                    scope.orderItems = undefined;
+                    scope.getCollection();
+                });
+                observerService.attach(scope.getCollection, 'swPaginationAction');
+            } //<--End link
+        };
+    }
+    SWOrderItems.Factory = function () {
+        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService); };
+        directive.$inject = [
+            '$log',
+            '$timeout',
+            '$location',
+            '$hibachi',
+            'collectionConfigService',
+            'formService',
+            'orderItemPartialsPath',
+            'slatwallPathBuilder',
+            'paginationService',
+            'observerService'
+        ];
+        return directive;
+    };
+    return SWOrderItems;
+}());
+exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
@@ -78914,8 +79078,6 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 var SWDatePicker = /** @class */ (function () {
     function SWDatePicker() {
         this.restrict = "A";
@@ -78925,7 +79087,9 @@ var SWDatePicker = /** @class */ (function () {
             startDayOfTheMonth: '<?',
             endDayOfTheMonth: '<?',
             startDate: '=?',
-            endDate: '=?'
+            startDateString: '@?',
+            endDate: '=?',
+            endDateString: '@?'
         };
         this.link = function ($scope, element, attrs, modelCtrl) {
             if (!$scope.options) {
@@ -78939,31 +79103,52 @@ var SWDatePicker = /** @class */ (function () {
                 $scope.startDayOfTheMonth = 1;
             }
             if (!$scope.endDayOfTheMonth) {
-                $scope.startDayOfTheMonth = 31;
+                $scope.endDayOfTheMonth = 31;
+            }
+            if ($scope.startDateString) {
+                $scope.startDate = Date.parse($scope.startDateString).getTime();
+            }
+            if ($scope.endDateString) {
+                $scope.endDate = Date.parse($scope.endDateString).getTime();
             }
             if (!$scope.startDate) {
                 $scope.startDate = Date.now();
             }
+            if (typeof $scope.startDate !== 'number') {
+                $scope.startDate = $scope.startDate.getTime();
+            }
+            if (typeof $scope.endDate !== 'number') {
+                $scope.endDate = $scope.endDate.getTime();
+            }
             if (!$scope.endDate) {
                 $scope.options.beforeShowDay = function (date) {
                     var dayOfMonth = date.getDate();
+                    var dateToCompare = date;
+                    if (typeof dateToCompare !== 'number') {
+                        dateToCompare = dateToCompare.getTime();
+                    }
                     return [dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            date >= $scope.startDate
+                            dateToCompare >= $scope.startDate
                     ];
                 };
             }
             else {
                 $scope.options.beforeShowDay = function (date) {
                     var dayOfMonth = date.getDate();
+                    var dateToCompare = date;
+                    if (typeof dateToCompare !== 'number') {
+                        dateToCompare = dateToCompare.getTime();
+                    }
                     return [dayOfMonth >= $scope.startDayOfTheMonth &&
                             dayOfMonth <= $scope.endDayOfTheMonth &&
-                            date >= $scope.startDate &&
-                            date < $scope.endDate
+                            dateToCompare >= $scope.startDate &&
+                            dateToCompare < $scope.endDate
                     ];
                 };
             }
             $(element).datepicker($scope.options);
+            console.log($scope);
         };
     }
     SWDatePicker.Factory = function () {
@@ -87635,6 +87820,17 @@ var RbKeyService = /** @class */ (function () {
             ////$log.debug(this.getConfig().rbLocale);
             var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
             ////$log.debug(keyValue);
+            /**
+             * const templateString = "Hello ${this.name}!";
+               const replaceStringData = {
+                    name: "world"
+                }
+             *
+             */
+            if (replaceStringData) {
+                //coppied from  https://github.com/mikemaccana/dynamic-template
+                keyValue = keyValue.replace(/\${(.*?)}/g, function (_, g) { return replaceStringData[g]; });
+            }
             return keyValue;
         };
         this.getRBKey = function (key, locale, checkedKeys, originalKey) {
@@ -91177,6 +91373,10 @@ var SWSimplePropertyDisplayController = /** @class */ (function () {
         this.formattedFlag = false;
         this.$onInit = function () {
             _this.value = _this.object[_this.property];
+            // First, check if it was passed in via the object instead of the attribute.
+            if (_this.object && _this.object.currencyCode && !_this.currencyCode) {
+                _this.currencyCode = _this.object.currencyCode;
+            }
             //sets a default if there is no value and we have one...
             if (!_this.value && _this.default) {
                 _this.value = _this.default;
@@ -91218,6 +91418,7 @@ var SWSimplePropertyDisplay = /** @class */ (function () {
             currencyFlag: "@?",
             refreshEvent: "@?",
             displayWidth: "@?",
+            currencyCode: "@?",
             default: "@?"
         };
         this.controller = SWSimplePropertyDisplayController;
@@ -91593,21 +91794,6 @@ var hibachimodule = angular.module('hibachi', [
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
         $rootScope.hasAccount = publicService.hasAccount;
-        if (!isAdmin && $hibachi.newAccount) {
-            $rootScope.hibachiScope.getAccount();
-        }
-        if (!isAdmin && $hibachi.newOrder) {
-            $rootScope.hibachiScope.getCart();
-        }
-        if (!isAdmin && $hibachi.newCountry) {
-            $rootScope.hibachiScope.getCountries();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getStates();
-        }
-        if (!isAdmin && $hibachi.newState) {
-            $rootScope.hibachiScope.getAddressOptions();
-        }
         if (localStorageService.hasItem('selectedPersonalCollection')) {
             $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
         }
@@ -92194,6 +92380,12 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.observerService.notifyById('swPaginationUpdate', _this.tableID, _this.collectionData);
             });
         };
+        this.startLoading = function () {
+            _this.loading = true;
+        };
+        this.stopLoading = function () {
+            _this.loading = false;
+        };
         /**
          * I pulled the ctor logic into its own method so we can reinintialize the
          * collection on demand (refresh).
@@ -92202,6 +92394,12 @@ var SWListingDisplayController = /** @class */ (function () {
             //setup a listener for refreshing this listing based on a refrsh event string 
             if (_this.refreshEvent && initial) {
                 _this.observerService.attach(_this.refreshListingDisplay, _this.refreshEvent);
+            }
+            if (initial) {
+                _this.observerService.attach(_this.startLoading, "addOrderItemStartLoading");
+            }
+            if (initial) {
+                _this.observerService.attach(_this.stopLoading, "addOrderItemStopLoading");
             }
             if (angular.isUndefined(_this.usingPersonalCollection)) {
                 _this.usingPersonalCollection = false;
@@ -92868,6 +93066,7 @@ var SWListingDisplay = /** @class */ (function () {
             createAction: "@?",
             createQueryString: "@?",
             exportAction: "@?",
+            currencyCode: "@?",
             getChildCount: "<?",
             hasSearch: "<?",
             hasActionBar: "<?",
@@ -92956,6 +93155,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
                         _this.value = _this.pageRecord[pageRecordKey];
                     }
+                    // If there is a currency code for the page record, first use that.
+                    // Then check if it was passed via the column args.
+                    // Then check if it was passed into the directive.
+                    // then set a default.
                     if (_this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
@@ -92965,7 +93168,10 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
                     else {
-                        _this.currencyCode = 'USD';
+                        //set a default if one was not passed in to use...
+                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                            _this.currencyCode = 'USD';
+                        }
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -93047,6 +93253,7 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
+            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;

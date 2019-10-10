@@ -6,11 +6,40 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     property name="publicService" type="any";
 
     this.publicMethods='';
-    this.publicMethods=listAppend(this.publicMethods, 'get');
-    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplates');
-    this.publicMethods=listAppend(this.publicMethods, 'getOrderTemplateItems');
-    this.publicMethods=listAppend(this.publicMethods, 'post');
+    this.publicMethods=ListAppend(this.publicMethods, 'get');
+    this.publicMethods=ListAppend(this.publicMethods, 'post');
+    
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplates');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplateItems');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplateDetails');
+    
+    this.publicMethods=ListAppend(this.publicMethods, 'getWishlistItems');
+    
+    this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'activateOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'cancelOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateShipping');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateBilling');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
+    this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateFrequency');
 
+    this.publicMethods=ListAppend(this.publicMethods, 'addOrderTemplateItem');
+    this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplateItem');
+    this.publicMethods=ListAppend(this.publicMethods, 'removeOrderTemplateItem');
+    
+    //get-xxx-options
+    this.publicMethods=ListAppend(this.publicMethods, 'getOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyTermOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyDateOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getShippingMethodOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getCancellationReasonTypeOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getScheduleDateChangeReasonTypeOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getExpirationMonthOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getExpirationYearOptions');
+
+    
+    
+    
     public void function init( required any fw ) {
         setFW( arguments.fw );
     }
@@ -98,7 +127,112 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().getOrderTemplateItems(arguments.rc); 
 	} 
 	
+	public any function getOrderTemplateDetails( required struct rc ){
+		getPublicService().getOrderTemplateDetails(arguments.rc); 
+	}	
+
 	public any function getWishlistItems( required struct rc ){
 		getPublicService().getWishlistItems(arguments.rc); 
 	} 
+	
+	public any function updateOrderTemplateShipping( required struct rc ){
+		getPublicService().updateOrderTemplateShipping(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateBilling(required struct rc){
+	    getPublicService().updateOrderTemplateBilling(arguments.rc);
+	}
+	
+	public any function editOrderTemplate( required struct rc ){
+		getPublicService().editOrderTemplate(arguments.rc); 
+	}
+	
+	public any function activateOrderTemplate( required struct rc ){
+		getPublicService().activateOrderTemplate(arguments.rc); 
+	} 
+	
+	public any function cancelOrderTemplate( required struct rc ){
+		getPublicService().cancelOrderTemplate(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateSchedule( required struct rc ){
+		getPublicService().updateOrderTemplateSchedule(arguments.rc); 
+	} 
+	
+	public any function updateOrderTemplateFrequency( required struct rc ){
+		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
+	} 
+	
+    public any function addOrderTemplateItem( required struct rc ){
+		getPublicService().addOrderTemplateItem(arguments.rc); 
+	}
+	
+	public any function editOrderTemplateItem( required struct rc ){
+		getPublicService().editOrderTemplateItem(arguments.rc); 
+	}
+	
+	public any function removeOrderTemplateItem( required struct rc ){
+		getPublicService().removeOrderTemplateItem(arguments.rc); 
+	}
+	
+	
+	
+	/// . ############# .     cart .   ################
+	
+	
+	public any function addOrderItem(required struct rc) {
+	    getPublicService().addOrderItem(arguments.rc);
+	}
+	
+	public any function removeOrderItem(required struct rc) {
+	    getPublicService().removeOrderItem(arguments.rc);
+	}
+	
+	public any function updateOrderItemQuantity(required struct rc) {
+	    getPublicService().updateOrderItemQuantity(arguments.rc);
+	}
+	
+	
+	//////////////////////////////////////////////
+	
+	
+	
+	///    ############### .  getXXXOptions();  .  ###############   
+    
+    /**
+     *  rc.optionsList = "op1,op2,op3"; 
+    */ 
+    public void function getOptions(required any rc){
+        getPublicService().getOptions(arguments.rc);
+    }
+    
+    public void function getFrequencyTermOptions(required any rc) {
+        getPublicService().getFrequencyTermOptions(arguments.rc);
+	}
+
+    public void function getFrequencyDateOptions(required any data) {
+		getPublicService().getFrequencyDateOptions(arguments.rc);
+    }
+    
+    public void function getShippingMethodOptions(required any rc) {
+        getPublicService().getShippingMethodOptions(arguments.rc);
+	}
+    
+    public void function getCancellationReasonTypeOptions(required any rc) {
+        getPublicService().getCancellationReasonTypeOptions(arguments.rc);
+	}
+    
+    public void function getScheduleDateChangeReasonTypeOptions(required any rc) {
+        getPublicService().getScheduleDateChangeReasonTypeOptions(arguments.rc);
+	}
+    
+    public void function getExpirationMonthOptions(required any rc) {
+        getPublicService().getExpirationMonthOptions(arguments.rc);
+	}
+    
+    public void function getExpirationYearOptions(required any rc) {
+        getPublicService().getExpirationYearOptions(arguments.rc);
+	}
+	
+
 }
