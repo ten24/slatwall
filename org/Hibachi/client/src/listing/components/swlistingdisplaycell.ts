@@ -124,7 +124,8 @@ class SWListingDisplayCellController{
                 // Then check if it was passed via the column args.
                 // Then check if it was passed into the directive.
                 // then set a default.
-                if(this.pageRecord['currencyCode'] != null &&
+                if(this.pageRecord != null &&
+                   this.pageRecord['currencyCode'] != null &&
                    this.pageRecord['currencyCode'].trim().length
                 ){
                     
