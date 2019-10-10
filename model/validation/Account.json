@@ -52,6 +52,9 @@
 		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
 		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}],
 		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}],
-		"username":								[{"required":true,"method":"getUsernameNotInUseFlag"}],
+		"username":								[
+			{"contexts":"save","required":true,"method":"getUsernameNotInUseFlag"},
+			{"contexts":"save","conditions":"nonIntegrationAuthenticatedAccount"}
+		]
 	}
 }
