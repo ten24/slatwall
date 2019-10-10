@@ -29,8 +29,8 @@
 																<p class="small mb_0" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
 																	<!-- FOOTER LINKS -->
-																	<a href="#siteLink#shop/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;"> | </span> 
-																	<a href="#siteLink#blog/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Blog</span></a>
+																	<a href="#local.siteLink#shop/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;"> | </span> 
+																	<a href="#local.siteLink#blog/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Blog</span></a>
 																	
 																</p>
 															</td>
@@ -46,16 +46,16 @@
 																<p class="fsocial mb_0" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
 																	<!-- INSTAGRAM ICON/LINK -->
-																	<a href="https://instagram.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a>
+																	<a href="https://instagram.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a>
 																	
 																	<!-- FACEBOOK ICON/LINK -->
-																	<a href="https://www.facebook.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#assets/images/social-facebook_white.png" width="24" height="24" alt="facebook" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
+																	<a href="https://www.facebook.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#assets/images/social-facebook_white.png" width="24" height="24" alt="facebook" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
 																	
 																	<!-- TWITTER ICON/LINK -->
-																	<a href="https://twitter.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#assets/images/social-twitter_white.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
+																	<a href="https://twitter.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#assets/images/social-twitter_white.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
 																	
 																	<!-- YOUTUBE ICON/LINK -->
-																	<a href="https://www.youtube.com/user/MONATOfficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#assets/images/social_youtube.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
+																	<a href="https://www.youtube.com/user/MONATOfficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#assets/images/social_youtube.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
 																</p>
 															</td>
 														</tr>

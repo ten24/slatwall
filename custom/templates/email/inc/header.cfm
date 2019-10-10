@@ -15,9 +15,9 @@
 <cfset colorWarning = "##eca552" />
 
 <cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
-	<cfset siteLink = "https://monatglobal.com/" />
+	<cfset local.siteLink = "http://monat.ten24dev.com/" />
 <cfelse>
-	<cfset siteLink = "http://monat.ten24dev.com/" />
+	<cfset local.siteLink = "https://monatglobal.com/" />
 </cfif>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -226,8 +226,8 @@ table.tr { margin-left: auto; margin-right: 0; }
 														<tr>
 															<!------- LOGO IMAGE ------->
 															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																	<a href="#siteLink#" style="text-decoration: none;line-height: inherit;">
-																		<img src="#siteLink#themes/monat/assets/images/logo.svg" alt="logo" style="width:100px; height:50px; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;">
+																	<a href="#local.siteLink#" style="text-decoration: none;line-height: inherit;">
+																		<img src="#local.siteLink#themes/monat/assets/images/logo.svg" alt="logo" style="width:100px; height:50px; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;">
 																	</a>
 																</td>
 														</tr>
