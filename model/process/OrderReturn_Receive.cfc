@@ -56,7 +56,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="packingSlipNumber" hb_rbKey="entity.stockReceiver.packingSlipNumber";
 	property name="boxCount" hb_rbKey="entity.stockReceiver.boxCount";
 	property name="orderReturnItems" type="array" hb_populateArray="true";
-	property name="stockLossFlag" hb_formFieldType="yesno" default="0" hb_populateEnabled="public";
 	
 	public any function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
@@ -82,6 +81,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}			
 		}
 		
+		return true;
+	}
+	
+	public boolean function validStockLossQuantity(){
+		if ( isNull( this.getOrderReturnItems() ) ){
+			return false;
+		}
+		for(var returnItem in this.getOrderReturnItems()){
+			if(!structKeyExists(returnItem,'quantity')){
+				returnItem.quantity = 0;
+			}
+			if(!structKeyExists(returnItem,'stockLoss')){
+				returnItem.stockLoss = 0;
+			}
+			if(val(returnItem.stockLoss) > returnItem.quantity){
+				return false;
+			}
+		}
 		return true;
 	}
 	
