@@ -291,8 +291,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(!isNull(priceGroup)){
                 account.addPriceGroup(priceGroup);
             }
-            var accountType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
-            if(!isNull(accountType)){
+            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
+            if(!isNull(accountStatusType)){
                 account.setAccountStatusType(getService('TypeService').getTypeByTypeCode('astEnrollmentPending'));
             }
         }
