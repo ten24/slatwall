@@ -453,7 +453,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
 		var query = arguments.skuBundleQuery;
 		var skuData = arguments.skuData;
-		var skuBundles = [];
 		var currentCountryCode = "";
 		ArrayEach(arguments.skuData.KitLines, function(item){
 			var skuBundleData = {};
