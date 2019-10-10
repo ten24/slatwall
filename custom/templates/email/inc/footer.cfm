@@ -29,8 +29,8 @@
 																<p class="small mb_0" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
 																	<!-- FOOTER LINKS -->
-																	<a href="#accountLink#/shop/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;"> | </span> 
-																	<a href="#accountLink#/blog/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Blog</span></a>
+																	<a href="#siteLink#shop/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;"> | </span> 
+																	<a href="#siteLink#blog/" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Blog</span></a>
 																	
 																</p>
 															</td>

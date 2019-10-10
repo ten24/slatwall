@@ -225,7 +225,11 @@ table.tr { margin-left: auto; margin-right: 0; }
 													<tbody>
 														<tr>
 															<!------- LOGO IMAGE ------->
-															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="#siteLink#themes/monat/assets/images/logo.svg" alt="logo" style="width:100px; height:50px; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;"></td>
+															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+																	<a href="#siteLink#" style="text-decoration: none;line-height: inherit;">
+																		<img src="#siteLink#themes/monat/assets/images/logo.svg" alt="logo" style="width:100px; height:50px; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;">
+																	</a>
+																</td>
 														</tr>
 													</tbody>
 												</table>
