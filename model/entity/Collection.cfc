@@ -2656,7 +2656,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						var HQLParams = {};
 						//For processing objects because we have a non-persistent column
-						if(this.getNonPersistentColumn()){
+						if(getUseScrollableFlag()){
 							variables.records = [];
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
