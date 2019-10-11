@@ -18,12 +18,13 @@ class EnrollmentMPController {
 	public totalPages: Array<number>;
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService) {
-		this.observerService.attatch(this.getProductList, 'createSuccess'); 
+		//this.observerService.attach(this.getProductList, 'createSuccess'); 
 	}
 	
 	public $onInit = () => {
 		this.getCountryCodeOptions();
 		this.getStarterPacks();
+		this.getProductList()
 	};
 
 	public getStarterPacks = () => {
@@ -110,7 +111,7 @@ class EnrollmentMPController {
 
 	public getProductList = (pageNumber = 1, direction: any = false, newPages = false) => {
 		this.loading = true;
-		const pageRecordsShow = 5;
+		const pageRecordsShow = 12;
 		let setNew;
 
 		if (pageNumber === 1) {

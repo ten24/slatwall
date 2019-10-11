@@ -59464,6 +59464,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
+            _this.getProductList();
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59541,7 +59542,7 @@ var EnrollmentMPController = /** @class */ (function () {
             if (direction === void 0) { direction = false; }
             if (newPages === void 0) { newPages = false; }
             _this.loading = true;
-            var pageRecordsShow = 5;
+            var pageRecordsShow = 12;
             var setNew;
             if (pageNumber === 1) {
                 setNew = true;
@@ -59598,7 +59599,7 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.observerService.attatch(this.getProductList, 'createSuccess');
+        //this.observerService.attach(this.getProductList, 'createSuccess'); 
     }
     return EnrollmentMPController;
 }());
