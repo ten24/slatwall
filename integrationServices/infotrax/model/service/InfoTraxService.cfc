@@ -244,11 +244,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		
 		if( transactionData['orderType'] == 'C' ){
-			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getRemoteID();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		
-		if(len(arguments.order.getRemoteID())){
-			transactionData['recordNumber'] = arguments.order.getOrderNumber()
+		if(len(arguments.order.getIceRecordNumber())){
+			transactionData['recordNumber'] = arguments.order.getIceRecordNumber()
 		}
 		
 		return transactionData;
