@@ -77,7 +77,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
-	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID";
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
@@ -255,6 +255,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
+ property name="orderSource" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -1958,7 +1959,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	        return variables.accountType;
 	    }
 	    
-	    if (!isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
 	        variables.accountType = "";

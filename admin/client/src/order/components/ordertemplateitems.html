@@ -1,6 +1,7 @@
 <div ng-if="!swOrderTemplateItems.edit">
     <sw-listing-display data-name="orderTemplateDetailOrderItems"
                         data-has-action-bar="false"
+                        data-currency-code="{{swOrderTemplateItems.currencyCode}}"
                         data-has-search="true"
                         data-base-entity-name="OrderTemplateItem"
                         data-collection-config='swOrderTemplateItems.viewOrderTemplateItemsCollection'
@@ -16,6 +17,7 @@
 <div ng-if="swOrderTemplateItems.edit">
     <sw-listing-display data-name="orderTemplateDetailOrderItems"
                         data-base-entity-name="OrderTemplateItem"
+                        data-currency-code="{{swOrderTemplateItems.currencyCode}}"
                         data-collection-config='swOrderTemplateItems.editOrderTemplateItemsCollection'
                         data-has-action-bar="false"
                         data-has-search="true"
@@ -29,6 +31,7 @@
     ></sw-listing-display>
     
     <sw-listing-display data-base-entity-name="Sku"
+                        data-currency-code="{{swOrderTemplateItems.currencyCode}}"
                         data-collection-config='swOrderTemplateItems.addSkuCollection'
                         data-has-action-bar="false"
                         data-using-personel-collection='false'

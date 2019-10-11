@@ -106,6 +106,11 @@ Notes:
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
+	})/>	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='currencyCode',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
 	})/>
 	<!--- Searchables --->
 	<cfif rc.slatAction eq "admin:entity.listorder">
