@@ -37,6 +37,13 @@
 				"logicalOperator": "AND",
 				"value": "ostNotPlaced",
 				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "account.accountNumber",
+				"comparisonOperator": "IS NOT",
+				"logicalOperator": "AND",
+				"value": "NULL",
+				"ormtype": "string"
 			}
 		],
 		

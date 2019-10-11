@@ -230,7 +230,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
 			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'volume5'           = getAmount(arguments.order,'retailCommission'), // Sponsor Valume
+			'volume5'           = getAmount(arguments.order,'retailValueVolumeTotal'), // Sponsor Valume
 			'volume6'           = getAmount(arguments.order,'ProductPackVolumeTotal'), // Product Pack Volume
 			'volume7'           = getAmount(arguments.order,'RetailValueVolumeTotal'), // Retail Value Volume
 			'volume8'           = 0,
