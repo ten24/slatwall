@@ -7,19 +7,24 @@ component {
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
+
+	private string function getPriceGroupIDListForAccountID(string accountID){
+    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
+			return '';
+		}
+		
+		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
+		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
+		return priceGroupCollection.getPrimaryIDList();  
+	}
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
-    	arguments.customPriceField = 'personalVolume';
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
@@ -29,14 +34,10 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getCommissionableVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -44,14 +45,10 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getRetailCommissionByCurrencyCode(string currencyCode, string accountID){
@@ -59,14 +56,10 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getProductPackVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -74,14 +67,10 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getRetailValueVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -89,14 +78,10 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
     public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
@@ -109,6 +94,7 @@ component {
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 		}
+
 
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
@@ -144,14 +130,14 @@ component {
 			
 		}
         
-		if(structKeyExists(variables,cacheKey)){
+		if(structKeyExists(variables, cacheKey)){
 		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
 		    } else if (!isStruct(variables[cacheKey])){
 				return variables[cacheKey];
-			}	
-		}
-    }
+			} 	 
+		}    
+	}
     
 	public any function getSkuProductURL(){
 		var skuProductURL = this.getProduct().getProductURL();
