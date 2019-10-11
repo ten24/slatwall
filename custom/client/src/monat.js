@@ -61792,6 +61792,7 @@ var monatflexshipmenu_1 = __webpack_require__(623);
 var monatenrollment_1 = __webpack_require__(606);
 var monatenrollmentvip_1 = __webpack_require__(609);
 var monatenrollmentstep_1 = __webpack_require__(608);
+var monat_order_items_1 = __webpack_require__(858);
 var swfreviewlisting_1 = __webpack_require__(626);
 var swfwishlist_1 = __webpack_require__(627);
 var swfmyaccount_1 = __webpack_require__(625);
@@ -61824,6 +61825,7 @@ var monatfrontendmodule = angular
     .directive('enrollmentMp', monatenrollmentmp_1.MonatEnrollmentMP.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
+    .directive('monatOrderItems', monat_order_items_1.MonatOrderItems.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -84235,6 +84237,7 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
+            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -84262,6 +84265,7 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
+            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -84365,7 +84369,8 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     // Then check if it was passed via the column args.
                     // Then check if it was passed into the directive.
                     // then set a default.
-                    if (_this.pageRecord['currencyCode'] != null &&
+                    if (_this.pageRecord != null &&
+                        _this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
                     }
@@ -84373,11 +84378,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.column.arguments.currencyCode) {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
-                    else {
-                        //set a default if one was not passed in to use...
-                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
-                            _this.currencyCode = 'USD';
-                        }
+                    else if (_this.swListingDisplay.currencyCode != undefined &&
+                        _this.swListingDisplay.currencyCode.length) {
+                        _this.currencyCode = _this.swListingDisplay.currencyCode;
+                    }
+                    else if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -84459,7 +84465,6 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
-            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;
@@ -85371,8 +85376,30 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
+                _this.showSearchFilterDropDown = false;
+            }
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
+            _this.searchableFilterOptions = [
+                {
+                    title: 'Last 3 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 3)
+                },
+                {
+                    title: 'Last 6 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 6)
+                },
+                {
+                    title: '1 Year Ago',
+                    value: new Date().setMonth(new Date().getMonth() - 12)
+                },
+                {
+                    title: 'All Time',
+                    value: 'All'
+                }
+            ];
+            _this.selectSearchFilter(_this.searchableFilterOptions[0]);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -85390,6 +85417,12 @@ var SWListingSearchController = /** @class */ (function () {
                 }, function (reason) {
                     throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
                 });
+            }
+        };
+        this.selectSearchFilter = function (filter) {
+            _this.selectedSearchFilter = filter;
+            if (_this.swListingDisplay.searchText) {
+                _this.search();
             }
         };
         this.selectSearchColumn = function (column) {
@@ -85514,6 +85547,14 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
+            _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            if (_this.selectedSearchFilter.value != 'All') {
+                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
+                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                }
+                console.log(_this.searchFilterPropertyIdentifier);
+                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
+            }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -85553,7 +85594,9 @@ var SWListingSearch = /** @class */ (function () {
             collectionConfig: "<?",
             paginator: "=?",
             listingId: "@?",
-            showToggleSearch: "=?"
+            showToggleSearch: "=?",
+            searchFilterPropertyIdentifier: "@?",
+            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';
@@ -89504,6 +89547,65 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 858 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatOrderItemsController = /** @class */ (function () {
+    //@ngInject
+    function MonatOrderItemsController(monatService) {
+        var _this = this;
+        this.monatService = monatService;
+        this.orderItems = []; // orderTemplateDetails
+        this.productPacks = []; // orderTemplateDetails
+        this.todaysOrder = []; // orderTemplateDetails
+        this.$onInit = function () {
+            _this.getOrderItems();
+        };
+        this.getOrderItems = function () {
+            _this.monatService.getCart().then(function (data) {
+                if (undefined !== data.orderItems) {
+                    _this.orderItems = data.orderItems;
+                    _this.aggregateOrderItems(data.orderItems);
+                }
+            });
+        };
+        this.aggregateOrderItems = function (orderItems) {
+            orderItems.forEach(function (item) {
+                var productType = item.sku.product.baseProductType;
+                if ('ProductPack' === productType) {
+                    _this.productPacks.push(item);
+                }
+                else {
+                    _this.todaysOrder.push(item);
+                }
+            });
+        };
+    }
+    return MonatOrderItemsController;
+}());
+var MonatOrderItems = /** @class */ (function () {
+    function MonatOrderItems() {
+        this.restrict = 'A';
+        this.scope = true;
+        this.bindToController = {};
+        this.controller = MonatOrderItemsController;
+        this.controllerAs = 'monatOrderItems';
+        this.link = function (scope, element, attrs) { };
+    }
+    MonatOrderItems.Factory = function () {
+        var directive = function () { return new MonatOrderItems(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatOrderItems;
+}());
+exports.MonatOrderItems = MonatOrderItems;
 
 
 /***/ })
