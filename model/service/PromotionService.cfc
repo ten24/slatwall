@@ -924,6 +924,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.currencyCode)){
 			args.currencyCode = arguments.currencyCode;
 		}
+
 		var priceDetails = getProductSkuSalePricesByPromoRewardSkuCollection( argumentCollection=args );
 
 		priceDetails = getRoundedPriceDetails(priceDetails);
@@ -955,19 +956,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var skus = product.getSkus();
 		var priceDetails = {};
-
+		
 		for(var sku in skus){
-			if(!isNull(arguments.currencyCode)){
+			var currencyCode = arguments.currencyCode;
+			if(!isNull(currencyCode)){
 				var originalPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
 			}else{
 				var originalPrice = sku.getPrice();
-				arguments.currencyCode = '';
+				currencyCode = '';
 			}
 			var skuPriceDetails = getPriceDetailsForPromoRewards(
 														promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=sku,
 														originalPrice=originalPrice,
-														currencyCode=arguments.currencyCode);
+														currencyCode=currencyCode);
 			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
 		}
 		return priceDetails;
