@@ -100,7 +100,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			}
 		}
 		
-		
 		if( structKeyExists(response, 'ERRORCODE') ){
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
 		}
@@ -141,7 +140,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
-				if(isNull(arguments.entity.getLastSyncedDateTime())){
+				if(!len(arguments.entity.getIceRecordNumber()) || isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createTransaction(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateTransaction(arguments.data.DTSArguments);
@@ -149,7 +148,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
-				iceResponse = deleteTransaction(arguments.data.DTSArguments);
+				if(!len(arguments.entity.getIceRecordNumber()) || isNull(arguments.entity.getLastSyncedDateTime())){
+					iceResponse = deleteTransaction(arguments.data.DTSArguments);
+				}
 				break;
 				
 			case 'afterOrderTemplateProcess_activateSuccess':
@@ -173,17 +174,18 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			arguments.entity.setLastSyncedDateTime(now());
 		}
 		
+		if(structKeyExists(iceResponse, 'recordNumber')){
+			arguments.entity.setIceRecordNumber(iceResponse['recordNumber']);
+		}
+		
 	}
-	
-
-	
 	
 	public struct function createDistributor(required struct DTSArguments){
 		return postRequest('ICEDistributor.create', arguments.DTSArguments, getSessionToken());
 	}
 	
 	public struct function updateDistributor(required struct DTSArguments){
-		structDelete(arguments.DTSArguments, 'referralId')
+		structDelete(arguments.DTSArguments, 'referralId');
 		return postRequest('ICEDistributor.update', arguments.DTSArguments, getSessionToken());
 	}
 	

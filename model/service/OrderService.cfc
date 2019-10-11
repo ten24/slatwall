@@ -1198,7 +1198,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
-			request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			if(!isNull(request.orderTemplate.getShippingMethod())){	
+				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			}
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
@@ -1250,8 +1252,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
 		}
 
-		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
-	
+		if(!isNull(arguments.orderTemplate.getShippingMethod())){
+			arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
+		}	
+
 		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
 		
 		return arguments.transientOrder;
@@ -2573,7 +2577,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
 			return true;
 		}
-
+		if(arguments.order.hasOrderTemplate() && arguments.order.getOrderTemplate().setting('orderTemplateRequirePaymentFlag') == 0){
+			return true;
+		}
 		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
 			var settingValue = arguments.order.getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder");

@@ -71260,8 +71260,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
-        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
-        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
+        this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.fulfillmentRefundAmount = 0;
         if (this.refundOrderItems == undefined) {
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();

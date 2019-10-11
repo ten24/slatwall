@@ -57,13 +57,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 
 	// Data Properties
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location";
 	property name="orderItems" type="array" hb_populateArray="true";
 	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
 	property name="fulfillmentAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
+	property name="locationID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
 	property name="stockLossFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
@@ -73,6 +74,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="refundOrderItemList";
 	// Option Properties
     property name="returnReasonTypeOptions";
+    property name="locationIDOptions";
 	
 
 	variables.orderItems = [];
@@ -86,11 +88,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// ====================== START: Data Options ==========================
     
-	public array function getLocationOptions() {
-		if(!structKeyExists(variables, "locationOptions")) {
-			variables.locationOptions = getService('locationService').getLocationOptions(); 
+    public any function getLocation(){
+    	if(!structKeyExists(variables,'location') && structKeyExists(variables,'locationID')){
+    		variables.location = getService('LocationService').getLocation(variables.locationID);
+    	}
+    	if(!isNull(variables.location)){
+    		return variables.location;
+    	}
+    }
+    
+	public array function getLocationIDOptions() {
+		if(!structKeyExists(variables, "locationIDOptions")) {
+			variables.locationIDOptions = getService('locationService').getLocationOptions(); 
 		}
-		return variables.locationOptions;
+		return variables.locationIDOptions;
 	}
 	
 	public array function getRefundOrderPaymentIDOptions() {
