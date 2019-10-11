@@ -140,6 +140,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
 	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
+	property name="siteCurrencyCode" persistent="false"; 
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
@@ -162,12 +163,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
- property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
@@ -180,15 +181,13 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
- property name="accountTypeCode" ormtype="string";
- property name="accountStatusName" ormtype="string" hb_formFieldType="select";
- property name="businessName" ormtype="string";
  property name="terminateDate" ormtype="string";
  property name="PayerAccountIdentification" ormtype="string";
  property name="payerName" ormtype="string";
  property name="govermentNumber" ormtype="string";
  property name="CareerTitle" ormtype="string";
  property name="GovermentTypeCode" ormtype="string";
+ property name="driverLicense" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
@@ -204,6 +203,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getSiteCurrencyCode(){ 
+		if(!isNull(getSite())){
+			return getSite().setting('skuCurrency'); 
+		}
+	}
+
 	public string function getPreferedLocale(){
 		//TODO: Get qualified locale based on account prefered language
 		return '';
@@ -1016,26 +1021,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	public void function removePickWave(required any pickWave) {
 	   arguments.pickWave.removeAssignedAccount(this);
-	}
-
-	// Price Groups (many-to-many - owner)
-	public void function addPriceGroup(required any priceGroup) {
-		if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {
-			arrayAppend(variables.priceGroups, arguments.priceGroup);
-		}
-		if(isNew() or !arguments.priceGroup.hasAccount( this )) {
-			arrayAppend(arguments.priceGroup.getAccounts(), this);
-		}
-	}
-	public void function removePriceGroup(required any priceGroup) {
-		var thisIndex = arrayFind(variables.priceGroups, arguments.priceGroup);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.priceGroups, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.priceGroup.getAccounts(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.priceGroup.getAccounts(), thatIndex);
-		}
 	}
 
 	// Permission Groups (many-to-many - owner)
