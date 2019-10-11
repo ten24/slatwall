@@ -129,8 +129,8 @@ class SWReturnOrderItemsController{
         public $hibachi,
         private collectionConfigService
     ){
-        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
-        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
+        this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.fulfillmentRefundAmount = 0;
         
         if(this.refundOrderItems == undefined){
             this.displayPropertiesList = this.getDisplayPropertiesList();
