@@ -323,6 +323,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="ShippingMethod"
 			},
+			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
