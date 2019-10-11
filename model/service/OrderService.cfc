@@ -1198,9 +1198,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
-			request['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
-			request['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
-			request['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -1279,7 +1279,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if(!isNull(arguments.orderTemplate.getShippingAccountAddress()) && 
 				  !isNull(arguments.orderTemplate.getShippingAccountAddress().getAddress()) 
 		){
-			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress())
+			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
 		} 		
 
 		if(arguments.evictFromSession){	
