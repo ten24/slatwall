@@ -62,13 +62,10 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<cfif rc.edit eq true AND rc.productReview.isNew() >
-					<swa:SlatwallProductTypeahead property="#rc.productReview#" productPropertyName="product.productID" edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"></swa:SlatwallProductTypeahead>
-					<cfelse>
-					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewProductName" edit="false" productLabelText="#$.slatwall.rbkey('entity.product_plural')#" valueLink="?slatAction=entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#">
-					</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
+					edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
+				/>
 					
-			
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
