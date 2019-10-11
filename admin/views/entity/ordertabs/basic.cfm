@@ -38,8 +38,9 @@
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbkey('entity.order.quoteNumber')#" value="#rc.order.getShortReferenceID(false)#" edit="false" displayType="dl">
 			</cfif>
 
-			<!--- Default Stock Location --->
-			<swa:SlatwallLocationTypeahead property="#rc.order.getDefaultStockLocation()#" locationPropertyName="defaultStockLocation.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
+			<!---location type ahead collection--->
+
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
 
 			<!--- Order IP Address --->
 			<cfif !isNull(rc.order.getOrderOpenIPAddress())>
