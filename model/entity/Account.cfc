@@ -204,8 +204,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public string function getSiteCurrencyCode(){ 
-		if(!isNull(getSite())){
-			return getSite().setting('skuCurrency'); 
+		if(!isNull(getAccountCreatedSite())){
+			return getAccountCreatedSite().setting('skuCurrency'); 
 		}
 	}
 
