@@ -49,6 +49,7 @@ Notes:
 <cfparam name="attributes.fieldName" type="string" default="accountID" />
 <cfparam name="attributes.edit" type="boolean" default="false"/>
 <cfparam name="attributes.placeholderText" type="string" default="Search Accounts" />
+<cfparam name="attributes.required" type="boolean" default="false"/>
 <cfparam name="attributes.typeaheadID" type="string" default=""/>
 
 <cfif thisTag.executionMode is "start">
@@ -65,6 +66,7 @@ Notes:
 				data-show-view-button="false"
 				data-placeholder-text="#attributes.placeholderText#"
 				data-multiselect-mode="false"
+				data-validate-required="#attributes.validateRequired#"
 				data-order-by-list="firstName|ASC" >
 
 				<span class="adminIcon" sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon"></span>
