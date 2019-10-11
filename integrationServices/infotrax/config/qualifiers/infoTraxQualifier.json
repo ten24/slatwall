@@ -2,8 +2,14 @@
 	"filters" : {
 		"validAccount" : [
 			{
+				"propertyIdentifier":"activeFlag",
+				"comparisonOperator":"=",
+				"value":"true"
+			},
+			{
 				"propertyIdentifier":"accountNumber",
 				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
 				"value":"null"
 			},
 			{
