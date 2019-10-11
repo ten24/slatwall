@@ -1252,8 +1252,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
 		}
 
-		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
-	
+		if(!isNull(arguments.orderTemplate.getShippingMethod())){
+			arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
+		}	
+
 		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
 		
 		return arguments.transientOrder;
