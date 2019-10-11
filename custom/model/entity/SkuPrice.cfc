@@ -9,7 +9,7 @@ component {
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
 	
-		public any function getSkuProductURL(){
+	public any function getSkuProductURL(){
 		var skuProductURL = getSku().getProduct().getProductURL();
 		return skuProductURL;
 	}

@@ -1,9 +1,9 @@
 component extends="Slatwall.model.dao.SkuPriceDAO"{
     
-    public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
+    public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList){
 		var priceGroupString = "";
 		
-		if(arraylen(arguments.priceGroups)){
+		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDList')){
 			priceGroupString = "OR _priceGroup.priceGroupID IN (:priceGroupIDs)";
 		}
 		
@@ -42,13 +42,17 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 			quantity=arguments.quantity
 			
 		};
-		if(len(priceGroupString)){
+
+		if(structKeyExists(arguments, 'priceGroupIDList')){
+			params.priceGroupIDs = arguments.priceGroupIDList;
+		} else if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = [];
 			for(var priceGroup in arguments.priceGroups){
 				arrayAppend(priceGroupIDs,priceGroup.getPriceGroupID());
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}
+		
 		return  ormExecuteQuery( hql,
 			params
 		);

@@ -100,7 +100,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			}
 		}
 		
-		
 		if( structKeyExists(response, 'ERRORCODE') ){
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
 		}
@@ -173,17 +172,18 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			arguments.entity.setLastSyncedDateTime(now());
 		}
 		
+		if(structKeyExists(iceResponse, 'recordNumber')){
+			arguments.entity.remoteID(iceResponse['recordNumber']);
+		}
+		
 	}
-	
-
-	
 	
 	public struct function createDistributor(required struct DTSArguments){
 		return postRequest('ICEDistributor.create', arguments.DTSArguments, getSessionToken());
 	}
 	
 	public struct function updateDistributor(required struct DTSArguments){
-		structDelete(arguments.DTSArguments, 'referralId')
+		structDelete(arguments.DTSArguments, 'referralId');
 		return postRequest('ICEDistributor.update', arguments.DTSArguments, getSessionToken());
 	}
 	
