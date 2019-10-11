@@ -30,29 +30,6 @@
 			}
 		],
 		
-		"validNeOrder" : [
-			{
-				"propertyIdentifier": "orderNumber",
-				"comparisonOperator": "is not",
-				"value": "null",
-				"ormtype": "string"
-			},
-			{
-				"propertyIdentifier": "orderStatusType.systemCode",
-				"comparisonOperator": "<>",
-				"logicalOperator": "AND",
-				"value": "ostNotPlaced",
-				"ormtype": "string"
-			},
-			{
-				"propertyIdentifier": "account.accountNumber",
-				"comparisonOperator": "IS NOT",
-				"logicalOperator": "AND",
-				"value": "NULL",
-				"ormtype": "string"
-			}
-		],
-		
 		"validOrder" : [
 			{
 				"propertyIdentifier": "orderNumber",
