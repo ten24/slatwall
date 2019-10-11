@@ -155,14 +155,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function processOrderFulfillmentRewards(required any order, required any promotionPeriodQualifications, required any promotionReward){
 		// Loop over all the fulfillments
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
-
 			// Verify that this fulfillment is in the list & the methods match
 			if( arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID())
 				&&
 				( !arrayLen(arguments.promotionReward.getFulfillmentMethods()) || arguments.promotionReward.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) )
 				&&
 				( !arrayLen(arguments.promotionReward.getShippingMethods()) || (!isNull(orderFulfillment.getShippingMethod()) && arguments.promotionReward.hasShippingMethod(orderFulfillment.getShippingMethod()) ) ) ) {
-
 				var addressIsInZone = true;
 				if(arrayLen(arguments.promotionReward.getShippingAddressZones())) {
 					addressIsInZone = false;
@@ -175,14 +173,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 				}
-
 				// Address In Zone
 				if(addressIsInZone) {
-
 					var discountAmount = getDiscountAmount(arguments.promotionReward, orderFulfillment.getFulfillmentCharge(), 1);
-
 					var addNew = shouldAddNewPromotion(discountAmount,orderFulfillment,arguments.promotionReward);
-
 					// Add the new appliedPromotion
 					if(addNew) {
 						applyPromotionToOrderFulfillment(orderFulfillment,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
@@ -384,7 +378,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		for(var promotionCode in arguments.order.getPromotionCodes()){
  			orderItemIDList = listAppend(orderItemIDList,promotionCode.getPromotionCodeID());
  		}
- 		
+
  		var orderFulfillmentList ="";
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			if(!isNull(orderFulfillment.getShippingAddress())){
@@ -401,14 +395,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		if(!isNull(arguments.order.getAccount())){
  			accountID = arguments.order.getAccount().getAccountID();
  		}
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
  		
+ 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
+ 		var promotionCacheKey = createUUID();
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
-
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-	
 				clearPreviouslyAppliedPromotions(arguments.order);
 	
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
@@ -425,17 +418,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Loop over all Potential Discounts that require qualifications
 				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 				var orderRewards = false;
-
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
 					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
 					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
-	
 					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
 						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
 					}
-
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
 						// =============== Order Item Reward ==============
@@ -606,7 +596,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If the above two conditions are ok, then we can find out the rest of the details
 		if(qualificationDetails.qualificationsMeet) {
-
+			var hasQualifiedQualifier = false;
 			// Loop over each of the qualifiers
 			for(var qualifier in arguments.promotionPeriod.getPromotionQualifiers()) {
 
@@ -615,7 +605,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// As long as there is a qualification count that is > 0 we can append the details
 				if(thisQualifierDetails.qualificationCount) {
-
+					hasQualifiedQualifier = true;
+					
 					// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
 					if(qualifier.getQualifierType() == "fulfillment") {
 
@@ -632,13 +623,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Attach the qualification details
 					arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
 
-				// Otherwise just set as false and return
-				} else {
-					qualificationDetails.qualificationsMeet = false;
-					qualificationDetails.qualifiedFulfillmentIDs = [];
-					qualificationDetails.qualifierDetails = [];
-					return qualificationDetails;
 				}
+			}
+			
+			if(!hasQualifiedQualifier){
+				qualificationDetails.qualificationsMeet = false;
+				qualificationDetails.qualifiedFulfillmentIDs = [];
+				qualificationDetails.qualifierDetails = [];
+				return qualificationDetails;
 			}
 		}
 
