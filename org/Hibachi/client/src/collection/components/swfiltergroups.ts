@@ -91,7 +91,7 @@ class SWFilterGroups{
 
 						$log.debug('removeFilterItem');
 						$log.debug(filterItemIndex);
-
+						observerService.notifyById('swPaginationAction',$scope.collectionConfig.eventID ,{type:'setCurrentPage',payload:1});
 						$scope.saveCollection();
 					}
 				};
