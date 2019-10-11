@@ -272,7 +272,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(getHibachiScope().getAccount().getAdminAccountFlag()){
 			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
-			arrayAppend(paymentMethodIDOptions, {
+			arrayPrepend(paymentMethodIDOptions, {
 				name = 'None',
 				value = 'none',
 				paymentmethodtype = 'none',

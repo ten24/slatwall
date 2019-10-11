@@ -49,7 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName,account.calculatedFullName,account.primaryEmailAddress.emailAddress',{isVisible=true,isSearchable=true,isDeletable=true}) />
+<cfset rc.orderTemplateCollectionList.setDisplayProperties('orderTemplateName',{isVisible=true,isSearchable=true,isDeletable=true}) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperties('account.calculatedFullName',{isVisible=true,isSearchable=false,isDeletable=true}) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperties('account.primaryEmailAddress.emailAddress',{isVisible=true,isSearchable=true,isDeletable=false}) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperties('account.firstName',{isVisible=false,isSearchable=true,isDeletable=false}) />
+<cfset rc.orderTemplateCollectionList.addDisplayProperties('account.lastName',{isVisible=false,isSearchable=true,isDeletable=false}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('createdDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('calculatedTotal',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
