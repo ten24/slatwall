@@ -9,22 +9,20 @@
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 		<tbody>
 			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;">
+					<div class="email_container" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
 						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 							<tbody>
 								<tr>
-									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainerAccent#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
+									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainerAccent#;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
 										<!-- col-6 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;margin-top: 15px;margin-bottom: 15px;">
+										<div class="email_row" style="box-sizing: border-box;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+											<div class="col_6" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;margin-top: 15px;margin-bottom: 15px;">
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 													<tbody>
 														<tr>
 															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding: 16px;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;text-align:left;">
-																
+															
 																<p class="mbe" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;text-align:left;">
 																	Dear #orderTemplate.getAccount().getFullName()#
 																</p>
@@ -54,116 +52,56 @@
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 		<tbody>
 			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;line-height: inherit;min-width: 0 !important; padding: 25px 16px 0;">
-										<!-- col-6 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="400" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 50%;line-height: inherit;min-width: 0 !important;margin-top: 15px;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
-																	Product ID
-																</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 50%;line-height: inherit;min-width: 0 !important;margin-top: 15px;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align:left;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 14px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
-																	Name
-																</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<!-- order_product_small -->
-	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-		<tbody>
-			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
-										
-										<!------- ORDER ITEM LOOP ------->
-										<cfset skuCodeArray = []>
-										<cfset skuIDArray = []>
-										
-										<cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align:center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;">
+					<div class="email_container" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;line-height: inherit;min-width: 0 !important;">
+						<div style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;line-height: inherit;min-width: 0 !important;">
+							<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+								<tbody>
+									<tr>
+										<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;line-height: inherit;min-width: 0 !important; padding: 25px 16px 0;">
 											<!-- col-6 -->
-											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; border-top: 1px solid #colorRule#; padding:16px 0;">
-											<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												
-												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_1" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 50%;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 0;">
-																	<p class="mb_0 mt_xs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 15px;line-height: 22px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
-																		#local.orderTemplateItem.getSku().getSkuCode()#
-																		<cfset ArrayAppend(skuCodeArray,local.orderTemplateItem.getSku().getSkuCode())>
-																		<cfset ArrayAppend(skuIDArray,local.orderTemplateItem.getSku().getSkuID())>
-																	</p>
+											<div class="email_row" style="box-sizing: border-box;display: block;width: 100%;vertical-align: top;margin: 0 auto;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+												<div class="" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 100%;line-height: inherit;min-width: 0 !important;margin-top: 15px;">
+													
+													<table align="center" class="container" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+														<tr style="line-height: 25px;  border: solid 1px #colorContainerAccent#;">
+															<td style="line-height: 25px; margin: 5px; font-weight: bold;">
+																Product ID
+															</td>
+															<td style="line-height: 25px; margin: 5px; font-weight: bold;">
+																Name
+															</td>
+															<td style="line-height: 25px; margin: 5px; font-weight: bold;">
+															</td>
+														</tr>
+														<!------- ORDER ITEM LOOP ------->
+														<cfset skuCodeArray = []>
+														<cfset skuIDArray = []>
+														
+														<cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
+															<tr style="line-height: 25px;  border: solid 1px #colorContainerAccent#;">
+																<td style="line-height: 25px; margin: 5px;">
+																	#local.orderTemplateItem.getSku().getSkuCode()#
+																	<cfset ArrayAppend(skuCodeArray,local.orderTemplateItem.getSku().getSkuCode())>
+																	<cfset ArrayAppend(skuIDArray,local.orderTemplateItem.getSku().getSkuID())>
+																</td>
+																<td style="line-height: 25px; margin: 5px;">
+																	#local.orderTemplateItem.getSku().getProduct().getTitle()#
+																<td class="success_b" style="line-height: 25px; margin: 5px;">
+																	<a href="#local.siteLink#shopping-cart/?slataction=public:cart.addOrderItems&amp;skuIds=#local.orderTemplateItem.getSku().getSkuID()#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorText#;">Add Item to Cart</a>
 																</td>
 															</tr>
-														</tbody>
-													</table>
-												</div>
-												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_2" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 50%;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;padding-left: 10px;">
-																	<p class="mb_0 mt_xs" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 15px;line-height: 22px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
-																		#local.orderTemplateItem.getSku().getProduct().getTitle()#
-																	</p>
-																</td>
-															</tr>
-														</tbody>
+														</cfloop>
+														<cfset skuIDList = skuIDArray.toList()>
 													</table>
 												</div>
 											</div>
-										</cfloop>
-										<cfset skuCodeList = skuCodeArray.toList()>
-										<cfset skuIDList = skuIDArray.toList()>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
 				</td>
 			</tr>
 		</tbody>
@@ -172,18 +110,16 @@
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 		<tbody>
 			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;">
+					<div class="email_container" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
 						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 							<tbody>
 								<tr>
-									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
+									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
 										<!-- col-6 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
+										<div class="email_row" style="box-sizing: border-box;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+											<div class="col_6" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
+												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%; margin-top: 15px;margin-bottom: 15px;">
 													<tbody>
 														<tr>
 															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 16px;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;text-align:left;">
@@ -191,7 +127,7 @@
 															 <table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="10" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
 																	<tbody>
 																		<tr>
-																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="#siteLink#/shopping-cart/?slataction=public:cart.addOrderItems&amp;skuIds=#skuIDList#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add to Cart</a></td>
+																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: 'Miller-Banner-Roman', sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 15px;"><a href="#local.siteLink#shopping-cart/?slataction=public:cart.addOrderItems&amp;skuIds=#skuIDList#&amp;showLogin=true&amp;abandonedCart=true&amp;utm_source=abandonedCart&amp;utm_medium=email&amp;utm_campaign=Abandoned%20Cart%20Promo%20Code" style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Add All To Cart</a></td>
 																		</tr>
 																	</tbody>
 																</table>
@@ -209,14 +145,12 @@
 													</tbody>
 												</table>
 											</div>
-										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
 										</div>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
 				</td>
 			</tr>
 		</tbody>
@@ -247,4 +181,3 @@
 		Online: monat.com/store
 	</cfoutput>
 </cfsavecontent>
-
