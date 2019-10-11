@@ -61,8 +61,12 @@ Notes:
 
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<swa:SlatwallAccountTypeahead /> 
-			<hr> 	
+		    <cfif isNull(rc.accountID)>
+    			<swa:SlatwallAccountTypeahead /> 
+    			<hr>
+    		<cfelse>
+    		    <input type="hidden" name="accountID" value="#rc.accountID#" />	
+			</cfif>
 			<!--- Always use schedule order template type for wishlist ---> 
 			<input type="hidden" name="orderTemplateTypeID" value="2c9280846b712d47016b75464e800014" />	
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">

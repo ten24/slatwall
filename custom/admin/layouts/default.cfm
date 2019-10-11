@@ -286,34 +286,36 @@ Notes:
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
-										<!--- Start of Search --->
-										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
-											<div class="form-group">
-												<input type="text" name="search" class="form-control input-sm" placeholder="#$.slatwall.rbKey('define.search')#" ng-model="keywords" ng-change="updateSearchResults()">
-												<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
-											</div>
-											<div class="row s-search-results ng-hide" style="padding-top:15px;" ng-show="searchResultsOpen">
-												<ul class="col-md-12 list-unstyled">
-													<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
-														<div class="col-md-4 s-title">
-															<h2 ng-bind="searchResult.title"></h2>
-														</div>
-														<div class="col-md-8 s-body">
-															<ul class="list-unstyled" id="j-search-results"	>
-																<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}" ng-bind="result.name"></a></li>
+										<cfif $.slatwall.setting('globalDisableSearchSettings') eq 0>
+											<!--- Start of Search --->
+											<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
+												<div class="form-group">
+													<input type="text" name="search" class="form-control input-sm" placeholder="#$.slatwall.rbKey('define.search')#" ng-model="keywords" ng-change="updateSearchResults()">
+													<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
+												</div>
+												<div class="row s-search-results ng-hide" style="padding-top:15px;" ng-show="searchResultsOpen">
+													<ul class="col-md-12 list-unstyled">
+														<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
+															<div class="col-md-4 s-title">
+																<h2 ng-bind="searchResult.title"></h2>
+															</div>
+															<div class="col-md-8 s-body">
+																<ul class="list-unstyled" id="j-search-results"	>
+																	<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}" ng-bind="result.name"></a></li>
+																</ul>
+															</div>
+														</li>
+														<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body">
+															<ul class="list-unstyled">
+																<li class="s-no-results"><br /><em>#$.slatwall.rbKey('admin.define.nosearchresults')#</em></li>
 															</ul>
-														</div>
-													</li>
-													<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body">
-														<ul class="list-unstyled">
-															<li class="s-no-results"><br /><em>#$.slatwall.rbKey('admin.define.nosearchresults')#</em></li>
-														</ul>
-													</li>
-												</ul>
-												<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
-											</div>
-										</form>
-										<!--- End of Search --->
+														</li>
+													</ul>
+													<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
+												</div>
+											</form>
+											<!--- End of Search --->
+										</cfif>
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
