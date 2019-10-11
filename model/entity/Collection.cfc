@@ -1148,8 +1148,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(find('.', arguments.join.associationName) > 0){
 			separator = '_';
 		}
+
 		var joinSyntax = 'left join'; 
-		if(getUseScrollableFlag()){ 
+		if( getUseScrollableFlag() &&
+		    !getRunningGetRecordsCount() &&
+			(structKeyExists(arguments.join, 'column') && arguments.join.column)
+		){
 			joinSyntax = 'join fetch';
 		} 
 		//Alias_
@@ -2491,7 +2495,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 										//support one level of many to one
 										if(listLen(propertyIdentifier, '.') == 2){
 											var entityProperty = listFirst(propertyIdentifier, '.'); 
-											propertyIdentfier = listLast(propertyIdentfiier, '.');
+											propertyIdentifier = listLast(propertyIdentifier, '.');
 											columnEntity = entity.getValueByPropertyIdentifier(entityProperty); 
 										} 
 	
@@ -2731,7 +2735,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-			variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
+				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}

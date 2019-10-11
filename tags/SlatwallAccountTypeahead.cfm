@@ -66,7 +66,7 @@ Notes:
 				data-show-view-button="false"
 				data-placeholder-text="#attributes.placeholderText#"
 				data-multiselect-mode="false"
-				data-validate-required="#attributes.validateRequired#"
+				data-validate-required="#attributes.required#"
 				data-order-by-list="firstName|ASC" >
 
 				<span class="adminIcon" sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon"></span>
