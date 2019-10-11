@@ -161,7 +161,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    scrollableSmartList.addFilter('activeFlag', true);
 	    scrollableSmartList.addFilter('publishedFlag', true);
 	    scrollableSmartList.addWhereCondition("price <> 0.00");
-	    scrollableSmartList.addWhereCondition("personalVolume <> 'NULL'");
+
 	    
         var recordsCount = scrollableSmartList.getRecordsCount();
         

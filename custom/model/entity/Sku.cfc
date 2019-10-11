@@ -180,7 +180,7 @@ component {
 		var adjustedVipPrice = this.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
 		var adjustedRetailPrice = this.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
 		var adjustedMPPrice = this.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-		var mPPersonalVolume = this.getPersonalVolume()?:0;
+		var mPPersonalVolume = this.getPersonalVolumeByCurrencyCode()?:0;
 		
 		var formattedAccountPricing = utilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
 		var formattedVipPricing = utilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});

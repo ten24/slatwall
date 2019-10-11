@@ -1753,6 +1753,7 @@ component  accessors="true" output="false"
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
 		
+		
 		if (len(arguments.data.orderTemplateID)){
 		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
 		}

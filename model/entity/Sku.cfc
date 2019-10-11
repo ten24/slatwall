@@ -223,12 +223,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
-    property name="personalVolume" ormtype="big_decimal";
-    property name="taxableAmount" ormtype="big_decimal";
-    property name="commissionableVolume" ormtype="big_decimal";
-    property name="retailCommission" ormtype="big_decimal";
-    property name="productPackVolume" ormtype="big_decimal";
-    property name="retailValueVolume" ormtype="big_decimal";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 	property name="skuProductURL" persistent="false";
@@ -2193,7 +2187,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		var adjustedVipPrice = this.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
 		var adjustedRetailPrice = this.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
 		var adjustedMPPrice = this.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-		var mPPersonalVolume = this.getPersonalVolume()?:0;
+		var mPPersonalVolume = this.getPersonalVolumeByCurrencyCode()?:0;
 		
 		var formattedAccountPricing = utilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
 		var formattedVipPricing = utilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
