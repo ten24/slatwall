@@ -138,7 +138,7 @@
 																	<span style="padding-left:15px;"><strong>E-mail:</strong> monatsupport@monatglobal.com</span><br/>
 																	<span style="padding-left:15px;"><strong>Phone:</strong> (888) 867- 9987</span><br/>
 																	<span style="padding-left:15px;"><strong>Address:</strong> 3450 NW 115th Ave, Doral, FL</span><br/>
-																	<span style="padding-left:15px;"><strong>Online:</strong> #storeLink#</span><br/>
+																	<span style="padding-left:15px;"><strong>Online:</strong> #local.siteLink#</span><br/>
 																</p>
 															</td>
 														</tr>
