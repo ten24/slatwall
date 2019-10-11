@@ -140,6 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalSumAggregates" persistent="false" type="array";
 
 	property name="exportFileName" type="string" persistent="false";
+	property name="useScrollableFlag" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	
@@ -1147,10 +1148,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(find('.', arguments.join.associationName) > 0){
 			separator = '_';
 		}
+		var joinSyntax = 'left join'; 
+		if(getUseScrollableFlag()){ 
+			joinSyntax = 'join fetch';
+		} 
 		//Alias_
 		var fullJoinName = "#parentAlias##separator##arguments.join.associationName#";
 		addHQLAlias(fullJoinName,arguments.join.alias);
-		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
+		var joinHQL = ' #joinSyntax# #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
 			for(var childJoin in arguments.join.joins){
 				joinHQL &= addJoinHQL(join.alias,childJoin);
@@ -2400,6 +2405,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			throw(rbkey('admin.reports.nonPersistentReport'));
 		}
 	}
+	public boolean function getUseScrollableFlag(){
+		if(!structKeyExists(variables, 'userScrollableFlag')){
+			variables.userScrollableFlag = this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext())); 
+		}
+		return variables.userScrollableFlag;  
+	}
+
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 		isReportAndHasNonPersistent();
@@ -2436,7 +2448,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						var HQLParams = {};
 						saveState();
-						if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
+						if(getUseScrollableFlag()){
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
 							variables.processObjectArray = [];
@@ -2470,19 +2482,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									var entity = entities.get(0);
 									var pageRecord = {};
 									for(var column in columns){
+										var columnEntity = entity; 
 										var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
 										if(left(propertyIdentifier,1) == '.'){
 											propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
 										}
+
+										//support one level of many to one
+										if(listLen(propertyIdentifier, '.') == 2){
+											var entityProperty = listFirst(propertyIdentifier, '.'); 
+											propertyIdentfier = listLast(propertyIdentfiier, '.');
+											columnEntity = entity.getValueByPropertyIdentifier(entityProperty); 
+										} 
 	
 										if(structKeyExists(column,'setting') && column.setting == true){
 											propertyIdentifier = ListRest(column.propertyIdentifier,'.');
 											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
 										}else{
 											if (!isNull(column.arguments)){
-												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
 											}else{
-												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
 											}
 										}
 									}
@@ -2579,7 +2599,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 
-	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=ORMGetSession()) {
 		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
 			variables.scrollableRecords = getService('ORMService').getScrollableRecordsByCollectionList(collectionList=this,ormSession=arguments.ormSession);
 		}
@@ -2636,24 +2656,41 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						var HQLParams = {};
 						//For processing objects because we have a non-persistent column
-						if(this.getNonPersistentColumn()){
+						if(getUseScrollableFlag()){
 							variables.records = [];
+							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
 
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-							
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = {};
 
 								for(var column in columns){
-
-									var listRestValue = ListRest(column.propertyIdentifier,'.');
+									var columnEntity = entity; 
+									var listRestValue = listRest(column.propertyIdentifier, '.');
+									var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
+									if(left(propertyIdentifier,1) == '.'){
+										propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+									}
+									
+									if(listLen(propertyIdentifier, '.') == 2){
+										var entityProperty = listFirst(propertyIdentifier, '.');
+										propertyIdentifier = listLast(propertyIdentifier, '.'); 
+										columnEntity = entity.getValueByPropertyIdentifier(entityProperty); 
+									}
+								
+									var propertyIdentifierAlias = convertPropertyIdentifierToAlias(column.propertyIdentifier); 
+	
 									if(structKeyExists(column,'setting') && column.setting == true){
-										record[Replace(listRestValue,'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRestValue,entity);
+										record[Replace(listRestValue,'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRestValue,columnEntity);
 									}else{
-										record[Replace(listRestValue,'.','_','all')] = entity.getValueByPropertyIdentifier(listRestValue);
+										if (!isNull(column.arguments)){
+											record[propertyIdentifierAlias] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+										}else{
+											record[propertyIdentifierAlias] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
+										}
 									}//<--end if
 
 								}//<--end for
@@ -2694,7 +2731,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
+			variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
