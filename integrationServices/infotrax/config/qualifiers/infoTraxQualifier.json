@@ -10,7 +10,7 @@
 				"propertyIdentifier":"ownerAccount",
 				"comparisonOperator":"is not",
 				"logicalOperator":"AND",
-				"value":"null",
+				"value":"null"
 			},{
 				"propertyIdentifier":"accountType",
 				"comparisonOperator":"is not",
@@ -36,6 +36,13 @@
 				"comparisonOperator": "<>",
 				"logicalOperator": "AND",
 				"value": "ostNotPlaced",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "account.accountNumber",
+				"comparisonOperator": "IS NOT",
+				"logicalOperator": "AND",
+				"value": "NULL",
 				"ormtype": "string"
 			}
 		],

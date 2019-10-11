@@ -223,19 +223,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
-    property name="personalVolume" ormtype="big_decimal";
-    property name="taxableAmount" ormtype="big_decimal";
-    property name="commissionableVolume" ormtype="big_decimal";
-    property name="retailCommission" ormtype="big_decimal";
-    property name="productPackVolume" ormtype="big_decimal";
-    property name="retailValueVolume" ormtype="big_decimal";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-    
-   
+
+
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -2021,18 +2015,23 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+private string function getPriceGroupIDListForAccountID(string accountID){
+    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
+			return '';
+		}
+		
+		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
+		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
+		return priceGroupCollection.getPrimaryIDList();  
+	}
+    
+    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
-    	arguments.customPriceField = 'personalVolume';
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
@@ -2042,14 +2041,10 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getCommissionableVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -2057,14 +2052,10 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getRetailCommissionByCurrencyCode(string currencyCode, string accountID){
@@ -2072,14 +2063,10 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getProductPackVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -2087,14 +2074,10 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
     
     public any function getRetailValueVolumeByCurrencyCode(string currencyCode, string accountID){
@@ -2102,14 +2085,10 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-    	if (structKeyExists(arguments, "accountID") && !isNull(arguments.accountID) && len(arguments.accountID)){
-    		var account = getService("AccountService").getAccountByAccountID(arguments.accountID);
-    		if (!isNull(account)){
-    			arguments.priceGroups = account.getPriceGroups();
-    		}
-    	}
+		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
-        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
     public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
@@ -2122,6 +2101,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 		}
+
 
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
@@ -2157,14 +2137,14 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 			
 		}
         
-		if(structKeyExists(variables,cacheKey)){
+		if(structKeyExists(variables, cacheKey)){
 		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
 		        return variables[cacheKey][customPriceField];
 		    } else if (!isStruct(variables[cacheKey])){
 				return variables[cacheKey];
-			}	
-		}
-    }
+			} 	 
+		}    
+	}
     
 	public any function getSkuProductURL(){
 		var skuProductURL = this.getProduct().getProductURL();
