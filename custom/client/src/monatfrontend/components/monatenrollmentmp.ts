@@ -18,13 +18,13 @@ class EnrollmentMPController {
 	public totalPages: Array<number>;
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService) {
-		//this.observerService.attach(this.getProductList, 'createSuccess'); 
+		this.observerService.attach(this.getProductList, 'createSuccess'); 
 	}
 	
 	public $onInit = () => {
 		this.getCountryCodeOptions();
 		this.getStarterPacks();
-		this.getProductList()
+		//this.getProductList()
 	};
 
 	public getStarterPacks = () => {

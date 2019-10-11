@@ -153,6 +153,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function getProducts(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
+        
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
@@ -164,8 +167,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    scrollableSmartList.addFilter('minQuantity', 'NULL');
 	    scrollableSmartList.addFilter('priceGroup.priceGroupCode', '1');
 
-	    //TODO MAKE IT DYNAMIC
-	    scrollableSmartList.addFilter('currencyCode', 'USD');
+	    scrollableSmartList.addFilter('currencyCode', currencyCode);
 
 	    scrollableSmartList.addWhereCondition("aslatwallsku.price <> 0.00");
 	    scrollableSmartList.addWhereCondition("aslatwallsku.price != NULL");
@@ -186,20 +188,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    while(productList.next()){
 		        
 			    var product = productList.get(0);
-			    var adjustedPricing = product.getSkuAdjustedPricing();
-			    
+			    var sku = product.getSku();
+
 			    var productStruct={
-			      "vipPrice"                    :       adjustedPricing.vipPrice?:"",
-			      "marketPartnerPrice"          :       adjustedPricing.MPPrice?:"",
-			      "adjustedPriceForAccount"     :       adjustedPricing.adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       adjustedPricing.retailPrice?:"",
-			      "personalVolume"              :       adjustedPricing.personalVolume?:"",
-			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
+			      "personalVolume"              :       utilityService.formatValue_currency(product.getPersonalVolume(), {currencyCode:currencyCode})?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
+  			      "marketPartnerPrice"          :       utilityService.formatValue_currency(product.getPrice(), {currencyCode:currencyCode})?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
-			      "productName"                 :       product.getSku().getProduct().getProductName()?:"",
-			      "skuID"                       :       product.getSku().getSkuID()?:"",
-  			      "skuCode"                     :       product.getSku().getSkuCode()?:""
+			      "productName"                 :       sku.getSkuName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+  			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);

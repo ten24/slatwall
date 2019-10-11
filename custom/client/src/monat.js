@@ -59464,7 +59464,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
-            _this.getProductList();
+            //this.getProductList()
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59599,7 +59599,7 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        //this.observerService.attach(this.getProductList, 'createSuccess'); 
+        this.observerService.attach(this.getProductList, 'createSuccess');
     }
     return EnrollmentMPController;
 }());
