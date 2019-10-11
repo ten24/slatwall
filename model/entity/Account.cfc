@@ -290,13 +290,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public any function getUsernameNotInUseFlag() {
 		if(!structKeyExists(variables, "usernameNotInUseFlag")) {
 			variables.usernameNotInUseFlag = true;
-			if(len(getUsername())) {
-				if(getNewFlag()) {
-					variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
-				} else {
-					variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
-				}
-
+			if(!isNull(getUserName()) && len(getUserName()) && getNewFlag()) {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
+			} else {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
 			}
 		}
 		return variables.usernameNotInUseFlag;
