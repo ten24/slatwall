@@ -156,12 +156,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
-		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
+		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
-	    scrollableSmartList.addFilter('activeFlag', true);
-	    scrollableSmartList.addFilter('publishedFlag', true);
-	    scrollableSmartList.addWhereCondition("price <> 0.00");
+	    scrollableSmartList.addFilter('sku.activeFlag', true);
+	    scrollableSmartList.addFilter('sku.publishedFlag', true);
+	    scrollableSmartList.addFilter('maxQuantity', 'NULL');
+	    scrollableSmartList.addFilter('minQuantity', 'NULL');
+	    scrollableSmartList.addFilter('priceGroup.priceGroupCode', '1');
 
+	    //TODO MAKE IT DYNAMIC
+	    scrollableSmartList.addFilter('currencyCode', 'USD');
+
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price != NULL");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume != NULL");
 	    
         var recordsCount = scrollableSmartList.getRecordsCount();
         
@@ -188,9 +197,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
-			      "productName"                 :       product.getProduct().getProductName()?:"",
-			      "skuID"                       :       product.getSkuID()?:"",
-  			      "skuCode"                     :       product.getSkuCode()?:""
+			      "productName"                 :       product.getSku().getProduct().getProductName()?:"",
+			      "skuID"                       :       product.getSku().getSkuID()?:"",
+  			      "skuCode"                     :       product.getSku().getSkuCode()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);

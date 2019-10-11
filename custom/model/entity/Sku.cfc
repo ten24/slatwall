@@ -4,9 +4,6 @@ component {
     property name="onTheFlyKitFlag" ormtype="boolean";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
-	property name="skuProductURL" persistent="false";
-	property name="skuImagePath" persistent="false";
-	property name="skuAdjustedPricing" persistent="false";
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){

@@ -225,9 +225,6 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
-	property name="skuProductURL" persistent="false";
-	property name="skuImagePath" persistent="false";
-	property name="skuAdjustedPricing" persistent="false";
     
    
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
