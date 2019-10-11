@@ -82,6 +82,40 @@ Notes:
 		)/>
 		<cfreturn !primaryInUseData />
 	</cffunction>
+	
+	<cffunction name="getUsernameNotInUseFlag" returntype="boolean" access="public">
+		<cfargument name="username" required="true" type="string" />
+		<cfargument name="accountID" type="string" />
+
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(username)"/>
+		<cfelse>
+			<cfset comparisonValue = "username"/>
+		</cfif>
+		
+		<cfset var params = {username=lcase(arguments.username)}/>
+		<cfset var hql = "SELECT count(username) from SlatwallAccount
+			WHERE #comparisonValue#=:username
+		"/>
+		<cfif structKeyExists(arguments,'accountID')>
+			<cfset params['accountID'] = arguments.accountID/>
+			<cfset hql &= " AND accountID != :accountID"/>
+		</cfif>
+
+		<!--- make sure that we enforce this only against other non guest accounts --->
+		<cfset var usernameNotInUseData = ormExecuteQuery(
+			hql
+			, params,
+			true
+			,{maxresults=1}
+		)/>
+
+		<cfif usernameNotInUseData GT 0>
+			<cfreturn false />
+		</cfif>
+		<cfreturn true />
+	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
 		<cfargument name="emailAddress" required="true" type="string" />

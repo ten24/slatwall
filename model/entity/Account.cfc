@@ -124,6 +124,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
+	property name="usernameNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
@@ -284,6 +285,18 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
+	}
+	
+	public any function getUsernameNotInUseFlag() {
+		if(!structKeyExists(variables, "usernameNotInUseFlag")) {
+			variables.usernameNotInUseFlag = true;
+			if(!isNull(getUserName()) && len(getUserName()) && getNewFlag()) {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
+			} else {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
+			}
+		}
+		return variables.usernameNotInUseFlag;
 	}
 
 	public any function getSaveablePaymentMethodsSmartList() {
