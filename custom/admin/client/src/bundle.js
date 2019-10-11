@@ -63715,6 +63715,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.propertiesToDisplayList == null) {
