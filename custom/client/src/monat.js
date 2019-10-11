@@ -59534,8 +59534,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
+                _this.loading = true;
                 _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
-                    console.log(data);
+                    _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
             }

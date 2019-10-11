@@ -37,8 +37,9 @@ class EnrollmentMPController {
 
 	public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
+			this.loading = true;
         	this.monatService.addToCart( this.selectedBundleID, 1 ).then(data => {
-        		console.log( data );
+        		this.loading = false;
             	this.observerService.notify('onNext');
         	})
         } else {
