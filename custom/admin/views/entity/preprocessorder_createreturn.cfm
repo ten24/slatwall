@@ -64,7 +64,7 @@ Notes:
 				<!--- Order Type --->
 				<input type="hidden" name="orderTypeCode" value="#rc.processObject.getOrderTypeCode()#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeName"  edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnReasonType" edit="true" />
 				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
