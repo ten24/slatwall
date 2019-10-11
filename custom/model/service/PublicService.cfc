@@ -153,15 +153,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function getProducts(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
+        
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
-		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
+		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
-	    scrollableSmartList.addFilter('activeFlag', true);
-	    scrollableSmartList.addFilter('publishedFlag', true);
-	    scrollableSmartList.addWhereCondition("price <> 0.00");
-	    scrollableSmartList.addWhereCondition("personalVolume <> 'NULL'");
+	    scrollableSmartList.addFilter('sku.activeFlag', true);
+	    scrollableSmartList.addFilter('sku.publishedFlag', true);
+	    scrollableSmartList.addFilter('maxQuantity', 'NULL');
+	    scrollableSmartList.addFilter('minQuantity', 'NULL');
+	    scrollableSmartList.addFilter('priceGroup.priceGroupCode', '1');
+
+	    scrollableSmartList.addFilter('currencyCode', currencyCode);
+
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price != NULL");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume != NULL");
 	    
         var recordsCount = scrollableSmartList.getRecordsCount();
         
@@ -177,20 +188,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    while(productList.next()){
 		        
 			    var product = productList.get(0);
-			    var adjustedPricing = product.getSkuAdjustedPricing();
-			    
+			    var sku = product.getSku();
+
 			    var productStruct={
-			      "vipPrice"                    :       adjustedPricing.vipPrice?:"",
-			      "marketPartnerPrice"          :       adjustedPricing.MPPrice?:"",
-			      "adjustedPriceForAccount"     :       adjustedPricing.adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       adjustedPricing.retailPrice?:"",
-			      "personalVolume"              :       adjustedPricing.personalVolume?:"",
-			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
+			      "personalVolume"              :       utilityService.formatValue_currency(product.getPersonalVolume(), {currencyCode:currencyCode})?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
+  			      "marketPartnerPrice"          :       utilityService.formatValue_currency(product.getPrice(), {currencyCode:currencyCode})?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
-			      "productName"                 :       product.getProduct().getProductName()?:"",
-			      "skuID"                       :       product.getSkuID()?:"",
-  			      "skuCode"                     :       product.getSkuCode()?:""
+			      "productName"                 :       sku.getSkuName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+  			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
