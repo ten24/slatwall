@@ -189,7 +189,7 @@ class HibachiInterceptor implements IInterceptor{
     public response = (response): ng.IPromise<any> => {
 		if(response.data.messages){
 			//We have 1 'error' that we use to display preprocess forms that we don't want displaying.
-			if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != this.preprocessdisplayedflagmessage){
+			if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != this.preProcessDisplayedFlagMessage){
             	var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
             	this.alertService.addAlerts(alerts);
 			}
