@@ -108,8 +108,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
-			// FIXME: Temporary disable to allow QA place order
-			//orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
 		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
@@ -1172,116 +1171,66 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	//begin order template functionality
-	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
-
-		var fulfillmentCharge = 0; 
-
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		request.orderTemplate = arguments.orderTemplate; 	
-		
-		thread name="#threadName#"
-			   action="run" 
-		{	
-			var ormSession = ormGetSessionFactory().openSession();
-	    	var tx = ormSession.beginTransaction();
-			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
-			tx.commit();
-			ormSession.close();
-			
-		}
-		
-		//join thread so we can return synchronously
-		threadJoin(threadName);
-		
-		//if we have any error we probably don't have the required data for returning the total
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			fulfillmentCharge = evaluate(threadName).fulfillmentCharge; 
-		} else {
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+		if(structKeyExists(request, 'orderTemplateOrderDetails')){
+			return request.orderTemplateOrderDetails;
 		} 
-
-		return fulfillmentCharge; 
-	}
-
-	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
 		
-		//return a sku collection that will never have records if this process fails
+		request.orderTemplateOrderDetails = {}; 
+	
+		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+
 		var skuCollection = getSkuService().getSkuCollectionList();
 		skuCollection.addFilter('skuID','null','is'); 
-		var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 		
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-	
-		request.orderTemplate = arguments.orderTemplate; 	
+		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplate = arguments.orderTemplate; 	
+		
 		thread name="#threadName#"
 			   action="run" 
 		{
+
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
 			transientOrder = this.saveOrder(transientOrder);
-			
+			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
- 
-			thread.promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+		
+			if(!isNull(request.orderTemplate.getShippingMethod())){	
+				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			}
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
+			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
-			
-		}
-		
-		threadJoin(threadName);
 	
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			promotionalRewardSkuCollectionConfig = evaluate(threadName).promotionalRewardSkuCollectionConfig; 
-		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		}
-		return promotionalRewardSkuCollectionConfig; 
+		//join thread so we can return synchronously
+		threadJoin(threadName);
+		//if we have any error we probably don't have the required data for returning the total
+		if(structKeyExists(evaluate(threadName), "ERROR")){
+			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		} 
 
+		return request.orderTemplateOrderDetails;
+	} 
+	
+	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal']	
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['promotionalRewardSkuCollectionConfig']; 
 	}
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
-		
-		var canPlaceOrder = false;
-
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-	
-		request.orderTemplate = arguments.orderTemplate; 	
-		
-		thread name="#threadName#"
-			   action="run" 
-		{	
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-
-			//merge the entity to prevent failed to lazy initiate collection errors
-			transientOrder = this.saveOrder(transientOrder);
-			
-			ormFlush();
- 
-			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
-
-			//getPromotionDAO().deletePromotionAppliedToOrderItemByOrderID(transientOrder.getOrderID()); 			
-
-			var deleteOk = this.deleteOrder(transientOrder); 
-
-			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
-
-			ormFlush();//persist changes independently 
-		}
-
-		//join thread so we can return synchronously
-		threadJoin(threadName);
-		
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
-		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
-		return canPlaceOrder;
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
 	}
 
 	//order transient helper methods
@@ -1303,8 +1252,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
 		}
 
-		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
-	
+		if(!isNull(arguments.orderTemplate.getShippingMethod())){
+			arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
+		}	
+
 		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
 		
 		return arguments.transientOrder;
@@ -1325,8 +1276,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.transientOrderFulfillment.setOrder(arguments.transientOrder); 
 		arguments.transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		arguments.transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
-		arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
 		
+		if(!isNull(arguments.orderTemplate.getShippingAddress())){
+			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		} else if(!isNull(arguments.orderTemplate.getShippingAccountAddress()) && 
+				  !isNull(arguments.orderTemplate.getShippingAccountAddress().getAddress()) 
+		){
+			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
+		} 		
+
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
@@ -1395,9 +1354,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
 			return arguments.orderTemplate;
 		} 
-		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getType(arguments.data.orderTemplateCancellationReasonType.typeID));
-		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.data.orderTemplateCancellationReasonType.typeIDOther);  
+
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
+		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
+		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
 
@@ -1523,6 +1485,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = newOrder.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 			} 
 
 			if(newOrder.hasErrors()){
@@ -1537,7 +1500,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionCode in promotionCodes){
 			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
 			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
-			porcessOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
@@ -2614,7 +2577,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
 			return true;
 		}
-
+		if(arguments.order.hasOrderTemplate() && arguments.order.getOrderTemplate().setting('orderTemplateRequirePaymentFlag') == 0){
+			return true;
+		}
 		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
 			var settingValue = arguments.order.getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder");
