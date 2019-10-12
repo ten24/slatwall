@@ -2104,6 +2104,7 @@ private string function getPriceGroupIDsForAccountID(string accountID){
 		arguments.skuID = this.getSkuID(); 
 		if(!structKeyExists(variables,cacheKey)){
 			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				   	if(isNull(a['price'])){

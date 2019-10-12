@@ -4,7 +4,7 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 		
 		var priceGroupString = "";
 		
-		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDList')){
+		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDs')){
 			priceGroupString = "OR _priceGroup.priceGroupID IN (:priceGroupIDs)";
 		}
 		

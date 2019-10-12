@@ -225,12 +225,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
 			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
 			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
-			'salesVolume'       = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Sales Volume of the order(999999999.99)
+			'salesVolume'       = getAmount(arguments.order,'total'),//Total Sales Volume of the order(999999999.99)
 			'qualifyingVolume'  = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Qualifying Volume of the order
 			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
 			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'volume5'           = getAmount(arguments.order,'retailValueVolumeTotal'), // Sponsor Valume
+			'volume5'           = getAmount(arguments.order,'RetailCommissionTotal'), // Retail Commission
 			'volume6'           = getAmount(arguments.order,'ProductPackVolumeTotal'), // Product Pack Volume
 			'volume7'           = getAmount(arguments.order,'RetailValueVolumeTotal'), // Retail Value Volume
 			'volume8'           = 0,

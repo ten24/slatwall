@@ -597,32 +597,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the above two conditions are ok, then we can find out the rest of the details
 		if(qualificationDetails.qualificationsMeet) {
 			var hasQualifiedQualifier = false;
-			// Loop over each of the qualifiers
-			for(var qualifier in arguments.promotionPeriod.getPromotionQualifiers()) {
-
-				// Get the details for this qualifier
-				var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
-
-				// As long as there is a qualification count that is > 0 we can append the details
-				if(thisQualifierDetails.qualificationCount) {
-					hasQualifiedQualifier = true;
-					
-					// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
-					if(qualifier.getQualifierType() == "fulfillment") {
-
-						// Loop over all fulfillments that were passed back
-						for(var orderFulfillmentID in thisQualifierDetails.qualifiedFulfillmentIDs) {
-
-							// If the explicit list doesn't have this one, then we can add it
-							if(!arrayFind(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID)) {
-								arrayAppend(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID);
+			var qualifiers = arguments.promotionPeriod.getPromotionQualifiers();
+			
+			if(!arrayLen(qualifiers)){
+				hasQualifiedQualifier=true;
+			}else{
+				// Loop over each of the qualifiers
+				for(var qualifier in qualifiers) {
+	
+					// Get the details for this qualifier
+					var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
+	
+					// As long as there is a qualification count that is > 0 we can append the details
+					if(thisQualifierDetails.qualificationCount) {
+						hasQualifiedQualifier = true;
+						
+						// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
+						if(qualifier.getQualifierType() == "fulfillment") {
+	
+							// Loop over all fulfillments that were passed back
+							for(var orderFulfillmentID in thisQualifierDetails.qualifiedFulfillmentIDs) {
+	
+								// If the explicit list doesn't have this one, then we can add it
+								if(!arrayFind(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID)) {
+									arrayAppend(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID);
+								}
 							}
 						}
+	
+						// Attach the qualification details
+						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
+	
 					}
-
-					// Attach the qualification details
-					arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
-
 				}
 			}
 			
@@ -924,6 +930,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.currencyCode)){
 			args.currencyCode = arguments.currencyCode;
 		}
+
 		var priceDetails = getProductSkuSalePricesByPromoRewardSkuCollection( argumentCollection=args );
 
 		priceDetails = getRoundedPriceDetails(priceDetails);
@@ -955,19 +962,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var skus = product.getSkus();
 		var priceDetails = {};
-
+		
 		for(var sku in skus){
-			if(!isNull(arguments.currencyCode)){
+			var currencyCode = arguments.currencyCode;
+			if(!isNull(currencyCode)){
 				var originalPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
 			}else{
 				var originalPrice = sku.getPrice();
-				arguments.currencyCode = '';
+				currencyCode = '';
 			}
 			var skuPriceDetails = getPriceDetailsForPromoRewards(
 														promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=sku,
 														originalPrice=originalPrice,
-														currencyCode=arguments.currencyCode);
+														currencyCode=currencyCode);
 			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
 		}
 		return priceDetails;

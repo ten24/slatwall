@@ -93,4 +93,13 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             }
         }
     }
+    
+    public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data ={}){
+        var account = arguments.order.getAccount();
+
+        if(!isNull(account.getAccountStatusType()) && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+            account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
+            account.getAccountNumber();
+        }
+    }
 }

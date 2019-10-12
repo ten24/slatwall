@@ -39,6 +39,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
 	property name="superUserFlag" ormtype="boolean";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
@@ -152,19 +153,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="permissionGroupNameList" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
-	property name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
-	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
+	property name="saveablePaymentMethodsCollectionList" persistent="false";
 
 
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
+ property name="isFlagged" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
@@ -1217,6 +1217,24 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			}
 		}
 		return variables.saveablePaymentMethodsCollectionList;
+	}
+	
+	public any function getAccountNumber(){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+			if(!isNull(this.getAccountID())){
+				var maxAccountNumberQuery = new query();
+				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
+				
+				maxAccountNumberQuery.setSQL(maxAccountNumberSQL);
+				maxAccountNumberQuery.addParam(name="accountID",value=this.getAccountID());
+				maxAccountNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+				var insertedID = maxAccountNumberQuery.execute().getPrefix().generatedKey;
+				
+				setAccountNumber(insertedID);	
+			}
+		}
+		if(!isNull(variables.accountNumber))
+		return variables.accountNumber;
 	}
 //CUSTOM FUNCTIONS END
 }
