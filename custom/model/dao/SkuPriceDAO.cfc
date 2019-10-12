@@ -1,6 +1,6 @@
 component extends="Slatwall.model.dao.SkuPriceDAO"{
     
-    public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList){
+    public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), array priceGroupIDs){
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDList')){
@@ -44,7 +44,7 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 		};
 
 		if(structKeyExists(arguments, 'priceGroupIDList')){
-			params.priceGroupIDs = arguments.priceGroupIDList;
+			params.priceGroupIDs = arguments.priceGroupIDs;
 		} else if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = [];
 			for(var priceGroup in arguments.priceGroups){

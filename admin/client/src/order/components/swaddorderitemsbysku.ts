@@ -51,7 +51,7 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
         this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
         this.addSkuCollection.addDisplayProperty('product.productType.productTypeName','Product Type',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('price','',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('priceByCurrencyCode','',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false, arguments:{accountID:this.accountId,currencyCode:this.currencyCode}});
         this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
         this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:false,isDeletable:false})
         this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});

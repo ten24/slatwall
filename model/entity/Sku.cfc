@@ -2013,14 +2013,14 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-private string function getPriceGroupIDListForAccountID(string accountID){
+private array function getPriceGroupIDsForAccountID(string accountID){
     	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return '';
+			return [];
 		}
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
 		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList();  
+		return priceGroupCollection.getPrimaryIDs();  
 	}
 
     
@@ -2029,7 +2029,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
 		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2040,7 +2040,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2051,7 +2051,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2062,7 +2062,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2073,7 +2073,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2084,7 +2084,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2103,7 +2103,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
 
 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups, arguments.priceGroupIDs);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				   	if(isNull(a['price'])){
