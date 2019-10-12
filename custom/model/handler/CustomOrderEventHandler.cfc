@@ -95,17 +95,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
     
     public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data ={}){
-        writeDump('here we are!');
         var account = arguments.order.getAccount();
 
         if(!isNull(account.getAccountStatusType()) && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
-            writeDump('lets do ths');
-            writeDump(var=getService('typeService').getTypeByTypeCode('astGoodStanding'),top=4);
             account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
             account.getAccountNumber();
         }
-        writeDump(account.getAccountNumber());
-        writeDump(account.getAccountStatusType().getTypeName());
-        abort;
     }
 }
