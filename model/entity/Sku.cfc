@@ -2013,14 +2013,14 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-private array function getPriceGroupIDsForAccountID(string accountID){
+private string function getPriceGroupIDsForAccountID(string accountID){
     	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
 			return [];
 		}
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
 		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDs();  
+		return priceGroupCollection.getPrimaryIDList(); 
 	}
 
     
@@ -2029,7 +2029,7 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
 		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2040,7 +2040,7 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2051,7 +2051,7 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2062,7 +2062,7 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2073,7 +2073,7 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2084,13 +2084,13 @@ private array function getPriceGroupIDsForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 		
 		for(var priceGroup in arguments.priceGroups){
@@ -2101,9 +2101,9 @@ private array function getPriceGroupIDsForAccountID(string accountID){
 			cacheKey &= '#arguments.quantity#';
 		}
 
-
+		arguments.skuID = this.getSkuID(); 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups, arguments.priceGroupIDs);
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				   	if(isNull(a['price'])){
