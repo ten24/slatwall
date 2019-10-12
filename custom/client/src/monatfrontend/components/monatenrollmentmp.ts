@@ -20,13 +20,12 @@ class EnrollmentMPController {
 	public lastAddedProductName: string = '';
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService) {
-	}
+	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
 		this.getCountryCodeOptions();
 		this.getStarterPacks();
-		//this.getProductList()
+		this.getProductList()
 		
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
