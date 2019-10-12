@@ -1144,6 +1144,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return rewardSkus;
 	}
+	
+	public string function getQualifiedPromotionRewardSkuIDsForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+		var rewardSkuIDs = "";
+		
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollection = promotionReward.getSkuCollection();
+			if(!isNull(skuCollection)){
+				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
+				
+				for(var sku in skus){
+					rewardSkuIDs = listAppend(rewardSkuIDs, sku.skuID);
+				}
+			}
+		}
+		return rewardSkus;
+	}
 
 	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
 		var masterSkuCollection = getSkuService().getSkuCollectionList(); 

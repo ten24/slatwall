@@ -1454,6 +1454,13 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return variables.qualifiedRewardSkus;
 	}
+	
+	public array function getQualifiedPromotionRewardSkuIDs( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkuIDs') || arguments.refresh ){
+			variables.qualifiedRewardSkuIDs = getService('PromotionService').getQualifiedPromotionRewardSkuIDsForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkuIDs;
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================

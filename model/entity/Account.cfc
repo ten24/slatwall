@@ -153,10 +153,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="permissionGroupNameList" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
-	property name="distributorID" ormtype="string";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
@@ -166,6 +164,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
+ property name="isFlagged" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
