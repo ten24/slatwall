@@ -43,7 +43,7 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 			
 		};
 
-		if(structKeyExists(arguments, 'priceGroupIDList')){
+		if(structKeyExists(arguments, 'priceGroupIDs')){
 			params.priceGroupIDs = arguments.priceGroupIDs;
 		} else if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = [];
