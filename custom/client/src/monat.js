@@ -59531,7 +59531,6 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.showAddToCartMessage = function () {
             var skuID = _this.monatService.lastAddedSkuID;
-            console.log('show');
             _this.monatService.getCart().then(function (data) {
                 var orderItem = data.orderItems.find(function (item) {
                     return item.sku.skuID === skuID;

@@ -33,7 +33,6 @@ class EnrollmentMPController {
 	
 	public showAddToCartMessage = () => {
 		var skuID = this.monatService.lastAddedSkuID;
-		console.log('show');
 		
 		this.monatService.getCart().then( data => {
 
