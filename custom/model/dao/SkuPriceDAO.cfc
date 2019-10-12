@@ -1,6 +1,6 @@
 component extends="Slatwall.model.dao.SkuPriceDAO"{
     
-    public any function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), array priceGroupIDs){
+    public any function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), array priceGroupIDList){
 		
 		var priceGroupString = "";
 		
