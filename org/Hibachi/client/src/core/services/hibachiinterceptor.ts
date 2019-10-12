@@ -95,7 +95,7 @@ class HibachiInterceptor implements IInterceptor{
     public baseUrl:string;
     public loginResponse=null;
     public authPromise=null;
-    private preprocessdisplayedflagmessage = "Pre Process Displayed Flag must be equal to 1";
+    private preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
     
 	//@ngInject
     constructor(
