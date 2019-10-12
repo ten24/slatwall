@@ -72,7 +72,13 @@ class EnrollmentMPController {
 
 	public submitSponsor = () => {
 		if (this.selectedMP) {
-			this.observerService.notify('onNext');
+			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+				if(data.successfulActions && data.successfulActions.length){
+					this.observerService.notify('onNext');
+				}else{
+					this.sponsorHasErrors = true;
+				}
+			})
 		} else {
 			this.sponsorHasErrors = true;
 		}

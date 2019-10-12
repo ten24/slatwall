@@ -2103,7 +2103,17 @@ private array function getPriceGroupIDsForAccountID(string accountID){
 
 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups, arguments.priceGroupIDs);
+			var skuPricesArguments = {
+				'skuID' = this.getSkuID(),
+				'currencyCode' = arguments.currencyCode,
+				'quantity' = arguments.quantity,
+				'priceGroups' = arguments.priceGroups
+				
+			};
+			if(structKeyExists( arguments, 'priceGroupIDs')){
+				skuPricesArguments['priceGroupIDs']	= arguments.priceGroupIDs;
+			}
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection = skuPricesArguments);
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				   	if(isNull(a['price'])){

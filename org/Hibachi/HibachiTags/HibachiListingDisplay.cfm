@@ -26,7 +26,7 @@
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
 	<cfparam name="attributes.showSearchFilterDropDown" type="boolean" default="false"/>
-	<cfparam name="attributes.searchFilterPropertyIdentifier" type="string" default="createdDateTime"/>
+	<cfparam name="attributes.searchFilterPropertyIdentifier" type="string" default=""/>
 	
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordActions" type="string" default="" />
