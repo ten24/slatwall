@@ -1150,6 +1150,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var joinSyntax = 'left join'; 
+
 		if( getUseScrollableFlag() &&
 		    !getRunningGetRecordsCount() &&
 			(structKeyExists(arguments.join, 'column') && arguments.join.column)
@@ -1909,6 +1910,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
+
 		return HQL;
 	}
 
@@ -2452,7 +2454,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						var HQLParams = {};
 						saveState();
+						
 						if(getUseScrollableFlag()){
+							
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
 							variables.processObjectArray = [];
@@ -2460,27 +2464,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQL = 'SELECT DISTINCT(#entityAlias#) ' & getHQL(excludeGroupBy=true);
 
 							HQLParams = getHQLParams();
-							
+
 							//build the scrollable query.
 							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
 							var cacheMode = createObject("java","org.hibernate.CacheMode");
 	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
+
 	    					var query = scrollableSession.createQuery(HQL)
 	    					.setCacheMode(cacheMode.IGNORE)
 	    					.setFirstResult(getPageRecordsStart()-1)
 	    					.setMaxResults(getPageRecordsShow())
 	    					.setReadOnly(true)
 							.setFetchSize(getPageRecordsShow());
-							
+
 							//Add all of the params.
 							for (var param in HQLParams){
+								if(HQLParams[param] == 'True'){
+									HQLParams[param] = true;
+								}
+								if(HQLParams[param] == 'False'){
+									HQLParams[param] = false;
+								}
 								query.setParameter(param, HQLParams[param]);
 							}
-							
 							// Set the pagination info.
 							var entities = query.scroll(scrollMode.FORWARD_ONLY);
 							var columns = getCollectionConfigStruct()["columns"];
-							
 							try{
 								while(entities.next()){
 									var entity = entities.get(0);
@@ -2524,6 +2533,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									scrollableSession.close();
 								}
 							}
+
 						}else{
 							HQL = getHQL();
 							HQLParams = getHQLParams();

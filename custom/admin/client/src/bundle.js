@@ -94345,11 +94345,9 @@ var SWListingSearchController = /** @class */ (function () {
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
             if (_this.selectedSearchFilter.value != 'All') {
-                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
-                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length) {
+                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
                 }
-                console.log(_this.searchFilterPropertyIdentifier);
-                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
             }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
