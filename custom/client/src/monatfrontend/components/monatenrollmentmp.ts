@@ -16,16 +16,39 @@ class EnrollmentMPController {
 	public productList;
 	public pageTracker: number;
 	public totalPages: Array<number>;
+	public addedItemToCart: boolean = false;
+	public lastAddedProductName: string = '';
+	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService) {
-		this.observerService.attach(this.getProductList, 'createSuccess'); 
-	}
+	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
 		this.getCountryCodeOptions();
 		this.getStarterPacks();
 		//this.getProductList()
+		
+		this.observerService.attach(this.getProductList, 'createSuccess'); 
+		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 	};
+	
+	public showAddToCartMessage = () => {
+		var skuID = this.monatService.lastAddedSkuID;
+		
+		this.monatService.getCart().then( data => {
+
+			var orderItem;
+			data.orderItems.forEach( item => {
+				if ( item.sku.skuID === skuID ) {
+					orderItem = item;
+				}
+			});
+			
+			if ( 'ProductPack' !== orderItem.sku.product.baseProductType ) {
+				this.lastAddedProductName = orderItem.sku.product.productName;
+				this.addedItemToCart = true;
+			}
+		})
+	}
 
 	public getStarterPacks = () => {
 		this.publicService
@@ -37,8 +60,9 @@ class EnrollmentMPController {
 
 	public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
+			this.loading = true;
         	this.monatService.addToCart( this.selectedBundleID, 1 ).then(data => {
-        		console.log( data );
+        		this.loading = false;
             	this.observerService.notify('onNext');
         	})
         } else {

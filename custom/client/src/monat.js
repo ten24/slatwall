@@ -59520,10 +59520,29 @@ var EnrollmentMPController = /** @class */ (function () {
         this.sponsorHasErrors = false;
         this.selectedBundleID = '';
         this.bundles = [];
+        this.addedItemToCart = false;
+        this.lastAddedProductName = '';
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
             //this.getProductList()
+            _this.observerService.attach(_this.getProductList, 'createSuccess');
+            _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
+        };
+        this.showAddToCartMessage = function () {
+            var skuID = _this.monatService.lastAddedSkuID;
+            _this.monatService.getCart().then(function (data) {
+                var orderItem;
+                data.orderItems.forEach(function (item) {
+                    if (item.sku.skuID === skuID) {
+                        orderItem = item;
+                    }
+                });
+                if ('ProductPack' !== orderItem.sku.product.baseProductType) {
+                    _this.lastAddedProductName = orderItem.sku.product.productName;
+                    _this.addedItemToCart = true;
+                }
+            });
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59534,8 +59553,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
+                _this.loading = true;
                 _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
-                    console.log(data);
+                    _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
             }
@@ -59665,7 +59685,6 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.observerService.attach(this.getProductList, 'createSuccess');
     }
     return EnrollmentMPController;
 }());
@@ -61946,6 +61965,7 @@ var MonatService = /** @class */ (function () {
         this.publicService = publicService;
         this.$q = $q;
         this.requestService = requestService;
+        this.lastAddedSkuID = '';
         this.cachedOptions = {
             frequencyTermOptions: null,
         };
@@ -61998,6 +62018,7 @@ var MonatService = /** @class */ (function () {
             skuID: skuID,
             quantity: quantity,
         };
+        this.lastAddedSkuID = skuID;
         return this.updateCart('addOrderItem', payload);
     };
     MonatService.prototype.removeFromCart = function (orderItemID) {
