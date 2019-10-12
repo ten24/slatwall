@@ -382,17 +382,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						break;
 				}
 
-				if(!arrayIsEmpty(skuPriceData) && currentCountryCode != previousCountryCode){
+				if(currentCountryCode != previousCountryCode){
+					if(!arrayIsEmpty(skuPriceData)){
+						var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+							var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
+													(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+													(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+													
+							return hasDefaultSkuPrice; 
+						},true, 10);
+					}
 
-					var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-						var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
-												(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-												(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-												
-						return hasDefaultSkuPrice; 
-					},true, 10);
-
-					if(ArrayLen(defaultSkuPrice)){
+					if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
 						data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
 					}
 
@@ -421,7 +422,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					return hasDefaultSkuPrice; 
 				},true, 10);
 
-				if(ArrayLen(defaultSkuPrice)){
+				if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
 					data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
 				}
 			}
