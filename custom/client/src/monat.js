@@ -59525,8 +59525,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
-<<<<<<< HEAD
-            _this.getProductList();
+            //this.getProductList()
             _this.observerService.attach(_this.getProductList, 'createSuccess');
             _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
         };
@@ -59542,9 +59541,6 @@ var EnrollmentMPController = /** @class */ (function () {
                     _this.addedItemToCart = true;
                 }
             });
-=======
-            //this.getProductList()
->>>>>>> 8058a4d41d7f94fdb7646da20dd99ebb6c6c8d7f
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59680,7 +59676,6 @@ var EnrollmentMPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.observerService.attach(this.getProductList, 'createSuccess');
     }
     return EnrollmentMPController;
 }());
