@@ -3,7 +3,7 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
     public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), array priceGroupIDs){
 		var priceGroupString = "";
 		
-		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDList')){
+		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDs')){
 			priceGroupString = "OR _priceGroup.priceGroupID IN (:priceGroupIDs)";
 		}
 		

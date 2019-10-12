@@ -223,7 +223,7 @@ property name="siteAvailableLocales" persistent="false";
 
 public string function getSiteAvailableLocales() {
 		if ( ! structKeyExists( variables, 'siteAvailableLocales' ) ) {
-			variables.siteAvailableLocales = getHibachiScope().setting('siteAvailableLocales');
+			variables.siteAvailableLocales = setting('siteAvailableLocales');
 		}
 		return variables.siteAvailableLocales;
 	}
