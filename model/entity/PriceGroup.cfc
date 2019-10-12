@@ -161,14 +161,6 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 		arguments.loyaltyRedemption.removePriceGroup( this );
 	}	
 	
-	// Accounts (many-to-many - inverse)
-	public void function addAccount(required any account) {
-		arguments.account.addPriceGroup( this );
-	}
-	public void function removeAccount(required any account) {
-		arguments.account.removePriceGroup( this );
-	}
-	
 	// Subscription Benefits (many-to-many - inverse)
 	public void function addSubscriptionBenefit(required any subscriptionBenefit) {
 		arguments.subscriptionBenefit.addPriceGroup( this );

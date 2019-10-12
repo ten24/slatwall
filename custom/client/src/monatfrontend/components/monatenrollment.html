@@ -33,7 +33,7 @@
 	
 	<!--- Mini cart ---> 	
 	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
-	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style"></monat-mini-cart>
+	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
 	</div>
 
 </footer>

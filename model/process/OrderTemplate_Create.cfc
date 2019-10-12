@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddressConfirm";
 	property name="createAuthenticationFlag" hb_rbKey="processObject.account_create.createAuthenticationFlag";
 	property name="organizationFlag";
+	property name="username";
 	property name="password";
 	property name="passwordConfirm";
 	

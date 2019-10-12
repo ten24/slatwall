@@ -15,6 +15,12 @@ component {
     property name="retailCommissionSubtotalAfterItemDiscounts" persistent="false";
     property name="productPackVolumeSubtotalAfterItemDiscounts" persistent="false";
     property name="retailValueVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="personalVolumeDiscountTotal" persistent="false";
+    property name="taxableAmountDiscountTotal" persistent="false";
+    property name="commissionableVolumeDiscountTotal" persistent="false";
+    property name="retailCommissionDiscountTotal" persistent="false";
+    property name="productPackVolumeDiscountTotal" persistent="false";
+    property name="retailValueVolumeDiscountTotal" persistent="false";
     property name="personalVolumeTotal" persistent="false";
     property name="taxableAmountTotal" persistent="false";
     property name="commissionableVolumeTotal" persistent="false";
@@ -42,9 +48,16 @@ component {
     property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
     property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
     property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
+    property name="calculatedPersonalVolumeDiscountTotal" ormtype="big_decimal";
+    property name="calculatedTaxableAmountDiscountTotal" ormtype="big_decimal";
+    property name="calculatedCommissionableVolumeDiscountTotal" ormtype="big_decimal";
+    property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal";
+    property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal";
+    property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
     
+    property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";

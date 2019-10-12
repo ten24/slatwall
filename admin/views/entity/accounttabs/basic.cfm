@@ -11,6 +11,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="activeFlag" edit="#rc.edit#" hint="Active Account">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="taxExemptFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="testAccountFlag" edit="#rc.edit#">
