@@ -3019,7 +3019,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else if(
 				!arguments.order.getPlaceOrderFlag()
 			){
-				this.updateOrderStatusTotalsBySystemCode(arguments.order, "ostProcessing");
+				this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 			}
 		}
 
