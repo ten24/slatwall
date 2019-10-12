@@ -219,6 +219,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
+
 	//CUSTOM PROPERTIES BEGIN
 property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
@@ -2013,14 +2014,14 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-private string function getPriceGroupIDListForAccountID(string accountID){
+private string function getPriceGroupIDsForAccountID(string accountID){
     	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return '';
+			return [];
 		}
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
 		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList();  
+		return priceGroupCollection.getPrimaryIDList(); 
 	}
 
     
@@ -2029,7 +2030,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
 		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2040,7 +2041,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2051,7 +2052,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2062,7 +2063,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2073,7 +2074,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2084,13 +2085,13 @@ private string function getPriceGroupIDListForAccountID(string accountID){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDListForAccountID(arguments.accountID); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 		
 		for(var priceGroup in arguments.priceGroups){
@@ -2101,9 +2102,10 @@ private string function getPriceGroupIDListForAccountID(string accountID){
 			cacheKey &= '#arguments.quantity#';
 		}
 
-
+		arguments.skuID = this.getSkuID(); 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity, arguments.priceGroups);
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
 				   	if(isNull(a['price'])){

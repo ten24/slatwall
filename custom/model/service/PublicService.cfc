@@ -356,4 +356,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         return account;
     }
+    
+    public void function submitSponsor(required struct data){
+        param name="arguments.data.sponsorID" default="";
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        var accountRelationship = getService('accountService').newAccountRelationship();
+        accountRelationship.setParentAccount(sponsorAccount);
+        accountRelationship.setChildAccount(getHibachiScope().getAccount());
+        accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+        
+        if(accountRelationship.hasErrors()){
+            addErrors(arguments.data,accountRelationship.getErrors());
+        }
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
+        
+    }
 }

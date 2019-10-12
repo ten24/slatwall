@@ -7,6 +7,7 @@ declare var angular: any;
 
 export class MonatService {
 	public cart;
+	public lastAddedSkuID: string = '';
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
@@ -62,6 +63,8 @@ export class MonatService {
 			skuID: skuID,
 			quantity: quantity,
 		};
+		
+		this.lastAddedSkuID = skuID;
 
 		return this.updateCart('addOrderItem', payload);
 	}
@@ -79,6 +82,10 @@ export class MonatService {
 			'orderItem.quantity': quantity,
 		};
 		return this.updateCart('updateOrderItemQuantity', payload);
+	}
+	
+	public submitSponsor( sponsorID:string ) {
+		return this.publicService.doAction('submitSponsor',{sponsorID});
 	}
 
 	/**
