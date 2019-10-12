@@ -63715,6 +63715,10 @@ var SWAddPromotionOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
+            //filter the sku listing on just the promotion skus.
+            if (_this.promotionSkus) {
+                _this.addSkuCollection.addFilter('skuID', true, 'in', undefined, _this.promotionSkus);
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -63836,6 +63840,7 @@ var SWAddPromotionOrderItemsBySku = /** @class */ (function () {
             simpleRepresentation: '<?',
             returnOrderId: '<?',
             skuPropertiesToDisplay: '@?',
+            promotionSkus: '@?',
             skuPropertiesToDisplayWithConfig: '@?',
             edit: "=?",
             exchangeOrderFlag: "=?"

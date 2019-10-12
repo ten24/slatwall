@@ -157,6 +157,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="promotionCodeList" persistent="false";
 	property name="qualifiedPromotionRewards" persistent="false";
 	property name="qualifiedRewardSkus" persistent="false";
+	property name="qualifiedRewardSkuIDs" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
@@ -1455,7 +1456,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		return variables.qualifiedRewardSkus;
 	}
 	
-	public array function getQualifiedPromotionRewardSkuIDs( numeric pageRecordsShow=25, boolean refresh=false ){
+	public string function getQualifiedPromotionRewardSkuIDs( numeric pageRecordsShow=25, boolean refresh=false ){
 		if( !structKeyExists(variables,'qualifiedRewardSkuIDs') || arguments.refresh ){
 			variables.qualifiedRewardSkuIDs = getService('PromotionService').getQualifiedPromotionRewardSkuIDsForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
 		}
