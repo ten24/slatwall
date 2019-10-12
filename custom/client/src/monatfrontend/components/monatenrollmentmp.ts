@@ -48,7 +48,6 @@ class EnrollmentMPController {
 
 	public submitSponsor = () => {
 		if (this.selectedMP) {
-			console.log(this.selectedMP);
 			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');

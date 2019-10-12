@@ -59545,7 +59545,6 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitSponsor = function () {
             if (_this.selectedMP) {
-                console.log(_this.selectedMP);
                 _this.monatService.submitSponsor(_this.selectedMP.accountID).then(function (data) {
                     if (data.successfulActions && data.successfulActions.length) {
                         _this.observerService.notify('onNext');
