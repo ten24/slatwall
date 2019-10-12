@@ -71,7 +71,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorder">
 			
 		</hb:HibachiListingDisplay>
-		<br />
+		</br>
 		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
 				recordDetailAction="admin:entity.detailproductreview"
 			collectionList="#rc.productReviewCollectionList#"
@@ -81,8 +81,12 @@ Notes:
 	</div>
 	
 	<div class="col-md-6">
-		<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
-		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.newaccounts")#" 
+				recordDetailAction="admin:entity.detailaccount"
+			collectionList="#rc.accountCollectionList#"
+			>
+			
+		</hb:HibachiListingDisplay>
 	</div>
 	
 
