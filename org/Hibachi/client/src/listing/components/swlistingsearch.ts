@@ -274,7 +274,7 @@ class SWListingSearchController {
         
         this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
         if(this.selectedSearchFilter.value!='All'){
-            if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length){
+            if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
                 this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
             }
         }

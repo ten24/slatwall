@@ -62051,7 +62051,7 @@ var MonatService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
-                _this.cachedOptions = __assign({}, _this.cachedOptions, realOptions); // override and merge with old options
+                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
                 _this.sendOptionsBack(options, deferred);
                 //TODO handle errors
             });
@@ -74714,6 +74714,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
+        this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
         this.getJWTDataFromToken = function () {
             _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
@@ -74765,8 +74766,11 @@ var HibachiInterceptor = /** @class */ (function () {
         };
         this.response = function (response) {
             if (response.data.messages) {
-                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
-                _this.alertService.addAlerts(alerts);
+                //We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+                if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != _this.preProcessDisplayedFlagMessage) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
             }
             return response;
         };
@@ -77064,6 +77068,13 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -78186,7 +78197,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -78896,10 +78907,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -85633,11 +85644,9 @@ var SWListingSearchController = /** @class */ (function () {
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
             if (_this.selectedSearchFilter.value != 'All') {
-                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
-                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length && _this.swListingDisplay.searchText.length > 0) {
+                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
                 }
-                console.log(_this.searchFilterPropertyIdentifier);
-                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
             }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
@@ -85796,11 +85805,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
