@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BATCH:
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 default:
                     return _this.state;
             }
@@ -48994,7 +48994,7 @@ module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n 
 /* 312 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <div class=\"pull-right\">\n                    <sw-action-caller\n                            data-event=\"EDIT_SKUPRICE\"\n                            data-payload=\"undefined\"\n                            data-class=\"btn btn-primary btn-md\"\n                            data-icon=\"plus\"\n                            data-text=\"Add Sku Price\"\n                            data-iconOnly=\"false\">\n                        \n                    </sw-action-caller>\n                </div>\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <sw-listing-display\n                            data-has-search=\"true\"\n                            data-is-angular-route=\"false\"\n                            data-angular-links=\"false\"\n                            data-has-action-bar=\"false\"\n                            data-base-entity-name=\"SkuPrice\"\n                            data-actions=\"[{\n                                'event' : 'SAVE_SKUPRICE',\n                                'icon' : 'floppy-disk',\n                                'iconOnly' : true,\n                                'display' : false,\n                                'eventListeners' : {\n                                    'cellModified' : 'setDisplayTrue',\n                                    'rowSaved' : 'setDisplayFalse'\n                                },\n                                'useEventListenerId' : true\n                            }]\"\n                            data-record-edit-event=\"EDIT_SKUPRICE\"\n                            data-record-delete-event=\"DELETE_SKUPRICE\"\n                            data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                            data-name=\"pricingListing\"\n                            data-using-personal-collection=\"true\"\n                            data-show-report=\"false\"\n                    >\n                            \n                    </sw-listing-display>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
+module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <div class=\"pull-right\">\n                        <sw-action-caller\n                                data-event=\"EDIT_SKUPRICE\"\n                                data-payload=\"undefined\"\n                                data-class=\"btn btn-primary btn-md\"\n                                data-icon=\"plus\"\n                                data-text=\"Add Sku Price\"\n                                data-iconOnly=\"false\">\n                            \n                        </sw-action-caller>\n                    </div>\n                    <div>\n                        <sw-listing-display\n                                data-has-search=\"true\"\n                                data-is-angular-route=\"false\"\n                                data-angular-links=\"false\"\n                                data-has-action-bar=\"false\"\n                                data-base-entity-name=\"SkuPrice\"\n                                data-actions=\"[{\n                                    'event' : 'SAVE_SKUPRICE',\n                                    'icon' : 'floppy-disk',\n                                    'iconOnly' : true,\n                                    'display' : false,\n                                    'eventListeners' : {\n                                        'cellModified' : 'setDisplayTrue',\n                                        'rowSaved' : 'setDisplayFalse'\n                                    },\n                                    'useEventListenerId' : true\n                                }]\"\n                                data-record-edit-event=\"EDIT_SKUPRICE\"\n                                data-record-delete-event=\"DELETE_SKUPRICE\"\n                                data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                                data-name=\"pricingListing\"\n                                data-using-personal-collection=\"true\"\n                                data-show-report=\"false\"\n                        >\n                                \n                        </sw-listing-display>\n                    </div>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
 /* 313 */
@@ -63496,7 +63496,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var skuDisplayProperties = "skuCode,skuDefinition,product.productName";
+            var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
             if (_this.skuPropertiesToDisplay != null) {
                 // join the two lists.
                 skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
@@ -63504,9 +63504,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
             _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('price', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+            _this.addSkuCollection.addDisplayProperty('priceByCurrencyCode', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, arguments: { accountID: _this.accountId, currencyCode: _this.currencyCode } });
             _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: true, isDeletable: false });
+            _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: false, isDeletable: false });
             _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
             if (_this.skuPropertiesToDisplayWithConfig) {
                 // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
@@ -63715,6 +63715,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
+        this.observerService.attach(this.updateBillingInfo, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.propertiesToDisplayList == null) {
@@ -71259,8 +71260,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderPayment.amount = Number((Math.max(maxRefund, 0)).toFixed(2));
             }
         };
-        this.fulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
-        this.maxFulfillmentRefundAmount = this.fulfillmentRefundAmount;
+        this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.fulfillmentRefundAmount = 0;
         if (this.refundOrderItems == undefined) {
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();
@@ -86366,13 +86367,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -87495,7 +87489,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -88205,10 +88199,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -93171,7 +93165,8 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     // Then check if it was passed via the column args.
                     // Then check if it was passed into the directive.
                     // then set a default.
-                    if (_this.pageRecord['currencyCode'] != null &&
+                    if (_this.pageRecord != null &&
+                        _this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
                     }
@@ -93179,11 +93174,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.column.arguments.currencyCode) {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
-                    else {
-                        //set a default if one was not passed in to use...
-                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
-                            _this.currencyCode = 'USD';
-                        }
+                    else if (_this.swListingDisplay.currencyCode != undefined &&
+                        _this.swListingDisplay.currencyCode.length) {
+                        _this.currencyCode = _this.swListingDisplay.currencyCode;
+                    }
+                    else if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -93265,7 +93261,6 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
-            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;
@@ -94513,11 +94508,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }

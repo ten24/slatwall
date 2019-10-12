@@ -112,6 +112,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function getPrimaryEmailAddressNotInUseFlag( required string emailAddress, string accountID ) {
 		return getAccountDAO().getPrimaryEmailAddressNotInUseFlag(argumentcollection=arguments);
 	}
+	
+	public boolean function getUsernameNotInUseFlag( required string username, string accountID ) {
+		return getAccountDAO().getUsernameNotInUseFlag(argumentcollection=arguments);
+	}
 
 	public any function getInternalAccountAuthenticationsByEmailAddress(required string emailAddress) {
 		return getAccountDAO().getInternalAccountAuthenticationsByEmailAddress(argumentcollection=arguments);

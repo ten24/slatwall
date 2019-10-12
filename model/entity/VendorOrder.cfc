@@ -57,7 +57,7 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="costDistributionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 
 	// Related Object Properties (Many-To-One)
-	property name="billToLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="billToLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="vendorOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderTypeID" hb_optionsSmartListData="f:parentType.systemCode=vendorOrderType";
 	property name="vendorOrderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=vendorOrderStatusType";
