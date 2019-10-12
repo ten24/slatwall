@@ -1174,7 +1174,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getQualifiedPromotionRewardSkuIDsForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
 		var rewardSkuIDs = "";
-		
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
 		for(var promotionReward in qualifiedPromotionRewards){
 			var skuCollection = promotionReward.getSkuCollection();
@@ -1182,11 +1181,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
 				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
 				
-				for(var sku in skus){
-					rewardSkuIDs = listAppend(rewardSkuIDs, sku.skuID);
+				if (isArray(skus)){
+					for(var sku in skus){
+						rewardSkuIDs = listAppend(rewardSkuIDs, sku['skuID']);
+					}
+				}else if (isStruct(skus)){
+					rewardSkuIDs = listAppend(rewardSkuIDs, skus['skuID']);
 				}
+				
 			}
 		}
+		
 		return rewardSkuIDs;
 	}
 

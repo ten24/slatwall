@@ -74,12 +74,10 @@ class SWAddPromotionOrderItemsBySkuController{
         
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
 		
 		//filter the sku listing on just the promotion skus.
 		if (this.promotionSkus){
-			this.addSkuCollection.addFilter('skuID', true,'in',undefined, this.promotionSkus);
+			this.addSkuCollection.addFilter('skuID', this.promotionSkus,'in',undefined, true);
 		}
 		
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);

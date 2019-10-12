@@ -63713,11 +63713,10 @@ var SWAddPromotionOrderItemsBySkuController = /** @class */ (function () {
             }
             _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
-            _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
-            _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
             //filter the sku listing on just the promotion skus.
             if (_this.promotionSkus) {
-                _this.addSkuCollection.addFilter('skuID', true, 'in', undefined, _this.promotionSkus);
+                //const promotionSkuIDs = this.promotionSkus.split(',').map(id => "'" + id + "'").toString(); //this reformats from id,id,id to 'id','id','id'
+                _this.addSkuCollection.addFilter('skuID', _this.promotionSkus, 'in', undefined, true);
             }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
