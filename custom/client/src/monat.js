@@ -59532,8 +59532,11 @@ var EnrollmentMPController = /** @class */ (function () {
         this.showAddToCartMessage = function () {
             var skuID = _this.monatService.lastAddedSkuID;
             _this.monatService.getCart().then(function (data) {
-                var orderItem = data.orderItems.find(function (item) {
-                    return item.sku.skuID === skuID;
+                var orderItem;
+                data.orderItems.forEach(function (item) {
+                    if (item.sku.skuID === skuID) {
+                        orderItem = item;
+                    }
                 });
                 if ('ProductPack' !== orderItem.sku.product.baseProductType) {
                     _this.lastAddedProductName = orderItem.sku.product.productName;

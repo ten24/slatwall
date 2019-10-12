@@ -36,8 +36,11 @@ class EnrollmentMPController {
 		
 		this.monatService.getCart().then( data => {
 
-			var orderItem = data.orderItems.find( item => {
-				return item.sku.skuID === skuID;
+			var orderItem;
+			data.orderItems.forEach( item => {
+				if ( item.sku.skuID === skuID ) {
+					orderItem = item;
+				}
 			});
 			
 			if ( 'ProductPack' !== orderItem.sku.product.baseProductType ) {
