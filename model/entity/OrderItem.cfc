@@ -1358,16 +1358,16 @@ public any function getPersonalVolume(){
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
 		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDs();  
+		return priceGroupCollection.getPrimaryIDList();  
 	} 
     
-	private numeric function getCustomPriceFieldAmount(required string priceField){
+	private numeric function getCustomPriceFieldAmount(required string customPriceField){
         arguments.currencyCode = this.getCurrencyCode();
 		arguments.quantity = this.getQuantity();
 		arguments.account = this.getOrder().getAccount();  
 		arguments.priceGroupIDs = [];
         if(!isNull(arguments.account)){
-			arguments.priceGroupIDs = getPriceGroupIDsForAccountID(arguments.account.getAccountID());	
+			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.account.getAccountID());	
 		}
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
