@@ -225,9 +225,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
-	property name="skuProductURL" persistent="false";
-	property name="skuImagePath" persistent="false";
-	property name="skuAdjustedPricing" persistent="false";
+
 
 
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
@@ -2024,6 +2022,7 @@ private string function getPriceGroupIDListForAccountID(string accountID){
 		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
 		return priceGroupCollection.getPrimaryIDList();  
 	}
+
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
@@ -2145,51 +2144,5 @@ private string function getPriceGroupIDListForAccountID(string accountID){
 			} 	 
 		}    
 	}
-    
-	public any function getSkuProductURL(){
-		var skuProductURL = this.getProduct().getProductURL();
-		return skuProductURL;
-	}
-	
-	public any function getSkuImagePath(){
-		var skuImagePath = this.getImagePath();
-		return skuImagePath;
-	}
-	
-	public any function getSkuAdjustedPricing(){
-			
-		var pricegroups = getHibachiScope().getAccount().getPriceGroups();
-		var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
-		var priceGroupService = getHibachiScope().getService('PriceGroupService');
-		var utilityService = getHibachiScope().getService('hibachiUtilityService');
-		
-		/*** TODO: FIGURE OUT HOW TO GET SITE SETTING FOR THIS AND WISHLIST AS WELL ***/
-		var currencyCode = 'usd';//getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
-		var vipPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(3);
-		var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
-		var MPPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
-
-		var adjustedAccountPrice = this.getPriceByCurrencyCode(currencyCode);
-		var adjustedVipPrice = this.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-		var adjustedRetailPrice = this.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-		var adjustedMPPrice = this.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-		var mPPersonalVolume = this.getPersonalVolume()?:0;
-		
-		var formattedAccountPricing = utilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
-		var formattedVipPricing = utilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
-		var formattedRetailPricing = utilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
-		var formattedMPPricing = utilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
-		var formattedPersonalVolume = utilityService.formatValue_currency(mPPersonalVolume, {currencyCode:currencyCode});
-		
-		var skuAdjustedPricing = {
-			adjustedPriceForAccount = formattedAccountPricing,
-			vipPrice = formattedVipPricing,
-			retailPrice = formattedRetailPricing,
-			MPPrice = formattedMPPricing,
-			personalVolume = formattedPersonalVolume,
-			accountPriceGroup = priceGroupCode
-		};
-
-		return skuAdjustedPricing;
-	}//CUSTOM FUNCTIONS END
+   //CUSTOM FUNCTIONS END
 }
