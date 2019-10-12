@@ -86,13 +86,29 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var entityCollectionList = invokeMethod('get#arguments.entityName#CollectionList');
 		entityCollectionList.setDisplayProperties('#primaryIDPropertyName#')
-		entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		
-		//TODO: Support filter groups
-		for( var filter in filters ){
-			entityCollectionList.addFilter(argumentCollection=filter);
+		var primaryFilterApplied = false;
+		for(var i = 1; i <= arrayLen(filters); i++){
+			if(!isArray(filters[i])){
+				entityCollectionList.addFilter(argumentCollection=filters[i]);
+				continue;
+			}
+			entityCollectionList.addFilter(
+				propertyIdentifier='#primaryIDPropertyName#', 
+				value=arguments.baseID, 
+				filterGroupAlias='FilterGroup#i#',
+				filterGroupLogicalOperator = 'OR'
+			);
+			primaryFilterApplied = true;
+			for(var ii = 1; ii <= arrayLen(filters[i]); ii++){
+				var filterArguments = filters[i][ii];
+				filterArguments['filterGroupAlias'] = 'FilterGroup#i#';
+				entityCollectionList.addFilter(argumentCollection=filterArguments);
+			}
 		}
-		
+		if(!primaryFilterApplied){
+			entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
+		}
 		return entityCollectionList.getRecordsCount() > 0;
 	}
 	
@@ -294,6 +310,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		switch ( arguments.entity.getClassName() ) {
+			
+			
+			case 'AccountPhoneNumber':
+			case 'AccountGovernmentIdentification':
+				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity.getAccount());
+				break;
 			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);

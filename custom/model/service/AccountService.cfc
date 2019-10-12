@@ -46,6 +46,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
 		ordersList.setDisplayProperties('
 			orderID,
+			calculatedTotalItemQuantity,
 			orderNumber,
 			orderStatusType.typeName,
 			orderFulfillments.shippingAddress.streetAddress,
