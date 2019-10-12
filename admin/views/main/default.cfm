@@ -71,7 +71,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorder">
 			
 		</hb:HibachiListingDisplay>
-		</br>
+		<br />
 		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
 				recordDetailAction="admin:entity.detailproductreview"
 			collectionList="#rc.productReviewCollectionList#"
