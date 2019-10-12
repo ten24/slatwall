@@ -59466,7 +59466,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
-            //this.getProductList()
+            _this.getProductList();
             _this.observerService.attach(_this.getProductList, 'createSuccess');
             _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
         };
