@@ -173,57 +173,140 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private array function getSkuPriceDataFlattened(required any skuPriceData, required struct skuData){ 
 		var skuPrices = [];
 		var sku = arguments.skuData;
+		var skuPriceData = arguments.skuPriceData;
 
-		ArrayEach(arguments.skuPriceData, function(item){
-			var skuPrice = {};
-			var itemData = arguments.item;
-			skuPrice["ItemCode"] = sku.ItemCode;
+		if(ArrayLen(sku['KitLines'])){
+			var currentCountryCode = "";
+			var previousCountryCode = "";
+			var index = 0;
 
-			StructEach(itemData, function(key, value){
-				
-				switch(arguments.key){
-					case 'CommissionableVolume':
-						skuPrice['CommissionableVolume'] = arguments.value;
+
+			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				switch (arguments.item['CountryCode']){	
+					case 'CAN':
+						currentCountryCode = 'CAD';
 						break;
-					case 'QualifyingVolume':
-						skuPrice['QualifyingPrice'] = arguments.value;
+					case 'GBR':
+						currentCountryCode = 'GBP';
 						break;
-					case 'RetailProfit':
-						skuPrice['RetailsCommissions'] = arguments.value;
-						break;
-					case 'RetailVolume':
-						skuPrice['RetailValueVolume'] = arguments.value;
-						break;
-					case 'SellingPrice':
-						skuPrice['SellingPrice'] = arguments.value;
-						break;
-					case 'TaxablePrice':
-						skuPrice['TaxablePrice'] = arguments.value;
-						break;
-					case 'ProductPackVolume':
-						skuPrice['ProductPackBonus'] = arguments.value;
-						break;
-					case 'PriceLevelCode':
-						skuPrice['PriceLevel'] = arguments.value;
-						break;
-					case 'CountryCode':
-						switch (arguments.value){	
-							case 'CAN':
-								skuPrice['CountryCode'] = 'CAD';
-								break;
-							case 'GBR':
-								skuPrice['CountryCode'] = 'GBP';
-								break;
-							case 'USA':
-								skuPrice['CountryCode'] = 'USD';
-								break;
-						}
+					case 'USA':
+						currentCountryCode = 'USD';
 						break;
 				}
+
+				if(currentCountryCode != previousCountryCode){
+					
+					ArrayEach(skuPriceData, function(item){
+						var skuPrice = {};
+						var itemData = arguments.item;
+						skuPrice["ItemCode"] = sku.ItemCode & currentCountryCode;
+
+						StructEach(itemData, function(key, value){
+							
+							switch(arguments.key){
+								case 'CommissionableVolume':
+									skuPrice['Commission'] = arguments.value;
+									break;
+								case 'QualifyingVolume':
+									skuPrice['QualifyingPrice'] = arguments.value;
+									break;
+								case 'RetailProfit':
+									skuPrice['RetailsCommissions'] = arguments.value;
+									break;
+								case 'RetailVolume':
+									skuPrice['RetailValueVolume'] = arguments.value;
+									break;
+								case 'SellingPrice':
+									skuPrice['SellingPrice'] = arguments.value;
+									break;
+								case 'TaxablePrice':
+									skuPrice['TaxablePrice'] = arguments.value;
+									break;
+								case 'ProductPackVolume':
+									skuPrice['ProductPackBonus'] = arguments.value;
+									break;
+								case 'PriceLevelCode':
+									skuPrice['PriceLevel'] = arguments.value;
+									break;
+								case 'CountryCode':
+									switch (arguments.value){	
+										case 'CAN':
+											skuPrice['CountryCode'] = 'CAD';
+											break;
+										case 'GBR':
+											skuPrice['CountryCode'] = 'GBP';
+											break;
+										case 'USA':
+											skuPrice['CountryCode'] = 'USD';
+											break;
+									}
+									break;
+							}
+						}, true, 10);
+						
+						ArrayAppend(skuPrices, skuPrice);
+					}, true, 10);
+				}
+
+				previousCountryCode = currentCountryCode;
+			});
+
+		} else {
+			ArrayEach(skuPriceData, function(item){
+				var skuPrice = {};
+				var itemData = arguments.item;
+				skuPrice["ItemCode"] = sku.ItemCode;
+
+				StructEach(itemData, function(key, value){
+					
+					switch(arguments.key){
+						case 'CommissionableVolume':
+							skuPrice['Commission'] = arguments.value;
+							break;
+						case 'QualifyingVolume':
+							skuPrice['QualifyingPrice'] = arguments.value;
+							break;
+						case 'RetailProfit':
+							skuPrice['RetailsCommissions'] = arguments.value;
+							break;
+						case 'RetailVolume':
+							skuPrice['RetailValueVolume'] = arguments.value;
+							break;
+						case 'SellingPrice':
+							skuPrice['SellingPrice'] = arguments.value;
+							break;
+						case 'TaxablePrice':
+							skuPrice['TaxablePrice'] = arguments.value;
+							break;
+						case 'ProductPackVolume':
+							skuPrice['ProductPackBonus'] = arguments.value;
+							break;
+						case 'PriceLevelCode':
+							skuPrice['PriceLevel'] = arguments.value;
+							break;
+						case 'CountryCode':
+							switch (arguments.value){	
+								case 'CAN':
+									skuPrice['CountryCode'] = 'CAD';
+									break;
+								case 'GBR':
+									skuPrice['CountryCode'] = 'GBP';
+									break;
+								case 'USA':
+									skuPrice['CountryCode'] = 'USD';
+									break;
+							}
+							break;
+					}
+				}, true, 10);
+				
+				ArrayAppend(skuPrices, skuPrice);
 			}, true, 10);
-			
-			ArrayAppend(skuPrices, skuPrice);
-		}, true, 10);
+		}
+
+
+		
 		
 		return skuPrices;
 	}
@@ -235,17 +318,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
-			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
-										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-										
-				return hasDefaultSkuPrice; 
-			},true, 10);
-
-			if(ArrayLen(defaultSkuPrice)){
-				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-			}
 		}
 
 		StructEach(arguments.skuData, function(key, value){
@@ -257,11 +329,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			switch(skuField){
 				case 'ItemCode':
 					data['SKUItemCode'] = Trim(fieldValue);
+					data['PRODUCTItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
 					break;
-				case 'DisableOnRegularOrders':
+				case 'ItemNote':
+					data['ItemNote'] = Trim(fieldValue);
+					break;
+				case 'SalesCategoryCode':
+					data['SalesCategoryCode'] = Trim(fieldValue);
+					break;
+				case 'DisableInDTX':
 					data['DisableOnRegularOrders'] = fieldValue;
 					break;
 				case 'DisableInFlexShip':
@@ -273,10 +352,84 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemCategoryName':
 					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
+				case 'EntryDate':
+					data['EntryDate'] = fieldValue;
+					break;
+				case 'SAPItemCodes':
+					if (ArrayLen(fieldValue)) {
+						data['SAPItemCode'] = fieldValue[1]['SAPItemCode'];
+					}
+					break;
 			}
 		}, true, 10);
 
-		QueryAddRow(query, data);
+		// create skubundle data
+		if(ArrayLen(arguments.skuData['KitLines'])){
+			var currentCountryCode = "";
+			var previousCountryCode = "";
+			var index = 0;
+
+			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				switch (arguments.item['CountryCode']){	
+					case 'CAN':
+						currentCountryCode = 'CAD';
+						break;
+					case 'GBR':
+						currentCountryCode = 'GBP';
+						break;
+					case 'USA':
+						currentCountryCode = 'USD';
+						break;
+				}
+
+				if(currentCountryCode != previousCountryCode){
+					if(!arrayIsEmpty(skuPriceData)){
+						var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+							var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
+													(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+													(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+													
+							return hasDefaultSkuPrice; 
+						},true, 10);
+					}
+
+					if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
+						data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+					}
+
+					if(index > 0){
+						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
+						data['SKUItemCode'] &= currentCountryCode;
+					} else {
+						data['SKUItemCode'] &= currentCountryCode;
+					}
+					
+					QueryAddRow(query, data);
+					index++;
+				}
+
+				previousCountryCode = currentCountryCode;
+			});
+
+		} else {
+
+			if(!arrayIsEmpty(skuPriceData)){
+				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+					var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
+											(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+											(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+											
+					return hasDefaultSkuPrice; 
+				},true, 10);
+
+				if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
+					data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+				}
+			}
+
+			QueryAddRow(query, data);
+		}
 
 		return query;
 	}
@@ -289,7 +442,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var priceLevels = skuData.PriceLevels;
 			skuPriceData = skuData.PriceLevels;
 		}
-
+		
 		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
 
 		ArrayEach(skuPricesFlattened, function(item){
@@ -299,12 +452,58 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return arguments.skuPriceQuery;
 	}
 
+	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
+		var query = arguments.skuBundleQuery;
+		var skuData = arguments.skuData;
+		var currentCountryCode = "";
+		ArrayEach(arguments.skuData.KitLines, function(item){
+			var skuBundleData = {};
+			switch (arguments.item['CountryCode']){	
+				case 'CAN':
+					currentCountryCode = 'CAD';
+					break;
+				case 'GBR':
+					currentCountryCode = 'GBP';
+					break;
+				case 'USA':
+					currentCountryCode = 'USD';
+					break;
+			}
+
+			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
+
+			StructEach(arguments.item, function(key, value){
+				switch (arguments.key){
+					case 'OnTheFlyFlag':
+						skuBundleData['ontheflykit'] = arguments.value;
+						break;
+					case 'ComponentItemCode':
+						skuBundleData['ComponentItemCode'] = arguments.value;
+						break;
+					case 'ComponentQty':
+						skuBundleData['ComponentQuantity'] = arguments.value;
+						break;
+				}
+			}, true, 10);
+			if(StructIsEmpty(skuBundleData)){
+				continue;
+			}
+			QueryAddRow(query, skuBundleData);
+		}, true, 10);
+
+		return query;
+	}
+
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
+		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
 	}
 
 	private string function getSkuPriceColumnsList(){
 		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
+	}
+	
+	private string function getSkuBundleColumnsList(){
+		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 
 	public void function importMonatProducts(){
@@ -314,12 +513,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var totalPages = 1;
+
 		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			totalPages = initProductData['Data']['TotalPages'];
 		}
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
+		var importSkuBundles = rc.importSkuBundles?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -331,7 +532,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var skuPriceColumns = this.getSkuPriceColumnsList();
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-
+		
+		var skuBundleColumns = this.getSkuBundleColumnsList();
+		skuBundleColumnTypes = [];
+		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -344,27 +548,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
 
-    		try{
-				
-				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
-				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
+			if(!importSkuBundles){
 
-				for (var skuData in monatProducts){
+				try{
 					
-					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
+					var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+					var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
-					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+					for (var skuData in monatProducts){
+						
+						skuQuery = this.populateSkuQuery(skuQuery, skuData);
+
+						if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
+							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+						}
 					}
-				}
-				
-				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
-				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-			} catch (any e){
-    			writeDump(e); // rollback the tx
+					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+
+					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+			} else {
+
+				try{
+					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+					for (var skuData in monatProducts){
+						if(arrayLen(skuData['KitLines'])){
+							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+
+							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+
+							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+						}
+					}
+				
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
 			}
 			pageNumber++
 		}

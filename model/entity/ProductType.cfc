@@ -118,7 +118,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		var baseID = listFirst(getProductTypeIDPath());
 	
 		var cacheKey = 'productType_getBaseProductType#baseID#';
-		if(isNull(getSystemCode()) || getSystemCode() == ""){
+		if(ListLen(getProductTypeIDPath())){
 			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 				getService('HibachiCacheService').setCachedValue(cacheKey,getService("ProductService").getProductType(baseID).getSystemCode());
 			}
