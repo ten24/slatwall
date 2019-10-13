@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"orderDeliveryItems":			[{"contexts":"save","required":true,"minCollection":1}]
+	"properties": {
+		"orderDeliveryItems": [{ "contexts": "save", "required": true, "minCollection": 1 }]
 	}
 }

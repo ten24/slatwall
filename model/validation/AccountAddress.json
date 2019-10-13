@@ -1,8 +1,8 @@
 {
-	"properties":{
-		"account":			[{"contexts":"save","required":true}]
+	"properties": {
+		"account": [{ "contexts": "save", "required": true }]
 	},
-	"populatedPropertyValidation":{
-	    "address":[{"validate":"full"}]
+	"populatedPropertyValidation": {
+		"address": [{ "validate": "full" }]
 	}
 }
