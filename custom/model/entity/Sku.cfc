@@ -5,16 +5,11 @@ component {
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
-
-
-
-    
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
 		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -25,7 +20,6 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -36,7 +30,6 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -47,7 +40,6 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -58,7 +50,6 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -69,13 +60,12 @@ component {
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
@@ -86,10 +76,6 @@ component {
 		if(!structKeyExists(arguments,'priceGroups')){
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
-
-		if(!structKeyExists(arguments,'priceGroupIDList')){
-			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
-		}	
 	
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
