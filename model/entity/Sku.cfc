@@ -616,9 +616,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	private string function getPriceGroupIDsForAccountID(string accountID){
+	public string function getPriceGroupIDsForAccountID(string accountID){
     	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return [];
+			return '';
 		}
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
@@ -2105,9 +2105,22 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
-		
+	
+		var account = getHibachiScope().getAccount();
+		if(structKeyExists(arguments,'accountID')){
+			account = getService('AccountService').getAccount(arguments.accountID);
+		}	
+
+		if(!structKeyExists(arguments,'priceGroups')){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+
+		if(!structKeyExists(arguments,'priceGroupIDList')){
+			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		}	
+	
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
