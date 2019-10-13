@@ -27,6 +27,7 @@ class SWListingSearchController {
     private selectedSearchFilter;
     
     public wildCardPositionOptions;
+    public selectedWildCardPosition;
     public showWildCardPositionDropDown:boolean;
 
     
@@ -102,9 +103,13 @@ class SWListingSearchController {
             }
         ];
         
-        this.selectSearchFilter(this.searchableFilterOptions[0]);
+        if(!angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
+            this.swListingDisplay.collectionConfig.listingSearchConfig = {};
+        } 
+        
+        this.applySearchConfig(this.swListingDisplay.collectionConfig.listingSearchConfig);
+        
         this.selectedSearchColumn={title:'All'};
-
         this.configureSearchableColumns(this.selectedSearchColumn);
 
         if(this.swListingControls.showPrintOptions){
@@ -131,8 +136,43 @@ class SWListingSearchController {
         }
     }
     
+    private applySearchConfig(searchConfig) {
+        
+        let preSelectedSearchFilter = null;
+        if(angular.isDefined(searchConfig.selectSearchFilter)){
+             preSelectedSearchFilter = this.searchableFilterOptions
+                                                .find(item => item.code === searchConfig.selectSearchFilter.code );
+        }
+        if(!preSelectedSearchFilter){
+            preSelectedSearchFilter = this.searchableFilterOptions[0];
+        }
+        
+        let preSelectedWildCardPosition = null;
+        if(angular.isDefined(searchConfig.selectWildCardPosition)){
+             preSelectedWildCardPosition = this.searchableFilterOptions
+                                                .find(item => item.value === searchConfig.selectWildCardPosition.value );
+        }
+        if(!preSelectedWildCardPosition) {
+            preSelectedWildCardPosition = this.searchableFilterOptions[0];
+        }
+        
+        this.selectSearchFilter(preSelectedSearchFilter);
+        this.selectedWildCardPosition(preSelectedWildCardPosition);
+        
+        this.showSearchFilterDropDown = searchConfig.showSearchFilterDropDown;
+        this.showWildCardPositionDropDown = searchConfig.showWildCardPositionDropDown;
+
+    }
+    
     public selectSearchFilter = (filter?)=>{
         this.selectedSearchFilter = filter;
+        if(this.swListingDisplay.searchText){
+            this.search();
+        }
+    }
+    
+    public selectWildCardPoition = (position:string)=>{
+        this.selectedWildCardPosition = position;
         if(this.swListingDisplay.searchText){
             this.search();
         }
@@ -299,12 +339,12 @@ class SWListingSearchController {
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
-        this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        if(this.selectedSearchFilter.value!='All'){
-            if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
-                this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-            }
-        }
+        // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+        // if(this.selectedSearchFilter.criteria != 'all'){
+        //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
+        //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+        //     }
+        // }
 
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 

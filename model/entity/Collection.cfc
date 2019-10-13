@@ -383,6 +383,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return variables.collectionEntityObject;
 	}
+	
+	public any function getCollectionObjectListingSearchConfig() {
+		
+		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
+			variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+			
+			if(StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')){
+				StructAppend(variables['collectionObjectListingSearchConfig'], this.getCollectionConfigStruct()['listingSearchConfig'],true);// Merge and override
+			}
+		}
+		
+		return variables.listingSearchConfig;
+	}
+
+	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
+		variables['collectionObjectListingSearchConfig'] = arguments.listingSearchConfig;
+	}
+
 
 	public string function getAlias(required string propertyIdentifier){
 		var alias = "";
@@ -4050,6 +4068,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 		}
+		var searchConfig = this.getCollectionObjectListingSearchConfig(); 
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {
@@ -4063,9 +4082,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				this.getCollectionEntityObject().getListingSearchConfig();
-				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
-				switch(wildcrdPosition){
+				switch(searchConfig.wildcrdPosition){
 					case "left":
 							currentFilter['value']="%#keyword#";
 						break;
@@ -4151,6 +4168,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				addPostFilterGroup(postFilterGroup);
 			}
 			keywordIndex++;
+		}
+		
+		if(!searchConfig.ignoreSearchFilters) {
+			
 		}
 
 	}
