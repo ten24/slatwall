@@ -229,6 +229,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 
 
+
+    
+   
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -630,9 +633,12 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		if(structKeyExists(arguments,'accountID')){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}
-
-		arguments.priceGroups = account.getPriceGroups(); 
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		if(!structKeyExists(arguments,'priceGroups')){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+		if(!structKeyExists(arguments,'priceGroupIDList')){
+			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		}
 
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
@@ -2033,18 +2039,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-private string function getPriceGroupIDsForAccountID(string accountID){
-    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return [];
-		}
-		
-		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
-		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList(); 
-	}
-
-    
-    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
