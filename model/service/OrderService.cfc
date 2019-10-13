@@ -1194,12 +1194,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			   action="run" 
 		{
 
+			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-			transientOrder = this.saveOrder(transientOrder);
+			//only update amounts if we can
+			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
-			if(!isNull(request.orderTemplate.getShippingMethod())){	
+			if(hasInfoForFulfillment){	
 				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
@@ -1207,7 +1210,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#');
+			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
