@@ -227,10 +227,6 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
-
-
-
-    
    
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
@@ -615,18 +611,8 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
-
-	public string function getPriceGroupIDsForAccountID(string accountID){
-    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return '';
-		}
-		
-		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
-		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList(); 
-	}
 	
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList, string accountID ) {
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 
 		var account = getHibachiScope().getAccount();
@@ -635,9 +621,6 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		}
 		if(!structKeyExists(arguments,'priceGroups')){
 			arguments.priceGroups = account.getPriceGroups(); 
-		}
-		if(!structKeyExists(arguments,'priceGroupIDList')){
-			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
 		}
 
 		for(var priceGroup in arguments.priceGroups){
@@ -2044,7 +2027,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
 		arguments.customPriceField = 'personalVolume';
     	
         return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2055,7 +2037,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'taxableAmount';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2066,7 +2047,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'commissionableVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2077,7 +2057,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailCommission';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2088,7 +2067,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'productPackVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
@@ -2099,13 +2077,12 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
     		arguments.currencyCode = this.getCurrencyCode();
     	}
     	
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.accountID); 
     	arguments.customPriceField = 'retailValueVolume';
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
@@ -2116,10 +2093,6 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		if(!structKeyExists(arguments,'priceGroups')){
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
-
-		if(!structKeyExists(arguments,'priceGroupIDList')){
-			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
-		}	
 	
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
