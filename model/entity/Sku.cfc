@@ -613,17 +613,36 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
-		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
+	private string function getPriceGroupIDsForAccountID(string accountID){
+    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
+			return [];
+		}
 		
+		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
+		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
+		return priceGroupCollection.getPrimaryIDList(); 
+	}
+	
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList, string accountID ) {
+		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
+
+		var account = getHibachiScope().getAccount();
+		if(structKeyExists(arguments,'accountID')){
+			account = getService('AccountService').getAccount(arguments.accountID);
+		}
+
+		arguments.priceGroups = account.getPriceGroups(); 
+		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
 
+		arguments.skuID = this.getSkuID(); 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
+				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
 				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 					var prices = [];
 						for(var i=1; i <= arrayLen(skuPriceResults); i++){
