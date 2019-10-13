@@ -618,7 +618,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	private string function getPriceGroupIDsForAccountID(string accountID){
     	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return [];
+			return '';
 		}
 		
 		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
