@@ -630,9 +630,12 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 		if(structKeyExists(arguments,'accountID')){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}
-
-		arguments.priceGroups = account.getPriceGroups(); 
-		arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		if(!structKeyExists(arguments,'priceGroups')){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+		if(!structKeyExists(arguments,'priceGroupIDList')){
+			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		}
 
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
