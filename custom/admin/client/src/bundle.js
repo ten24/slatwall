@@ -93160,7 +93160,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
                     if (_this.column.type && _this.column.type == 'datetime') {
-                        _this.dateFormat = 'MM/dd/yyyy hh:mm xm';
+                        _this.dateFormat = 'MM/dd/yyyy hh:mm a';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }

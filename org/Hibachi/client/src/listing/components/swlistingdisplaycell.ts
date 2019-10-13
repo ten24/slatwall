@@ -115,7 +115,7 @@ class SWListingDisplayCellController{
             
             if(this.column.ormtype === 'timestamp'){
                 if(this.column.type && this.column.type=='datetime'){
-                    this.dateFormat = 'MM/dd/yyyy hh:mm xm';
+                    this.dateFormat = 'MM/dd/yyyy hh:mm a';
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycelldate.html';
