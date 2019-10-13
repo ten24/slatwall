@@ -1,3 +1,17 @@
+<!--- Custom Monat Styles --->
+<style> 
+	#tabvolume .col-sm-4 {
+	  width: 75%;
+	}
+	#tabvolume .col-sm-8 {
+	  width: 25%;
+	}
+	#tabvolume .form-control-static {
+	  padding: 0;
+	  min-height: auto;
+	}
+</style>
+
 <cfimport prefix="swa" taglib="../../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
