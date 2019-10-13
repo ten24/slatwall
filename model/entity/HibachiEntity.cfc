@@ -557,6 +557,23 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	
+	/**
+	 * param  wildCardPosition  => left, right, both; default driven by sys-stting
+	 * param searchFilterPropertyIdentifier => any propertyIdentifier where  ormtype = dateTime
+	 * 
+	*/ 
 	
-
+	public struct function getListingSearchConfig() {
+		param name="wildCardPosition" default=getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+		param name="showWildCardPositionDropdown" default=true; // ability to change wildcard position
+		param name="searchFilterPropertyIdentifier" default='createdDateTime';
+		param name="showSearchFilterDropDown" default=true; // ability to change search filter period
+		param name="ignoreSearchFilters" default=false; // searchFilters will be ignored
+		
+		var listingSearchConfig  = {};
+		listingSearchConfig['wildCardPostion'] = arguments.wildCardPosition;
+		listingSearchConfig['searchFilterPropertyIdentifier'] = arguments.searchFilterPropertyIdentifier;	
+		return listingSearchConfig;
+	}
+	
 }

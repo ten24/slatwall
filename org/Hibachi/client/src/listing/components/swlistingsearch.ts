@@ -2,8 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingSearchController {
-    private selectedSearchColumn;
-    private selectedSearchFilter;
+
     public searchFilterPropertyIdentifier;
     private filterPropertiesList;
     private collectionConfig;
@@ -14,14 +13,23 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
-    public showSearchFilterDropDown:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
     private listingId;
     public swListingDisplay:any;
+    
     public searchableOptions;
+    private selectedSearchColumn;
+   
     public searchableFilterOptions;
+    public showSearchFilterDropDown:boolean;
+    private selectedSearchFilter;
+    
+    public wildCardPositionOptions;
+    public showWildCardPositionDropDown:boolean;
+
+    
     public swListingControls:any;
     public hasPersonalCollections:boolean=false;
     public personalCollections:any;
@@ -59,19 +67,38 @@ class SWListingSearchController {
         this.searchableFilterOptions = [
             {
                 title:'Last 3 Months',
-                value:new Date().setMonth(new Date().getMonth()-3)
+                code:'lastThreeMonths',
+                criteria:"m:3",
             },
             {
                 title:'Last 6 Months',
-                value:new Date().setMonth(new Date().getMonth()-6)
+                code:'lastThreeSix',
+                criteria:"m:6",
             },
             {
                 title:'1 Year Ago',
-                value:new Date().setMonth(new Date().getMonth()-12)
+                code:'lastOneYear',
+                criteria:"y:1",
             },
             {
                 title:'All Time',
-                value:'All'
+                code:'allRecords',
+                criteria:'all'
+            }
+        ];
+        
+        this.wildCardPositionOptions = [
+            {
+                title:'Match from start',
+                value:'left'
+            },
+            {
+                title:'Match end',
+                value:'right'
+            },
+            {
+                title:'Match between',
+                value:'both'
             }
         ];
         

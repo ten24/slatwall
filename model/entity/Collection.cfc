@@ -3064,7 +3064,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
 			
-			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType);
 		
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
@@ -4063,7 +4063,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				
+				this.getCollectionEntityObject().getListingSearchConfig();
 				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
 				switch(wildcrdPosition){
 					case "left":
