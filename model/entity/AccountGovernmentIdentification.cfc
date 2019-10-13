@@ -79,7 +79,7 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	// Account (many-to-one)    
 	public void function setAccount(required any account) {    
 		variables.account = arguments.account;    
-		if(isNew() || !arguments.account.hasAccountGovernmentIdentification( this )) {    
+		if(isNew() || !arguments.account.hasAccountGovernmentIdentifications( this )) {    
 			arrayAppend(arguments.account.getAccountGovernmentIdentifications(), this);    
 		}
 	}
@@ -102,7 +102,18 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	public string function getSimpleRepresentationPropertyName() {
 		return "governmentIdentificationLastFour";
 	}
-
+	
+	public string function getGovernmentIdentificationNumber() {
+		if(!structKeyExists(variables,"governmentIdentificationNumber")) {
+			if(nullReplace(getGovernmentIdentificationNumberEncrypted(), "") != "") {
+				variables.governmentIdentificationNumber = decryptProperty("governmentIdentificationNumber");
+			} else {
+				variables.governmentIdentificationNumber = "";
+			}
+		}
+		return variables.governmentIdentificationNumber;
+	}
+	
 	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
 		if(len(arguments.governmentIdentificationNumber)) {
 			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;

@@ -13,7 +13,7 @@
 				"value":"null"
 			},
 			{
-				"propertyIdentifier":"ownerAccount",
+				"propertyIdentifier":"ownerAccount.accountID",
 				"comparisonOperator":"is not",
 				"logicalOperator":"AND",
 				"value":"null"
