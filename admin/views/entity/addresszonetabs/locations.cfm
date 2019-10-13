@@ -67,12 +67,6 @@ Notes:
 		isVisible=false,
 		isDeletable=false
 	});
-
-    locationCollectionList.addDisplayProperty(displayProperty='addressZoneLocations.addressID',columnConfig={
-		isSearchable=false,
-		isVisible=false,
-		isDeletable=false
-	});
 </cfscript>
 
 <cfoutput>
