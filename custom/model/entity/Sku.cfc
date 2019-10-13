@@ -6,15 +6,7 @@ component {
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
 
-	private string function getPriceGroupIDsForAccountID(string accountID){
-    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return [];
-		}
-		
-		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
-		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList(); 
-	}
+
 
     
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
