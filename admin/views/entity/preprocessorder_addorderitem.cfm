@@ -315,6 +315,7 @@ Notes:
 											</cfif>
 										</div>
 										
+									</hb:HibachiDisplayToggle>	
 									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
 									</cfif>
