@@ -59564,6 +59564,7 @@ var EnrollmentMPController = /** @class */ (function () {
             }
         };
         this.submitSponsor = function () {
+            _this.loading = true;
             if (_this.selectedMP) {
                 _this.monatService.submitSponsor(_this.selectedMP.accountID).then(function (data) {
                     if (data.successfulActions && data.successfulActions.length) {
@@ -59572,10 +59573,12 @@ var EnrollmentMPController = /** @class */ (function () {
                     else {
                         _this.sponsorHasErrors = true;
                     }
+                    _this.loading = false;
                 });
             }
             else {
                 _this.sponsorHasErrors = true;
+                _this.loading = false;
             }
         };
         this.selectBundle = function (bundleID) {
@@ -59615,12 +59618,11 @@ var EnrollmentMPController = /** @class */ (function () {
             });
         };
         this.setOwnerAccount = function (ownerAccountID) {
-            _this.loading = true;
+            //this.loading = true;
             _this.publicService
                 .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
                 .then(function (result) {
-                console.log(result);
-                _this.loading = false;
+                //this.loading = false;
             });
         };
         this.getProductList = function (pageNumber, direction, newPages) {
@@ -84425,6 +84427,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.dateFormat = 'MM/dd/yyyy';
         this.expandable = false;
         this.hasAggregate = function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
@@ -84453,6 +84456,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
+                    if (_this.column.type && _this.column.type == 'datetime') {
+                        _this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                    }
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
