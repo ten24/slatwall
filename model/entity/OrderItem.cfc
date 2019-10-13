@@ -1354,7 +1354,9 @@ public any function getPersonalVolume(){
 	private numeric function getCustomPriceFieldAmount(required string customPriceField){
         arguments.currencyCode = this.getCurrencyCode();
 		arguments.quantity = this.getQuantity();
-		arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		if(!isNull(this.getOrder().getAccount())){ 
+			arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		}
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
