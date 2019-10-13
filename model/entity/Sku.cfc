@@ -229,6 +229,9 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 
 
+
+    
+   
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -2036,18 +2039,7 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-private string function getPriceGroupIDsForAccountID(string accountID){
-    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return [];
-		}
-		
-		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
-		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList(); 
-	}
-
-    
-    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
