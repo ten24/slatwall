@@ -75,9 +75,22 @@ component {
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
 
-    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList ) {
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups, string priceGroupIDList ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
-		
+	
+		var account = getHibachiScope().getAccount();
+		if(structKeyExists(arguments,'accountID')){
+			account = getService('AccountService').getAccount(arguments.accountID);
+		}	
+
+		if(!structKeyExists(arguments,'priceGroups')){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+
+		if(!structKeyExists(arguments,'priceGroupIDList')){
+			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(account.getAccountID()); 
+		}	
+	
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
