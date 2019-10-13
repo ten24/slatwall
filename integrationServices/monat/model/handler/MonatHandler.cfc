@@ -14,7 +14,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				baseObject      = 'Account',
 				processMethod   = 'push',
 				entityQueueData = { 'event' = 'afterAccountSaveSuccess' },
-				integrationID   = getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
+				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
 			);
 		}
 
