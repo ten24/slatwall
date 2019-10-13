@@ -49,6 +49,9 @@ component extends="Slatwall.model.service.HibachiService" {
         accountCollection.addDisplayProperty('primaryAddress.address.city');
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
         
+        accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
+        accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
+        
         if(arguments.data.accountSearchType == 'VIP'){
             accountCollection.addFilter(
                 propertyIdentifier = 'accountType', 
