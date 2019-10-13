@@ -1,10 +1,12 @@
 {
-	"properties":{
-		"productTypeName":		[{"contexts":"save","required":true,"unique":true}],
-		"urlTitle":				[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"products":				[{"contexts":"delete","maxCollection":0}],
-		"childProductTypes":	[{"contexts":"delete","maxCollection":0}],
-		"systemCode":			[{"contexts":"delete","maxLength":0}],
-		"physicalCounts":		[{"contexts":"delete","maxCollection":0}]
+	"properties": {
+		"productTypeName": [{ "contexts": "save", "required": true, "unique": true }],
+		"urlTitle": [
+			{ "contexts": "save", "required": true, "unique": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }
+		],
+		"products": [{ "contexts": "delete", "maxCollection": 0 }],
+		"childProductTypes": [{ "contexts": "delete", "maxCollection": 0 }],
+		"systemCode": [{ "contexts": "delete", "maxLength": 0 }],
+		"physicalCounts": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }
