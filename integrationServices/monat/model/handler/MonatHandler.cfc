@@ -1,6 +1,6 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     property name="OrderService";
-    property name="AccounService";
+    property name="AccountService";
     
     public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
         
