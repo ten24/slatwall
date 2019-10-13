@@ -1350,24 +1350,11 @@ public any function getPersonalVolume(){
     public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
     }
-   
-	private string function getPriceGroupIDsForAccountID(string accountID){
-    	if (!structKeyExists(arguments, "accountID") || isNull(arguments.accountID) || !len(arguments.accountID)){
-			return ''; 
-		}
-		
-		var priceGroupCollection = getService('PriceGroupService').getPriceGroupCollectionList();
-		priceGroupCollection.addFilter('accounts.accountID', arguments.accountID);
-		return priceGroupCollection.getPrimaryIDList();  
-	} 
     
 	private numeric function getCustomPriceFieldAmount(required string customPriceField){
         arguments.currencyCode = this.getCurrencyCode();
 		arguments.quantity = this.getQuantity();
-		arguments.account = this.getOrder().getAccount();  
-        if(!isNull(arguments.account)){
-			arguments.priceGroupIDList = getPriceGroupIDsForAccountID(arguments.account.getAccountID());	
-		}
+		arguments.accountID = this.getOrder().getAccount().getAccountID();  
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
