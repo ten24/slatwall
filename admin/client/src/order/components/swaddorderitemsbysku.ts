@@ -89,8 +89,8 @@ class SWAddOrderItemsBySkuController{
 	        },
 	        {
 	            'title': this.rbkeyService.rbKey('define.price'),
-            	'propertyIdentifier':'price',
-            	'type':'number',
+            	'propertyIdentifier':'priceByCurrencyCode',
+            	'type':'currency',
             	'isCollectionColumn':true,
             	'isEditable':true,
             	'isVisible':true
