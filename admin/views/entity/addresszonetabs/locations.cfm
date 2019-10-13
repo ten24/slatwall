@@ -62,6 +62,12 @@ Notes:
 		isDeletable=true
     });
 
+    locationCollectionList.addDisplayProperty(displayProperty='addressZoneID',columnConfig={
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
+	});
+
     locationCollectionList.addDisplayProperty(displayProperty='addressZoneLocations.addressID',columnConfig={
 		isSearchable=false,
 		isVisible=false,
