@@ -9,6 +9,7 @@
 	#tabvolume .form-control-static {
 	  padding: 0;
 	  min-height: auto;
+	  text-align: right;
 	}
 </style>
 
