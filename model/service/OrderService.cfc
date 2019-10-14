@@ -1210,7 +1210,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
@@ -1226,7 +1226,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal']	
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
 	}
 
 	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
@@ -1310,11 +1310,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
-		
+	
 		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
 
 		var transientOrderItems = []; 
-	
+		
+		if( structKeyExists(arguments, "transientOrder") &&
+			!arrayIsEmpty(arguments.transientOrder.getOrderItems())){
+			return transientOrderItems; 
+		}
+
 		for(var orderTemplateItem in orderTemplateItems){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
 			var sku = orderTemplateItem.getSku(); 		
