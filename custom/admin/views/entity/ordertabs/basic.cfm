@@ -41,6 +41,8 @@
 			</cfif>
 			
 			<!--- Origin --->
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="iceRecordNumber" edit="false">
+				
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
 			
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">

@@ -115,7 +115,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private any function encryptCardNumber(required string cardNumber, required string publicKey) {
 		var secureRandom = createObject("java", "java.security.SecureRandom").init();
 		var cipher = createObject("java", "javax.crypto.Cipher").getInstance("RSA/ECB/PKCS1Padding", "SunJCE"); // This also is equivalent: getInstance("RSA/None/PKCS1Padding", "BC") for BouncyCastle (org.bouncycastle.jce.provider.BouncyCastleProvider)
-
+		arguments.publicKey = normalizeBase64Length(arguments.publicKey);
 		// Convert public key from string to java Key object
 		// First need to convert raw string to ByteArray
 		var publicKeySpec = createObject('java', 'java.security.spec.X509EncodedKeySpec').init(toBinary(arguments.publicKey));
@@ -124,6 +124,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		cipher.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, key, secureRandom);
 		
 		return cipher.doFinal(toBinary(toBase64(arguments.cardNumber)));
+	}
+	
+	private string function normalizeBase64Length( required string base64String){
+		while(len(arguments.base64String)%4 != 0){
+			arguments.base64String &= '=';
+		}
+		return arguments.base64String;
 	}
 	
 	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {

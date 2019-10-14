@@ -63534,8 +63534,8 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
                 'isVisible': true
             }, {
                 'title': _this.rbkeyService.rbKey('define.price'),
-                'propertyIdentifier': 'price',
-                'type': 'number',
+                'propertyIdentifier': 'priceByCurrencyCode',
+                'type': 'currency',
                 'isCollectionColumn': true,
                 'isEditable': true,
                 'isVisible': true
@@ -84017,6 +84017,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
+        this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
         this.getJWTDataFromToken = function () {
             _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
@@ -84068,8 +84069,11 @@ var HibachiInterceptor = /** @class */ (function () {
         };
         this.response = function (response) {
             if (response.data.messages) {
-                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
-                _this.alertService.addAlerts(alerts);
+                //We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+                if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != _this.preProcessDisplayedFlagMessage) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
             }
             return response;
         };
@@ -93126,6 +93130,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.dateFormat = 'MM/dd/yyyy';
         this.expandable = false;
         this.hasAggregate = function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
@@ -93154,6 +93159,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
+                    if (_this.column.type && _this.column.type == 'datetime') {
+                        _this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                    }
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
@@ -94345,11 +94353,9 @@ var SWListingSearchController = /** @class */ (function () {
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
             _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
             if (_this.selectedSearchFilter.value != 'All') {
-                if (angular.isUndefined(_this.searchFilterPropertyIdentifier) || !_this.searchFilterPropertyIdentifier.length) {
-                    _this.searchFilterPropertyIdentifier = 'createdDateTime';
+                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length && _this.swListingDisplay.searchText.length > 0) {
+                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
                 }
-                console.log(_this.searchFilterPropertyIdentifier);
-                _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
             }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });

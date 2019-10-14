@@ -71,10 +71,19 @@ class EnrollmentMPController {
     }
 
 	public submitSponsor = () => {
+		this.loading = true;
 		if (this.selectedMP) {
-			this.observerService.notify('onNext');
+			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+				if(data.successfulActions && data.successfulActions.length){
+					this.observerService.notify('onNext');
+				}else{
+					this.sponsorHasErrors = true;
+				}
+				this.loading = false;
+			})
 		} else {
 			this.sponsorHasErrors = true;
+			this.loading = false;
 		}
 	};
 
@@ -124,12 +133,11 @@ class EnrollmentMPController {
 	};
 
 	public setOwnerAccount = (ownerAccountID) => {
-		this.loading = true;
+		//this.loading = true;
 		this.publicService
 			.doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
 			.then((result) => {
-				console.log(result);
-				this.loading = false;
+				//this.loading = false;
 			});
 	};
 

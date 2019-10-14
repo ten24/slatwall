@@ -1,8 +1,5 @@
 {
-
-	"properties":{
-		
-		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"}]
-		
+	"properties": {
+		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }]
 	}
 }

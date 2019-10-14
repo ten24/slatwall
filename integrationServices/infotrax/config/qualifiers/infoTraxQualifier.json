@@ -13,7 +13,7 @@
 				"value":"null"
 			},
 			{
-				"propertyIdentifier":"ownerAccount",
+				"propertyIdentifier":"ownerAccount.accountID",
 				"comparisonOperator":"is not",
 				"logicalOperator":"AND",
 				"value":"null"
@@ -30,27 +30,95 @@
 			}
 		],
 		
-		"validOrder" : [
+		"validRelatedAccount" : [
 			{
-				"propertyIdentifier": "orderNumber",
-				"comparisonOperator": "is not",
-				"value": "null",
-				"ormtype": "string"
+				"propertyIdentifier":"account.activeFlag",
+				"comparisonOperator":"=",
+				"value":"true"
 			},
 			{
-				"propertyIdentifier": "orderStatusType.systemCode",
-				"comparisonOperator": "<>",
-				"logicalOperator": "AND",
-				"value": "ostNotPlaced",
-				"ormtype": "string"
+				"propertyIdentifier":"account.accountNumber",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
 			},
 			{
-				"propertyIdentifier": "account.accountNumber",
-				"comparisonOperator": "IS NOT",
-				"logicalOperator": "AND",
-				"value": "NULL",
-				"ormtype": "string"
+				"propertyIdentifier":"account.ownerAccount",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			},{
+				"propertyIdentifier":"account.accountType",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			},{
+				"propertyIdentifier":"account.renewalDate",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
 			}
+		],
+		
+		"validOrder" : [
+			[
+				{
+					"propertyIdentifier": "orderNumber",
+					"comparisonOperator": "is not",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderType.systemCode",
+					"comparisonOperator": "=",
+					"logicalOperator": "AND",
+					"value": "otSalesOrder",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderStatusType.systemCode",
+					"comparisonOperator": "!=",
+					"logicalOperator": "AND",
+					"value": "ostNotPlaced",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "account.accountNumber",
+					"comparisonOperator": "IS NOT",
+					"logicalOperator": "AND",
+					"value": "NULL",
+					"ormtype": "string"
+				}
+			],
+			[
+				{
+					"propertyIdentifier": "orderNumber",
+					"comparisonOperator": "is not",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderType.systemCode",
+					"comparisonOperator": "!=",
+					"logicalOperator": "AND",
+					"value": "otSalesOrder",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderStatusType.systemCode",
+					"comparisonOperator": "=",
+					"logicalOperator": "AND",
+					"value": "ostClosed",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "account.accountNumber",
+					"comparisonOperator": "IS NOT",
+					"logicalOperator": "AND",
+					"value": "NULL",
+					"ormtype": "string"
+				}
+			]
 		],
 		
 		"validOrderTemplate" : [
@@ -68,6 +136,13 @@
 				"ormtype": "string"
 			}
 		]
+	},
+	
+	"afterAccountPhoneNumberSaveSuccess" : {
+		"filters": "validRelatedAccount"
+	},
+	"afterAccountGovernmentIdentificationCreateSuccess" : {
+		"filters": "validRelatedAccount"
 	},
 	
 	"afterAccountSaveSuccess" : {

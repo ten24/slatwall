@@ -52,18 +52,31 @@ Notes:
 
 <cfparam name="rc.addressZone" type="any" />
 
+<cfscript>
+    var locationCollectionList = getHibachiScope().getService('addressService').getAddressZoneCollectionList();
+    locationCollectionList.addFilter('addressZoneID',rc.addressZone.getAddressZoneID(),'=');
+    
+    locationCollectionList.setDisplayProperties('addressZoneLocations.countryCode,addressZoneLocations.stateCode,addressZoneLocations.city,addressZoneLocations.postalCode', {
+    	isSearchable=true,
+		isVisible=true,
+		isDeletable=true
+    });
+
+    locationCollectionList.addDisplayProperty(displayProperty='addressZoneLocations.addressID',columnConfig={
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
+	});
+</cfscript>
+
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.addressZone.getAddressZoneLocationsSmartList()#"
+	<hb:HibachiListingDisplay 
+	        collectionList ="#locationCollectionList#"
 			recordEditAction="admin:entity.editaddresszonelocation"
 			recordEditQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#"
 			recordEditModal=true
 			recordDeleteAction="admin:entity.deleteaddresszonelocation"
 			recordDeleteQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#">
-			
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="countryCode" />
-		<hb:HibachiListingColumn propertyIdentifier="stateCode" />
-		<hb:HibachiListingColumn propertyIdentifier="city"  />
-		<hb:HibachiListingColumn propertyIdentifier="postalCode"  />
 	</hb:HibachiListingDisplay>
 </cfoutput>
 

@@ -95,6 +95,8 @@ class HibachiInterceptor implements IInterceptor{
     public baseUrl:string;
     public loginResponse=null;
     public authPromise=null;
+    private preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
+    
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
@@ -186,8 +188,11 @@ class HibachiInterceptor implements IInterceptor{
     }
     public response = (response): ng.IPromise<any> => {
 		if(response.data.messages){
-            var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
-            this.alertService.addAlerts(alerts);
+			//We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+			if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != this.preProcessDisplayedFlagMessage){
+            	var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
+            	this.alertService.addAlerts(alerts);
+			}
 
         }
 		return response;

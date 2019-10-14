@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
 <cfparam name="rc.order" type="any" />
@@ -97,7 +97,7 @@ Notes:
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
 							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" value="#rc.processObject.getSku().getPriceByCurrencyCode(currencyCode=rc.processObject.getCurrencyCode(),accountID=rc.order.getAccount().getAccountID())#" edit="#rc.edit#" fieldAttributes="sw-currency-formatter ng-model='priceByCurrencyCode'">
 
 							<!--- Manual Gift Card Code Entry --->
 							<cfif rc.processObject.getSku().isGiftCardSku() && !rc.processObject.getSku().getGiftCardRecipientRequiredFlag() && !rc.processObject.getSku().getGiftCardAutoGenerateCodeFlag()>
@@ -296,26 +296,27 @@ Notes:
 												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
 											</span>
 										</cfloop>
+										<span ng-if="shippingAccountAddressID == ''">
 
-										<div ng-if="shippingAccountAddressID.length === 0">
-
-											<!--- New Address --->
+										<!--- New Address --->
+										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
 
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
 
-											<cfif !isNull(rc.order.getAccount())>
-												<!--- Save New Address --->
-												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
+										<cfif !isNull(rc.order.getAccount())>
+											<!--- Save New Address --->
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
 
-												<!--- Save New Address Name --->
-												<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
-													<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
-												</hb:HibachiDisplayToggle>
-											</cfif>
-										</div>
+											<!--- Save New Address Name --->
+											<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
+												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+											</hb:HibachiDisplayToggle>
+										</cfif>
+
+										</hb:HibachiDisplayToggle>
 										
-									</hb:HibachiDisplayToggle>	
+									</hb:HibachiDisplayToggle>
 									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
 									</cfif>
