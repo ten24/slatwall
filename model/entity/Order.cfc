@@ -1905,8 +1905,11 @@ public numeric function getPersonalVolumeSubtotal(){
     public numeric function getCustomPriceFieldSubtotal(required string customPriceField){
         var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
-		for(var i=1; i<=arrayLen(orderItems); i++) {
+		var orderItemsCount = arrayLen(orderItems);
+		this.logHibachi('order item count #orderItemsCount# : #customPriceField#', true);	
+		for(var i=1; i<=orderItemsCount; i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
+				logHibachi('Sku ID #orderItems[i].getSKuID()# : #customPriceField# : #orderItems[i].getCustomExtendedPrice(customPriceField)# : #subtotal#',true);
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(customPriceField));
@@ -1951,6 +1954,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
+		logHibachi('getting total #customPriceField# : #getCustomPriceFieldSubtotal(customPriceField)# - #getCustomDiscountTotal(customPriceField)#',true)
 		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
 	}
 	
