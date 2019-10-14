@@ -10,12 +10,13 @@ class VIPController {
 	public mpSearchText: string = '';
 	public currentMpPage: number = 1;
 	public isVIPEnrollment: boolean = false;
+
 	public productList;
 	public sponsorHasErrors: boolean = false;
 	public selectedMP: any;
 
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService) {
+	constructor(public publicService, public observerService, public monatService,public orderTemplateService) {
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 	}
 
@@ -146,6 +147,12 @@ class VIPController {
 			});
 	};
 
+    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
+        this.loading = true;
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+            this.loading = false;
+        });
+    }
 }
 
 class MonatEnrollmentVIP {

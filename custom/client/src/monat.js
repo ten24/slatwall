@@ -59769,11 +59769,12 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 Object.defineProperty(exports, "__esModule", { value: true });
 var VIPController = /** @class */ (function () {
     // @ngInject
-    function VIPController(publicService, observerService, monatService) {
+    function VIPController(publicService, observerService, monatService, orderTemplateService) {
         var _this = this;
         this.publicService = publicService;
         this.observerService = observerService;
         this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
         this.loading = false;
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
@@ -59889,6 +59890,13 @@ var VIPController = /** @class */ (function () {
                     _this.totalPages = holdingArray;
                 }
                 _this.pageTracker = pageNumber;
+                _this.loading = false;
+            });
+        };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            if (orderTemplateSystemCode === void 0) { orderTemplateSystemCode = 'ottSchedule'; }
+            _this.loading = true;
+            _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
                 _this.loading = false;
             });
         };
@@ -62419,6 +62427,9 @@ var OrderTemplateService = /** @class */ (function () {
                 }, objectToReturn);
             }
             return objectToReturn;
+        };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", { orderTemplateSystemCode: orderTemplateSystemCode });
         };
     }
     return OrderTemplateService;

@@ -70,6 +70,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return orderTemplate;
     }
     
+    public any function createOrderTemplate( required struct data ) {
+
+        param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
+        param name="arguments.data.frequencyTermID" default="23c6a8c4e605d0586869d7f3a8b36ba7";
+        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
+        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        
+        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("create");
+        var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        
+        processObject.setSiteID(arguments.data.siteID);
+        processObject.setOrderTemplateTypeID(orderTypeID);
+        processObject.setFrequencyTermID(arguments.data.frequencyTermID);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        
+        if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
+            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
+        }
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        
+        getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
+        
+        arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
+    }
+    
     public any function addItemAndCreateWishlist( required struct data ) {
         var orderTemplate = this.createWishlist(argumentCollection=arguments);
         var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
