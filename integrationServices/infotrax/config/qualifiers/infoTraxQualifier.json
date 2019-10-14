@@ -88,6 +88,12 @@
 		"validOrder" : [
 			[
 				{
+					"propertyIdentifier": "remoteID",
+					"comparisonOperator": "is",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
 					"propertyIdentifier": "orderNumber",
 					"comparisonOperator": "is not",
 					"value": "null",
@@ -117,6 +123,12 @@
 			],
 			[
 				{
+					"propertyIdentifier": "remoteID",
+					"comparisonOperator": "is",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
 					"propertyIdentifier": "orderNumber",
 					"comparisonOperator": "is not",
 					"value": "null",
@@ -131,9 +143,9 @@
 				},
 				{
 					"propertyIdentifier": "orderStatusType.systemCode",
-					"comparisonOperator": "=",
+					"comparisonOperator": "IN",
 					"logicalOperator": "AND",
-					"value": "ostClosed",
+					"value": "ostClosed,ostCanceled",
 					"ormtype": "string"
 				},
 				{

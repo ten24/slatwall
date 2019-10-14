@@ -169,7 +169,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
-				if(len(arguments.entity.getIceRecordNumber()){
+				if(len(arguments.entity.getIceRecordNumber())){
 					iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				}
 				break;
