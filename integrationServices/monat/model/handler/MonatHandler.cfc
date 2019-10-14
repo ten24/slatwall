@@ -4,11 +4,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     public any function afterAccountProcess_loginFailure(required any slatwallScope, required any account ,required struct data){
         param name="arguments.data.emailAddressOrUsername" default="";
+        param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
 
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
-        accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddressOrUsername);
+        accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
@@ -20,7 +21,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                 len(accountAuthentication['legacyPassword']) > 29 && 
                 accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29))){
 
-                accountAuthEntity.setPassword(arguments.slatwallScope.getService('AccountService').getHashedAndSaltedPassword(accountAuthentication['legacyPassword'], accountAuthentication['accountAuthenticationID']));
+                accountAuthEntity.setPassword(arguments.slatwallScope.getService('AccountService').getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
                 accountAuthEntity.setLegacyPassword(javacast("null", ""));
                 accountAuthEntity = arguments.slatwallScope.getService('AccountService').saveAccountAuthentication(accountAuthEntity);                
             } else {

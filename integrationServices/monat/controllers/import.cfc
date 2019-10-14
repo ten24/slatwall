@@ -599,42 +599,37 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function importVibeAccounts(){
-		param name="arguments.rc.fileLocation" default="/var/www/app/Monat/Slatwall/custom/";
-		param name="arguments.rc.fileName" default="monat-prod-users-5-20-2019.csv";
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		var importSuccess = true;
 
 		try{
-			var columnTypeList = "varchar,varchar,varchar,varchar,varchar,varchar"
-			var accountQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.fileName, columnTypeList);
-			var index = 0;
-			QueryEach(accountQuery, function(row, rowNumber, query){
-				var userNameQuery = "UPDATE swaccount a SET a.userName = :userName WHERE a.accountNumber = :accountNumber";
-				var accountAuthQuery = "INSERT INTO swaccountauthentication (
-											accountAuthenticationID, 
-											password, 
-											activeFlag, 
-											createdDateTime, 
-											accountID, 
-											legacyPassword
-										) 
-										VALUES (
-											LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
-											'LEGACY',
-											1,
-											NOW(),
-											(
-												SELECT a.accountID FROM swaccount a WHERE a.accountNumber = :accountNumber
-												ORDER BY a.createdDateTime DESC LIMIT 1
-											),
-											:legacyPassword
-										)";
+			var userNameQuery = "UPDATE swaccount a 
+								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+								 SET a.userName = temp.userName";
+			var accountAuthQuery = "INSERT INTO swaccountauthentication (
+										accountAuthenticationID, 
+										password, 
+										activeFlag, 
+										createdDateTime, 
+										accountID, 
+										legacyPassword
+									) 
+									SELECT
+										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
+										'LEGACY' password,
+										1 activeFlag,
+										NOW() createdDateTime,
+										a.accountID accountID,
+										temp.encrypted_password legacyPassword
+										FROM swaccount a 
+										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
+										WHERE aa.accountID IS NULL
+									";
 
 
-				QueryExecute(userNameQuery, {userName=arguments.row['username'], accountNumber=arguments.row['consultantid']});
-				QueryExecute(accountAuthQuery, {legacyPassword=arguments.row['encryptedpassword'], accountNumber=arguments.row['consultantid']});
-				index++;
-			});
+			var usernameQuery = QueryExecute(userNameQuery);
+			var accountAuthQuery = QueryExecute(accountAuthQuery);
 
 		} catch(any e){
 			importSuccess = false;
@@ -644,7 +639,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(importSuccess){
 			writeDump("Import Success!!!");
-			writeDump("Accounts Updated: #index#");
+			writedump(usernameQuery);
+			writedump(accountAuthQuery);
 		}
 		abort;
 	}
