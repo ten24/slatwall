@@ -62,6 +62,11 @@ Notes:
 		isDeletable=true
     });
 
+    locationCollectionList.addDisplayProperty(displayProperty='addressZoneLocations.addressID|addressID',columnConfig={
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
+	});
     locationCollectionList.addDisplayProperty(displayProperty='addressZoneID',columnConfig={
 		isSearchable=false,
 		isVisible=false,
@@ -74,8 +79,10 @@ Notes:
 	        collectionList ="#locationCollectionList#"
 			recordEditAction="admin:entity.editaddresszonelocation"
 			recordEditQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#"
-			recordEditModal=true
+			recordEditActionProperty="addressID" 
+			recordEditActionPropertyIdentifier="addressID" 
 			recordDeleteAction="admin:entity.deleteaddresszonelocation"
+			recordDeleteActionProperty="addressID" 
 			recordDeleteQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#">
 	</hb:HibachiListingDisplay>
 </cfoutput>
