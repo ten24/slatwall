@@ -328,6 +328,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account.setAccountType('marketPartner');
+            account.setActiveFlag(false);
             var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('1');
             if(!isNull(priceGroup)){
                 account.addPriceGroup(priceGroup);

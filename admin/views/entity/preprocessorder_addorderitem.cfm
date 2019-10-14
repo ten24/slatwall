@@ -296,27 +296,26 @@ Notes:
 												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
 											</span>
 										</cfloop>
-										<span ng-if="shippingAccountAddressID == ''">
 
-										<!--- New Address --->
-										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
+										<div ng-if="shippingAccountAddressID.length === 0">
+
+											<!--- New Address --->
 
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
 
-										<cfif !isNull(rc.order.getAccount())>
-											<!--- Save New Address --->
-											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
+											<cfif !isNull(rc.order.getAccount())>
+												<!--- Save New Address --->
+												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
 
-											<!--- Save New Address Name --->
-											<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
-												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
-											</hb:HibachiDisplayToggle>
-										</cfif>
-
-										</hb:HibachiDisplayToggle>
+												<!--- Save New Address Name --->
+												<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
+													<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+												</hb:HibachiDisplayToggle>
+											</cfif>
+										</div>
 										
-									</hb:HibachiDisplayToggle>
+									</hb:HibachiDisplayToggle>	
 									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
 									</cfif>

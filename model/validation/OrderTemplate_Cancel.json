@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"orderTemplateCancellationReasonType" : [{"required":true}],
+	"properties": {
+		"orderTemplateCancellationReasonType": [{ "required": true }]
 	}
 }

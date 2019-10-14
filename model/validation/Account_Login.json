@@ -1,15 +1,19 @@
-{	
-	"conditions":{
-	    "EmailAddressOrUsernameEnforcedLoginType":{
-	        "emailAddressOrUsername":{"null":false}
-	    },
-		"EmailAddressEnforcedLoginType":{
-	        "emailAddress":{"null":false}
-	    }
+{
+	"conditions": {
+		"EmailAddressOrUsernameEnforcedLoginType": {
+			"emailAddressOrUsername": { "null": false }
+		},
+		"EmailAddressEnforcedLoginType": {
+			"emailAddress": { "null": false }
+		}
 	},
-	"properties":{
-		"emailAddressOrUsername":			[{"conditions":"EmailAddressOrUsernameEnforcedLoginType", "required":true}],
-		"emailAddress":						[{"conditions":"EmailAddressEnforcedLoginType","required":true, "dataType":"email"}],
-		"password":							[{"required":true}]
+	"properties": {
+		"emailAddressOrUsername": [
+			{ "conditions": "EmailAddressOrUsernameEnforcedLoginType", "required": true }
+		],
+		"emailAddress": [
+			{ "conditions": "EmailAddressEnforcedLoginType", "required": true, "dataType": "email" }
+		],
+		"password": [{ "required": true }]
 	}
 }
