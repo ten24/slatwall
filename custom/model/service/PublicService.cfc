@@ -358,16 +358,45 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
-            account.setAccountType('marketPartner');
-            account.setActiveFlag(false);
-            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('1');
-            if(!isNull(priceGroup)){
-                account.addPriceGroup(priceGroup);
+            account = setupEnrollmentInfo(account, 'marketPartner');
+        }
+        return account;
+    }
+    
+    public any function createRetailEnrollment(required struct data){
+        var account = super.createAccount(arguments.data);
+        if(!account.hasErrors()){
+            account = setupEnrollmentInfo(account, 'retail');
+        }
+        account.getAccountNumber();
+        return account;
+    }
+    
+    private any function setupEnrollmentInfo(required any account, required any accountType){
+        var accountTypeInfo = {
+            'retail':{
+                'priceGroupCode':'2',
+                'statusTypeCode':'astGoodStanding',
+                'activeFlag':true
+            },
+            'marketPartner':{
+                'priceGroupCode':'1',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
             }
-            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
-            if(!isNull(accountStatusType)){
-                account.setAccountStatusType(accountStatusType);
-            }
+        }
+        account.setAccountType(accountType);
+        account.setActiveFlag(accountTypeInfo[accountType].activeFlag);
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[accountType].priceGroupCode);
+        if(!isNull(priceGroup)){
+            account.addPriceGroup(priceGroup);
+        }
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[accountType].statusTypeCode);
+        if(!isNull(accountStatusType)){
+            account.setAccountStatusType(accountStatusType);
+        }
+        if(!isNull(getHibachiScope().getCurrentRequestSite())){
+            account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
         return account;
     }
@@ -392,17 +421,31 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
 
+
         var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
         
         if(isNull(sponsorAccount)){
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
         }
+        
+        var account = getHibachiScope().getAccount();
+        if(account.hasParentAccountRelationship()){
+            for(var accountRelationship in account.getParentAccountRelationships()){
+                if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
+                    getService('accountService').deleteAccountRelationship(accountRelationship);
+                }
+            }
+        }
+        
+        if(!account.hasParentAccountRelationship()){
+            var accountRelationship = getService('accountService').newAccountRelationship();
+            accountRelationship.setParentAccount(sponsorAccount);
+            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+        }
+        
         getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
-        var accountRelationship = getService('accountService').newAccountRelationship();
-        accountRelationship.setParentAccount(sponsorAccount);
-        accountRelationship.setChildAccount(getHibachiScope().getAccount());
-        accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         
         if(accountRelationship.hasErrors()){
             addErrors(arguments.data,accountRelationship.getErrors());
