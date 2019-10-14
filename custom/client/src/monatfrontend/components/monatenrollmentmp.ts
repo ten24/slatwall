@@ -55,7 +55,6 @@ class EnrollmentMPController {
 	}
 	
 	public setDayOptionsByDate = ( year = null, month = null ) => {
-		this.dayOptions = [];
 		
 		if ( null === year ) {
 			year = this.currentDate.getFullYear();
@@ -65,10 +64,12 @@ class EnrollmentMPController {
 			year = this.currentDate.getMonth();
 		}
 		
+		var newDayOptions = [];
 		var daysInMonth = new Date( year, month, 0 ).getDate();
 		for ( var i = 1; i <= daysInMonth; i++ ) {
-			this.dayOptions.push( i );
+			newDayOptions.push( ( '0' + i ).slice(-2) );
 		}
+		this.dayOptions = newDayOptions;
 	}
 	
 	public showAddToCartMessage = () => {

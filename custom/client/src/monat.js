@@ -59551,17 +59551,18 @@ var EnrollmentMPController = /** @class */ (function () {
         this.setDayOptionsByDate = function (year, month) {
             if (year === void 0) { year = null; }
             if (month === void 0) { month = null; }
-            _this.dayOptions = [];
             if (null === year) {
                 year = _this.currentDate.getFullYear();
             }
             if (null === month) {
                 year = _this.currentDate.getMonth();
             }
+            var newDayOptions = [];
             var daysInMonth = new Date(year, month, 0).getDate();
             for (var i = 1; i <= daysInMonth; i++) {
-                _this.dayOptions.push(i);
+                newDayOptions.push(('0' + i).slice(-2));
             }
+            _this.dayOptions = newDayOptions;
         };
         this.showAddToCartMessage = function () {
             var skuID = _this.monatService.lastAddedSkuID;

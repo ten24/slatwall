@@ -354,6 +354,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 }
                 getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
             }
+            if ( 
+                !isNull( arguments.data['month'] )
+                && !isNull( arguments.data['year'] )
+                && !isNull( arguments.data['day'] )
+            ) {
+                account.setDob( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                getAccountService().saveAccount( account );
+            }
         }
         return account;
     }
