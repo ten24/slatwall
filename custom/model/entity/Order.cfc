@@ -141,7 +141,6 @@ component {
 		var orderItemsCount = arrayLen(orderItems);
 		for(var i=1; i<=orderItemsCount; i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
-				logHibachi('Sku ID #orderItems[i].getSKuID()# : #customPriceField# : #orderItems[i].getCustomExtendedPrice(customPriceField)# : #subtotal#',true);
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(customPriceField));
@@ -186,7 +185,6 @@ component {
 	}
 	
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
-		logHibachi('getting total #customPriceField# : #getCustomPriceFieldSubtotal(customPriceField)# - #getCustomDiscountTotal(customPriceField)#',true)
 		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
 	}
 	
