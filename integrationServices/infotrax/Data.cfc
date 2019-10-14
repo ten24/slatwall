@@ -130,11 +130,21 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	public void function pushData(required any entity, struct data ={}){
 	
 		var iceResponse = {};
+		var relatedToAccount = false;
 		
 		switch ( arguments.data.event ) {
 			
+			case 'afterAccountAddressSaveSuccess':
 			case 'afterAccountPhoneNumberSaveSuccess':
 			case 'afterAccountGovernmentIdentificationCreateSuccess':
+			case 'afterAccountGovernmentIdentificationSaveSuccess':
+				relatedToAccount = true;
+				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
+					iceResponse = createDistributor(arguments.data.DTSArguments);
+				}else{
+					iceResponse = updateDistributor(arguments.data.DTSArguments);
+				}
+				break;
 			case 'afterAccountEnrollSuccess':
 			case 'afterAccountSaveSuccess':
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
@@ -147,7 +157,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
-				if(!len(arguments.entity.getIceRecordNumber()) || isNull(arguments.entity.getLastSyncedDateTime())){
+				if(arguments.entity.getOrderStatusType().getSystemCode() == 'ostCanceled'){
+					if(len(arguments.entity.getIceRecordNumber())){
+						iceResponse = deleteTransaction(arguments.data.DTSArguments);
+					}
+				}else if(!len(arguments.entity.getIceRecordNumber()) || isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createTransaction(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateTransaction(arguments.data.DTSArguments);
@@ -155,11 +169,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
-				if(!len(arguments.entity.getIceRecordNumber()) || isNull(arguments.entity.getLastSyncedDateTime())){
-					iceResponse = deleteTransaction(arguments.data.DTSArguments);
-				}
+				iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				break;
-				
 			case 'afterOrderTemplateProcess_activateSuccess':
 			case 'afterOrderTemplateSaveSuccess':
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
@@ -178,7 +189,12 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
-			arguments.entity.setLastSyncedDateTime(now());
+			if(relatedToAccount){
+				arguments.entity.getAccount().setLastSyncedDateTime(now());
+			}else{
+				arguments.entity.setLastSyncedDateTime(now());
+			}
+			
 		}
 		
 		if(structKeyExists(iceResponse, 'recordNumber')){

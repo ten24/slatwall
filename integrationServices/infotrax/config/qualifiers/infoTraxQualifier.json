@@ -1,33 +1,58 @@
 {
 	"filters" : {
 		"validAccount" : [
-			{
-				"propertyIdentifier":"activeFlag",
-				"comparisonOperator":"=",
-				"value":"true"
-			},
-			{
-				"propertyIdentifier":"accountNumber",
-				"comparisonOperator":"is not",
-				"logicalOperator":"AND",
-				"value":"null"
-			},
-			{
-				"propertyIdentifier":"ownerAccount.accountID",
-				"comparisonOperator":"is not",
-				"logicalOperator":"AND",
-				"value":"null"
-			},{
-				"propertyIdentifier":"accountType",
-				"comparisonOperator":"is not",
-				"logicalOperator":"AND",
-				"value":"null"
-			},{
-				"propertyIdentifier":"renewalDate",
-				"comparisonOperator":"is not",
-				"logicalOperator":"AND",
-				"value":"null"
-			}
+			[
+				{
+					"propertyIdentifier":"activeFlag",
+					"comparisonOperator":"=",
+					"value":"true"
+				},
+				{
+					"propertyIdentifier":"accountNumber",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},
+				{
+					"propertyIdentifier":"ownerAccount.accountID",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},{
+					"propertyIdentifier":"accountType",
+					"comparisonOperator":"IN",
+					"logicalOperator":"AND",
+					"value":"vip,marketPartner"
+				},{
+					"propertyIdentifier":"renewalDate",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				}
+			],[
+				{
+					"propertyIdentifier":"activeFlag",
+					"comparisonOperator":"=",
+					"value":"true"
+				},
+				{
+					"propertyIdentifier":"accountNumber",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},{
+					"propertyIdentifier":"ownerAccount.accountID",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},
+				{
+					"propertyIdentifier":"accountType",
+					"comparisonOperator":"is",
+					"logicalOperator":"AND",
+					"value":"null"
+				}
+			]
 		],
 		
 		"validRelatedAccount" : [
@@ -141,7 +166,13 @@
 	"afterAccountPhoneNumberSaveSuccess" : {
 		"filters": "validRelatedAccount"
 	},
+	"afterAccountAddressSaveSuccess" : {
+		"filters": "validRelatedAccount"
+	},
 	"afterAccountGovernmentIdentificationCreateSuccess" : {
+		"filters": "validRelatedAccount"
+	},
+	"afterAccountGovernmentIdentificationSaveSuccess" : {
 		"filters": "validRelatedAccount"
 	},
 	
