@@ -59522,12 +59522,46 @@ var EnrollmentMPController = /** @class */ (function () {
         this.bundles = [];
         this.addedItemToCart = false;
         this.lastAddedProductName = '';
+        this.yearOptions = [];
+        this.dayOptions = [];
+        this.monthOptions = [];
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
+            _this.getDateOptions();
             //this.getProductList()
             _this.observerService.attach(_this.getProductList, 'createSuccess');
             _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
+        };
+        this.getDateOptions = function () {
+            _this.currentDate = new Date();
+            // Setup Years
+            for (var i = _this.currentDate.getFullYear(); i >= 1900; i--) {
+                _this.yearOptions.push(i);
+            }
+            // Setup Months / Default Days
+            for (i = 1; i <= 31; i++) {
+                var label = ('0' + i).slice(-2);
+                if (i < 13) {
+                    _this.monthOptions.push(label);
+                }
+                _this.dayOptions.push(label);
+            }
+        };
+        this.setDayOptionsByDate = function (year, month) {
+            if (year === void 0) { year = null; }
+            if (month === void 0) { month = null; }
+            _this.dayOptions = [];
+            if (null === year) {
+                year = _this.currentDate.getFullYear();
+            }
+            if (null === month) {
+                year = _this.currentDate.getMonth();
+            }
+            var daysInMonth = new Date(year, month, 0).getDate();
+            for (var i = 1; i <= daysInMonth; i++) {
+                _this.dayOptions.push(i);
+            }
         };
         this.showAddToCartMessage = function () {
             var skuID = _this.monatService.lastAddedSkuID;
