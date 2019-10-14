@@ -1226,7 +1226,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal']	
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
 	}
 
 	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
