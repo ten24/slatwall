@@ -2,6 +2,7 @@ class MonatProductCardController {
 	public product;
 	public type: string;
 	public loading: boolean;
+	public lastAddedSkuID: string; 
 	public newTemplateID: string;
 	public orderTemplates: Array<any>;
 	public pageRecordsShow: number = 5;
@@ -77,6 +78,7 @@ class MonatProductCardController {
 
 	public addToCart = (skuID, skuCode) => {
 		this.loading = true;
+		this.lastAddedSkuID = skuID;
 		if (this.type === 'flexship') {
 			//flexship logic
 		} else {

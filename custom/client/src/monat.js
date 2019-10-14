@@ -59323,7 +59323,65 @@ exports.MonatMiniCart = MonatMiniCart;
 
 
 /***/ }),
-/* 606 */,
+/* 606 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatOrderItemsController = /** @class */ (function () {
+    //@ngInject
+    function MonatOrderItemsController(monatService) {
+        var _this = this;
+        this.monatService = monatService;
+        this.orderItems = []; // orderTemplateDetails
+        this.productPacks = []; // orderTemplateDetails
+        this.todaysOrder = []; // orderTemplateDetails
+        this.$onInit = function () {
+            _this.getOrderItems();
+        };
+        this.getOrderItems = function () {
+            _this.monatService.getCart().then(function (data) {
+                if (undefined !== data.orderItems) {
+                    _this.orderItems = data.orderItems;
+                    _this.aggregateOrderItems(data.orderItems);
+                }
+            });
+        };
+        this.aggregateOrderItems = function (orderItems) {
+            orderItems.forEach(function (item) {
+                var productType = item.sku.product.baseProductType;
+                if ('ProductPack' === productType) {
+                    _this.productPacks.push(item);
+                }
+                else {
+                    _this.todaysOrder.push(item);
+                }
+            });
+        };
+    }
+    return MonatOrderItemsController;
+}());
+var MonatOrderItems = /** @class */ (function () {
+    function MonatOrderItems() {
+        this.restrict = 'A';
+        this.scope = true;
+        this.bindToController = {};
+        this.controller = MonatOrderItemsController;
+        this.controllerAs = 'monatOrderItems';
+        this.link = function (scope, element, attrs) { };
+    }
+    MonatOrderItems.Factory = function () {
+        var directive = function () { return new MonatOrderItems(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatOrderItems;
+}());
+exports.MonatOrderItems = MonatOrderItems;
+
+
+/***/ }),
 /* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -59462,10 +59520,29 @@ var EnrollmentMPController = /** @class */ (function () {
         this.sponsorHasErrors = false;
         this.selectedBundleID = '';
         this.bundles = [];
+        this.addedItemToCart = false;
+        this.lastAddedProductName = '';
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.getStarterPacks();
-            _this.getProductList();
+            //this.getProductList()
+            _this.observerService.attach(_this.getProductList, 'createSuccess');
+            _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
+        };
+        this.showAddToCartMessage = function () {
+            var skuID = _this.monatService.lastAddedSkuID;
+            _this.monatService.getCart().then(function (data) {
+                var orderItem;
+                data.orderItems.forEach(function (item) {
+                    if (item.sku.skuID === skuID) {
+                        orderItem = item;
+                    }
+                });
+                if ('ProductPack' !== orderItem.sku.product.baseProductType) {
+                    _this.lastAddedProductName = orderItem.sku.product.productName;
+                    _this.addedItemToCart = true;
+                }
+            });
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59476,8 +59553,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
+                _this.loading = true;
                 _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
-                    console.log(data);
+                    _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
             }
@@ -59486,11 +59564,21 @@ var EnrollmentMPController = /** @class */ (function () {
             }
         };
         this.submitSponsor = function () {
+            _this.loading = true;
             if (_this.selectedMP) {
-                _this.observerService.notify('onNext');
+                _this.monatService.submitSponsor(_this.selectedMP.accountID).then(function (data) {
+                    if (data.successfulActions && data.successfulActions.length) {
+                        _this.observerService.notify('onNext');
+                    }
+                    else {
+                        _this.sponsorHasErrors = true;
+                    }
+                    _this.loading = false;
+                });
             }
             else {
                 _this.sponsorHasErrors = true;
+                _this.loading = false;
             }
         };
         this.selectBundle = function (bundleID) {
@@ -59530,12 +59618,11 @@ var EnrollmentMPController = /** @class */ (function () {
             });
         };
         this.setOwnerAccount = function (ownerAccountID) {
-            _this.loading = true;
+            //this.loading = true;
             _this.publicService
                 .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
                 .then(function (result) {
-                console.log(result);
-                _this.loading = false;
+                //this.loading = false;
             });
         };
         this.getProductList = function (pageNumber, direction, newPages) {
@@ -61231,6 +61318,7 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;
+            _this.lastAddedSkuID = skuID;
             if (_this.type === 'flexship') {
                 //flexship logic
             }
@@ -61801,6 +61889,7 @@ var monatflexshipmenu_1 = __webpack_require__(624);
 var monatenrollment_1 = __webpack_require__(607);
 var monatenrollmentvip_1 = __webpack_require__(610);
 var monatenrollmentstep_1 = __webpack_require__(609);
+var monat_order_items_1 = __webpack_require__(606);
 var swfreviewlisting_1 = __webpack_require__(627);
 var swfwishlist_1 = __webpack_require__(628);
 var swfmyaccount_1 = __webpack_require__(626);
@@ -61833,6 +61922,7 @@ var monatfrontendmodule = angular
     .directive('enrollmentMp', monatenrollmentmp_1.MonatEnrollmentMP.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
+    .directive('monatOrderItems', monat_order_items_1.MonatOrderItems.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -61886,6 +61976,7 @@ var MonatService = /** @class */ (function () {
         this.publicService = publicService;
         this.$q = $q;
         this.requestService = requestService;
+        this.lastAddedSkuID = '';
         this.cachedOptions = {
             frequencyTermOptions: null,
         };
@@ -61896,9 +61987,8 @@ var MonatService = /** @class */ (function () {
         this.updateCart = function (action, payload) {
             var deferred = _this.$q.defer();
             payload['returnJSONObjects'] = 'cart';
-            _this.requestService
-                .newPublicRequest('?slatAction=api:public.' + action, payload)
-                .promise.then(function (data) {
+            _this.publicService.doAction(action, payload)
+                .then(function (data) {
                 if (data.cart) {
                     _this.cart = data.cart;
                     deferred.resolve(data.cart);
@@ -61939,6 +62029,7 @@ var MonatService = /** @class */ (function () {
             skuID: skuID,
             quantity: quantity,
         };
+        this.lastAddedSkuID = skuID;
         return this.updateCart('addOrderItem', payload);
     };
     MonatService.prototype.removeFromCart = function (orderItemID) {
@@ -61954,6 +62045,9 @@ var MonatService = /** @class */ (function () {
             'orderItem.quantity': quantity,
         };
         return this.updateCart('updateOrderItemQuantity', payload);
+    };
+    MonatService.prototype.submitSponsor = function (sponsorID) {
+        return this.publicService.doAction('submitSponsor', { sponsorID: sponsorID });
     };
     /**
      * options = {optionName:refresh, ---> option2:true, o3:false}
@@ -74634,6 +74728,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
+        this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
         this.getJWTDataFromToken = function () {
             _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
@@ -74685,8 +74780,11 @@ var HibachiInterceptor = /** @class */ (function () {
         };
         this.response = function (response) {
             if (response.data.messages) {
-                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
-                _this.alertService.addAlerts(alerts);
+                //We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+                if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != _this.preProcessDisplayedFlagMessage) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
             }
             return response;
         };
@@ -84248,6 +84346,7 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
+            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -84275,6 +84374,7 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
+            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -84339,6 +84439,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.dateFormat = 'MM/dd/yyyy';
         this.expandable = false;
         this.hasAggregate = function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
@@ -84367,6 +84468,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
+                    if (_this.column.type && _this.column.type == 'datetime') {
+                        _this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                    }
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
@@ -84378,7 +84482,8 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     // Then check if it was passed via the column args.
                     // Then check if it was passed into the directive.
                     // then set a default.
-                    if (_this.pageRecord['currencyCode'] != null &&
+                    if (_this.pageRecord != null &&
+                        _this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
                     }
@@ -84386,11 +84491,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.column.arguments.currencyCode) {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
-                    else {
-                        //set a default if one was not passed in to use...
-                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
-                            _this.currencyCode = 'USD';
-                        }
+                    else if (_this.swListingDisplay.currencyCode != undefined &&
+                        _this.swListingDisplay.currencyCode.length) {
+                        _this.currencyCode = _this.swListingDisplay.currencyCode;
+                    }
+                    else if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -84472,7 +84578,6 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
-            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;
@@ -85384,8 +85489,30 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
+                _this.showSearchFilterDropDown = false;
+            }
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
+            _this.searchableFilterOptions = [
+                {
+                    title: 'Last 3 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 3)
+                },
+                {
+                    title: 'Last 6 Months',
+                    value: new Date().setMonth(new Date().getMonth() - 6)
+                },
+                {
+                    title: '1 Year Ago',
+                    value: new Date().setMonth(new Date().getMonth() - 12)
+                },
+                {
+                    title: 'All Time',
+                    value: 'All'
+                }
+            ];
+            _this.selectSearchFilter(_this.searchableFilterOptions[0]);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -85403,6 +85530,12 @@ var SWListingSearchController = /** @class */ (function () {
                 }, function (reason) {
                     throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
                 });
+            }
+        };
+        this.selectSearchFilter = function (filter) {
+            _this.selectedSearchFilter = filter;
+            if (_this.swListingDisplay.searchText) {
+                _this.search();
             }
         };
         this.selectSearchColumn = function (column) {
@@ -85527,6 +85660,12 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
+            _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            if (_this.selectedSearchFilter.value != 'All') {
+                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length && _this.swListingDisplay.searchText.length > 0) {
+                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
+                }
+            }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -85566,7 +85705,9 @@ var SWListingSearch = /** @class */ (function () {
             collectionConfig: "<?",
             paginator: "=?",
             listingId: "@?",
-            showToggleSearch: "=?"
+            showToggleSearch: "=?",
+            searchFilterPropertyIdentifier: "@?",
+            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';

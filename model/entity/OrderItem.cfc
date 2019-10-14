@@ -60,9 +60,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedExtendedUnitPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedPriceAfterDiscountMinusReturns" column="calcExtdPriceAfterDiscMinusReturns" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
+	
 	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -75,7 +78,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
 	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
 	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
-	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
+	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID" hb_cascadeCalculate="true"; // Used For Returns. This is set when this order is a return.
 
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
@@ -115,8 +118,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedPriceAfterDiscountMinusReturns" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
+	property name="quantityDeliveredMinusReturns" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
@@ -127,19 +132,33 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="itemTotalAfterOrderDiscounts" persistent="false" hb_formatType="currency";
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
- 
-	//CUSTOM PROPERTIES BEGIN
+ 	//CUSTOM PROPERTIES BEGIN
 property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
     property name="commissionableVolume" ormtype="big_decimal";
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
+    
+    property name="manualPersonalVolume" ormtype="big_decimal";
+    property name="manualTaxableAmount" ormtype="big_decimal";
+    property name="manualCommissionableVolume" ormtype="big_decimal";
+    property name="manualRetailCommission" ormtype="big_decimal";
+    property name="manualProductPackVolume" ormtype="big_decimal";
+    property name="manualRetailValueVolume" ormtype="big_decimal";
+    
+    property name="allocatedOrderPersonalVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderTaxableAmountDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderCommissionableVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailCommissionDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderProductPackVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailValueVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
     
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
@@ -589,6 +608,31 @@ property name="personalVolume" ormtype="big_decimal";
 	public numeric function getExtendedPriceAfterDiscount(boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
 	}
+	
+	public numeric function getExtendedPriceAfterDiscountMinusReturns(boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments) - getExtendedPriceOnReturns());
+	}
+	
+	public numeric function getExtendedPriceOnReturns(){
+		var total = 0;
+		var referencingOrderItemSmartList = getService('HibachiService').getOrderItemSmartList();
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','orderItemType','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','order','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrder','orderStatusType','inner');
+		referencingOrderItemSmartList.addWhereCondition("aslatwalltype.systemCode IN ('oitReturn','oitReplacement')");
+		referencingOrderItemSmartList.addWhereCondition("bslatwalltype.systemCode NOT IN ('ostCanceled','ostNotPlaced')");
+		referencingOrderItemSmartList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = referencingOrderItemSmartList.getRecords();
+		
+		for(var item in result){
+			if(item.getOrderItemType().getSystemCode() == 'oitReturn'){
+				total += item.getExtendedPriceAfterDiscount();
+			}else{
+				total -= item.getExtendedPriceAfterDiscount();
+			}
+		}
+		return total;
+	}
 
 	public numeric function getExtendedUnitPrice() {
 		if(!isNull(getQuantity()) && getQuantity() > 0){
@@ -703,6 +747,43 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return quantityDelivered;
 	}
+	
+	public numeric function getQuantityDeliveredMinusReturns(){
+		return getQuantityDelivered() - getQuantityOnReturnOrders();
+	}
+	
+	public numeric function getQuantityOnReturnOrders(){
+		
+		var quantity = 0;
+		
+		var returnOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		returnOrderItemCollectionList.setDisplayProperties('quantity');
+		returnOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
+		returnOrderItemCollectionList.addFilter('order.orderType.systemCode','otReturnOrder,otExchangeOrder','IN');
+		returnOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
+		returnOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = returnOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity += item['quantity'];
+			}
+		}
+		
+		//get replacement order items from Exchange orders
+		var replacementOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		replacementOrderItemCollectionList.setDisplayProperties('quantity');
+		replacementOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReplacement');
+		replacementOrderItemCollectionList.addFilter('order.orderType.systemCode','otExchangeOrder');
+		replacementOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
+		replacementOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		result = replacementOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity -= item['quantity'];
+			}
+		}
+		return quantity;
+	}
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
@@ -726,6 +807,10 @@ property name="personalVolume" ormtype="big_decimal";
 
 	public numeric function getItemTotal() {
 		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
+	}
+	
+	public numeric function getItemTotalAfterOrderDiscounts() {
+		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterAllDiscounts()));
 	}
 
 	public any function getSalePrice() {
@@ -1126,9 +1211,7 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================	
-
-
-	//CUSTOM FUNCTIONS BEGIN
+		//CUSTOM FUNCTIONS BEGIN
 
 public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
@@ -1244,8 +1327,37 @@ public any function getPersonalVolume(){
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
-    private numeric function getCustomPriceFieldAmount(required string priceField){
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+    public any function getExtendedPersonalVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('personalVolume');
+    }
+    
+    public any function getExtendedTaxableAmountAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('taxableAmount');
+    }
+    
+    public any function getExtendedCommissionableVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('commissionableVolume');
+    }
+    
+    public any function getExtendedRetailCommissionAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailCommission');
+    }
+    
+    public any function getExtendedProductPackVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('productPackVolume');
+    }
+    
+    public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
+	private numeric function getCustomPriceFieldAmount(required string customPriceField){
+        arguments.currencyCode = this.getCurrencyCode();
+		arguments.quantity = this.getQuantity();
+		if(!isNull(this.getOrder().getAccount())){ 
+			arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		}
+        var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
         }
@@ -1267,18 +1379,25 @@ public any function getPersonalVolume(){
 		
 		return discountAmount;
 	}
-
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#priceField#')){
 			var price = 0;
-		
-			if(!isNull(this.invokeMethod('get#priceField#'))){
+			
+			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
+			var manualPrice = this.invokeMethod('getManual#priceField#');
+		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
+				price = this.invokeMethod('getManual#priceField#');
+			} else if(!isNull(this.invokeMethod('get#priceField#'))){
 				price = this.invokeMethod('get#priceField#');
 			}
 			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 		}
 		return variables['extended#priceField#'];
+	}
+	
+	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){
+	    return this.invokeMethod('getAllocatedOrder#arguments.priceField#DiscountAmount')
 	}
 	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {

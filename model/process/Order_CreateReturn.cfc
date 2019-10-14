@@ -57,30 +57,51 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 
 	// Data Properties
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location";
 	property name="orderItems" type="array" hb_populateArray="true";
+	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
+	property name="fulfillmentAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
+	property name="locationID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
 	property name="stockLossFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
+	property name="allocatedOrderDiscountAmountTotal";
+	property name="refundOrderItemList";
+	// Option Properties
+    property name="returnReasonTypeOptions";
+    property name="locationIDOptions";
 	
 
 	variables.orderItems = [];
 
 	
 	public any function setupDefaults() {
-		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+		if(arrayLen(getRefundOrderPaymentIDOptions())){
+			variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+		}
 	}
 	
-	public array function getLocationOptions() {
-		if(!structKeyExists(variables, "locationOptions")) {
-			variables.locationOptions = getService('locationService').getLocationOptions(); 
+	// ====================== START: Data Options ==========================
+    
+    public any function getLocation(){
+    	if(!structKeyExists(variables,'location') && structKeyExists(variables,'locationID')){
+    		variables.location = getService('LocationService').getLocation(variables.locationID);
+    	}
+    	if(!isNull(variables.location)){
+    		return variables.location;
+    	}
+    }
+    
+	public array function getLocationIDOptions() {
+		if(!structKeyExists(variables, "locationIDOptions")) {
+			variables.locationIDOptions = getService('locationService').getLocationOptions(); 
 		}
-		return variables.locationOptions;
+		return variables.locationIDOptions;
 	}
 	
 	public array function getRefundOrderPaymentIDOptions() {
@@ -91,26 +112,71 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			
 			for(var orderPayment in opSmartList.getRecords()) {
-				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+				arrayAppend(variables.refundOrderPaymentIDOptions, 
+					{
+						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
+						"value"=orderPayment.getOrderPaymentID(),
+						"amountToRefund"=orderPayment.getRefundableAmount(),
+						"amount"=0
+					}
+				);
 			}
-			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
 		}
 		return variables.refundOrderPaymentIDOptions;
 	}
 	
+	public array function getOrderTypeCodeOptions() {
+		if(!structKeyExists(variables, "orderTypeCodeOptions")) {
+			var collectionList = getService('TypeService').getCollectionList('Type');
+			collectionList.setDisplayProperties('systemCode|value,typeName|name');
+			collectionList.addFilter('systemCode', 'otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', 'IN');
+			collectionList.setOrderBy('sortOrder|ASC');
+			
+			// May need to overwrite name with rbKey('define.exchange')
+			variables.orderTypeCodeOptions = collectionList.getRecords();
+		}
+		return variables.orderTypeCodeOptions;
+	}
+	
+	public array function getReturnReasonTypeOptions() {
+        if (!structKeyExists(variables, 'returnReasonTypeOptions')) {
+            var typeCollection = getService('typeService').getTypeCollectionList();
+		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
+		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
+            typeCollection.addOrderBy('sortOrder|ASC');
+
+            variables.returnReasonTypeOptions = typeCollection.getRecords();
+            arrayPrepend(variables.returnReasonTypeOptions, {name=rbKey('define.select'), value=""});
+        }
+
+        return variables.returnReasonTypeOptions;
+    }
+	
+	// ======================  END: Data Options ===========================
+	
 	public numeric function getFulfillmentRefundAmount() {
 		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
-			if(!getPreProcessDisplayedFlag()) {
-				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+			if(!getPreProcessDisplayedFlag() && getOrderTypeCode() == 'otReturnOrder') {
+				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeNotRefunded();	
 			}
 		}
 		return variables.fulfillmentRefundAmount;
 	}
 	
+	public numeric function getFulfillmentAmount() {
+		if(!structKeyExists(variables, "fulfillmentAmount")) {
+			variables.fulfillmentAmount = 0;
+			if(!getPreProcessDisplayedFlag()) {
+				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+			}
+		}
+		return variables.fulfillmentAmount;
+	}
+	
 	public boolean function getReceiveItemsFlag() {
 		if(!structKeyExists(variables, "receiveItemsFlag")) {
-			variables.receiveItemsFlag = getPropertySessionDefault("receiveItemsFlag");
+			variables.receiveItemsFlag = 0;
 		}
 		return variables.receiveItemsFlag;
 	}
@@ -125,11 +191,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public array function getOrderTypeCodeOptions() {
-		if(!structKeyExists(variables, "orderTypeOptions")) {
-			variables.orderTypeCodeOptions=[];
-			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.return'), value='otReturnOrder'});
-			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.exchange'), value='otExchangeOrder'});
+		if(!structKeyExists(variables, "orderTypeCodeOptions")) {
+			var collectionList = getService('TypeService').getCollectionList('Type');
+			collectionList.setDisplayProperties('systemCode|value,typeName|name');
+			collectionList.addFilter('systemCode', 'otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', 'IN');
+			collectionList.setOrderBy('sortOrder|ASC');
 			
+			// May need to overwrite name with rbKey('define.exchange')
+			variables.orderTypeCodeOptions = collectionList.getRecords();
 		}
 		return variables.orderTypeCodeOptions;
 	}
@@ -141,21 +210,63 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.orderTypeCode;
 	}
 	
-	public boolean function orderItemsWithinOrginalQuantity(){
+	public array function getRefundOrderItemList(){
+		if(!structKeyExists(variables,'refundOrderItemList')){
+			var refundOrderItemList = [];
+			var refundSkuCollectionList = getService('OrderService').getRefundSkuCollectionList();
+			var refundSkus = refundSkuCollectionList.getRecords();
+			for(var sku in refundSkus){
+				var orderItem = {
+					'orderItemID':'',
+	                'quantity':1,
+	                'sku_calculatedSkuDefinition':sku.calculatedSkuDefinition,
+	                'calculatedDiscountAmount':0,
+	                'calculatedExtendedPriceAfterDiscount':sku.price,
+	                'calculatedExtendedUnitPriceAfterDiscount':sku.price,
+	                'calculatedTaxAmount':0,
+	                'allocatedOrderDiscountAmount':0,
+	                'sku_skuID':sku.skuID,
+	                'sku_skuCode':sku.skuCode,
+	                'sku_product_calculatedTitle':sku.product_calculatedTitle,
+	                'calculatedQuantityDeliveredMinusReturns':1
+				};
+				arrayAppend(refundOrderItemList,orderItem);
+			}
+			variables.refundOrderItemList = refundOrderItemList;
+		}
+		return variables.refundOrderItemList;
+	}
+	
+	public boolean function orderItemsWithinOriginalQuantity(){
 		
 		if ( !isnull(this.getOrderItems()) ){
 			
 			for (var orderItem in this.getOrderItems()){
 
-				var orginalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
-				if (orderItem.quantity > orginalItem.getQuantityDelivered()){
+				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
+				if (orderItem.quantity > originalItem.getQuantityDeliveredMinusReturns()){
 					return false;
 				}
 			}			
 		}
 		
 		return true;
+	}
+	
+	public boolean function paymentAmountsWithinAllowedAmount(){
+		var amount = 0;
+		if(!isNull(this.getOrderPayments())){
+			for( var orderPayment in this.getOrderPayments() ){
+				var originalOrderPayment = getService('orderService').getOrderPayment(orderPayment.originalOrderPaymentID);
+				if(isNull(originalOrderPayment) || orderPayment.amount > originalOrderPayment.getRefundableAmount()){
+					return false;
+				}
+				amount += orderPayment.amount;
+				
+			}
+		}
 		
-		
+		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
+		return amount <= maxRefundAmount;
 	}
 }

@@ -15,6 +15,7 @@ class SWListingDisplayCellController{
     public actionCaller:any;
     //string that should translate to a custom directive
     public cellView:string;
+    public dateFormat:string='MM/dd/yyyy';
     public template:string;
     public templateVariables:any; 
     public expandable:boolean=false; 
@@ -113,6 +114,10 @@ class SWListingDisplayCellController{
         } else if(!listingDisplayIsExpandableAndPrimaryColumn){
             
             if(this.column.ormtype === 'timestamp'){
+                if(this.column.type && this.column.type=='datetime'){
+                    this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                }
+                
                 templateUrl = basePartialPath + 'listingdisplaycelldate.html';
             }else if(this.column.type === 'currency'){
                 if(this.hasAggregate() && this.pageRecord){
@@ -124,7 +129,8 @@ class SWListingDisplayCellController{
                 // Then check if it was passed via the column args.
                 // Then check if it was passed into the directive.
                 // then set a default.
-                if(this.pageRecord['currencyCode'] != null &&
+                if(this.pageRecord != null &&
+                   this.pageRecord['currencyCode'] != null &&
                    this.pageRecord['currencyCode'].trim().length
                 ){
                     
@@ -134,11 +140,13 @@ class SWListingDisplayCellController{
                           this.column.arguments.currencyCode
                 ){
                     this.currencyCode = this.column.arguments.currencyCode;
-                } else {
-                    //set a default if one was not passed in to use...
-                    if (this.currencyCode == undefined || this.currencyCode == ""){
+                } else if(this.swListingDisplay.currencyCode != undefined && 
+                          this.swListingDisplay.currencyCode.length
+                ){
+                    this.currencyCode = this.swListingDisplay.currencyCode;
+                    
+                } else if (this.currencyCode == undefined || this.currencyCode == ""){
                         this.currencyCode = 'USD';
-                    }
                 }
                 
                 templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
@@ -188,7 +196,6 @@ class SWListingDisplayCell {
         pageRecord:"=?",
         value:"=?",
         cellView:"@?",
-        currencyCode:"@?",
         expandableRules:"=?"
     }
     public controller=SWListingDisplayCellController;

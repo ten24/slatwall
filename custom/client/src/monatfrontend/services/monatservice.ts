@@ -7,6 +7,7 @@ declare var angular: any;
 
 export class MonatService {
 	public cart;
+	public lastAddedSkuID: string = '';
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
@@ -41,9 +42,8 @@ export class MonatService {
 		let deferred = this.$q.defer();
 		payload['returnJSONObjects'] = 'cart';
 
-		this.requestService
-			.newPublicRequest('?slatAction=api:public.' + action, payload)
-			.promise.then((data) => {
+		this.publicService.doAction(action, payload)
+			.then((data) => {
 				if (data.cart) {
 					this.cart = data.cart;
 					deferred.resolve(data.cart);
@@ -63,6 +63,8 @@ export class MonatService {
 			skuID: skuID,
 			quantity: quantity,
 		};
+		
+		this.lastAddedSkuID = skuID;
 
 		return this.updateCart('addOrderItem', payload);
 	}
@@ -80,6 +82,10 @@ export class MonatService {
 			'orderItem.quantity': quantity,
 		};
 		return this.updateCart('updateOrderItemQuantity', payload);
+	}
+	
+	public submitSponsor( sponsorID:string ) {
+		return this.publicService.doAction('submitSponsor',{sponsorID});
 	}
 
 	/**

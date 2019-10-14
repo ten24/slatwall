@@ -57,7 +57,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="rating" hb_populateEnabled="public" ormtype="int";
 
 	// Related Object Properties (many-to-one)
-	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_formFieldType="typeahead";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="productReviewStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=productReviewStatusType&orderBy=sortOrder";
@@ -219,8 +219,9 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 
 	public string function getProductReviewProductName()
 	{
-		return getProduct().getProductName();
-		
+		if(!isNull(getProduct())){
+			return getProduct().getProductName();	
+		}		
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================

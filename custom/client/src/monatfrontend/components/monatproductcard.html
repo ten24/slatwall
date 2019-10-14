@@ -36,26 +36,38 @@
         <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
       
         <!-- Market Partner Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 1" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment'" class="price">
             <strong>{{monatProductCard.product.marketPartnerPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
             <br><strong>PV {{monatProductCard.product.personalVolume}}</strong>
         </div>
         
         <!-- VIP Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 3" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment'" class="price">
             <strong>{{monatProductCard.product.vipPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
         </div>
         
         <!-- Retail Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment'" class="price">
             <strong>{{monatProductCard.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductCard.product.vipPrice}}</span>
+        </div>
+        
+        <!-- Enrollment Pricing -->
+        <div ng-if="monatProductCard.type ==='enrollment'" class="price">
+            <strong>{{monatProductCard.product.marketPartnerPrice}} /</strong> <span class="vip-price">PV {{monatProductCard.product.personalVolume}}</span>
         </div>
 
    </div>
    
    <!-- Add To Cart -->
    <div class="product-actions">
-         <button ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" type="submit" class="btn btn-border-primary add-to-cart" ng-class="{'bg-primary': monatProductCard.type == 'enrollment'}">
+         <button 
+            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
+            class="btn btn-border-primary add-to-cart" 
+            ng-class="{
+                'bg-primary': monatProductCard.type == 'enrollment',
+                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
+            }"
+        >
              <span ng-if="monatProductCard.type != 'flexship'" >Add To Cart</span>
              <span ng-if="monatProductCard.type == 'flexship'">Add To Flexship</span>
          </button>

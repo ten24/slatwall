@@ -405,6 +405,12 @@ Notes:
 			}
 			return true;
 		}
+		
+		public query function getTrueRefundSkuSettingRecords(){
+			var sql = "select settingValue, skuID, productID, productTypeID, brandID from swsetting where settingName = 'skuIsRefundFee'";
+			var settingQuery = queryExecute(sql);
+			return settingQuery;
+		}
 	</cfscript>
 
 </cfcomponent>

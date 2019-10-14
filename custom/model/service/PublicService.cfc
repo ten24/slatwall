@@ -184,15 +184,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function getProducts(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
+        
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
-		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
+		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
-	    scrollableSmartList.addFilter('activeFlag', true);
-	    scrollableSmartList.addFilter('publishedFlag', true);
-	    scrollableSmartList.addWhereCondition("price <> 0.00");
-	    scrollableSmartList.addWhereCondition("personalVolume <> 'NULL'");
+	    scrollableSmartList.addFilter('sku.activeFlag', true);
+	    scrollableSmartList.addFilter('sku.publishedFlag', true);
+	    scrollableSmartList.addFilter('maxQuantity', 'NULL');
+	    scrollableSmartList.addFilter('minQuantity', 'NULL');
+	    scrollableSmartList.addFilter('priceGroup.priceGroupCode', '1');
+
+	    scrollableSmartList.addFilter('currencyCode', currencyCode);
+
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price != NULL");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume != NULL");
 	    
         var recordsCount = scrollableSmartList.getRecordsCount();
         
@@ -208,20 +219,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    while(productList.next()){
 		        
 			    var product = productList.get(0);
-			    var adjustedPricing = product.getSkuAdjustedPricing();
-			    
+			    var sku = product.getSku();
+
 			    var productStruct={
-			      "vipPrice"                    :       adjustedPricing.vipPrice?:"",
-			      "marketPartnerPrice"          :       adjustedPricing.MPPrice?:"",
-			      "adjustedPriceForAccount"     :       adjustedPricing.adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       adjustedPricing.retailPrice?:"",
-			      "personalVolume"              :       adjustedPricing.personalVolume?:"",
-			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
+			      "personalVolume"              :       utilityService.formatValue_currency(product.getPersonalVolume(), {currencyCode:currencyCode})?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
+  			      "marketPartnerPrice"          :       utilityService.formatValue_currency(product.getPrice(), {currencyCode:currencyCode})?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
-			      "productName"                 :       product.getProduct().getProductName()?:"",
-			      "skuID"                       :       product.getSkuID()?:"",
-  			      "skuCode"                     :       product.getSkuCode()?:""
+			      "productName"                 :       sku.getSkuName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+  			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
@@ -257,28 +264,62 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
-		var bundleCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundleCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
-		bundleCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundleCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundleCollectionList.setDisplayProperties('
+		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
+		bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+		
+		bundlePersistentCollectionList.setDisplayProperties('
+			skuBundleID,
 			bundledSku.product.productName,
-			bundledSku.product.calculatedSalePrice,
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
-			sku.product.calculatedSalePrice,
 			sku.product.defaultSku.imageFile
 		');
+
 		
-		var skuBundles = bundleCollectionList.getRecords();
+		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
+		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundleNonPersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+
+		var visibleColumnConfigWithArguments = {
+			"isVisible":true,
+			"isDeletable":false,
+			"isSearchable":false,
+			"arguments":{
+			}
+		};
 		
+		if(!isNull(getHibachiScope().getAccount())){
+			visibleColumnConfigWithArguments["arguments"]["currencyCode"] = getHibachiScope().getAccount().getSiteCurrencyCode();
+			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
+		}
+
+		//todo handle case where user is not logged in 
+	
+		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+	
+		var skuBundles = bundlePersistentCollectionList.getRecords();
+		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
+
+			
+	
 		// Build out bundles struct
 		var bundles = {};
-		for ( var skuBundle in skuBundles ) {
+		var skuBundleCount = arrayLen(skuBundles);
+		for ( var i=1; i<=skuBundleCount; i++ ){
+		
+			var skuBundle = skuBundles[i]; 
+			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
 		
 			var skuID = skuBundle.sku_product_defaultSku_skuID;
 			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
@@ -288,7 +329,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
-					'price': skuBundle.sku_product_calculatedSalePrice,
+					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'productTypes': {}
@@ -306,7 +347,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			// Add sub product to the struct.
 			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
 				'name': skuBundle.bundledSku_product_productName,
-				'price': skuBundle.bundledSku_product_calculatedSalePrice,
+				'price': skuBundle.bundledSku_priceByCurrencyCode,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
 			});
 		}
@@ -314,11 +355,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
     
-    public any function createAccount(required struct data){
+    public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
-            if(!isNull(arguments.data['accountStatusName'])){
-                account.setAccountStatusName(arguments.data['accountStatusName']);
+            account.setAccountType('marketPartner');
+            account.setActiveFlag(false);
+            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('1');
+            if(!isNull(priceGroup)){
+                account.addPriceGroup(priceGroup);
+            }
+            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
+            if(!isNull(accountStatusType)){
+                account.setAccountStatusType(accountStatusType);
             }
         }
         return account;
@@ -341,5 +389,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return account;
     }
     
-    
+    public void function submitSponsor(required struct data){
+        param name="arguments.data.sponsorID" default="";
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        var accountRelationship = getService('accountService').newAccountRelationship();
+        accountRelationship.setParentAccount(sponsorAccount);
+        accountRelationship.setChildAccount(getHibachiScope().getAccount());
+        accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+        
+        if(accountRelationship.hasErrors()){
+            addErrors(arguments.data,accountRelationship.getErrors());
+        }
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
+        
+    }
 }
