@@ -75,19 +75,33 @@ class SWListingDisplayController{
     public hasRecordAddAction:boolean=false;
     public recordAddEvent:string;
     public recordAddAction:string;
+    
     public hasRecordDetailAction:boolean=false;
+    public recordDetailModal:boolean;
     public recordDetailEvent:string
     public recordDetailAction:string;
-    public recordDetailActionIdProperty:string;
-    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
+    public recordDetailActionPropertyIdentifier:string;
+    public recordDetailQueryString:string;
+    
     public hasRecordEditAction:boolean=false;
+    public recordEditDisabled:boolean;
+    public recordEditModal:boolean;
     public recordEditEvent:string
     public recordEditAction:string;
+    public recordEditActionProperty:string;
+    public recordEditActionPropertyIdentifier:string;
+    public recordEditQueryString:string;
     public recordEditIcon:string='pencil';
+    
     public hasRecordDeleteAction:boolean=false;
+    public recordDeleteModal:boolean;
     public recordDeleteEvent:string
     public recordDeleteAction:string;
+    public recordDeleteActionProperty:string;
+    public recordDeleteActionPropertyIdentifier:string;
+    public recordDeleteQueryString:string;
+    
     public recordProcessButtonDisplayFlag:boolean;
     public reportAction:string;
     public searching:boolean = false;
@@ -464,22 +478,22 @@ class SWListingDisplayController{
         
         if( this.hasRecordDetailAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('detail');
+            // this.getAdminAttributesByType('detail');
         }
         
         if( this.hasRecordEditAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('edit');
+            // this.getAdminAttributesByType('edit');
         }
         
         if( this.hasRecordDeleteAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('delete');
+            // this.getAdminAttributesByType('delete');
         }
         
         if( this.hasRecordAddAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('add');
+            // this.getAdminAttributesByType('add');
         }
         
         if( this.collectionConfig != null &&
@@ -707,18 +721,55 @@ class SWListingDisplayController{
        return this.listingService.getPageRecordKey(propertyIdentifier);
     };
 
+    //not in use
     private getAdminAttributesByType = (type:string):void =>{
-        var recordActionName = 'record'+type.toUpperCase()+'Action';
+        var recordActionName = 'record' + this.capitalize(type) + 'Action';
         var recordActionPropertyName = recordActionName + 'Property';
-        var recordActionQueryStringName = recordActionName + 'QueryString';
-        var recordActionModalName = recordActionName + 'Modal';
+        
+        var recordActionModalName = 'record' + this.capitalize(type) + 'Modal';
+        var recordQueryStringName = 'record' + this.capitalize(type) + 'QueryString';
+        
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'action="'+this[recordActionName]+'"', " ");
+        
         if(this[recordActionPropertyName] && this[recordActionPropertyName].length){
             this.adminattributes = this.utilityService.listAppend(this.adminattributes,'data-'+type+'actionproperty="'+this[recordActionPropertyName]+'"', " ");
         }
-        this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordActionQueryStringName]+'"', " ");
+        
+        this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordQueryStringName]+'"', " ");
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'modal="'+this[recordActionModalName]+'"', " ");
     };
+    
+    public  makeQuertStringForAction(action:string, pageRecord) {
+        let queryString = "";
+        action = this.capitalize(action);
+        
+        let actionProppertyName = `record${action}ActionProperty`;
+        let actionPropertyIdentifierName = `record${action}ActionPropertyIdentifier`;
+        
+        if( this[actionProppertyName] ) {
+            queryString += '&' + this[actionProppertyName];
+            if( this[actionPropertyIdentifierName] ) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            } else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        } else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        
+        let actionQueryStringName = `record${action}QueryString`;
+        if(this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        } 
+        
+        return queryString;
+    }
+
+    private capitalize = (s) => {
+      if (typeof s !== 'string' || s.length === 0) return s;
+      
+      return s.charAt(0).toUpperCase() + s.slice(1)
+    }
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
@@ -864,26 +915,29 @@ class SWListingDisplay implements ng.IDirective{
             actions:"<?",
             administrativeCount:"@?",
             
+            recordEditModal:"<?",
             recordEditEvent:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
+            recordEditActionPropertyIdentifier:"@?",
             recordEditQueryString:"@?",
-            recordEditModal:"<?",
             recordEditDisabled:"<?",
             recordEditIcon:"@?",
             
+            recordDetailModal:"<?",
             recordDetailEvent:"@?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
-            recordDetailActionIdProperty:"@?",
-            recordDetailActionIdKey:"@?",
+            recordDetailActionPropertyIdentifier:"@?",
             recordDetailQueryString:"@?",
-            recordDetailModal:"<?",
             
+            recordDeleteModal:"<?",
             recordDeleteEvent:"@?",
             recordDeleteAction:"@?",
             recordDeleteActionProperty:"@?",
+            recordDeleteActionPropertyIdentifier:"@?",
             recordDeleteQueryString:"@?",
+            
             
             recordAddEvent:"@?",
             recordAddAction:"@?",
