@@ -570,9 +570,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		param name="showSearchFilterDropDown" default=true; // ability to change search filter period
 		param name="ignoreSearchFilters" default=false; // searchFilters will be ignored
 		
-		var listingSearchConfig  = {};
-		listingSearchConfig['wildCardPostion'] = arguments.wildCardPosition;
-		listingSearchConfig['searchFilterPropertyIdentifier'] = arguments.searchFilterPropertyIdentifier;	
+		var listingSearchConfig  = {
+			"wildCardPosition" = arguments.wildCardPosition,
+			"showWildCardPositionDropdown" = arguments.showWildCardPositionDropdown,
+			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
+			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
+			"ignoreSearchFilter" = arguments.ignoreSearchFilters,
+		};
 		return listingSearchConfig;
 	}
 	

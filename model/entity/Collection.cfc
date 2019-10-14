@@ -384,21 +384,120 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.collectionEntityObject;
 	}
 	
+	
+	/**
+	 * Named as CollectionObject-listingSearchConfig, as Collection.cfc has it's own listingSearchConfig
+	 * 
+	 * 
+	 * 	var listingSearchConfig  = {
+			
+			//default options
+			
+			"wildCardPosition"
+			"showWildCardPositionDropdown"
+			"searchFilterPropertyIdentifier"
+			"showSearchFilterDropDown"
+			"ignoreSearchFilter",
+	
+			//extra-options
+			"selectedSearchFiterCode" = "lastThreeMonths"
+			
+		};
+	 * 
+	*/ 
 	public any function getCollectionObjectListingSearchConfig() {
 		
 		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
-			variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+			var collectionObjectListingSearchConfig = {};
 			
-			if(StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')){
-				StructAppend(variables['collectionObjectListingSearchConfig'], this.getCollectionConfigStruct()['listingSearchConfig'],true);// Merge and override
+			if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
+				collectionObjectListingSearchConfig = this.getCollectionConfigStruct()['listingSearchConfig'];
 			}
+			
+			this.setCollectionObjectListingSearchConfig({}); // will set the defaults
 		}
 		
-		return variables.listingSearchConfig;
+		return variables.collectionObjectListingSearchConfig;
 	}
+	
 
+	/**
+	 * Do not update the struct directly (getCollectionConfigStruct()[listingSearchConfig]) ;
+	*/ 
 	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
-		variables['collectionObjectListingSearchConfig'] = arguments.listingSearchConfig;
+		
+		variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+		StructAppend(variables['collectionObjectListingSearchConfig'], arguments.listingSearchConfig,true);// Merge and override
+		
+		//update The CollectionConfigStruct
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["listingSearchConfig"] = variables['collectionObjectListingSearchConfig'];
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	
+	public array function getListingSearchFilterOptions() {
+		// Replicating to keep things simple for now
+		// TODO: see if we'd like to make it more configurable
+		return [
+					{
+		                title:'Last 3 Months',
+		                code:'lastThreeMonths',
+		                criteria:"m:3",
+		            },
+		            
+		            {
+		                title:'Last 6 Months',
+		                code:'lastThreeSix',
+		                criteria:"m:6",
+		            },
+		            
+		            {
+		                title:'1 Year Ago',
+		                code:'lastOneYear',
+		                criteria:"y:1",
+		            },
+		            
+		            {
+		                title:'All Time',
+		                code:'allRecords',
+		                criteria:'all'
+		            }
+		            
+		        ];
+	}
+	
+	public void function updateListingSearchFilters() {
+		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
+		
+		var searchFilterAppliesCondition = true;
+		
+		if(len(trim(listingSearchConfig.selectedSearchFilterCode) ) <= 0) {
+			searchFilterAppliesCondition = false;
+		} else if(listingSearchConfig.selectedSearchFilterCode === "allRecords") {
+			searchFilterAppliesCondition = false;
+		}
+		//TODO: see if we'd want to other-conditions
+		
+		if(listingSearchConfig.ignoreSearchFilter || !searchFilterAppliesCondition ) {
+			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
+		} 
+		
+		if(searchFilterAppliesCondition) {
+			var filter = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
+				return arguments.opt.code === listingSearchConfig.selectedSearchFilterCode;
+			});
+			
+			var criterias = ListToArray(filter.criteria,':');
+			var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
+			
+			this.addFilter(
+				propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
+				value = filterValue,
+				comparisonOperator = ">=",
+			    filterGroupAlias = "listingSearchFilters"
+			);
+		}
 	}
 
 
@@ -452,6 +551,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		this.setCollectionConfigStruct(collectionConfig);
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
+ 	
+ 	public boolean function removeFilterGroupByFilterGroupAlias(required string filterGroupAlias){
+ 		if(this.hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
+ 			var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias);
+ 			var collectionConfigStruct = this.getCollectionConfigStruct();
+ 			
+ 			ArrayDelete( collectionConfigStruct['filterGroups'], filterGroupIndex); 
+ 			// arrays from struct are "get-by-ref", so no need to update the collectionConfigStruct;
+ 			StructDelete(variables.filterGroupAliasMap, arguments.filterGroupAlias);
+ 		}
+ 	}
+
+ 	
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="none"){
  		if(findNoCase('(',arguments.propertyIdentifier)){
@@ -710,6 +822,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		collectionConfig["isDistinct"] = arguments.isDistinct;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
+	
 
 	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -3942,6 +4055,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(!isnull(this.getParentCollection())){
 				mergeParentCollectionFilters();
+			}
+			
+			if(arraylen(keywordArray)){
+				this.updateListingSearchFilters();
 			}
 
 			//build select

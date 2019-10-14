@@ -5582,6 +5582,43 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
 
 	}
+	
+		/**
+	* @test
+	*/
+	public void function ListingSearchConfigTest(){
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.addDisplayProperties('productID,productName,productDescription');
+		writeDump('simple collection :');
+		writeDump(myCollection.createHQLFromCollectionObject());
+		writeDump(myCollection.getCollectionCongigStruct());
+		
+		myCollection.addFilter('productDescription',"abc");
+		writeDump('Added filter : ');
+		writeDump(myCollection.createHQLFromCollectionObject());
+		writeDump(myCollection.getCollectionCongigStruct());
+		
+		myCollection.setKeywords('ProductABC');
+		writeDump('added keywords : ');
+		writeDump(myCollection.createHQLFromCollectionObject());
+		writeDump(myCollection.getCollectionCongigStruct());
+		
+		myCollection.setCollectionObjectListingSearchConfig({
+			'selectedSearchFilterCode' = 'lastOneYear'
+		});
+		writeDump('added selectedSearchFilterCode : ');
+		writeDump(myCollection.createHQLFromCollectionObject());
+		writeDump(myCollection.getCollectionCongigStruct());
+
+		myCollection.setCollectionObjectListingSearchConfig({
+			'ignoreSearchFilter' = true
+		});
+		writeDump('added ignoreSearchFilter : ');
+		writeDump(myCollection.createHQLFromCollectionObject());
+		writeDump(myCollection.getCollectionCongigStruct());
+		
+		abort;
+	}
 
 
 	/**
