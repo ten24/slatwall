@@ -49,7 +49,8 @@ class swfAccountController {
     }
     // Determine how many years old the account is
     public checkAndApplyAccountAge = () => {
-        if(this.accountData.ownerAccount.createdDateTime){
+        if(this.accountData && this.accountData.ownerAccount){
+            console.log('running')
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
