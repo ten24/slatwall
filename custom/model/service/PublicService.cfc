@@ -372,7 +372,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return account;
     }
     
-    private any function setupEnrollmentInfo(required any account, required any accountType){
+    private any function setupEnrollmentInfo(required any account, required string accountType){
         var accountTypeInfo = {
             'retail':{
                 'priceGroupCode':'2',
@@ -385,20 +385,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'activeFlag':false
             }
         }
-        account.setAccountType(accountType);
-        account.setActiveFlag(accountTypeInfo[accountType].activeFlag);
-        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[accountType].priceGroupCode);
+        arguments.account.setAccountType(arguments.accountType);
+        arguments.account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
         if(!isNull(priceGroup)){
-            account.addPriceGroup(priceGroup);
+            arguments.account.addPriceGroup(priceGroup);
         }
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
         if(!isNull(accountStatusType)){
-            account.setAccountStatusType(accountStatusType);
+            arguments.account.setAccountStatusType(accountStatusType);
         }
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
-            account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
+            arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
-        return account;
+        return arguments.account;
     }
     
     public any function updateAccount(required struct data){
