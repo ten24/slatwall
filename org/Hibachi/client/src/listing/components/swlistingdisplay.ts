@@ -739,7 +739,7 @@ class SWListingDisplayController{
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'modal="'+this[recordActionModalName]+'"', " ");
     };
     
-    public  makeQuertStringForAction(action:string, pageRecord) {
+    public  makeQueryStringForAction(action:string, pageRecord) {
         let queryString = "";
         action = this.capitalize(action);
         
