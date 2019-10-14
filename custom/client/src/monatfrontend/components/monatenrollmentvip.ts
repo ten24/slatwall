@@ -41,18 +41,18 @@ class VIPController {
 		});
 	};
 
-	public getMpResults = () => {
+	public getMpResults = (model) => {
 		this.publicService.marketPartnerResults = this.publicService.doAction(
 			'/?slatAction=monat:public.getmarketpartners' +
 				'&search=' +
-				this.mpSearchText +
+				model.mpSearchText +
 				'&currentPage=' +
 				this.currentMpPage +
 				'&accountSearchType=VIP' +
 				'&countryCode=' +
-				this.currentCountryCode +
+				model.currentCountryCode +
 				'&stateCode=' +
-				this.currentStateCode,
+				model.currentStateCode,
 		);
 	};
 	
