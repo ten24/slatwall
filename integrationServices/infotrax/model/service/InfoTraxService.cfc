@@ -125,7 +125,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return left(distributorName, 60);
 	}
 	
-	private string function formatDistributorType(required string accountType){
+	private string function formatDistributorType(string accountType){
+		
+		if(!structKeyExists(arguments, 'accountType')){
+			return 'C';
+		}
 		var mapping = {
 			'MarketPartner' = 'D',
 			'VIP'           = 'P',
@@ -214,9 +218,13 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
-			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			
 		};
+		
+		if(len(arguments.account.getRenewalDate())){
+			distributorData['renewalDate'] = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd');//Renewal Date (YYYYMMDD)
+		}
 		
 		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
 			distributorData['governmentId'] = arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
@@ -239,7 +247,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
 			'transactionTime'   = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
-			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
+			'transactionType'   = formatOrderType(arguments.order),//Type of ICE transactionusually “I” or “C”.
 			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
 			'salesVolume'       = getAmount(arguments.order,'total'),//Total Sales Volume of the order(999999999.99)
 			'qualifyingVolume'  = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Qualifying Volume of the order
@@ -312,6 +320,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		switch ( arguments.entity.getClassName() ) {
 			
 			
+			case 'AccountAddress':
 			case 'AccountPhoneNumber':
 			case 'AccountGovernmentIdentification':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity.getAccount());

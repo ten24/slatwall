@@ -28,7 +28,9 @@
 			},
 			{
 				"contexts": "save",
-				"regex": "^[a-zA-Z0-9-_.|:~^]+$"
+				"regex": "^[a-zA-Z0-9-_.|:~^]+$",
+				"maxLength": 35,
+				"minLength": 5
 			}
 		],
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
