@@ -77152,7 +77152,6 @@ var PublicService = /** @class */ (function () {
         /** accessors for cart */
         this.getCart = function (refresh) {
             if (refresh === void 0) { refresh = false; }
-            console.trace();
             var urlBase = _this.baseActionPath + 'getCart/';
             if (!_this.cartDataPromise || refresh) {
                 _this.cartDataPromise = _this.getData(urlBase, "cart", "");

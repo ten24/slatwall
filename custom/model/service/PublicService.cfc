@@ -434,7 +434,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         if(account.getNewFlag()){
-            writeDump('bad news bears');abort;
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
         }

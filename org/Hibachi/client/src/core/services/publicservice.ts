@@ -153,7 +153,7 @@ class PublicService {
     }
     /** accessors for cart */
     public getCart=(refresh=false):any =>  {
-        console.trace()
+
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
             this.cartDataPromise = this.getData(urlBase, "cart", "");
