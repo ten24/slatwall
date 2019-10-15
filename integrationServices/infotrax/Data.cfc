@@ -190,10 +190,18 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				return;
 		}
 		
+		
+		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			if(relatedToAccount){
+				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
+					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",arguments.entity.getAccount());
+				}
 				arguments.entity.getAccount().setLastSyncedDateTime(now());
 			}else{
+				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
+					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", arguments.entity);
+				}
 				arguments.entity.setLastSyncedDateTime(now());
 			}
 			
