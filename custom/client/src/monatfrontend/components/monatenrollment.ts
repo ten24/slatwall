@@ -40,7 +40,7 @@ class MonatEnrollmentController {
 
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		if (this.currentAccountID.length) {
+		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
 	}

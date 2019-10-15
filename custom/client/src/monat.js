@@ -59403,7 +59403,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.cartText = 'Show Cart';
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
-            if (_this.currentAccountID.length) {
+            if (_this.currentAccountID.length && (!_this.$rootScope.slatwall.errors || !_this.$rootScope.slatwall.errors.length)) {
                 _this.next();
             }
         };
@@ -59769,9 +59769,10 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 Object.defineProperty(exports, "__esModule", { value: true });
 var VIPController = /** @class */ (function () {
     // @ngInject
-    function VIPController(publicService) {
+    function VIPController(publicService, orderTemplateService) {
         var _this = this;
         this.publicService = publicService;
+        this.orderTemplateService = orderTemplateService;
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
         this.currentCountryCode = '';
@@ -59779,6 +59780,7 @@ var VIPController = /** @class */ (function () {
         this.mpSearchText = '';
         this.currentMpPage = 1;
         this.isVIPEnrollment = false;
+        this.loading = false;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
         };
@@ -59807,6 +59809,13 @@ var VIPController = /** @class */ (function () {
                 _this.currentCountryCode +
                 '&stateCode=' +
                 _this.currentStateCode);
+        };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            if (orderTemplateSystemCode === void 0) { orderTemplateSystemCode = 'ottSchedule'; }
+            _this.loading = true;
+            _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
+                _this.loading = false;
+            });
         };
     }
     return VIPController;
@@ -62053,7 +62062,7 @@ var MonatService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
-                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
+                _this.cachedOptions = __assign({}, _this.cachedOptions, realOptions); // override and merge with old options
                 _this.sendOptionsBack(options, deferred);
                 //TODO handle errors
             });
@@ -62334,6 +62343,9 @@ var OrderTemplateService = /** @class */ (function () {
                 }, objectToReturn);
             }
             return objectToReturn;
+        };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", { orderTemplateSystemCode: orderTemplateSystemCode });
         };
     }
     return OrderTemplateService;
@@ -77070,13 +77082,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -78199,7 +78204,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -78909,10 +78914,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -82936,6 +82941,9 @@ var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.
         $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
         $rootScope.slatwall.getEntity = entityService.newEntity;
         $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
+        if (hibachiConfig && hibachiConfig.cmsSiteID) {
+            $rootScope.slatwall.cmsSiteID = hibachiConfig.cmsSiteID;
+        }
     }])
     .constant('coreFrontEndPartialsPath', 'frontend/components/')
     //controllers
@@ -85811,11 +85819,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }

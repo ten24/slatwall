@@ -6,6 +6,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
 		if(!isNull(account.getAccountStatusType()) && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
 			account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
+			account.setActiveFlag(true);
 			account.getAccountNumber();
 			account.setRenewalDate(now());
 			getService("accountService").saveAccount(account);
