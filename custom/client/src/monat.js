@@ -59441,9 +59441,6 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
-        this.observerService.attach(this.getCart, "addOrderItemSuccess");
-        this.observerService.attach(this.getCart, "removeOrderItemSuccess");
-        this.observerService.attach(this.getCart, "updateOrderItemSuccess");
         this.getCart();
     }
     MonatEnrollmentController.prototype.next = function () {
@@ -77155,6 +77152,7 @@ var PublicService = /** @class */ (function () {
         /** accessors for cart */
         this.getCart = function (refresh) {
             if (refresh === void 0) { refresh = false; }
+            console.trace();
             var urlBase = _this.baseActionPath + 'getCart/';
             if (!_this.cartDataPromise || refresh) {
                 _this.cartDataPromise = _this.getData(urlBase, "cart", "");
@@ -82297,8 +82295,10 @@ var SWFAddressFormController = /** @class */ (function (_super) {
         _this.slatwall = $rootScope.slatwall;
         $scope.$watch(angular.bind(_this, function () {
             return _this.form['countryCode'].$modelValue;
-        }), function (val) {
-            _this.slatwall.getStates(val);
+        }), function (newVal, oldVal) {
+            if (!isNaN(newVal)) {
+                _this.slatwall.getStates(newVal);
+            }
         });
         $scope.$watch('slatwall.states.addressOptions', function () {
             if (_this.slatwall.states && _this.slatwall.states.addressOptions) {
