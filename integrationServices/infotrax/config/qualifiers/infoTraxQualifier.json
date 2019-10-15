@@ -22,7 +22,7 @@
 					"propertyIdentifier":"accountType",
 					"comparisonOperator":"IN",
 					"logicalOperator":"AND",
-					"value":"vip,marketPartner"
+					"value":"marketPartner"
 				},{
 					"propertyIdentifier":"renewalDate",
 					"comparisonOperator":"is not",
@@ -48,9 +48,9 @@
 				},
 				{
 					"propertyIdentifier":"accountType",
-					"comparisonOperator":"is",
+					"comparisonOperator":"IN",
 					"logicalOperator":"AND",
-					"value":"null"
+					"value":"vip,Customer"
 				}
 			]
 		],
