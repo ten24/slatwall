@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BATCH:
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 default:
                     return _this.state;
             }
@@ -76944,7 +76944,8 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -76957,7 +76958,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        var _this = this;
+        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -76981,6 +76982,7 @@ var CollectionConfig = /** @class */ (function () {
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
         this.enableAveragesAndSums = enableAveragesAndSums;
+        this.listingSearchConfig = listingSearchConfig;
         this.filterGroupAliasMap = {};
         this.reportFlag = false;
         this.periodInterval = "";
@@ -77061,6 +77063,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
+            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -77102,7 +77105,8 @@ var CollectionConfig = /** @class */ (function () {
                 isDistinct: _this.isDistinct,
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
-                enableAveragesAndSums: _this.enableAveragesAndSums
+                enableAveragesAndSums: _this.enableAveragesAndSums,
+                listingSearchConfig: _this.listingSearchConfig,
             };
         };
         this.getEntityName = function () {
@@ -77134,6 +77138,7 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
+                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
             if (angular.isDefined(_this.id)) {
@@ -77647,6 +77652,10 @@ var CollectionConfig = /** @class */ (function () {
         this.setEnableAveragesAndSums = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.enableAveragesAndSums = flag;
+            return _this;
+        };
+        this.setListingSearchConfig = function (config) {
+            _this.listingSearchConfig = config;
             return _this;
         };
         this.setDirtyRead = function (flag) {
@@ -84505,6 +84514,9 @@ var HibachiService = /** @class */ (function () {
                     var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
                 }
                 params.enableAveragesAndSums = options.enableAveragesAndSums || false;
+                if (angular.isDefined(options.listingSearchConfig)) {
+                    params.listingSearchConfig = options.listingSearchConfig;
+                }
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -86371,6 +86383,13 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -87493,7 +87512,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -88203,10 +88222,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -93037,7 +93056,6 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
-            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -93065,7 +93083,6 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
-            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -94159,11 +94176,23 @@ exports.SWListingRowSave = SWListingRowSave;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingSearchController = /** @class */ (function () {
     //@ngInject
-    function SWListingSearchController($rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
+    function SWListingSearchController($scope, $rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
         var _this = this;
+        this.$scope = $scope;
         this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
         this.metadataService = metadataService;
@@ -94176,34 +94205,52 @@ var SWListingSearchController = /** @class */ (function () {
         this.filtersClosed = true;
         this.hasPersonalCollections = false;
         this.collectionNameSaveIsOpen = false;
+        this.searchableFilterOptions = [
+            {
+                title: 'Last 3 Months',
+                value: 'lastThreeMonths',
+            },
+            {
+                title: 'Last 6 Months',
+                value: 'lastThreeSix',
+            },
+            {
+                title: '1 Year Ago',
+                value: 'lastOneYear',
+            },
+            {
+                title: 'All Time',
+                value: 'allRecords',
+            }
+        ];
+        this.wildCardPositionOptions = [
+            {
+                title: 'Match from start',
+                value: 'left'
+            },
+            {
+                title: 'Match end',
+                value: 'right'
+            },
+            {
+                title: 'Match between',
+                value: 'both'
+            }
+        ];
         this.$onInit = function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
-            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
-                _this.showSearchFilterDropDown = false;
-            }
             //snapshot searchable options in the beginning
-            _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
-            _this.searchableFilterOptions = [
-                {
-                    title: 'Last 3 Months',
-                    value: new Date().setMonth(new Date().getMonth() - 3)
-                },
-                {
-                    title: 'Last 6 Months',
-                    value: new Date().setMonth(new Date().getMonth() - 6)
-                },
-                {
-                    title: '1 Year Ago',
-                    value: new Date().setMonth(new Date().getMonth() - 12)
-                },
-                {
-                    title: 'All Time',
-                    value: 'All'
-                }
-            ];
-            _this.selectSearchFilter(_this.searchableFilterOptions[0]);
+            _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
+            // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
+            //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
+            // })
+            var listingSearchConfig = {};
+            if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
+                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+            }
+            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -94223,10 +94270,20 @@ var SWListingSearchController = /** @class */ (function () {
                 });
             }
         };
-        this.selectSearchFilter = function (filter) {
-            _this.selectedSearchFilter = filter;
-            if (_this.swListingDisplay.searchText) {
-                _this.search();
+        this.changeSearchFilter = function (filter) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFiterCode !== filter.value) {
+                _this.selectedWildCardPosition = filter;
+                _this.updateListingSearchConfig({
+                    selectedSearchFiterCode: filter.value
+                });
+            }
+        };
+        this.changeWildCardPoition = function (position) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.wildCardPosition !== position.value) {
+                _this.selectedWildCardPosition = position;
+                _this.updateListingSearchConfig({
+                    wildCardPosition: position.value
+                });
             }
         };
         this.selectSearchColumn = function (column) {
@@ -94351,12 +94408,12 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
-            _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-            if (_this.selectedSearchFilter.value != 'All') {
-                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length && _this.swListingDisplay.searchText.length > 0) {
-                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
-                }
-            }
+            // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            // if(this.selectedSearchFilter.criteria != 'all'){
+            //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
+            //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+            //     }
+            // }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -94381,6 +94438,27 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
     }
+    SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (angular.isDefined(searchConfig.selectSearchFilter)) {
+            this.selectedSearchFilter = this.searchableFilterOptions
+                .find(function (item) { return item.value === searchConfig.selectedSearchFiterCode; });
+        }
+        if (!this.selectedSearchFilter) {
+            this.selectedSearchFilter = this.searchableFilterOptions[0];
+        }
+        if (angular.isDefined(searchConfig.selectWildCardPosition)) {
+            this.selectedWildCardPosition = this.wildCardPositionOptions
+                .find(function (item) { return item.value === searchConfig.wildCardPosition; });
+        }
+        if (!this.selectedWildCardPosition) {
+            this.selectedWildCardPosition = this.wildCardPositionOptions[0];
+        }
+    };
+    SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
+        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
+    };
     return SWListingSearchController;
 }());
 var SWListingSearch = /** @class */ (function () {
@@ -94393,12 +94471,10 @@ var SWListingSearch = /** @class */ (function () {
         this.scope = {};
         this.require = { swListingDisplay: "?^swListingDisplay", swListingControls: '?^swListingControls' };
         this.bindToController = {
-            collectionConfig: "<?",
+            collectionConfig: "=",
             paginator: "=?",
             listingId: "@?",
             showToggleSearch: "=?",
-            searchFilterPropertyIdentifier: "@?",
-            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';
@@ -94514,11 +94590,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }

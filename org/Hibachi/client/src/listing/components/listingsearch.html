@@ -13,13 +13,24 @@
         </ul>
     </div>
     
-    <div ng-if="swListingSearch.showSearchFilterDropDown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchFilter.title"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li data-ng-repeat="filterOption in swListingSearch.searchableFilterOptions">
-                <a href data-ng-click="swListingSearch.selectSearchFilter(filterOption)" data-ng-bind="filterOption.displayTitle ? filterOption.displayTitle : filterOption.title"></a>
+                <a href data-ng-click="swListingSearch.changeSearchFilter(filterOption)" data-ng-bind="filterOption.title"></a>
+            </li>
+        </ul>
+    </div>
+    
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showWildCardPositionDropdown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span data-ng-bind="swListingSearch.selectedWildCardPosition.title"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li data-ng-repeat="option in swListingSearch.wildCardPositionOptions">
+                <a href data-ng-click="swListingSearch.changeWildCardPoition(option)" data-ng-bind="option.title"></a>
             </li>
         </ul>
     </div>

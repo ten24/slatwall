@@ -5590,8 +5590,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myCollection = variables.entityService.getProductCollectionList();
 		myCollection.setDisplayProperties('productID,productName,productDescription',{isSearchable:true});
 		writeDump('simple collection :');
-		// writeDump(myCollection.getHQL());
-		// writeDump(myCollection.getCollectionConfigStruct());
+		writeDump(myCollection.getHQL());
+		writeDump(myCollection.getCollectionConfigStruct());
 		
 		myCollection.addFilter('productDescription',"abc");
 		writeDump('Added filter : ');

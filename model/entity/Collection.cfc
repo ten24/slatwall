@@ -4068,6 +4068,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(getKeywordArray())){
 				this.updateListingSearchFilters();
 			}
+			
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
