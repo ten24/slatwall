@@ -29,7 +29,7 @@
 					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
 						<i class="fas fa-times"></i>
 					</button>
-					<div ng-init="monatMiniCart.mIndex = monatMiniCart.mIndex + 1" class="img">
+					<div class="img">
 						<a href="#">
 							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
@@ -72,10 +72,10 @@
 			</ul>
 			
 			<!---Pagination Arrows--->
-			<span ng-show="monatMiniCart.currentPage != 0" ng-click="monatMiniCart.changePage('back')" class="back-arrow" style="position: absolute; float: left; left: 0.5%; top: 50%;">
+			<span ng-show="monatMiniCart.currentPage != 0" ng-click="monatMiniCart.changePage('back')" class="paginate-nav back-arrow">
 				<i class="fal fa-angle-double-left fa-5x"></i>
 			</span>
-			<span ng-show="((monatMiniCart.currentPage + 1) * monatMiniCart.pageSize) <=  monatMiniCart.cart.orderItems.length -1 && monatMiniCart.cart.orderItems.length  > monatMiniCart.pageSize" ng-click="monatMiniCart.changePage('next')" class="forward-arrow" style="position: absolute; float: right; right: .5%; top: 50%;">
+			<span ng-show="((monatMiniCart.currentPage + 1) * monatMiniCart.pageSize) <=  monatMiniCart.cart.orderItems.length -1 && monatMiniCart.cart.orderItems.length  > monatMiniCart.pageSize" ng-click="monatMiniCart.changePage('next')" class="paginate-nav forward-arrow">
 				<i class="fal fa-angle-double-right fa-5x"></i>
 			</span>
 			<!---End: Pagination Arrows --->
