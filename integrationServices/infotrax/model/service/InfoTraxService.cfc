@@ -193,11 +193,27 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function getAmount(required any order, required string fieldName){
 		var amount = order.invokeMethod('get#arguments.fieldName#');
 		
-		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder'){
+		
+		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && amount > 0){
 			amount = amount * -1;
 		}
-		
 		return amount;
+	}
+	
+	private string function formatDescription(required any order){
+		var description = '';
+		
+		if( len(arguments.order.getAccount().getLastName()) ){
+			description &= '#arguments.order.getAccount().getLastName()#, ';
+		}
+		
+		description &= '#arguments.order.getAccount().getFirstName()#';
+		
+		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
+			description &= ' - '&arguments.order.getReferencedOrder().getIceRecordNumber();
+		}
+		
+		return description;
 	}
 	
 
@@ -217,10 +233,16 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
-			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
-			
 		};
+		
+		if(!isNull(arguments.account.getCompany()) && len(arguments.account.getCompany())){
+			distributorData['companyname'] = arguments.account.getCompany(); // Distributor Company
+		}
+		
+		if(isDate(arguments.account.getDOB())){
+			distributorData['birthDate'] = dateFormat(arguments.account.getDOB(), 'yyyymmdd');//Member Birthday YYYYMMDD
+		}
 		
 		if(len(arguments.account.getRenewalDate())){
 			distributorData['renewalDate'] = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd');//Renewal Date (YYYYMMDD)
@@ -243,6 +265,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
+			'description'       = formatDescription(arguments.order),
 			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
 			'transactionTime'   = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
@@ -267,7 +290,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
 		
 		
-		if( transactionData['orderType'] == 'C' ){
+		if( transactionData['orderType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
 			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		
@@ -302,7 +325,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			//'nextRunDate'       = dateFormat(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyymmdd') //Date the next time the autoship will generate an order (YYYYMMDD)
 		};
 		
-		if(arguments.orderTemplate.getLastOrderPlacedDateTime()){
+		if(isDate(arguments.orderTemplate.getLastOrderPlacedDateTime())){
 			autoshipData['lastRunDate'] = dateFormat(arguments.orderTemplate.getLastOrderPlacedDateTime(), 'yyyymmdd'); //Date the autoship last generated an order (YYYYMMDD)
 		}
 		
