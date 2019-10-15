@@ -7,9 +7,10 @@ class VIPController {
 	public mpSearchText: string = '';
 	public currentMpPage: number = 1;
 	public isVIPEnrollment: boolean = false;
+    public loading:boolean = false;
 
 	// @ngInject
-	constructor(public publicService) {}
+	constructor(public publicService, public orderTemplateService) {}
 
 	public $onInit = () => {
 		this.getCountryCodeOptions();
@@ -47,6 +48,13 @@ class VIPController {
 				this.currentStateCode,
 		);
 	};
+	
+    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
+        this.loading = true;
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+            this.loading = false;
+        });
+    }
 }
 
 class MonatEnrollmentVIP {

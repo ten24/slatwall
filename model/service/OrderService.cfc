@@ -1377,10 +1377,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else {
+		} else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
+		} else{
+			var account = getHibachiScope().getAccount();
 		}
-
+		
 		if(account.hasErrors()) {
 			arguments.orderTemplate.addError('create', account.getErrors());
 		} else {

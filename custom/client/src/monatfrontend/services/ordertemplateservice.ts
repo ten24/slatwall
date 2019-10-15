@@ -250,6 +250,8 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-   
+    public createOrderTemplate = (orderTemplateSystemCode) => {
+        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{orderTemplateSystemCode: orderTemplateSystemCode});
+    }   
 
 }
