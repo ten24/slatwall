@@ -5588,34 +5588,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function ListingSearchConfigTest(){
 		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.addDisplayProperties('productID,productName,productDescription');
+		myCollection.setDisplayProperties('productID,productName,productDescription',{isSearchable:true});
 		writeDump('simple collection :');
-		writeDump(myCollection.createHQLFromCollectionObject());
-		writeDump(myCollection.getCollectionCongigStruct());
+		// writeDump(myCollection.getHQL());
+		// writeDump(myCollection.getCollectionConfigStruct());
 		
 		myCollection.addFilter('productDescription',"abc");
 		writeDump('Added filter : ');
-		writeDump(myCollection.createHQLFromCollectionObject());
-		writeDump(myCollection.getCollectionCongigStruct());
+		writeDump(myCollection.getHQL());
+		writeDump(myCollection.getCollectionConfigStruct());
 		
 		myCollection.setKeywords('ProductABC');
 		writeDump('added keywords : ');
-		writeDump(myCollection.createHQLFromCollectionObject());
-		writeDump(myCollection.getCollectionCongigStruct());
+		writeDump(myCollection.getHQL());
+		writeDump(myCollection.getCollectionConfigStruct());
 		
 		myCollection.setCollectionObjectListingSearchConfig({
 			'selectedSearchFilterCode' = 'lastOneYear'
 		});
-		writeDump('added selectedSearchFilterCode : ');
-		writeDump(myCollection.createHQLFromCollectionObject());
-		writeDump(myCollection.getCollectionCongigStruct());
+		writeDump('added selectedSearchFilterCode lastOneYear: ');
+		writeDump(myCollection.getHQL());
+		writeDump(myCollection.getCollectionConfigStruct());
 
 		myCollection.setCollectionObjectListingSearchConfig({
-			'ignoreSearchFilter' = true
+			'ignoreSearchFilters' = true
 		});
-		writeDump('added ignoreSearchFilter : ');
-		writeDump(myCollection.createHQLFromCollectionObject());
-		writeDump(myCollection.getCollectionCongigStruct());
+		writeDump('added ignoreSearchFilters : ');
+		writeDump(myCollection.getHQL());
+		writeDump(myCollection.getCollectionConfigStruct());
 		
 		abort;
 	}

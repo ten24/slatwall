@@ -397,7 +397,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"showWildCardPositionDropdown"
 			"searchFilterPropertyIdentifier"
 			"showSearchFilterDropDown"
-			"ignoreSearchFilter",
+			"ignoreSearchFilters",
 	
 			//extra-options
 			"selectedSearchFiterCode" = "lastThreeMonths"
@@ -408,12 +408,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionObjectListingSearchConfig() {
 		
 		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
-			var collectionObjectListingSearchConfig = {};
-			
-			if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
-				collectionObjectListingSearchConfig = this.getCollectionConfigStruct()['listingSearchConfig'];
-			}
-			
 			this.setCollectionObjectListingSearchConfig({}); // will set the defaults
 		}
 		
@@ -427,6 +421,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
 		
 		variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+		if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
+			collectionObjectListingSearchConfig = this.getCollectionConfigStruct()['listingSearchConfig'];
+		}
 		StructAppend(variables['collectionObjectListingSearchConfig'], arguments.listingSearchConfig,true);// Merge and override
 		
 		//update The CollectionConfigStruct
@@ -455,13 +452,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		            {
 		                title:'1 Year Ago',
 		                code:'lastOneYear',
-		                criteria:"y:1",
+		                criteria:"yyyy:1",
 		            },
 		            
 		            {
 		                title:'All Time',
 		                code:'allRecords',
-		                criteria:'all'
 		            }
 		            
 		        ];
@@ -470,34 +466,47 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function updateListingSearchFilters() {
 		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
 		
-		var searchFilterAppliesCondition = true;
+		var searchFilterCondition = (
+				StructKeyExists(listingSearchConfig, 'selectedSearchFilterCode')
+				&& len( trim(listingSearchConfig.selectedSearchFilterCode) )
+			);
 		
-		if(len(trim(listingSearchConfig.selectedSearchFilterCode) ) <= 0) {
-			searchFilterAppliesCondition = false;
-		} else if(listingSearchConfig.selectedSearchFilterCode === "allRecords") {
-			searchFilterAppliesCondition = false;
+		//if we have keywords and there's no search-filter applied
+		if(!searchFilterCondition && Arraylen(getKeywordArray())){ 
+			listingSearchConfig['selectedSearchFilterCode'] = 'lastThreeMonths';
+			searchFilterCondition = true;
 		}
+
+		//if the the user has selected 'allRecords'
+		if(searchFilterCondition && listingSearchConfig.selectedSearchFilterCode === "allRecords") {
+			searchFilterCondition = false;
+		}
+		
 		//TODO: see if we'd want to other-conditions
 		
-		if(listingSearchConfig.ignoreSearchFilter || !searchFilterAppliesCondition ) {
+		if(!searchFilterCondition || listingSearchConfig.ignoreSearchFilters ) {
 			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
+			return;
 		} 
 		
-		if(searchFilterAppliesCondition) {
-			var filter = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
-				return arguments.opt.code === listingSearchConfig.selectedSearchFilterCode;
-			});
-			
-			var criterias = ListToArray(filter.criteria,':');
-			var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
-			
-			this.addFilter(
-				propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
-				value = filterValue,
-				comparisonOperator = ">=",
-			    filterGroupAlias = "listingSearchFilters"
-			);
-		}
+		
+		
+		//        else add listingSearchFilter      // 
+		
+		var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
+									return arguments.opt.code === listingSearchConfig.selectedSearchFilterCode;
+								});
+		
+		var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
+		var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
+
+		this.addFilter(
+			propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
+			value = filterValue,
+			comparisonOperator = ">=",
+		    filterGroupAlias = "listingSearchFilters"
+		);
+	
 	}
 
 
@@ -552,13 +561,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
  	
- 	public boolean function removeFilterGroupByFilterGroupAlias(required string filterGroupAlias){
+ 	public void function removeFilterGroupByFilterGroupAlias(required string filterGroupAlias){
  		if(this.hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
  			var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias);
- 			var collectionConfigStruct = this.getCollectionConfigStruct();
+
+ 			ArrayDeleteAt( this.getCollectionConfigStruct()['filterGroups'], filterGroupIndex); 
  			
- 			ArrayDelete( collectionConfigStruct['filterGroups'], filterGroupIndex); 
- 			// arrays from struct are "get-by-ref", so no need to update the collectionConfigStruct;
  			StructDelete(variables.filterGroupAliasMap, arguments.filterGroupAlias);
  		}
  	}
@@ -4057,7 +4065,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				mergeParentCollectionFilters();
 			}
 			
-			if(arraylen(keywordArray)){
+			if(arraylen(getKeywordArray())){
 				this.updateListingSearchFilters();
 			}
 
@@ -4199,7 +4207,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				switch(searchConfig.wildcrdPosition){
+				switch(searchConfig.wildCardPosition){
 					case "left":
 							currentFilter['value']="%#keyword#";
 						break;
@@ -4287,10 +4295,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			keywordIndex++;
 		}
 		
-		if(!searchConfig.ignoreSearchFilters) {
-			
-		}
-
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig

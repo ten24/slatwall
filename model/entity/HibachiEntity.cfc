@@ -563,19 +563,19 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	 * 
 	*/ 
 	
-	public struct function getListingSearchConfig() {
-		param name="wildCardPosition" default=getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
-		param name="showWildCardPositionDropdown" default=true; // ability to change wildcard position
-		param name="searchFilterPropertyIdentifier" default='createdDateTime';
-		param name="showSearchFilterDropDown" default=true; // ability to change search filter period
-		param name="ignoreSearchFilters" default=false; // searchFilters will be ignored
+	public struct function getListingSearchConfig(struct config = {}) {
+		param name="config.wildCardPosition" default=getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+		param name="config.showWildCardPositionDropdown" default=true; // ability to change wildcard position
+		param name="config.searchFilterPropertyIdentifier" default='createdDateTime';
+		param name="config.showSearchFilterDropDown" default=true; // ability to change search filter period
+		param name="config.ignoreSearchFilters" default=false; // searchFilters will be ignored
 		
 		var listingSearchConfig  = {
-			"wildCardPosition" = arguments.wildCardPosition,
-			"showWildCardPositionDropdown" = arguments.showWildCardPositionDropdown,
-			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
-			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
-			"ignoreSearchFilter" = arguments.ignoreSearchFilters,
+			"wildCardPosition" = arguments.config.wildCardPosition,
+			"showWildCardPositionDropdown" = arguments.config.showWildCardPositionDropdown,
+			"searchFilterPropertyIdentifier" = arguments.config.searchFilterPropertyIdentifier,
+			"showSearchFilterDropDown" = arguments.config.showSearchFilterDropDown,
+			"ignoreSearchFilters" = arguments.config.ignoreSearchFilters,
 		};
 		return listingSearchConfig;
 	}
