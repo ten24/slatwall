@@ -21,15 +21,15 @@
 			</a>
 		</div>
 	</div>
-
+	
 	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatMiniCart.cart.orderItems track by item.orderItemID">
+				<li ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart">
 					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
 						<i class="fas fa-times"></i>
 					</button>
-					<div class="img">
+					<div ng-init="monatMiniCart.mIndex = monatMiniCart.mIndex + 1" class="img">
 						<a href="#">
 							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
@@ -65,11 +65,13 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.extendedPriceAfterDiscount | currency }} </span>
+							<span class="price">{{ item.extendedPriceAfterDiscount | currency }}</span>
 						</div>
 					</div>
 				</li>
 			</ul>
+			<span ng-show="monatMiniCart.currentPage != 0" ng-click="monatMiniCart.changePage('back')" class="back-arrow" style="position: absolute; float: left; left: 0.5%; top: 50%;"><i class="fal fa-angle-double-left fa-5x"></i></span>
+			<span ng-show="((monatMiniCart.currentPage + 1) * monatMiniCart.pageSize) <=  monatMiniCart.cart.orderItems.length -1" ng-click="monatMiniCart.changePage('next')" class="forward-arrow" style="position: absolute; float: right; right: .5%; top: 50%;"><i class="fal fa-angle-double-right fa-5x"></i></span>
 		</div>
 		<a href="/shopping-cart" class="btn bg-primary btn-block">
 			<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
