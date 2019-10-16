@@ -60067,7 +60067,7 @@ var MonatFlexshipConfirm = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            redirectUrl: '@',
+            redirectUrl: '<',
             close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipConfirmController;
