@@ -61384,9 +61384,9 @@ exports.MonatProductCard = MonatProductCard;
 Object.defineProperty(exports, "__esModule", { value: true });
 var swfAccountController = /** @class */ (function () {
     // @ngInject
-    function swfAccountController($rootScope, $scope, observerService) {
+    function swfAccountController(publicService, $scope, observerService) {
         var _this = this;
-        this.$rootScope = $rootScope;
+        this.publicService = publicService;
         this.$scope = $scope;
         this.observerService = observerService;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -61396,13 +61396,6 @@ var swfAccountController = /** @class */ (function () {
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
         this.pageTracker = 1;
-        // Determine how many years old the account is
-        this.checkAndApplyAccountAge = function () {
-            if (_this.accountData && _this.accountData.ownerAccount) {
-                var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
-                _this.accountAge = _this.currentYear - accountCreatedYear;
-            }
-        };
         this.$onInit = function () {
             _this.getAccount();
         };
@@ -61410,21 +61403,28 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             _this.accountData = {};
             _this.accountPaymentMethods = [];
-            var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
-            //Optimize when get orders on account is called, only needed on account overview and orders overview
-            account.then(function (response) {
+            _this.publicService.getAccount(true).then(function (response) {
                 _this.accountData = response;
                 _this.checkAndApplyAccountAge();
-                _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
                 _this.accountPaymentMethods = _this.accountData.accountPaymentMethods;
                 if (_this.urlParams.get('orderid')) {
                     _this.getOrderItemsByOrderID();
                 }
+                else if (window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/') {
+                    _this.getOrdersOnAccount();
+                }
                 ;
                 _this.loading = false;
             });
+        };
+        // Determine how many years old the account owner is
+        this.checkAndApplyAccountAge = function () {
+            if (_this.accountData && _this.accountData.ownerAccount) {
+                var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
+                _this.accountAge = _this.currentYear - accountCreatedYear;
+            }
         };
         this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
@@ -61449,7 +61449,7 @@ var swfAccountController = /** @class */ (function () {
                     pageNumber = _this.pageTracker + 1;
                 }
             }
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
+            return _this.publicService.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
                 var holdingArray = [];
                 var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
@@ -61467,7 +61467,7 @@ var swfAccountController = /** @class */ (function () {
             if (currentPage === void 0) { currentPage = 1; }
             _this.loading = true;
             var accountID = _this.accountData.accountID;
-            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
+            return _this.publicService.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
                 });
@@ -61479,7 +61479,7 @@ var swfAccountController = /** @class */ (function () {
             if (_this.countryCodeOptions) {
                 return _this.countryCodeOptions;
             }
-            return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
+            return _this.publicService.doAction("getCountries").then(function (result) {
                 _this.countryCodeOptions = result.countryCodeOptions;
                 _this.loading = false;
             });
@@ -61490,7 +61490,7 @@ var swfAccountController = /** @class */ (function () {
                 return _this.stateCodeOptions;
             }
             _this.cachedCountryCode = countryCode;
-            return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
+            return _this.publicService.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
                 //Resets the state code options on each click so they dont add up incorrectly
                 if (_this.stateCodeOptions.length) {
                     _this.stateCodeOptions = [];
@@ -61503,7 +61503,7 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setPrimaryPaymentMethod = function (methodID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
+            return _this.publicService.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
                 _this.loading = false;
             });
         };
@@ -61523,7 +61523,7 @@ var swfAccountController = /** @class */ (function () {
         };
         this.deletePaymentMethod = function (paymentMethodID, index) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
+            return _this.publicService.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
                 _this.accountPaymentMethods.splice(index, 1);
                 _this.loading = false;
                 return _this.accountPaymentMethods;
@@ -61536,17 +61536,17 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setPrimaryAddress = function (addressID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
+            return _this.publicService.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
                 _this.loading = false;
             });
         };
+        this.observerService.attach(this.getAccount, "loginSuccess");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
         do {
             this.yearOptions.push(manipulateableYear++);
         } while (this.yearOptions.length <= 9);
-        this.observerService.attach(this.getAccount, "loginSuccess");
     }
     return swfAccountController;
 }());
@@ -62071,7 +62071,7 @@ var MonatService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
-                _this.cachedOptions = __assign({}, _this.cachedOptions, realOptions); // override and merge with old options
+                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
                 _this.sendOptionsBack(options, deferred);
                 //TODO handle errors
             });
@@ -77091,6 +77091,13 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -78213,7 +78220,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -78923,10 +78930,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -85830,11 +85837,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
