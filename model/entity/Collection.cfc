@@ -2520,40 +2520,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							try{
 								while(entities.next()){
 									var entity = entities.get(0);
-									var pageRecord = {};
-									for(var column in columns){
+									var pageRecord = makeRecordStructFromScorllableORMEntity(entity);
 									
-										if(structKeyExists(column,'setting') && column.setting == true){
-											propertyIdentifier = ListRest(column.propertyIdentifier,'.');
-											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
-										}else{
-											
-											var columnEntity = entity; 
-											
-											var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
-											if(left(propertyIdentifier,1) == '.'){
-												propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-											}
-	
-											//walk nested props
-											while( ListLen(propertyIdentifier, '.') >= 2 && !IsSimpleValue(columnEntity)){
-												var entityProperty = ListFirst(propertyIdentifier, '.'); 
-												propertyIdentifier = ListRest(propertyIdentifier, '.');
-												columnEntity = columnEntity.getValueByPropertyIdentifier(entityProperty); 
-											} 
-											
-											if(IsSimpleValue(columnEntity)) { //there's no related entity
-												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity;
-											} else {
-												
-												if (!isNull(column.arguments)){
-													pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
-												}else{
-													pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
-												}
-											}
-										}
-									}
 									arrayAppend(variables.pageRecords,pageRecord);
 	
 									if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
@@ -2655,6 +2623,48 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return variables.scrollableRecords;
 	}
+	
+	
+	private struct function makeRecordStructFromScorllableORMEntity(required any entity) {
+		var record = {};
+		var columns = getCollectionConfigStruct()["columns"];
+		
+		for(var column in columns) {
+		
+			if(structKeyExists(column,'setting') && column.setting == true){
+				propertyIdentifier = ListRest(column.propertyIdentifier,'.');
+				record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
+			}else{
+				
+				var columnEntity = arguments.entity; 
+				
+				var propertyIdentifier = rereplace(replace(column.propertyIdentifier,getBaseEntityAlias(),''),'_','.','all');
+				if(left(propertyIdentifier,1) == '.'){
+					propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+				}
+
+				//walk nested props
+				while( ListLen(propertyIdentifier, '.') >= 2 && !IsSimpleValue(columnEntity)){
+					var entityProperty = ListFirst(propertyIdentifier, '.'); 
+					propertyIdentifier = ListRest(propertyIdentifier, '.');
+					columnEntity = columnEntity.getValueByPropertyIdentifier(entityProperty); 
+				} 
+				
+				if(IsSimpleValue(columnEntity)) { //there's no related entity
+					record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity;
+				} else {
+					
+					if (!isNull(column.arguments)){
+						record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+					}else{
+						record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
+					}
+				}
+			}
+		}
+		
+		return record;
+	}
 
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
@@ -2714,35 +2724,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
-								var record = {};
-
-								for(var column in columns){
-									var columnEntity = entity; 
-									var listRestValue = listRest(column.propertyIdentifier, '.');
-									var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
-									if(left(propertyIdentifier,1) == '.'){
-										propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-									}
-									
-									if(listLen(propertyIdentifier, '.') == 2){
-										var entityProperty = listFirst(propertyIdentifier, '.');
-										propertyIdentifier = listLast(propertyIdentifier, '.'); 
-										columnEntity = entity.getValueByPropertyIdentifier(entityProperty); 
-									}
-								
-									var propertyIdentifierAlias = convertPropertyIdentifierToAlias(column.propertyIdentifier); 
-	
-									if(structKeyExists(column,'setting') && column.setting == true){
-										record[Replace(listRestValue,'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRestValue,columnEntity);
-									}else{
-										if (!isNull(column.arguments)){
-											record[propertyIdentifierAlias] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
-										}else{
-											record[propertyIdentifierAlias] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
-										}
-									}//<--end if
-
-								}//<--end for
+								var record = makeRecordStructFromScorllableORMEntity(entity);
 								arrayAppend(variables.records,record);
 							}//<--end entity
 						//standard Collections HQL
