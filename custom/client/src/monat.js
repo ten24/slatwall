@@ -59201,7 +59201,10 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
-        this.cartAsAttribute = false; //declares if cart data is being bound through attribute binding or not
+        this.cartAsAttribute = false; //declares if cart data is bound through with attribute or not
+        this.currentPage = 0;
+        this.pageSize = 6;
+        this.recordsStart = 0;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59285,6 +59288,15 @@ var MonatMiniCartController = /** @class */ (function () {
                 .finally(function () {
                 //TODO hide loader...
             });
+        };
+        this.changePage = function (dir) {
+            if (dir === 'next' && ((_this.currentPage + 1) * _this.pageSize) <= _this.cart.orderItems.length - 1) {
+                _this.currentPage++;
+            }
+            else if (dir === 'back' && _this.currentPage != 0) {
+                _this.currentPage--;
+            }
+            _this.recordsStart = (_this.currentPage * _this.pageSize);
         };
         this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
     }
