@@ -207,7 +207,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			description &= '#arguments.order.getAccount().getLastName()#, ';
 		}
 		
-		description &= '#arguments.order.getAccount().getFirstName()#';
+		description &= arguments.order.getAccount().getFirstName();
 		
 		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder'){
 			description &= ' - '&arguments.order.getReferencedOrder().getOrderNumber();
