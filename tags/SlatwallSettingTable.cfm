@@ -191,6 +191,17 @@ Notes:
 								<cfif local.isTranslatable>
 									<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
 									<cfif local.hasSettingID>
+										
+										<cfset local.translationQS = "">
+										<cfset local.translationQS = listAppend(local.translationQS, "baseObject=Setting", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "baseID=#thisSetting.settingDetails.settingID#", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "basePropertyName=settingValue", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "currentAction=#request.context[request.context.fw.getAction()]#", "&") >
+
+										<cfif NOT findNoCase('entity.settings', request.context[request.context.fw.getAction()])>
+											<cfset local.translationQS = listAppend(local.translationQS, "currentAction=#request.context[request.context.fw.getAction()]#", "&") >
+										</cfif>
+
 										<hb:HibachiProcessCaller 
 											entity="Translation" 
 											action="admin:entity.preprocesstranslation"
@@ -198,7 +209,7 @@ Notes:
 											icon="globe"
 											iconOnly="true"
 											modal="true"
-											queryString="baseObject=Setting&baseID=#thisSetting.settingDetails.settingID#&basePropertyName=settingValue"
+											queryString="#local.translationQS#"
 										/>
 									</cfif>
 								</cfif>

@@ -13,6 +13,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
     property name="baseObject";
     property name="baseID";
     property name="basePropertyName";
+    property name="currentAction";
     
     // Data Properties (Related Entity Populate)
     property name="translationData" hb_populateArray="true";

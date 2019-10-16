@@ -281,6 +281,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>
