@@ -18,7 +18,7 @@
 
 			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
 				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
-				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">Show Cart</small>
+				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{monatEnrollment.cartText}}</small>
 			</span>
 		</div>
 		
