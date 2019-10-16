@@ -1141,6 +1141,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			addHQLParam(key,arguments.collectionHQLParams[key]);
 		}
 	}
+	
+	private boolean function hasManyToOneNonPersistentColumn() {
+		
+		if( !structKeyExists(variables,'manyToOneNonPersistentColumn') && isNull(variables.manyToOneNonPersistentColumn)) {
+			variables.manyToOneNonPersistentColumn = false;
+			
+			if(structKeyExists(this.getCollectionConfigStruct(),'columns')) {
+				for(var column in this.getCollectionConfigStruct().columns) {
+					if(structKeyExists(column,'persistent') && column.persistent == false) {
+						var propertyIdentifier = rereplace(replace(column.propertyIdentifier,getBaseEntityAlias(),''),'_','.','all');
+						if(left(propertyIdentifier,1) == '.'){
+							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+						}
+						
+						if(listLen(propertyIdentifier, '.') >= 2){ 
+							variables.manyToOneNonPersistentColumn = true;
+							break;
+						} 
+					}
+				}
+			}
+			
+		}
+
+		return variables.manyToOneNonPersistentColumn;
+	}
 
 	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
@@ -1150,10 +1176,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var joinSyntax = 'left join'; 
+		
+		// dump( hasManyToOneNonPersistentColumn());  abort;
+
 
 		if( getUseScrollableFlag() &&
 		    !getRunningGetRecordsCount() &&
-			(structKeyExists(arguments.join, 'column') && arguments.join.column)
+			(structKeyExists(arguments.join, 'column') && arguments.join.column) 
+			&& hasManyToOneNonPersistentColumn()
 		){
 			joinSyntax = 'join fetch';
 		} 
@@ -2495,27 +2525,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									var entity = entities.get(0);
 									var pageRecord = {};
 									for(var column in columns){
-										var columnEntity = entity; 
-										var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
-										if(left(propertyIdentifier,1) == '.'){
-											propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-										}
-
-										//support one level of many to one
-										if(listLen(propertyIdentifier, '.') == 2){
-											var entityProperty = listFirst(propertyIdentifier, '.'); 
-											propertyIdentifier = listLast(propertyIdentifier, '.');
-											columnEntity = entity.getValueByPropertyIdentifier(entityProperty); 
-										} 
-	
+									
 										if(structKeyExists(column,'setting') && column.setting == true){
 											propertyIdentifier = ListRest(column.propertyIdentifier,'.');
 											pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
 										}else{
-											if (!isNull(column.arguments)){
-												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
-											}else{
-												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
+											
+											var columnEntity = entity; 
+											
+											var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
+											if(left(propertyIdentifier,1) == '.'){
+												propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+											}
+	
+											//walk nested props
+											while( ListLen(propertyIdentifier, '.') >= 2 && !IsSimpleValue(columnEntity)){
+												var entityProperty = ListFirst(propertyIdentifier, '.'); 
+												propertyIdentifier = ListRest(propertyIdentifier, '.');
+												columnEntity = columnEntity.getValueByPropertyIdentifier(entityProperty); 
+											} 
+											
+											if(IsSimpleValue(columnEntity)) { //there's no related entity
+												pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity;
+											} else {
+												
+												if (!isNull(column.arguments)){
+													pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+												}else{
+													pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
+												}
 											}
 										}
 									}
