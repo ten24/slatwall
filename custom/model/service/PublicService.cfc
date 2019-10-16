@@ -360,13 +360,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
         }
+        if(account.hasErrors()){
+            addErrors(arguments.data,account.getErrors());
+        }
         return account;
     }
     
     public any function createRetailEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'retail');
+            account = setupEnrollmentInfo(account, 'customer');
         }
         account.getAccountNumber();
         return account;
@@ -374,7 +377,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     private any function setupEnrollmentInfo(required any account, required string accountType){
         var accountTypeInfo = {
-            'retail':{
+            'customer':{
                 'priceGroupCode':'2',
                 'statusTypeCode':'astGoodStanding',
                 'activeFlag':true
@@ -430,6 +433,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         var account = getHibachiScope().getAccount();
+        if(account.getNewFlag()){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){

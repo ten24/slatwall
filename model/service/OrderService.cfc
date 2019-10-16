@@ -1331,6 +1331,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
 			
 			if(structKeyExists(arguments, "transientOrderFulfillment")){
@@ -1481,7 +1482,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderTemplateItem in orderTemplateItems){ 
 
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
-			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
+			var sku = getSkuService().getSku(orderTemplateItem['sku_skuID']);	
+			processOrderAddOrderItem.setSku(sku);
+			processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
 			processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 	
