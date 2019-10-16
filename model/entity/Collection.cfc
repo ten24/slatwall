@@ -1176,9 +1176,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var joinSyntax = 'left join'; 
-		
-		// dump( hasManyToOneNonPersistentColumn());  abort;
-
 
 		if( getUseScrollableFlag() &&
 		    !getRunningGetRecordsCount() &&
