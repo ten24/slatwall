@@ -19,7 +19,6 @@ class SWFWishlistController {
     public skuID:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
-
     
     // @ngInject
     constructor(
