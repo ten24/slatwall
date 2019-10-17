@@ -32,11 +32,6 @@ class MaterialTextarea {
         directive.$inject = [];
         return directive;
 	}
-	
-	public link = (scope, element, attrs) => {
-        this.bindToController.textarea = element;
-        console.log( attrs );
-    }
 }
 
 export {MaterialTextarea };

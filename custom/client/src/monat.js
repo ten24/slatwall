@@ -59210,16 +59210,11 @@ var MaterialTextareaController = /** @class */ (function () {
 }());
 var MaterialTextarea = /** @class */ (function () {
     function MaterialTextarea() {
-        var _this = this;
         this.restrict = 'A';
         this.scope = {};
         this.bindToController = {};
         this.controller = MaterialTextareaController;
         this.controllerAs = 'materialTextarea';
-        this.link = function (scope, element, attrs) {
-            _this.bindToController.textarea = element;
-            console.log(attrs);
-        };
     }
     MaterialTextarea.Factory = function () {
         var _this = this;
