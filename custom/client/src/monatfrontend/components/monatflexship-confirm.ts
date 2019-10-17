@@ -73,7 +73,7 @@ class MonatFlexshipConfirm {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    redirectUrl: '@',
+	    redirectUrl: '<',
 	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipConfirmController;

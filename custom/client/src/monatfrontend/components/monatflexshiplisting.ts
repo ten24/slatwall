@@ -13,7 +13,7 @@ class MonatFlexshipListingController{
 	public initialized=false; 
 	
     //@ngInject
-	constructor( public orderTemplateService){
+	constructor( public orderTemplateService, public $window){
 		
 	}
 	
@@ -36,6 +36,41 @@ class MonatFlexshipListingController{
 	    }).finally(()=>{
 	    	this.initialized=true; 
 	    });
+	}
+	
+	public createNewFlexship = () => {
+        // this.loading = true;
+        this.orderTemplateService.createOrderTemplate('ottSchedule')
+        .then((data) => {
+        	if(data.orderTemplate){
+        		this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+        	} else{
+        		throw(data);
+        	}
+        })
+        .catch((error) => {
+            // this.loading = false;
+        });
+    }
+    
+    public setAsCurrentFlexship(orderTemplate) {
+		// make api request
+		this.orderTemplateService
+			.setAsCurrentFlexship(orderTemplate)
+			.then((data) => {
+				if (
+					data.successfulActions &&
+					data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1
+				) {
+					this.$window.location.href = '/shop';
+				} else {
+					throw data;
+				}
+			})
+			.catch((error) => {
+				console.error('setAsCurrentFlexship :', error);
+				// TODO: show alert
+			});
 	}
 
 }
