@@ -66,6 +66,9 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
+	
+	
+	
 	private struct function postRequest(required string service, required struct requestData, string jsessionid){
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
@@ -100,47 +103,21 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		// 	}
 		// }
 		
-		// if( structKeyExists(response, 'ERRORCODE') ){
-		// 	throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
-		// }
+		if( structKeyExists(response, 'ERRORCODE') ){
+			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
+		}
 		
-		// return response;
+		return response;
 	}
-	
-	public string function getSessionToken(){
-		
-		// if( !structKeyExists(variables, 'sessionToken') ){
-			
-		// 	var response = postRequest('Session.login',{
-		// 		'dtsuserid' = setting('username'),
-		// 		'password' = setting('password'),
-		// 	});
-		
-		// 	variables.sessionToken = response['SESSION'];
-		// }
-		
-		// return variables.sessionToken;
-	}
+
 	
 	public void function pushData(required any entity, struct data ={}){
 	
+		//push to remote endpoint
 		var vibeResponse = {};
 		var relatedToAccount = false;
 		
-		switch ( arguments.data.event ) {
-			
-			case 'afterInfotraxAccountCreateSuccess':
-
-				break;
-				
-			default:
-				return;
-		}
-		
-		if(structKeyExists(vibeResponse, 'vibeUserID')){
-			arguments.entity.setVibeUserID(iceResponse['vibeUserID']);
-		}
-		
+		//update the account
 	}
 
 }

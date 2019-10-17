@@ -48,79 +48,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return variables.integration;
 	}
 	
-	private string function formatDistibutorName(required any account){
-		var distributorName = '';
-		
-		if( len(arguments.account.getLastName()) ){
-			distributorName &= '#arguments.account.getLastName()#, ';
-		}
-		
-		distributorName &= '#arguments.account.getFirstName()#';
-		
-		return left(distributorName, 60);
-	}
-	
-	private string function formatDistributorType(string accountType){
-		
-		if(!structKeyExists(arguments, 'accountType')){
-			return 'C';
-		}
-		var mapping = {
-			'MarketPartner' = 'D',
-			'VIP'           = 'P',
-			'Customer'      = 'C'
-		};
-		
-		return structKeyExists(mapping, accountType) ? mapping[accountType] : 'C';
-	}
 
-	public string function getCityStateZipcode(required any address) {
-		var cityStateZipcode = "";
-		cityStateZipcode = listAppend(cityStateZipcode,address.getCity());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getStateCode());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getPostalCode());
-		return cityStateZipcode;
-	}
-	
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		var distributorData = { 
-			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
-			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
-			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
-			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
-			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
-			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
-			'address3'    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress()),
-			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
-			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
-			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
-			'email'       = left(arguments.account.getEmailAddress(), 60),
-			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
-		};
-		
-		if(!isNull(arguments.account.getCompany()) && len(arguments.account.getCompany())){
-			distributorData['companyname'] = arguments.account.getCompany(); // Distributor Company
-		}
-		
-		if(isDate(arguments.account.getDOB())){
-			distributorData['birthDate'] = dateFormat(arguments.account.getDOB(), 'yyyymmdd');//Member Birthday YYYYMMDD
-		}
-		
-		if(len(arguments.account.getRenewalDate())){
-			distributorData['renewalDate'] = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd');//Renewal Date (YYYYMMDD)
-		}
-		
-		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
-			distributorData['governmentId'] = arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
-		}
-		
-		if( len(arguments.account.getPhoneNumber()) ){
-			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
-		}
-		
-		return distributorData;
+		return argument.account.getJsonRepresentation();
 	}
 	
 	
@@ -128,20 +59,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * to be called from entity queue 
 	 * 
 	*/ 
-	public void function push(required any entity, any data ={}){
+	public void function push(required any account, any data ={}){
 		
-		if( !structKeyExists(arguments.data, 'event') ){
-			return;
-		}
-		
-		switch ( arguments.entity.getClassName() ) {
-			
-			case 'Account':
-				arguments.data.DTSArguments = convertSwAccountToVibeAccount(arguments.entity);
-				break;
-			default:
-				return;
-		}
+		arguments.data.payload = convertSwAccountToVibeAccount(arguments.account);
 		
 		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
 	

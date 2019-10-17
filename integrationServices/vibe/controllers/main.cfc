@@ -5,7 +5,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
    	property name="fw";
 
 
-	this.publicMethods = "";
+	this.publicMethods = "authenticate";
 
 
 	this.secureMethods="";
@@ -16,25 +16,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return this;
 	}
 
-    public any function before(required struct rc){
-        arguments.rc.ajaxRequest = true;
-        arguments.rc.ajaxResponse = {};
-    }
-    
     public void function authenticate(required struct rc){
+        if(getHibachiScope().getLoggedInFlag()){
+        	getHibachiScope().getAccount().logout();
+        }	
         
-        
+		getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
+		rc.redirectURL = 'http://google.com';
+
+		if(getHibachiScope().getLoggedInFlag()) {
+			if(structKeyExists(rc, "sRedirectURL")) {
+				rc.redirectURL = rc.sRedirectURL;
+			}
+			//append the payload to the url
+			
+		}
+		getFW().redirectExact(rc.redirectURL); 
     }
     
-    public void function after( required struct rc ) {
-		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
-				getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
-		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
-				getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
-		} else if (structKeyExists(arguments.rc, "redirectURL")) {
-				getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
-		}
-	}
-
     
 }

@@ -8,19 +8,15 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	}
 	
 	
-	public void function onEvent(required any eventName, required struct eventData={}){
+	public void function afterInfotraxAccountCreateSuccess(required any slatwallScope, required any account, required any data={}){
 		
 		try{
-			//Only focus on entity events
-			if(!structKeyExists(arguments,'entity')){
-				return;
-			}
+
 
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'push',
-				entityQueueData = { 'event' = arguments.eventName },
 				integrationID   = getIntegration().getIntegrationID()
 			);
 		 }catch( any e){
