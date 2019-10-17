@@ -360,13 +360,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
         }
+        if(account.hasErrors()){
+            addErrors(arguments.data,account.getErrors());
+        }
         return account;
     }
     
     public any function createRetailEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'retail');
+            account = setupEnrollmentInfo(account, 'customer');
         }
         account.getAccountNumber();
         return account;
@@ -374,7 +377,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     private any function setupEnrollmentInfo(required any account, required string accountType){
         var accountTypeInfo = {
-            'retail':{
+            'customer':{
                 'priceGroupCode':'2',
                 'statusTypeCode':'astGoodStanding',
                 'activeFlag':true
@@ -430,6 +433,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         var account = getHibachiScope().getAccount();
+        if(account.getNewFlag()){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
@@ -452,5 +459,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
+    }
+    
+
+    public any function getAccountOrderTemplateNamesAndIDs(required struct data){
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+
+        var accountID = getHibachiScope().getAccount().getAccountID();
+		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('orderTemplateID,orderTemplateName');
+		orderTemplateCollectionList.addFilter('account.accountID', accountID);
+		orderTemplateCollectionList.addFilter('ordertemplateType.typeID', arguments.data.ordertemplateTypeID);
+
+		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
 }

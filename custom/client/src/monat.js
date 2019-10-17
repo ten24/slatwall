@@ -59201,7 +59201,10 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
-        this.cartAsAttribute = false; //declares if cart data is being bound through attribute binding or not
+        this.cartAsAttribute = false; //declares if cart data is bound through with attribute or not
+        this.currentPage = 0;
+        this.pageSize = 6;
+        this.recordsStart = 0;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59285,6 +59288,15 @@ var MonatMiniCartController = /** @class */ (function () {
                 .finally(function () {
                 //TODO hide loader...
             });
+        };
+        this.changePage = function (dir) {
+            if (dir === 'next' && ((_this.currentPage + 1) * _this.pageSize) <= _this.cart.orderItems.length - 1) {
+                _this.currentPage++;
+            }
+            else if (dir === 'back' && _this.currentPage != 0) {
+                _this.currentPage--;
+            }
+            _this.recordsStart = (_this.currentPage * _this.pageSize);
         };
         this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
     }
@@ -59441,9 +59453,6 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
-        this.observerService.attach(this.getCart, "addOrderItemSuccess");
-        this.observerService.attach(this.getCart, "removeOrderItemSuccess");
-        this.observerService.attach(this.getCart, "updateOrderItemSuccess");
         this.getCart();
     }
     MonatEnrollmentController.prototype.next = function () {
@@ -60067,7 +60076,7 @@ var MonatFlexshipConfirm = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            redirectUrl: '@',
+            redirectUrl: '<',
             close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipConfirmController;
@@ -60997,9 +61006,10 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipListingController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipListingController(orderTemplateService) {
+    function MonatFlexshipListingController(orderTemplateService, $window) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.$window = $window;
         this.initialized = false;
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
@@ -61020,7 +61030,41 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.initialized = true;
             });
         };
+        this.createNewFlexship = function () {
+            // this.loading = true;
+            _this.orderTemplateService.createOrderTemplate('ottSchedule')
+                .then(function (data) {
+                if (data.orderTemplate) {
+                    _this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+                }
+                else {
+                    throw (data);
+                }
+            })
+                .catch(function (error) {
+                // this.loading = false;
+            });
+        };
     }
+    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplate) {
+        var _this = this;
+        // make api request
+        this.orderTemplateService
+            .setAsCurrentFlexship(orderTemplate)
+            .then(function (data) {
+            if (data.successfulActions &&
+                data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+                _this.$window.location.href = '/shop';
+            }
+            else {
+                throw data;
+            }
+        })
+            .catch(function (error) {
+            console.error('setAsCurrentFlexship :', error);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipListingController;
 }());
 var MonatFlexshipListing = /** @class */ (function () {
@@ -61798,6 +61842,11 @@ var SWFWishlistController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
+        this.getWishlistsLight = function () {
+            _this.orderTemplateService.getOrderTemplatesLight().then(function (response) {
+                _this.orderTemplates = response['orderTemplates'];
+            });
+        };
         this.successfulAlert = function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
             var wishlistInnerText = document.getElementById("wishlistTextWrapper");
@@ -62062,7 +62111,7 @@ var MonatService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
-                _this.cachedOptions = __assign({}, _this.cachedOptions, realOptions); // override and merge with old options
+                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
                 _this.sendOptionsBack(options, deferred);
                 //TODO handle errors
             });
@@ -62123,11 +62172,12 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi, $rootScope) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope, publicService) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
         this.$rootScope = $rootScope;
+        this.publicService = publicService;
         /**
          * This function is being used to fetch flexships and wishLists
          *
@@ -62345,7 +62395,14 @@ var OrderTemplateService = /** @class */ (function () {
             return objectToReturn;
         };
         this.createOrderTemplate = function (orderTemplateSystemCode) {
-            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", { orderTemplateSystemCode: orderTemplateSystemCode });
+            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", {
+                orderTemplateSystemCode: orderTemplateSystemCode,
+                returnJSONObjects: ''
+            });
+        };
+        this.getOrderTemplatesLight = function (orderTemplateTypeID) {
+            if (orderTemplateTypeID === void 0) { orderTemplateTypeID = "2c9280846b712d47016b75464e800014"; }
+            return _this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', { ordertemplateTypeID: orderTemplateTypeID });
         };
     }
     return OrderTemplateService;
@@ -77082,6 +77139,13 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -78204,7 +78268,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -78914,10 +78978,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -82297,8 +82361,10 @@ var SWFAddressFormController = /** @class */ (function (_super) {
         _this.slatwall = $rootScope.slatwall;
         $scope.$watch(angular.bind(_this, function () {
             return _this.form['countryCode'].$modelValue;
-        }), function (val) {
-            _this.slatwall.getStates(val);
+        }), function (newVal, oldVal) {
+            if (!isNaN(newVal)) {
+                _this.slatwall.getStates(newVal);
+            }
         });
         $scope.$watch('slatwall.states.addressOptions', function () {
             if (_this.slatwall.states && _this.slatwall.states.addressOptions) {
@@ -85819,11 +85885,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
