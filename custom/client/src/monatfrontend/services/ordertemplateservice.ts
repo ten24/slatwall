@@ -252,7 +252,10 @@ export class OrderTemplateService {
     }
 
     public createOrderTemplate = (orderTemplateSystemCode) => {
-        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{orderTemplateSystemCode: orderTemplateSystemCode});
+        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
+            orderTemplateSystemCode: orderTemplateSystemCode,
+            returnJSONObjects:''
+        });
     }   
     
    public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{

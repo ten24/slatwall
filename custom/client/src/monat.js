@@ -60117,7 +60117,7 @@ var MonatFlexshipConfirm = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            redirectUrl: '@',
+            redirectUrl: '<',
             close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipConfirmController;
@@ -61047,9 +61047,10 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipListingController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipListingController(orderTemplateService) {
+    function MonatFlexshipListingController(orderTemplateService, $window) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
+        this.$window = $window;
         this.initialized = false;
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
@@ -61070,7 +61071,41 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.initialized = true;
             });
         };
+        this.createNewFlexship = function () {
+            // this.loading = true;
+            _this.orderTemplateService.createOrderTemplate('ottSchedule')
+                .then(function (data) {
+                if (data.orderTemplate) {
+                    _this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+                }
+                else {
+                    throw (data);
+                }
+            })
+                .catch(function (error) {
+                // this.loading = false;
+            });
+        };
     }
+    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplate) {
+        var _this = this;
+        // make api request
+        this.orderTemplateService
+            .setAsCurrentFlexship(orderTemplate)
+            .then(function (data) {
+            if (data.successfulActions &&
+                data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+                _this.$window.location.href = '/shop';
+            }
+            else {
+                throw data;
+            }
+        })
+            .catch(function (error) {
+            console.error('setAsCurrentFlexship :', error);
+            // TODO: show alert
+        });
+    };
     return MonatFlexshipListingController;
 }());
 var MonatFlexshipListing = /** @class */ (function () {
@@ -62403,7 +62438,10 @@ var OrderTemplateService = /** @class */ (function () {
             return objectToReturn;
         };
         this.createOrderTemplate = function (orderTemplateSystemCode) {
-            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", { orderTemplateSystemCode: orderTemplateSystemCode });
+            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", {
+                orderTemplateSystemCode: orderTemplateSystemCode,
+                returnJSONObjects: ''
+            });
         };
         this.getOrderTemplatesLight = function (orderTemplateTypeID) {
             if (orderTemplateTypeID === void 0) { orderTemplateTypeID = "2c9280846b712d47016b75464e800014"; }
