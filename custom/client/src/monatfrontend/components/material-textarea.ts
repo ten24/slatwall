@@ -12,7 +12,7 @@ class MaterialTextareaController {
 
 		this.$element[0].oninput = ( event ) => {
 			event.target.style.height = 'auto';
-			event.target.style.height = event.target.scrollHeight + 7 + 'px'; // 10px for padding bottom
+			event.target.style.height = event.target.scrollHeight + 7 + 'px';
 		}
 	}
 }
