@@ -33,16 +33,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	public string function getSimpleRepresentation(required any account){
 		var accountType = arguments.account.getAccountType();
-		switch(accountType){
-			case 'marketPartner':
-				accountType = 'MP';
-				break;
-			case 'vip':
-				accountType = 'VIP';
-				break;
-			case 'customer':
-				accountType = 'Retail';
-				break;
+		var typeReps = {
+			'marketPartner':'MP',
+			'vip':'VIP',
+			'customer':'Retail'
+		}
+		if(structKeyExists(typeReps,accountType)){
+			accountType = typeReps[accountType];
 		}
 		return arguments.account.getFullName() & ' ( ' & arguments.account.getAccountNumber() & ' - ' & accountType & ' )';
 	}
