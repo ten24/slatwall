@@ -32,7 +32,19 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	
 	public string function getSimpleRepresentation(required any account){
-		return arguments.account.getFullName() & ' - ' & arguments.account.getAccountNumber();
+		var accountType = arguments.account.getAccountType();
+		switch(accountType){
+			case 'marketPartner':
+				accountType = 'MP';
+				break;
+			case 'vip':
+				accountType = 'VIP';
+				break;
+			case 'customer':
+				accountType = 'Retail';
+				break;
+		}
+		return arguments.account.getFullName() & ' ( ' & arguments.account.getAccountNumber() & ' - ' & accountType & ' )';
 	}
 	
 	public any function getAllOrdersOnAccount(struct data={}) {
