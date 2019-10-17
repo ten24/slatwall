@@ -199,7 +199,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				}
 				arguments.entity.getAccount().setLastSyncedDateTime(now());
 			}else{
-				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
+				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", arguments.entity);
 				}
 				arguments.entity.setLastSyncedDateTime(now());
