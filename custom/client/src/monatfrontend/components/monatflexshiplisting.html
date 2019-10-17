@@ -1,4 +1,6 @@
 <div sw-loading="monatFlexshipListing.initialized">
+    <a href="##" ng-click="monatFlexshipListing.createNewFlexship()" class="btn bg-primary btn-add">Create Flexship</a>
+
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates" >
         <monat-flexship-card data-order-template="orderTemplate"
                          data-account-addresses="monatFlexshipListing.accountAddresses"
