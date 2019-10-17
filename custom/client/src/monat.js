@@ -61842,6 +61842,11 @@ var SWFWishlistController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
+        this.getWishlistsLight = function () {
+            _this.orderTemplateService.getOrderTemplatesLight().then(function (response) {
+                _this.orderTemplates = response['orderTemplates'];
+            });
+        };
         this.successfulAlert = function () {
             var wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
             var wishlistInnerText = document.getElementById("wishlistTextWrapper");
@@ -62167,11 +62172,12 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi, $rootScope) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope, publicService) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
         this.$rootScope = $rootScope;
+        this.publicService = publicService;
         /**
          * This function is being used to fetch flexships and wishLists
          *
@@ -62393,6 +62399,10 @@ var OrderTemplateService = /** @class */ (function () {
                 orderTemplateSystemCode: orderTemplateSystemCode,
                 returnJSONObjects: ''
             });
+        };
+        this.getOrderTemplatesLight = function (orderTemplateTypeID) {
+            if (orderTemplateTypeID === void 0) { orderTemplateTypeID = "2c9280846b712d47016b75464e800014"; }
+            return _this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', { ordertemplateTypeID: orderTemplateTypeID });
         };
     }
     return OrderTemplateService;

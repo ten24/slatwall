@@ -460,4 +460,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
     }
+    
+
+    public any function getAccountOrderTemplateNamesAndIDs(required struct data){
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+
+        var accountID = getHibachiScope().getAccount().getAccountID();
+		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('orderTemplateID,orderTemplateName');
+		orderTemplateCollectionList.addFilter('account.accountID', accountID);
+		orderTemplateCollectionList.addFilter('ordertemplateType.typeID', arguments.data.ordertemplateTypeID);
+
+		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
+    }
 }
