@@ -994,6 +994,9 @@ label {
 .modal-dialog {
   text-align: left;
 }
+.input-group-btn {
+  vertical-align: top;
+}
 .modal-body {
   overflow-y: auto;
   overflow-x: auto;
