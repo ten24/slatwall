@@ -58,6 +58,12 @@ class swfAccountController {
         this.getAccount();
 	}
 	
+	public getProducts = (arg) =>{
+        this.$rootScope.hibachiScope.doAction("getProductsByContentID", {'contentID': arg}).then(result => {
+            console.log(result);
+        })
+	}
+	
     public getAccount = () => {
         this.loading = true;
         this.accountData = {};

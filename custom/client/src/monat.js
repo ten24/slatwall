@@ -61441,6 +61441,11 @@ var swfAccountController = /** @class */ (function () {
         this.$onInit = function () {
             _this.getAccount();
         };
+        this.getProducts = function (arg) {
+            _this.$rootScope.hibachiScope.doAction("getProductsByContentID", { 'contentID': arg }).then(function (result) {
+                console.log(result);
+            });
+        };
         this.getAccount = function () {
             _this.loading = true;
             _this.accountData = {};

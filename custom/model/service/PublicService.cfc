@@ -460,7 +460,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
     }
-    
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
         param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
@@ -472,5 +471,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('ordertemplateType.typeID', arguments.data.ordertemplateTypeID);
 
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
+    }
+    
+    public any function getProductsByContentID(required any data){
+        param name="arguments.data.contentID" default="";
+        param name="arguments.data.pageRecordsShow" default="20";
+
+        var productCollectionList = super.getBaseProductCollectionList();
+        if(len(arguments.data.contentID)){
+            productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" )
+        }else{
+            return;
+        }
+        
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        
+		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
+    }
+    
+    public any function getProductsByCategory(required any data){
+        param name="arguments.data.category" default="";
+        param name="arguments.data.pageRecordsShow" default="20";
+
+        var productCollectionList = super.getBaseProductCollectionList();
+        if(len(arguments.data.category)){
+            productCollectionList.addFilter('category',arguments.data.category,"=" )
+        }else{
+            return;
+        }
+        
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        
+		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
     }
 }

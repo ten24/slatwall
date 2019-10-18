@@ -2181,6 +2181,14 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-
+    public any function getBaseProductCollectionList(){
+        productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addFilter('activeFlag',1);
+        productCollectionList.addFilter('publishedFlag',1);
+        productCollectionList.addFilter('skus.activeFlag',1);
+        productCollectionList.addFilter('skus.publishedFlag',1);
+        productCollectionList.addFilter('defaultSku.price', 0.00, '!=');
+        return productCollectionList
+    }
     
 }
