@@ -21,6 +21,7 @@ import { MonatEnrollment } from './components/monatenrollment';
 import { MonatEnrollmentVIP } from './components/monatenrollmentvip';
 import { MonatEnrollmentStep } from './components/monatenrollmentstep';
 import { MonatOrderItems } from './components/monat-order-items';
+import { MaterialTextarea } from './components/material-textarea';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
@@ -61,6 +62,7 @@ var monatfrontendmodule = angular
 	.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
 	.directive('vipController', MonatEnrollmentVIP.Factory())
 	.directive('monatOrderItems', MonatOrderItems.Factory())
+	.directive('materialTextarea', MaterialTextarea.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
