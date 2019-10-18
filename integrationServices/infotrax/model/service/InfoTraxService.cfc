@@ -86,13 +86,29 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var entityCollectionList = invokeMethod('get#arguments.entityName#CollectionList');
 		entityCollectionList.setDisplayProperties('#primaryIDPropertyName#')
-		entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		
-		//TODO: Support filter groups
-		for( var filter in filters ){
-			entityCollectionList.addFilter(argumentCollection=filter);
+		var primaryFilterApplied = false;
+		for(var i = 1; i <= arrayLen(filters); i++){
+			if(!isArray(filters[i])){
+				entityCollectionList.addFilter(argumentCollection=filters[i]);
+				continue;
+			}
+			entityCollectionList.addFilter(
+				propertyIdentifier='#primaryIDPropertyName#', 
+				value=arguments.baseID, 
+				filterGroupAlias='FilterGroup#i#',
+				filterGroupLogicalOperator = 'OR'
+			);
+			primaryFilterApplied = true;
+			for(var ii = 1; ii <= arrayLen(filters[i]); ii++){
+				var filterArguments = filters[i][ii];
+				filterArguments['filterGroupAlias'] = 'FilterGroup#i#';
+				entityCollectionList.addFilter(argumentCollection=filterArguments);
+			}
 		}
-		
+		if(!primaryFilterApplied){
+			entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
+		}
 		return entityCollectionList.getRecordsCount() > 0;
 	}
 	
@@ -109,14 +125,18 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return left(distributorName, 60);
 	}
 	
-	private string function formatDistributorType(required string accountType){
+	private string function formatDistributorType(string accountType){
+		
+		if(!structKeyExists(arguments, 'accountType')){
+			return 'C';
+		}
 		var mapping = {
 			'MarketPartner' = 'D',
 			'VIP'           = 'P',
 			'Customer'      = 'C'
 		};
 		
-		return mapping[accountType];
+		return structKeyExists(mapping, accountType) ? mapping[accountType] : 'C';
 	}
 	
 	private string function formatOrderType(required any order){
@@ -173,11 +193,27 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function getAmount(required any order, required string fieldName){
 		var amount = order.invokeMethod('get#arguments.fieldName#');
 		
-		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder'){
+		
+		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && amount > 0){
 			amount = amount * -1;
 		}
-		
 		return amount;
+	}
+	
+	private string function formatDescription(required any order){
+		var description = '';
+		
+		if( len(arguments.order.getAccount().getLastName()) ){
+			description &= '#arguments.order.getAccount().getLastName()#, ';
+		}
+		
+		description &= arguments.order.getAccount().getFirstName();
+		
+		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder'){
+			description &= ' - '&arguments.order.getReferencedOrder().getOrderNumber();
+		}
+		
+		return description;
 	}
 	
 
@@ -197,10 +233,20 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
-			'birthDate'   = dateFormat(arguments.account.getDOB(), 'yyyymmdd'),//Member Birthday YYYYMMDD
-			'renewalDate' = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd'),//Renewal Date (YYYYMMDD)
-			'referralId'  = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
+			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
+		
+		if(!isNull(arguments.account.getCompany()) && len(arguments.account.getCompany())){
+			distributorData['companyname'] = arguments.account.getCompany(); // Distributor Company
+		}
+		
+		if(isDate(arguments.account.getDOB())){
+			distributorData['birthDate'] = dateFormat(arguments.account.getDOB(), 'yyyymmdd');//Member Birthday YYYYMMDD
+		}
+		
+		if(len(arguments.account.getRenewalDate())){
+			distributorData['renewalDate'] = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd');//Renewal Date (YYYYMMDD)
+		}
 		
 		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
 			distributorData['governmentId'] = arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
@@ -219,23 +265,23 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var transactionData = { 
 			'distId'            = arguments.order.getAccount().getAccountNumber(), //ICE DistributorID or Customer IDof userwho createdthe transaction
+			'description'       = formatDescription(arguments.order),
 			'transactionDate'   = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymmdd'), // Date the order was placed. This is assigned automatically if not included(YYYYMMDD)
-			'recordNumber'      = arguments.order.getOrderNumber(),
 			'transactionNumber' = arguments.order.getOrderNumber(),//Company transaction number.
 			'transactionTime'   = timeFormat(arguments.order.getOrderOpenDateTime(), 'hhmmss00'),
 			'firstOrder'        = isFirstOrder(arguments.order), //Y or N. If this is the distributor’s first order, then this should be included with a “Y”
-			'transactionType'   = 'I',//Type of ICE transactionusually “I” or “C”.
+			'transactionType'   = formatOrderType(arguments.order),//Type of ICE transactionusually “I” or “C”.
 			'country'           = arguments.order.getAccount().getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//ISO3166-1country code (e.g. USA, MEX)
-			'salesVolume'       = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Sales Volume of the order(999999999.99)
+			'salesVolume'       = getAmount(arguments.order,'total'),//Total Sales Volume of the order(999999999.99)
 			'qualifyingVolume'  = getAmount(arguments.order,'PersonalVolumeTotal'),//Total Qualifying Volume of the order
 			'taxableVolume'     = getAmount(arguments.order,'TaxableAmountTotal'),//Total Taxable Volume of the order
 			'commissionVolume'  = getAmount(arguments.order,'CommissionableVolumeTotal'),//Total Commissionable Volume of the order
 			'transactionSource' = formatTransactionSource(arguments.order),//Source of the transaction. (e.g. 903 for autoship, 100 for phone order, 900 for internet order)
-			'volume5'           = 0,
-			'volume6'           = 0,//PRODUCT PACK?
-			'volume7'           = 0,
+			'volume5'           = getAmount(arguments.order,'RetailCommissionTotal'), // Retail Commission
+			'volume6'           = getAmount(arguments.order,'ProductPackVolumeTotal'), // Product Pack Volume
+			'volume7'           = getAmount(arguments.order,'RetailValueVolumeTotal'), // Retail Value Volume
 			'volume8'           = 0,
-			'volume9'           = 0,
+			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
 			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
@@ -244,8 +290,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
 		
 		
-		if( transactionData['orderType'] == 'C' ){
-			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getOrderNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+		if( transactionData['orderType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
+			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
+		}
+		
+		if(len(arguments.order.getIceRecordNumber())){
+			transactionData['recordNumber'] = arguments.order.getIceRecordNumber()
 		}
 		
 		return transactionData;
@@ -257,25 +307,25 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var autoshipData = { 
 			'distId'            = arguments.orderTemplate.getAccount().getAccountNumber(), //Distributor ID
 			'autoshipNumber'    = arguments.orderTemplate.getShortReferenceID(true), //Autoship Number
-			'marketingUnit'     = 0, //Source Marketing Unit, will default
+			//'marketingUnit'     = 0, //Source Marketing Unit, will default
 			'salesVolume'       = arguments.orderTemplate.getPersonalVolumeTotal(),//Autoship SalesVolume
 			'qualifyingVolume'  = arguments.orderTemplate.getPersonalVolumeTotal(),//Autoship Qualifying Volume
-			'taxableVolume'     = arguments.orderTemplate.getTaxableAmountTotal(),//Autoship Taxable Volume
+		//	'taxableVolume'     = 0, //arguments.orderTemplate.getTaxableAmountTotal(),//Autoship Taxable Volume
 			'commissionVolume'  = arguments.orderTemplate.getCommissionableVolumeTotal(),//Autoship Commission Volume
-			'volume5'           = 0,
-			'volume6'           = 0,//PRODUCT PACK?
-			'volume7'           = 0,
-			'volume8'           = 0,
-			'volume9'           = 0,
-			'invoiceAmount'     = arguments.orderTemplate.getTotal(),//Total Amount of Autoship (including taxes, shipping, etc)
-			'batchNumber'       = arguments.orderTemplate.getScheduleOrderDayOfTheMonth(),//Calendar day the autoship will generate an order
-			'frequency'         = arguments.orderTemplate.getFrequencyTerm().getTermMonths(),//How often during the month the autoship will generate an order (1 = once a month)
-			'startDate'         = dateFormat(arguments.orderTemplate.getOrderOpenDateTime(), 'yyyymmdd'), //Date autoship will start being active (YYYYMMDD), default to todays date if not passed
+			// 'volume5'           = 0,
+			// 'volume6'           = 0,//PRODUCT PACK?
+			// 'volume7'           = 0,
+			// 'volume8'           = 0,
+			// 'volume9'           = 0,
+			// 'invoiceAmount'     = arguments.orderTemplate.getTotal(),//Total Amount of Autoship (including taxes, shipping, etc)
+			// 'batchNumber'       = arguments.orderTemplate.getScheduleOrderDayOfTheMonth(),//Calendar day the autoship will generate an order
+			// 'frequency'         = arguments.orderTemplate.getFrequencyTerm().getTermMonths(),//How often during the month the autoship will generate an order (1 = once a month)
+			//'startDate'         = dateFormat(arguments.orderTemplate.getOrderOpenDateTime(), 'yyyymmdd'), //Date autoship will start being active (YYYYMMDD), default to todays date if not passed
 			//'endDate'           = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm'), //Date autoship will stop being active (YYYYMMDD), this will default to 10 years from start date
-			'nextRunDate'       = dateFormat(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyymmdd') //Date the next time the autoship will generate an order (YYYYMMDD)
+			//'nextRunDate'       = dateFormat(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyymmdd') //Date the next time the autoship will generate an order (YYYYMMDD)
 		};
 		
-		if(arguments.orderTemplate.getLastOrderPlacedDateTime()){
+		if(isDate(arguments.orderTemplate.getLastOrderPlacedDateTime())){
 			autoshipData['lastRunDate'] = dateFormat(arguments.orderTemplate.getLastOrderPlacedDateTime(), 'yyyymmdd'); //Date the autoship last generated an order (YYYYMMDD)
 		}
 		
@@ -291,6 +341,13 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		switch ( arguments.entity.getClassName() ) {
+			
+			
+			case 'AccountAddress':
+			case 'AccountPhoneNumber':
+			case 'AccountGovernmentIdentification':
+				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity.getAccount());
+				break;
 			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);

@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"rating":		[{"contexts":"save","dataType":"numeric","lte":5,"gte":0}]
+	"properties": {
+		"rating": [{ "contexts": "save", "dataType": "numeric", "lte": 5, "gte": 0 }]
 	}
 }

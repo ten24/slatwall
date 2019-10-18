@@ -147,6 +147,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}
+		this.logHibachi('getSkuPrices HQL #hql#',true);
 		return  ormExecuteQuery( hql,
 			params
 		);

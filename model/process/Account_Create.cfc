@@ -56,9 +56,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
 	property name="phoneNumber";
+	property name="username";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
-	property name="username" hb_rbKey="entity.account.username";
 	property name="createAuthenticationFlag" hb_sessionDefault="1";
 	property name="password";
 	property name="passwordConfirm";
@@ -107,6 +107,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function getPrimaryEmailAddressNotInUseFlag() {
 		if(!isNull(getEmailAddress())) {
 			return getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress() );	
+		}
+		return true;
+	}
+	
+	public boolean function getUsernameNotInUseFlag() {
+		if(!isNull(getUsername())) {
+			return getService("accountService").getUsernameNotInUseFlag( username=getUsername() );	
 		}
 		return true;
 	}

@@ -2,11 +2,10 @@ component {
 	property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="sponsorIDNumber" ormtype="string";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
-	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
+	property name="saveablePaymentMethodsCollectionList" persistent="false";
 
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -33,6 +32,24 @@ component {
 			}
 		}
 		return variables.saveablePaymentMethodsCollectionList;
+	}
+	
+	public any function getAccountNumber(){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+			if(!isNull(this.getAccountID())){
+				var maxAccountNumberQuery = new query();
+				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
+				
+				maxAccountNumberQuery.setSQL(maxAccountNumberSQL);
+				maxAccountNumberQuery.addParam(name="accountID",value=this.getAccountID());
+				maxAccountNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+				var insertedID = maxAccountNumberQuery.execute().getPrefix().generatedKey;
+				
+				setAccountNumber(insertedID);	
+			}
+		}
+		if(!isNull(variables.accountNumber))
+		return variables.accountNumber;
 	}
 
 } 

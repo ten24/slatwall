@@ -3,13 +3,15 @@ export class OrderTemplateService {
    //@ngInject
    constructor(
         public requestService,
-        public $hibachi
-    ) {
-       
+        public $hibachi,
+        public $rootScope,
+        public publicService
+       ){
+
    } 
    
    /**
-    * This function is being used to fetch flexShips and wishLists 
+    * This function is being used to fetch flexships and wishLists 
     * 
     * 
    */
@@ -65,6 +67,16 @@ export class OrderTemplateService {
                   .promise;
     }
     
+    public setAsCurrentFlexship = (orderTemplateID) => {
+        let payload = {
+            'orderTemplateID' : orderTemplateID
+        };
+        
+       return this.requestService
+                  .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', payload)
+                  .promise;
+    }
+    
     /**
      * orderTemplateID:string, 
      * typeID:string,  => OrderTEmplateCancellationReasonTypeID
@@ -85,19 +97,47 @@ export class OrderTemplateService {
                   .promise;
     }
     
+    /**
+     * 
+       'orderTemplateID',
+       'orderTemplateName'
+     * 
+    */ 
+    public editOrderTemplate = (orderTemplateID:string, orderTemplateName:string) => {
+        let payload = {
+			'orderTemplateID': orderTemplateID,
+			'orderTemplateName': orderTemplateName
+		};
+		
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.editOrderTemplate',payload)
+                  .promise;
+    }
+    
     public updateOrderTemplateSchedule = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)
                   .promise;
     }
     
-    public updateOrderTemplateFrequency = (data) => {
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', data)
+    public updateOrderTemplateFrequency = (orderTemplateID:string, frequencyTermID:string, scheduleOrderDayOfTheMonth?:number ) => {
+       
+        let payload = {
+    		'orderTemplateID' : orderTemplateID,
+    		'frequencyTerm.value' : frequencyTermID
+    	};
+    	
+    	if(scheduleOrderDayOfTheMonth) {
+    	    payload['scheduleOrderDayOfTheMonth'] =  scheduleOrderDayOfTheMonth;
+    	}
+    	
+        return this.requestService
+                  .newPublicRequest('?slatAction=api:public.updateOrderTemplateFrequency', payload)
                   .promise;
     }
 	
 	public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
+    
        var data = {
            orderTemplateID:orderTemplateID,
            currentPage:currentPage,
@@ -111,26 +151,74 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getWishlistitems',data).promise;
     }
 
-   public addOrderTemplateItem = (skuID, orderTemplateID, quantity=1):Promise<any> =>{
-        
-        var formDataToPost:any = {
-			entityID: orderTemplateID,
-			entityName: 'OrderTemplate',
-			context: 'addOrderTemplateItem',
-			skuID: skuID,
-			quantity: quantity
+    /**
+     * 
+       'orderTemplateID',
+       'skuID',
+       'quantity'
+     * 
+    */ 
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+        let payload = {
+			'orderTemplateID': orderTemplateID,
+			'skuID': skuID,
+			'quantity': quantity
 		};
 		
-		var processUrl = this.$hibachi.buildUrl('api:main.post');
-		
-		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
-		
-		return adminRequest.promise
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
+                  .promise;
     }
     
+    
     /**
-    * for more details https://gist.github.com/penguinboy/762197
+     * 
+       'orderTemplateItemID',
+       'quantity'
+     * 
     */ 
+    public editOrderTemplateItem = (orderTemplateItemID:string, newQuantity:number=1) => {
+        let payload = {
+			'orderTemplateItemID': orderTemplateItemID,
+			'quantity': newQuantity
+		};
+		
+       return this.requestService
+                  .newPublicRequest('?slatAction=api:public.editOrderTemplateItem',payload)
+                  .promise;
+    }
+    
+
+   public addOrderTemplateItemAndCreateWishlist = (orderTemplateName:string, skuID, quantity:number = 1)=>{
+        const data = {
+           orderTemplateName:orderTemplateName,
+           skuID:skuID,
+           quantity:quantity
+        };
+        
+        return this.$rootScope.hibachiScope.doAction("addItemAndCreateWishlist",data);
+   }
+   
+    public deleteOrderTemplateItem = (orderTemplateItemID)=>{
+        return this.$rootScope.hibachiScope.doAction("deleteOrderTemplateItem", {orderTemplateItemID: orderTemplateItemID});
+   }
+
+    
+    /**
+     * orderTemplateItemID
+     * 
+    */ 
+    public removeOrderTemplateItem = (orderTemplateItemID:string) => {
+
+        let payload = {'orderTemplateItemID': orderTemplateItemID };
+        return this.requestService
+                  .newPublicRequest('?slatAction=api:public.removeOrderTemplateItem',payload)
+                  .promise;
+    }
+
+   /**
+    * for more details https://gist.github.com/penguinboy/762197
+   */ 
     public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
         var objectToReturn = {};
         for (var key in inObject) {
@@ -162,5 +250,16 @@ export class OrderTemplateService {
       }
       return objectToReturn;
     }
-   
+
+    public createOrderTemplate = (orderTemplateSystemCode) => {
+        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
+            orderTemplateSystemCode: orderTemplateSystemCode,
+            returnJSONObjects:''
+        });
+    }   
+    
+   public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{
+       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID})
+   }
+
 }

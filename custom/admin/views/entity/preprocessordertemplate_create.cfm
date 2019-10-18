@@ -67,6 +67,7 @@ Notes:
 				<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="username" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
@@ -80,7 +81,7 @@ Notes:
 				</hb:HibachiDisplayToggle>
 				
 				<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-					<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" /> 	
+					<swa:SlatwallAccountTypeahead typeaheadID="#rc.typeaheadID#" required="true" /> 	
 				</hb:HibachiDisplayToggle>
 
 				<hr>

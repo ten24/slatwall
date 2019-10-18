@@ -1,34 +1,40 @@
 <header class="step-header">
 	<div class="container">
-		<div class="header-row">
-			<div class="left-nav">
-				<a data-ng-href="{{ monatEnrollment.backUrl }}" class="back" >
-					<i class='fas fa-angle-left'></i> <span>Back to Shop</span>
-				</a>
-			</div>
-			<a href="#" class="logo">
-				<img src="common/images/logo.svg"  alt="">
-			</a>
-			<div class="right-nav">          
-				<div class="header-cart" data-ng-if="monatEnrollment.cart">
-					<a href="#">Cart
-						<span class="cart-count" data-ng-bind="monatEnrollment.cart.totalItemQuantity"></span>
-					</a>
-				</div>
-			</div>
-		</div>
+		<a href="#" class="logo">
+			<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
+		</a>
 	</div>
 </header>
 
 <ng-transclude></ng-transclude>
 
-<footer class="steps-footer">
-	<a href data-ng-click="monatEnrollment.previous()" class="back" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
-		<i class="fas fa-chevron-left"></i>
-	</a>
-	<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}}</span>
-	<a href data-ng-click="monatEnrollment.next()" class="forward">
-		<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
-		<i class="fas fa-chevron-right"></i>
-	</a>
+<footer class="steps-footer d-flex flex-column">
+	<div class="w-100 d-flex justify-content-between align-items-center">
+		<div class="d-flex align-items-center">
+			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
+				<span class="last" sw-rbkey="'frontend.global.back'"></span>
+				<i class="fas fa-chevron-left"></i> 
+			</a>
+
+			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
+				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
+				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{monatEnrollment.cartText}}</small>
+			</span>
+		</div>
+		
+		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
+		
+		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
+			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</a>
+		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
+		
+	</div>
+	
+	<!--- Mini cart ---> 	
+	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
+	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
+	</div>
+
 </footer>

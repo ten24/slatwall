@@ -1,0 +1,88 @@
+<div class="flexship-block" style="{{monatMiniCart.customStyle}}" >
+	<div ng-if="monatMiniCart.type != 'enrollment' " class="flexship-bar">
+		<div class="open-flexship">
+			<a href="#">
+				<i class="fas fa-chevron-up"></i>
+			</a>
+			<span class="qty-and-price">
+				{{ monatMiniCart.cart.totalItemQuantity }} 
+				<span sw-rbkey="'frontend.miniCart.items'"></span>
+				/
+				<span sw-rbkey="'frontend.miniCart.total'"></span>
+				{{ monatMiniCart.cart.total | currency }} 
+			</span>
+		</div>
+		
+		<span class="steps" ng-bind-html="monatMiniCart.translations.currentStepOfTtotalSteps"></span>
+		
+		<div class="go-to-cart">
+			<a href="/shopping-cart" class="btn bg-primary btn-block">
+				<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
+			</a>
+		</div>
+	</div>
+	
+	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
+		<div class="product-container">
+			<ul class="item-slider">
+				<li ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart">
+					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
+						<i class="fas fa-times"></i>
+					</button>
+					<div class="img">
+						<a href="#">
+							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
+						</a>
+					</div>
+					<h6 class="title-sm">
+						<a ng-href="{{item.skuProductURL}}">
+							<span class="product-name" ng-bind="item.sku.skuDefinition"></span>
+						</a>
+					</h6>
+					<div class="product-bottom">
+						<div class="qty">
+							<button
+								type="button"
+								class="minus"
+								ng-disabled="item.quantity <= 1"
+								ng-click="$parent.monatMiniCart.decreaseItemQuantity(item)"
+							>
+								- 
+							</button>
+							<input
+								type="text"
+								id="qty"
+								name="quantity"
+								class="form-control"
+								ng-model="item.quantity"
+							/>
+							<button
+								type="button"
+								class="plus"
+								ng-click="$parent.monatMiniCart.increaseItemQuantity(item)"
+							>
+								+
+							</button>
+						</div>
+						<div class="price-block">
+							<span class="price">{{ item.extendedPriceAfterDiscount | currency }}</span>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<!---Pagination Arrows--->
+			<span ng-show="monatMiniCart.currentPage != 0" ng-click="monatMiniCart.changePage('back')" class="paginate-nav back-arrow">
+				<i class="fal fa-angle-double-left fa-5x"></i>
+			</span>
+			<span ng-show="((monatMiniCart.currentPage + 1) * monatMiniCart.pageSize) <=  monatMiniCart.cart.orderItems.length -1 && monatMiniCart.cart.orderItems.length  > monatMiniCart.pageSize" ng-click="monatMiniCart.changePage('next')" class="paginate-nav forward-arrow">
+				<i class="fal fa-angle-double-right fa-5x"></i>
+			</span>
+			<!---End: Pagination Arrows --->
+		</div>
+		<a href="/shopping-cart" class="btn bg-primary btn-block">
+			<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
+		</a>
+
+	</div>
+</div>

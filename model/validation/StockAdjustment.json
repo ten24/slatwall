@@ -1,18 +1,21 @@
 {
-	"conditions":{
-	    "shouldHaveFromLocation":{
-	        "stockAdjustmentTypeSystemCode":{"inList":"satLocationTransfer,satManualOut"}
-	    },
-	    "shouldHaveToLocation":{
-	        "stockAdjustmentTypeSystemCode":{"inList":"satLocationTransfer,satManualIn"}
-	    }
+	"conditions": {
+		"shouldHaveFromLocation": {
+			"stockAdjustmentTypeSystemCode": { "inList": "satLocationTransfer,satManualOut" }
+		},
+		"shouldHaveToLocation": {
+			"stockAdjustmentTypeSystemCode": { "inList": "satLocationTransfer,satManualIn" }
+		}
 	},
-	"properties":{
-		"stockAdjustmentType":			[{"contexts":"save","required":true}],
-		"stockAdjustmentStatusType":	[{"contexts":"save","required":true},{"contexts":"edit","method":"isNotClosed"}],
-		"fromLocation":					[{"contexts":"save","conditions":"shouldHaveFromLocation","required":true}],
-		"toLocation":					[{"contexts":"save","conditions":"shouldHaveToLocation","required":true}],
-		"statusCode":					[{"contexts":"addItems,processAdjustment,delete","inList":"sastNew"}],
-		"stockReceivers":				[{"contexts":"delete","maxCollection":0}]
+	"properties": {
+		"stockAdjustmentType": [{ "contexts": "save", "required": true }],
+		"stockAdjustmentStatusType": [
+			{ "contexts": "save", "required": true },
+			{ "contexts": "edit", "method": "isNotClosed" }
+		],
+		"fromLocation": [{ "contexts": "save", "conditions": "shouldHaveFromLocation", "required": true }],
+		"toLocation": [{ "contexts": "save", "conditions": "shouldHaveToLocation", "required": true }],
+		"statusCode": [{ "contexts": "addItems,processAdjustment,delete", "inList": "sastNew" }],
+		"stockReceivers": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }

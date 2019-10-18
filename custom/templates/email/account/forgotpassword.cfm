@@ -4,18 +4,14 @@
 
 <cfsilent>
 	<cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
-		<cfset siteLink = "https://monatglobal.com/" />
+		<cfset local.siteLink = "http://monat.ten24dev.com/" />
 	<cfelse>
-		<cfset siteLink = "http://monat.ten24dev.com/" />
+		<cfset local.siteLink = "https://monatglobal.com/" />
 	</cfif>
 
 	<cfset resetLink = "http://" />
 	<cfset resetLink &= CGI.HTTP_HOST /> <!--- This adds the current domain name --->
-	<cfset resetLink &= CGI.SCRIPT_NAME /> <!--- This adds the script name which includes the sub-directories that a site is in --->
-	<cfif CGI.SCRIPT_NAME NEQ CGI.PATH_INFO> <!--- In IIS PATH_INFO is the same as SCRIPT_NAME by default where in Apache it is blank --->
-		<cfset resetLink &= CGI.PATH_INFO /> <!--- This adds the current path information, basically what page you are on --->
-	</cfif>
-	<cfset resetLink &= "?swprid=#account.getPasswordResetID()#" /> <!--- This is what tells the page to execute a password reset --->
+	<cfset resetLink &= '/Slatwall/?swprid=#account.getPasswordResetID()#' />
 </cfsilent>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
@@ -66,7 +62,7 @@
 										<tbody>
 											<tr>
 												<td width="350" height="90" valign="top" align="center" bgcolor="##fff">
-													<cfset logo = siteLink & "themes/monat/assets/images/logo.svg">
+													<cfset logo = local.siteLink & "themes/monat/assets/images/logo.svg">
 													<img style="display: block; padding:0; margin:0 auto;" src="#logo#" border="0" alt="Monat" width="350" height="90" align="center" class="logo">
 												</td>
 											</tr>
@@ -103,7 +99,7 @@
 															</tr>
 														</tbody>
 													</table>
-													<p>To make additional changes to your account settings, simply sign in to <a href="#siteLink#my-account">My Account</a> from the site. Questions? Our team would be delighted to help at <a href="mailto:monatsupport@monatglobal.com">monatsupport@monatglobal.com</a> or (888) 867- 9987.</p>
+													<p>To make additional changes to your account settings, simply sign in to <a href="#local.siteLink#my-account">My Account</a> from the site. Questions? Our team would be delighted to help at <a href="mailto:monatsupport@monatglobal.com">monatsupport@monatglobal.com</a> or (888) 867- 9987.</p>
 		                                        </td>
 											</tr>
 										</tbody>
@@ -162,20 +158,20 @@
 															<tr>
 																<td width="60">
 																	<!-- FACEBOOK ICON/LINK -->
-																	<a href="https://www.facebook.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#Slatwall/assets/images/social-facebook_white.png" width="24" height="24" alt="facebook" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
+																	<a href="https://www.facebook.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#Slatwall/assets/images/social-facebook_white.png" width="24" height="24" alt="facebook" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
 																</td>
 																
 																<td width="60">
 																	<!-- INSTAGRAM ICON/LINK -->
-																	<a href="https://instagram.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#Slatwall/assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a>
+																	<a href="https://instagram.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#Slatwall/assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a>
 																</td>
 																<td width="60">
 																	<!-- TWITTER ICON/LINK -->
-																	<a href="https://twitter.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#Slatwall/assets/images/social-twitter_white.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
+																	<a href="https://twitter.com/monatofficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#Slatwall/assets/images/social-twitter_white.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
 																</td>
 																<td width="60">
 																	<!-- YOUTUBE ICON/LINK -->
-																	<a href="https://www.youtube.com/user/MONATOfficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#siteLink#Slatwall/assets/images/social_youtube.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
+																	<a href="https://www.youtube.com/user/MONATOfficial" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="#local.siteLink#Slatwall/assets/images/social_youtube.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> 
 																</td>
 															</tr>
 														</tbody>

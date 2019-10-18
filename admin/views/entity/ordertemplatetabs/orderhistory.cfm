@@ -8,6 +8,7 @@
 <cfset rc.orderCollectionList.addFilter('orderTemplate.orderTemplateID', rc.orderTemplate.getOrderTemplateID()) />
 <cfset rc.orderCollectionList.setDisplayProperties('orderNumber,orderOpenDateTime,orderCloseDateTime,calculatedSubTotal,calculatedTaxTotal,calculatedFulfillmentTotal,calculatedTotal',{isVisible=true,isSearchable=true,isDeletable=false,isEditable=false}) />
 <cfset rc.orderCollectionList.addDisplayProperty('orderID','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
+<cfset rc.orderCollectionList.addDisplayProperty('currencyCode','',{isVisible=false,isSearchable=false,isDeletable=false,isEditable=false}) /> 
 
 
 <cfoutput>

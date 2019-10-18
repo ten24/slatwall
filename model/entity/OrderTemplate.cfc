@@ -291,11 +291,12 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 
 	public array function getFrequencyTermOptions(){
-		var termCollection = getService('SettingService').getTermCollectionList();
-		termCollection.setDisplayProperties('termID|value,termName|name');
-		termCollection.addFilter('termID', getService('SettingService').getSettingValue('orderTemplateEligibleTerms'),'in');
-		return termCollection.getRecords();
+		return getService("OrderService").getOrderTemplateFrequencyTermOptions();
 	} 
+	
+	public array function getFrequencyDateOptions() {
+		getService('OrderService').getOrderTemplateFrequencyDateOptions();
+	}
 
 	// Account (many-to-one)
 	public any function setAccount(required any account) {
@@ -360,26 +361,15 @@ public boolean function getCustomerCanCreateFlag(){
 	public numeric function getPersonalVolumeTotal(){
 	
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
-			variables.personalVolumeTotal = 0; 
+			variables.personalVolumeTotal = getService('OrderService').getPersonalVolumeTotalForOrderTemplate(this);
 
-			var orderTemplateItems = this.getOrderTemplateItems();
-
-			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
-			}
 		}	
 		return variables.personalVolumeTotal; 	
 	}
 
 	public numeric function getCommissionableVolumeTotal(){
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = 0; 
-
-			var orderTemplateItems = this.getOrderTemplateItems();
-
-			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
-			}
+			variables.commissionableVolumeTotal = getService('OrderService').getComissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
 	}  //CUSTOM FUNCTIONS END

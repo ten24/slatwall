@@ -53,6 +53,7 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 	property name="discountAmount" ormtype="big_decimal";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="manualDiscountAmountFlag" ormtype="boolean" default="false";
 	
 	// Related Entities
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";

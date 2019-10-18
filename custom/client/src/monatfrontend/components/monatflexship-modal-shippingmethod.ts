@@ -3,6 +3,7 @@ class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
 	public accountAddresses;
 	public shippingMethodOptions;
+	public close; // injected from angularModalService
 
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
@@ -89,7 +90,7 @@ class MonatFlexshipShippingMethodModalController {
 	                		
 	                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
 	                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-	                
+	                this.closeModal();
                } else {
 	               	console.error(response); //
                }
@@ -101,6 +102,10 @@ class MonatFlexshipShippingMethodModalController {
             }
         );
     }
+
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
     	
 }
 
@@ -114,7 +119,8 @@ class MonatFlexshipShippingMethodModal {
 	    orderTemplate:'<',
 	    accountAddresses:'<',
 	    shippingMethodOptions:'<',
-	    stateCodeOptions:'<'
+	    stateCodeOptions:'<',
+	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";

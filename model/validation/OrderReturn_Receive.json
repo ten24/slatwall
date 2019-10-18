@@ -1,5 +1,12 @@
 {
-	"properties":{
-		"orderReturnItems":			[{"method":"validReturnItemsQuantity"}]
+	"conditions": {
+		"orderTypeNotRefund": {
+			"order.orderType.systemCode": {
+				"neq": "otRefundOrder"
+			}
+		}
+	},
+	"properties": {
+		"orderReturnItems": [{ "method": "validReturnItemsQuantity" }, { "method": "validStockLossQuantity" }]
 	}
 }

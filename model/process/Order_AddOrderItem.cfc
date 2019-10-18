@@ -56,7 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku" hb_rbKey="entity.sku";
 	property name="product" hb_rbKey="entity.product";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
-	property name="location" hb_rbKey="entity.location";
+	property name="location" hb_rbKey="entity.location" cfc="Location";
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
@@ -75,7 +75,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderReturnID" hb_formFieldType="select" hb_rbKey="entity.orderReturn";
 	property name="fulfillmentMethodID" hb_formFieldType="select";
 	property name="shippingAccountAddressID" hb_formFieldType="select";
-	property name="pickupLocationID" hb_formFieldType="select" hb_rbKey="entity.orderFulfillment.pickupLocation";
+	property name="pickupLocationID" hb_formFieldType="typeahead" cfc="Location" hb_rbKey="entity.orderFulfillment.pickupLocation";
 
 	// Data Properties (Inputs)
 	property name="price" hb_formatType="currency";
@@ -130,13 +130,32 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return variables.childOrderItems;
 	}
+	
+	
+	public any function getPickupLocationIDTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		if(!isNull(getOrder().getDefaultStockLocation())){
+			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation().getLocationID()#%','LIKE');
+		}
+		return locationCollectionList;
+	}
+
+	public any function getLocationIDTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		if(!isNull(getOrder().getDefaultStockLocation())){
+			locationCollectionList.addFilter('locationIDPath','%#getOrder().getDefaultStockLocation()#%','LIKE');
+		}
+		return locationCollectionList;
+	}
 
 	public any function getRegistrantAccounts() {
 		if(structKeyExists(variables, "registrantAccounts")) {
 			return variables.registrantAccounts;
 		}
 		variables.registrantAccounts = [];
-		for(i=1;i<=variables.quantity;i++) {
+		for(var i=1;i<=variables.quantity;i++) {
 			var account = getService("accountService").newAccount();
 			arrayAppend(variables.registrantAccounts,account);
 		}
@@ -172,13 +191,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(
 			!structKeyExists(variables, "price") 
-			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCodeAndAccount(currencyCode=getCurrencyCode(),account=account) )
-			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),account=account) )
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(),account=account.getAccountID()) )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
 		){
 			variables.price = 0;
 			if(!isNull(getSku())) {
 				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode() , quantity=getQuantity(), account=account);
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=account.getAccountID());
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {

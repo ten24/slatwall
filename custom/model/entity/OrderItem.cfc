@@ -6,6 +6,20 @@ component {
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     
+    property name="manualPersonalVolume" ormtype="big_decimal";
+    property name="manualTaxableAmount" ormtype="big_decimal";
+    property name="manualCommissionableVolume" ormtype="big_decimal";
+    property name="manualRetailCommission" ormtype="big_decimal";
+    property name="manualProductPackVolume" ormtype="big_decimal";
+    property name="manualRetailValueVolume" ormtype="big_decimal";
+    
+    property name="allocatedOrderPersonalVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderTaxableAmountDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderCommissionableVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailCommissionDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderProductPackVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="allocatedOrderRetailValueVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";
     property name="extendedCommissionableVolume" persistent="false";
@@ -153,8 +167,37 @@ component {
         return getCustomExtendedPriceAfterDiscount('retailValueVolume');
     }
     
-    private numeric function getCustomPriceFieldAmount(required string priceField){
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode());
+    public any function getExtendedPersonalVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('personalVolume');
+    }
+    
+    public any function getExtendedTaxableAmountAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('taxableAmount');
+    }
+    
+    public any function getExtendedCommissionableVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('commissionableVolume');
+    }
+    
+    public any function getExtendedRetailCommissionAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailCommission');
+    }
+    
+    public any function getExtendedProductPackVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('productPackVolume');
+    }
+    
+    public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
+        return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
+	private numeric function getCustomPriceFieldAmount(required string customPriceField){
+        arguments.currencyCode = this.getCurrencyCode();
+		arguments.quantity = this.getQuantity();
+		if(!isNull(this.getOrder().getAccount())){ 
+			arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		}
+        var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
         }
@@ -176,18 +219,25 @@ component {
 		
 		return discountAmount;
 	}
-
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
-		if(!structKeyExists(variables,'extended#priceField#')){
+		if(!structKeyExists(variables,'extended#arguments.priceField#')){
 			var price = 0;
-		
-			if(!isNull(this.invokeMethod('get#priceField#'))){
-				price = this.invokeMethod('get#priceField#');
+			
+			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
+			var manualPrice = this.invokeMethod('getManual#arguments.priceField#');
+		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
+				price = this.invokeMethod('getManual#arguments.priceField#');
+			} else if(!isNull(this.invokeMethod('get#arguments.priceField#'))){
+				price = this.invokeMethod('get#arguments.priceField#');
 			}
-			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+			variables['extended#arguments.priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 		}
-		return variables['extended#priceField#'];
+		return variables['extended#arguments.priceField#'];
+	}
+	
+	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){
+	    return this.invokeMethod('getAllocatedOrder#arguments.priceField#DiscountAmount')
 	}
 	
 	public numeric function getCustomExtendedPriceAfterDiscount(required string priceField, boolean forceCalculationFlag = false) {
