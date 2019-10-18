@@ -61480,11 +61480,16 @@ var swfAccountController = /** @class */ (function () {
             }
         };
         this.$onInit = function () {
-            _this.getAccount();
+            //this.getAccount();
         };
-        this.getProducts = function (arg) {
+        this.getProductsByContent = function (arg) {
             _this.$rootScope.hibachiScope.doAction("getProductsByContentID", { 'contentID': arg }).then(function (result) {
-                console.log(result);
+                console.log('Content results', result.productList);
+            });
+        };
+        this.getProductsByCategory = function (arg) {
+            _this.$rootScope.hibachiScope.doAction("getProductsByCategoryID", { 'categoryID': arg }).then(function (result) {
+                console.log('category results', result.productList);
             });
         };
         this.getAccount = function () {

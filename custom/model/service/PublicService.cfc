@@ -473,35 +473,42 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
     
-    public any function getProductsByContentID(required any data){
-        param name="arguments.data.contentID" default="";
-        param name="arguments.data.pageRecordsShow" default="20";
+//     public any function getProductsByContentID(required any data){
+//         param name="arguments.data.contentID" default="";
+//         param name="arguments.data.priceGroupCode" default="";
+//         param name="arguments.data.currentPage" default="1";
+//         param name="arguments.data.pageRecordsShow" default="12";
+        
+//         if(len(arguments.data.contentID)){
+//             var productCollectionList = getBaseProductCollectionList(arguments.data);
+//             productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" )
+//         }else{
+//             return;
+//         }
+        
+//         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+//         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
 
-        var productCollectionList = super.getBaseProductCollectionList();
-        if(len(arguments.data.contentID)){
-            productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" )
-        }else{
-            return;
-        }
-        
-        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        
-		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
-    }
+// 		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
+//     }
     
-    public any function getProductsByCategory(required any data){
-        param name="arguments.data.category" default="";
-        param name="arguments.data.pageRecordsShow" default="20";
-
-        var productCollectionList = super.getBaseProductCollectionList();
-        if(len(arguments.data.category)){
-            productCollectionList.addFilter('category',arguments.data.category,"=" )
-        }else{
-            return;
-        }
+//     public any function getProductsByCategoryID(required any data){
+//         param name="arguments.data.categoryID" default="";
+//         param name="arguments.data.priceGroupCode" default="";
+//         param name="arguments.data.currentPage" default="1";
+//         param name="arguments.data.pageRecordsShow" default="12";
         
-        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+//         if(len(arguments.data.categoryID)){
+//             var productCollectionList = getBaseProductCollectionList(arguments.data);
+//             productCollectionList.setDisplayProperties('defaultSku.skuID,defaultSku.skuPrices.personalVolume,defaultSku.skuPrices.price');
+//             productCollectionList.addFilter('categories.categoryID',arguments.data.categoryID,"=" )
+//         }else{
+//             return;
+//         }
         
-		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
-    }
+//         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+//         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+// 		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
+//     }
 }

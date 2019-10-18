@@ -2182,12 +2182,20 @@ component  accessors="true" output="false"
     }
     
     public any function getBaseProductCollectionList(){
+        param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
+        param name="arguments.data.siteID" default=""; //TODO: make dynamic/add filter
+        param name="arguments.data.priceGroupCode" default="";
+
+        
         productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.price', 0.00, '!=');
+        productCollectionList.addFilter('skus.skuPrices.currencyCode', arguments.data.currencyCode);
+        //productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', arguments.data.priceGroupCode);
+
         return productCollectionList
     }
     

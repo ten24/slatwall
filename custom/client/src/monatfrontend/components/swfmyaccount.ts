@@ -54,12 +54,18 @@ class swfAccountController {
         }
     }
 	public $onInit = () =>{
-        this.getAccount();
+        //this.getAccount();
 	}
 	
-	public getProducts = (arg) =>{
+	public getProductsByContent = (arg) =>{
         this.$rootScope.hibachiScope.doAction("getProductsByContentID", {'contentID': arg}).then(result => {
-            console.log(result);
+            console.log('Content results',result.productList);
+        })
+	}
+	
+	public getProductsByCategory = (arg) =>{
+        this.$rootScope.hibachiScope.doAction("getProductsByCategoryID", {'categoryID': arg}).then(result => {
+            console.log('category results', result.productList);
         })
 	}
 	
