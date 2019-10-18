@@ -37,7 +37,7 @@
         },
         {
           "sourceColumn":"SAPItemCode",
-          "propertyIdentifier":"SAPItemCode"
+          "propertyIdentifier":"sapItemCode"
         },
         {
           "sourceColumn":"EntryDate",
