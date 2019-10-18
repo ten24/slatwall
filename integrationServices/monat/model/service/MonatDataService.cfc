@@ -44,10 +44,13 @@ component extends="Slatwall.model.service.HibachiService" {
         accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
         accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
 
-        accountCollection.setDisplayProperties("firstName,lastName,primaryAddress.address.stateCode", {isSearchable: true});
-        accountCollection.addDisplayProperty('accountID');
-        accountCollection.addDisplayProperty('primaryAddress.address.city');
-        accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
+        accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:true});
+        accountCollection.addDisplayProperty('firstName', {isVisible:true, isSearchable: false});
+        accountCollection.addDisplayProperty('lastName', {isVisible:true, isSearchable: false});
+        accountCollection.addDisplayProperty('accountID',{isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.city',{isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.countryCode',{isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.stateCode',{isVisible:true, isSearchable:false});
         
         accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
         accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
