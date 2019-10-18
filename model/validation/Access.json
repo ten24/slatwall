@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"accessID":		[{"contexts":"save","method":"hasUsageOrUsageBenefitOrUsageBenefitAccount"}]
+	"properties": {
+		"accessID": [{ "contexts": "save", "method": "hasUsageOrUsageBenefitOrUsageBenefitAccount" }]
 	}
 }

@@ -3,7 +3,7 @@
 		        <div class="row">
 		            <div class="control-label col-sm-7 title" style="margin-bottom: 8px;" ng-bind="swSimplePropertyDisplay.title"></div>
 		            
-		            <div class="control-label col-sm-5 value" style="margin-bottom: 8px;" ng-if="swSimplePropertyDisplay.currencyFlag == 'true' && swSimplePropertyDisplay.formattedFlag == false" ng-bind-html="swSimplePropertyDisplay.value | swcurrency:swSimplePropertyDisplay.currencyCode"></div>
+		            <div class="control-label col-sm-5 value" style="margin-bottom: 8px;" ng-if="swSimplePropertyDisplay.currencyFlag == 'true' && swSimplePropertyDisplay.formattedFlag == false && swSimplePropertyDisplay.currencyCode" ng-bind-html="swSimplePropertyDisplay.value | swcurrency:swSimplePropertyDisplay.currencyCode"></div>
 		            <div class="control-label col-sm-5 value" style="margin-bottom: 8px;" ng-if="swSimplePropertyDisplay.currencyFlag != 'true' || swSimplePropertyDisplay.formattedFlag == true" ng-bind="swSimplePropertyDisplay.value"></div>
 		        </div>
         	</div>

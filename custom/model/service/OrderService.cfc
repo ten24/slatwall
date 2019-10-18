@@ -102,7 +102,73 @@ component extends="Slatwall.model.service.OrderService" {
 		return returnOrder;
 	}
 
-    private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	//begin order template functionality
+	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+		if(structKeyExists(request, 'orderTemplateOrderDetails')){
+			return request.orderTemplateOrderDetails;
+		} 
+		
+		request.orderTemplateOrderDetails = {}; 
+	
+		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
+		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
+
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		
+		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplate = arguments.orderTemplate; 	
+		
+		thread name="#threadName#"
+			   action="run" 
+		{
+
+			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
+			//only update amounts if we can
+			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
+			transientOrder.updateCalculatedProperties(); 	
+			ormFlush();
+		
+			if(hasInfoForFulfillment){	
+				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			}
+			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
+			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+
+			ormFlush();	
+	
+		}
+		//join thread so we can return synchronously
+		threadJoin(threadName);
+		//if we have any error we probably don't have the required data for returning the total
+		if(structKeyExists(evaluate(threadName), "ERROR")){
+			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		} 
+
+		return request.orderTemplateOrderDetails;
+	}
+
+	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
+	}
+	
+	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
+	}
+    
+	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";

@@ -107,6 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
+		rc.orderCollectionList.addFilter('orderOpenDateTime',dateAdd('m','-3',now()),'>');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
@@ -117,6 +118,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
 		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
 		rc.productReviewCollectionList.addFilter('activeFlag',0);
+
+		rc.accountCollectionList = getAccountService().getAccountCollectionList();
+		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true});
+		rc.accountCollectionList.addDisplayProperty('accountID',javacast('null',''),{hidden=true});
+		rc.accountCollectionList.addFilter('activeFlag','1','=');
+		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-3',now()),'>');
+		rc.accountCollectionList.setOrderBy('createdDateTime|DESC');
 
 		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );

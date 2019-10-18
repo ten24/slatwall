@@ -15,6 +15,7 @@ class SWListingDisplayCellController{
     public actionCaller:any;
     //string that should translate to a custom directive
     public cellView:string;
+    public dateFormat:string='MM/dd/yyyy';
     public template:string;
     public templateVariables:any; 
     public expandable:boolean=false; 
@@ -113,6 +114,10 @@ class SWListingDisplayCellController{
         } else if(!listingDisplayIsExpandableAndPrimaryColumn){
             
             if(this.column.ormtype === 'timestamp'){
+                if(this.column.type && this.column.type=='datetime'){
+                    this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                }
+                
                 templateUrl = basePartialPath + 'listingdisplaycelldate.html';
             }else if(this.column.type === 'currency'){
                 if(this.hasAggregate() && this.pageRecord){

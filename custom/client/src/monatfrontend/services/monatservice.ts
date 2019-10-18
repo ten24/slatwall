@@ -83,6 +83,10 @@ export class MonatService {
 		};
 		return this.updateCart('updateOrderItemQuantity', payload);
 	}
+	
+	public submitSponsor( sponsorID:string ) {
+		return this.publicService.doAction('submitSponsor',{sponsorID});
+	}
 
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}

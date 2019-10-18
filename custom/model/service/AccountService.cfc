@@ -32,7 +32,16 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	
 	public string function getSimpleRepresentation(required any account){
-		return arguments.account.getFullName() & ' - ' & arguments.account.getAccountNumber();
+		var accountType = arguments.account.getAccountType();
+		var typeReps = {
+			'marketPartner':'MP',
+			'vip':'VIP',
+			'customer':'Retail'
+		}
+		if(structKeyExists(typeReps,accountType)){
+			accountType = typeReps[accountType];
+		}
+		return arguments.account.getFullName() & ' ( ' & arguments.account.getAccountNumber() & ' - ' & accountType & ' )';
 	}
 	
 	public any function getAllOrdersOnAccount(struct data={}) {
@@ -46,6 +55,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
 		ordersList.setDisplayProperties('
 			orderID,
+			calculatedTotalItemQuantity,
 			orderNumber,
 			orderStatusType.typeName,
 			orderFulfillments.shippingAddress.streetAddress,

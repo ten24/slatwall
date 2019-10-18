@@ -9,7 +9,7 @@
     </span>
     
     <span ng-if="swListingDisplayCell.value.indexOf(':') > -1" 
-          ng-bind="swListingDisplayCell.value | swdate:'MM/dd/yyyy'"
+          ng-bind="swListingDisplayCell.value | swdate:swListingDisplayCell.dateFormat"
           popover="{{swListingDisplayCell.popover}}"
           popover-trigger="mouseenter"
           popover-placement="bottom"
