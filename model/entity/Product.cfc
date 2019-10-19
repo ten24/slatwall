@@ -145,7 +145,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-
+	
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
@@ -349,7 +349,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.optionGroups = smartList.getRecords();
 		}
 		return variables.optionGroups;
-	}
+	}	
 
 	public any function getOptionGroupsAsList(){
 		var list = [];
@@ -543,7 +543,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			optionName,
 			optionCode,
 			optionDescription,
+			defaultImage.calculatedImagePath,
 			sortOrder,
+			optionGroup.imageGroupFlag,
 			optionGroup.optionGroupName,
 			optionGroup.optionGroupCode,
 			optionGroup.optionGroupID,
@@ -555,24 +557,33 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		optionCollection.addFilter('skus.calculatedQATS',0,'>');
 		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
 		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
-		var optionRecords = optionCollection.getRecords();
-		// Create an array of the selectOptions
-		if(listLen(arguments.selectedOptionIDList)) {
-			for(var optionData in optionRecords) {
-				if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
-					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
-				}
+		
+		
+		if(listLen(arguments.selectedOptionIDList) > 0) {
+			var skus = getDAO('SkuDAO').getSkusBySelectedOptions(arguments.selectedOptionIDList, getProductID()); 
+
+			var skusList = '';
+
+			for(var i = 1; i <= arrayLen(skus); i++){
+				skusList = listAppend(skusList, skus[i].getSkuID());
 			}
-			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-				break;
-			}
+
+			optionCollection.addFilter('skus.skuID', skusList, 'IN'); 
 		}
+
+		optionCollection.addOrderBy('optionGroup.sortOrder|ASC');
+		optionCollection.addOrderBy('sortOrder|ASC');
+
+		var optionRecords = optionCollection.getRecords();
 
 		var skuOptionIDArray = [];
 		for(var optionData in optionRecords) {
 			arrayAppend(skuOptionIDArray, optionData['optionID']);
+			if(listFindNoCase(arguments.selectedOptionIDList, optionData['optionID'])) {
+				selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
+			}
 		}
-
+		
 		// Loop over the options for this sku
 		for(var optionData in optionRecords) {
 
@@ -594,6 +605,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				skuOptionDetails[ ogCode ][ "options" ] = [];
 				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
 				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
+				skuOptionDetails[ ogCode ][ "optionGroupImageGroupFlag" ] = optionData['optionGroup_imageGroupFlag'];
 				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
 				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
 			}
@@ -615,6 +627,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				newOption['optionID'] = optionData['optionID'];
 				newOption['optionCode'] = optionData['optionCode'];
 				newOption['optionName'] = optionData['optionName'];
+				newOption['calculatedImagePath'] = optionData['defaultImage_calculatedImagePath'];
 				newOption['name'] = optionData['optionName'];
 				newOption['value'] = optionData['optionID'];
 				newOption['sortOrder'] = optionData['sortOrder'];
@@ -820,6 +833,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.defaultProductImageFilesCount;
 	}
+	
 	/**
 	* @Suppress
 	*/

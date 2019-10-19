@@ -143,8 +143,32 @@ Notes:
 			arrayAppend(params,arguments.productID);	
 		}
 		return ormExecuteQuery(hql,params);
-	}
+	}	
 	
+	public any function getActiveSkuIDsBySelectedOptions(required string selectedOptions, string productID) {
+		
+		var params = [];
+		var hql = "select distinct new map(sku.skuID as skuID) from SlatwallSku as sku 
+					inner join sku.options as opt 
+					where 
+					sku.activeFlag = true ";
+		for(var i=1; i<=listLen(arguments.selectedOptions); i++) {
+			var thisOptionID = listGetat(arguments.selectedOptions,i);
+			hql &= "and exists (
+						from SlatwallOption o
+						join o.skus s where s.id = sku.id
+						and o.optionID = ?
+					) ";
+			arrayAppend(params,thisOptionID);
+		}
+		// if product ID is passed in, limit query to the product
+		if(structKeyExists(arguments,"productID")) {
+			hql &= "and sku.product.id = ?";
+			arrayAppend(params,arguments.productID);	
+		}
+		return ormExecuteQuery(hql,params);
+	}	
+
 	public any function searchSkusByProductType(string term,string productTypeID) {
 		var q = new Query();
 		var sql = "select skuID,skuCode from SlatwallSku where skuCode like :code";
