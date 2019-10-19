@@ -2185,18 +2185,27 @@ component  accessors="true" output="false"
         param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
         param name="arguments.data.siteID" default=""; //TODO: make dynamic/add filter
         param name="arguments.data.priceGroupCode" default="";
-
+        
+        if(len(arguments.data.priceGroupCode)){
+			var pricegroups = getHibachiScope().getAccount().getPriceGroups();
+			arguments.data.priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : 3;
+        }
         
         productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.addDisplayProperty('defaultSku.skuID');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
+        productCollectionList.addDisplayProperty('urlTitle');
+
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.price', 0.00, '!=');
+        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('skus.skuPrices.currencyCode', arguments.data.currencyCode);
         //productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', arguments.data.priceGroupCode);
 
         return productCollectionList
-    }
-    
+    }   
 }
