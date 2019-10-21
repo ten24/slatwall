@@ -66,58 +66,58 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	
-	
-	
-	private struct function postRequest(required string service, required struct requestData, string jsessionid){
+	private struct function postRequest(required struct requestData){
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		
-		// if( structKeyExists(arguments, 'jsessionid') ){
-		// 	requestURL &= ';jsessionid=' & arguments.jsessionid;
-		// }
-		
-		// requestURL &= '?format=JSON';
-		// requestURL &= '&apikey=' & setting('apikey');
-		// requestURL &= '&service=' & arguments.service;
-		
-		// var httpRequest = new http();
-		// httpRequest.setMethod('POST');
-		// httpRequest.setUrl( requestURL );
-		
-		// for(var key in requestData){
-		// 	httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
-		// }
-		
-		// var rawRequest = httpRequest.send().getPrefix();
-		// var response = deserializeJson(rawRequest.fileContent);
-		
-		
-		// if( structKeyExists(response, 'errors') && arrayLen(response.errors) ){
-		// 	var errorMessages = '';
-		// 	for(var error in response.errors){
-		// 		errorMessages = listAppend(errorMessages, error['detail']);
-		// 	}
-		// 	if(len(errorMessages)){
-		// 		throw(errorMessages);
-		// 	}
-		// }
-		
-		if( structKeyExists(response, 'ERRORCODE') ){
-			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
+		var httpRequest = new http();
+		httpRequest.setMethod('POST');
+		httpRequest.setUrl( requestURL );
+
+    	httpRequest.addParam(type='header', name='auth-token', value=this.setting['apikey']);
+    	httpRequest.addParam(type='header', name='Content-Type', value='application/x-www-form-urlencoded');
+    	
+		for(var key in requestData) {
+			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
 		}
 		
-		return response;
+		writelog(file='vibe',text='new post request START-->>');
+		writelog(file='vibe', text="request : ");
+		writelog(file='vibe', text="#httpRequest#");
+		
+		var rawRequest = httpRequest.send().getPrefix();
+		var response = deserializeJson(rawRequest.fileContent);
+		
+		writelog(file='vibe', text="response : ");
+		writelog(file='vibe', text="#response#");
+		writelog(file="vibe",text="new post request END<<--");
+		
+		if(structKeyExists(response, 'success')) {
+			return response; //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+		} 
+		
+		if( structKeyExists(response, 'errors') && arrayLen(response.errors) ) {
+			var errorMessages = '';
+			for(var error in response.errors){
+				errorMessages = listAppend(errorMessages, error['detail']);
+			}
+			if(len(errorMessages)){
+				throw(errorMessages);
+			}
+		}
+		
+		if( structKeyExists(response, 'ERRORCODE') ) {
+			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
+		}
 	}
 
 	
-	public void function pushData(required any entity, struct data ={}){
-	
-		//push to remote endpoint
-		var vibeResponse = {};
-		var relatedToAccount = false;
+	public void function pushData(required any account, struct data ={}) {
 		
+		//push to remote endpoint
+		var vibeResponse = postRequest(arguments.data);
 		//update the account
+		arguments.account.setVibeUserID(vibeResponse.id);
 	}
 
 }

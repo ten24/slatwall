@@ -48,6 +48,25 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return variables.integration;
 	}
 	
+	
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+	}
+	
+	public string function appendVibeQueryParamsToURL(required string url, ){
+		// var consultant_id = getHibachiScope().getAccount().getVibeID();
+		var consultant_id = 12345;
+		var authentication_key = this.setting('apikey');
+		var  dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
+		var string_to_hash = consultant_id & authentication_key & dateString;
+		var token = hash(string_to_hash); //default is MD5
+		
+		return arguments.url &= "&token=#token#&consultant_id=#consultant_id#"
+	}
+	
 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
@@ -61,6 +80,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public void function push(required any account, any data ={}){
 		
+		writelog(file='vibe',text="in 'VibeService::push' account: #arguments.account.getAccountID()#, data: #arguments.data#');
+
 		arguments.data.payload = convertSwAccountToVibeAccount(arguments.account);
 		
 		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);

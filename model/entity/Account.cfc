@@ -160,6 +160,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 
+	property name="vibeUserID" ormtype="integer";
+	
 
  property name="allowUplineEmails" ormtype="boolean";
  property name="memberCode" ormtype="string";
@@ -173,13 +175,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
- property name="businessAcc" ormtype="boolean";
  property name="dob" ormtype="string";
  property name="lastRenewDate" ormtype="string";
  property name="nextRenewDate" ormtype="string";
  property name="lastStatusDate" ormtype="string";
- property name="pickupCenter" ormtype="string";
- property name="holdEarningsToAR" ormtype="string";
  property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
  property name="terminateDate" ormtype="string";
