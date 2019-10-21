@@ -61483,12 +61483,12 @@ var swfAccountController = /** @class */ (function () {
             //this.getAccount();
         };
         this.getProductsByContent = function (arg) {
-            _this.$rootScope.hibachiScope.doAction("getProductsByContentID", { 'contentID': arg, 'priceGroupCode': 1 }).then(function (result) {
+            _this.$rootScope.hibachiScope.doAction("getProductsByContentID", { 'contentID': arg, 'priceGroupCode': 2 }).then(function (result) {
                 console.log('Content results', result.productList);
             });
         };
         this.getProductsByCategory = function (arg) {
-            _this.$rootScope.hibachiScope.doAction("getProductsByCategoryID", { 'categoryID': arg, 'priceGroupCode': 1 }).then(function (result) {
+            _this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", { 'categoryID': arg, 'priceGroupCode': 2 }).then(function (result) {
                 console.log('category results', result.productList);
             });
         };

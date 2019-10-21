@@ -2183,13 +2183,9 @@ component  accessors="true" output="false"
     
     public any function getBaseProductCollectionList(){
         param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
-        param name="arguments.data.siteID" default=""; //TODO: make dynamic/add filter
-        param name="arguments.data.priceGroupCode" default="";
+        param name="arguments.data.priceGroupCode" default="2";
         
-        if(len(arguments.data.priceGroupCode)){
-			var pricegroups = getHibachiScope().getAccount().getPriceGroups();
-			arguments.data.priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : 3;
-        }
+        //TODO: Consider starting from skuPrice table for less joins
         
         productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addDisplayProperties('productName');
@@ -2197,14 +2193,13 @@ component  accessors="true" output="false"
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
-
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('skus.skuPrices.currencyCode', arguments.data.currencyCode);
-        //productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', arguments.data.priceGroupCode);
+        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', arguments.data.priceGroupCode);
 
         return productCollectionList
     }   

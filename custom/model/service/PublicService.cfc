@@ -482,40 +482,47 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(len(arguments.data.contentID)){
             var productCollectionList = getBaseProductCollectionList(arguments.data);
             productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
-            
+            productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+            productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);  
+            var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords());
+    		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         }else{
             return;
         }
-        
-        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-
-		arguments.data['ajaxResponse']['productList'] = productCollectionList.getPageRecords();
     }
     
-    public any function getProductsByCategoryID(required any data){
+    public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
+        param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
 
-        if(len(arguments.data.categoryID)){
-            var productCollectionList = getBaseProductCollectionList(arguments.data);
+        var productCollectionList = getBaseProductCollectionList(arguments.data);
+        
+        if(len(arguments.data.contentID)){
+            productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
+        }
+        else if(len(arguments.data.categoryID)){
             productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
-            
-        }else{
+        }
+        else{
             return;
         }
-        
+
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords());
+		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+    }
+    
+    public any function getNewCommonNonPersistentProductProperties(required array records){
         
-        var records = productCollectionList.getPageRecords();
         var productList = [];
         var imageService = getService('ImageService');
         var productService = getProductService();
-        
-        for(record in records){
+
+        for(record in arguments.records){
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
@@ -525,7 +532,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'url': productService.getProductUrlByUrlTitle(record.urlTitle)
             });
         }
-        
-		arguments.data['ajaxResponse']['productList'] = productList;
+        return productList;
     }
+
 }
