@@ -1,4 +1,9 @@
 {
+	"conditions":{
+		"mpEnrollmentOrder":{
+			"monatOrderType"
+		}
+	},
 	"properties": {
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }]
 	}

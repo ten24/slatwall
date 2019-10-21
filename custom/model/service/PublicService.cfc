@@ -473,4 +473,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
+    
+    public any function addOrderItem(required struct data){
+        var cart = super.addOrderItem(arguments.data);
+        if(!cart.hasErrors() 
+        && cart.getAccount().getAccountType() == 'marketPartner' 
+        && !isNull(account.getAccountStatusType()) 
+        && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+                
+            cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
+            
+        }
+        return cart;
+    }
 }
