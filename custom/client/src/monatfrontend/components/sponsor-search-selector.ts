@@ -88,8 +88,8 @@ class SponsorSearchSelector {
 
 	public static Factory() {
 		var directive = monatFrontendBasePath => new this( monatFrontendBasePath );
-        directive.$inject = ['monatFrontendBasePath'];
-        return directive;
+		directive.$inject = ['monatFrontendBasePath'];
+		return directive;
 	}
 	
 	constructor(
