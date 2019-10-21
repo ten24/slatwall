@@ -100,17 +100,16 @@ class EnrollmentMPController {
 	};
 
 	public getMpResults = (model) => {
+		let data = {
+			search:model.mpSearchText,
+			currentPage:1,
+			accountSearchType:'marketPartner',
+			countryCode:model.currentCountryCode,
+			stateCode:model.currentStateCode,
+			returnJsonObjects:''
+		}
 		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'/?slatAction=monat:public.getmarketpartners' +
-				'&search=' +
-				model.mpSearchText +
-				'&currentPage=' +
-				1 +
-				'&accountSearchType=marketPartner' +
-				'&countryCode=' +
-				model.currentCountryCode +
-				'&stateCode=' +
-				model.currentStateCode,
+			'?slatAction=monat:public.getmarketpartners',data
 		);
 	};
 
