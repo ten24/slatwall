@@ -526,7 +526,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     productList[index].upgradedPriceGroupCode = record.priceGroupCode;  
                     continue;
                 }
-
             }else{
                 arrayAppend(joinedCollection, record);
             }
