@@ -822,15 +822,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Check to make sure that this is an orderItem type of qualifier
 			if(listFindNoCase("merchandise,subscription,contentAccess", qualifier.getQualifierType())) {
 				
-				// Setup a local var for this orderItem
-				var orderItemQualifierCount = arguments.orderItem.getQuantity();
+				// Loop over the orderItems and see how many times this item has been qualified
+				for(var o=1; o<=arrayLen(arguments.order.getOrderItems()); o++) {
 
-				// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
-				if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=arguments.orderItem)){
-					orderItemQualifierCount = 0;
+					// Setup a local var for this orderItem
+					var thisOrderItem = arguments.order.getOrderItems()[o];
+					var orderItemQualifierCount = thisOrderItem.getQuantity();
+
+					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
+					if(
+						!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)
+						||
+						// Then check the match type of based on the current orderitem, and the orderItem we are getting a count for
+						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem.getSku().getSkuID() != arguments.orderItem.getSku().getSkuID() )
+						||
+						( qualifier.getRewardMatchingType() == "product" && thisOrderItem.getSku().getProduct().getProductID() != arguments.orderItem.getSku().getProduct().getProductID() )
+						||
+						( qualifier.getRewardMatchingType() == "productType" && thisOrderItem.getSku().getProduct().getProductType().getProductTypeID() != arguments.orderItem.getSku().getProduct().getProductType().getProductTypeID() )
+						||
+						( qualifier.getRewardMatchingType() == "brand" && isNull(thisOrderItem.getSku().getProduct().getBrand()))
+						||
+						( qualifier.getRewardMatchingType() == "brand" && isNull(arguments.orderItem.getSku().getProduct().getBrand()))
+						||
+						( qualifier.getRewardMatchingType() == "brand" && thisOrderItem.getSku().getProduct().getBrand().getBrandID() != arguments.orderItem.getSku().getProduct().getBrand().getBrandID() )
+						) {
+
+						orderItemQualifierCount = 0;
+
+					}
+
+					qualifierCount += orderItemQualifierCount;
+
 				}
-
-				qualifierCount += orderItemQualifierCount;
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
