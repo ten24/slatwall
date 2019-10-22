@@ -24,6 +24,7 @@ class swfAccountController {
     public editAddress;
     public isNewAddress:boolean;
 
+
     public totalPages:Array<number>;
     public pageTracker:number = 1;
 
@@ -54,20 +55,7 @@ class swfAccountController {
         }
     }
 	public $onInit = () =>{
-        //this.getAccount();
-	}
-	
-
-	public getProductsByContent = (arg) =>{
-        this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", {'contentID': arg, 'priceGroupCode': 2}).then(result => {
-            console.log('Content results',result.productList);
-        })
-	}
-	
-	public getProductsByCategory = (arg) =>{
-        this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", {'categoryID': arg,'priceGroupCode': 2}).then(result => {
-            console.log('category results', result.productList);
-        })
+        this.getAccount();
 	}
 	
     public getAccount = () => {
