@@ -473,30 +473,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
     
-    public any function getProductsByContentID(required any data){
-        param name="arguments.data.contentID" default="";
-        param name="arguments.data.priceGroupCode" default="";
-        param name="arguments.data.currentPage" default="1";
-        param name="arguments.data.pageRecordsShow" default="12";
-        
-        if(len(arguments.data.contentID)){
-            var productCollectionList = getBaseProductCollectionList(arguments.data);
-            productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
-            productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-            productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);  
-            var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords());
-    		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
-        }else{
-            return;
-        }
-    }
-    
     public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
+                
+        if(arguments.data.priceGroupCode == 3 || arguments.data.priceGroupCode == 1){
+            arguments.data.upgradedPriceGroupCode = 2;
+        } else{
+            arguments.data.upgradedPriceGroupCode = 3;
+        }
 
         var productCollectionList = getBaseProductCollectionList(arguments.data);
         
@@ -512,24 +500,34 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-        var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords());
+        var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), arguments.data.priceGroupCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
     }
     
-    public any function getNewCommonNonPersistentProductProperties(required array records){
-        
+    public any function getNewCommonNonPersistentProductProperties(required array records, required string priceGroupCode){
         var productList = [];
         var imageService = getService('ImageService');
         var productService = getProductService();
-
+        var index = 0;
+        
         for(record in arguments.records){
+           
+            
+            if(arrayLen(productList) && record.skuID == productList[index]){
+                record.skuID
+            }else{
+               index++; 
+            }
+            
+            
+            
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
-                'productImage': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'large'),
-                'url': productService.getProductUrlByUrlTitle(record.urlTitle)
+                'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'large'),
+                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle)
             });
         }
         return productList;

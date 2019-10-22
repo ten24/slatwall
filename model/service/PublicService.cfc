@@ -2184,9 +2184,9 @@ component  accessors="true" output="false"
     public any function getBaseProductCollectionList(){
         param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
         param name="arguments.data.priceGroupCode" default="2";
-        
+        param name="arguments.data.upgradedPriceGroupCode" default="";
+
         //TODO: Consider starting from skuPrice table for less joins
-        
         productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addDisplayProperties('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
@@ -2199,7 +2199,7 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('skus.skuPrices.currencyCode', arguments.data.currencyCode);
-        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', arguments.data.priceGroupCode);
+        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', '#arguments.data.priceGroupCode#,#arguments.data.upgradedPriceGroupCode#', "IN");
 
         return productCollectionList
     }   
