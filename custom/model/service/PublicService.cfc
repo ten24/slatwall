@@ -496,15 +496,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getMostRecentOrderTemplate (required any data){
         param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
         param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
-
-		var flexshipCollectionList = getService('HibachiService').getOrderTemplateCollectionList();
-		flexshipCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
-		flexshipCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
-		flexshipCollectionList.setOrderBy('createdDateTime|DESC');
-		flexshipCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
-		flexshipCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
-		flexshipCollectionList.setPageRecordsShow(1);
-		collectionList = flexshipCollectionList.getPageRecords();
+        
+        var daysToEditFlexship = getService('SettingService').getSettingValue('globalDaysAllowedToEditNextFlexship')
+        
+		var orderTemplateCollectionList = getService('HibachiService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');
+		orderTemplateCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		orderTemplateCollectionList.setPageRecordsShow(1);
+		collectionList = orderTemplateCollectionList.getPageRecords();
 		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
 }

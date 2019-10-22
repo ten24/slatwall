@@ -61565,8 +61565,12 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             var accountID = _this.accountData.accountID;
             return _this.publicService.doAction("getMostRecentOrderTemplate", { 'accountID': accountID }).then(function (result) {
-                _this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
-                console.log(_this.mostRecentFlexship);
+                if (result.mostRecentOrderTemplate.length) {
+                    _this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                    _this.mostRecentFlexshipDeliveryDate = Date.parse(_this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                    _this.editFlexshipUntilDate = new Date(_this.mostRecentFlexshipDeliveryDate);
+                    _this.editFlexshipUntilDate.setDate(_this.editFlexshipUntilDate.getDate() - result.daysToEditFlexship);
+                }
                 _this.loading = false;
             });
         };

@@ -24,8 +24,8 @@ class swfAccountController {
     public editAddress;
     public isNewAddress:boolean;
     public mostRecentFlexship:any;
-
-
+    public mostRecentFlexshipDeliveryDate:any;
+    public editFlexshipUntilDate:any;
     public totalPages:Array<number>;
     public pageTracker:number = 1;
 
@@ -91,8 +91,13 @@ class swfAccountController {
         this.loading = true;
         const accountID = this.accountData.accountID;
         return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
-            this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
-            console.log(this.mostRecentFlexship);
+            if(result.mostRecentOrderTemplate.length){
+                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
+                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
+            }
+  
             this.loading = false;
         });
     }
