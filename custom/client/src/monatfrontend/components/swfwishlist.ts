@@ -3,8 +3,6 @@
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
-
-
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
     public orderTemplates:Array<any>;
@@ -19,14 +17,13 @@ class SWFWishlistController {
     public skuID:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
-
     
     // @ngInject
     constructor(
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService,
+        public orderTemplateService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -65,7 +62,6 @@ class SWFWishlistController {
             return result;
         });
     }
-
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
@@ -108,6 +104,12 @@ class SWFWishlistController {
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
             this.loading = false;
+        });
+    }
+    
+    public getWishlistsLight = () =>{
+        this.orderTemplateService.getOrderTemplatesLight().then(response =>{
+            this.orderTemplates = response['orderTemplates'];
         });
     }
     

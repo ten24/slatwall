@@ -191,13 +191,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(
 			!structKeyExists(variables, "price") 
-			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCodeAndAccount(currencyCode=getCurrencyCode(),account=account) )
-			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),account=account) )
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(),account=account.getAccountID()) )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
 		){
 			variables.price = 0;
 			if(!isNull(getSku())) {
 				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode() , quantity=getQuantity(), account=account);
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=account.getAccountID());
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {

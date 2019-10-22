@@ -4,7 +4,8 @@ export class OrderTemplateService {
    constructor(
         public requestService,
         public $hibachi,
-        public $rootScope
+        public $rootScope,
+        public publicService
        ){
 
    } 
@@ -136,7 +137,7 @@ export class OrderTemplateService {
     }
 	
 	public getWishlistItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
-
+    
        var data = {
            orderTemplateID:orderTemplateID,
            currentPage:currentPage,
@@ -251,7 +252,14 @@ export class OrderTemplateService {
     }
 
     public createOrderTemplate = (orderTemplateSystemCode) => {
-        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{orderTemplateSystemCode: orderTemplateSystemCode});
+        return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
+            orderTemplateSystemCode: orderTemplateSystemCode,
+            returnJSONObjects:''
+        });
     }   
+    
+   public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{
+       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID})
+   }
 
 }
