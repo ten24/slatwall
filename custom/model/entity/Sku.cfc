@@ -2,7 +2,12 @@ component {
 	property name="sapItemCode" ormtype="string";
     property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="vipFlag" ormtype="boolean" default="1";
+	property name="mpFlag" ormtype="boolean" default="1";
+	property name="retailFlag" ormtype="boolean" default="1";
+	
+	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 

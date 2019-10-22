@@ -224,7 +224,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 property name="sapItemCode" ormtype="string";
     property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="vipFlag" ormtype="boolean" default="1";
+	property name="mpFlag" ormtype="boolean" default="1";
+	property name="retailFlag" ormtype="boolean" default="1";
+	
+	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
     property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
@@ -2087,7 +2092,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID')){
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}	
 
