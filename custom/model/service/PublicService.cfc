@@ -391,7 +391,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
         return account;
-
+    }
+    
     private any function setupEnrollmentInfo(required any account, required string accountType){
         var accountTypeInfo = {
             'customer':{
