@@ -164,9 +164,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 
  property name="allowUplineEmails" ormtype="boolean";
+
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
- property name="isFlagged" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
@@ -180,13 +180,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="nextRenewDate" ormtype="string";
  property name="lastStatusDate" ormtype="string";
  property name="commStatusUser" ormtype="string";
+
  property name="accountNumber" ormtype="string";
  property name="terminateDate" ormtype="string";
  property name="PayerAccountIdentification" ormtype="string";
  property name="payerName" ormtype="string";
  property name="govermentNumber" ormtype="string";
- property name="CareerTitle" ormtype="string";
- property name="GovermentTypeCode" ormtype="string";
  property name="driverLicense" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
