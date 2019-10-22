@@ -8,13 +8,15 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	}
 	
 	
-	public void function afterInfotraxAccountCreateSuccess(required any slatwallScope, required any account, required any data={}){
-		writelog(file='vibe',text="in 'afterInfotraxAccountCreateSuccess' account: #arguments.account.getAccountID()#, data: #arguments.data#');
+	public void function afterInfotraxAccountCreateSuccess(any slatwallScope, any entity, any eventData){
+		dump("in 'afterInfotraxAccountCreateSuccess' account: #arguments.entity.getPrimaryIDValue()#");
+		
+		writelog(file='vibe',text="in 'afterInfotraxAccountCreateSuccess' accountID: #arguments.entity.getPrimaryIDValue()#");
 
 		try{
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				baseID          = arguments.account.getAccountID(),
-				baseObject      = "Account",
+				baseID          = arguments.entity.getPrimaryIDValue(),
+				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'push',
 				integrationID   = getIntegration().getIntegrationID()
 			);

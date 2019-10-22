@@ -49,7 +49,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+	public any function getSetting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 		}
@@ -58,8 +58,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	public string function appendVibeQueryParamsToURL(required string url, ){
 		// var consultant_id = getHibachiScope().getAccount().getVibeID();
-		var consultant_id = 12345;
-		var authentication_key = this.setting('apikey');
+		var authentication_key = getSetting('apikey');
+		var authentication_key = 'sacacacacacacacacaca;
 		var  dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
 		var string_to_hash = consultant_id & authentication_key & dateString;
 		var token = hash(string_to_hash); //default is MD5
@@ -70,7 +70,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		return argument.account.getJsonRepresentation();
+		return arguments.account.getJsonRepresentation();
 	}
 	
 	
@@ -78,11 +78,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * to be called from entity queue 
 	 * 
 	*/ 
-	public void function push(required any account, any data ={}){
-		
-		writelog(file='vibe',text="in 'VibeService::push' account: #arguments.account.getAccountID()#, data: #arguments.data#');
+	public void function push(required any entity, any data ={}){
+		dump("in 'VibeService::push' account: #arguments.entity.getAccountID()#");
+		dump(arguments.data);
+		writelog(file='vibe',text="in 'VibeService::push' account: #arguments.entity.getAccountID()#");
 
-		arguments.data.payload = convertSwAccountToVibeAccount(arguments.account);
+		arguments.data.payload = convertSwAccountToVibeAccount(arguments.entity);
 		
 		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
 	

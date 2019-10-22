@@ -74,23 +74,29 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
 
-    	httpRequest.addParam(type='header', name='auth-token', value=this.setting['apikey']);
+    	httpRequest.addParam(type='header', name='auth-token', value= setting['apikey']);
     	httpRequest.addParam(type='header', name='Content-Type', value='application/x-www-form-urlencoded');
     	
 		for(var key in requestData) {
 			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
 		}
 		
-		writelog(file='vibe',text='new post request START-->>');
-		writelog(file='vibe', text="request : ");
+		writelog(file='vibe', text='new post request START-->>');
 		writelog(file='vibe', text="#httpRequest#");
+		
+		dump('new post request START-->> request: ');
+		dump(httpRequest);
 		
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = deserializeJson(rawRequest.fileContent);
 		
 		writelog(file='vibe', text="response : ");
 		writelog(file='vibe', text="#response#");
-		writelog(file="vibe",text="new post request END<<--");
+		writelog(file="vibe", text="new post request END<<--");
+		
+		dump("Response :");
+		dump(response);
+		dump('new post request END<<--');
 		
 		if(structKeyExists(response, 'success')) {
 			return response; //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
@@ -115,7 +121,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	public void function pushData(required any account, struct data ={}) {
 		
 		//push to remote endpoint
-		var vibeResponse = postRequest(arguments.data);
+		var vibeResponse = postRequest(arguments.data.payload);
 		//update the account
 		arguments.account.setVibeUserID(vibeResponse.id);
 	}
