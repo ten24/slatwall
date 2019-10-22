@@ -945,6 +945,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountEmailAddress.setAccount(arguments.account);
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
 
+			//Setup username
+			arguments.account.setUsername( processObject.getUsername() );
+			
 			// Setup the authentication
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
