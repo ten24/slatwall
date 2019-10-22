@@ -23,8 +23,6 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-
-
     public totalPages:Array<number>;
     public pageTracker:number = 1;
 
