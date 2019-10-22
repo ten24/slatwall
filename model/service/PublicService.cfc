@@ -2184,7 +2184,12 @@ component  accessors="true" output="false"
     public any function getBaseProductCollectionList(){
         param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
         param name="arguments.data.priceGroupCode" default="2";
-        param name="arguments.data.upgradedPriceGroupCode" default="";
+        
+        if(arguments.data.priceGroupCode == 3 || arguments.data.priceGroupCode == 1){
+            var upgradedPriceGroupCode = 2;
+        } else{
+            var upgradedPriceGroupCode = 3;
+        }
 
         //TODO: Consider starting from skuPrice table for less joins
         productCollectionList = getProductService().getProductCollectionList();
@@ -2193,13 +2198,16 @@ component  accessors="true" output="false"
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.priceGroup.priceGroupCode');
+        productCollectionList.addDisplayProperty('urlTitle'); 
+
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('skus.skuPrices.currencyCode', arguments.data.currencyCode);
-        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode', '#arguments.data.priceGroupCode#,#arguments.data.upgradedPriceGroupCode#', "IN");
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode', arguments.data.currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode', '#arguments.data.priceGroupCode#,#upgradedPriceGroupCode#', "IN");
 
         return productCollectionList
     }   

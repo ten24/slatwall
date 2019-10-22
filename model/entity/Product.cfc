@@ -26,8 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-
-	- You also meet the terms and conditions of the license of each
+- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
 	  any part of the application
@@ -154,7 +153,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
+property name="productURL" persistent="false";
+    property name="defaultSkuImagePath" persistent="false";
 
+   
  property name="productHowVideoYoutubeURL" ormtype="string";
  property name="productHowVideoVimeoURL" ormtype="string";
  property name="productHowStepTitle1" ormtype="string";
@@ -1503,5 +1505,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public boolean function defaultSkuImagePath(){
+        this.getSku().getImagePath();
+    }//CUSTOM FUNCTIONS END
 }

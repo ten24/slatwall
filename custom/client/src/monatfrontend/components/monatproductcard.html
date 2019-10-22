@@ -34,20 +34,25 @@
         </figure>
       
         <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
-      
+         
+        <!-- TODO: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
+        <div ng-if="monatProductCard.type ==='productListing'" class="price">
+            <strong>{{monatProductCard.product.price | currency }} /</strong> <span class="vip-price">PV {{monatProductCard.product.personalVolume}}</span>
+        </div>
+        
         <!-- Market Partner Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
             <strong>{{monatProductCard.product.marketPartnerPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
             <br><strong>PV {{monatProductCard.product.personalVolume}}</strong>
         </div>
         
         <!-- VIP Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
             <strong>{{monatProductCard.product.vipPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
         </div>
         
         <!-- Retail Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
             <strong>{{monatProductCard.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductCard.product.vipPrice}}</span>
         </div>
         

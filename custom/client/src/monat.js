@@ -61483,7 +61483,7 @@ var swfAccountController = /** @class */ (function () {
             //this.getAccount();
         };
         this.getProductsByContent = function (arg) {
-            _this.$rootScope.hibachiScope.doAction("getProductsByContentID", { 'contentID': arg, 'priceGroupCode': 2 }).then(function (result) {
+            _this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", { 'contentID': arg, 'priceGroupCode': 2 }).then(function (result) {
                 console.log('Content results', result.productList);
             });
         };

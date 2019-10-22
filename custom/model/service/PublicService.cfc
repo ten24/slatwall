@@ -480,12 +480,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
-        if(arguments.data.priceGroupCode == 3 || arguments.data.priceGroupCode == 1){
-            arguments.data.upgradedPriceGroupCode = 2;
-        } else{
-            arguments.data.upgradedPriceGroupCode = 3;
-        }
-
         var productCollectionList = getBaseProductCollectionList(arguments.data);
         
         if(len(arguments.data.contentID)){
@@ -508,29 +502,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productList = [];
         var imageService = getService('ImageService');
         var productService = getProductService();
-        var index = 0;
+        var joinedCollection = [];
         
         for(record in arguments.records){
-           
-            
-            if(arrayLen(productList) && record.skuID == productList[index]){
-                record.skuID
-            }else{
-               index++; 
-            }
-            
-            
-            
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'large'),
-                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle)
+                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
+                'priceGroupCode': record.defaultSku_skuPrices_priceGroup_priceGroupCode,
+                'upgradedPricing': '',
+                'upgradedPriceGroupCode':''
             });
         }
-        return productList;
+        
+        for(record in productList){
+            if(arguments.priceGroupCode != record.priceGroupCode){
+                var index = arrayFind(productList, function(item) {return item.skuID == record.skuID && item.priceGroupCode != record.priceGroupCode});
+                if(index != 0){
+                    productList[index].upgradedPricing = record.price;
+                    productList[index].upgradedPriceGroupCode = record.priceGroupCode;  
+                    continue;
+                }
+
+            }else{
+                arrayAppend(joinedCollection, record);
+            }
+        }
+        
+        return joinedCollection;
     }
 
 }

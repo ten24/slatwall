@@ -57,12 +57,15 @@ class swfAccountController {
         //this.getAccount();
 	}
 	
+<<<<<<< Updated upstream
+=======
 	public getProductsByContent = (arg) =>{
-        this.$rootScope.hibachiScope.doAction("getProductsByContentID", {'contentID': arg, 'priceGroupCode': 2}).then(result => {
+        this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", {'contentID': arg, 'priceGroupCode': 2}).then(result => {
             console.log('Content results',result.productList);
         })
 	}
 	
+>>>>>>> Stashed changes
 	public getProductsByCategory = (arg) =>{
         this.$rootScope.hibachiScope.doAction("getProductsByCategoryOrContentID", {'categoryID': arg,'priceGroupCode': 2}).then(result => {
             console.log('category results', result.productList);
