@@ -61543,7 +61543,11 @@ var swfAccountController = /** @class */ (function () {
                 if (_this.urlParams.get('orderid')) {
                     _this.getOrderItemsByOrderID();
                 }
-                else if (window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/') {
+                else if (window.location.pathname == '/my-account/') {
+                    _this.getOrdersOnAccount(1);
+                    _this.getMostRecentFlexship();
+                }
+                else if (window.location.pathname == '/my-account/order-history/') {
                     _this.getOrdersOnAccount();
                 }
                 ;
@@ -61556,6 +61560,15 @@ var swfAccountController = /** @class */ (function () {
                 var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
                 _this.accountAge = _this.currentYear - accountCreatedYear;
             }
+        };
+        this.getMostRecentFlexship = function () {
+            _this.loading = true;
+            var accountID = _this.accountData.accountID;
+            return _this.publicService.doAction("getMostRecentOrderTemplate", { 'accountID': accountID }).then(function (result) {
+                _this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                console.log(_this.mostRecentFlexship);
+                _this.loading = false;
+            });
         };
         this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }

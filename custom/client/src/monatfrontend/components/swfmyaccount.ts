@@ -23,6 +23,7 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
+    public mostRecentFlexship:any;
 
 
     public totalPages:Array<number>;
@@ -67,7 +68,10 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
+            }else if(window.location.pathname == '/my-account/' ){
+                this.getOrdersOnAccount(1);
+                this.getMostRecentFlexship();
+            }else if(window.location.pathname == '/my-account/order-history/'){
                 this.getOrdersOnAccount();
             };
             
@@ -81,6 +85,16 @@ class swfAccountController {
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
+    }
+    
+    public getMostRecentFlexship = () => {
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+            this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+            console.log(this.mostRecentFlexship);
+            this.loading = false;
+        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {

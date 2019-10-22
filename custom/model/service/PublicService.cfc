@@ -482,7 +482,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
-        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
 
         var accountID = getHibachiScope().getAccount().getAccountID();
 		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
@@ -491,5 +491,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('ordertemplateType.typeID', arguments.data.ordertemplateTypeID);
 
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
+    }
+    
+    public any function getMostRecentOrderTemplate (required any data){
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
+
+		var flexshipCollectionList = getService('HibachiService').getOrderTemplateCollectionList();
+		flexshipCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		flexshipCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		flexshipCollectionList.setOrderBy('createdDateTime|DESC');
+		flexshipCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		flexshipCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		flexshipCollectionList.setPageRecordsShow(1);
+		collectionList = flexshipCollectionList.getPageRecords();
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
     }
 }
