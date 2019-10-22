@@ -61662,7 +61662,9 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setEditAddress = function (newAddress, address) {
             if (newAddress === void 0) { newAddress = true; }
-            _this.editAddress = address ? address : {};
+            debugger;
+            _this.editAddress = {};
+            _this.editAddress = address;
             _this.isNewAddress = newAddress;
         };
         this.setPrimaryAddress = function (addressID) {

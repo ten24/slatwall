@@ -196,8 +196,10 @@ class swfAccountController {
     }
     
     public setEditAddress = (newAddress = true, address) => {
-       this.editAddress = address ? address : {};
-       this.isNewAddress = newAddress;
+        debugger;
+        this.editAddress = {};
+        this.editAddress = address;
+        this.isNewAddress = newAddress;
     }
     
     public setPrimaryAddress = (addressID) => {
