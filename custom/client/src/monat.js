@@ -61672,7 +61672,11 @@ var swfAccountController = /** @class */ (function () {
             if (newAddress === void 0) { newAddress = true; }
             _this.editAddress = {};
             _this.editAddress = address ? address : {};
+            if (!newAddress) {
+                _this.getStateCodeOptions(address.address.countryCode);
+            }
             _this.isNewAddress = newAddress;
+            console.log(_this.editAddress);
         };
         this.setPrimaryAddress = function (addressID) {
             _this.loading = true;

@@ -200,7 +200,12 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
+        if(!newAddress){
+            this.getStateCodeOptions(address.address.countryCode)
+        }
         this.isNewAddress = newAddress;
+        console.log(this.editAddress);
+
     }
     
     public setPrimaryAddress = (addressID) => {
