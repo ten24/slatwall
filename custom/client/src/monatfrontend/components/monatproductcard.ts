@@ -18,7 +18,13 @@ class MonatProductCardController {
 		public orderTemplateService,
 		public $rootScope,
 		public monatService,
-	) {}
+        public observerService
+	) { 
+        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
+        this.observerService.attach(this.closeModals,"addItemSuccess"); 
+        this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
+
+	}
 
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
@@ -95,6 +101,11 @@ class MonatProductCardController {
 	public setWishlistName = (newName) => {
 		this.wishlistTemplateName = newName;
 	};
+	
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
+    }
 }
 
 class MonatProductCard {

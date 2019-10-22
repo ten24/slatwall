@@ -36,7 +36,9 @@ class swfAccountController {
         public observerService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
-        
+        this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
+        this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -196,9 +198,8 @@ class swfAccountController {
     }
     
     public setEditAddress = (newAddress = true, address) => {
-        debugger;
         this.editAddress = {};
-        this.editAddress = address;
+        this.editAddress = address ? address : {};
         this.isNewAddress = newAddress;
     }
     
@@ -207,6 +208,11 @@ class swfAccountController {
         return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
         });
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
     }
 }
 

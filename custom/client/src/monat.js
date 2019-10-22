@@ -61396,11 +61396,12 @@ var MonatProductCardController = /** @class */ (function () {
     // @ngInject
     function MonatProductCardController(
     //inject modal service
-    orderTemplateService, $rootScope, monatService) {
+    orderTemplateService, $rootScope, monatService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$rootScope = $rootScope;
         this.monatService = monatService;
+        this.observerService = observerService;
         this.pageRecordsShow = 5;
         this.currentPage = 1;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
@@ -61474,6 +61475,13 @@ var MonatProductCardController = /** @class */ (function () {
         this.setWishlistName = function (newName) {
             _this.wishlistTemplateName = newName;
         };
+        this.closeModals = function () {
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+        };
+        this.observerService.attach(this.closeModals, "createWishlistSuccess");
+        this.observerService.attach(this.closeModals, "addItemSuccess");
+        this.observerService.attach(this.closeModals, "deleteOrderTemplateItemSuccess");
     }
     return MonatProductCardController;
 }());
@@ -61662,9 +61670,8 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setEditAddress = function (newAddress, address) {
             if (newAddress === void 0) { newAddress = true; }
-            debugger;
             _this.editAddress = {};
-            _this.editAddress = address;
+            _this.editAddress = address ? address : {};
             _this.isNewAddress = newAddress;
         };
         this.setPrimaryAddress = function (addressID) {
@@ -61673,7 +61680,13 @@ var swfAccountController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
+        this.closeModals = function () {
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+        };
         this.observerService.attach(this.getAccount, "loginSuccess");
+        this.observerService.attach(this.closeModals, "addNewAccountAddressSuccess");
+        this.observerService.attach(this.closeModals, "addAccountPaymentMethodSuccess");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
@@ -61960,6 +61973,10 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.search = function () {
         };
+        this.closeModals = function () {
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+        };
         if (!this.pageRecordsShow) {
             this.pageRecordsShow = 6;
         }
@@ -61968,6 +61985,8 @@ var SWFWishlistController = /** @class */ (function () {
         }
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
         this.observerService.attach(this.successfulAlert, "OrderTemplateAddOrderTemplateItemSuccess");
+        this.observerService.attach(this.closeModals, "createWishlistSuccess");
+        this.observerService.attach(this.closeModals, "addItemSuccess");
     }
     return SWFWishlistController;
 }());
