@@ -32535,6 +32535,9 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 if (_this.object.$$isPersisted()) {
                     _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
                 }
+                else {
+                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Create', _this.object.className, _this.propertyIdentifier);
+                }
             }
         };
         this.onChange = function (result) {
@@ -59202,7 +59205,7 @@ var MaterialTextareaController = /** @class */ (function () {
             _this.$element[0].rows = '1';
             _this.$element[0].oninput = function (event) {
                 event.target.style.height = 'auto';
-                event.target.style.height = event.target.scrollHeight + 7 + 'px'; // 10px for padding bottom
+                event.target.style.height = event.target.scrollHeight + 7 + 'px';
             };
         };
     }
@@ -59573,7 +59576,6 @@ var EnrollmentMPController = /** @class */ (function () {
         this.addedItemToCart = false;
         this.lastAddedProductName = '';
         this.$onInit = function () {
-            _this.getCountryCodeOptions();
             _this.getStarterPacks();
             //this.getProductList()
             _this.observerService.attach(_this.getProductList, 'createSuccess');
@@ -59615,10 +59617,13 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitSponsor = function () {
             _this.loading = true;
-            if (_this.selectedMP) {
-                _this.monatService.submitSponsor(_this.selectedMP.accountID).then(function (data) {
+            var selectedSponsor = document.getElementById('selected-sponsor-id');
+            if (null !== selectedSponsor) {
+                var accountID = selectedSponsor.value;
+                _this.monatService.submitSponsor(accountID).then(function (data) {
                     if (data.successfulActions && data.successfulActions.length) {
                         _this.observerService.notify('onNext');
+                        _this.sponsorHasErrors = false;
                     }
                     else {
                         _this.sponsorHasErrors = true;
@@ -59640,40 +59645,6 @@ var EnrollmentMPController = /** @class */ (function () {
             var tmp = document.createElement('div');
             tmp.innerHTML = html;
             return tmp.textContent || tmp.innerText || '';
-        };
-        this.getMpResults = function (model) {
-            _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners' +
-                '&search=' +
-                model.mpSearchText +
-                '&currentPage=' +
-                1 +
-                '&accountSearchType=marketPartner' +
-                '&countryCode=' +
-                model.currentCountryCode +
-                '&stateCode=' +
-                model.currentStateCode);
-        };
-        this.getCountryCodeOptions = function () {
-            if (_this.countryCodeOptions.length) {
-                return _this.countryCodeOptions;
-            }
-            _this.publicService.getCountries().then(function (data) {
-                _this.countryCodeOptions = data.countryCodeOptions;
-            });
-        };
-        this.getStateCodeOptions = function (countryCode) {
-            _this.currentCountryCode = countryCode;
-            _this.publicService.getStates(countryCode).then(function (data) {
-                _this.stateCodeOptions = data.stateCodeOptions;
-            });
-        };
-        this.setOwnerAccount = function (ownerAccountID) {
-            //this.loading = true;
-            _this.publicService
-                .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
-                .then(function (result) {
-                //this.loading = false;
-            });
         };
         this.getProductList = function (pageNumber, direction, newPages) {
             if (pageNumber === void 0) { pageNumber = 1; }
@@ -61981,11 +61952,13 @@ var monatenrollmentvip_1 = __webpack_require__(611);
 var monatenrollmentstep_1 = __webpack_require__(610);
 var monat_order_items_1 = __webpack_require__(607);
 var material_textarea_1 = __webpack_require__(605);
+var observe_event_1 = __webpack_require__(860);
 var swfreviewlisting_1 = __webpack_require__(628);
 var swfwishlist_1 = __webpack_require__(629);
 var swfmyaccount_1 = __webpack_require__(627);
 var monatproductcard_1 = __webpack_require__(626);
 var monatenrollmentmp_1 = __webpack_require__(609);
+var sponsor_search_selector_1 = __webpack_require__(861);
 var monat_minicart_1 = __webpack_require__(606);
 //services
 var monatservice_1 = __webpack_require__(631);
@@ -62015,6 +61988,8 @@ var monatfrontendmodule = angular
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
     .directive('monatOrderItems', monat_order_items_1.MonatOrderItems.Factory())
     .directive('materialTextarea', material_textarea_1.MaterialTextarea.Factory())
+    .directive('observeEvent', observe_event_1.ObserveEvent.Factory())
+    .directive('sponsorSearchSelector', sponsor_search_selector_1.SponsorSearchSelector.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -89763,6 +89738,139 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 860 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ObserveEventController = /** @class */ (function () {
+    // @ngInject
+    function ObserveEventController(observerService, $timeout) {
+        var _this = this;
+        this.observerService = observerService;
+        this.$timeout = $timeout;
+        this.eventCalled = false;
+        this.$onInit = function () {
+            _this.observerService.attach(_this.handleEventCalled, _this.event);
+        };
+        this.handleEventCalled = function () {
+            _this.eventCalled = true;
+            if (angular.isDefined(_this.timeout)) {
+                _this.$timeout(function () {
+                    _this.eventCalled = false;
+                }, +_this.timeout);
+            }
+        };
+    }
+    return ObserveEventController;
+}());
+var ObserveEvent = /** @class */ (function () {
+    function ObserveEvent() {
+        this.restrict = 'A';
+        this.scope = true;
+        this.bindToController = {
+            event: '@',
+            timeout: '@?'
+        };
+        this.controller = ObserveEventController;
+        this.controllerAs = 'observeEvent';
+    }
+    ObserveEvent.Factory = function () {
+        var _this = this;
+        var directive = function () { return new _this(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return ObserveEvent;
+}());
+exports.ObserveEvent = ObserveEvent;
+
+
+/***/ }),
+/* 861 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SponsorSearchSelectorController = /** @class */ (function () {
+    // @ngInject
+    function SponsorSearchSelectorController(publicService) {
+        var _this = this;
+        this.publicService = publicService;
+        this.loadingResults = false;
+        this.currentPage = 1;
+        // Form fields for the sponsor search.
+        this.form = {
+            text: '',
+            countryCode: null,
+            state: '',
+        };
+        this.$onInit = function () {
+            // Set the default country code based on the current site.
+            _this.form.countryCode = _this.siteCountryCode;
+            _this.getCountryCodeOptions();
+            _this.getStateCodeOptions(_this.form.countryCode);
+            _this.getSearchResults();
+        };
+        this.getCountryCodeOptions = function () {
+            // We dont't need to get country code options more than once.
+            if (angular.isDefined(_this.countryCodeOptions)) {
+                return _this.countryCodeOptions;
+            }
+            _this.publicService.getCountries().then(function (data) {
+                _this.countryCodeOptions = data.countryCodeOptions;
+            });
+        };
+        this.getStateCodeOptions = function (countryCode) {
+            // Reset the state code.
+            _this.form.stateCode = '';
+            _this.publicService.getStates(countryCode).then(function (data) {
+                _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
+        this.getSearchResults = function () {
+            _this.loadingResults = true;
+            _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners'
+                + ("&search=" + _this.form.text)
+                + ("&currentPage=" + _this.currentPage)
+                + ("&accountSearchType=" + _this.accountSearchType)
+                + ("&countryCode=" + _this.form.countryCode)
+                + ("&stateCode=" + _this.form.stateCode)).then(function (data) {
+                _this.loadingResults = false;
+                _this.searchResults = data.pageRecords;
+            });
+        };
+    }
+    return SponsorSearchSelectorController;
+}());
+var SponsorSearchSelector = /** @class */ (function () {
+    function SponsorSearchSelector(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'E';
+        this.scope = {};
+        this.bindToController = {
+            accountSearchType: '@',
+            siteCountryCode: '@',
+            title: '@',
+        };
+        this.controller = SponsorSearchSelectorController;
+        this.controllerAs = 'sponsorSearchSelector';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/sponsor-search-selector.html';
+    }
+    SponsorSearchSelector.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return SponsorSearchSelector;
+}());
+exports.SponsorSearchSelector = SponsorSearchSelector;
 
 
 /***/ })
