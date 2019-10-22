@@ -279,7 +279,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="originalRMANumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="originalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1995,6 +1996,13 @@ public numeric function getPersonalVolumeSubtotal(){
     	    }
 	    }
 	   
+	}
+	
+	public boolean function hasProductPackOrderItem(){
+        var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
+        orderItemCollectionList.addFilter('orderID',getOrderID());
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack');
+        return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	//CUSTOM FUNCTIONS END
 }
