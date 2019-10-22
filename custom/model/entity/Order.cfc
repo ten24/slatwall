@@ -232,7 +232,7 @@ component {
 	
 	public boolean function hasProductPackOrderItem(){
         var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
-        orderItemCollectionList.addFilter('orderID',getOrderID());
+        orderItemCollectionList.addFilter('order.orderID',getOrderID());
         orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack');
         return orderItemCollectionList.getRecordsCount() > 0;
 	}
