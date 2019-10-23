@@ -2199,7 +2199,6 @@ component  accessors="true" output="false"
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.priceGroup.priceGroupCode');
-        productCollectionList.addDisplayProperty('urlTitle'); 
 
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
