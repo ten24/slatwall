@@ -68,23 +68,21 @@ Notes:
 				data-multiselect-mode="false"
 				data-validate-required="#attributes.required#"
 				data-order-by-list="firstName|ASC" >
-			
-				<div class="container">
 					<div class="row">
 						<span class="adminIcon col-xs-2 col-sm-1 " sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon" data-right-content-property-identifier="company"></span>
-						<div class="col-xs-10">
+						<div class="col-xs-10 col-sm-offset-1">
 							<p class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName"></p>
 							<p class="company" sw-typeahead-search-line-item data-property-identifier="company"></p>
 							<p class="account-number">
 								<span sw-typeahead-search-line-item bind-html="true" data-property-identifier="accountNumber"> ##</span>
 							</p>
 						</div>
+						
 						<!--<div class="col">-->
 						<!--	<p class="emailAddress" sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress"></p>-->
 						<!--	<p class="phoneNumber" sw-typeahead-search-line-item data-property-identifier="primaryPhoneNumber_phoneNumber"></p>-->
 						<!--</div>-->
 					</div>
-				</div>
 			</sw-typeahead-input-field>
 	</cfoutput>
 </cfif> 
