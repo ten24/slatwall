@@ -1,6 +1,4 @@
 class MaterialTextareaController {
-	public textarea;
-	public rows;
 
 	// @ngInject
 	constructor(

@@ -114,10 +114,10 @@
                         </li>
                         
                         <div class="text-center">
-                            <a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="monatProductCard.addItemAndCreateWishlist(createWishList.orderTemplateName, monatProductCard.product.skuID); " data-dismiss="modal" class="btn text-white bg-primary">
+                            <a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="monatProductCard.addItemAndCreateWishlist(createWishList.orderTemplateName, monatProductCard.product.skuID); "  class="btn text-white bg-primary">
                                 Save Changes
                             </a>
-                            <a ng-if="createWishList.orderTemplateID" data-dismiss="modal" ng-click="monatProductCard.addWishlistItem(monatProductCard.product.skuID)" class="btn text-white bg-primary">
+                            <a ng-if="createWishList.orderTemplateID" ng-click="monatProductCard.addWishlistItem(monatProductCard.product.skuID)" class="btn text-white bg-primary">
                                 Save Changes
                             </a>
                         </div>
@@ -165,7 +165,6 @@
 						/>
 						<button
 							class="btn bg-primary w-100"
-							data-dismiss="modal"
 							ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
 							sw-rbKey="'define.yes'"
 						></button>

@@ -33,6 +33,9 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	public string function getSimpleRepresentation(required any account){
 		var accountType = arguments.account.getAccountType();
+		if(isNull(accountType)){
+			accountType = '';
+		}
 		var typeReps = {
 			'marketPartner':'MP',
 			'vip':'VIP',
