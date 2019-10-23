@@ -31,52 +31,56 @@ class swfAccountController {
     
     // @ngInject
     constructor(
-        public $rootScope,
+        public publicService,
         public $scope,
         public observerService
     ){
+        this.observerService.attach(this.getAccount,"loginSuccess"); 
+        
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-
+        
         do {
             this.yearOptions.push(manipulateableYear++)
         }
         while(this.yearOptions.length <= 9);
-        
-        this.observerService.attach(this.getAccount,"loginSuccess"); 
-        
     }
-    // Determine how many years old the account is
+    
+	public $onInit = () =>{
+        this.getAccount();
+	}
+
+    public getAccount = () => {
+        this.loading = true;
+        this.accountData = {};
+        this.accountPaymentMethods = [];
+         
+        //Do this when then account data returns
+        
+        this.publicService.getAccount(true).then((response)=>{
+            
+            this.accountData = response;
+            this.checkAndApplyAccountAge();
+            this.userIsLoggedIn = true;
+            this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            
+            if(this.urlParams.get('orderid')){
+                this.getOrderItemsByOrderID();
+            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
+                this.getOrdersOnAccount();
+            };
+            
+            this.loading = false;
+        });
+    }
+    
+    // Determine how many years old the account owner is
     public checkAndApplyAccountAge = () => {
         if(this.accountData && this.accountData.ownerAccount){
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
-    }
-	public $onInit = () =>{
-        this.getAccount();
-	}
-	
-    public getAccount = () => {
-        this.loading = true;
-        this.accountData = {};
-        this.accountPaymentMethods = [];
-        const account = this.$rootScope.hibachiScope.getAccount();
-        //Do this when then account data returns
-        //Optimize when get orders on account is called, only needed on account overview and orders overview
-        account.then((response)=>{
-            this.accountData = response;
-            this.checkAndApplyAccountAge();
-            this.getOrdersOnAccount();
-            this.userIsLoggedIn = true;
-            this.accountPaymentMethods = this.accountData.accountPaymentMethods;
-            if(this.urlParams.get('orderid')){
-                this.getOrderItemsByOrderID();
-            };
-            
-            this.loading = false;
-        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
@@ -98,9 +102,7 @@ class swfAccountController {
             }
         }
 
-        
-        
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
+        return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             const holdingArray = [];
@@ -121,7 +123,7 @@ class swfAccountController {
         this.loading = true;
         
         const accountID = this.accountData.accountID
-        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
             });
@@ -135,7 +137,7 @@ class swfAccountController {
             return this.countryCodeOptions;
         }
 
-        return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
+        return this.publicService.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
         });
@@ -149,7 +151,7 @@ class swfAccountController {
         }
         
         this.cachedCountryCode = countryCode;
-        return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
+        return this.publicService.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
             //Resets the state code options on each click so they dont add up incorrectly
             if(this.stateCodeOptions.length){
                 this.stateCodeOptions = [];
@@ -164,7 +166,7 @@ class swfAccountController {
     
     public setPrimaryPaymentMethod = (methodID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
+        return this.publicService.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
             this.loading = false;
         });
     }
@@ -186,14 +188,12 @@ class swfAccountController {
     
     public deletePaymentMethod = (paymentMethodID, index) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
+        return this.publicService.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
             this.accountPaymentMethods.splice(index, 1);
             this.loading = false;
             return this.accountPaymentMethods
         });
     }
-    
-
     
     public setEditAddress = (newAddress = true, address) => {
        this.editAddress = address ? address : {};
@@ -202,7 +202,7 @@ class swfAccountController {
     
     public setPrimaryAddress = (addressID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
+        return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
         });
     }
