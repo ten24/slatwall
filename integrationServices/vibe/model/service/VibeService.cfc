@@ -49,22 +49,28 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	
-	public any function getSetting(required string settingName, array filterEntities=[], formatValue=false) {
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 		}
 		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
 	
-	public string function appendVibeQueryParamsToURL(required string url, ){
-		// var consultant_id = getHibachiScope().getAccount().getVibeID();
-		var authentication_key = getSetting('apikey');
-		var authentication_key = 'sacacacacacacacacaca;
-		var  dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
+	public string function appendVibeQueryParamsToURL(required string urlString, required any user ){
+		var consultant_id = arguments.user.getVibeUserID();
+		var authentication_key = this.setting('apikey');
+		var dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
+		
 		var string_to_hash = consultant_id & authentication_key & dateString;
 		var token = hash(string_to_hash); //default is MD5
 		
-		return arguments.url &= "&token=#token#&consultant_id=#consultant_id#"
+		if( Find("?", arguments.urlString) ) {
+			arguments.urlString &= "&token=#token#&consultant_id=#consultant_id#"
+		} else{
+			arguments.urlString &= "?token=#token#&consultant_id=#consultant_id#"
+		}
+		
+		return arguments.urlString;
 	}
 	
 
@@ -83,7 +89,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		dump(arguments.data);
 		writelog(file='vibe',text="in 'VibeService::push' account: #arguments.entity.getAccountID()#");
 
-		arguments.data.payload = convertSwAccountToVibeAccount(arguments.entity);
+		arguments.data.payload = DeserializeJson( this.convertSwAccountToVibeAccount(arguments.entity) );
 		
 		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
 	

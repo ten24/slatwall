@@ -62,8 +62,6 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 		
 		var settings = {
 			apikey       = { fieldType = 'text' },
-			username     = { fieldType = 'text' },
-			password     = { fieldType = 'password' },
 			liveModeFlag = { fieldType = 'yesno', defaultValue = '0' },
 			liveURL      = { fieldType = 'text' },
 			testURL      = { fieldType = 'text', defaultValue = 'https://dev-monat-vibe.myvoffice.com/' },

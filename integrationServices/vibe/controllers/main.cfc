@@ -1,7 +1,8 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
-    property name="vibeService";
-    property name="accountService";
     property name="publicService";
+    property name="viBeService";
+    property name="accountService";
+    property name="hibachiEventService";
 
    	property name="fw";
 
@@ -18,7 +19,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public any function init(required any fw){
 		setFW(arguments.fw);
-		setVibeService(getService('vibeServicee'));
 		return this;
 	}
 
@@ -41,7 +41,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				arguments.rc.redirectURL = arguments.rc.sRedirectURL;
 			}
 			
-			arguments.rc.redirectURL = getVibeService().appendVibeQueryParamsToURL(arguments.rc.redirectURL);
+			arguments.rc.redirectURL = getVibeService().appendVibeQueryParamsToURL(arguments.rc.redirectURL, getHibachiScope().getAccount());
 			
 		} else if(structKeyExists(arguments.rc, "fRedirectURL")) {
 			arguments.rc.redirectURL = arguments.rc.fRedirectURL;
@@ -58,13 +58,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     //TODO remove for development-testing only
 	public void function announceTestEvent(required struct rc) {
 		var account = getAccountService().getAccount(arguments.rc.accountID);
-    	getService('HibachiEventService').announceEvent( 
+		
+		
+    	getHibachiEventService().announceEvent( 
     		eventName = "afterInfotraxAccountCreateSuccess", 
     		eventData = {
-	    		'entity' = account
-    		}
-    	);
+    			'entity' = account 
+	    		} 
+    		);
+    	
     	getVibeService().push(account);
+    	
     	dump(account.getAccountID()); abort;
     	// arguments.rc['redirectURL'] = "http://monat:8906/Slatwall/index.cfm?slatAction=vibe:main.dumpRequest&eventAnnouncedFor=#arguments.rc.accountID#";
 	}
