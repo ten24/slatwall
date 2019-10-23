@@ -518,7 +518,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             });
         }
         
-        for(record in productList){
+        for(var record in productList){
             if(arguments.priceGroupCode != record.priceGroupCode){
                 var index = arrayFind(productList, function(item) {return arguments.item.skuID == record.skuID && arguments.item.priceGroupCode != record.priceGroupCode});
                 if(index != 0){
