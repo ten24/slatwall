@@ -497,9 +497,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
         param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
         
-        var daysToEditFlexship = getService('SettingService').getSettingValue('globalDaysAllowedToEditNextFlexship')
+        var daysToEditFlexship = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
         
-		var orderTemplateCollectionList = getService('HibachiService').getOrderTemplateCollectionList();
+		var orderTemplateCollectionList = getService('OrderService').getOrderTemplateCollectionList();
 		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
 		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
 		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');

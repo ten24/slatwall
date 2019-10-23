@@ -88,6 +88,5 @@ Notes:
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
         <swa:SlatwallSetting settingName="globalHibachiCacheName" />
-        <swa:SlatwallSetting settingName="globalDaysAllowedToEditNextFlexship" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

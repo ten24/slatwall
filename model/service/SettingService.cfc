@@ -289,7 +289,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
-			globalDaysAllowedToEditNextFlexship = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}},
+
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
