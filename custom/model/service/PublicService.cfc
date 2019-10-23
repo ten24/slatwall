@@ -520,7 +520,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         for(record in productList){
             if(arguments.priceGroupCode != record.priceGroupCode){
-                var index = arrayFind(productList, function(item) {return item.skuID == record.skuID && item.priceGroupCode != record.priceGroupCode});
+                var index = arrayFind(productList, function(item) {return arguments.item.skuID == record.skuID && arguments.item.priceGroupCode != record.priceGroupCode});
                 if(index != 0){
                     productList[index].upgradedPricing = record.price;
                     productList[index].upgradedPriceGroupCode = record.priceGroupCode;  
