@@ -770,9 +770,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Login the account
 		if (!arguments.processObject.hasErrors()) {
-			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
-			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+			var activeFlag = accountAuthentication.getAccount().getActiveFlag();
+			activeFlag = !isNull(activeFlag) && len(trim(activeFlag)); // loose white-spce or null
+			
+			if( activeFlag ){ //if the account is active
+				getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+			} else {
+				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+			}
 		// Login was invalid
 		} else {
 			var invalidLoginData = {};
