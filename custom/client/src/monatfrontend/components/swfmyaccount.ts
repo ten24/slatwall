@@ -206,6 +206,13 @@ class swfAccountController {
             this.loading = false;
         });
     }
+    
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
 }
 
 class SWFAccount  {
