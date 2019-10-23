@@ -2,8 +2,8 @@
    <div class="pr-box">
     <!-- Product Card -->
     
-        <!-- If the product is not being viewed as a wishlist item, show the button to launch add to wishlist modal -->
- 	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
+        <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
+ 	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' && monatProductCard.type!='VIPenrollment' " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
@@ -68,8 +68,8 @@
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship'" >Add To Cart</span>
-             <span ng-if="monatProductCard.type == 'flexship'">Add To Flexship</span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" >Add To Cart</span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
          </button>
    </div>
    
