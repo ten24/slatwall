@@ -67,8 +67,8 @@ component {
 	 	
 	 	var orderItems = getOrderItems();
 	 	
-	 	//If this order is placed and is a salesorder
-	 	if (!isNull(getOrderNumber()) && getTypeCode() == "otSalesOrder"){
+	 	//If this order is placed
+	 	if (!isNull(getOrderNumber())){
 		 	if (!isNull(orderItems) && arrayLen(orderItems)){
 			 	for (var orderitem in orderItems){
 			 		var hasPrice = false;
@@ -78,12 +78,12 @@ component {
 			 		
 			 			for (var skuBundle in bundledOrderItems){
 			 				//If this doesn't already exist, then create it.
-			 				var foundInventoryItems = getService("OrderService").getBundledOrderItemCollectionList();
-			 				foundInventoryItems.addFilter("order.orderID", this.getOrderID());
-			 				foundInventoryItems.addFilter("orderItem.orderItemID", orderItem.getOrderItemID());
-			 				foundInventoryItems.addFilter("sku.skuID", skuBundle.getBundledSku().getSkuID());
-			 				foundInventoryItems.addFilter("quantity", skuBundle.getBundledQuantity() * orderItem.getQuantity());
-			 				var foundItem = foundInventoryItems.getRecords();
+			 				var foundBundledItem = getService("OrderService").getBundledOrderItemCollectionList();
+			 				foundBundledItem.addFilter("order.orderID", this.getOrderID());
+			 				foundBundledItem.addFilter("orderItem.orderItemID", orderItem.getOrderItemID());
+			 				foundBundledItem.addFilter("sku.skuID", skuBundle.getBundledSku().getSkuID());
+			 				foundBundledItem.addFilter("quantity", skuBundle.getBundledQuantity() * orderItem.getQuantity());
+			 				var foundItem = foundBundledItem.getRecords();
 			 				
 			 				if (!arrayLen(foundItem)){
 				 				var bundledOrderItem = getService("OrderService").newBundledOrderItem();
@@ -108,7 +108,8 @@ component {
 		 	
 	 	getService("OrderService").saveOrder(this);
 	 	
-	 }
+	}
+	
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }

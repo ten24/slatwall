@@ -49,7 +49,7 @@ Notes:
 component entityname="SlatwallBundledOrderItem" table="SwBundledOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="OrderService" {
 
 	// Persistent Properties
-	property name="BundledOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="bundledOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="price" ormtype="big_decimal" hb_formatType="currency";
