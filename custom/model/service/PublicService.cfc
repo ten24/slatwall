@@ -504,7 +504,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productService = getProductService();
         var joinedCollection = [];
         
-        for(record in arguments.records){
+        for(var record in arguments.records){
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
