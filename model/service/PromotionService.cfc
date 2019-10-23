@@ -823,28 +823,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(listFindNoCase("merchandise,subscription,contentAccess", qualifier.getQualifierType())) {
 				
 				// Loop over the orderItems and see how many times this item has been qualified
-				for(var o=1; o<=arrayLen(arguments.order.getOrderItems()); o++) {
+				var orderItemCollectionList = arguments.order.getOrderItemsCollectionList();
+				orderItemCollectionList.setDisplayProperties('quantity,price,sku.skuID,sku.product.productID,sku.product.productType.productTypeID,sku.product.brand.brandID');
+				var orderItems = orderItemCollectionList.getRecords(formatRecords=false);
+				var numRecords = arrayLen(orderItems);
+				
+				for(var i=1; i<=numRecords; i++) {
 
 					// Setup a local var for this orderItem
-					var thisOrderItem = arguments.order.getOrderItems()[o];
-					var orderItemQualifierCount = thisOrderItem.getQuantity();
+					
+					var thisOrderItem = orderItems[i];
+					var orderItemQualifierCount = thisOrderItem['quantity'];
 
 					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
 					if(
 						!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)
 						||
 						// Then check the match type of based on the current orderitem, and the orderItem we are getting a count for
-						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem.getSku().getSkuID() != arguments.orderItem.getSku().getSkuID() )
+						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem['sku_skuID'] != arguments.orderItem.getSku().getSkuID() )
 						||
-						( qualifier.getRewardMatchingType() == "product" && thisOrderItem.getSku().getProduct().getProductID() != arguments.orderItem.getSku().getProduct().getProductID() )
+						( qualifier.getRewardMatchingType() == "product" && thisOrderItem['sku_product_productID'] != arguments.orderItem.getSku().getProduct().getProductID() )
 						||
-						( qualifier.getRewardMatchingType() == "productType" && thisOrderItem.getSku().getProduct().getProductType().getProductTypeID() != arguments.orderItem.getSku().getProduct().getProductType().getProductTypeID() )
+						( qualifier.getRewardMatchingType() == "productType" && thisOrderItem['sku_product_productType_productTypeID'] != arguments.orderItem.getSku().getProduct().getProductType().getProductTypeID() )
 						||
-						( qualifier.getRewardMatchingType() == "brand" && isNull(thisOrderItem.getSku().getProduct().getBrand()))
+						( qualifier.getRewardMatchingType() == "brand" && isNull(thisOrderItem['sku_product_brand_brandID']))
 						||
 						( qualifier.getRewardMatchingType() == "brand" && isNull(arguments.orderItem.getSku().getProduct().getBrand()))
 						||
-						( qualifier.getRewardMatchingType() == "brand" && thisOrderItem.getSku().getProduct().getBrand().getBrandID() != arguments.orderItem.getSku().getProduct().getBrand().getBrandID() )
+						( qualifier.getRewardMatchingType() == "brand" && thisOrderItem['sku_product_brand_brandID'] != arguments.orderItem.getSku().getProduct().getBrand().getBrandID() )
 						) {
 
 						orderItemQualifierCount = 0;
@@ -879,11 +885,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
-		return (qualifier.hasOrderItemSku(arguments.orderItem) 
+		if(!isObject(arguments.orderItem)){
+			var qualifierHasSku = qualifier.hasSkuBySkuID(arguments.orderItem['sku_skuID']);
+			var price = orderItem['price'];
+		}else{
+			var qualifierHasSku = qualifier.hasOrderItemSku(arguments.orderItem);
+			var price = orderItem.getPrice();
+		}
+		return (
+			qualifierHasSku 
 			&&
-			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= arguments.orderItem.getPrice() )
+			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= price )
 			&&
-			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= arguments.orderItem.getPrice() )
+			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= price )
 		);
 		
 	}
