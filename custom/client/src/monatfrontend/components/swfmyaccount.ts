@@ -213,6 +213,13 @@ class swfAccountController {
         });
     }
     
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
+    
     public closeModals = () =>{
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
