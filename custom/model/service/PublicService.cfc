@@ -375,6 +375,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return account;
     }
     
+
+    public any function createVIPEnrollment(required struct data){
+        var account = super.createAccount(arguments.data);
+        if(!account.hasErrors()){
+            account.setAccountType('VIP');
+            account.setActiveFlag(false);
+            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('3');
+            if(!isNull(priceGroup)){
+                account.addPriceGroup(priceGroup);
+            }
+            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
+            if(!isNull(accountStatusType)){
+                account.setAccountStatusType(accountStatusType);
+            }
+        }
+        return account;
+    }
+    
     private any function setupEnrollmentInfo(required any account, required string accountType){
         var accountTypeInfo = {
             'customer':{
@@ -402,6 +420,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
         return arguments.account;
+
     }
     
     public any function updateAccount(required struct data){
