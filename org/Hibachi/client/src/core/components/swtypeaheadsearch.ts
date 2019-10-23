@@ -284,9 +284,26 @@ class SWTypeaheadSearchController {
         }, 500);
     };
 
-   public updateSelections = () =>{
+    public updateSelections = () =>{
        this.typeaheadService.updateSelections(this.typeaheadDataKey);
-   }
+    }
+    
+    public updateCollectionConfigWithSearchableColumns = () => {
+        var newColumns = this.collectionConfig.columns
+                            .map((column)  => {
+                                //try to find that(column with same prop identifier) in our searchable columns
+                                let tmpColumn = this.searchableColumns.find( (searchableColum) => {
+                                                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier']; 
+                                                });
+                                if(tmpColumn) {
+                                    return angular.copy(tmpColumn); 
+                                }
+                                return angular.copy(column);
+                            });
+                            
+        this.collectionConfig.loadColumns(newColumns);
+
+    }
 
     public updateSearchableProperties = (column) =>{
         if(angular.isString(column) && column == 'all'){
@@ -299,7 +316,13 @@ class SWTypeaheadSearchController {
             column.isSearchable = true; 
             this.searchableColumnSelection = column.title; 
         }
-        //probably need to refetch the collection
+
+        this.updateCollectionConfigWithSearchableColumns();
+        this.toggleDropdown();
+        
+        if(this.searchText && this.searchText.length){
+            this.search(this.searchText);
+        }
     }
 
     public addOrRemoveItem = (item)=>{
