@@ -23,8 +23,6 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-
-
     public totalPages:Array<number>;
     public pageTracker:number = 1;
 
@@ -36,7 +34,9 @@ class swfAccountController {
         public observerService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
-        
+        this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
+        this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -196,8 +196,14 @@ class swfAccountController {
     }
     
     public setEditAddress = (newAddress = true, address) => {
-       this.editAddress = address ? address : {};
-       this.isNewAddress = newAddress;
+        this.editAddress = {};
+        this.editAddress = address ? address : {};
+        if(!newAddress){
+            this.getStateCodeOptions(address.address.countryCode)
+        }
+        this.isNewAddress = newAddress;
+        console.log(this.editAddress);
+
     }
     
     public setPrimaryAddress = (addressID) => {
@@ -205,6 +211,18 @@ class swfAccountController {
         return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
         });
+    }
+    
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
     }
 }
 
