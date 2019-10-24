@@ -38,8 +38,6 @@ component {
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
@@ -53,6 +51,8 @@ component {
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
     
+    property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true";
+	
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
             variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
