@@ -61,55 +61,7 @@ component {
     property name="lastSyncedDateTime" ormtype="timestamp";
     
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-    property name="calculatedBundledOrderItems" singularname="bundledOrderItem" fieldtype="one-to-many" fkcolumn="orderID" cfc="BundledOrderItem";
-	
-	public any function getBundledOrderItems(){
-	 	
-	 	var orderItems = getOrderItems();
-	 	
-	 	//If this order is placed
-	 	if (!isNull(getOrderNumber())){
-		 	if (!isNull(orderItems) && arrayLen(orderItems)){
-			 	for (var orderitem in orderItems){
-			 		var hasPrice = false;
-			 		var bundledOrderItems = orderItem.getSku().getBundledOrderItems();
-			 		
-			 		if (!isNull(BundledOrderItems) && arrayLen(bundledOrderItems)){
-			 		
-			 			for (var skuBundle in bundledOrderItems){
-			 				//If this doesn't already exist, then create it.
-			 				var foundBundledItem = getService("OrderService").getBundledOrderItemCollectionList();
-			 				foundBundledItem.addFilter("order.orderID", this.getOrderID());
-			 				foundBundledItem.addFilter("orderItem.orderItemID", orderItem.getOrderItemID());
-			 				foundBundledItem.addFilter("sku.skuID", skuBundle.getBundledSku().getSkuID());
-			 				foundBundledItem.addFilter("quantity", skuBundle.getBundledQuantity() * orderItem.getQuantity());
-			 				var foundItem = foundBundledItem.getRecords();
-			 				
-			 				if (!arrayLen(foundItem)){
-				 				var bundledOrderItem = getService("OrderService").newBundledOrderItem();
-				 				if (!hasPrice){
-				 					bundledOrderItem.setPrice(orderItem.getCalculatedExtendedPrice());
-				 					hasPrice = true;
-				 				}else{
-				 					bundledOrderItem.setPrice(0);
-				 				}
-				 				bundledOrderItem.setSku(skuBundle.getBundledSku());
-				 				bundledOrderItem.setQuantity(skuBundle.getBundledQuantity() * orderItem.getQuantity());
-				 				bundledOrderItem.setOrder(this);
-				 				bundledOrderItem.setOrderItem(orderItem);
-				 				getService("OrderService").saveBundledOrderItem(bundledOrderItem);
-				 				
-			 				}
-			 			}
-			 		}
-			 	}
-			}
-	 	}
-		 	
-	 	getService("OrderService").saveOrder(this);
-	 	
-	}
-	
+    
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
