@@ -4414,10 +4414,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
 
 				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
-					arguments.order.clearHibachiErrors(); 
-					orderPayment.clearHibachiErrors();
-					getHibachiScope().setORMHasErrors(false);	
- 
+					if(!arguments.order.hasErrors()){
+						arguments.order.addErrors(orderPayment.getErrors());
+						arguments.orderPayment.clearHibachiErrors();
+					}
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
 					arguments.order.setPaymentLastRetryDateTime(now());
