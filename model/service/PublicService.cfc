@@ -2185,12 +2185,6 @@ component  accessors="true" output="false"
         param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
         param name="arguments.data.priceGroupCode" default="2";
         
-        if(arguments.data.priceGroupCode == 3 || arguments.data.priceGroupCode == 1){
-            var upgradedPriceGroupCode = 2;
-        } else{
-            var upgradedPriceGroupCode = 3;
-        }
-
         //TODO: Consider starting from skuPrice table for less joins
         productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addDisplayProperties('productName');
@@ -2198,6 +2192,7 @@ component  accessors="true" output="false"
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
+        productCollectionList.addDisplayProperty('defaultSku.imageFile');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.priceGroup.priceGroupCode');
 
         productCollectionList.addFilter('activeFlag',1);
@@ -2205,8 +2200,8 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode', arguments.data.currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode', '#arguments.data.priceGroupCode#,#upgradedPriceGroupCode#', "IN");
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
 
         return productCollectionList
     }   

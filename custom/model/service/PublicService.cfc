@@ -496,6 +496,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="";
+        param name="arguments.data.currencyCode" default="USD";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
@@ -507,50 +508,60 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         else if(len(arguments.data.categoryID)){
             productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
         }
-        else{
-            return;
-        }
 
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-        var nonPersistentRecords = getNewCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), arguments.data.priceGroupCode);
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), arguments.data.priceGroupCode,arguments.data.currencyCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
     }
     
-    public any function getNewCommonNonPersistentProductProperties(required array records, required string priceGroupCode){
-        var productList = [];
-        var imageService = getService('ImageService');
-        var productService = getProductService();
-        var joinedCollection = [];
+    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
         
+        var productService = getProductService();
+        var productList = [];
+        var skuIDsToQuery = [];
+        var index = 1;
+        var upgradedPriceGroupCode;
+        var upgradedPriceGroupID;
+        var skuCurrencyCode = "'#arguments.currencyCode#'"; //double wrap strings for sql query
+        
+        
+        if(arguments.priceGroupCode == 3 || arguments.priceGroupCode == 1){
+            upgradedPriceGroupCode = 2;
+            upgradedPriceGroupID = "'c540802645814b36b42d012c5d113745'";
+        } else{
+            upgradedPriceGroupCode = 3;
+            upgradedPriceGroupID = "'84a7a5c187b04705a614eb1b074959d4'";
+        }
+        
+        //Looping over the collection list and using helper methods to get non persistent properties
         for(var record in arguments.records){
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
-                'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'large'),
+                'skuImagePath': record.defaultSku_imageFile,
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': record.defaultSku_skuPrices_priceGroup_priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode':''
             });
+            //add skuID's to skuID array for query below, wrap in '' for string formatting
+            arrayAppend(skuIDsToQuery, "'#record.defaultSku_skuID#'");
         }
         
-        for(var record in productList){
-            if(arguments.priceGroupCode != record.priceGroupCode){
-                var index = arrayFind(productList, function(item) {return arguments.item.skuID == record.skuID && arguments.item.priceGroupCode != record.priceGroupCode});
-                if(index != 0){
-                    productList[index].upgradedPricing = record.price;
-                    productList[index].upgradedPriceGroupCode = record.priceGroupCode;  
-                    continue;
-                }
-            }else{
-                arrayAppend(joinedCollection, record);
-            }
+        //Query skuPrice table to get upgraded skuPrices for skus in above collection list
+        var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(#arrayToList(skuIDsToQuery)#) AND priceGroupID = #upgradedPriceGroupID# AND currencyCode = #skuCurrencyCode# " , []);
+        
+        //Add upgraded sku prices into the collection list 
+        for(price in upgradedSkuPrices){
+            productList[index].upgradedPricing = price;
+            productList[index].upgradedPriceGroupCode = upgradedPriceGroupCode;
+            index++
         }
         
-        return joinedCollection;
+        return productList;
     }
 
 }
