@@ -62441,28 +62441,40 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi, $rootScope, publicService) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope, publicService, $q) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
         this.$rootScope = $rootScope;
         this.publicService = publicService;
+        this.$q = $q;
+        this.orderTemplateTypeID = '';
         /**
          * This function is being used to fetch flexships and wishLists
          *
          *
         */
-        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
+        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID, refresh) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
+            if (refresh === void 0) { refresh = false; }
+            var deferred = _this.$q.defer();
             var data = {
                 currentPage: currentPage,
                 pageRecordsShow: pageRecordsShow,
             };
-            if (orderTemplateTypeID) {
-                data['orderTemplateTypeID'] = orderTemplateTypeID;
+            if (orderTemplateTypeID == _this.orderTemplateTypeID && refresh != true && _this.orderTemplateTypeID != '') {
+                deferred.resolve(_this.orderTemplates);
             }
-            return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
+            else if (orderTemplateTypeID && _this.orderTemplateTypeID == '') {
+                _this.orderTemplateTypeID = orderTemplateTypeID;
+                data['orderTemplateTypeID'] = orderTemplateTypeID;
+                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data).then(function (result) {
+                    _this.orderTemplates = result;
+                    deferred.resolve(_this.orderTemplates);
+                });
+            }
+            return deferred.promise;
         };
         this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }

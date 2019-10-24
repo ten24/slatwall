@@ -496,7 +496,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="";
-        param name="arguments.data.currencyCode" default="USD";
+        param name="arguments.data.currencyCode" default="USD";//TODO make Dynamic
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
@@ -534,7 +534,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             upgradedPriceGroupID = "'84a7a5c187b04705a614eb1b074959d4'";
         }
         
-        //Looping over the collection list and using helper methods to get non persistent properties
+        //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
             arrayAppend(productList,{
                 'skuID': record.defaultSku_skuID,
@@ -543,7 +543,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'productName': record.productName,
                 'skuImagePath': record.defaultSku_imageFile,
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
-                'priceGroupCode': record.defaultSku_skuPrices_priceGroup_priceGroupCode,
+                'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode':''
             });
