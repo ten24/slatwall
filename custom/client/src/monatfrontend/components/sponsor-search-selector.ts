@@ -56,13 +56,16 @@ class SponsorSearchSelectorController {
 		
 		this.loadingResults = true;
 		
-		this.publicService.doAction(
-			'/?slatAction=monat:public.getmarketpartners'
-				+ `&search=${ this.form.text }`
-				+ `&currentPage=${ this.currentPage }`
-				+ `&accountSearchType=${ this.accountSearchType }`
-				+ `&countryCode=${ this.form.countryCode }`
-				+ `&stateCode=${ this.form.stateCode }`
+		let data = {
+			search:this.form.text,
+			currentPage:this.currentPage,
+			accountSearchType:this.accountSearchType,
+			countryCode:this.form.countryCode,
+			stateCode:this.form.stateCode,
+			returnJsonObjects:''
+		}
+		this.publicService.marketPartnerResults = this.publicService.doAction(
+			'?slatAction=monat:public.getmarketpartners',data
 		).then(data => {
 			
 			this.loadingResults = false;
@@ -70,6 +73,7 @@ class SponsorSearchSelectorController {
 			
 		});
 	}
+
 }
 
 class SponsorSearchSelector {

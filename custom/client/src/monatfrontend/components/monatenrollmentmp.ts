@@ -104,6 +104,7 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
+
 	public getProductList = (pageNumber = 1, direction: any = false, newPages = false) => {
 		this.loading = true;
 		const pageRecordsShow = 12;
