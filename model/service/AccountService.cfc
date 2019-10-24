@@ -772,7 +772,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		if (!arguments.processObject.hasErrors()) {
 			var activeFlag = accountAuthentication.getAccount().getActiveFlag();
 			
-			if( !isNull(activeFlag) && isBoolean(activeFlag) && activeFlag ){ //if the account is active
+			//the default value for activeflag is null we're considering that as active
+			if( isNull(activeFlag) || ( isBoolean(activeFlag) && activeFlag ) ) { 
 				getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
