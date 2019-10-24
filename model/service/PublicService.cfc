@@ -2186,7 +2186,7 @@ component  accessors="true" output="false"
         param name="arguments.data.priceGroupCode" default="2";
         
         //TODO: Consider starting from skuPrice table for less joins
-        productCollectionList = getProductService().getProductCollectionList();
+        var productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addDisplayProperties('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');

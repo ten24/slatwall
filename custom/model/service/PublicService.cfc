@@ -506,7 +506,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
         }
         else if(len(arguments.data.categoryID)){
-            productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
+            productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.categoryID, "=" );
         }
 
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
