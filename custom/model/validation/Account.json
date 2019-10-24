@@ -1,5 +1,5 @@
 {
 	"properties": {
-		"renewalDate": [{ "contexts": "update,save", "method": "ristrictRenewalDateToOneYearFromNow" }]
+		"renewalDate": [{ "contexts": "update,save", "method": "ristrictRenewalDateToOneYearFromNow", "dataType": "date" }]
 	}
 }
