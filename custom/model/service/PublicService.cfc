@@ -545,7 +545,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
-                'upgradedPriceGroupCode':''
+                'upgradedPriceGroupCode':upgradedPriceGroupCode
             });
             //add skuID's to skuID array for query below, wrap in '' for string formatting
             arrayAppend(skuIDsToQuery, "'#record.defaultSku_skuID#'");
@@ -557,7 +557,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //Add upgraded sku prices into the collection list 
         for(price in upgradedSkuPrices){
             productList[index].upgradedPricing = price;
-            productList[index].upgradedPriceGroupCode = upgradedPriceGroupCode;
             index++
         }
         
