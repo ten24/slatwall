@@ -2182,7 +2182,7 @@ component  accessors="true" output="false"
     }
     
     public any function getBaseProductCollectionList(){
-        param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
+        param name="arguments.data.currencyCode" default="";
         param name="arguments.data.priceGroupCode" default="2";
         
         //TODO: Consider starting from skuPrice table for less joins

@@ -496,7 +496,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="";
-        param name="arguments.data.currencyCode" default="USD";//TODO make Dynamic
+        param name="arguments.data.currencyCode" default="USD"; //TODO make Dynamic
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
