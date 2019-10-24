@@ -519,19 +519,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var productService = getProductService();
         var productList = [];
-        var skuIDsToQuery = [];
+        var skuIDsToQuery = "";
         var index = 1;
         var upgradedPriceGroupCode;
         var upgradedPriceGroupID;
-        var skuCurrencyCode = "'#arguments.currencyCode#'"; //double wrap strings for sql query
+        var skuCurrencyCode = #arguments.currencyCode#; 
         
         
         if(arguments.priceGroupCode == 3 || arguments.priceGroupCode == 1){
             upgradedPriceGroupCode = 2;
-            upgradedPriceGroupID = "'c540802645814b36b42d012c5d113745'";
+            upgradedPriceGroupID = "c540802645814b36b42d012c5d113745";
         } else{
             upgradedPriceGroupCode = 3;
-            upgradedPriceGroupID = "'84a7a5c187b04705a614eb1b074959d4'";
+            upgradedPriceGroupID = "84a7a5c187b04705a614eb1b074959d4";
         }
         
         //Looping over the collection list and using helper method to get non persistent properties
@@ -548,11 +548,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'upgradedPriceGroupCode':upgradedPriceGroupCode
             });
             //add skuID's to skuID array for query below, wrap in '' for string formatting
-            arrayAppend(skuIDsToQuery, "'#record.defaultSku_skuID#'");
+            skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
         }
         
         //Query skuPrice table to get upgraded skuPrices for skus in above collection list
-        var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(#arrayToList(skuIDsToQuery)#) AND priceGroupID = #upgradedPriceGroupID# AND currencyCode = #skuCurrencyCode# " , []);
+        var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode",{
+            skuIDs = {value=skuIDsToQuery, list=true, cfsqltype="cf_sql_varchar"}, 
+            upgradedPriceGroup = {value=upgradedPriceGroupID, cfsqltype="cf_sql_varchar"},
+            currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
+        });
         
         //Add upgraded sku prices into the collection list 
         for(price in upgradedSkuPrices){
