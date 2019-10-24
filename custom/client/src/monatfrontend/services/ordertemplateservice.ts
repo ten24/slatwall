@@ -1,11 +1,15 @@
 export class OrderTemplateService { 
    
+   public orderTemplateTypeID:string='';
+   public orderTemplates:any;
+   
    //@ngInject
    constructor(
         public requestService,
         public $hibachi,
         public $rootScope,
-        public publicService
+        public publicService,
+        public $q
        ){
 
    } 
@@ -15,15 +19,25 @@ export class OrderTemplateService {
     * 
     * 
    */
-   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?) =>{
+   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?, refresh=false) =>{
+       var deferred = this.$q.defer();
+       
        var data = {
            currentPage:currentPage,
            pageRecordsShow:pageRecordsShow,
        }
-       if(orderTemplateTypeID){
-           data['orderTemplateTypeID'] = orderTemplateTypeID;
+       if(orderTemplateTypeID == this.orderTemplateTypeID && refresh != true && this.orderTemplateTypeID != ''){
+           deferred.resolve(this.orderTemplates);
        }
-       return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
+       else if(orderTemplateTypeID && this.orderTemplateTypeID == ''){
+           this.orderTemplateTypeID = orderTemplateTypeID;
+           data['orderTemplateTypeID'] = orderTemplateTypeID;
+           this.publicService.doAction('?slatAction=api:public.getordertemplates', data).then(result =>{
+               this.orderTemplates = result;
+               deferred.resolve(this.orderTemplates);
+           })
+       }
+       return deferred.promise;
    }
    
    public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
