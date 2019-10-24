@@ -33925,6 +33925,9 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 if (_this.object.$$isPersisted()) {
                     _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
                 }
+                else {
+                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Create', _this.object.className, _this.propertyIdentifier);
+                }
             }
         };
         this.onChange = function (result) {
@@ -86623,7 +86626,9 @@ var PublicService = /** @class */ (function () {
             }
             if (data) {
                 method = "post";
-                data.returnJsonObjects = "cart,account";
+                if (data.returnJsonObjects == undefined) {
+                    data.returnJsonObjects = "cart,account";
+                }
                 if (_this.cmsSiteID) {
                     data.cmsSiteID = _this.cmsSiteID;
                 }
@@ -86636,7 +86641,6 @@ var PublicService = /** @class */ (function () {
                 }
             }
             if (method == "post") {
-                data.returnJsonObjects = "cart,account";
                 //post
                 var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
                 request_1.promise.then(function (result) {

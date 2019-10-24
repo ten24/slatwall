@@ -21,12 +21,15 @@ import { MonatEnrollment } from './components/monatenrollment';
 import { MonatEnrollmentVIP } from './components/monatenrollmentvip';
 import { MonatEnrollmentStep } from './components/monatenrollmentstep';
 import { MonatOrderItems } from './components/monat-order-items';
+import { MaterialTextarea } from './components/material-textarea';
+import { ObserveEvent } from './components/observe-event';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
 import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
+import { SponsorSearchSelector } from './components/sponsor-search-selector';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
@@ -61,6 +64,9 @@ var monatfrontendmodule = angular
 	.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
 	.directive('vipController', MonatEnrollmentVIP.Factory())
 	.directive('monatOrderItems', MonatOrderItems.Factory())
+	.directive('materialTextarea', MaterialTextarea.Factory())
+	.directive('observeEvent', ObserveEvent.Factory())
+	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
