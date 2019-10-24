@@ -292,11 +292,11 @@ class SWTypeaheadSearchController {
         var newColumns = this.collectionConfig.columns
                             .map((column)  => {
                                 //try to find that(column with same prop identifier) in our searchable columns
-                                let tmpColumn = this.searchableColumns.find( (searchableColum) => {
+                                let existingColumFromSearchableColumns = this.searchableColumns.find( (searchableColum) => {
                                                     return column['propertyIdentifier'] === searchableColum['propertyIdentifier']; 
                                                 });
-                                if(tmpColumn) {
-                                    return angular.copy(tmpColumn); 
+                                if(existingColumFromSearchableColumns) {
+                                    return angular.copy(existingColumFromSearchableColumns); 
                                 }
                                 return angular.copy(column);
                             });
