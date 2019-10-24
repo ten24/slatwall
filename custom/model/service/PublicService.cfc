@@ -495,12 +495,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
-        param name="arguments.data.priceGroupCode" default="";
+        param name="arguments.data.priceGroupCode" default="2";
         param name="arguments.data.currencyCode" default="USD";//TODO make Dynamic
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
-        var productCollectionList = getBaseProductCollectionList(arguments.data);
+        var productCollectionList = super.getBaseProductCollectionList(arguments.data);
         
         if(len(arguments.data.contentID)){
             productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );

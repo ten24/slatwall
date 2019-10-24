@@ -2181,9 +2181,9 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-    public any function getBaseProductCollectionList(){
-        param name="arguments.data.currencyCode" default="USD"; //TODO: make this dynamic
-        param name="arguments.data.priceGroupCode" default="2";
+    public any function getBaseProductCollectionList(required any data){
+        param name="arguments.data.currencyCode" default=""; 
+        param name="arguments.data.priceGroupCode" default="";
         
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
