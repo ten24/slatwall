@@ -1225,6 +1225,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return request.orderTemplateOrderDetails;
 	} 
 	
+	public numeric function getFulfillmentDiscountForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
+	}
+	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
 	}
