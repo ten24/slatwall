@@ -83137,6 +83137,7 @@ var SWFPromoBoxController = /** @class */ (function () {
             });
         };
         this.removePromotionCode = function (promoCode) {
+            debugger;
             _this.removePromotionCodeIsLoading = true;
             var data = {
                 'promotionCode': promoCode.promotionCode

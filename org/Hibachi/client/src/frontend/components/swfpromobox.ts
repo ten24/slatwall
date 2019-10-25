@@ -23,6 +23,7 @@ class SWFPromoBoxController{
         });
     }
     public removePromotionCode = (promoCode)=>{
+        debugger;
         this.removePromotionCodeIsLoading = true;
         let data = {
             'promotionCode':promoCode.promotionCode
