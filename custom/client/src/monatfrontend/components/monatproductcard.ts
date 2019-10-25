@@ -11,6 +11,7 @@ class MonatProductCardController {
 	public allProducts: Array<any>;
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
+	public orderTemplate;
 
 	// @ngInject
 	constructor(
@@ -85,8 +86,11 @@ class MonatProductCardController {
 	public addToCart = (skuID, skuCode) => {
 		this.loading = true;
 		this.lastAddedSkuID = skuID;
-		if (this.type === 'flexship') {
-			//flexship logic
+		let orderTemplateID = this.orderTemplate;
+		if (this.type === 'flexship' || this.type==='VIPenrollment') {
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then((result) =>{
+				this.loading = false;
+			})
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 				this.loading = false;
@@ -118,6 +122,7 @@ class MonatProductCard {
 		type: '@',
 		index: '@',
 		allProducts: '<?',
+		orderTemplate: '<?',
 	};
 
 	public controller = MonatProductCardController;
