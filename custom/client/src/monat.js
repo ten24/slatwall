@@ -59249,7 +59249,6 @@ var MonatMiniCartController = /** @class */ (function () {
         this.currentPage = 0;
         this.pageSize = 6;
         this.recordsStart = 0;
-        this.deletingItemID = null;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59293,12 +59292,10 @@ var MonatMiniCartController = /** @class */ (function () {
             }
         };
         this.removeItem = function (item) {
-            _this.deletingItemID = item.orderItemID;
             _this.monatService
                 .removeFromCart(item.orderItemID)
                 .then(function (data) {
                 _this.cart = data;
-                _this.deletingItemID = null;
             })
                 .catch(function (reason) {
                 throw reason;
