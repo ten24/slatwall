@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.sku" type="any">
 <cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 <cfparam name="rc.edit" type="boolean">
-<cfset skuHasEventConflict=rc.sku.geteventConflictExistsFlag()>
+<cfset local.skuHasEventConflict=rc.sku.getEventConflictExistsFlag()>
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
