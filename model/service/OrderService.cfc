@@ -1017,7 +1017,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 	
 		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.orderTemplate.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.addPromotionCode( promotionCode );
 		}
@@ -1029,31 +1029,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
 		} else if ( !pc.getCurrentFlag() || !pc.getPromotion().getCurrentFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
 		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
 		//if promo has a max account use and account related to order has used it more than the max account use, show over max account use message
 		} else if( !isNull(pc.getMaximumAccountUseCount()) && !isNull(arguments.order.getAccount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
 		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
 		//If promo site does not match order site, display incorrect site message
 		} else if( 
 			!isNull(pc.getPromotion().getSite())
 			&& !isNull(arguments.order.getOrderCreatedSite())
 			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
 		) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
-		} else if(arguments.processObject.getUpdateOrderAmountFlag()) {
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'));
+		} else {
+			
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
+				
 				arguments.order.addPromotionCode( pc );
-				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+
+				if(arguments.processObject.getUpdateOrderAmountFlag()){
+					this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+				}
 			}
 		}
 
@@ -1522,6 +1527,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
+
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#',true);
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
