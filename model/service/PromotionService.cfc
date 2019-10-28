@@ -317,7 +317,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function processOrderRewards(required any order, required any promotionReward){
-		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts() + arguments.order.getFulfillmentChargeAfterDiscountTotal();
+		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts();
 
 		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
 
