@@ -54,6 +54,7 @@ Notes:
 		<cfargument name="qualificationRequired" type="boolean" default="false" />
 		<cfargument name="promotionEffectiveDateTime" type="date" default="#now()#" />
 		<cfargument name="excludeRewardsWithQualifiers" type="boolean" default="true">
+		<cfargument name="site" type="any" />
 		
 		<cfif arguments.qualificationRequired >
 			<cfset arguments.excludeRewardsWithQualifiers = false />
@@ -72,8 +73,14 @@ Notes:
 			  INNER JOIN FETCH
 				spr.promotionPeriod spp
 			  INNER JOIN FETCH
-				spp.promotion sp
-			WHERE
+				spp.promotion sp" />
+				
+		<cfif NOT isNull(arguments.site)>
+			<cfset hql &=" INNER JOIN FETCH
+					sp.site s" />
+		</cfif>
+				
+		<cfset hql &= " WHERE
 				spr.rewardType IN (:rewardTypeList)
 			  and
 				(spp.startDateTime is null or spp.startDateTime < :promotionEffectiveDateTime)
@@ -123,6 +130,10 @@ Notes:
 
 		<!--- End additional where --->
 		<cfset hql &= " )" />
+		
+		<cfif NOT isNull(arguments.site) >
+			<cfset hql &= 'AND (s.siteID IS NULL OR s.siteID = :siteID)'>
+		</cfif>
 
 		<cfset var params = {
 			promotionEffectiveDateTime = arguments.promotionEffectiveDateTime,
@@ -135,6 +146,10 @@ Notes:
 
 		<cfif len(promotionCodeList)>
 			<cfset params.promotionCodeList = listToArray(arguments.promotionCodeList) />
+		</cfif>
+		
+		<cfif NOT isNull(arguments.site) >
+			<cfset params.siteID = arguments.site.getSiteID() />
 		</cfif>
 
 		<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />
