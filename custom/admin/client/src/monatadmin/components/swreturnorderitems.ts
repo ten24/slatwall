@@ -37,7 +37,11 @@ class ReturnOrderItem{
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
-        this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        if(this.refundUnitPrice){
+            this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        }else{
+            this.maxRefund = this.total;
+        }
         return this;
     }
     
@@ -136,7 +140,10 @@ class SWReturnOrderItemsController{
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();
         }else{
-            this.orderItems = this.refundOrderItems.map(item=>{return new ReturnOrderItem(item)});
+            this.orderItems = this.refundOrderItems.map(item=>{
+                item.calculatedExtendedPriceAfterDiscount = this.orderTotal;
+                return new ReturnOrderItem(item)
+            });
         }
         
         $hibachi.getCurrencies().then(result=>{
@@ -163,8 +170,8 @@ class SWReturnOrderItemsController{
            },0);
            
            orderMaxRefund = this.orderTotal - refundTotal;
+           maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
         }
-        maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
        
        if((orderItem.refundTotal > maxRefund)){
            orderItem.refundUnitPrice = Math.max(maxRefund,0) / orderItem.returnQuantity;
