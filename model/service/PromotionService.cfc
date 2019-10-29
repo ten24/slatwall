@@ -416,7 +416,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
 				// Loop over all Potential Discounts that require qualifications
-				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 				var orderRewards = false;
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
@@ -995,7 +995,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getProductSkuSalePricesByPromoRewardSkuCollection( required string productID, string currencyCode ){
 		var product = getService('productService').getProduct( arguments.productID );
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true, site=getHibachiScope().getCart().getOrderCreatedSite() );
 
 		var skus = product.getSkus();
 		var priceDetails = {};
@@ -1019,7 +1019,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 
@@ -1084,7 +1084,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var promotionPeriodQualifications = {};
 
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards( rewardTypeList="fulfillment", promotionCodeList=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getPromotionCodeList() );
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards( rewardTypeList="fulfillment", promotionCodeList=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getPromotionCodeList(), site=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getOrderCreatedSite() );
 
 		// Loop over the Promotion Rewards to look for the best discount
 		for(var i=1; i<=arrayLen(promotionRewards); i++) {
@@ -1134,7 +1134,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
 		var canPlaceOrder = true;
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now());
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
 		if(arraylen(promotionRewards)){
 			canPlaceOrder = false;
 			for(var promoReward in promotionRewards){
@@ -1155,7 +1155,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
