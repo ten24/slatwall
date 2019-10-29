@@ -76,7 +76,7 @@ Notes:
 				spp.promotion sp" />
 				
 		<cfif NOT isNull(arguments.site)>
-			<cfset hql &=" INNER JOIN FETCH
+			<cfset hql &=" LEFT JOIN FETCH
 					sp.site s" />
 		</cfif>
 				
