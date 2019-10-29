@@ -194,10 +194,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var promotionPeriodQualification = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()];
 		
 		//Get all orderitems in descending order of price
-		var orderItemSmahtlist = arguments.order.getOrderItemsSmartList();
-		orderItemSmahtlist.addOrder('price DESC');
-		orderItemSmahtlist.addOrder('skuCode ASC');
-		var orderItems = orderItemSmahtlist.getRecords();
+		var orderItemSmartlist = arguments.order.getOrderItemsSmartList();
+		orderItemSmartlist.addOrder('price DESC');
+		orderItemSmartlist.addOrder('skuCode ASC');
+		var orderItems = orderItemSmartlist.getRecords();
 		// Loop over all the orderItems
 		for(var orderItem in orderItems) {
 			// Verify that this is an item being sold
