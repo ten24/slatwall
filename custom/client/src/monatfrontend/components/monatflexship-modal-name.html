@@ -31,16 +31,15 @@
 					type="button"
 					class="btn btn-block bg-primary"
 					ng-click="monatFlexshipNameModal.saveFlexshipName()"
-				>
-					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
-				</button>
+					ng-class="{ loading: monatFlexshipNameModal.loading }"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+				></button>
 				<button
 					type="button"
 					class="btn btn-cancel cancel-dark"
 					ng-click="monatFlexshipNameModal.closeModal()"
-				>
-					<span sw-rbkey="'frontend.modal.closeButton'"></span>
-				</button>
+					sw-rbkey="'frontend.modal.closeButton'"
+				></button>
 			</div>
 		</div>
 	</div>

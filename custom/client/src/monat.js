@@ -60436,6 +60436,7 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
@@ -60450,8 +60451,9 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         };
     }
     MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
-        //TODO frontend validation
         var _this = this;
+        //TODO frontend validation
+        this.loading = true;
         // make api request
         this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
             if (data.orderTemplate) {
@@ -60465,6 +60467,8 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         }).catch(function (error) {
             console.error(error);
             // TODO: show alert / handle error
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipNameModalController;
@@ -61110,7 +61114,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
         this.loading = false;
         this.initialized = false;
         this.$onInit = function () {
-            _this.orderTemplateService.getOrderTemplates()
+            _this.orderTemplateService.getOrderTemplates(100, 1, '2c948084697d51bd01697d5725650006', true)
                 .then(function (data) {
                 _this.accountAddresses = data.accountAddresses;
                 _this.accountPaymentMethods = data.accountPaymentMethods;
@@ -72811,6 +72815,20 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.updateSelections = function () {
             _this.typeaheadService.updateSelections(_this.typeaheadDataKey);
         };
+        this.updateCollectionConfigWithSearchableColumns = function () {
+            var newColumns = _this.collectionConfig.columns
+                .map(function (column) {
+                //try to find that(column with same prop identifier) in our searchable columns
+                var existingColumFromSearchableColumns = _this.searchableColumns.find(function (searchableColum) {
+                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier'];
+                });
+                if (existingColumFromSearchableColumns) {
+                    return angular.copy(existingColumFromSearchableColumns);
+                }
+                return angular.copy(column);
+            });
+            _this.collectionConfig.loadColumns(newColumns);
+        };
         this.updateSearchableProperties = function (column) {
             if (angular.isString(column) && column == 'all') {
                 angular.copy(_this.initialSearchableColumnsState, _this.searchableColumns); //need to insure that these changes are actually on the collectionconfig
@@ -72823,7 +72841,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 column.isSearchable = true;
                 _this.searchableColumnSelection = column.title;
             }
-            //probably need to refetch the collection
+            _this.updateCollectionConfigWithSearchableColumns();
+            _this.toggleDropdown();
+            if (_this.searchText && _this.searchText.length) {
+                _this.search(_this.searchText);
+            }
         };
         this.addOrRemoveItem = function (item) {
             var remove = item.selected || false;
@@ -84286,19 +84308,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
+                // this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
+                // this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
+                // this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('add');
+                // this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -84484,17 +84506,23 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
+        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionQueryStringName = recordActionName + 'QueryString';
-            var recordActionModalName = recordActionName + 'Modal';
+            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
+            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+        };
+        this.capitalize = function (s) {
+            if (typeof s !== 'string' || s.length === 0)
+                return s;
+            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -84605,6 +84633,29 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
+        var queryString = "";
+        action = this.capitalize(action);
+        var actionProppertyName = "record" + action + "ActionProperty";
+        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
+        if (this[actionProppertyName]) {
+            queryString += '&' + this[actionProppertyName];
+            if (this[actionPropertyIdentifierName]) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            }
+            else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        }
+        else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        var actionQueryStringName = "record" + action + "QueryString";
+        if (this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        }
+        return queryString;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -84651,23 +84702,25 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
+            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
+            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
-            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
+            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionIdProperty: "@?",
-            recordDetailActionIdKey: "@?",
+            recordDetailActionPropertyIdentifier: "@?",
             recordDetailQueryString: "@?",
-            recordDetailModal: "<?",
+            recordDeleteModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
+            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",

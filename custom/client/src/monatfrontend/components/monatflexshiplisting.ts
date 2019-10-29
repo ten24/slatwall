@@ -19,7 +19,7 @@ class MonatFlexshipListingController{
 	}
 	
 	public $onInit = () => {
-		this.orderTemplateService.getOrderTemplates()
+		this.orderTemplateService.getOrderTemplates(100, 1, '2c948084697d51bd01697d5725650006', true)
 			.then((data) => {
 				this.accountAddresses = data.accountAddresses;
 				this.accountPaymentMethods = data.accountPaymentMethods;
@@ -35,7 +35,7 @@ class MonatFlexshipListingController{
 			}, (reason) => {
 				console.error(reason);
 			}).finally(()=>{
-				this.initialized=true; 
+				this.initialized = true; 
 			});
 	}
 	
