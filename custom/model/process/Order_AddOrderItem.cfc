@@ -41,18 +41,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         var sku = this.getSku();
 
         if(!isNull(account) && !isNull(sku)){
-            var notValidVipItem = account.getAccountType() == "vip" && sku.getVipFlag() != true;
-            if(notValidVipItem){
-                return false;
-            }
-            var notValidMpItem = account.getAccountType() == "marketPartner" && sku.getMpFlag() != true;
-            if(notValidVipItem){
-                return false;
-            }
-            var notValidRetailItem = account.getAccountType() == "retail" && sku.getRetailFlag() != true;
-            if(notValidVipItem){
-                return false;
-            }
+            return sku.canBePurchased(account);
         }
 
         return true;
