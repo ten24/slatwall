@@ -133,8 +133,8 @@ component extends="Slatwall.model.service.OrderService" {
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
-			ormFlush();
-		
+			getHibachiDAO().flushORMSession();	
+	
 			if(hasInfoForFulfillment){
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();

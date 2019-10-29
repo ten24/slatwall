@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiDAO";
 	property name="orderDAO";
 	property name="productDAO";
 	property name="promotionDAO";
@@ -1205,7 +1206,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
-			ormFlush();
+			getHibachiDAO().flushORMSession();
 		
 			if(hasInfoForFulfillment){	
 				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
