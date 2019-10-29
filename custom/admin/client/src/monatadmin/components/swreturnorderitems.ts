@@ -92,7 +92,9 @@ class SWReturnOrderItemsController{
     public allocatedOrderPVDiscountAmountTotal;
     public allocatedOrderCVDiscountAmountTotal;
     public currencySymbol:string;
-
+    public fulfillmentTaxAmount:number;
+    public fulfillmentRefundTaxAmount:number=0;
+    
     public setupOrderItemCollectionList = () =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
         for(let displayProperty of this.displayPropertiesList.split(',')){
@@ -135,7 +137,9 @@ class SWReturnOrderItemsController{
     ){
         this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
         this.fulfillmentRefundAmount = 0;
-        
+        if(this.fulfillmentTaxAmount == undefined){
+            this.fulfillmentTaxAmount = 0;
+        }
         if(this.refundOrderItems == undefined){
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();
@@ -249,6 +253,7 @@ class SWReturnOrderItemsController{
        if(this.fulfillmentRefundAmount > this.maxFulfillmentRefundAmount){
            this.fulfillmentRefundAmount = this.maxFulfillmentRefundAmount;
        }
+        this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount / this.fulfillmentRefundAmount * this.maxFulfillmentRefundAmount;
        this.updateRefundTotals();
    }
    
@@ -282,7 +287,8 @@ class SWReturnOrderItems {
 	    orderPayments:'<',
 	    refundOrderItems:'<?',
 	    orderType:'@',
-	    orderTotal:'<?'
+	    orderTotal:'<?',
+	    fulfillmentTaxAmount:'@'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";
