@@ -169,8 +169,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		 * columns to CREATE...
     		 * Are these used anywhere before deleting?
     		 * 
-    		 * allowCorporateEmailsFlag,allowUplineEmailsFlag,businessAccountFlag,countryCallingCode (to accountPhone)
-    		 * productPackPurchasedFlag,lastAccountStatusDate,
+    		 * allowCorporateEmailsFlag, created
+    		 * allowUplineEmailsFlag, created
+    		 * businessAccountFlag, created
+    		 * countryCallingCode (to accountPhone)
+    		 * productPackPurchasedFlag,
+    		 * lastAccountStatusDate,
     		 **/
     		 
     		 //* next to the field means I've verified it with the mapping document.
@@ -327,7 +331,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             }
                             
                             ormStatelessSession.insert("SlatwallAccountEmailAddress", accountEmailAddress);
-                            //Set primary newAccount.setPrimary(sponsorAccount);
+                            newAccount.setPrimaryEmailAddress(accountEmailAddress);
                         }
                     }
                     
@@ -367,7 +371,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        accountAddress.setAddress(newAddress);
         			        ormStatelessSession.insert("SlatwallAddress", newAddress);
         			        ormStatelessSession.insert("SlatwallAccountAddress", accountAddress);
-        			         //Set primary newAccount.setPrimary(sponsorAccount);
+        			        newAccount.setPrimaryAddress(accountAddress);
                         } 
         			}
         			
@@ -390,7 +394,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             
                 			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
                 			ormStatelessSession.insert("SlatwallAccountPhoneNumber", accountPhone);
-                			 //Set primary newAccount.setPrimary(sponsorAccount);
+                			newAccount.setPrimaryPhoneNumber(accountPhone);
                         }
                     }
                     
