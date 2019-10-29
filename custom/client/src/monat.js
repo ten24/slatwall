@@ -32224,6 +32224,9 @@ var SWFFormController = /** @class */ (function () {
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
         };
+        this.resetMethod = function (newMethod) {
+            _this.method = newMethod;
+        };
         this.getFormData = function () {
             var formData = {};
             for (var key in _this.form) {
@@ -32365,6 +32368,7 @@ var SWFForm = /** @class */ (function () {
          */
         this.bindToController = {
             method: "@?",
+            dynamicMethod: "<?",
             sRedirectUrl: "@?",
             fRedirectUrl: "@?",
             sAction: "=?",
@@ -61107,7 +61111,6 @@ var MonatFlexshipListingController = /** @class */ (function () {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$window = $window;
-        this.loading = false;
         this.initialized = false;
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
@@ -61129,7 +61132,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
             });
         };
         this.createNewFlexship = function () {
-            _this.loading = true;
+            // this.loading = true;
             _this.orderTemplateService.createOrderTemplate('ottSchedule')
                 .then(function (data) {
                 if (data.orderTemplate) {
@@ -61137,11 +61140,10 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 }
                 else {
                     throw (data);
-                    _this.loading = false;
                 }
             })
                 .catch(function (error) {
-                _this.loading = false;
+                // this.loading = false;
             });
         };
     }
@@ -61157,12 +61159,10 @@ var MonatFlexshipListingController = /** @class */ (function () {
             }
             else {
                 throw data;
-                _this.loading = false;
             }
         })
             .catch(function (error) {
             console.error('setAsCurrentFlexship :', error);
-            _this.loading = false;
             // TODO: show alert
         });
     };
@@ -72811,6 +72811,20 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.updateSelections = function () {
             _this.typeaheadService.updateSelections(_this.typeaheadDataKey);
         };
+        this.updateCollectionConfigWithSearchableColumns = function () {
+            var newColumns = _this.collectionConfig.columns
+                .map(function (column) {
+                //try to find that(column with same prop identifier) in our searchable columns
+                var existingColumFromSearchableColumns = _this.searchableColumns.find(function (searchableColum) {
+                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier'];
+                });
+                if (existingColumFromSearchableColumns) {
+                    return angular.copy(existingColumFromSearchableColumns);
+                }
+                return angular.copy(column);
+            });
+            _this.collectionConfig.loadColumns(newColumns);
+        };
         this.updateSearchableProperties = function (column) {
             if (angular.isString(column) && column == 'all') {
                 angular.copy(_this.initialSearchableColumnsState, _this.searchableColumns); //need to insure that these changes are actually on the collectionconfig
@@ -72823,7 +72837,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 column.isSearchable = true;
                 _this.searchableColumnSelection = column.title;
             }
-            //probably need to refetch the collection
+            _this.updateCollectionConfigWithSearchableColumns();
+            _this.toggleDropdown();
+            if (_this.searchText && _this.searchText.length) {
+                _this.search(_this.searchText);
+            }
         };
         this.addOrRemoveItem = function (item) {
             var remove = item.selected || false;
