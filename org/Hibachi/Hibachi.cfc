@@ -1059,6 +1059,10 @@ component extends="framework.one" {
 
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
+		
+		if(structKeyExists(request,'abort')){
+			abort;
+		}
 
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
@@ -1090,7 +1094,6 @@ component extends="framework.one" {
 			}
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
 		}
-		getHibachiScope().getProfiler().logProfiler();
 		
 	}
 
