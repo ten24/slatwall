@@ -23,7 +23,6 @@ class EnrollmentMPController {
 	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
-		this.getCountryCodeOptions();
 		this.getStarterPacks();
 		//this.getProductList()
 		
@@ -72,10 +71,16 @@ class EnrollmentMPController {
 
 	public submitSponsor = () => {
 		this.loading = true;
-		if (this.selectedMP) {
-			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+		
+		var selectedSponsor = document.getElementById('selected-sponsor-id');
+		
+		if ( null !== selectedSponsor ) {
+			var accountID = (<HTMLInputElement>selectedSponsor).value;
+			
+			this.monatService.submitSponsor( accountID ).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
+					this.sponsorHasErrors = false;
 				}else{
 					this.sponsorHasErrors = true;
 				}
@@ -99,46 +104,6 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getMpResults = (model) => {
-		let data = {
-			search:model.mpSearchText,
-			currentPage:1,
-			accountSearchType:'marketPartner',
-			countryCode:model.currentCountryCode,
-			stateCode:model.currentStateCode,
-			returnJsonObjects:''
-		}
-		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'?slatAction=monat:public.getmarketpartners',data
-		);
-	};
-
-	public getCountryCodeOptions = () => {
-		if (this.countryCodeOptions.length) {
-			return this.countryCodeOptions;
-		}
-
-		this.publicService.getCountries().then((data) => {
-			this.countryCodeOptions = data.countryCodeOptions;
-		});
-	};
-
-	public getStateCodeOptions = (countryCode) => {
-		this.currentCountryCode = countryCode;
-
-		this.publicService.getStates(countryCode).then((data) => {
-			this.stateCodeOptions = data.stateCodeOptions;
-		});
-	};
-
-	public setOwnerAccount = (ownerAccountID) => {
-		//this.loading = true;
-		this.publicService
-			.doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
-			.then((result) => {
-				//this.loading = false;
-			});
-	};
 
 	public getProductList = (pageNumber = 1, direction: any = false, newPages = false) => {
 		this.loading = true;

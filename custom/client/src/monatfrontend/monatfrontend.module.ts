@@ -29,6 +29,7 @@ import { SWFWishlist } from './components/swfwishlist';
 import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
+import { SponsorSearchSelector } from './components/sponsor-search-selector';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
@@ -65,6 +66,7 @@ var monatfrontendmodule = angular
 	.directive('monatOrderItems', MonatOrderItems.Factory())
 	.directive('materialTextarea', MaterialTextarea.Factory())
 	.directive('observeEvent', ObserveEvent.Factory())
+	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
