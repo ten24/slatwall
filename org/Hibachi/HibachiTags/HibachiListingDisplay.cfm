@@ -110,6 +110,7 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
+				<cfset attributes.collectionList.getCollectionConfigStruct()["listingSearchConfig"] = attributes.collectionList.getCollectionObjectListingSearchConfig() /> <!--- setting listing-search-config --->
 				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 

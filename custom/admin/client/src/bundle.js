@@ -94216,7 +94216,7 @@ var SWListingSearchController = /** @class */ (function () {
             },
             {
                 title: 'Last 6 Months',
-                value: 'lastThreeSix',
+                value: 'lastSixMonths',
             },
             {
                 title: '1 Year Ago',
@@ -94233,11 +94233,11 @@ var SWListingSearchController = /** @class */ (function () {
                 value: 'left'
             },
             {
-                title: 'Match end',
+                title: 'Match from end',
                 value: 'right'
             },
             {
-                title: 'Match between',
+                title: 'Match Anywhere',
                 value: 'both'
             }
         ];
@@ -94275,10 +94275,10 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
         this.changeSearchFilter = function (filter) {
-            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFiterCode !== filter.value) {
-                _this.selectedWildCardPosition = filter;
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value) {
+                _this.selectedSearchFilter = filter;
                 _this.updateListingSearchConfig({
-                    selectedSearchFiterCode: filter.value
+                    selectedSearchFilterCode: filter.value
                 });
             }
         };
@@ -94442,20 +94442,21 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
     }
+    SWListingSearchController.prototype.shouldShowSearchFilterDropdown = function () {
+        console.log("calling shouldShowSearchFilterDropdown");
+        //the controls with new config
+        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
+        return (this.swListingDisplay.searchText && this.swListingDisplay.searchText.length)
+            || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
+    };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
-        if (angular.isDefined(searchConfig.selectSearchFilter)) {
+        if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
             this.selectedSearchFilter = this.searchableFilterOptions
-                .find(function (item) { return item.value === searchConfig.selectedSearchFiterCode; });
+                .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
         }
-        if (!this.selectedSearchFilter) {
-            this.selectedSearchFilter = this.searchableFilterOptions[0];
-        }
-        if (angular.isDefined(searchConfig.selectWildCardPosition)) {
+        if (angular.isDefined(searchConfig.wildCardPosition)) {
             this.selectedWildCardPosition = this.wildCardPositionOptions
                 .find(function (item) { return item.value === searchConfig.wildCardPosition; });
-        }
-        if (!this.selectedWildCardPosition) {
-            this.selectedWildCardPosition = this.wildCardPositionOptions[0];
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {

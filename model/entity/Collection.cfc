@@ -445,7 +445,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		            
 		            {
 		                title:'Last 6 Months',
-		                code:'lastThreeSix',
+		                code:'lastSixMonths',
 		                criteria:"m:6",
 		            },
 		            
@@ -478,25 +478,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		//if the the user has selected 'allRecords'
-		if(searchFilterCondition && listingSearchConfig.selectedSearchFilterCode === "allRecords") {
+		if(searchFilterCondition && listingSearchConfig.selectedSearchFilterCode == "allRecords") {
 			searchFilterCondition = false;
 		}
 		
-		//TODO: see if we'd want to other-conditions
-		
+
 		if(!searchFilterCondition || listingSearchConfig.ignoreSearchFilters ) {
 			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
-			return;
+			return; //nothing to add
 		} 
+
 		
-		
-		
-		//        else add listingSearchFilter      // 
-		
+		//        else add listingSearchFilter      //
 		var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
-									return arguments.opt.code === listingSearchConfig.selectedSearchFilterCode;
+									return arguments.opt.code == listingSearchConfig.selectedSearchFilterCode;
 								});
-		
+
 		var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
 		var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
 
@@ -4082,7 +4079,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				mergeParentCollectionFilters();
 			}
 			
-			if(arraylen(getKeywordArray())){
+			//if the request's comming from the listing displays
+			if( StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')) {
 				this.updateListingSearchFilters();
 			}
 			

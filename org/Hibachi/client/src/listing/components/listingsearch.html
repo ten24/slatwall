@@ -13,7 +13,9 @@
         </ul>
     </div>
     
-    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown" 
+        class="input-group-btn search-panel"
+        ng-show="swListingSearch.shouldShowSearchFilterDropdown()">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchFilter.title"></span> <span class="caret"></span>
         </button>
@@ -24,7 +26,9 @@
         </ul>
     </div>
     
-    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showWildCardPositionDropdown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showWildCardPositionDropdown" 
+        class="input-group-btn search-panel" 
+        ng-show="swListingSearch.swListingDisplay.searchText.length">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedWildCardPosition.title"></span> <span class="caret"></span>
         </button>

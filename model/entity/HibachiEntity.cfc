@@ -563,19 +563,21 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	 * 
 	*/ 
 	
-	public struct function getListingSearchConfig(struct config = {}) {
-		param name="config.wildCardPosition" default=getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
-		param name="config.showWildCardPositionDropdown" default=true; // ability to change wildcard position
-		param name="config.searchFilterPropertyIdentifier" default='createdDateTime';
-		param name="config.showSearchFilterDropDown" default=true; // ability to change search filter period
-		param name="config.ignoreSearchFilters" default=false; // searchFilters will be ignored
+	public struct function getListingSearchConfig() {
+		param name = "arguments.wildCardPosition" default = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+		param name = "arguments.showWildCardPositionDropdown" default = true; // ability to change wildcard position
+		param name = "arguments.searchFilterPropertyIdentifier" default = 'createdDateTime';
+		param name = "arguments.showSearchFilterDropDown" default = true; // ability to change search filter period
+		param name = "arguments.ignoreSearchFilters" default = false; // searchFilters will be ignored
+		param name = "arguments.selectedSearchFilterCode" default = "allRecords";
 		
 		var listingSearchConfig  = {
-			"wildCardPosition" = arguments.config.wildCardPosition,
-			"showWildCardPositionDropdown" = arguments.config.showWildCardPositionDropdown,
-			"searchFilterPropertyIdentifier" = arguments.config.searchFilterPropertyIdentifier,
-			"showSearchFilterDropDown" = arguments.config.showSearchFilterDropDown,
-			"ignoreSearchFilters" = arguments.config.ignoreSearchFilters,
+			"wildCardPosition" = arguments.wildCardPosition,
+			"showWildCardPositionDropdown" = arguments.showWildCardPositionDropdown,
+			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
+			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
+			"ignoreSearchFilters" = arguments.ignoreSearchFilters,
+			"selectedSearchFilterCode" = arguments.selectedSearchFilterCode,
 		};
 		return listingSearchConfig;
 	}

@@ -54,7 +54,7 @@ class SWListingSearchController {
             },
             {
                 title:'Last 6 Months',
-                value:'lastThreeSix',
+                value:'lastSixMonths',
             },
             {
                 title:'1 Year Ago',
@@ -72,11 +72,11 @@ class SWListingSearchController {
             value:'left'
         },
         {
-            title:'Match end',
+            title:'Match from end',
             value:'right'
         },
         {
-            title:'Match between',
+            title:'Match Anywhere',
             value:'both'
         }
     ];
@@ -126,33 +126,35 @@ class SWListingSearchController {
         }
     }
     
+    public shouldShowSearchFilterDropdown() {
+        console.log("calling shouldShowSearchFilterDropdown");
+
+        //the controls with new config
+        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
+        
+        return ( this.swListingDisplay.searchText && this.swListingDisplay.searchText.length )
+                || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
+    }
+    
     private configureListingSearchConfigControls(searchConfig?) {
-
-        if(angular.isDefined(searchConfig.selectSearchFilter)){
+        if(angular.isDefined(searchConfig.selectedSearchFilterCode)){
              this.selectedSearchFilter = this.searchableFilterOptions
-                                            .find(item => item.value === searchConfig.selectedSearchFiterCode );
-        }
-        if(!this.selectedSearchFilter){
-            this.selectedSearchFilter = this.searchableFilterOptions[0];
+                                            .find(item => item.value === searchConfig.selectedSearchFilterCode );
         }
 
-        if(angular.isDefined(searchConfig.selectWildCardPosition)){
+        if(angular.isDefined(searchConfig.wildCardPosition)){
              this.selectedWildCardPosition = this.wildCardPositionOptions
                                                 .find(item => item.value === searchConfig.wildCardPosition );
         }
         
-        if(!this.selectedWildCardPosition) {
-            this.selectedWildCardPosition = this.wildCardPositionOptions[0];
-        }
-
     }
     
     
     public changeSearchFilter = (filter)=>{
-        if(this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFiterCode !== filter.value){
-            this.selectedWildCardPosition = filter; 
+        if(this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value){
+            this.selectedSearchFilter = filter; 
             this.updateListingSearchConfig({
-                selectedSearchFiterCode : filter.value       
+                selectedSearchFilterCode : filter.value       
             });
         }
     }
