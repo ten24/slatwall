@@ -61111,6 +61111,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.$window = $window;
+        this.loading = false;
         this.initialized = false;
         this.$onInit = function () {
             _this.orderTemplateService.getOrderTemplates()
@@ -61132,7 +61133,7 @@ var MonatFlexshipListingController = /** @class */ (function () {
             });
         };
         this.createNewFlexship = function () {
-            // this.loading = true;
+            _this.loading = true;
             _this.orderTemplateService.createOrderTemplate('ottSchedule')
                 .then(function (data) {
                 if (data.orderTemplate) {
@@ -61140,10 +61141,11 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 }
                 else {
                     throw (data);
+                    _this.loading = false;
                 }
             })
                 .catch(function (error) {
-                // this.loading = false;
+                _this.loading = false;
             });
         };
     }
@@ -61159,10 +61161,12 @@ var MonatFlexshipListingController = /** @class */ (function () {
             }
             else {
                 throw data;
+                _this.loading = false;
             }
         })
             .catch(function (error) {
             console.error('setAsCurrentFlexship :', error);
+            _this.loading = false;
             // TODO: show alert
         });
     };
