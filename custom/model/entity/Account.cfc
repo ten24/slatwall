@@ -55,7 +55,8 @@ component {
 
 	//custom validation methods
 		
-	public boolean function ristrictRenewalDateToOneYearFromNow( required any renewalDate) {
-		return getService('accountService').ristrictRenewalDateToOneYearFromNow(argumentCollection = arguments);
+	public boolean function restrictRenewalDateToOneYearFromNow() {
+		
+		return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
 	}
 } 
