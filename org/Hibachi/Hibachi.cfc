@@ -1060,9 +1060,6 @@ component extends="framework.one" {
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
 		
-		if(structKeyExists(request,'abort')){
-			abort;
-		}
 
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
