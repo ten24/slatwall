@@ -81764,6 +81764,20 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.updateSelections = function () {
             _this.typeaheadService.updateSelections(_this.typeaheadDataKey);
         };
+        this.updateCollectionConfigWithSearchableColumns = function () {
+            var newColumns = _this.collectionConfig.columns
+                .map(function (column) {
+                //try to find that(column with same prop identifier) in our searchable columns
+                var existingColumFromSearchableColumns = _this.searchableColumns.find(function (searchableColum) {
+                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier'];
+                });
+                if (existingColumFromSearchableColumns) {
+                    return angular.copy(existingColumFromSearchableColumns);
+                }
+                return angular.copy(column);
+            });
+            _this.collectionConfig.loadColumns(newColumns);
+        };
         this.updateSearchableProperties = function (column) {
             if (angular.isString(column) && column == 'all') {
                 angular.copy(_this.initialSearchableColumnsState, _this.searchableColumns); //need to insure that these changes are actually on the collectionconfig
@@ -81776,7 +81790,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 column.isSearchable = true;
                 _this.searchableColumnSelection = column.title;
             }
-            //probably need to refetch the collection
+            _this.updateCollectionConfigWithSearchableColumns();
+            _this.toggleDropdown();
+            if (_this.searchText && _this.searchText.length) {
+                _this.search(_this.searchText);
+            }
         };
         this.addOrRemoveItem = function (item) {
             var remove = item.selected || false;

@@ -98,6 +98,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="fulfillmentDiscount" persistent="false";
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
@@ -199,6 +200,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.canPlaceFutureScheduleOrderFlag;
 	}  
+
+	public numeric function getFulfillmentDiscount() {
+		if(!structKeyExists(variables, 'fulfillmentDiscount')){
+			variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+		}
+		return variables.fulfillmentDiscount;
+	}
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){

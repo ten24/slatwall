@@ -33,6 +33,9 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	public string function getSimpleRepresentation(required any account){
 		var accountType = arguments.account.getAccountType();
+		if(isNull(accountType)){
+			accountType = '';
+		}
 		var typeReps = {
 			'marketPartner':'MP',
 			'vip':'VIP',
@@ -79,5 +82,9 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
-
+	//custom validation methods
+	
+	public boolean function ristrictRenewalDateToOneYearFromNow( required string renewalDate) {
+		return  DateDiff( "yyyy", ParseDateTime(arguments.renewalDate), Now() ) <= 1;
+	}
 }
