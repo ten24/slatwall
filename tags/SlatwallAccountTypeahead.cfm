@@ -77,11 +77,6 @@ Notes:
 								<span sw-typeahead-search-line-item bind-html="true" data-property-identifier="accountNumber"> ##</span>
 							</p>
 						</div>
-						
-						<!--<div class="col">-->
-						<!--	<p class="emailAddress" sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress"></p>-->
-						<!--	<p class="phoneNumber" sw-typeahead-search-line-item data-property-identifier="primaryPhoneNumber_phoneNumber"></p>-->
-						<!--</div>-->
 					</div>
 			</sw-typeahead-input-field>
 	</cfoutput>
