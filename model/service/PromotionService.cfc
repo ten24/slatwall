@@ -1218,10 +1218,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
+	
+			filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
 			
-			if(filterGroupIndex > 1){
-				filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
-			}
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
