@@ -189,7 +189,6 @@ class SWFForm  {
     */
     public bindToController = {
         method:"@?",
-        dynamicMethod:"<?",
         sRedirectUrl:"@?",
         fRedirectUrl:"@?",
         sAction:"=?",
