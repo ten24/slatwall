@@ -151,6 +151,7 @@ Notes:
 					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
 					order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
 					order-total="#rc.order.getRefundableAmount()#"
+					fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 					<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 						refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
 					</cfif>
