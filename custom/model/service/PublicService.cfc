@@ -361,7 +361,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account = setupEnrollmentInfo(account, 'marketPartner');
         }
         if(account.hasErrors()){
-            addErrors(arguments.data,account.getErrors());
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
         return account;
     }
