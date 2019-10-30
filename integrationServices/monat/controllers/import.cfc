@@ -175,6 +175,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		 * countryCallingCode (to accountPhone)
     		 * productPackPurchasedFlag,
     		 * lastAccountStatusDate,
+    		 * terminationDate
     		 **/
     		 
     		 //* next to the field means I've verified it with the mapping document.
