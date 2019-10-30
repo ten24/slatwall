@@ -4,6 +4,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
+	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -326,7 +328,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             accountEmailAddress.setEmailAddress(email.emailAddress);//*
                             
                             //handle the account email type.
-                            if (!isNull(email['EmailTypeName']) && structKeyExists(email['EmailTypeName'])){
+                            if (!isNull(email['EmailTypeName']) && structKeyExists(email, 'EmailTypeName')){
                             	if (email['EmailTypeName'] == "Billing")  { accountEmailAddress.setAccountEmailType(aetBilling); } //*
                             	if (email['EmailTypeName'] == "Shipping") { accountEmailAddress.setAccountEmailType(aetShipping); }//*
                             }
@@ -385,7 +387,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			accountPhone.setPhoneNumber( phone.phoneNumber ); //*
                 			accountPhone.setRemoteID( phone.phoneID );//*
                 			
-                			if (!isNull(email['PhoneTypeName']) && structKeyExists(email['PhoneTypeName'])){
+                			if (!isNull(email['PhoneTypeName']) && structKeyExists(email, 'PhoneTypeName')){
                             	if (email['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
                             	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
                             	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
