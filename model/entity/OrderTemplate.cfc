@@ -107,6 +107,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
 	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="encodedPromotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
 	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
@@ -186,7 +187,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.encodedPromotionalRewardSkuCollectionConfig; 	
 		
 	}
-	
+
+	public string function getEncodedPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'encodedPromotionalFreeRewardSkuCollectionConfig')){
+			variables.encodedPromotionalFreeRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalFreeRewardSkuCollectionConfig()));  
+		} 
+		return variables.encodedPromotionalFreeRewardSkuCollectionConfig; 	
+		
+	}	
+
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
 		if(!structKeyExists(variables, 'canPlaceFutureScheduleOrderFlag')){
 			variables.canPlaceFutureScheduleOrderFlag = true;

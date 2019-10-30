@@ -1206,6 +1206,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return rewardSkus;
 	}
 
+	public array function getQualifiedFreePromotionRewardSkuIDs( required any order ){
+		var qualifiedFreePromotionRewardSkuIDs = [];	
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			
+			var skuCollection = promotionReward.getSkuCollection();
+			
+			if(promotionReward.getAmount() > 0 || isNull(skuCollection)){
+				continue; 
+			} 
+			
+			arrayAppend(qualifiedFreePromotionRewardSkuIDs, skuCollection.getPrimaryIDs(),true)	
+		}
+		return qualifiedFreePromotionRewardSkuIDs;  
+	}
+
 	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
 		var masterSkuCollection = getSkuService().getSkuCollectionList(); 
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );

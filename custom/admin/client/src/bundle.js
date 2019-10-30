@@ -64272,7 +64272,6 @@ var SWOrderTemplatePromotionItemsController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.edit = false;
-        this.filterOnZeroPriceFlag = false;
         this.defaultColumnConfig = {
             isVisible: true,
             isSearchable: false,
@@ -64304,16 +64303,31 @@ var SWOrderTemplatePromotionItemsController = /** @class */ (function () {
             isEditable: false
         };
         this.$onInit = function () {
+            if (_this.filterOnZeroPriceFlag == null) {
+                _this.filterOnZeroPriceFlag = false;
+            }
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.skuCollectionConfig['columns'] = []; //don't care about columns just filters
+            var priceFilter = {
+                displayPropertyIdentifier: "Price",
+                displayValue: 0.00,
+                propertyIdentifier: "_sku.price",
+                value: 0,
+                comparisonOperator: '>',
+                logicalOperator: 'AND'
+            };
+            if (_this.filterOnZeroPriceFlag) {
+                priceFilter['comparisonOperator'] = '=';
+            }
+            for (var i = 0; i < _this.skuCollectionConfig.filterGroups.length; i++) {
+                var filterGroup = _this.skuCollectionConfig.filterGroups[i];
+                if (filterGroup.filterGroup.length) {
+                    filterGroup.filterGroup.push(priceFilter);
+                }
+            }
             _this.addSkuCollection.loadJson(_this.skuCollectionConfig);
             _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection(_this.addSkuCollection);
-            if (_this.filterOnZeroPriceFlag) {
-                _this.addSkuCollection.addFilter('price', 0, '=');
-            }
-            else {
-                _this.addSkuCollection.addFilter('price', 0, '>');
-            }
+            //this.addSkuCollection.addFilter('skuPrices.price', 0);
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
