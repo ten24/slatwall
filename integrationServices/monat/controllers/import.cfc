@@ -250,8 +250,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
                     }
                     
-                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
-                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
+                    if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['LastActivityDate']));//*
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
@@ -299,14 +299,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
 	                    }
                     }
-                    
-                    //set language
-                    /*if (trim(account.countryCode?:"USA") == "USA"){
-                    	newAccount.setCountry( countryUSA );
-                    }else{
-                    	var country = getAddressService().getCountryByCountryCode3Digit(trim(account.countryCode)?:"USA");
-                    	newAccount.setCountry( country );
-                    }*/
                     
                     //set the language preference with a default to English *
                     newAccount.setLanguagePreference( this.getLanguagePreference(account['Language']?:"ENG") );//*
@@ -485,6 +477,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// import those records using the mapping file.
 		//var accountsResponse = getAccountData(pageNumber, pageSize);
 		//writedump(accountsResponse);abort;
+		var index=0;
+		
 		while (pageNumber < pageMax){
 			
     		var accountsResponse = getAccountData(pageNumber, pageSize);
@@ -494,11 +488,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    continue;
     		}
     		
-    		//writedump(accountsResponse);abort;
     		var accounts = accountsResponse.Data.Records;
     		
     		var transactionClosed = false;
-    		var index=0;
+    		index=0;
     		
     		 //* next to the field means I've verified it with the mapping document.
     		try{
@@ -509,6 +502,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			//Get or Create
         			var isNewAccount = false;
         			var newAccount = getService("AccountService").getAccountByRemoteID(account['AccountID']);
+        			
         			if (isNull(newAccount)){
         				isNewAccount = true;
         				var newUUID = rereplace(createUUID(), "-", "", "all");
@@ -575,8 +569,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
                     }
                     
-                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
-                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
+                    if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['LastActivityDate']));//*
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
@@ -670,7 +664,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	}
                     	
                     	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
-                    		var newAccountRelationship = getService("AccountService").getAccountRelationshipByChildAccountIDAndParentAccountID(childAccount.getAccountID(), sponsorAccount.getAccountID());
+                    		var newAccountRelationship = getService("AccountService")
+                    			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
                     		
                     		if (isNull(newAccountRelationship)){
                     			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
@@ -699,7 +694,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     // Create an account email address for each email.
                     if (structKeyExists(account, "Emails") && arrayLen(account.emails)){
                         for (var email in account.emails){
-                        	var accountEmailAddress = getService("AccountService").getAccountEmailAddressByRemoteID(email.emailID);
+                        	var accountEmailAddress = getService("AccountService")
+                        		.getAccountEmailAddressByRemoteIDANDEmailAddress({1:email.emailID, 2:email.emailAddress}, false);
                         	
                         	if (isNull(accountEmailAddress)){
                             	var accountEmailAddress = new Slatwall.model.entity.AccountEmailAddress();
@@ -729,7 +725,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			// Create an address for each
         			if (structKeyExists(account, "Addresses") && arrayLen(account.addresses)){
                         for (var address in account.addresses){ 
-                        	var accountAddress = getService("AccountService").getAccountAddressByRemoteID(address.addressID);
+                        	var accountAddress = getService("AccountService").getAccountAddressByRemoteID(address.addressID, false);
                         	
                         	if (isNull(accountAddress)){
 	                            var accountAddress = new Slatwall.model.entity.AccountAddress();
@@ -775,7 +771,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     if (structKeyExists(account, "Phones") && arrayLen(account.phones)){
                         for (var phone in account.phones){
                 			// Create a phone number
-                			var accountPhone = getService("AccountService").getAccountPhoneNumberByRemoteID(phone.PhoneID);
+                			var accountPhone = getService("AccountService").getAccountPhoneNumberByRemoteID(phone.PhoneID, false);
                 			
                 			if (isNull(accountPhone)){
                 				var accountPhone = new Slatwall.model.entity.AccountPhoneNumber();
@@ -790,7 +786,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
                             	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
                             	if (email['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
-                            	//if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
+                            	if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
                             }
                             
                 			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
@@ -813,12 +809,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			//echo("Commit account");
     			tx.commit();
     		}catch(e){
-    			/*if (!isNull(tx) && tx.isActive()){
+    			if (!isNull(tx) && tx.isActive()){
     			    tx.rollback();
-    			}*/
+    			}
     			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
     			writeDump(e); // rollback the tx
-    			//abort;
+    			abort;
     		}
     		//echo("Clear session");
     		ormGetSession().clear();//clear every page records...
