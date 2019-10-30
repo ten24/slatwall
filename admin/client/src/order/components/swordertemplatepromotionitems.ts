@@ -6,6 +6,9 @@ class SWOrderTemplatePromotionItemsController{
     
     public orderTemplate;
     public addSkuCollection;
+    
+    public filterOnZeroPriceFlag = false;
+    
     public skuCollectionConfig; 
     public skuColumns;
     
@@ -60,6 +63,12 @@ class SWOrderTemplatePromotionItemsController{
 		
 		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(this.addSkuCollection);
 		
+		if(this.filterOnZeroPriceFlag){
+			this.addSkuCollection.addFilter('price', 0, '=');
+		} else {
+			this.addSkuCollection.addFilter('price', 0, '>');
+		}
+		
 		this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 		this.skuColumns.push(
 	        {
@@ -85,7 +94,8 @@ class SWOrderTemplatePromotionItems implements ng.IDirective {
         skuCollectionConfig: '<?',
         skuPropertiesToDisplay: '@?',
         skuPropertyColumnConfigs: '<?',//array of column configs
-        edit:"=?"
+        edit:"=?",
+        filterOnZeroPriceFlag:"=?"
 	};
 	public controller=SWOrderTemplatePromotionItemsController;
 	public controllerAs="swOrderTemplatePromotionItems";

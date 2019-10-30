@@ -64272,6 +64272,7 @@ var SWOrderTemplatePromotionItemsController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.edit = false;
+        this.filterOnZeroPriceFlag = false;
         this.defaultColumnConfig = {
             isVisible: true,
             isSearchable: false,
@@ -64307,6 +64308,12 @@ var SWOrderTemplatePromotionItemsController = /** @class */ (function () {
             _this.skuCollectionConfig['columns'] = []; //don't care about columns just filters
             _this.addSkuCollection.loadJson(_this.skuCollectionConfig);
             _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection(_this.addSkuCollection);
+            if (_this.filterOnZeroPriceFlag) {
+                _this.addSkuCollection.addFilter('price', 0, '=');
+            }
+            else {
+                _this.addSkuCollection.addFilter('price', 0, '>');
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -64334,7 +64341,8 @@ var SWOrderTemplatePromotionItems = /** @class */ (function () {
             skuCollectionConfig: '<?',
             skuPropertiesToDisplay: '@?',
             skuPropertyColumnConfigs: '<?',
-            edit: "=?"
+            edit: "=?",
+            filterOnZeroPriceFlag: "=?"
         };
         this.controller = SWOrderTemplatePromotionItemsController;
         this.controllerAs = "swOrderTemplatePromotionItems";

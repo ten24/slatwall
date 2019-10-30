@@ -51,6 +51,7 @@
 
 <cfoutput>
 	<sw-order-template-promotion-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
-									data-sku-collection-config="#rc.orderTemplate.getEncodedPromotionalRewardSkuCollectionConfig()#">
+										data-sku-collection-config="#rc.orderTemplate.getEncodedPromotionalRewardSkuCollectionConfig()#"
+										data-filter-on-zero-price-flag="true">
 	</sw-order-template-promotion-items> 
 </cfoutput> 
