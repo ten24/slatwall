@@ -1,7 +1,13 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerEntity" {
 	property name="ProductService";
 	property name="SettingService";
-
+	property name="AddressService";
+	property name="AccountService";
+	property name="TypeService";
+	property name="settingService";
+	property name="integrationService";
+	property name="siteService";
+	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
 	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
@@ -142,6 +148,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		//var accountsResponse = getAccountData(pageNumber, pageSize);
 		//writedump(accountsResponse);abort;
 		while (pageNumber < pageMax){
+			echo("Starting #pageNumber#");
     		var accountsResponse = getAccountData(pageNumber, pageSize);
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
@@ -211,15 +218,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     //newAccount.setCountryCode( account['countryCode']?:"" );
-                    newAccount.setProductPackPurchasedFlag( account['productPack']?:false );
-                    
+                    if (structKeyExists(account, 'productPack') && len(account['productPack']) && account['productPack'] == true){
+                    	newAccount.setProductPackPurchasedFlag( true );
+                    }else{
+                    	newAccount.setProductPackPurchasedFlag( false );
+                    }
+                   
                     //Account Status
                     //select typeName, typeCode from SwType where typeID = "2c9180836dacb117016dad11ebf2000e"
                     if (!isNull(account['AccountStatusName']) && len(account['AccountStatusName'])){
                     	var newAccountStatusTypeID = getAccountStatusTypeIDFromName(account['AccountStatusName']);
                     	if (!isNull(newAccountStatusTypeID)){
                     		newAccount.setAccountStatus(account['AccountStatusCode']?:""); //*
-                    		newAccount.setAccountStatusTypeID( getAccountStatusTypeIDFromName(account['AccountStatusName']) );//*
+                    		
+                    		var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
+                    		if (!isNull(statusType)){
+                    			newAccount.setAccountStatusType( statusType );//*
+                    		}
                     	}
                     }
                     
@@ -231,23 +246,39 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newAccount.setSuperUserFlag(false);//*
                     
                     //dates
+                    if (!isNull(account['NextRenewDate']) && len(account['NextRenewDate'])){
+                    	newAccount.setRenewalDate( getDateFromString(account['NextRenewDate']) ); // * changed from nextRenewalDate to renewalDate
+                    }
                     
-                    newAccount.setRenewalDate( getDateFromString(account['NextRenewDate']) ); // * changed from nextRenewalDate to renewalDate
-                    newAccount.setBirthDate( getDateFromString(account['BirthDate']) ); // * changed from DOB to borthDate
-                    newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
-                    newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']) );//*
-                    //* (* means its verified in this file and in the mapping spreadsheet in case you didn't read that above.)
+                    if (!isNull(account['BirthDate']) && len(account['BirthDate'])){
+                    	newAccount.setBirthDate( getDateFromString(account['BirthDate']) ); // * changed from DOB to borthDate
+                    }
                     
-                    newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
+                    	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
+                    }
                     
+                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
+                    }
+                    
+                    if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
+                    	newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    }
+                    
+                    if (!isNull(account['TerminateDate']) && len(account['TerminateDate'])){
+                    	newAccount.setTerminationDate(getDateFromString(account['TerminateDate'])); // *
+                    }
+                    
+                    if (!isNull(account['LastStatusDate']) && len(account['LastStatusDate'])){
+                    	newAccount.setLastAccountStatusDate(getDateFromString(account['LastStatusDate'])); // * changed from last status date.
+                    }
                     
             		//spouse information
             		newAccount.setSpouseName( account['SpouseName']?:"" );//*
             		
-                    newAccount.setTerminationDate(account['TerminateDate']?:""); // *
-                    
                     // These fields are waiting on Monat for a response.
-                    newAccount.setLastAccountStatusDate(getDateFromString(account['LastStatusDate'])); // * changed from last status date.
+                    
                     newAccount.setPayerAccountNumber( account['PayerAccountId']?:"" );//*
                     newAccount.setPayerName( account['PayerName'] );//*
                     
@@ -269,7 +300,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
             		
                     //set the price group from the accountTypeName
-                    newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
+                    if (structKeyExists(account,'accountType') && len(account['accountType'])){
+	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
+	                    
+	                    if (!isNull(priceGroup)){
+	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
+	                    }
+                    }
                     
                     //set language
                     /*if (trim(account.countryCode?:"USA") == "USA"){
@@ -290,14 +327,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     //save the account.
+                    //writedump(newAccount);abort;
                     ormStatelessSession.insert("SlatwallAccount", newAccount);
-                    
+                    //echo("Inserts account");
                     //This sets the parent child account relationship and creates the owner account. *
+                    
                     if (!isNull(account['AccountNumber']) && !isNull(account['SponsorNumber']) && len(account['AccountNumber']) && len(account['SponsorNumber']) && account['AccountNumber'] != account['SponsorNumber']){
                     	var notUnique = false;
                     	try{
                     		var sponsorAccount = getService("AccountService").getAccountByAccountNumber(account['SponsorNumber']);
-                    		var childAccount = getService("AccountService").getAccountByAccountNumber(account['AccountNumber']);
+                    		var childAccount = newAccount;
                     	}catch(nonUniqueResultException){
                     		//not unique
                     		notUnique = true;
@@ -314,7 +353,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
 	                    	
 	                    	newAccount.setOwnerAccount(sponsorAccount);
-	                    	
+	                    	//echo("Inserts owner account");
                     	}
                     }
                     
@@ -335,6 +374,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             
                             ormStatelessSession.insert("SlatwallAccountEmailAddress", accountEmailAddress);
                             newAccount.setPrimaryEmailAddress(accountEmailAddress);
+                            //echo("Inserts email account");
                         }
                     }
                     
@@ -375,6 +415,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        ormStatelessSession.insert("SlatwallAddress", newAddress);
         			        ormStatelessSession.insert("SlatwallAccountAddress", accountAddress);
         			        newAccount.setPrimaryAddress(accountAddress);
+        			        //echo("Inserts address account");
                         } 
         			}
         			
@@ -392,28 +433,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
                             	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
                             	if (email['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
-                            	if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
+                            	//if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
                             }
                             
                 			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
                 			ormStatelessSession.insert("SlatwallAccountPhoneNumber", accountPhone);
                 			newAccount.setPrimaryPhoneNumber(accountPhone);
+                			//echo("Inserts phone account");
                         }
                     }
                     
                     // update with all the previous data
                     ormStatelessSession.update("SlatwallAccount", newAccount);
+                    //echo("Update account");
     			}
-    			
+    			//echo("Commit account");
     			tx.commit();
     		}catch(e){
-    			if (!isNull(tx) && tx.isActive()){
+    			/*if (!isNull(tx) && tx.isActive()){
     			    tx.rollback();
-    			}
+    			}*/
     			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
     			writeDump(e); // rollback the tx
-    			
-    		} 
+    			//abort;
+    		}
+    		//echo("Clear session");
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
