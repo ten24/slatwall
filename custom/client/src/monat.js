@@ -32368,7 +32368,6 @@ var SWFForm = /** @class */ (function () {
          */
         this.bindToController = {
             method: "@?",
-            dynamicMethod: "<?",
             sRedirectUrl: "@?",
             fRedirectUrl: "@?",
             sAction: "=?",
