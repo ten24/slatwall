@@ -1130,7 +1130,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function addHQLParam(required string paramKey, required any paramValue, string ormType) {
 
-		if(structKeyExists(arguments, 'ormType')){
+		//if using scrollable we need to format to make java happy
+		if( getUseScrollableFlag() && 
+			structKeyExists(arguments, 'ormType')
+		){
 			variables.hqlParamOrmTypes[ arguments.paramKey ] = arguments.ormType; 
 
 			if(arguments.ormType == 'boolean'){
@@ -1142,7 +1145,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		
 			if(arguments.ormType == 'big_decimal'){
-				arguments.paramValue = javaCast('bigdecimal', arguments.paramValue);
+				arguments.paramValue = javaCast('java.math.BigDecimal', arguments.paramValue);
 			}
 		} 
 
@@ -2580,7 +2583,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				rethrow;
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}
@@ -2775,7 +2777,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				rethrow;
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
