@@ -35,8 +35,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getAccountData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";
-	
+		var authKey = setting(authKeyName);
+		
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
@@ -65,19 +65,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getOrderData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";
+		var authKey = setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
-			},
-		  	"Filters": {
-		        "EntryDate": {
-		          "StartDate": "2019-08-01T00:00:00.000",
-		          "EndDate": "2019-08-02T00:00:00.000"
-		        }
-		    }
+			}
 		};
 	    /*
 	    "Filters": {
@@ -140,9 +134,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var aptFax = getTypeService().getTypeBySystemCode("aptFax");
 		var aptShipTo =  getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
 		
-		/*if(structKeyExists(integration.getSettings(), authKeyName)) {
-			authKey = getService("settingService").getSettingValue(settingName="integrationMonat#authKeyName#");
-		}*/
 		
 		// Call the api and get records from start to end.
 		// import those records using the mapping file.
@@ -489,10 +480,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var aptMobile = 	getTypeService().getTypeBySystemCode("aptMobile");
 		var aptFax =		getTypeService().getTypeBySystemCode("aptFax");
 		var aptShipTo = 	getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
-		
-		/*if(structKeyExists(integration.getSettings(), authKeyName)) {
-			authKey = getService("settingService").getSettingValue(settingName="integrationMonat#authKeyName#");
-		}*/
 		
 		// Call the api and get records from start to end.
 		// import those records using the mapping file.
