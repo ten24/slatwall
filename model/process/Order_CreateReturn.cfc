@@ -168,10 +168,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "fulfillmentAmount")) {
 			variables.fulfillmentAmount = 0;
 			if(!getPreProcessDisplayedFlag()) {
-				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountPreTaxTotal();	
 			}
 		}
 		return variables.fulfillmentAmount;
+	}
+	
+	public numeric function getFulfillmentTaxAmount(){
+		if(!structKeyExists(variables, "fulfillmentTaxAmount")) {
+			variables.fulfillmentTaxAmount = 0;
+			if(!getPreProcessDisplayedFlag()) {
+				variables.fulfillmentTaxAmount = getOrder().getFulfillmentChargeTaxAmount();	
+			}
+		}
+		return variables.fulfillmentTaxAmount;
+	}
+	
+	public numeric function getFulfillmentTaxAmountNotRefunded(){
+		return getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount();
 	}
 	
 	public boolean function getReceiveItemsFlag() {

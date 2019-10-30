@@ -71142,7 +71142,12 @@ var ReturnOrderItem = /** @class */ (function () {
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
-        this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        if (this.refundUnitPrice) {
+            this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        }
+        else {
+            this.maxRefund = this.total;
+        }
         return this;
     }
     return ReturnOrderItem;
@@ -71157,6 +71162,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.refundTotal = 0;
         this.refundPVTotal = 0;
         this.refundCVTotal = 0;
+        this.fulfillmentRefundTaxAmount = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
             for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
@@ -71189,8 +71195,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                     return (item == orderItem) ? total : total += item.refundTotal;
                 }, 0);
                 orderMaxRefund = _this.orderTotal - refundTotal;
+                maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
             }
-            maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
             if ((orderItem.refundTotal > maxRefund)) {
                 orderItem.refundUnitPrice = Math.max(maxRefund, 0) / orderItem.returnQuantity;
                 orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
@@ -71257,6 +71263,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
                 _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
             }
+            _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
@@ -71273,12 +71280,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
         this.fulfillmentRefundAmount = 0;
+        if (this.fulfillmentTaxAmount == undefined) {
+            this.fulfillmentTaxAmount = 0;
+        }
         if (this.refundOrderItems == undefined) {
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();
         }
         else {
-            this.orderItems = this.refundOrderItems.map(function (item) { return new ReturnOrderItem(item); });
+            this.orderItems = this.refundOrderItems.map(function (item) {
+                item.calculatedExtendedPriceAfterDiscount = _this.orderTotal;
+                return new ReturnOrderItem(item);
+            });
         }
         $hibachi.getCurrencies().then(function (result) {
             _this.currencySymbol = result.data[_this.currencyCode];
@@ -71298,7 +71311,8 @@ var SWReturnOrderItems = /** @class */ (function () {
             orderPayments: '<',
             refundOrderItems: '<?',
             orderType: '@',
-            orderTotal: '<?'
+            orderTotal: '<?',
+            fulfillmentTaxAmount: '@'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
