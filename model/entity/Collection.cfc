@@ -1147,8 +1147,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} 
 
 		variables.hqlParams[ arguments.paramKey ] = arguments.paramValue;
-
-		if(structKeyExists(arguments, 'ormType')){
 	}
 
 	public void function addHQLAlias(required string aliasKey, required any aliasValue) {
