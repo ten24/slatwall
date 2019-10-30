@@ -384,6 +384,129 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return variables.collectionEntityObject;
 	}
+	
+	
+	/**
+	 * Named as CollectionObject-listingSearchConfig, as Collection.cfc has it's own listingSearchConfig
+	 * 
+	 * 
+	 * 	var listingSearchConfig  = {
+			
+			//default options
+			
+			"wildCardPosition"
+			"showWildCardPositionDropdown"
+			"searchFilterPropertyIdentifier"
+			"showSearchFilterDropDown"
+			"ignoreSearchFilters",
+	
+			//extra-options
+			"selectedSearchFiterCode" = "lastThreeMonths"
+			
+		};
+	 * 
+	*/ 
+	public any function getCollectionObjectListingSearchConfig() {
+		
+		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
+			this.setCollectionObjectListingSearchConfig({}); // will set the defaults
+		}
+		
+		return variables.collectionObjectListingSearchConfig;
+	}
+	
+
+	/**
+	 * Do not update the struct directly (getCollectionConfigStruct()[listingSearchConfig]) ;
+	*/ 
+	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
+		
+		variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+		if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
+			collectionObjectListingSearchConfig = this.getCollectionConfigStruct()['listingSearchConfig'];
+		}
+		StructAppend(variables['collectionObjectListingSearchConfig'], arguments.listingSearchConfig,true);// Merge and override
+		
+		//update The CollectionConfigStruct
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["listingSearchConfig"] = variables['collectionObjectListingSearchConfig'];
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	
+	public array function getListingSearchFilterOptions() {
+		// Replicating to keep things simple for now
+		// TODO: see if we'd like to make it more configurable
+		return [
+					{
+		                title:'Last 3 Months',
+		                code:'lastThreeMonths',
+		                criteria:"m:3",
+		            },
+		            
+		            {
+		                title:'Last 6 Months',
+		                code:'lastSixMonths',
+		                criteria:"m:6",
+		            },
+		            
+		            {
+		                title:'1 Year Ago',
+		                code:'lastOneYear',
+		                criteria:"yyyy:1",
+		            },
+		            
+		            {
+		                title:'All Time',
+		                code:'allRecords',
+		            }
+		            
+		        ];
+	}
+	
+	public void function updateListingSearchFilters() {
+		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
+		
+		var searchFilterCondition = (
+				StructKeyExists(listingSearchConfig, 'selectedSearchFilterCode')
+				&& len( trim(listingSearchConfig.selectedSearchFilterCode) )
+			);
+		
+		//if we have keywords and there's no search-filter applied
+		if(!searchFilterCondition && Arraylen(getKeywordArray())){ 
+			listingSearchConfig['selectedSearchFilterCode'] = 'lastThreeMonths';
+			searchFilterCondition = true;
+		}
+
+		//if the the user has selected 'allRecords'
+		if(searchFilterCondition && listingSearchConfig.selectedSearchFilterCode == "allRecords") {
+			searchFilterCondition = false;
+		}
+		
+
+		if(!searchFilterCondition || listingSearchConfig.ignoreSearchFilters ) {
+			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
+			return; //nothing to add
+		} 
+
+		
+		//        else add listingSearchFilter      //
+		var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
+									return arguments.opt.code == listingSearchConfig.selectedSearchFilterCode;
+								});
+
+		var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
+		var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
+
+		this.addFilter(
+			propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
+			value = filterValue,
+			comparisonOperator = ">=",
+		    filterGroupAlias = "listingSearchFilters"
+		);
+	
+	}
+
 
 	public string function getAlias(required string propertyIdentifier){
 		var alias = "";
@@ -435,6 +558,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		this.setCollectionConfigStruct(collectionConfig);
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
+ 	
+ 	public void function removeFilterGroupByFilterGroupAlias(required string filterGroupAlias){
+ 		if(this.hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
+ 			var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias);
+
+ 			ArrayDeleteAt( this.getCollectionConfigStruct()['filterGroups'], filterGroupIndex); 
+ 			
+ 			StructDelete(variables.filterGroupAliasMap, arguments.filterGroupAlias);
+ 		}
+ 	}
+
+ 	
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="none"){
  		if(findNoCase('(',arguments.propertyIdentifier)){
@@ -693,6 +828,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		collectionConfig["isDistinct"] = arguments.isDistinct;
 		this.setCollectionConfigStruct(collectionConfig);
 	}
+	
 
 	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -3096,7 +3232,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
 			
-			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType);
 		
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
@@ -3957,6 +4093,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!isnull(this.getParentCollection())){
 				mergeParentCollectionFilters();
 			}
+			
+			//if the request's comming from the listing displays
+			if( StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')) {
+				this.updateListingSearchFilters();
+			}
+			
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
@@ -4082,6 +4224,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 		}
+		var searchConfig = this.getCollectionObjectListingSearchConfig(); 
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {
@@ -4095,9 +4238,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				
-				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
-				switch(wildcrdPosition){
+				switch(searchConfig.wildCardPosition){
 					case "left":
 							currentFilter['value']="%#keyword#";
 						break;
@@ -4184,7 +4325,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			keywordIndex++;
 		}
-
+		
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig
