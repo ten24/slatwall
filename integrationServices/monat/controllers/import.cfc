@@ -467,6 +467,388 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
+	//monat:import.upsertAccounts&pageNumber=33857&pageSize=50&pageMax=36240
+	public void function upsertAccounts(rc){ 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		//Objects we need to set over and over...
+		var countryUSA = getAddressService().getCountryByCountryCode3Digit("USA");
+		var aetShipping =  getTypeService().getTypeBySystemCode("aetShipping");
+		var aetBilling = getTypeService().getTypeBySystemCode("aetBilling");
+		var aptHome =  getTypeService().getTypeBySystemCode("aptHome");
+		var aptWork = getTypeService().getTypeBySystemCode("aptWork");
+		var aptMobile =  getTypeService().getTypeBySystemCode("aptMobile");
+		var aptFax = getTypeService().getTypeBySystemCode("aptFax");
+		var aptShipTo =  getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
+		
+		/*if(structKeyExists(integration.getSettings(), authKeyName)) {
+			authKey = getService("settingService").getSettingValue(settingName="integrationMonat#authKeyName#");
+		}*/
+		
+		// Call the api and get records from start to end.
+		// import those records using the mapping file.
+		//var accountsResponse = getAccountData(pageNumber, pageSize);
+		//writedump(accountsResponse);abort;
+		while (pageNumber < pageMax){
+			echo("Starting #pageNumber#");
+    		var accountsResponse = getAccountData(pageNumber, pageSize);
+    		if (accountsResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		//writedump(accountsResponse);abort;
+    		var accounts = accountsResponse.Data.Records;
+    		
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		 //* next to the field means I've verified it with the mapping document.
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			for (var account in accounts){
+    			    index++;
+        		    
+        			//Get or Create
+        			var isNewAccount = false;
+        			var newAccount = getService("AccountService").getAccountByRemoteID(account['AccountID']);
+        			if (isNull(newAccount)){
+        				isNewAccount = true;
+        				var newUUID = rereplace(createUUID(), "-", "", "all");
+        				var newAccount = Slatwall.model.entity.Account();
+        				newAccount.setAccountID(newUUID);
+        				newAccount.setRemoteID(account['AccountId']?:""); //*
+        			}
+        			
+        			newAccount.setFirstName(account['FirstName']?:"");//*
+        			newAccount.setLastName(account['LastName']?:"");//*
+                    newAccount.setAccountNumber(account['AccountNumber']?:"");//*
+                    newAccount.setAllowCorporateEmailsFlag(account['AllowCorporateEmails']?:false);//*- changed to Flag
+                    newAccount.setAllowUplineEmailsFlag(account['AllowUplineEmails']?:false);//* - changed to Flag
+                    newAccount.setGender(account['Gender']?:""); // * attribute with attribute options exist.
+                    newAccount.setBusinessAccountFlag(account['BusinessAccount']?:false); //boolean *
+                    newAccount.setCompany(account['BusinessName']?:"");//*
+                    newAccount.setActiveFlag( false ); 
+            		newAccount.setTestAccountFlag( account['TestAccount']?:false );
+            		newAccount.setCareerTitle( account['CareerTitle']?:"" );
+            		
+                    //set the status if it exists.
+                    if (!isNull(account['ComplianceFlag']) && len(account['ComplianceFlag'])){
+                    	newAccount.setComplianceStatus(account['ComplianceFlag']);//* 
+                    }
+                    
+                    //newAccount.setCountryCode( account['countryCode']?:"" );
+                    if (structKeyExists(account, 'productPack') && len(account['productPack']) && account['productPack'] == true){
+                    	newAccount.setProductPackPurchasedFlag( true );
+                    }else{
+                    	newAccount.setProductPackPurchasedFlag( false );
+                    }
+                   
+                    //Account Status
+                    //select typeName, typeCode from SwType where typeID = "2c9180836dacb117016dad11ebf2000e"
+                    if (!isNull(account['AccountStatusName']) && len(account['AccountStatusName'])){
+                    	var newAccountStatusTypeID = getAccountStatusTypeIDFromName(account['AccountStatusName']);
+                    	if (!isNull(newAccountStatusTypeID)){
+                    		newAccount.setAccountStatus(account['AccountStatusCode']?:""); //*
+                    		
+                    		var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
+                    		if (!isNull(statusType)){
+                    			newAccount.setAccountStatusType( statusType );//*
+                    		}
+                    	}
+                    }
+                    
+                    //Account Type
+                    newAccount.setAccountType(account['AccountTypeName']?:""); //*
+                    
+                    //lastAccountStatusDate
+                    
+                    newAccount.setSuperUserFlag(false);//*
+                    
+                    //dates
+                    if (!isNull(account['NextRenewDate']) && len(account['NextRenewDate'])){
+                    	newAccount.setRenewalDate( getDateFromString(account['NextRenewDate']) ); // * changed from nextRenewalDate to renewalDate
+                    }
+                    
+                    if (!isNull(account['BirthDate']) && len(account['BirthDate'])){
+                    	newAccount.setBirthDate( getDateFromString(account['BirthDate']) ); // * changed from DOB to borthDate
+                    }
+                    
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
+                    	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
+                    }
+                    
+                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
+                    }
+                    
+                    if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
+                    	newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    }
+                    
+                    if (!isNull(account['TerminateDate']) && len(account['TerminateDate'])){
+                    	newAccount.setTerminationDate(getDateFromString(account['TerminateDate'])); // *
+                    }
+                    
+                    if (!isNull(account['LastStatusDate']) && len(account['LastStatusDate'])){
+                    	newAccount.setLastAccountStatusDate(getDateFromString(account['LastStatusDate'])); // * changed from last status date.
+                    }
+                    
+            		//spouse information
+            		newAccount.setSpouseName( account['SpouseName']?:"" );//*
+            		
+                    // These fields are waiting on Monat for a response.
+                    
+                    newAccount.setPayerAccountNumber( account['PayerAccountId']?:"" );//*
+                    newAccount.setPayerName( account['PayerName'] );//*
+                    
+                    
+                    //create a new SwAccountGovernementID if needed
+                    if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
+                    	
+                    	var accountGovernmentID = getService("AccountService")
+                    		.getAccountGovernmentIDByAccountID(newAccount.getAccountID());
+                    	
+        				if (isNewAccount || isNull(accountGovernmentID)){
+	                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+		                    var isNewAccountGovernmentID = true;
+        				}
+        				
+        				accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
+		                accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
+		                accountGovernmentID.setAccount(newAccount);//*
+		                    
+		                //insert the relationship
+		                if (accountGovernmentID.getNewFlag()){
+		                	ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
+		                }else{
+		                	ormStatelessSession.update("SlatwallAccountGovernmentID", accountGovernmentID);
+		                }
+                    }
+                    
+                    //set created account id
+                    newAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );//can't change as Irta is using...
+                    
+            		
+                    //set the price group from the accountTypeName
+                    if (structKeyExists(account,'accountType') && len(account['accountType'])){
+	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
+	                    
+	                    if (!isNull(priceGroup)){
+	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
+	                    }
+                    }
+                    
+                    //set language
+                    /*if (trim(account.countryCode?:"USA") == "USA"){
+                    	newAccount.setCountry( countryUSA );
+                    }else{
+                    	var country = getAddressService().getCountryByCountryCode3Digit(trim(account.countryCode)?:"USA");
+                    	newAccount.setCountry( country );
+                    }*/
+                    
+                    //set the language preference with a default to English *
+                    newAccount.setLanguagePreference( this.getLanguagePreference(account['Language']?:"ENG") );//*
+                    
+                    // sets the account created site.
+                    var createdSite = getService("SiteService")
+                    	.getSiteBySiteCode(getCreatedSiteCode(account['CountryCode']));
+                    
+                    if (!isNull(createdSite)){
+                    	newAccount.setAccountCreatedSite(createdSite);
+                    }
+                    
+                    //save the account.
+                    //writedump(newAccount);abort;
+                    if (isNewAccount){
+                    	ormStatelessSession.insert("SlatwallAccount", newAccount);
+                    }else{
+                    	ormStatelessSession.update("SlatwallAccount", newAccount);
+                    }
+                    
+                    //echo("Inserts account");
+                    //This sets the parent child account relationship and creates the owner account. *
+                    
+                    if (!isNull(account['AccountNumber']) && !isNull(account['SponsorNumber']) && len(account['AccountNumber']) && len(account['SponsorNumber']) && account['AccountNumber'] != account['SponsorNumber']){
+                    	var notUnique = false;
+                    	try{
+                    		var sponsorAccount = getService("AccountService")
+                    			.getAccountByAccountNumber(account['SponsorNumber']);
+                    		var childAccount = newAccount;
+                    	}catch(nonUniqueResultException){
+                    		//not unique
+                    		notUnique = true;
+                    	}
+                    	
+                    	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
+                    		var newAccountRelationship = getService("AccountService").getAccountRelationshipByChildAccountIDAndParentAccountID(childAccount.getAccountID(), sponsorAccount.getAccountID());
+                    		
+                    		if (isNull(newAccountRelationship)){
+                    			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+                    		}
+                    		
+	                    	newAccountRelationship.setParentAccount(sponsorAccount);
+	                    	newAccountRelationship.setChildAccount(childAccount);
+	                    	newAccountRelationship.setActiveFlag( true );
+	                    	newAccountRelationship.setCreatedDateTime( now() );
+	                    	newAccountRelationship.setModifiedDateTime( now() );
+	                    	
+	                    	//insert the relationship
+	                    	if (newAccountRelationship.getNewFlag()){
+	                    		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}else{
+	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}
+	                    	
+	                    	newAccount.setOwnerAccount(sponsorAccount);
+	                    	//echo("Inserts owner account");
+	                    	
+                    	}
+                    }
+                    
+                    
+                    // Create an account email address for each email.
+                    if (structKeyExists(account, "Emails") && arrayLen(account.emails)){
+                        for (var email in account.emails){
+                        	var accountEmailAddress = getService("AccountService").getAccountEmailAddressByRemoteID(email.emailID);
+                        	
+                        	if (isNull(accountEmailAddress)){
+                            	var accountEmailAddress = new Slatwall.model.entity.AccountEmailAddress();
+                        	}
+                        	
+            			    accountEmailAddress.setAccount(newAccount);//*
+                            accountEmailAddress.setRemoteID(email.emailID); //*
+                            accountEmailAddress.setEmailAddress(email.emailAddress);//*
+                            
+                            //handle the account email type.
+                            if (!isNull(email['EmailTypeName']) && structKeyExists(email, 'EmailTypeName')){
+                            	if (email['EmailTypeName'] == "Billing")  { accountEmailAddress.setAccountEmailType(aetBilling); } //*
+                            	if (email['EmailTypeName'] == "Shipping") { accountEmailAddress.setAccountEmailType(aetShipping); }//*
+                            }
+                            
+                            if (accountEmailAddress.getNewFlag()){
+                            	ormStatelessSession.insert("SlatwallAccountEmailAddress", accountEmailAddress);
+                            }else{
+                            	ormStatelessSession.update("SlatwallAccountEmailAddress", accountEmailAddress);
+                            }
+                            
+                            newAccount.setPrimaryEmailAddress(accountEmailAddress);
+                            //echo("Inserts email account");
+                        }
+                    }
+                    
+        			// Create an address for each
+        			if (structKeyExists(account, "Addresses") && arrayLen(account.addresses)){
+                        for (var address in account.addresses){ 
+                        	var accountAddress = getService("AccountService").getAccountAddressByRemoteID(address.addressID);
+                        	
+                        	if (isNull(accountAddress)){
+	                            var accountAddress = new Slatwall.model.entity.AccountAddress();
+	                            accountAddress.setAccount(newAccount);//*
+	        			        accountAddress.setRemoteID( address.addressID );//*
+	        			        accountAddress.setAccountAddressName( address.AddressTypeName?:"");
+	                        	
+	                            var newAddress = new Slatwall.model.entity.Address();
+	        			        newAddress.setFirstName( account['FirstName']?:"" );//*
+	        			        newAddress.setLastName( account['LastName']?:"" );//*
+	        			        newAddress.setCity( address['City']?:"" );//*
+	        			        newAddress.setStreetAddress( address['Address1']?:"" );//*
+	        			        newAddress.setStreet2Address( address['Address2']?:"" );//*
+	        			        newAddress.setPostalCode(address['postalCode']?:"");//*
+	        			        
+	        			        //handle country
+	        			        //&& address.countryCode contains "USA"
+	        			        if (structKeyExists(address, "CountryCode")){
+	        			            //get the country by three digit
+	        			            var country = getAddressService().getCountryByCountryCode3Digit(trim(address.countryCode));
+	        			            if (!isNull(country)){
+	        			                newAddress.setCountryCode( country.getCountryCode() );  
+	        			                if (country.getStateCodeShowFlag()){
+	        			                    //using state
+	        			                    newAddress.setStateCode( address.stateOrProvince?:"" );//*
+	        			                }else{
+	        			                    //using province
+	        			                    newAddress.setProvince( address.stateOrProvince?:"" );//*
+	        			                }
+	        			            }
+	        			        }
+        			        	accountAddress.setAddress(newAddress);
+        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
+        			        	ormStatelessSession.insert("SlatwallAccountAddress", accountAddress);
+                        	}
+        			        
+        			        newAccount.setPrimaryAddress(accountAddress);
+        			        //echo("Inserts address account");
+                        } 
+        			}
+        			
+        			//create all the phones
+                    if (structKeyExists(account, "Phones") && arrayLen(account.phones)){
+                        for (var phone in account.phones){
+                			// Create a phone number
+                			var accountPhone = getService("AccountService").getAccountPhoneNumberByRemoteID(phone.PhoneID);
+                			
+                			if (isNull(accountPhone)){
+                				var accountPhone = new Slatwall.model.entity.AccountPhoneNumber();
+                			}
+                			
+                			accountPhone.setAccount(newAccount); //*
+                			accountPhone.setPhoneNumber( phone.phoneNumber ); //*
+                			accountPhone.setRemoteID( phone.phoneID );//*
+                			
+                			if (!isNull(email['PhoneTypeName']) && structKeyExists(email, 'PhoneTypeName')){
+                            	if (email['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
+                            	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
+                            	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
+                            	if (email['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
+                            	//if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
+                            }
+                            
+                			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
+                			
+                			if (accountPhone.getNewFlag()){
+                				ormStatelessSession.insert("SlatwallAccountPhoneNumber", accountPhone);
+                			}else{
+                				ormStatelessSession.update("SlatwallAccountPhoneNumber", accountPhone);
+                			}
+                			
+                			newAccount.setPrimaryPhoneNumber(accountPhone);
+                			//echo("Inserts phone account");
+                        }
+                    }
+                    
+                    // update with all the previous data
+                    ormStatelessSession.update("SlatwallAccount", newAccount);
+                    //echo("Update account");
+    			}
+    			//echo("Commit account");
+    			tx.commit();
+    		}catch(e){
+    			/*if (!isNull(tx) && tx.isActive()){
+    			    tx.rollback();
+    			}*/
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			//abort;
+    		}
+    		//echo("Clear session");
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
+	}
+	
 	/**
 	 * USA (ENG), -> en
 	 * CAN (ENG, FRN), -> fr
