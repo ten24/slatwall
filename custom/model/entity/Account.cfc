@@ -52,4 +52,11 @@ component {
 		return variables.accountNumber;
 	}
 
+
+	//custom validation methods
+		
+	public boolean function restrictRenewalDateToOneYearFromNow() {
+		
+		return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+	}
 } 
