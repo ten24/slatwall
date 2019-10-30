@@ -11,6 +11,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
 	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 
 	// @hint helper function to return a Setting
@@ -473,21 +474,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	
 		//get the api key from integration settings.
-		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
-		var pageNumber = rc.pageNumber?:1;
-		var pageSize = rc.pageSize?:25;
-		var pageMax = rc.pageMax?:1;
+		var integration =	getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber =	rc.pageNumber?:1;
+		var pageSize =		rc.pageSize?:25;
+		var pageMax =		rc.pageMax?:1;
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		
 		//Objects we need to set over and over...
-		var countryUSA = getAddressService().getCountryByCountryCode3Digit("USA");
-		var aetShipping =  getTypeService().getTypeBySystemCode("aetShipping");
-		var aetBilling = getTypeService().getTypeBySystemCode("aetBilling");
-		var aptHome =  getTypeService().getTypeBySystemCode("aptHome");
-		var aptWork = getTypeService().getTypeBySystemCode("aptWork");
-		var aptMobile =  getTypeService().getTypeBySystemCode("aptMobile");
-		var aptFax = getTypeService().getTypeBySystemCode("aptFax");
-		var aptShipTo =  getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
+		var countryUSA =	getAddressService().getCountryByCountryCode3Digit("USA");
+		var aetShipping =	getTypeService().getTypeBySystemCode("aetShipping");
+		var aetBilling =	getTypeService().getTypeBySystemCode("aetBilling");
+		var aptHome =		getTypeService().getTypeBySystemCode("aptHome");
+		var aptWork =		getTypeService().getTypeBySystemCode("aptWork");
+		var aptMobile = 	getTypeService().getTypeBySystemCode("aptMobile");
+		var aptFax =		getTypeService().getTypeBySystemCode("aptFax");
+		var aptShipTo = 	getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
 		
 		/*if(structKeyExists(integration.getSettings(), authKeyName)) {
 			authKey = getService("settingService").getSettingValue(settingName="integrationMonat#authKeyName#");
@@ -498,13 +499,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		//var accountsResponse = getAccountData(pageNumber, pageSize);
 		//writedump(accountsResponse);abort;
 		while (pageNumber < pageMax){
-			echo("Starting #pageNumber#");
+			
     		var accountsResponse = getAccountData(pageNumber, pageSize);
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    pageNumber++;
     		    continue;
     		}
+    		
     		//writedump(accountsResponse);abort;
     		var accounts = accountsResponse.Data.Records;
     		
@@ -646,14 +648,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
 	                    }
                     }
-                    
-                    //set language
-                    /*if (trim(account.countryCode?:"USA") == "USA"){
-                    	newAccount.setCountry( countryUSA );
-                    }else{
-                    	var country = getAddressService().getCountryByCountryCode3Digit(trim(account.countryCode)?:"USA");
-                    	newAccount.setCountry( country );
-                    }*/
                     
                     //set the language preference with a default to English *
                     newAccount.setLanguagePreference( this.getLanguagePreference(account['Language']?:"ENG") );//*
