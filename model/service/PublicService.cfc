@@ -2182,5 +2182,27 @@ component  accessors="true" output="false"
     }
     
 
-    
+    public any function getBaseProductCollectionList(required any data){
+        param name="arguments.data.currencyCode" default=""; 
+        param name="arguments.data.priceGroupCode" default="";
+        
+        //TODO: Consider starting from skuPrice table for less joins
+        var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.addDisplayProperty('defaultSku.skuID');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
+        productCollectionList.addDisplayProperty('urlTitle');
+        productCollectionList.addDisplayProperty('defaultSku.imageFile');
+
+        productCollectionList.addFilter('activeFlag',1);
+        productCollectionList.addFilter('publishedFlag',1);
+        productCollectionList.addFilter('skus.activeFlag',1);
+        productCollectionList.addFilter('skus.publishedFlag',1);
+        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
+
+        return productCollectionList
+    }   
 }

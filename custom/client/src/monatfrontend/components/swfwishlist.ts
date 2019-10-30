@@ -3,8 +3,6 @@
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
-
-
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
     public orderTemplates:Array<any>;
@@ -19,14 +17,13 @@ class SWFWishlistController {
     public skuID:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
-
     
     // @ngInject
     constructor(
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService,
+        public orderTemplateService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -38,7 +35,8 @@ class SWFWishlistController {
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-
+        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
+        this.observerService.attach(this.closeModals,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
@@ -65,7 +63,6 @@ class SWFWishlistController {
             return result;
         });
     }
-
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
@@ -111,6 +108,12 @@ class SWFWishlistController {
         });
     }
     
+    public getWishlistsLight = () =>{
+        this.orderTemplateService.getOrderTemplatesLight().then(response =>{
+            this.orderTemplates = response['orderTemplates'];
+        });
+    }
+    
     public successfulAlert = () =>{
         const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
         const wishlistInnerText = document.getElementById("wishlistTextWrapper");
@@ -131,6 +134,11 @@ class SWFWishlistController {
     }
     
     public search =()=>{
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
     }
     
 }

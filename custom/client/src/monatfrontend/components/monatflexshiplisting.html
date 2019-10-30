@@ -1,15 +1,27 @@
-<div sw-loading="monatFlexshipListing.initialized">
-    <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates" >
-        <monat-flexship-card data-order-template="orderTemplate"
-                         data-account-addresses="monatFlexshipListing.accountAddresses"
-                         data-account-payment-methods="monatFlexshipListing.accountPaymentMethods"
-                         data-expiration-month-options="monatFlexshipListing.expirationMonthOptions"
-                         data-expiration-year-options="monatFlexshipListing.expirationYearOptions"
-                         data-shipping-method-options="monatFlexshipListing.shippingMethodOptions"
-                         data-state-code-options="monatFlexshipListing.stateCodeOptions"
-                         data-cancellation-reason-type-options="monatFlexshipListing.cancellationReasonTypeOptions"
-                         data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
-                         >
-        </monat-flexship-card>
+<div sw-loading="!monatFlexshipListing.initialized">
+    
+    <div ng-if="!monatFlexshipListing.orderTemplates.length">
+        <h2 sw-rbkey="'frontend.flexship.noFlexships'"></h2>
+    </div>
+    
+    <button
+        role="button"
+        ng-click="monatFlexshipListing.createNewFlexship()" 
+        class="btn bg-primary btn-add"
+        ng-class="{loading: monatFlexshipListing.loading}"
+    >Create Flexship</button>
+
+    <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates">
+        <monat-flexship-card 
+            data-order-template="orderTemplate"
+            data-account-addresses="monatFlexshipListing.accountAddresses"
+            data-account-payment-methods="monatFlexshipListing.accountPaymentMethods"
+            data-expiration-month-options="monatFlexshipListing.expirationMonthOptions"
+            data-expiration-year-options="monatFlexshipListing.expirationYearOptions"
+            data-shipping-method-options="monatFlexshipListing.shippingMethodOptions"
+            data-state-code-options="monatFlexshipListing.stateCodeOptions"
+            data-cancellation-reason-type-options="monatFlexshipListing.cancellationReasonTypeOptions"
+            data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
+        ></monat-flexship-card>
     </div>
 </div>
