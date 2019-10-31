@@ -60687,7 +60687,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
-        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default]
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
@@ -60736,6 +60737,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+        this.loading = true;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
             payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
@@ -60764,6 +60766,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         }, function (reason) {
             throw (reason);
             // TODO: show alert
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipShippingMethodModalController;
@@ -84308,19 +84312,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                // this.getAdminAttributesByType('detail');
+                _this.adminattributes = _this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                // this.getAdminAttributesByType('edit');
+                _this.adminattributes = _this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                // this.getAdminAttributesByType('delete');
+                _this.adminattributes = _this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                // this.getAdminAttributesByType('add');
+                _this.adminattributes = _this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -84506,23 +84510,17 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
-        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
+            var recordActionName = 'record' + type.toUpperCase() + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
-            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
+            var recordActionQueryStringName = recordActionName + 'QueryString';
+            var recordActionModalName = recordActionName + 'Modal';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
-        };
-        this.capitalize = function (s) {
-            if (typeof s !== 'string' || s.length === 0)
-                return s;
-            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -84633,29 +84631,6 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
-    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
-        var queryString = "";
-        action = this.capitalize(action);
-        var actionProppertyName = "record" + action + "ActionProperty";
-        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
-        if (this[actionProppertyName]) {
-            queryString += '&' + this[actionProppertyName];
-            if (this[actionPropertyIdentifierName]) {
-                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
-            }
-            else {
-                queryString += '=' + pageRecord[this[actionProppertyName]];
-            }
-        }
-        else {
-            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
-        }
-        var actionQueryStringName = "record" + action + "QueryString";
-        if (this[actionQueryStringName]) {
-            queryString += '&' + this[actionQueryStringName];
-        }
-        return queryString;
-    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -84702,25 +84677,23 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
-            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
-            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
+            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
-            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionPropertyIdentifier: "@?",
+            recordDetailActionIdProperty: "@?",
+            recordDetailActionIdKey: "@?",
             recordDetailQueryString: "@?",
-            recordDeleteModal: "<?",
+            recordDetailModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
-            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",
