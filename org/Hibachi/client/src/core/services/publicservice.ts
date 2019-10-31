@@ -333,7 +333,9 @@ class PublicService {
 
         if(data){
             method = "post";
-            data.returnJsonObjects = "cart,account";
+            if(data.returnJsonObjects == undefined){
+                data.returnJsonObjects = "cart,account";
+            }
             if(this.cmsSiteID){
                 data.cmsSiteID = this.cmsSiteID;
             }
@@ -345,8 +347,6 @@ class PublicService {
             }
         }
         if (method == "post"){
-
-             data.returnJsonObjects = "cart,account";
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
 

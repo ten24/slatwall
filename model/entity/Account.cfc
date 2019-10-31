@@ -168,21 +168,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
- property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
- property name="dob" ormtype="string";
- property name="lastRenewDate" ormtype="string";
- property name="nextRenewDate" ormtype="string";
- property name="lastStatusDate" ormtype="string";
+ property name="birthDate" ormtype="timestamp" hb_formatType="date";
  property name="accountNumber" ormtype="string";
- property name="terminateDate" ormtype="string";
- property name="PayerAccountIdentification" ormtype="string";
  property name="payerName" ormtype="string";
- property name="govermentNumber" ormtype="string";
  property name="driverLicense" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
- property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
+ //CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);

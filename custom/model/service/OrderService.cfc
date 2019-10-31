@@ -135,8 +135,9 @@ component extends="Slatwall.model.service.OrderService" {
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
-			if(hasInfoForFulfillment){	
-				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+			if(hasInfoForFulfillment){
+				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
@@ -388,7 +389,9 @@ component extends="Slatwall.model.service.OrderService" {
         }
 	    
 	    arguments.order = super.processOrder_releaseCredits(argumentCollection=arguments);
-	    arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    if(!order.hasErrors()){
+	    	arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    }
 	    return order;
 	}
 	

@@ -35,7 +35,8 @@ class SWFWishlistController {
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-
+        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
+        this.observerService.attach(this.closeModals,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
@@ -133,6 +134,11 @@ class SWFWishlistController {
     }
     
     public search =()=>{
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
     }
     
 }
