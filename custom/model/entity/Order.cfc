@@ -138,7 +138,8 @@ component {
     public numeric function getCustomPriceFieldSubtotal(required string customPriceField){
         var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
-		for(var i=1; i<=arrayLen(orderItems); i++) {
+		var orderItemsCount = arrayLen(orderItems);
+		for(var i=1; i<=orderItemsCount; i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
@@ -227,6 +228,11 @@ component {
     	    }
 	    }
 	   
+	}
+	
+	public struct function getListingSearchConfig() {
+	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
 }

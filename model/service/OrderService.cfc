@@ -394,7 +394,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
+					//we will update order amounts at the end of the process
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=false );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -562,8 +563,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.saveOrder(order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag());
 			}
 
-			// Save the new order items
-			newOrderItem = this.saveOrderItem( newOrderItem );
+			// Save the new order items don't update order amounts we'll do it at the end of this process
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1016,7 +1017,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 	
 		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.orderTemplate.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.addPromotionCode( promotionCode );
 		}
@@ -1028,31 +1029,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
 		} else if ( !pc.getCurrentFlag() || !pc.getPromotion().getCurrentFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
 		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
 		//if promo has a max account use and account related to order has used it more than the max account use, show over max account use message
 		} else if( !isNull(pc.getMaximumAccountUseCount()) && !isNull(arguments.order.getAccount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
 		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
 		//If promo site does not match order site, display incorrect site message
 		} else if( 
 			!isNull(pc.getPromotion().getSite())
 			&& !isNull(arguments.order.getOrderCreatedSite())
 			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
 		) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
-		} else if(arguments.processObject.getUpdateOrderAmountFlag()) {
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'));
+		} else {
+			
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
+				
 				arguments.order.addPromotionCode( pc );
-				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+
+				if(arguments.processObject.getUpdateOrderAmountFlag()){
+					this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+				}
 			}
 		}
 
@@ -1193,12 +1199,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			   action="run" 
 		{
 
+			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-			transientOrder = this.saveOrder(transientOrder);
+			//only update amounts if we can
+			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
-			if(!isNull(request.orderTemplate.getShippingMethod())){	
+			if(hasInfoForFulfillment){	
 				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
@@ -1206,7 +1215,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#');
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
@@ -1221,8 +1230,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return request.orderTemplateOrderDetails;
 	} 
 	
+	public numeric function getFulfillmentDiscountForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
+	}
+	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal']	
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
 	}
 
 	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
@@ -1306,11 +1319,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
-		
+	
 		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
 
 		var transientOrderItems = []; 
-	
+		
+		if( structKeyExists(arguments, "transientOrder") &&
+			!arrayIsEmpty(arguments.transientOrder.getOrderItems())){
+			return transientOrderItems; 
+		}
+
 		for(var orderTemplateItem in orderTemplateItems){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
 			var sku = orderTemplateItem.getSku(); 		
@@ -1322,6 +1340,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
 			
 			if(structKeyExists(arguments, "transientOrderFulfillment")){
@@ -1367,10 +1386,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else {
+		} else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
+		} else{
+			var account = getHibachiScope().getAccount();
 		}
-
+		
 		if(account.hasErrors()) {
 			arguments.orderTemplate.addError('create', account.getErrors());
 		} else {
@@ -1470,7 +1491,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderTemplateItem in orderTemplateItems){ 
 
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
-			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
+			var sku = getSkuService().getSku(orderTemplateItem['sku_skuID']);	
+			processOrderAddOrderItem.setSku(sku);
+			processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
 			processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 	
@@ -1504,6 +1527,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
+
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#',true);
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
@@ -4400,10 +4425,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
 
 				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
-					arguments.order.clearHibachiErrors(); 
-					orderPayment.clearHibachiErrors();
-					getHibachiScope().setORMHasErrors(false);	
- 
+					if(!arguments.order.hasErrors()){
+						arguments.order.addErrors(orderPayment.getErrors());
+						arguments.orderPayment.clearHibachiErrors();
+					}
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
 					arguments.order.setPaymentLastRetryDateTime(now());
@@ -4703,7 +4728,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
- 							getService("OrderService").saveOrderItem(orderItem);
+ 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmount=arguments.updateOrderAmount);
  						}
  					}
  				}
@@ -4757,7 +4782,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
-	public any function saveOrderItem(required any orderItem, struct data={}, string context="save") {
+	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true) {
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
@@ -4772,7 +4797,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderItem.hasErrors()){
+		if(!arguments.orderItem.hasErrors() && arguments.updateOrderAmounts){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 

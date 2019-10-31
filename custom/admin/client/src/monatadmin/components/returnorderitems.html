@@ -60,7 +60,9 @@
 		<td>{{swReturnOrderItems.currencySymbol}}
 			<input class="form-control" name="fulfillmentRefundAmount" type="number" ng-model="swReturnOrderItems.fulfillmentRefundAmount" ng-change="swReturnOrderItems.validateFulfillmentRefundAmount()">
 		</td>
-		<td></td>
+		<td>{{swReturnOrderItems.currencySymbol}}
+			<span ng-bind="swReturnOrderItems.fulfillmentRefundTaxAmount.toFixed(2)"></span>
+		</td>
 		<td></td>
 		<td></td>
 	</tr>

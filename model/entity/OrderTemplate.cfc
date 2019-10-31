@@ -98,6 +98,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="fulfillmentDiscount" persistent="false";
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
@@ -199,6 +200,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.canPlaceFutureScheduleOrderFlag;
 	}  
+
+	public numeric function getFulfillmentDiscount() {
+		if(!structKeyExists(variables, 'fulfillmentDiscount')){
+			variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+		}
+		return variables.fulfillmentDiscount;
+	}
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
@@ -361,26 +369,15 @@ public boolean function getCustomerCanCreateFlag(){
 	public numeric function getPersonalVolumeTotal(){
 	
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
-			variables.personalVolumeTotal = 0; 
+			variables.personalVolumeTotal = getService('OrderService').getPersonalVolumeTotalForOrderTemplate(this);
 
-			var orderTemplateItems = this.getOrderTemplateItems();
-
-			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.personalVolumeTotal += orderTemplateItem.getPersonalVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
-			}
 		}	
 		return variables.personalVolumeTotal; 	
 	}
 
 	public numeric function getCommissionableVolumeTotal(){
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = 0; 
-
-			var orderTemplateItems = this.getOrderTemplateItems();
-
-			for(var orderTemplateItem in orderTemplateItems){ 
-				variables.commissionableVolumeTotal += orderTemplateItem.getCommissionableVolumeTotal(getCurrencyCode(), getAccount().getAccountID());
-			}
+			variables.commissionableVolumeTotal = getService('OrderService').getComissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
 	}  //CUSTOM FUNCTIONS END

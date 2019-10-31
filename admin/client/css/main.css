@@ -994,6 +994,9 @@ label {
 .modal-dialog {
   text-align: left;
 }
+.input-group-btn {
+  vertical-align: top;
+}
 .modal-body {
   overflow-y: auto;
   overflow-x: auto;
@@ -2185,16 +2188,6 @@ table .s-edit-elements a:hover {
   line-height: 1.7;
 }
 /*Custom CSS*/
-#tabvolume .col-sm-4 {
-  width: 75%;
-}
-#tabvolume .col-sm-8 {
-  width: 25%;
-}
-#tabvolume .form-control-static {
-  padding: 0;
-  min-height: auto;
-}
 .s-pannel-group .panel {
   border: none;
   -webkit-border-radius: 2px;

@@ -31,16 +31,12 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
-		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
-		this.observerService.attach(this.getCart,"removeOrderItemSuccess");
-		this.observerService.attach(this.getCart,"updateOrderItemSuccess");
-
-		this.getCart();
+    	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
 	}
 
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		if (this.currentAccountID.length) {
+		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
 	}

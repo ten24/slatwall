@@ -1,7 +1,12 @@
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
 	public type:any;
-	public cartAsAttribute:boolean = false; //declares if cart data is being bound through attribute binding or not
+	public cartAsAttribute:boolean = false; //declares if cart data is bound through with attribute or not
+	public currentPage:number = 0;
+	public pageSize:number = 6;
+	public recordsStart:number = 0;
+	
+	
 
 	//@ngInject
 	constructor(public monatService, public rbkeyService, public ModalService, public observerService) {
@@ -101,6 +106,16 @@ class MonatMiniCartController {
 				//TODO hide loader...
 			});
 	};
+	
+	public changePage = (dir)=>{
+		
+		if(dir === 'next' && ((this.currentPage + 1) * this.pageSize) <=  this.cart.orderItems.length -1){
+			this.currentPage++;
+		}else if(dir === 'back' && this.currentPage != 0){
+			this.currentPage--;
+		}
+		this.recordsStart = (this.currentPage * this.pageSize);
+	}
 }
 
 class MonatMiniCart {

@@ -40,6 +40,10 @@ class SWFFormController {
     public $onInit=()=>{
     }
     
+    public resetMethod=(newMethod)=>{
+        this.method = newMethod;
+    }
+    
     public getFormData = ()=>{
         var formData = {};
         for(var key in this.form){

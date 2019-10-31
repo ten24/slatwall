@@ -122,6 +122,7 @@ class CollectionConfig {
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false,
         private enableAveragesAndSums:boolean = false,
+        private listingSearchConfig:any = {},
 
     ){
         this.$hibachi = $hibachi;
@@ -222,7 +223,7 @@ class CollectionConfig {
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
         this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-        
+        this.listingSearchConfig = jsonCollection.listingSearchConfig;
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
@@ -266,7 +267,8 @@ class CollectionConfig {
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
             periodInterval:this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums
+            enableAveragesAndSums: this.enableAveragesAndSums,
+            listingSearchConfig: this.listingSearchConfig,
         };
     };
 
@@ -303,6 +305,7 @@ class CollectionConfig {
             isReport: this.isReport(),
             periodInterval: this.periodInterval,
             enableAveragesAndSums: this.enableAveragesAndSums,
+            listingSearchConfig: this.listingSearchConfig,
             customEndpoint:this.customEndpoint
         };
         if(angular.isDefined(this.id)){
@@ -967,6 +970,11 @@ class CollectionConfig {
         this.enableAveragesAndSums =  flag;
         return this;
     };
+    
+    public setListingSearchConfig = (config) => {
+        this.listingSearchConfig = config;
+        return this;
+    }
 
     public setDirtyRead = (flag:boolean=false)=>{
         this.dirtyRead = flag;
