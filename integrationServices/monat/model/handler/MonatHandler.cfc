@@ -17,7 +17,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					var enrollmentDate = Now();
 					if(IsNull(account.getEnrollmentDate())) {
 						account.setEnrollmentDate(now());
 					}
