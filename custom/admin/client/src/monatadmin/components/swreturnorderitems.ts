@@ -264,7 +264,7 @@ class SWReturnOrderItemsController{
        },0);
        
        const maxRefund = Math.min(orderPayment.amountToRefund,this.refundTotal - paymentTotal);
-
+ 
        if(orderPayment.amount == undefined){
            orderPayment.amount = 0;
        }
