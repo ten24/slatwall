@@ -67,7 +67,6 @@ class MonatEnrollmentController {
 	}
 
 	public next() {
-		debugger;
 		this.navigate(this.position + 1);
 		if(this.position + 1 == this.steps.length){
 			this.monatService.addEnrollmentFee();

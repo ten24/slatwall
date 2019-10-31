@@ -2,6 +2,7 @@ class MonatOrderItemsController {
 	public orderItems: any = []; // orderTemplateDetails
 	public productPacks: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
+	public orderFees; 
 
 	//@ngInject
 	constructor(public monatService) {
@@ -22,11 +23,14 @@ class MonatOrderItemsController {
 	
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
-			var productType = item.sku.product.baseProductType;
+			var productType = item.sku.product.productType.systemCode;
 			
 			if ( 'ProductPack' === productType ) {
 				this.productPacks.push( item );
-			} else {
+			}else if('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType){
+				this.orderFees = item.extendedUnitPriceAfterDiscount;
+			}	
+			else{
 				this.todaysOrder.push( item );
 			}
 		});

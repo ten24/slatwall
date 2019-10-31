@@ -59409,9 +59409,12 @@ var MonatOrderItemsController = /** @class */ (function () {
         };
         this.aggregateOrderItems = function (orderItems) {
             orderItems.forEach(function (item) {
-                var productType = item.sku.product.baseProductType;
+                var productType = item.sku.product.productType.systemCode;
                 if ('ProductPack' === productType) {
                     _this.productPacks.push(item);
+                }
+                else if ('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType) {
+                    _this.orderFees = item.extendedUnitPriceAfterDiscount;
                 }
                 else {
                     _this.todaysOrder.push(item);
@@ -59503,7 +59506,6 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.getCart.bind(this), "addOrderItemSuccess");
     }
     MonatEnrollmentController.prototype.next = function () {
-        debugger;
         this.navigate(this.position + 1);
         if (this.position + 1 == this.steps.length) {
             this.monatService.addEnrollmentFee();
