@@ -13,7 +13,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
-
+	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
+		
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
@@ -1208,6 +1209,116 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index#");
 		
 	}
+	
+	public any function getOrderTypeFromOrderTypeCode( orderTypeCode ) {
+    	return 
+    		(orderTypeCode == "I" || orderTypeCode == "D" || orderTypeCode == "Y") ? otSalesOrder :
+    		(orderTypeCode == "R") ? otReplacementOrder : 
+    		(orderTypeCode == "E" || orderTypeCode == "X") ? otExchangeOrder : 
+    		(orderTypeCode == "C") ? otReturn : otSalesOrder
+    }
+    
+    /**
+     *  1- Entered ->  not placed
+		2- Paid -> Paid
+		3- Printed -> processing
+		5- Posted/Completed -> processing
+		4- Shipped -> Closed
+		
+		not placed, new, paid, processing, shipped
+		
+		
+     * 
+     **/
+    public any function getOrderStatusFromOrderStatusCode( orderStatusCode ){
+    	switch(orderStatusCode){
+            case '100':
+                orderStatusCode = "Standard Order";
+            break;
+            
+            default:
+            	orderStatusCode = "Standard Order" ;
+        }
+        return orderStatusCode;
+    }
+    
+    /**
+     *	100- Standard Order
+		900- Internet Order
+		901- Voice Order
+		902- Sub. Bill Order
+		903- Autoship Order
+		904- RMA
+		905- Web Upgrades
+		906- Internet - ISP
+		908- Promotion
+		910- Auto Renewal
+		300- Replacement
+		301- Consistency Prg
+		302- Convention
+		200- Web Enrollment
+		500- BLACK FRI DISC 
+     * 
+     * 
+     **/
+    public any function getOrderOriginNameFromOrderSourceCode( orderSourceCode ) {
+    	var orderOriginName = "";
+    	
+    	switch(orderSourceCode){
+            case '100':
+                orderOriginName = "Standard Order";
+                break;
+            case '900':
+                orderOriginName = "Internet Order" ;
+                break;
+            case '901':
+                orderOriginName = "Voice Order" ;
+                break;
+            case '902':
+                orderOriginName = "Sub. Bill Order" ;
+                break;
+            case '903':
+                orderOriginName = "Autoship Order" ;
+                break;
+            case '904':
+                orderOriginName = "RMA" ;
+                break;
+            case '905':
+                orderOriginName = "Web Upgrades" ;
+                break;
+            case '906':
+                orderOriginName = "Internet - ISP" ;
+                break;
+            case '908':
+                orderOriginName = "Promotion" ;
+                break;
+            case '910':
+                orderOriginName = "Auto Renewal" ;
+                break
+            case '300':
+                orderOriginName = "Replacement" ;
+                break;
+            case '301':
+                orderOriginName = "Consistency Prg" ;
+                break;
+            case '302':
+                orderOriginName = "Convention" ;
+                break;
+            case '200':
+                orderOriginName = "Web Enrollment" ;
+                break;
+            case '500':
+                orderOriginName = "BLACK FRI DISC " ;
+                break;
+            default:
+            	orderOriginName = "Standard Order" ;
+        }
+        return orderOriginName;
+				        
+    };
+    
+    
+	
 	//http://monat.local:8906/Slatwall/?slatAction=monat%3Aimport.importupdatedorderswithorderitems&updated=true
 	public void function upsertOrders(rc) { 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
@@ -1223,13 +1334,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		//var ostProcessing = getTypeService().getTypeByTypeCode("2");
 		//var ostShipped = getTypeService().getTypeByTypeCode("4");
 		//var ostClosed = getTypeService().getTypeByTypeCode("5");
-		//var ostCanceled = getTypeService().getTypeByTypeCode("9");
+		var ostCanceled = getTypeService().getTypeByTypeCode("9");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
-		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
 		var fulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodID("444df2fb93d5fa960ba2966ba2017953");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
+		
+		//Order Types
+		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
+		var otReturnOrder = getTypeService().getTypeBySystemCode("otReturnOrder");
+		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
+		var otReplacementOrder = getTypeService().getTypeBySystemCode("otReplacementOrder");
+		var otRefundOrder = getTypeService().getTypeBySystemCode("otRefundOrder");
+
+		//Order Status Types
+		
+		//Order Origins
+		
 	    var index=0;
 	    
 	    var MASTER = "M";
@@ -1285,23 +1407,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    
 	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");
 	                	newOrder.setOrderInvoiceNumber(order['InvoiceNumber']?:"");
+	                    
 	                    newOrder.setOrderType( otSalesOrder );
+	                    
 	                    newOrder.setOrderStatusType( ostClosed );
 	                    
 	                    //Dates 
-	                    newOrder.setCreatedDateTime( getDateFromString(order['entryDate']) );//*
-	                    newOrder.setOrderOpenDateTime( getDateFromString(order['verifyDate']) );//*
-	                    newOrder.setOrderCloseDateTime( getDateFromString(order['postDate']) );//*
-	                    newOrder.setModifiedDateTime( getDateFromString(order['postDate']) );//*
-	                    newOrder.setOrderAccountNumber(order['AccountNumber']?:"");
-					    
-				        newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);
-				        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0);
+	                    if (!isNull(order['entryDate']) && len(order['entryDate'])){
+	                    	newOrder.setCreatedDateTime( getDateFromString(order['entryDate']) );//*
+	                    }
+	                    
+	                    if (!isNull(order['verifyDate']) && len(order['verifyDate'])){
+	                    	newOrder.setOrderOpenDateTime( getDateFromString(order['verifyDate']) );//*
+	                    }
+	                    
+	                    if (!isNull(order['postDate']) && len(order['postDate'])){
+	                    	newOrder.setOrderCloseDateTime( getDateFromString(order['postDate']) );//*
+	                    }
+	                    
+	                    if (!isNull(order['postDate']) && len(order['postDate'])){
+	                    	newOrder.setModifiedDateTime( getDateFromString(order['postDate']) );//*
+	                    }
+	                    
+	                    
+					    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
+				        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
+				        newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
+				        
 				        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
     					
-				        newOrder.setHandlingCharge(order['HandlingAmount']?:0);
 				        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
-				        newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);
 				        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
 				        
 				        newOrder.setOriginalRMAIDNumber( order['RMAOrigOrderNumber']?:0 );
@@ -1316,7 +1451,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        newOrder.setFlexshipNumber( order['FlexshipNumber']?:"" ); // order source 903
 				        newOrder.setLastGeneratedDate( order['DateLastGen']?:"" ); //Date field ADD THIS
 				        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
-				        
+				        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //ADD THIS
 				        
 				        //Handle Tax
 				        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0); //*
@@ -1328,7 +1463,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				         * Order - 
 				         * accountType
 				         * priceGroup
-				         * 
+				         * remoteAmountTotal
+				         * initialOrderFlag
+				         * lastGeneratedDate
+				         * commissionPeriod
+				         * initialOrderFlag
 				         **/
 				         
 				         /**
@@ -1339,6 +1478,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        
 				        
 				        //Find the orders account.
+				        newOrder.setOrderAccountNumber(order['AccountNumber']?:""); //snapshot
 				        if (structKeyExists(order, "AccountNumber") && len(order.AccountNumber)){
 	                        //set the account if we have the account, otherwise, skip this for now...
 	                        var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
@@ -1366,14 +1506,52 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                    }
 	                    }
 	                    
+	                    /**
+	                     * Sets the orderType to the Slatwall Type
+	                     * otReplacementOrder, otSalesOrder,otExchangeOrder,otReturnOrder,otRefundOrder
+	                     **/
 	                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
+	                    newOrder.setOrderType(getOrderTypeFromOrderTypeCode(order['OrderTypeCode']) ?:"" );
 	                    
+	                    /**
+	                     * Sets the order origin 
+	                     * Get the origin name from the code. Get the origin from that and set it.
+	                     **/
 	                    newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
+		                
+		                if (!isNull(order['OrderSourceCode']) && len(order['OrderSourceCode'])){
+		                    var originName = getOrderOriginNameFromOrderSourceCode(order['OrderSourceCode']);
+		                    
+		                    var origin = (!isNull(originName)) ? getService("OrderService").getOrderOriginByOrderOriginName(originName);
+		                    
+		                    if (!isNull(origin)){
+		                    	newOrder.setOrderOrigin();
+		                    }
+	                    }
 	                    
+	                    //Sets the order status to the Slatwall order status.
 	                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
+	                    //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped'
 				        
-				        //AddressValidationFlag
-				        //remoteAmountTotal
+				        if (order['OrderStatusCode'] == "9"){
+				        	newOrder.setOrderStatus( ostCanceled );		
+				        }else{
+				        	newOrder.setOrderStatus( ostClosed );
+				        }
+				        
+				        //Create order comments if needed.
+				        if (!isNull(order['Comments'])){
+				        	var comment = new Slatwall.model.entity.Comment();
+				        	var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+				        	
+				        	comment.setRemoteID(order["OrderID"]);
+				        	comment.setComment(order['Comments']);
+				        	
+				        	ormStatelessSession.insert("SlatwallComment", comment); 
+				        	commentRelationship.setOrder( newOrder );
+				        	commentRelationship.setComment( comment );
+				        	ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+				        }
 				        
 				        // set the currency code on the order...
 				        var countryCode = "USA";
@@ -1399,6 +1577,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        }
 				        
 				        newOrder.setCurrencyCode(currencyCode); //*
+				        
+				        //Handle creating order comments.
 				        
 				        
 	                    ///->Add order items...
@@ -1569,6 +1749,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			orderFulfillment.setOrder(newOrder);
 	                			orderFulfillment.setRemoteID( shipment.shipmentId );
 	                			orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
+	                			orderFulfillment.manualHandlingFeeFlag(true);//*
+	                			
 	                		    ormStatelessSession.insert("SlatwallOrderFulfillment", orderFulfillment);
 	                		    
 	                		   
@@ -1650,9 +1833,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			//insert into the queue
 	                        }
 	                    }
-	                    //set the order status
 	                    
-	                    //set the origin
 	                    //update calculated properties
 	                    //ADD undeliverable order date to core.
 	                    ormStatelessSession.update("SlatwallOrder", newOrder);
