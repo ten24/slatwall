@@ -235,4 +235,13 @@ component {
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
+	
+	
+	public boolean function hasRenewalFeeMPOrderItems() {
+	    if(!structKeyExists(variables,'hasRenewalFeeMPOrderItems')){
+            variables.hasRenewalFeeMPOrderItems = getService('orderService').orderHasRenewalFeeMPOrderItems(order=this);
+		}
+		return variables.hasRenewalFeeMPOrderItems;
+	}
+	
 }

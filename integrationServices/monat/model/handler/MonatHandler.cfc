@@ -8,7 +8,13 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
 			account.setActiveFlag(true);
 			account.getAccountNumber();
-			account.setRenewalDate(now());
+			if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  
+				&& order.hasRenewalFeeMPOrderItems()
+			) {
+				var enrolmentDate = ParseDateTime(account.getEnrollmentDate());
+				var renewalDate = DateAdd('yyyy', 1, enrolmentDate);
+				account.setRenewalDate(renewalDate);
+			}
 			getService("accountService").saveAccount(account);
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),

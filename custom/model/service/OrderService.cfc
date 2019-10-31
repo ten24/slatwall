@@ -421,5 +421,18 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return arguments.orderDelivery;
 	}
+	
+	
+	public boolean function orderHasRenewalFeeMPOrderItems(required order) {
+
+		var renewalFeeMPProductType = getService('productService').getProductTypeBySystemCode('RenewalFee-MP');
+		
+		var orderItemCollectionList = this.getOrderItemsCollectionList();
+		orderItemCollectionList.setDisplayProperties('orderItemID');
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.order.getOrderID()#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeID()#%','Like');
+		
+		return orderItemCollectionList.getRecordsCount(true) > 0;
+	}
 }
 
