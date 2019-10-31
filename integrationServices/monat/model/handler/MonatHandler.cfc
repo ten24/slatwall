@@ -28,7 +28,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			} else if ( 
 				account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
-				&& arguments.order.hasRenewalFeeMPOrderItems()
+				&& arguments.order.hasMPRenewalFee()
 			) {
 				
 				//set renewal-date to one-year-from-OrderOpenDateTime
