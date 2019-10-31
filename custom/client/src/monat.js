@@ -59933,7 +59933,6 @@ var VIPController = /** @class */ (function () {
         this.setOrderTemplateFrequency = function (frequencyTermID, dayOfMonth) {
             _this.loading = true;
             var flexshipID = _this.flexshipID;
-            debugger;
             _this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(function (result) {
                 _this.loading = false;
             });

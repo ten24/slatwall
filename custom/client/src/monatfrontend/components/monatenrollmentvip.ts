@@ -165,7 +165,6 @@ class VIPController {
     public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth) => {
         this.loading = true;
         const flexshipID = this.flexshipID;
-        debugger;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
             this.loading = false;
         });
