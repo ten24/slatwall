@@ -4,17 +4,40 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		
 		var account = arguments.order.getAccount();
 
-		if(!isNull(account.getAccountStatusType()) && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
-			account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
-			account.setActiveFlag(true);
-			account.getAccountNumber();
-			if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  
-				&& order.hasRenewalFeeMPOrderItems()
-			) {
-				var enrolmentDate = ParseDateTime(account.getEnrollmentDate());
-				var renewalDate = DateAdd('yyyy', 1, enrolmentDate);
+		if( 
+			!isNull(account.getAccountStatusType()) 
+			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
+		) {
+			
+			if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+				account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
+				account.setActiveFlag(true);
+				account.getAccountNumber();
+			}
+			
+			if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
+				var renewalDate = account.getRenewalDate();
+			
+				if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+					
+					//set renewal-date to one-year-from-enrolmentdate
+					var enrolmentDate = ParseDateTime(account.getEnrollmentDate());
+					renewalDate = DateAdd('yyyy', 1, enrolmentDate);
+					
+				} else if( 
+					account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
+					&& arguments.order.hasRenewalFeeMPOrderItems()
+				) {
+				
+					//set renewal-date to one-year-from-OrderOpenDateTime
+					var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
+					renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
+					account.setRenewalDate(renewalDate);
+				}
+				
 				account.setRenewalDate(renewalDate);
 			}
+			
 			getService("accountService").saveAccount(account);
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
