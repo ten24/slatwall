@@ -1094,8 +1094,9 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		var taxTotalOnReturnOrders = 0;
 		
 		for(var referencingOrder in getReferencingOrders()){
-			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode()))
-			taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
+			}
 		}
 		return taxTotalOnReturnOrders;
 	}

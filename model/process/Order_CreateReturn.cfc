@@ -186,7 +186,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public numeric function getFulfillmentTaxAmountNotRefunded(){
 		if(!isNull(getFulfillmentAmount()) && getFulfillmentAmount() != 0){
-			return getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount();
+			return getService('HibachiUtilityService').precisionCalculate(getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount());
 		}
 		return 0;
 	}
