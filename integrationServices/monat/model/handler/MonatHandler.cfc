@@ -37,8 +37,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				account.setRenewalDate(renewalDate);
 			}
 			
-			abort;
-			
 			getService("accountService").saveAccount(account);
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),

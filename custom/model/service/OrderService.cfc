@@ -431,9 +431,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemCollectionList.setDisplayProperties('orderItemID');
 		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
 		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeIDPath()#%','Like');
-		dump(orderItemCollectionList.getHQL());
-		dump(orderItemCollectionList.getCollectionConfigStruct());
-		dump(orderItemCollectionList.getRecords());
+		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 }
