@@ -87,6 +87,10 @@ export class MonatService {
 	public submitSponsor( sponsorID:string ) {
 		return this.publicService.doAction('submitSponsor',{sponsorID});
 	}
+	
+	public addEnrollmentFee( sponsorID:string ) {
+		return this.publicService.doAction('addEnrollmentFee');
+	}
 
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}

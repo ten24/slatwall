@@ -11,7 +11,7 @@ class MonatEnrollmentController {
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
-	public cartText:string = 'Show Cart'
+	public cartText:string = 'Show Cart';
 
 
 	//@ngInject
@@ -67,7 +67,11 @@ class MonatEnrollmentController {
 	}
 
 	public next() {
+		debugger;
 		this.navigate(this.position + 1);
+		if(this.position + 1 == this.steps.length){
+			this.monatService.addEnrollmentFee();
+		}
 	}
 
 	public previous() {
