@@ -423,15 +423,17 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	
-	public boolean function orderHasRenewalFeeMPOrderItems(required order) {
+	public boolean function orderHasRenewalFeeMPOrderItems(required orderID) {
 
 		var renewalFeeMPProductType = getService('productService').getProductTypeBySystemCode('RenewalFee-MP');
 		
-		var orderItemCollectionList = this.getOrderItemsCollectionList();
+		var orderItemCollectionList = this.getOrderItemCollectionList();
 		orderItemCollectionList.setDisplayProperties('orderItemID');
-		orderItemCollectionList.addFilter('order.orderID', "#arguments.order.getOrderID()#");
-		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeID()#%','Like');
-		
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeIDPath()#%','Like');
+		dump(orderItemCollectionList.getHQL());
+		dump(orderItemCollectionList.getCollectionConfigStruct());
+		dump(orderItemCollectionList.getRecords());
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 }

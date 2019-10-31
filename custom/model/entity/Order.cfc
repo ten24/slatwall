@@ -238,10 +238,10 @@ component {
 	
 	
 	public boolean function hasRenewalFeeMPOrderItems() {
-	    if(!structKeyExists(variables,'hasRenewalFeeMPOrderItems')){
-            variables.hasRenewalFeeMPOrderItems = getService('orderService').orderHasRenewalFeeMPOrderItems(order=this);
+	    if(!structKeyExists(variables,'orderHasRenewalFeeMPOrderItems')){
+            variables.orderHasRenewalFeeMPOrderItems = getService('orderService').orderHasRenewalFeeMPOrderItems(this.getOrderID());
 		}
-		return variables.hasRenewalFeeMPOrderItems;
+		return variables.orderHasRenewalFeeMPOrderItems;
 	}
 	
 }
