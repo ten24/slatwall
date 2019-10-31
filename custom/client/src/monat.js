@@ -59813,7 +59813,6 @@ var VIPController = /** @class */ (function () {
             _this.getCountryCodeOptions();
             _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
                 _this.frequencyTerms = response.frequencyTermOptions;
-                console.log(response);
             });
         };
         this.getCountryCodeOptions = function () {

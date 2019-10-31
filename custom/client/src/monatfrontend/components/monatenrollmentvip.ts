@@ -27,7 +27,6 @@ class VIPController {
 		this.getCountryCodeOptions();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
-			console.log(response);
 		})
 	};
 
