@@ -61111,9 +61111,14 @@ var MonatFlexshipListingController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.$window = $window;
         this.loading = false;
+        this.orderTemplateTypeID = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
         this.initialized = false;
         this.$onInit = function () {
-            _this.orderTemplateService.getOrderTemplates()
+            _this.fetchFlexships();
+        };
+        this.fetchFlexships = function () {
+            _this.orderTemplateService
+                .getOrderTemplates(_this.orderTemplateTypeID)
                 .then(function (data) {
                 _this.accountAddresses = data.accountAddresses;
                 _this.accountPaymentMethods = data.accountPaymentMethods;
@@ -61125,9 +61130,11 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.expirationYearOptions = data.expirationYearOptions;
                 //set this last so that ng repeat inits with all needed data
                 _this.orderTemplates = data.orderTemplates;
-            }, function (reason) {
-                console.error(reason);
-            }).finally(function () {
+            })
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
                 _this.initialized = true;
             });
         };
@@ -61140,19 +61147,21 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 }
                 else {
                     throw (data);
-                    _this.loading = false;
                 }
             })
-                .catch(function (error) {
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
                 _this.loading = false;
             });
         };
     }
-    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplate) {
+    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplateID) {
         var _this = this;
         // make api request
         this.orderTemplateService
-            .setAsCurrentFlexship(orderTemplate)
+            .setAsCurrentFlexship(orderTemplateID)
             .then(function (data) {
             if (data.successfulActions &&
                 data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
@@ -61160,13 +61169,14 @@ var MonatFlexshipListingController = /** @class */ (function () {
             }
             else {
                 throw data;
-                _this.loading = false;
             }
         })
             .catch(function (error) {
             console.error('setAsCurrentFlexship :', error);
-            _this.loading = false;
             // TODO: show alert
+        })
+            .finally(function () {
+            //TODO
         });
     };
     return MonatFlexshipListingController;
@@ -61419,7 +61429,7 @@ var MonatProductCardController = /** @class */ (function () {
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -62100,7 +62110,7 @@ var SWFWishlistController = /** @class */ (function () {
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -62108,6 +62118,12 @@ var SWFWishlistController = /** @class */ (function () {
                 else if (setNewTemplateID) {
                     _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
                 }
+            })
+                .cache(function (e) {
+                //TODO
+                console.error(e);
+            })
+                .finally(function () {
                 _this.loading = false;
             });
         };
@@ -62466,24 +62482,30 @@ var OrderTemplateService = /** @class */ (function () {
          *
          *
         */
-        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID, refresh) {
+        this.getOrderTemplates = function (orderTemplateTypeID, pageRecordsShow, currentPage, refresh) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             if (refresh === void 0) { refresh = false; }
             var deferred = _this.$q.defer();
-            var data = {
-                currentPage: currentPage,
-                pageRecordsShow: pageRecordsShow,
-            };
-            if (orderTemplateTypeID == _this.orderTemplateTypeID && refresh != true && _this.orderTemplateTypeID != '') {
-                deferred.resolve(_this.orderTemplates);
+            // if we're gonna use pagination, we shoudn't cache 
+            if (orderTemplateTypeID == _this.orderTemplateTypeID && _this.cachedGetOrderTemplatesResponse && !refresh) {
+                deferred.resolve(_this.cachedGetOrderTemplatesResponse);
             }
-            else if (orderTemplateTypeID && _this.orderTemplateTypeID == '') {
+            else {
                 _this.orderTemplateTypeID = orderTemplateTypeID;
-                data['orderTemplateTypeID'] = orderTemplateTypeID;
-                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data).then(function (result) {
-                    _this.orderTemplates = result;
-                    deferred.resolve(_this.orderTemplates);
+                var data = {
+                    currentPage: currentPage,
+                    pageRecordsShow: pageRecordsShow,
+                    orderTemplateTypeID: orderTemplateTypeID
+                };
+                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data)
+                    .then(function (result) {
+                    // TODO additional checks to make sure it's a successful response
+                    _this.cachedGetOrderTemplatesResponse = result;
+                    deferred.resolve(_this.cachedGetOrderTemplatesResponse);
+                })
+                    .catch(function (e) {
+                    deferred.reject(e);
                 });
             }
             return deferred.promise;
@@ -68005,7 +68027,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
         var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
@@ -68019,6 +68041,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -68042,6 +68065,7 @@ var CollectionConfig = /** @class */ (function () {
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
         this.enableAveragesAndSums = enableAveragesAndSums;
+        this.listingSearchConfig = listingSearchConfig;
         this.filterGroupAliasMap = {};
         this.reportFlag = false;
         this.periodInterval = "";
@@ -68122,6 +68146,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
+            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -68163,7 +68188,8 @@ var CollectionConfig = /** @class */ (function () {
                 isDistinct: _this.isDistinct,
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
-                enableAveragesAndSums: _this.enableAveragesAndSums
+                enableAveragesAndSums: _this.enableAveragesAndSums,
+                listingSearchConfig: _this.listingSearchConfig,
             };
         };
         this.getEntityName = function () {
@@ -68195,6 +68221,7 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
+                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
             if (angular.isDefined(_this.id)) {
@@ -68708,6 +68735,10 @@ var CollectionConfig = /** @class */ (function () {
         this.setEnableAveragesAndSums = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.enableAveragesAndSums = flag;
+            return _this;
+        };
+        this.setListingSearchConfig = function (config) {
+            _this.listingSearchConfig = config;
             return _this;
         };
         this.setDirtyRead = function (flag) {
@@ -75584,6 +75615,9 @@ var HibachiService = /** @class */ (function () {
                     var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
                 }
                 params.enableAveragesAndSums = options.enableAveragesAndSums || false;
+                if (angular.isDefined(options.listingSearchConfig)) {
+                    params.listingSearchConfig = options.listingSearchConfig;
+                }
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -84720,7 +84754,6 @@ var SWListingDisplay = /** @class */ (function () {
             expandableOpenRoot: "<?",
             /*Searching*/
             searchText: "<?",
-            searchFilterPropertyIdentifier: "@?",
             /*Sorting*/
             sortable: "<?",
             sortableFieldName: "@?",
@@ -84748,7 +84781,6 @@ var SWListingDisplay = /** @class */ (function () {
             showTopPagination: "<?",
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
-            showSearchFilterDropDown: "<?",
             showSearchFilters: "<?",
             showFilters: "<?",
             showSimpleListingControls: "<?",
@@ -85842,11 +85874,23 @@ exports.SWListingRowSave = SWListingRowSave;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingSearchController = /** @class */ (function () {
     //@ngInject
-    function SWListingSearchController($rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
+    function SWListingSearchController($scope, $rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
         var _this = this;
+        this.$scope = $scope;
         this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
         this.metadataService = metadataService;
@@ -85859,34 +85903,52 @@ var SWListingSearchController = /** @class */ (function () {
         this.filtersClosed = true;
         this.hasPersonalCollections = false;
         this.collectionNameSaveIsOpen = false;
+        this.searchableFilterOptions = [
+            {
+                title: 'Last 3 Months',
+                value: 'lastThreeMonths',
+            },
+            {
+                title: 'Last 6 Months',
+                value: 'lastSixMonths',
+            },
+            {
+                title: '1 Year Ago',
+                value: 'lastOneYear',
+            },
+            {
+                title: 'All Time',
+                value: 'allRecords',
+            }
+        ];
+        this.wildCardPositionOptions = [
+            {
+                title: 'Match from start',
+                value: 'left'
+            },
+            {
+                title: 'Match from end',
+                value: 'right'
+            },
+            {
+                title: 'Match Anywhere',
+                value: 'both'
+            }
+        ];
         this.$onInit = function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
-            if (angular.isUndefined(_this.showSearchFilterDropDown)) {
-                _this.showSearchFilterDropDown = false;
-            }
             //snapshot searchable options in the beginning
-            _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
-            _this.searchableFilterOptions = [
-                {
-                    title: 'Last 3 Months',
-                    value: new Date().setMonth(new Date().getMonth() - 3)
-                },
-                {
-                    title: 'Last 6 Months',
-                    value: new Date().setMonth(new Date().getMonth() - 6)
-                },
-                {
-                    title: '1 Year Ago',
-                    value: new Date().setMonth(new Date().getMonth() - 12)
-                },
-                {
-                    title: 'All Time',
-                    value: 'All'
-                }
-            ];
-            _this.selectSearchFilter(_this.searchableFilterOptions[0]);
+            _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
+            // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
+            //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
+            // })
+            var listingSearchConfig = {};
+            if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
+                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+            }
+            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -85906,10 +85968,20 @@ var SWListingSearchController = /** @class */ (function () {
                 });
             }
         };
-        this.selectSearchFilter = function (filter) {
-            _this.selectedSearchFilter = filter;
-            if (_this.swListingDisplay.searchText) {
-                _this.search();
+        this.changeSearchFilter = function (filter) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value) {
+                _this.selectedSearchFilter = filter;
+                _this.updateListingSearchConfig({
+                    selectedSearchFilterCode: filter.value
+                });
+            }
+        };
+        this.changeWildCardPoition = function (position) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.wildCardPosition !== position.value) {
+                _this.selectedWildCardPosition = position;
+                _this.updateListingSearchConfig({
+                    wildCardPosition: position.value
+                });
             }
         };
         this.selectSearchColumn = function (column) {
@@ -86034,12 +86106,12 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
-            _this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-            if (_this.selectedSearchFilter.value != 'All') {
-                if (angular.isDefined(_this.searchFilterPropertyIdentifier) && _this.searchFilterPropertyIdentifier.length && _this.swListingDisplay.searchText.length > 0) {
-                    _this.collectionConfig.addFilter(_this.searchFilterPropertyIdentifier, _this.selectedSearchFilter.value, '>', undefined, undefined, undefined, undefined, 'searchableFilters');
-                }
-            }
+            // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            // if(this.selectedSearchFilter.criteria != 'all'){
+            //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
+            //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+            //     }
+            // }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -86064,6 +86136,28 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
     }
+    SWListingSearchController.prototype.shouldShowSearchFilterDropdown = function () {
+        console.log("calling shouldShowSearchFilterDropdown");
+        //the controls with new config
+        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
+        return (this.swListingDisplay.searchText && this.swListingDisplay.searchText.length)
+            || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
+    };
+    SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
+            this.selectedSearchFilter = this.searchableFilterOptions
+                .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
+        }
+        if (angular.isDefined(searchConfig.wildCardPosition)) {
+            this.selectedWildCardPosition = this.wildCardPositionOptions
+                .find(function (item) { return item.value === searchConfig.wildCardPosition; });
+        }
+    };
+    SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
+        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
+    };
     return SWListingSearchController;
 }());
 var SWListingSearch = /** @class */ (function () {
@@ -86076,12 +86170,10 @@ var SWListingSearch = /** @class */ (function () {
         this.scope = {};
         this.require = { swListingDisplay: "?^swListingDisplay", swListingControls: '?^swListingControls' };
         this.bindToController = {
-            collectionConfig: "<?",
+            collectionConfig: "=",
             paginator: "=?",
             listingId: "@?",
             showToggleSearch: "=?",
-            searchFilterPropertyIdentifier: "@?",
-            showSearchFilterDropDown: "=?"
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';

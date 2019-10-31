@@ -35,7 +35,7 @@ class MonatProductCardController {
 		this.loading = true;
 
 		this.orderTemplateService
-			.getOrderTemplates(pageRecordsToShow, this.currentPage, this.wishlistTypeID)
+			.getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
 			.then((result) => {
 				if (setNewTemplates) {
 					this.orderTemplates = result['orderTemplates'];
