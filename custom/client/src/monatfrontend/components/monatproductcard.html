@@ -3,7 +3,7 @@
     <!-- Product Card -->
     
         <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
- 	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' && monatProductCard.type!='VIPenrollment' " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
+ 	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' && monatProductCard.type!='VIPenrollment' && monatProductCard.type!='VIPenrollmentOrder' " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
@@ -36,7 +36,7 @@
         <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
          
         <!-- TODO: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
-        <div ng-if="monatProductCard.type ==='productListing'" class="price">
+        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' " class="price">
             <strong>{{monatProductCard.product.price | currency }} /</strong> 
             <span class="vip-price"><span ng-bind-html="monatProductCard.product.upgradedPriceGroupCode == 3 ? 'VIP' : (monatProductCard.product.upgradedPriceGroupCode == 2 ? 'RETAIL': '') "></span> {{monatProductCard.product.upgradedPricing.price | currency }}</span>
         </div>
@@ -53,7 +53,7 @@
         </div>
         
         <!-- Retail Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing && monatProductCard.type !='VIPenrollment' monatProductCard.type !='VIPenrollmentOrder' '" class="price">
             <strong>{{monatProductCard.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductCard.product.vipPrice}}</span>
         </div>
         
