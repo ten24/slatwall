@@ -297,7 +297,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
 	                    
 	                    if (!isNull(priceGroup)){
-	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
+	                    	newAccount.setPriceGroupID(priceGroup);
 	                    }
                     }
                     
@@ -628,7 +628,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
 	                    
 	                    if (!isNull(priceGroup)){
-	                    	newAccount.setPriceGroupID(findPriceGroupID(account['accountType']));
+	                    	newAccount.setPriceGroup(priceGroup);
 	                    }
                     }
                     
@@ -903,6 +903,27 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
+	private string function findPriceGroupIDByPriceLevel( priceLevel ){
+		switch (arguments.priceLevel) {
+			case "MarketPartner": 
+				return "045f95c3ab9d4a73bcc9df7e753a2080";
+				break;
+			case "VIP": 
+				return "84a7a5c187b04705a614eb1b074959d4";
+				break;
+			case "Employee": 
+				return "76a3339386f840f8a71f5e5867141edb";
+				break;
+			case "Customer": 
+				return "c540802645814b36b42d012c5d113745";
+				break;
+			case "VIP Upgrade": 
+				return "5cf7693358c640cb9e5ef63e0b6aa56f";
+				break;
+			default: return "";
+		}
+	}
+	
 	private any function findOrderByRemoteId(any orderArray, string remoteID){
 		for (var order in orderArray){
 			if (!isNull(order['OrderId']) && order['OrderId'] == remoteID){
@@ -1006,6 +1027,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		/**
     		 * Fields to create
     		 * accountType on order for snapshot
+    		 * pricegroup to order
     		 * 
     		 **/
     		try{
@@ -1022,11 +1044,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newOrder.setRemoteID(order['OrderId']?:"");//*
                     newOrder.setOrderNumber(order['OrderNumber']?:"");//*
                     newOrder.setPartnerNumber(order['PartnerNumber']?:"");
-                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
                     newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
                     newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
                     newOrder.setShipMethodCode(order['ShipMethodCode']?:"");
-                	newOrder.setInvoiceNumber(order['InvoiceNumber']?:"");
+                	newOrder.setInvoiceNumber(order['InvoiceNumber']?:""); //*
                     newOrder.setOrderType( otSalesOrder );
                     newOrder.setOrderStatusType( ostClosed );
                     newOrder.setCreatedDateTime( order['entryDate']?:now() );
@@ -1043,13 +1064,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         }
                     }
                     
-                    ///->
+                    ///->Calculated
 				    newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);
 				    //create applied tax with manual flag set.
 			        newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);
 			        //create promo applied with discount amount set.
 			        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0);
-    
+    				
+    				//->Sets the price group snapshot
+                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
+    				
+    				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
+	                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+	                    
+	                    if (!isNull(priceGroup)){
+	                    	newOrder.setPriceGroup(priceGroup);
+	                    }
+                    }
+    				
 			        // set the currency code on the order...
 			        if (!isNull(order['ShipToCountry'])){
 				        switch(order['ShipToCountry']){
@@ -1067,7 +1099,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        }
 			        }
 			        
-                    ///->
+                    ///->Order Created Site
+                    //Adds the order created site.
+            		var createdSite = getService("SiteService").getSiteBySiteCode(getCreatedSiteCode(order['CountryCode']));
+                    
+                    if (!isNull(createdSite)){
+                    	newOrder.setOrderCreatedSite(createdSite); //*
+                    }
                     
                     //newOrder.setOrderComments(order['comments']?:false);
                     ormStatelessSession.insert("SlatwallOrder", newOrder);
@@ -1171,7 +1209,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	//http://monat.local:8906/Slatwall/?slatAction=monat%3Aimport.importupdatedorderswithorderitems&updated=true
-	public void function importUpdatedOrdersWithOrderItems(rc) { 
+	public void function upsertOrders(rc) { 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 	    
@@ -1231,117 +1269,121 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    			for (var order in orders){
 	    			    index++;
 	    			    
-	    			    //echo("Creating order #index# on #pageNumber#");
-	        		    //var newUUID = rereplace(createUUID(), "-", "", "all");
-	        			// Create a new account and then use the mapping file to map it.
-	        			//var queryString = "Select o from SlatwallOrder as o where o.remoteID = '#order['OrderId']#'";
-	        			//var query = ormStatelessSession.createQuery(queryString);
-            			
-            			/*try{
-            				var results  = query.list();
-            			}catch(sqlException){
-            				writeDump(sqlException);
-            			}*/
-            			
-            			/*if (arrayIsEmpty(results)){
-            				echo("Creating #order['OrderId']# <br>");
-            				//createing instead
-            				//var newOrder = new Slatwall.model.entity.Order();
-            				
-            			}else{
-            				echo("Exists #order['OrderId']# <br>");
-            				var newOrder = results.get(0);	
-            			}*/
-            			
             			var newOrder = new Slatwall.model.entity.Order();
-            			
-            			//newOrder
-            			//if (isNull(newOrder.getOrderID())){
             				
         				var newUUID = rereplace(createUUID(), "-", "", "all");
         				newOrder.setOrderID(newUUID);
         				newOrder.setRemoteID(order['OrderId']?:"");	
-        				remoteIds = listAppend( remoteIds, order['OrderId'] );
+        				//remoteIds = listAppend( remoteIds, order['OrderId'] );
         				ormStatelessSession.insert("SlatwallOrder", newOrder);   
-            			//}
+            			
 	        			//newOrder.setOrderStatusType(getOrderStatusType(order['OrderStatusCode']?:"2"));
 	        			
 	        			//AllowUplineEmails added...
-	                    newOrder.setOrderNumber(order['OrderNumber']?:"");
-	                    newOrder.setOrderPartnerNumber(order['PartnerNumber']?:"");
-	                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
-	                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
-	                    newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
-	                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
+	                    newOrder.setOrderNumber(order['OrderNumber']?:""); // *
+	                    //newOrder.setOrderPartnerNumber(order['PartnerNumber']?:"");
+	                    
 	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");
 	                	newOrder.setOrderInvoiceNumber(order['InvoiceNumber']?:"");
 	                    newOrder.setOrderType( otSalesOrder );
 	                    newOrder.setOrderStatusType( ostClosed );
-	                    newOrder.setCreatedDateTime( order['entryDate']?:now() );
-	                    newOrder.setOrderOpenDateTime( order['verifyDate']?:"" );
-	                    newOrder.setOrderCloseDateTime( order['postDate']?:"");
-	                    newOrder.setModifiedDateTime( now() );
+	                    
+	                    //Dates 
+	                    newOrder.setCreatedDateTime( getDateFromString(order['entryDate']) );//*
+	                    newOrder.setOrderOpenDateTime( getDateFromString(order['verifyDate']) );//*
+	                    newOrder.setOrderCloseDateTime( getDateFromString(order['postDate']) );//*
+	                    newOrder.setModifiedDateTime( getDateFromString(order['postDate']) );//*
 	                    newOrder.setOrderAccountNumber(order['AccountNumber']?:"");
-					    newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);
+					    
 				        newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);
 				        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0);
-				        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);
-    					newOrder.setCurrencyCode(order['currencyCode']?:'USD');
-				        newOrder.setOrderCountryCode(order['shipToCountry']?:'USA');
-				        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0);
+				        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
+    					
 				        newOrder.setHandlingCharge(order['HandlingAmount']?:0);
 				        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
 				        newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);
 				        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
-				        newOrder.setCommissionPeriod(order['CommissionPeriod']?:"");
 				        
 				        newOrder.setOriginalRMAIDNumber( order['RMAOrigOrderNumber']?:0 );
 				        newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
-				        
 				        
 				        // Only for order type C return orders
 				        newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
 				        newOrder.setRmaOPSReasonDescription( order['RMAOpsReasonDescription']?:"" ); //add this field
 				        newOrder.setReplacementReasonDescription( order['ReplacementReasonDescription']?:"" ); //add this field
 				        
+				        
 				        newOrder.setFlexshipNumber( order['FlexshipNumber']?:"" ); // order source 903
 				        newOrder.setLastGeneratedDate( order['DateLastGen']?:"" ); //Date field ADD THIS
 				        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
 				        
-				        // newOrder.setInitialOrderFlag(order['InitialOrderFlag']?:0);
+				        
+				        //Handle Tax
+				        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0); //*
+				        newOrder.setCalculatedTaxableAmountTotal(order['TaxableAmount']?:0); //*
+				        newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);//*
+				        
+				        /**
+				         * Fields to add 
+				         * Order - 
+				         * accountType
+				         * priceGroup
+				         * 
+				         **/
+				         
+				         /**
+				          * Fields to remove 
+				          * 
+				          * 
+				          **/
 				        
 				        
-				        /*if (structKeyExists(order, "AccountNumber")){
-				        	//find the account and set it.
-				        	var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
-				        	var queryString = "from SlatwallAccount as a where a.accountNumber = '#order['AccountNumber']#'";
-	        				var query = ormStatelessSession.createQuery(queryString);
-            			
-	            			try{
-            					var results  = query.list();
-            					var foundAccount = results.get(0);
-	            			}catch(sqlException){
-	            				//could not find an account...
-	            				echo("could not set the account. <br>");
-	            			}
-            				
-            				if (!isNull(foundAccount)){
-	                        	newOrder.setAccount(foundAccount);
-            				}
-				        }*/
+				        //Find the orders account.
+				        if (structKeyExists(order, "AccountNumber") && len(order.AccountNumber)){
+	                        //set the account if we have the account, otherwise, skip this for now...
+	                        var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
+	                        if (!isNull(foundAccount)){
+	                        	echo("Account found, adding...");	
+	                        	newOrder.setAccount(foundAccount); // * This is for order.account.accountNumber accountType
+	                        }
+	                    }
+	                    
+	                    //Sets the order created site.
+                    	var createdSite = getService("SiteService").getSiteBySiteCode(getCreatedSiteCode(order['CountryCode']?:"USA"));
+                    
+	                    if (!isNull(createdSite)){
+	                    	newOrder.setOrderCreatedSite(createdSite);
+	                    }
+                    
+	    				//->Sets the price group snapshot
+	                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
+	    				
+	    				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
+		                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+		                    
+		                    if (!isNull(priceGroup)){
+		                    	newOrder.setPriceGroup(priceGroup);
+		                    }
+	                    }
+	                    
+	                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
+	                    
+	                    newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
+	                    
+	                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
 				        
 				        //AddressValidationFlag
 				        //remoteAmountTotal
-				        // set the currency code on the order...
+				        
 				        // set the currency code on the order...
 				        var countryCode = "USA";
 				        var currencyCode = "USD";
 				        
-				        if (!isNull(order['ShipToCountry'])){
-				        	countryCode = order['ShipToCountry'];
+				        if (!isNull(order['CountryCode'])){
+				        	countryCode = order['CountryCode'];
 				        }
 				        
-				        //Map the country.
+				        //Set the currencyCode
 				        switch(countryCode){
 				            case 'CAN':
 				                currencyCode = "CAD" ;
@@ -1356,10 +1398,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				            	currencyCode = "USD" ;
 				        }
 				        
-				        newOrder.setCurrencyCode(currencyCode);
+				        newOrder.setCurrencyCode(currencyCode); //*
 				        
 				        
-	                    ///->The order items...
+	                    ///->Add order items...
 	                    if (!isNull(order['Details'])){
 	                    	for (var detail in order['Details']){
 	                    		
@@ -1388,8 +1430,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             			        	orderItem.setOrder(newOrder);
             			        	orderItem.setOrderItemType(oitSale);
             			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
-            			            orderItem.setCalculatedTaxAmount(detail['TaxBase']);
+            			            
             			            orderItem.setRequestedReturnQuantity( detail['ReturnsRequested'] );//add this
+            			            orderItem.setCalculatedTaxAmount(detail['TaxBase']);
             			            orderItem.setCalculatedExtendedCommissionableVolume( detail['CommissionableVolume']?:0 );
             			            orderItem.setCalculatedExtendedPersonalVolume( detail['QualifyingVolume']?:0 );
             			            orderItem.setCalculatedExtendedProductPackVolume( detail['ProductPackVolume']?:0  );
