@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BATCH:
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 default:
                     return _this.state;
             }
@@ -71134,7 +71134,12 @@ var ReturnOrderItem = /** @class */ (function () {
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
-        this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        if (this.refundUnitPrice) {
+            this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
+        }
+        else {
+            this.maxRefund = this.total;
+        }
         return this;
     }
     return ReturnOrderItem;
@@ -71149,6 +71154,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.refundTotal = 0;
         this.refundPVTotal = 0;
         this.refundCVTotal = 0;
+        this.fulfillmentRefundTaxAmount = 0;
         this.setupOrderItemCollectionList = function () {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
             for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
@@ -71181,8 +71187,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                     return (item == orderItem) ? total : total += item.refundTotal;
                 }, 0);
                 orderMaxRefund = _this.orderTotal - refundTotal;
+                maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
             }
-            maxRefund = Math.min(orderMaxRefund, orderItem.maxRefund);
             if ((orderItem.refundTotal > maxRefund)) {
                 orderItem.refundUnitPrice = Math.max(maxRefund, 0) / orderItem.returnQuantity;
                 orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
@@ -71249,6 +71255,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
                 _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
             }
+            _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
@@ -71265,12 +71272,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
         this.fulfillmentRefundAmount = 0;
+        if (this.fulfillmentTaxAmount == undefined) {
+            this.fulfillmentTaxAmount = 0;
+        }
         if (this.refundOrderItems == undefined) {
             this.displayPropertiesList = this.getDisplayPropertiesList();
             this.setupOrderItemCollectionList();
         }
         else {
-            this.orderItems = this.refundOrderItems.map(function (item) { return new ReturnOrderItem(item); });
+            this.orderItems = this.refundOrderItems.map(function (item) {
+                item.calculatedExtendedPriceAfterDiscount = _this.orderTotal;
+                return new ReturnOrderItem(item);
+            });
         }
         $hibachi.getCurrencies().then(function (result) {
             _this.currencySymbol = result.data[_this.currencyCode];
@@ -71290,7 +71303,8 @@ var SWReturnOrderItems = /** @class */ (function () {
             orderPayments: '<',
             refundOrderItems: '<?',
             orderType: '@',
-            orderTotal: '<?'
+            orderTotal: '<?',
+            fulfillmentTaxAmount: '@'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
@@ -81760,11 +81774,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
             var newColumns = _this.collectionConfig.columns
                 .map(function (column) {
                 //try to find that(column with same prop identifier) in our searchable columns
-                var tmpColumn = _this.searchableColumns.find(function (searchableColum) {
+                var existingColumFromSearchableColumns = _this.searchableColumns.find(function (searchableColum) {
                     return column['propertyIdentifier'] === searchableColum['propertyIdentifier'];
                 });
-                if (tmpColumn) {
-                    return angular.copy(tmpColumn);
+                if (existingColumFromSearchableColumns) {
+                    return angular.copy(existingColumFromSearchableColumns);
                 }
                 return angular.copy(column);
             });
@@ -86392,13 +86406,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -86632,7 +86639,9 @@ var PublicService = /** @class */ (function () {
             }
             if (data) {
                 method = "post";
-                data.returnJsonObjects = "cart,account";
+                if (data.returnJsonObjects == undefined) {
+                    data.returnJsonObjects = "cart,account";
+                }
                 if (_this.cmsSiteID) {
                     data.cmsSiteID = _this.cmsSiteID;
                 }
@@ -86645,7 +86654,6 @@ var PublicService = /** @class */ (function () {
                 }
             }
             if (method == "post") {
-                data.returnJsonObjects = "cart,account";
                 //post
                 var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
                 request_1.promise.then(function (result) {
@@ -87521,7 +87529,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -88231,10 +88239,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -94542,11 +94550,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
