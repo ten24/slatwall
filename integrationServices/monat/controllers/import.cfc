@@ -1364,7 +1364,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var ostCanceled = getTypeService().getTypeByTypeCode("9");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
-		var fulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodID("444df2fb93d5fa960ba2966ba2017953");
+		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
 		
@@ -1483,9 +1483,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        
 				        newOrder.setImportFlexshipNumber( order['FlexshipNumber']?:"" ); // order source 903
 				        
-				        if (!isNull(order['DateLastGen'])){
+				        /*if (!isNull(order['DateLastGen'])){
 				        	newOrder.setLastGeneratedDate( getDateFromString(order['DateLastGen']) ); //Date field ADD THIS
-				        }
+				        }*/
 				        
 				        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
 				        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //ADD THIS
@@ -1609,6 +1609,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        	ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
 				        }
 				        
+				        //Promotion Applied.
+				        
+				        
 				        // set the currency code on the order...
 				        var countryCode = "USA";
 				        var currencyCode = "USD";
@@ -1639,8 +1642,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        
 	                    ///->Add order items...
 	                    if (!isNull(order['Details'])){
+	                    	var detailIndex = 0;
 	                    	for (var detail in order['Details']){
-	                    		
+	                    		detailIndex++;
 	                    	   /**
 	                    		 * If the sku is a 'parent', then the lookup by skucode needs the currencyCode appended to it.
 	                    		 * This is found using KitFlagCode M (Master), versus C (Component).
@@ -1672,22 +1676,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             			            
             			            orderItem.setRequestedReturnQuantity( detail['ReturnsRequested'] );//add this
             			            orderItem.setCalculatedTaxAmount(detail['TaxBase']);
-            			            orderItem.setCalculatedExtendedCommissionableVolume( detail['CommissionableVolume']?:0 );
-            			            orderItem.setCalculatedExtendedPersonalVolume( detail['QualifyingVolume']?:0 );
-            			            orderItem.setCalculatedExtendedProductPackVolume( detail['ProductPackVolume']?:0  );
-            			            orderItem.setCalculatedExtendedRetailCommission(  detail['RetailProfitAmount']?:0 );
-            			            orderItem.setCalculatedExtendedRetailValueVolume( detail['retailVolume']?:0 );//add this
+            			            orderItem.setTaxableAmount(detail['TaxBase']);
+            			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );
+            			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );
+            			            orderItem.setProductPackVolume( detail['ProductPackVolume']?:0  );
+            			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );
+            			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this
             			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );
-            			    		orderItem.setKitFlagCode( detail['KitFlagCode']?:0 );
-            			    		orderItem.setKitLineNumber( detail['KitLineNumber']?:0 );
-            			    		orderItem.setItemCategoryCode( detail['ItemCategoryCode']?:0 ); // Create Attribute so they can see the name instead of code
-	                    			orderItem.setReturnsRestocked( detail['ReturnsRestocked']?:0 );//they will review and get back to us.
+            			    		
+            			    		//orderItem.setKitFlagCode( detail['KitFlagCode']?:0 );
+            			    		//orderItem.setKitLineNumber( detail['KitLineNumber']?:0 );
+            			    		//orderItem.setItemCategoryCode( detail['ItemCategoryCode']?:0 ); // Create Attribute so they can see the name instead of code
+	                    			//orderItem.setReturnsRestocked( detail['ReturnsRestocked']?:0 );//they will review and get back to us.
+	                    			
 	                    			orderItem.setCurrencyCode(order['CurrencyCode']?:'USD');
 	                    			
 	                    			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
             			            ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
             			            
+            			            //Taxbase
             			            
+            			            //adds the tax for the order to the first Line Item
+            			            if (detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
+            			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
+            			            	taxApplied.setOrderItem(orderItem);
+            			            	taxApplied.setManualTaxAmountFlag(true);
+            			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
+            			            	taxApplied.setTaxAmount(order['SalesTax']);
+            			            	
+            			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
+            			            }
             			            //returnLineID, must be imported in post processing.
         			            }
 	                    	}
@@ -1805,14 +1823,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                		    orderDelivery.setTrackingNumber(concatTrackingNumber);
 	                		    //orderDelivery.setCarriorCode(concatCarriorCode);
 	                		    
-	                		    
 	                		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
 	                		    
 	                		    // Create a order fulfillment
 	                		    var orderFulfillment = new Slatwall.model.entity.OrderFulfillment();
 	                			orderFulfillment.setOrder(newOrder);
 	                			orderFulfillment.setRemoteID( shipment.shipmentId );
-	                			orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+	                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
 	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
 	                			orderFulfillment.manualHandlingFeeFlag(true);//*
 	                			
