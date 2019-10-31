@@ -185,7 +185,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public numeric function getFulfillmentTaxAmountNotRefunded(){
-		return getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount();
+		if(!isNull(getFulfillmentAmount()) && getFulfillmentAmount() != 0){
+			return getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount();
+		}
+		return 0;
 	}
 	
 	public boolean function getReceiveItemsFlag() {
