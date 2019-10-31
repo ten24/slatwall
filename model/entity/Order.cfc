@@ -175,6 +175,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
 	property name="taxTotal" persistent="false" hb_formatType="currency";
+	property name="taxTotalNotRefunded" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
 	property name="totalItemQuantity" persistent="false"; 
@@ -182,6 +183,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
 	
     //======= Mocking Injection for Unit Test ======	
@@ -1079,6 +1081,26 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return variables.refundableAmount;
 	}
+	/* This function does exactly what it says, don't @ me */
+	public numeric function getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge(){
+		return getRefundableAmount() - getTaxTotalNotRefunded() - getFulfillmentChargeNotRefunded();
+	}
+	
+	public numeric function getTaxTotalNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() - getTaxTotalOnReturnOrders());
+	}
+	
+	public numeric function getTaxTotalOnReturnOrders(){
+		var taxTotalOnReturnOrders = 0;
+		
+		for(var referencingOrder in getReferencingOrders()){
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
+			}
+		}
+		return taxTotalOnReturnOrders;
+	}
+
 
 	public any function getPaymentMethodOptionsSmartList() {
 		if(!structKeyExists(variables, "paymentMethodOptionsSmartList")) {
@@ -2014,6 +2036,11 @@ public numeric function getPersonalVolumeSubtotal(){
     	    }
 	    }
 	   
+	}
+	
+	public struct function getListingSearchConfig() {
+	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	//CUSTOM FUNCTIONS END
 }

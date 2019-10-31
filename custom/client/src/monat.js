@@ -59809,6 +59809,7 @@ var VIPController = /** @class */ (function () {
         this.isVIPEnrollment = false;
         this.sponsorHasErrors = false;
         this.flexshipDaysOfMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
+        this.accountPriceGroupCode = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
@@ -59859,65 +59860,10 @@ var VIPController = /** @class */ (function () {
                 _this.loading = false;
             }
         };
-        this.getProductList = function (pageNumber, direction, newPages) {
-            if (pageNumber === void 0) { pageNumber = 1; }
-            if (direction === void 0) { direction = false; }
-            if (newPages === void 0) { newPages = false; }
+        this.getProductList = function () {
             _this.loading = true;
-            var pageRecordsShow = 12;
-            var setNew;
-            if (pageNumber === 1) {
-                setNew = true;
-            }
-            //Pagination logic TODO: abstract into a more reusable method
-            if (direction === 'prev') {
-                setNew = false;
-                if (_this.pageTracker === 1) {
-                    return pageNumber;
-                }
-                else if (_this.pageTracker === _this.totalPages[0] + 1) {
-                    // If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages
-                    var q = _this.totalPages[0];
-                    pageNumber = q;
-                    //its not beautiful but it works
-                    _this.totalPages.unshift(q - 10, q - 9, q - 8, q - 7, q - 6, q - 5, q - 4, q - 3, q - 2, q - 1);
-                }
-                else {
-                    pageNumber = _this.pageTracker - 1;
-                }
-            }
-            else if (direction === 'next') {
-                setNew = false;
-                if (_this.pageTracker >= _this.totalPages[_this.totalPages.length - 1]) {
-                    pageNumber = _this.totalPages.length;
-                    return pageNumber;
-                }
-                else if (_this.pageTracker === _this.totalPages[9] + 1) {
-                    newPages = true;
-                }
-                else {
-                    pageNumber = _this.pageTracker + 1;
-                }
-            }
-            if (newPages) {
-                // If user is at the end of 10 page length display, get next 10 pages
-                pageNumber = _this.totalPages[10] + 1;
-                _this.totalPages.splice(0, 10);
-                setNew = false;
-            }
-            _this.publicService
-                .doAction('getproducts', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber })
-                .then(function (result) {
-                _this.productList = result.productListing;
-                if (setNew) {
-                    var holdingArray = [];
-                    var pages = Math.ceil(result.recordsCount / pageRecordsShow);
-                    for (var i = 0; i <= pages - 1; i++) {
-                        holdingArray.push(i);
-                    }
-                    _this.totalPages = holdingArray;
-                }
-                _this.pageTracker = pageNumber;
+            _this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': _this.accountPriceGroupCode, 'currencyCode': _this.currencyCode }).then(function (result) {
+                _this.productList = result.productList;
                 _this.loading = false;
             });
         };
@@ -61122,9 +61068,14 @@ var MonatFlexshipListingController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.$window = $window;
         this.loading = false;
+        this.orderTemplateTypeID = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
         this.initialized = false;
         this.$onInit = function () {
-            _this.orderTemplateService.getOrderTemplates()
+            _this.fetchFlexships();
+        };
+        this.fetchFlexships = function () {
+            _this.orderTemplateService
+                .getOrderTemplates(_this.orderTemplateTypeID)
                 .then(function (data) {
                 _this.accountAddresses = data.accountAddresses;
                 _this.accountPaymentMethods = data.accountPaymentMethods;
@@ -61136,9 +61087,11 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 _this.expirationYearOptions = data.expirationYearOptions;
                 //set this last so that ng repeat inits with all needed data
                 _this.orderTemplates = data.orderTemplates;
-            }, function (reason) {
-                console.error(reason);
-            }).finally(function () {
+            })
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
                 _this.initialized = true;
             });
         };
@@ -61151,19 +61104,21 @@ var MonatFlexshipListingController = /** @class */ (function () {
                 }
                 else {
                     throw (data);
-                    _this.loading = false;
                 }
             })
-                .catch(function (error) {
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
                 _this.loading = false;
             });
         };
     }
-    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplate) {
+    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplateID) {
         var _this = this;
         // make api request
         this.orderTemplateService
-            .setAsCurrentFlexship(orderTemplate)
+            .setAsCurrentFlexship(orderTemplateID)
             .then(function (data) {
             if (data.successfulActions &&
                 data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
@@ -61171,13 +61126,14 @@ var MonatFlexshipListingController = /** @class */ (function () {
             }
             else {
                 throw data;
-                _this.loading = false;
             }
         })
             .catch(function (error) {
             console.error('setAsCurrentFlexship :', error);
-            _this.loading = false;
             // TODO: show alert
+        })
+            .finally(function () {
+            //TODO
         });
     };
     return MonatFlexshipListingController;
@@ -61430,7 +61386,7 @@ var MonatProductCardController = /** @class */ (function () {
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -62111,7 +62067,7 @@ var SWFWishlistController = /** @class */ (function () {
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -62119,6 +62075,12 @@ var SWFWishlistController = /** @class */ (function () {
                 else if (setNewTemplateID) {
                     _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
                 }
+            })
+                .cache(function (e) {
+                //TODO
+                console.error(e);
+            })
+                .finally(function () {
                 _this.loading = false;
             });
         };
@@ -62477,24 +62439,30 @@ var OrderTemplateService = /** @class */ (function () {
          *
          *
         */
-        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID, refresh) {
+        this.getOrderTemplates = function (orderTemplateTypeID, pageRecordsShow, currentPage, refresh) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
             if (refresh === void 0) { refresh = false; }
             var deferred = _this.$q.defer();
-            var data = {
-                currentPage: currentPage,
-                pageRecordsShow: pageRecordsShow,
-            };
-            if (orderTemplateTypeID == _this.orderTemplateTypeID && refresh != true && _this.orderTemplateTypeID != '') {
-                deferred.resolve(_this.orderTemplates);
+            // if we're gonna use pagination, we shoudn't cache 
+            if (orderTemplateTypeID == _this.orderTemplateTypeID && _this.cachedGetOrderTemplatesResponse && !refresh) {
+                deferred.resolve(_this.cachedGetOrderTemplatesResponse);
             }
-            else if (orderTemplateTypeID && _this.orderTemplateTypeID == '') {
+            else {
                 _this.orderTemplateTypeID = orderTemplateTypeID;
-                data['orderTemplateTypeID'] = orderTemplateTypeID;
-                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data).then(function (result) {
-                    _this.orderTemplates = result;
-                    deferred.resolve(_this.orderTemplates);
+                var data = {
+                    currentPage: currentPage,
+                    pageRecordsShow: pageRecordsShow,
+                    orderTemplateTypeID: orderTemplateTypeID
+                };
+                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data)
+                    .then(function (result) {
+                    // TODO additional checks to make sure it's a successful response
+                    _this.cachedGetOrderTemplatesResponse = result;
+                    deferred.resolve(_this.cachedGetOrderTemplatesResponse);
+                })
+                    .catch(function (e) {
+                    deferred.reject(e);
                 });
             }
             return deferred.promise;

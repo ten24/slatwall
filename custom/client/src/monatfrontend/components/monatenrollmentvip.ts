@@ -16,6 +16,8 @@ class VIPController {
 	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
+	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
+	public currencyCode:any;
 
 
 	// @ngInject
@@ -80,77 +82,12 @@ class VIPController {
 		}
 	};
 	
-	public getProductList = (pageNumber = 1, direction: any = false, newPages = false) => {
+	public getProductList = () => {
 		this.loading = true;
-		const pageRecordsShow = 12;
-		let setNew;
-
-		if (pageNumber === 1) {
-			setNew = true;
-		}
-
-		//Pagination logic TODO: abstract into a more reusable method
-		if (direction === 'prev') {
-			setNew = false;
-			if (this.pageTracker === 1) {
-				return pageNumber;
-			} else if (this.pageTracker === this.totalPages[0] + 1) {
-				// If user is at the beggining of a new set of ten (ie: page 11) and clicks back, reset totalPages to include prior ten pages
-				let q = this.totalPages[0];
-				pageNumber = q;
-				//its not beautiful but it works
-				this.totalPages.unshift(
-					q - 10,
-					q - 9,
-					q - 8,
-					q - 7,
-					q - 6,
-					q - 5,
-					q - 4,
-					q - 3,
-					q - 2,
-					q - 1,
-				);
-			} else {
-				pageNumber = this.pageTracker - 1;
-			}
-		} else if (direction === 'next') {
-			setNew = false;
-			if (this.pageTracker >= this.totalPages[this.totalPages.length - 1]) {
-				pageNumber = this.totalPages.length;
-				return pageNumber;
-			} else if (this.pageTracker === this.totalPages[9] + 1) {
-				newPages = true;
-			} else {
-				pageNumber = this.pageTracker + 1;
-			}
-		}
-
-		if (newPages) {
-			// If user is at the end of 10 page length display, get next 10 pages
-			pageNumber = this.totalPages[10] + 1;
-			this.totalPages.splice(0, 10);
-			setNew = false;
-		}
-
-		this.publicService
-			.doAction('getproducts', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber })
-			.then((result) => {
-				this.productList = result.productListing;
-
-				if (setNew) {
-					const holdingArray = [];
-					const pages = Math.ceil(result.recordsCount / pageRecordsShow);
-
-					for (var i = 0; i <= pages - 1; i++) {
-						holdingArray.push(i);
-					}
-
-					this.totalPages = holdingArray;
-				}
-				this.pageTracker = pageNumber;
-				this.loading = false;
-			});
+		this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': this.accountPriceGroupCode, 'currencyCode': this.currencyCode }).then((result) => {
+			this.productList = result.productList;
+			this.loading = false;
+		});
 	};
 
     public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
