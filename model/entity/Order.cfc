@@ -279,7 +279,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="originalRMANumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="originalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -767,15 +768,24 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
+	public numeric function getFulfillmentChargeAfterDiscountPreTaxTotal() {
+		var fulfillmentChargeAfterDiscountTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
+		}
+
+		return fulfillmentChargeAfterDiscountTotal;
+	}
+	
 	public numeric function getFulfillmentChargeNotRefunded() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountTotal() - getFulfillmentRefundTotalOnReferencingOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundTotalOnReferencingOrders());
 	}
 	
 	public numeric function getFulfillmentRefundTotalOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
 			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundTotal();
-			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountTotal();
+			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
 		}
 		return fulfillmentRefundTotal;
 	}
@@ -1401,13 +1411,22 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			}
 		}
 
-		for(var orderFulfillment in this.getOrderFulfillments()) {
-			taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
-		}
+		taxTotal += getFulfillmentChargeTaxAmount();
 
 		variables.taxTotal = taxTotal;
 
 		return taxTotal;
+	}
+	
+	public numeric function getFulfillmentChargeTaxAmount(){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+			var taxTotal = 0;
+			for(var orderFulfillment in this.getOrderFulfillments()) {
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
+			}
+			variables.fulfillmentChargeTaxAmount = taxTotal;
+		}
+		return variables.fulfillmentChargeTaxAmount;
 	}
 
 	public numeric function getTotal() {

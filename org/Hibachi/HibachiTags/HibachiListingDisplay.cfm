@@ -25,9 +25,6 @@
 	<cfparam name="attributes.refreshEvent" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
-	<cfparam name="attributes.showSearchFilterDropDown" type="boolean" default="false"/>
-	<cfparam name="attributes.searchFilterPropertyIdentifier" type="string" default=""/>
-	
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordActions" type="string" default="" />
 	<cfparam name="attributes.recordEditEvent" type="string" default="" />
@@ -113,6 +110,7 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
+				<cfset attributes.collectionList.getCollectionConfigStruct()["listingSearchConfig"] = attributes.collectionList.getCollectionObjectListingSearchConfig() /> <!--- setting listing-search-config --->
 				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 
@@ -142,11 +140,6 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
-			    
-			    <cfif attributes.showSearchFilterDropDown>
-					data-show-search-filter-drop-down="#attributes.showSearchFilterDropDown#"
-					data-search-filter-property-identifier="#attributes.searchFilterPropertyIdentifier#"
-				</cfif>
 				
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
