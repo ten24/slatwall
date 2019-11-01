@@ -356,7 +356,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
         
     public any function selectStarterPackBundle(required struct data){
-        // Setup the frontend defaults
         var cart = getHibachiScope().cart();
         
         //remove previously-selected StarterPackBundle

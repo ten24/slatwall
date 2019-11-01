@@ -102,6 +102,7 @@ export class MonatService {
 		
 		this.lastAddedSkuID = skuID;
 		this.previouslySelectedStarterPackBundlSkuID = skuID;
+		
 		return this.updateCart('selectStarterPackBundle', payload);
 	}
 	
