@@ -329,6 +329,7 @@ component  accessors="true" output="false"
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'changePassword');
         getHibachiScope().addActionResult( "public:account.changePassword", account.hasErrors() );
+        addErrors(arguments.data, account.getProcessObject('changePassword').getErrors());
         return account;
     }
     
