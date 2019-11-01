@@ -18,6 +18,7 @@ class VIPController {
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
+	public flexshipItemList:any;
 
 
 	// @ngInject
@@ -101,6 +102,16 @@ class VIPController {
         this.loading = true;
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
+            this.loading = false;
+        });
+    }
+    
+    public getFlexshipItems = () =>{
+    	this.loading = true;
+        const flexshipID = this.flexshipID;
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
+        	this.flexshipItemList = result.orderTemplateItems;
+			this.observerService.notify('onNext');
             this.loading = false;
         });
     }

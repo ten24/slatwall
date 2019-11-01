@@ -84,6 +84,7 @@ class MonatEnrollmentController {
 			return;
 		}
 		if (index >= this.steps.length) {
+			this.observerService.notify('FinalStep')
 			return this.onFinish();
 		}
 		this.position = index;

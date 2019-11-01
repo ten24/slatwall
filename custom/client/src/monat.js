@@ -59390,9 +59390,10 @@ exports.MonatMiniCart = MonatMiniCart;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatOrderItemsController = /** @class */ (function () {
     //@ngInject
-    function MonatOrderItemsController(monatService) {
+    function MonatOrderItemsController(monatService, orderTemplateService) {
         var _this = this;
         this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
         this.orderItems = []; // orderTemplateDetails
         this.productPacks = []; // orderTemplateDetails
         this.todaysOrder = []; // orderTemplateDetails
@@ -59517,6 +59518,7 @@ var MonatEnrollmentController = /** @class */ (function () {
             return;
         }
         if (index >= this.steps.length) {
+            this.observerService.notify('FinalStep');
             return this.onFinish();
         }
         this.position = index;
@@ -59914,6 +59916,15 @@ var VIPController = /** @class */ (function () {
             _this.loading = true;
             var flexshipID = _this.flexshipID;
             _this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(function (result) {
+                _this.loading = false;
+            });
+        };
+        this.getFlexshipItems = function () {
+            _this.loading = true;
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.getWishlistItems(flexshipID).then(function (result) {
+                _this.flexshipItemList = result.orderTemplateItems;
+                _this.observerService.notify('onNext');
                 _this.loading = false;
             });
         };
@@ -61476,7 +61487,6 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;
-            debugger;
             _this.lastAddedSkuID = skuID;
             var orderTemplateID = _this.orderTemplate;
             if (_this.type === 'flexship' || _this.type === 'VIPenrollment') {

@@ -4,7 +4,7 @@ class MonatOrderItemsController {
 	public todaysOrder: any = []; // orderTemplateDetails
 
 	//@ngInject
-	constructor(public monatService) {
+	constructor(public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
