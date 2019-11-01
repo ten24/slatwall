@@ -1372,7 +1372,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    var MASTER = "M";
         var COMPONENT = "C";
         var isParentSku = function(kitCode) {
-        	kitCode ?: MASTER == COMPONENT;
+        	return (kitCode == MASTER);
         };
 				        
 				        
@@ -1631,6 +1631,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        newOrder.setCurrencyCode(currencyCode); //*
 			        
                     ///->Add order items...
+                    var parentKits = {};
                     if (!isNull(order['Details'])){
                     	var detailIndex = 0;
                     	for (var detail in order['Details']){
@@ -1641,13 +1642,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		 * 
                     		 **/
                     		var isKit = isParentSku(detail['KitFlagCode']);
+                    		
                     		if (isKit) {
                     			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
                     		} else {
                     			var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
                     		}
                     		
-    			            if (!isNull(sku)){
+                    		// Create an orderitem for the order if its a kit parent item OR if the 
+    			            if (!isNull(sku) && isKit || isNull(detail['KitFlagCode'])){
     			            	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
     			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
@@ -1671,7 +1674,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
         			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
         			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
-                    			orderItem.setCurrencyCode(order['CurrencyCode']?:'USD');//*
+                    			orderItem.setCurrencyCode( order['CurrencyCode']?:'USD' );//*
                     			
                     			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
                     			
@@ -1681,19 +1684,49 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     				ormStatelessSession.update("SlatwallOrderItem", orderItem); 
                     			}
         			            
+        			            if (isKit) {
+        			            	var kitName = detail['KitFlagName'].replace(" Master", "");
+    			            		parentKits[kitName] = orderItem;	
+    			            	}
+    			            	
         			            //Taxbase
         			            
         			            //adds the tax for the order to the first Line Item
         			            if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
         			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
-        			            	taxApplied.setOrderItem(orderItem);
-        			            	taxApplied.setManualTaxAmountFlag(true);
-        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
-        			            	taxApplied.setTaxAmount(order['SalesTax']);
+        			            	taxApplied.setOrderItem(orderItem);//*
+        			            	taxApplied.setManualTaxAmountFlag(true);//*
+        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');//*
+        			            	taxApplied.setTaxAmount(order['SalesTax']);//*
         			            	
         			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
         			            }
-        			            //returnLineID, must be imported in post processing.
+        			            //returnLineID, must be imported in post processing. ***Note
+    			            } else if(!isNull(sku) && detail['KitFlagCode'] == "C") {
+    			            	// Is a component, need to create a orderItemSkuBundle
+    			            	var componentKitName = detail['KitFlagName'].replace(" Component", "");
+    			            	if (structKeyExists(parentKits[componentKitName])){
+    			            		//found the orderItem
+    			            		var parentOrderItem = parentKits[componentKitName]);
+    			            		
+    			            		//create the orderItemSkuBundle and set the orderItem.
+    			            		var orderItemSkuBundle = getOrderService().getOrderItemSkuBundleByRemoteID();
+		                			if (isNull(orderItemSkuBundle)){
+		                				var orderItemSkuBundle = new Slatwall.model.entity.OrderItemSkuBundle();
+		                			}
+		                			
+		                			orderItemSkuBundle.setOrderItem(parentOrderItem);
+		                			orderItemSkuBundle.setSku(sku);
+        			            	orderItemSkuBundle.setPrice(val(sku.getPrice()));//*
+        			            	orderItemSkuBundle.setQuantity( detail['QtyOrdered']?:1 );//*
+		                			orderItemSkuBundle.setRemoteID( detail['OrderDetailId'] );
+		                			
+		                			if (orderItemSkuBundle.getNewFlag()){
+		                				ormStatelessSession.insert("SlatwallOrderItemSkuBundle", orderItemSkuBundle);
+		                			}else{
+		                				ormStatelessSession.update("SlatwallOrderItemSkuBundle", orderItemSkuBundle);
+		                			}
+    			            	}
     			            }
                     	}
     			    }
@@ -1720,15 +1753,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             
                             //Which payment methods are we pulling in for legacy data?
                             newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode
-                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']);
-                            newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:"");
-                            newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");
-                            newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");
-                            newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );
-                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );
+                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']); //*
+                            newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:""); //*
+                            newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
+                            newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");//*
+                            newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );//*
+                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );//*
                             
                             //If another type
-                            newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");
+                            newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");//*
                             ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
                             
                             //create a transaction for this payment
