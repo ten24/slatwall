@@ -1429,12 +1429,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             				newOrder.setOrderID(newUUID);
 	    			    }
 	    			    
-        				newOrder.setRemoteID(order['OrderId']?:"");	
+        				newOrder.setRemoteID(order['OrderId']?:"");	//*
 	                    newOrder.setOrderNumber(order['OrderNumber']?:""); // *
-	                    //newOrder.setOrderPartnerNumber(order['PartnerNumber']?:"");
-	                    
-	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");
-	                	newOrder.setOrderInvoiceNumber(order['InvoiceNumber']?:"");
+	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");//*
+	                	newOrder.setInvoiceNumber(order['InvoiceNumber']?:"");//*
 	                	
 	                	if (isNewOrderFlag){
 	                    	ormStatelessSession.insert("SlatwallOrder", newOrder);  
@@ -1523,32 +1521,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);//*
 				        
 				        /**
-				         * Fields to add 
-				         * Order - 
-				         * accountType
-				         * priceGroup
-				         * remoteAmountTotal
-				         * initialOrderFlag
-				         * lastGeneratedDate
-				         * commissionPeriod
-				         * importRMAORIGINALOrderNumber
-				         * ImportFlexshipNumber
-				         * flexshipNumber
-				         * orderItemLineNumber
-				         **/
-				         
-				         /**
-				          * Fields to remove 
-				          * 
-				          * importRMAORIGINALOrderNumber
-				          * ImportFlexshipNumber
-				          * orderItemLine
-				          * 
-				          * rma original order number
-				          **/
-				        
-				        
-				        /**
 				         * Find the orders account. 
 				         **/
 				        newOrder.setOrderAccountNumber(order['AccountNumber']?:""); //snapshot
@@ -1589,6 +1561,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                     **/
 	                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
 	                    newOrder.setOrderType(getOrderTypeFromOrderTypeCode(order['OrderTypeCode']) ?:"" );
+	                    
+	                    //If this is a return or a return order, we will need to create an order return instead of fulfillment.
+	                    var createOrderReturn = false;
+	                    if (order['OrderTypeCode'] == "C"){
+	                    	createOrderReturn = true;
+	                    }
 	                    
 	                    /**
 	                     * Sets the order origin 
@@ -1906,125 +1884,171 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                		    
 	                		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
 	                		    
-	                		    // Create a order fulfillment
-	                		    var orderFulfillment = getOrderService().getOrderFulfillmentByRemoteID(shipment.shipmentId);
+	                		    // Create an order return
+	                		    if (createReturnOrder){
+	                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId);
 	                		    
-	                		    if (isNull(orderFulfillment)){
-	                		    	var orderFulfillment = new Slatwall.model.entity.OrderFulfillment();
-	                		    }
+		                		    if (isNull(orderReturn)){
+		                		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
+		                		    }
+		                		    
+		                			orderReturn.setOrder(newOrder);
+		                			orderReturn.setRemoteID( shipment.shipmentId );
+		                			
+		                			if (orderReturn.getNewFlag()){
+		                		    	ormStatelessSession.insert("SlatwallOrderReturn", orderReturn);
+		                			}else{
+		                				ormStatelessSession.update("SlatwallOrderReturn", orderReturn);
+		                			}
+		                			
+		                			// Create the return items.
+		                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
+		                			   
+		                			    for (var shipmentItem in shipment['Items']){
+		                			       
+		                			        //create an orderItem for the fulfillment and delivery.
+		                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
+	                			        		//find the orderLine
+	                			            	//create an order fulfillment item.
+	                			                //find the correct orderItem using the shipmentItem.orderLine  
+	                    			            
+	                    			            //create an order delivery item
+	                    			            for (var oi in newOrder.getOrderItems()){
+	                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
+	                    			            		
+	                    			            		// set this return on that orderLine
+	                    			            		oi.setOrderItemStatusType(oistFulfilled);
+	                    			            		oi.setOrderReturn(orderReturn);
+	                    			            		
+	                    			            		//save the oi.
+	                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
+	                    			            		
+	                    			            	}
+	                    			            }
+		                			        }
+		                			    }
+		                			}//end return items
+	                		    }else{
+	                		    	//Create the Order fulfillment
+	                		    	var orderFulfillment = getOrderService().getOrderFulfillmentByRemoteID(shipment.shipmentId);
 	                		    
-	                			orderFulfillment.setOrder(newOrder);
-	                			orderFulfillment.setRemoteID( shipment.shipmentId );
-	                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
-	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
-	                			orderFulfillment.manualHandlingFeeFlag(true);//*
-	                			
-	                			//set the verifiedAddressFlag if verified.
-	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
-	                				orderFulfillment.setVerifiedAddressFlag( true );
-	                			}else{
-	                				orderFulfillment.setVerifiedAddressFlag( false );
-	                			}
-	                			
-	                			if (orderFulfillment.getNewFlag()){
-	                		    	ormStatelessSession.insert("SlatwallOrderFulfillment", orderFulfillment);
-	                			}else{
-	                				ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
-	                			}
-	                			
-	                		    //Create the shipping address
-	                		    var newAddress = getAddressService().getAddressByRemoteID(shipment['shipmentId']);
-	                		    if (isNull(newAddress)){
-	                		    	var newAddress = new Slatwall.model.entity.Address();	
-	                		    }
-	                            
-	                            newAddress.setRemoteID( shipment['shipmentId']?:"" );
-	        			        newAddress.setName( shipment['ShipToName']?:"" );
-	        			        newAddress.setCity(shipment['ShipTo_City']?:"" );
-	        			        var addressConcat = (shipment['ShipToAddr2']?:"") & (shipment['ShipToAddr3']?:"");
-	        			        newAddress.setStreetAddress( (shipment['ShipToAddr1']?:""));
-	        			        newAddress.setStreet2Address( addressConcat );
-	        			        newAddress.setCity( shipment['ShipToCity']?:"" );
-	        			        newAddress.setPostalCode( shipment['ShipToZip']?:"" );
-	        			        newAddress.setPhoneNumber( shipment['ShipToPhone']?:"" );
-	        			        newAddress.setEmailAddress( shipment['EmailAddress']?:"" );
+		                		    if (isNull(orderFulfillment)){
+		                		    	var orderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+		                		    }
+		                		    
+		                			orderFulfillment.setOrder(newOrder);
+		                			orderFulfillment.setRemoteID( shipment.shipmentId );
+		                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
+		                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
+		                			orderFulfillment.manualHandlingFeeFlag(true);//*
+		                			
+		                			//set the verifiedAddressFlag if verified.
+		                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
+		                				orderFulfillment.setVerifiedAddressFlag( true );
+		                			}else{
+		                				orderFulfillment.setVerifiedAddressFlag( false );
+		                			}
+		                			
+		                			if (orderFulfillment.getNewFlag()){
+		                		    	ormStatelessSession.insert("SlatwallOrderFulfillment", orderFulfillment);
+		                			}else{
+		                				ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
+		                			}
+		                			
+		                		    //Create the shipping address
+		                		    var newAddress = getAddressService().getAddressByRemoteID(shipment['shipmentId']);
+		                		    if (isNull(newAddress)){
+		                		    	var newAddress = new Slatwall.model.entity.Address();	
+		                		    }
+		                            
+		                            newAddress.setRemoteID( shipment['shipmentId']?:"" );
+		        			        newAddress.setName( shipment['ShipToName']?:"" );
+		        			        newAddress.setCity(shipment['ShipTo_City']?:"" );
+		        			        var addressConcat = (shipment['ShipToAddr2']?:"") & (shipment['ShipToAddr3']?:"");
+		        			        newAddress.setStreetAddress( (shipment['ShipToAddr1']?:""));
+		        			        newAddress.setStreet2Address( addressConcat );
+		        			        newAddress.setCity( shipment['ShipToCity']?:"" );
+		        			        newAddress.setPostalCode( shipment['ShipToZip']?:"" );
+		        			        newAddress.setPhoneNumber( shipment['ShipToPhone']?:"" );
+		        			        newAddress.setEmailAddress( shipment['EmailAddress']?:"" );
 	        			        
-	        			        if (structKeyExists(shipment, 'ShipToCountry')){
-	        			            //get the country by three digit
-	        			            var country = getAddressService().getCountryByCountryCode3Digit(shipment['ShipToCountry']?:"USA");
-	        			            if (!isNull(country)){
-	        			                newAddress.setCountryCode( country.getCountryCode() );  
-	        			                if (country.getStateCodeShowFlag()){
-	        			                    //using state
-	        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
-	        			                }else{
-	        			                    //using province
-	        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
-	        			                }
-	        			            }
-	        			        }
+		        			        if (structKeyExists(shipment, 'ShipToCountry')){
+		        			            //get the country by three digit
+		        			            var country = getAddressService().getCountryByCountryCode3Digit(shipment['ShipToCountry']?:"USA");
+		        			            if (!isNull(country)){
+		        			                newAddress.setCountryCode( country.getCountryCode() );  
+		        			                if (country.getStateCodeShowFlag()){
+		        			                    //using state
+		        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
+		        			                }else{
+		        			                    //using province
+		        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
+		        			                }
+		        			            }
+		        			        }
 	        			        
-	        			        if (newAddress.getNewFlag()){
-	        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
-	        			        }else{
-	        			        	ormStatelessSession.update("SlatwallAddress", newAddress);
-	        			        }
-	        			        
-	        			        orderFulfillment.setShippingAddress(newAddress);
-	                		    ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
+		        			        if (newAddress.getNewFlag()){
+		        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
+		        			        }else{
+		        			        	ormStatelessSession.update("SlatwallAddress", newAddress);
+		        			        }
+		        			        
+		        			        orderFulfillment.setShippingAddress(newAddress);
+		                		    ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
 	                		    
-	                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
-	                			   
-	                			    for (var shipmentItem in shipment['Items']){
-	                			       
-	                			        //create an orderItem for the fulfillment and delivery.
-	                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
-                			        		//find the orderLine
-                			            	//create an order fulfillment item.
-                			                //find the correct orderItem using the shipmentItem.orderLine  
-                    			            
-                    			            //create an order delivery item
-                    			            for (var oi in newOrder.getOrderItems()){
-                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
-                    			            		
-                    			            		// set this fulfillment on that orderLine
-                    			            		oi.setOrderItemStatusType(oistFulfilled);
-                    			            		oi.setOrderFulfillment(orderFulfillment);
-                    			            		
-                    			            		//save the oi.
-                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
-                    			            		
-                    			            		//create a deliveryItem for this if quantityShipped > 0
-                    			            		if (!isNull(shipmentItem['quantityShipped']) && shipmentItem['quantityShipped'] > 0){
-                    			            			
-                    			            			var orderDeliveryItem = getOrderService().getOrderDeliveryItemByRemoteID(shipmentItem.ShipmentDetailId);
-                    			            			if (isNull(orderDeliveryItem)){
-	                    			            			var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
-                    			            			}
-                    			            			
-			                        			        orderDeliveryItem.setOrderDelivery( orderDelivery );
-			                        			        orderDeliveryItem.setCreatedDateTime( shipmentItem['ArchiveDate']?:now());//*
-			                        			        orderDeliveryItem.setOrderItem( oi );//*
-			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
-			                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
-			                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
-			                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
-			                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
-			                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
-			                        			        
-			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );
-			                        			        
-			                        			        if (orderDeliveryItem.getNewFlag()){
-			                        			        	ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
-			                        			        }else{
-			                        			        	ormStatelessSession.update("SlatwallOrderDeliveryItem", orderDeliveryItem);
-			                        			        }
-                    			            		}
-                    			            	}
-                    			            }
-	                			        }
-	                			    }
-	                			}//end items
+		                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
+		                			   
+		                			    for (var shipmentItem in shipment['Items']){
+		                			       
+		                			        //create an orderItem for the fulfillment and delivery.
+		                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
+	                			        		//find the orderLine
+	                			            	//create an order fulfillment item.
+	                			                //find the correct orderItem using the shipmentItem.orderLine  
+	                    			            
+	                    			            //create an order delivery item
+	                    			            for (var oi in newOrder.getOrderItems()){
+	                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
+	                    			            		
+	                    			            		// set this fulfillment on that orderLine
+	                    			            		oi.setOrderItemStatusType(oistFulfilled);
+	                    			            		oi.setOrderFulfillment(orderFulfillment);
+	                    			            		
+	                    			            		//save the oi.
+	                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
+	                    			            		
+	                    			            		//create a deliveryItem for this if quantityShipped > 0
+	                    			            		if (!isNull(shipmentItem['quantityShipped']) && shipmentItem['quantityShipped'] > 0){
+	                    			            			
+	                    			            			var orderDeliveryItem = getOrderService().getOrderDeliveryItemByRemoteID(shipmentItem.ShipmentDetailId);
+	                    			            			if (isNull(orderDeliveryItem)){
+		                    			            			var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
+	                    			            			}
+	                    			            			
+				                        			        orderDeliveryItem.setOrderDelivery( orderDelivery );
+				                        			        orderDeliveryItem.setCreatedDateTime( shipmentItem['ArchiveDate']?:now());//*
+				                        			        orderDeliveryItem.setOrderItem( oi );//*
+				                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
+				                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
+				                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
+				                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
+				                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
+				                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
+				                        			        
+				                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );
+				                        			        
+				                        			        if (orderDeliveryItem.getNewFlag()){
+				                        			        	ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+				                        			        }else{
+				                        			        	ormStatelessSession.update("SlatwallOrderDeliveryItem", orderDeliveryItem);
+				                        			        }
+	                    			            		}
+	                    			            	}
+	                    			            }
+		                			        }
+		                			    }
+		                			}//end items
+	                		    }//end create fulfillment
 	                			//insert into the queue
 	                        }
 	                    }
