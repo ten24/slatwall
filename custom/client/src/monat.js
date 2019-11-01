@@ -62404,7 +62404,11 @@ var MonatService = /** @class */ (function () {
             skuID: skuID,
             quantity: quantity,
         };
+        if (this.previouslySelectedStarterPackBundlSkuID) {
+            payload['previouslySelectedStarterPackBundlSkuID'] = this.previouslySelectedStarterPackBundlSkuID;
+        }
         this.lastAddedSkuID = skuID;
+        this.previouslySelectedStarterPackBundlSkuID = skuID;
         return this.updateCart('selectStarterPackBundle', payload);
     };
     /**
