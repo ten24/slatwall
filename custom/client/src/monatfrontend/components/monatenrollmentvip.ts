@@ -89,6 +89,7 @@ class VIPController {
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
         	this.flexshipID = result.orderTemplate;
             this.loading = false;
+            this.observerService.notify('onNext');
         });
     }
 }
