@@ -192,6 +192,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	    getPublicService().updateOrderItemQuantity(arguments.rc);
 	}
 	
+	public any function selectStarterPackBundle(required struct rc) {
+	    getPublicService().selectStarterPackBundle(arguments.rc);
+	}
+	
 	
 	//////////////////////////////////////////////
 	

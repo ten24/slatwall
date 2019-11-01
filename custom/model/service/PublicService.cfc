@@ -354,6 +354,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
+        
+    public any function selectStarterPackBundle(required struct data){
+        // Setup the frontend defaults
+        var cart = getHibachiScope().cart();
+        
+        //remove previously-selected StarterPackBundle
+        for( orderItem in cart.getOrderItems()) {
+            if( orderItem.getSku().getBundleFlag() ) {
+                arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                StructDelete(arguments.data, 'orderItemID');
+            }
+        }
+        
+        this.addOrderItem(argumentCollection = arguments);
+    }
+
+    
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);

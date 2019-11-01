@@ -59644,7 +59644,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
                 _this.loading = true;
-                _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
+                _this.monatService.selectStarterPackBundle(_this.selectedBundleID).then(function (data) {
                     _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
@@ -62397,6 +62397,15 @@ var MonatService = /** @class */ (function () {
     };
     MonatService.prototype.submitSponsor = function (sponsorID) {
         return this.publicService.doAction('submitSponsor', { sponsorID: sponsorID });
+    };
+    MonatService.prototype.selectStarterPackBundle = function (skuID, quantity) {
+        if (quantity === void 0) { quantity = 1; }
+        var payload = {
+            skuID: skuID,
+            quantity: quantity,
+        };
+        this.lastAddedSkuID = skuID;
+        return this.updateCart('selectStarterPackBundle', payload);
     };
     /**
      * options = {optionName:refresh, ---> option2:true, o3:false}
