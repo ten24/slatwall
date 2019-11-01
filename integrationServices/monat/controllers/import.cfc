@@ -1642,12 +1642,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		 **/
                     		var isKit = isParentSku(detail['KitFlagCode']);
                     		if (isKit) {
-                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode);
-                    		}else{
-                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode);
+                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
+                    		} else {
+                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
                     		}
                     		
-    			            if (!isNull(sku) && isKit){
+    			            if (!isNull(sku)){
     			            	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
     			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
@@ -1658,15 +1658,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			                
     			                //Check if the skus are always broken into multiple skus under one product.
     			                orderItem.setSku(sku);
-        			            orderItem.setPrice(val(sku.getPrice()));
-        			            orderItem.setSkuPrice(val(sku.getPrice()));
-        			            orderItem.setQuantity( detail['QtyOrdered']?:1 );
-        			        	orderItem.setOrder(newOrder);
-        			        	orderItem.setOrderItemType(oitSale);
+        			            orderItem.setPrice(val(sku.getPrice()));//*
+        			            orderItem.setSkuPrice(val(sku.getPrice()));//*
+        			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
+        			        	orderItem.setOrder(newOrder);//*
+        			        	orderItem.setOrderItemType(oitSale);//*
         			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
-        			            
-        			            orderItem.setRequestedReturnQuantity( detail['ReturnsRequested'] );//add this
-        			            //orderItem.setCalculatedTaxAmount(detail['TaxBase']);//*
         			            orderItem.setTaxableAmount(detail['TaxBase']);//*
         			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
         			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );//*
@@ -1674,12 +1671,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
         			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
         			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
-        			    		
-        			    		//orderItem.setKitFlagCode( detail['KitFlagCode']?:0 );
-        			    		//orderItem.setKitLineNumber( detail['KitLineNumber']?:0 );
-        			    		//orderItem.setItemCategoryCode( detail['ItemCategoryCode']?:0 ); // Create Attribute so they can see the name instead of code
-                    			//orderItem.setReturnsRestocked( detail['ReturnsRestocked']?:0 );//they will review and get back to us.
-                    			
                     			orderItem.setCurrencyCode(order['CurrencyCode']?:'USD');//*
                     			
                     			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
@@ -1829,9 +1820,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
                 			orderDelivery.setShipmentTypeCode(shipment.ShipTypeSequence);//Add attribute
                 			orderDelivery.setShipToModifiedFlag(shipment.ShipToModFlag);//this would need to be added
-                			orderDelivery.setWarehouseCode(shipment.warehouseCode);
-                			orderDelivery.setFreightTypeCode(shipment.FreightTypeCode);
-                			orderDelivery.setCarrierCode(shipment.CarrierCode);
+                			orderDelivery.setWarehouseCode(shipment.warehouseCode);//ADD
+                			orderDelivery.setFreightTypeCode(shipment.FreightTypeCode); //ADD
+                			orderDelivery.setCarrierCode(shipment.CarrierCode);//ADD
                 			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
                 			orderDelivery.setRemoteID( shipment.shipmentId );
                 			
