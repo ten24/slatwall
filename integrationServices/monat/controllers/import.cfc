@@ -1885,8 +1885,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
 	                		    
 	                		    // Create an order return
-	                		    if (createReturnOrder){
-	                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId);
+	                		    if (createOrderReturn){
+	                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId, false);
 	                		    
 		                		    if (isNull(orderReturn)){
 		                		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
