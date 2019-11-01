@@ -54,7 +54,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
-
 		if (!arguments.order.hasOrderItem()){
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
@@ -108,11 +107,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
  		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
-		
 		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
-			&& (len(orderFulfillmentList) || len(taxAddressList))
+			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())
 		){
-
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
 	
 			//Remove existing taxes from OrderItems and OrderFulfillments
@@ -287,7 +284,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// Apply Tax for return items
 				} else if (orderItem.getOrderItemType().getSystemCode() == "oitReturn") {
-	
 					if(!isNull(orderItem.getReferencedOrderItem())) {
 	
 						var originalAppliedTaxes = orderItem.getReferencedOrderItem().getAppliedTaxes();
@@ -741,7 +737,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 			}
 		}
-
 	}
 
 	//Generates an array of integrations

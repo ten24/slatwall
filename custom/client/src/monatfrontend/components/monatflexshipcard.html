@@ -36,6 +36,13 @@
 				</p>
 			</div>
 			
+			<div>
+				<span class="status" sw-rbkey="'define.status'"></span>
+				<p class="broad">
+					<span ng-bind="monatFlexshipCard.orderTemplate.orderTemplateStatusType_typeName">
+				</p>
+			</div>
+			
 			<monat-flexship-menu ng-if="monatFlexshipCard.orderTemplate.statusCode !== 'otstCancelled'"
 								 data-order-template="monatFlexshipCard.orderTemplate"
 								 data-account-addresses="monatFlexshipCard.accountAddresses"

@@ -96,14 +96,20 @@ class SWFWishlistController {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(pageRecordsToShow,this.currentPage,this.wishlistTypeID)
-        .then(result=>{
+        .getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
+        .then( (result) => {
             
             if(setNewTemplates){
                 this.orderTemplates = result['orderTemplates'];                
             } else if(setNewTemplateID){
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
+        })
+        .cache( (e) => {
+            //TODO
+            console.error(e);
+        })
+        .finally( () => {
             this.loading = false;
         });
     }
