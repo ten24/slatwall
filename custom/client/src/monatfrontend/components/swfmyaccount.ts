@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
     public currentYear;
@@ -101,7 +102,8 @@ class swfAccountController {
                 pageNumber = this.pageTracker +1;
             }
         }
-
+        
+        this.loadingOrders = true;
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
@@ -116,6 +118,7 @@ class swfAccountController {
             this.totalPages = holdingArray;
             this.pageTracker = pageNumber;
             this.loading = false;
+            this.loadingOrders = false;
         });
     }
     
