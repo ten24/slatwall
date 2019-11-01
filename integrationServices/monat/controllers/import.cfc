@@ -1348,44 +1348,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     
     
 	
-	//http://monat.local:8906/Slatwall/?slatAction=monat%3Aimport.importupdatedorderswithorderitems&updated=true
+	//http://monat/Slatwall/?slatAction=monat:import.upsertOrders&pageNumber=1&pageMax=2&pageSize=25
 	public void function upsertOrders(rc) { 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 	    
-		//get the api key from integration settings.
-		//var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
 		var updateFlag = rc.updateFlag?:false;
-		
-		//var ostProcessing = getTypeService().getTypeByTypeCode("2");
-		//var ostShipped = getTypeService().getTypeByTypeCode("4");
-		//var ostClosed = getTypeService().getTypeByTypeCode("5");
 		var ostCanceled = getTypeService().getTypeByTypeCode("9");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
 		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
-		
-		//Order Types
 		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
 		var otReturnOrder = getTypeService().getTypeBySystemCode("otReturnOrder");
 		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
 		var otReplacementOrder = getTypeService().getTypeBySystemCode("otReplacementOrder");
 		var otRefundOrder = getTypeService().getTypeBySystemCode("otRefundOrder");
-
-		//Order Status Types
-		
-		//Order Origins
-		
 	    var index=0;
-	    
 	    var MASTER = "M";
         var COMPONENT = "C";
-        
         var isParentSku = function(kitCode) {
         	kitCode ?: MASTER == COMPONENT;
         };
@@ -1393,380 +1378,384 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        
 		//here
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
-			
-			// Call the api and get records from start to end.
-			// import those records using the mapping file.
-			var remoteIDs = "";
-	    	while (pageNumber < pageMax){
-	    		
-	    		var orderResponse = getOrderData(pageNumber, pageSize);
-	    		//writedump(orderResponse);abort;
-	    		if (orderResponse.hasErrors == true){
-	    			
-	    		    //goto next page causing this is erroring!
-	    		    //echo("Skipping page #pageNumber#");
-	    		    pageNumber++;
-	    		    continue;
-	    		}
-	    		
-	    		var orders = orderResponse.Records;
-	    		
-	    		var transactionClosed = false;
-	    		var index=0;
-	    		
-	    		try{
-	    			var tx = ormStatelessSession.beginTransaction();
-	    			
-	    			for (var order in orders){
-	    			    index++;
-	    			    
-	    			    var newOrder = getOrderService().getOrderByRemoteID(order['OrderId']);
-	    			    var isNewOrderFlag = false;
-	    			    if (isNull(newOrder)){
-	    			    	isNewOrderFlag = true;
-            				var newOrder = new Slatwall.model.entity.Order();
-            				var newUUID = rereplace(createUUID(), "-", "", "all");
-            				newOrder.setOrderID(newUUID);
-	    			    }
-	    			    
-        				newOrder.setRemoteID(order['OrderId']?:"");	//*
-	                    newOrder.setOrderNumber(order['OrderNumber']?:""); // *
-	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");//*
-	                	newOrder.setInvoiceNumber(order['InvoiceNumber']?:"");//*
-	                	
-	                	if (isNewOrderFlag){
-	                    	ormStatelessSession.insert("SlatwallOrder", newOrder);  
-	                	}else{
-	                		ormStatelessSession.update("SlatwallOrder", newOrder);
-	                	}
-	                    
-	                    //Dates 
-	                    if (!isNull(order['entryDate']) && len(order['entryDate'])){
-	                    	newOrder.setCreatedDateTime( getDateFromString(order['entryDate']) );//*
-	                    }
-	                    
-	                    if (!isNull(order['verifyDate']) && len(order['verifyDate'])){
-	                    	newOrder.setOrderOpenDateTime( getDateFromString(order['verifyDate']) );//*
-	                    }
-	                    
-	                    if (!isNull(order['postDate']) && len(order['postDate'])){
-	                    	newOrder.setOrderCloseDateTime( getDateFromString(order['postDate']) );//*
-	                    }
-	                    
-	                    if (!isNull(order['postDate']) && len(order['postDate'])){
-	                    	newOrder.setModifiedDateTime( getDateFromString(order['postDate']) );//*
-	                    }
-	                    
-	                    
-					    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
-				        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
-				        
-				        /**
-				         * Handle discounts on the order. 
-				         **/
-				        
-				        if (!isNull(order['DiscountAmount']) && order['DiscountAmount'] > 0){
-				        	newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
-				        	
-				        	
-				        	var promotionApplied = getService("PromotionService").getPromotionAppliedByPromotionAppliedRemoteID( order["OrderID"] );
-				        	
-				        	if (isNull(promotionApplied)){
-				        		promotionApplied = new Slatwall.model.entity.PromotionApplied();
-				        	}
-				        	
-				        	promotionApplied.setManualDiscountAmountFlag(true);
-				        	promotionApplied.setDiscountAmount(order['DiscountAmount']);
-				        	promotionApplied.setRemoteID(order["OrderID"]);
-				        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
-				        	
-				        	if (promotionApplied.getNewFlag()){
-				        		ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied); //*
-				        	}else{
-				        		ormStatelessSession.update("SlatwallPromotionApplied", promotionApplied);
-				        	}
-				        }
-				        
-				        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
-				        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
-				        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
-				        
-				        //RMAOrigOrderNumber
-				        if (!isNull(order['RMAOrigOrderNumber'])){
-				        	newOrder.setImportOriginalRMAIDNumber( order['RMAOrigOrderNumber']?:0 );
-				        }
-				        
-				        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
-				        
-				        // Only for order type C return orders
-				        //newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
-				        //newOrder.setRmaOPSReasonDescription( order['RMAOpsReasonDescription']?:"" ); //add this field
-				        //newOrder.setReplacementReasonDescription( order['ReplacementReasonDescription']?:"" ); //add this field
-				        /**
-				         * Create the rma types
-				         **/
-				        
-				        newOrder.setImportFlexshipNumber( order['FlexshipNumber']?:"" ); // order source 903 *
-				        
-				        /*if (!isNull(order['DateLastGen'])){
-				        	newOrder.setLastGeneratedDate( getDateFromString(order['DateLastGen']) ); //Date field ADD THIS
-				        }*/
-				        
-				        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
-				        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //ADD THIS
-				        
-				        //Handle Tax
-				        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0); //*
-				        newOrder.setCalculatedTaxableAmountTotal(order['TaxableAmount']?:0); //*
-				        newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);//*
-				        
-				        /**
-				         * Find the orders account. 
-				         **/
-				        newOrder.setOrderAccountNumber(order['AccountNumber']?:""); //snapshot
-				        if (structKeyExists(order, "AccountNumber") && len(order.AccountNumber)){
-	                        //set the account if we have the account, otherwise, skip this for now...
-	                        var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
-	                        if (!isNull(foundAccount)){
-	                        	echo("Account found, adding...");	
-	                        	newOrder.setAccount(foundAccount); // * This is for order.account.accountNumber accountType
-	                        }
-	                    }
-	                    
-	                    /**
-	                     * Sets the order created site. 
-	                     **/
-                    	var createdSite = getService("SiteService").getSiteBySiteCode(getCreatedSiteCode(order['CountryCode']?:"USA"));
+		
+    	while (pageNumber < pageMax){
+    		
+    		var orderResponse = getOrderData(pageNumber, pageSize);
+    		//writedump(orderResponse);abort;
+    		
+    		if (orderResponse.hasErrors == true){
+    			
+    		    //goto next page causing this is erroring!
+    		    echo("Skipping page #pageNumber# because of errors <br>");
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var orders = orderResponse.Records;
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var order in orders){
+    			    index++;
+    			    
+    			    var newOrder = getOrderService().getOrderByRemoteID(order['OrderId']);
+    			    var isNewOrderFlag = false;
+    			    
+    			    if (isNull(newOrder)){
+    			    	isNewOrderFlag = true;
+        				var newOrder = new Slatwall.model.entity.Order();
+        				var newUUID = rereplace(createUUID(), "-", "", "all");
+        				newOrder.setOrderID(newUUID);
+    			    }
+    			    
+    				newOrder.setRemoteID(order['OrderId']?:"");	//*
+                    newOrder.setOrderNumber(order['OrderNumber']?:""); // *
+                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");//*
+                	newOrder.setInvoiceNumber(order['InvoiceNumber']?:"");//*
+                	
+                	if (isNewOrderFlag){
+                    	ormStatelessSession.insert("SlatwallOrder", newOrder);  
+                	}else{
+                		ormStatelessSession.update("SlatwallOrder", newOrder);
+                	}
                     
-	                    if (!isNull(createdSite)){
-	                    	newOrder.setOrderCreatedSite(createdSite);
-	                    }
+                    //Dates 
+                    if (!isNull(order['entryDate']) && len(order['entryDate'])){
+                    	newOrder.setCreatedDateTime( getDateFromString(order['entryDate']) );//*
+                    }
                     
-	    				/**
-	    				 * Adds the priceGroup 
-	    				 **/
-	                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
-	    				
-	    				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
-		                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+                    if (!isNull(order['verifyDate']) && len(order['verifyDate'])){
+                    	newOrder.setOrderOpenDateTime( getDateFromString(order['verifyDate']) );//*
+                    }
+                    
+                    if (!isNull(order['postDate']) && len(order['postDate'])){
+                    	newOrder.setOrderCloseDateTime( getDateFromString(order['postDate']) );//*
+                    }
+                    
+                    if (!isNull(order['postDate']) && len(order['postDate'])){
+                    	newOrder.setModifiedDateTime( getDateFromString(order['postDate']) );//*
+                    }
+                    
+                    
+				    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
+			        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
+			        
+			        /**
+			         * Handle discounts on the order. 
+			         **/
+			        
+			        if (!isNull(order['DiscountAmount']) && order['DiscountAmount'] > 0){
+			        	newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
+			        	
+			        	
+			        	var promotionApplied = getService("PromotionService").getPromotionAppliedByPromotionAppliedRemoteID( order["OrderID"] );
+			        	
+			        	if (isNull(promotionApplied)){
+			        		promotionApplied = new Slatwall.model.entity.PromotionApplied();
+			        	}
+			        	
+			        	promotionApplied.setManualDiscountAmountFlag(true);
+			        	promotionApplied.setDiscountAmount(order['DiscountAmount']);
+			        	promotionApplied.setRemoteID(order["OrderID"]);
+			        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
+			        	
+			        	if (promotionApplied.getNewFlag()){
+			        		ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied); //*
+			        	}else{
+			        		ormStatelessSession.update("SlatwallPromotionApplied", promotionApplied);
+			        	}
+			        }
+			        
+			        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
+			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
+			        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
+			        
+			        //RMAOrigOrderNumber
+			        if (!isNull(order['RMAOrigOrderNumber'])){
+			        	newOrder.setImportOriginalRMAIDNumber( order['RMAOrigOrderNumber']?:0 );
+			        }
+			        
+			        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
+			        
+			        // Only for order type C return orders
+			        //newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
+			        //newOrder.setRmaOPSReasonDescription( order['RMAOpsReasonDescription']?:"" ); //add this field
+			        //newOrder.setReplacementReasonDescription( order['ReplacementReasonDescription']?:"" ); //add this field
+			        /**
+			         * Create the rma types
+			         **/
+			        
+			        newOrder.setImportFlexshipNumber( order['FlexshipNumber']?:"" ); // order source 903 *
+			        
+			        /*if (!isNull(order['DateLastGen'])){
+			        	newOrder.setLastGeneratedDate( getDateFromString(order['DateLastGen']) ); //Date field ADD THIS
+			        }*/
+			        
+			        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
+			        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //ADD THIS
+			        
+			        //Handle Tax
+			        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0); //*
+			        newOrder.setCalculatedTaxableAmountTotal(order['TaxableAmount']?:0); //*
+			        newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);//*
+			        
+			        /**
+			         * Find the orders account. 
+			         **/
+			        newOrder.setOrderAccountNumber(order['AccountNumber']?:""); //snapshot
+			        if (structKeyExists(order, "AccountNumber") && len(order.AccountNumber)){
+                        //set the account if we have the account, otherwise, skip this for now...
+                        var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
+                        if (!isNull(foundAccount)){
+                        	echo("Account found, adding...");	
+                        	newOrder.setAccount(foundAccount); // * This is for order.account.accountNumber accountType
+                        }
+                    }
+                    
+                    /**
+                     * Sets the order created site. 
+                     **/
+                	var createdSite = getService("SiteService").getSiteBySiteCode(getCreatedSiteCode(order['CountryCode']?:"USA"));
+                
+                    if (!isNull(createdSite)){
+                    	newOrder.setOrderCreatedSite(createdSite);
+                    }
+                
+    				/**
+    				 * Adds the priceGroup 
+    				 **/
+                    newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
+    				
+    				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
+	                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+	                    
+	                    if (!isNull(priceGroup)){
+	                    	newOrder.setPriceGroup(priceGroup);
+	                    }
+                    }
+                    
+                    /**
+                     * Sets the orderType to the Slatwall Type
+                     * otReplacementOrder, otSalesOrder,otExchangeOrder,otReturnOrder,otRefundOrder
+                     **/
+                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
+                    newOrder.setOrderType(getOrderTypeFromOrderTypeCode(order['OrderTypeCode']) ?:"" );
+                    
+                    //If this is a return or a return order, we will need to create an order return instead of fulfillment.
+                    var createOrderReturn = false;
+                    if (order['OrderTypeCode'] == "C"){
+                    	createOrderReturn = true;
+                    }
+                    
+                    /**
+                     * Sets the order origin 
+                     * Get the origin name from the code. Get the origin from that and set it.
+                     **/
+                    newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
+	                
+	                if (!isNull(order['OrderSourceCode']) && len(order['OrderSourceCode'])){
+	                    var originName = getOrderOriginNameFromOrderSourceCode(order['OrderSourceCode']);
+	                    
+	                    if (!isNull(originName)){
+		                    var origin = getOrderService().getOrderOriginByOrderOriginName(originName);
 		                    
-		                    if (!isNull(priceGroup)){
-		                    	newOrder.setPriceGroup(priceGroup);
+		                    if (!isNull(origin)){
+		                    	newOrder.setOrderOrigin();
 		                    }
 	                    }
-	                    
-	                    /**
-	                     * Sets the orderType to the Slatwall Type
-	                     * otReplacementOrder, otSalesOrder,otExchangeOrder,otReturnOrder,otRefundOrder
-	                     **/
-	                    newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
-	                    newOrder.setOrderType(getOrderTypeFromOrderTypeCode(order['OrderTypeCode']) ?:"" );
-	                    
-	                    //If this is a return or a return order, we will need to create an order return instead of fulfillment.
-	                    var createOrderReturn = false;
-	                    if (order['OrderTypeCode'] == "C"){
-	                    	createOrderReturn = true;
-	                    }
-	                    
-	                    /**
-	                     * Sets the order origin 
-	                     * Get the origin name from the code. Get the origin from that and set it.
-	                     **/
-	                    newOrder.setOrderSourceCode(order['OrderSourceCode']?:"");
-		                
-		                if (!isNull(order['OrderSourceCode']) && len(order['OrderSourceCode'])){
-		                    var originName = getOrderOriginNameFromOrderSourceCode(order['OrderSourceCode']);
-		                    
-		                    if (!isNull(originName)){
-			                    var origin = getOrderService().getOrderOriginByOrderOriginName(originName);
-			                    
-			                    if (!isNull(origin)){
-			                    	newOrder.setOrderOrigin();
-			                    }
-		                    }
-	                    }
-	                    
-	                    /**
-	                     * Sets the order status to the Slatwall order status. 
-	                     **/
-	                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
-	                    //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped' or canceled
-				        
-				        if (order['OrderStatusCode'] == "9"){
-				        	newOrder.setOrderStatus( ostCanceled );		
-				        }else{
-				        	newOrder.setOrderStatus( ostClosed );
-				        }
-				        
-				        /**
-				         * Create order comments if needed. 
-				         **/
-				        if (!isNull(order['Comments'])){
-				        	
-				        	var comment = getCommentService().getCommentByRemoteID(order["OrderID"]);
-				        	if (isNull(comment)){
-				        		var comment = new Slatwall.model.entity.Comment();
-				        		var commentRelationship = new Slatwall.model.entity.CommentRelationship();
-				        	}
-				        	
-				        	comment.setRemoteID(order["OrderID"]);
-				        	comment.setComment(order['Comments']);
-				        	
-				        	if (comment.getNewFlag()){
-				        		ormStatelessSession.insert("SlatwallComment", comment); 
-				        		commentRelationship.setOrder( newOrder );
-				        		commentRelationship.setComment( comment );
-				        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
-				        	}else{
-				        		ormStatelessSession.update("SlatwallComment", comment); 
-				        	}
-				        }
-				        
-				        //Promotion Applied.
-				        
-				        
-				        // set the currency code on the order...
-				        var countryCode = "USA";
-				        var currencyCode = "USD";
-				        
-				        if (!isNull(order['CountryCode'])){
-				        	countryCode = order['CountryCode'];
-				        }
-				        
-				        //Set the currencyCode
-				        switch(countryCode){
-				            case 'CAN':
-				                currencyCode = "CAD" ;
-				                break;
-				            case 'GBR':
-				                currencyCode = "GBP" ;
-				                break;
-				            case 'USA':
-				                currencyCode = "USD" ;
-				                break;
-				            default:
-				            	currencyCode = "USD" ;
-				        }
-				        
-				        newOrder.setCurrencyCode(currencyCode); //*
-				        
-				        //Handle creating order comments.
-				        
-				        
-	                    ///->Add order items...
-	                    if (!isNull(order['Details'])){
-	                    	var detailIndex = 0;
-	                    	for (var detail in order['Details']){
-	                    		detailIndex++;
-	                    	   /**
-	                    		 * If the sku is a 'parent', then the lookup by skucode needs the currencyCode appended to it.
-	                    		 * This is found using KitFlagCode M (Master), versus C (Component).
-	                    		 * 
-	                    		 **/
-	                    		var isKit = isParentSku(detail['KitFlagCode']);
-	                    		if (isKit) {
-	                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode);
-	                    		}else{
-	                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode);
-	                    		}
-	                    		
-        			            if (!isNull(sku) && isKit){
+                    }
+                    
+                    /**
+                     * Sets the order status to the Slatwall order status. 
+                     **/
+                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
+                    //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped' or canceled
+			        
+			        if (order['OrderStatusCode'] == "9"){
+			        	newOrder.setOrderStatus( ostCanceled );		
+			        }else{
+			        	newOrder.setOrderStatus( ostClosed );
+			        }
+			        
+			        /**
+			         * Create order comments if needed. 
+			         **/
+			        if (!isNull(order['Comments'])){
+			        	
+			        	var comment = getCommentService().getCommentByRemoteID(order["OrderID"]);
+			        	if (isNull(comment)){
+			        		var comment = new Slatwall.model.entity.Comment();
+			        		var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+			        	}
+			        	
+			        	comment.setRemoteID(order["OrderID"]);
+			        	comment.setComment(order['Comments']);
+			        	
+			        	if (comment.getNewFlag()){
+			        		ormStatelessSession.insert("SlatwallComment", comment); 
+			        		commentRelationship.setOrder( newOrder );
+			        		commentRelationship.setComment( comment );
+			        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+			        	}else{
+			        		ormStatelessSession.update("SlatwallComment", comment); 
+			        	}
+			        }
+			        
+			        // set the currency code on the order...
+			        var countryCode = "USA";
+			        var currencyCode = "USD";
+			        
+			        if (!isNull(order['CountryCode'])){
+			        	countryCode = order['CountryCode'];
+			        }
+			        
+			        //Set the currencyCode
+			        switch(countryCode){
+			            case 'CAN':
+			                currencyCode = "CAD" ;
+			                break;
+			            case 'GBR':
+			                currencyCode = "GBP" ;
+			                break;
+			            case 'USA':
+			                currencyCode = "USD" ;
+			                break;
+			            default:
+			            	currencyCode = "USD" ;
+			        }
+			        
+			        newOrder.setCurrencyCode(currencyCode); //*
+			        
+                    ///->Add order items...
+                    if (!isNull(order['Details'])){
+                    	var detailIndex = 0;
+                    	for (var detail in order['Details']){
+                    		detailIndex++;
+                    	   /**
+                    		 * If the sku is a 'parent', then the lookup by skucode needs the currencyCode appended to it.
+                    		 * This is found using KitFlagCode M (Master), versus C (Component).
+                    		 * 
+                    		 **/
+                    		var isKit = isParentSku(detail['KitFlagCode']);
+                    		if (isKit) {
+                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode);
+                    		}else{
+                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode);
+                    		}
+                    		
+    			            if (!isNull(sku) && isKit){
+    			            	
+    			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
+    			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
+    			                
+    			                if (isNull(orderItem)){
+    			                	var orderItem = new Slatwall.model.entity.OrderItem();
+    			                }
+    			                
+    			                //Check if the skus are always broken into multiple skus under one product.
+    			                orderItem.setSku(sku);
+        			            orderItem.setPrice(val(sku.getPrice()));
+        			            orderItem.setSkuPrice(val(sku.getPrice()));
+        			            orderItem.setQuantity( detail['QtyOrdered']?:1 );
+        			        	orderItem.setOrder(newOrder);
+        			        	orderItem.setOrderItemType(oitSale);
+        			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
+        			            
+        			            orderItem.setRequestedReturnQuantity( detail['ReturnsRequested'] );//add this
+        			            //orderItem.setCalculatedTaxAmount(detail['TaxBase']);//*
+        			            orderItem.setTaxableAmount(detail['TaxBase']);//*
+        			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
+        			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );//*
+        			            orderItem.setProductPackVolume( detail['ProductPackVolume']?:0  );//*
+        			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
+        			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
+        			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
+        			    		
+        			    		//orderItem.setKitFlagCode( detail['KitFlagCode']?:0 );
+        			    		//orderItem.setKitLineNumber( detail['KitLineNumber']?:0 );
+        			    		//orderItem.setItemCategoryCode( detail['ItemCategoryCode']?:0 ); // Create Attribute so they can see the name instead of code
+                    			//orderItem.setReturnsRestocked( detail['ReturnsRestocked']?:0 );//they will review and get back to us.
+                    			
+                    			orderItem.setCurrencyCode(order['CurrencyCode']?:'USD');//*
+                    			
+                    			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
+                    			
+                    			if (orderItem.getNewFlag()){
+        			            	ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
+                    			}else{
+                    				ormStatelessSession.update("SlatwallOrderItem", orderItem); 
+                    			}
+        			            
+        			            //Taxbase
+        			            
+        			            //adds the tax for the order to the first Line Item
+        			            if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
+        			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
+        			            	taxApplied.setOrderItem(orderItem);
+        			            	taxApplied.setManualTaxAmountFlag(true);
+        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
+        			            	taxApplied.setTaxAmount(order['SalesTax']);
         			            	
-        			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
-        			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
-        			                
-        			                if (isNull(orderItem)){
-        			                	var orderItem = new Slatwall.model.entity.OrderItem();
-        			                }
-        			                
-        			                //Check if the skus are always broken into multiple skus under one product.
-        			                orderItem.setSku(sku);
-            			            orderItem.setPrice(val(sku.getPrice()));
-            			            orderItem.setSkuPrice(val(sku.getPrice()));
-            			            orderItem.setQuantity( detail['QtyOrdered']?:1 );
-            			        	orderItem.setOrder(newOrder);
-            			        	orderItem.setOrderItemType(oitSale);
-            			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
-            			            
-            			            orderItem.setRequestedReturnQuantity( detail['ReturnsRequested'] );//add this
-            			            //orderItem.setCalculatedTaxAmount(detail['TaxBase']);//*
-            			            orderItem.setTaxableAmount(detail['TaxBase']);//*
-            			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
-            			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );//*
-            			            orderItem.setProductPackVolume( detail['ProductPackVolume']?:0  );//*
-            			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
-            			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
-            			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
-            			    		
-            			    		//orderItem.setKitFlagCode( detail['KitFlagCode']?:0 );
-            			    		//orderItem.setKitLineNumber( detail['KitLineNumber']?:0 );
-            			    		//orderItem.setItemCategoryCode( detail['ItemCategoryCode']?:0 ); // Create Attribute so they can see the name instead of code
-	                    			//orderItem.setReturnsRestocked( detail['ReturnsRestocked']?:0 );//they will review and get back to us.
-	                    			
-	                    			orderItem.setCurrencyCode(order['CurrencyCode']?:'USD');//*
-	                    			
-	                    			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
-	                    			
-	                    			if (orderItem.getNewFlag()){
-            			            	ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
-	                    			}else{
-	                    				ormStatelessSession.update("SlatwallOrderItem", orderItem); 
-	                    			}
-            			            
-            			            //Taxbase
-            			            
-            			            //adds the tax for the order to the first Line Item
-            			            if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
-            			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
-            			            	taxApplied.setOrderItem(orderItem);
-            			            	taxApplied.setManualTaxAmountFlag(true);
-            			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
-            			            	taxApplied.setTaxAmount(order['SalesTax']);
-            			            	
-            			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
-            			            }
-            			            //returnLineID, must be imported in post processing.
+        			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
         			            }
-	                    	}
-        			    }
-	                    
-	                    // Create an account email address for each email.
-	                    if (structKeyExists(order, "Payments") && arrayLen(order.Payments)){
-	                        for (var orderPayment in order.Payments){
-	                        	var calculatedRemoteID = orderPayment['orderPaymentID']&orderPayment['PaymentNumber'];
-	                        	var newOrderPayment = getOrderService().getOrderPaymentByRemoteID(calculatedRemoteID, false);
+        			            //returnLineID, must be imported in post processing.
+    			            }
+                    	}
+    			    }
+                    
+                    // Create an account email address for each email.
+                    if (structKeyExists(order, "Payments") && arrayLen(order.Payments)){
+                        for (var orderPayment in order.Payments){
+                        	var calculatedRemoteID = orderPayment['orderPaymentID']&orderPayment['PaymentNumber'];
+                        	var newOrderPayment = getOrderService().getOrderPaymentByRemoteID(calculatedRemoteID, false);
+                            
+                            if (isNull(newOrderPayment)){
+                            	var newOrderPayment = new Slatwall.model.entity.OrderPayment();
+                            }
+                            
+            			    newOrderPayment.setOrder(newOrder);
+            			    
+            			    if (!isNull(orderPayment['EntryDate']) && len(orderPayment['EntryDate'])){
+            			    	newOrderPayment.setCreatedDateTime(getDateFromString(orderPayment['EntryDate'])?:now());
+            			    }
+            			    
+                            newOrderPayment.setRemoteID(calculatedRemoteID);//* use orderPayment
+                            
+                            //If CC
+                            
+                            //Which payment methods are we pulling in for legacy data?
+                            newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode
+                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']);
+                            newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:"");
+                            newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");
+                            newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");
+                            newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );
+                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );
+                            
+                            //If another type
+                            newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");
+                            ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
+                            
+                            //create a transaction for this payment
+                            
+                            if (newOrderPayment.getNewFlag())
+	                            var paymentTransaction = new Slatwall.model.entity.PaymentTransaction();
+	                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
+	                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
+	                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
+	                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
+	                            paymentTransaction.setTransactionType( "received" );
+	                            paymentTransaction.setOrderPayment(newOrderPayment);
+	                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
 	                            
-	                            if (isNull(newOrderPayment)){
-	                            	var newOrderPayment = new Slatwall.model.entity.OrderPayment();
-	                            }
-	                            
-	            			    newOrderPayment.setOrder(newOrder);
-	            			    
-	            			    if (!isNull(orderPayment['EntryDate']) && len(orderPayment['EntryDate'])){
-	            			    	newOrderPayment.setCreatedDateTime(getDateFromString(orderPayment['EntryDate'])?:now());
-	            			    }
-	            			    
-	                            newOrderPayment.setRemoteID(calculatedRemoteID ?:"");//* use orderPayment
-	                            
-	                            //If CC
-	                            
-	                            //Which payment methods are we pulling in for legacy data?
-	                            newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode
-	                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']);
-	                            newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:"");
-	                            newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");
-	                            newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");
-	                            newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );
-	                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );
-	                            
-	                            //If another type
-	                            newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");
-	                            ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
-	                            
-	                            //create a transaction for this payment
-	                            
-	                            if (newOrderPayment.getNewFlag())
-		                            var paymentTransaction = new Slatwall.model.entity.PaymentTransaction();
+	                            ormStatelessSession.insert("SlatwallPaymentTransaction", paymentTransaction);
+                        	}else{
+                        		var paymentTransaction = getOrderService().getPaymentTransactionByRemoteID(orderPayment['orderPaymentID']);
+                        		if (!isNull(paymentTransaction)){
 		                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
 		                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
 		                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
@@ -1775,310 +1764,294 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                            paymentTransaction.setOrderPayment(newOrderPayment);
 		                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
 		                            
-		                            ormStatelessSession.insert("SlatwallPaymentTransaction", paymentTransaction);
-	                        	}else{
-	                        		var paymentTransaction = getOrderService().getPaymentTransactionByRemoteID(orderPayment['orderPaymentID']);
-	                        		if (!isNull(paymentTransaction)){
-			                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
-			                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
-			                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
-			                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
-			                            paymentTransaction.setTransactionType( "received" );
-			                            paymentTransaction.setOrderPayment(newOrderPayment);
-			                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
-			                            
-			                            ormStatelessSession.update("SlatwallPaymentTransaction", paymentTransaction);
-	                        		}
-	                        	}
-	                        	
-	                            //Create the payment address
-	                            var newAddress = getAddressService().getAddressByRemoteID(calculatedRemoteID);
-	                            if (isNull(newAddress)){
-	                            	var newAddress = new Slatwall.model.entity.Address();
-	                            }
+		                            ormStatelessSession.update("SlatwallPaymentTransaction", paymentTransaction);
+                        		}
+                        	}
+                        	
+                            //Create the payment address
+                            var newAddress = getAddressService().getAddressByRemoteID(calculatedRemoteID);
+                            if (isNull(newAddress)){
+                            	var newAddress = new Slatwall.model.entity.Address();
+                            }
+                            
+        			        newAddress.setFirstName( orderPayment['CardHolderAddress_FirstName']?:"" );
+        			        newAddress.setLastName( orderPayment['CardHolderAddress_LastName']?:"" );
+        			        newAddress.setCity(orderPayment['CardHolderAddress_City']?:"" );
+        			        newAddress.setStreetAddress( orderPayment['CardHolderAddress_Addr1']?:"" );
+        			        newAddress.setStreet2Address( orderPayment['CardHolderAddress_Addr2']?:"" );
+        			        newAddress.setPostalCode( orderPayment['CardHolderAddress_Zip']?:"" );
+        			        newAddress.setPhoneNumber( orderPayment['CardHolderAddress_Phone']?:"" );
+        			        newAddress.setEmailAddress( orderPayment['CardHolderAddress_Email']?:"" );
+        			        newAddress.setRemoteID( calculatedRemoteID ); //*
+        			        
+        			        if (structKeyExists(orderPayment, 'CardHolderAddress_CountryCode')){
+        			            //get the country by three digit
+        			            var country = getAddressService().getCountryByCountryCode3Digit(orderPayment['CardHolderAddress_CountryCode']?:"USA");
+        			            if (!isNull(country)){
+        			                newAddress.setCountryCode( country.getCountryCode() );  
+        			                if (country.getStateCodeShowFlag()){
+        			                    //using state
+        			                    newAddress.setStateCode( orderPayment['CardHolderAddress_State']?:"" );
+        			                }else{
+        			                    //using province
+        			                    newAddress.setProvince( orderPayment['CardHolderAddress_State']?:"" );
+        			                }
+        			            }
+        			        }
+        			        
+        			        if (newAddress.getNewFlag()){
+        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
+        			        }else{
+        			        	ormStatelessSession.update("SlatwallAddress", newAddress);
+        			        }
+        			        
+        			        newOrderPayment.setBillingAddress(newAddress);
+        			        ormStatelessSession.update("SlatwallOrderPayment", newOrderPayment);
+                            
+                        }
+                    }
+                    
+                    ormStatelessSession.update("SlatwallOrder", newOrder);
+                    
+        			//create all the deliveries
+                    if (structKeyExists(order, "Shipments") && arrayLen(order.shipments)){
+                        for (var shipment in order.Shipments){
+                			
+                			
+                			// Create a order delivery
+                			var orderDelivery = getOrderService().getOrderDeliveryByRemoteID();
+                			if (isNull(orderDelivery)){
+                				var orderDelivery = new Slatwall.model.entity.OrderDelivery();
+                			}
+                			
+                			orderDelivery.setOrder(newOrder);
+                			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
+                			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
+                			orderDelivery.setShipmentTypeCode(shipment.ShipTypeSequence);//Add attribute
+                			orderDelivery.setShipToModifiedFlag(shipment.ShipToModFlag);//this would need to be added
+                			orderDelivery.setWarehouseCode(shipment.warehouseCode);
+                			orderDelivery.setFreightTypeCode(shipment.FreightTypeCode);
+                			orderDelivery.setCarrierCode(shipment.CarrierCode);
+                			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+                			orderDelivery.setRemoteID( shipment.shipmentId );
+                			
+                			if (orderDelivery.getNewFlag()){
+                				ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery);
+                			}else{
+                				ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
+                			}
+                		    
+                		    //get the tracking numbers.
+                		    //get tracking information...
+                		    var concatTrackingNumber = "";
+                		    var concatScanDate = "";
+                		    if (structKeyExists(shipment, "Packages")){
+                		    	 for (var packages in shipment.Packages){
+                		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
+                		    		//concatCarriorCode = listAppend(concatCarriorCode, packages.CarriorCode);
+                		    		if (!isNull(packages['ScanDate'])){
+                		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+                		    		}
+                		    	 }
+                		    }
+                		    
+                		    // all tracking on one fulfillment.
+                		    orderDelivery.setTrackingNumber(concatTrackingNumber);
+                		    //orderDelivery.setCarriorCode(concatCarriorCode);
+                		    
+                		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
+                		    
+                		    // Create an order return
+                		    if (createOrderReturn){
+                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId, false);
+                		    
+	                		    if (isNull(orderReturn)){
+	                		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
+	                		    }
+	                		    
+	                			orderReturn.setOrder(newOrder);
+	                			orderReturn.setRemoteID( shipment.shipmentId );
+	                			
+	                			if (orderReturn.getNewFlag()){
+	                		    	ormStatelessSession.insert("SlatwallOrderReturn", orderReturn);
+	                			}else{
+	                				ormStatelessSession.update("SlatwallOrderReturn", orderReturn);
+	                			}
+	                			
+	                			// Create the return items.
+	                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
+	                			   
+	                			    for (var shipmentItem in shipment['Items']){
+	                			       
+	                			        //create an orderItem for the fulfillment and delivery.
+	                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
+                			        		//find the orderLine
+                			            	//create an order fulfillment item.
+                			                //find the correct orderItem using the shipmentItem.orderLine  
+                    			            
+                    			            //create an order delivery item
+                    			            for (var oi in newOrder.getOrderItems()){
+                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
+                    			            		
+                    			            		// set this return on that orderLine
+                    			            		oi.setOrderItemStatusType(oistFulfilled);
+                    			            		oi.setOrderReturn(orderReturn);
+                    			            		
+                    			            		//save the oi.
+                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
+                    			            		
+                    			            	}
+                    			            }
+	                			        }
+	                			    }
+	                			}//end return items
+                		    }else{
+                		    	//Create the Order fulfillment
+                		    	var orderFulfillment = getOrderService().getOrderFulfillmentByRemoteID(shipment.shipmentId);
+                		    
+	                		    if (isNull(orderFulfillment)){
+	                		    	var orderFulfillment = new Slatwall.model.entity.OrderFulfillment();
+	                		    }
+	                		    
+	                			orderFulfillment.setOrder(newOrder);
+	                			orderFulfillment.setRemoteID( shipment.shipmentId );
+	                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
+	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
+	                			orderFulfillment.manualHandlingFeeFlag(true);//*
+	                			
+	                			//set the verifiedAddressFlag if verified.
+	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
+	                				orderFulfillment.setVerifiedAddressFlag( true );
+	                			}else{
+	                				orderFulfillment.setVerifiedAddressFlag( false );
+	                			}
+	                			
+	                			if (orderFulfillment.getNewFlag()){
+	                		    	ormStatelessSession.insert("SlatwallOrderFulfillment", orderFulfillment);
+	                			}else{
+	                				ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
+	                			}
+	                			
+	                		    //Create the shipping address
+	                		    var newAddress = getAddressService().getAddressByRemoteID(shipment['shipmentId']);
+	                		    if (isNull(newAddress)){
+	                		    	var newAddress = new Slatwall.model.entity.Address();	
+	                		    }
 	                            
-	        			        newAddress.setFirstName( orderPayment['CardHolderAddress_FirstName']?:"" );
-	        			        newAddress.setLastName( orderPayment['CardHolderAddress_LastName']?:"" );
-	        			        newAddress.setCity(orderPayment['CardHolderAddress_City']?:"" );
-	        			        newAddress.setStreetAddress( orderPayment['CardHolderAddress_Addr1']?:"" );
-	        			        newAddress.setStreet2Address( orderPayment['CardHolderAddress_Addr2']?:"" );
-	        			        newAddress.setPostalCode( orderPayment['CardHolderAddress_Zip']?:"" );
-	        			        newAddress.setPhoneNumber( orderPayment['CardHolderAddress_Phone']?:"" );
-	        			        newAddress.setEmailAddress( orderPayment['CardHolderAddress_Email']?:"" );
-	        			        newAddress.setRemoteID( calculatedRemoteID ); //*
-	        			        
-	        			        if (structKeyExists(orderPayment, 'CardHolderAddress_CountryCode')){
+	                            newAddress.setRemoteID( shipment['shipmentId']?:"" );
+	        			        newAddress.setName( shipment['ShipToName']?:"" );
+	        			        newAddress.setCity(shipment['ShipTo_City']?:"" );
+	        			        var addressConcat = (shipment['ShipToAddr2']?:"") & (shipment['ShipToAddr3']?:"");
+	        			        newAddress.setStreetAddress( (shipment['ShipToAddr1']?:""));
+	        			        newAddress.setStreet2Address( addressConcat );
+	        			        newAddress.setCity( shipment['ShipToCity']?:"" );
+	        			        newAddress.setPostalCode( shipment['ShipToZip']?:"" );
+	        			        newAddress.setPhoneNumber( shipment['ShipToPhone']?:"" );
+	        			        newAddress.setEmailAddress( shipment['EmailAddress']?:"" );
+        			        
+	        			        if (structKeyExists(shipment, 'ShipToCountry')){
 	        			            //get the country by three digit
-	        			            var country = getAddressService().getCountryByCountryCode3Digit(orderPayment['CardHolderAddress_CountryCode']?:"USA");
+	        			            var country = getAddressService().getCountryByCountryCode3Digit(shipment['ShipToCountry']?:"USA");
 	        			            if (!isNull(country)){
 	        			                newAddress.setCountryCode( country.getCountryCode() );  
 	        			                if (country.getStateCodeShowFlag()){
 	        			                    //using state
-	        			                    newAddress.setStateCode( orderPayment['CardHolderAddress_State']?:"" );
+	        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
 	        			                }else{
 	        			                    //using province
-	        			                    newAddress.setProvince( orderPayment['CardHolderAddress_State']?:"" );
+	        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
 	        			                }
 	        			            }
 	        			        }
-	        			        
+        			        
 	        			        if (newAddress.getNewFlag()){
 	        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
 	        			        }else{
 	        			        	ormStatelessSession.update("SlatwallAddress", newAddress);
 	        			        }
 	        			        
-	        			        newOrderPayment.setBillingAddress(newAddress);
-	        			        ormStatelessSession.update("SlatwallOrderPayment", newOrderPayment);
-	                            
-	                        }
-	                    }
-	                    
-	                    ormStatelessSession.update("SlatwallOrder", newOrder);
-	                    
-	        			//create all the deliveries
-	                    if (structKeyExists(order, "Shipments") && arrayLen(order.shipments)){
-	                        for (var shipment in order.Shipments){
-	                			
-	                			
-	                			// Create a order delivery
-	                			var orderDelivery = getOrderService().getOrderDeliveryByRemoteID();
-	                			if (isNull(orderDelivery)){
-	                				var orderDelivery = new Slatwall.model.entity.OrderDelivery();
-	                			}
-	                			
-	                			orderDelivery.setOrder(newOrder);
-	                			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
-	                			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
-	                			orderDelivery.setShipmentTypeCode(shipment.ShipTypeSequence);//Add attribute
-	                			orderDelivery.setShipToModifiedFlag(shipment.ShipToModFlag);//this would need to be added
-	                			orderDelivery.setWarehouseCode(shipment.warehouseCode);
-	                			orderDelivery.setFreightTypeCode(shipment.FreightTypeCode);
-	                			orderDelivery.setCarrierCode(shipment.CarrierCode);
-	                			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
-	                			orderDelivery.setRemoteID( shipment.shipmentId );
-	                			
-	                			if (orderDelivery.getNewFlag()){
-	                				ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery);
-	                			}else{
-	                				ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
-	                			}
-	                		    
-	                		    //get the tracking numbers.
-	                		    //get tracking information...
-	                		    var concatTrackingNumber = "";
-	                		    var concatScanDate = "";
-	                		    if (structKeyExists(shipment, "Packages")){
-	                		    	 for (var packages in shipment.Packages){
-	                		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
-	                		    		//concatCarriorCode = listAppend(concatCarriorCode, packages.CarriorCode);
-	                		    		if (!isNull(packages['ScanDate'])){
-	                		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
-	                		    		}
-	                		    	 }
-	                		    }
-	                		    
-	                		    // all tracking on one fulfillment.
-	                		    orderDelivery.setTrackingNumber(concatTrackingNumber);
-	                		    //orderDelivery.setCarriorCode(concatCarriorCode);
-	                		    
-	                		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
-	                		    
-	                		    // Create an order return
-	                		    if (createOrderReturn){
-	                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId, false);
-	                		    
-		                		    if (isNull(orderReturn)){
-		                		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
-		                		    }
-		                		    
-		                			orderReturn.setOrder(newOrder);
-		                			orderReturn.setRemoteID( shipment.shipmentId );
-		                			
-		                			if (orderReturn.getNewFlag()){
-		                		    	ormStatelessSession.insert("SlatwallOrderReturn", orderReturn);
-		                			}else{
-		                				ormStatelessSession.update("SlatwallOrderReturn", orderReturn);
-		                			}
-		                			
-		                			// Create the return items.
-		                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
-		                			   
-		                			    for (var shipmentItem in shipment['Items']){
-		                			       
-		                			        //create an orderItem for the fulfillment and delivery.
-		                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
-	                			        		//find the orderLine
-	                			            	//create an order fulfillment item.
-	                			                //find the correct orderItem using the shipmentItem.orderLine  
-	                    			            
-	                    			            //create an order delivery item
-	                    			            for (var oi in newOrder.getOrderItems()){
-	                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
-	                    			            		
-	                    			            		// set this return on that orderLine
-	                    			            		oi.setOrderItemStatusType(oistFulfilled);
-	                    			            		oi.setOrderReturn(orderReturn);
-	                    			            		
-	                    			            		//save the oi.
-	                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
-	                    			            		
-	                    			            	}
-	                    			            }
-		                			        }
-		                			    }
-		                			}//end return items
-	                		    }else{
-	                		    	//Create the Order fulfillment
-	                		    	var orderFulfillment = getOrderService().getOrderFulfillmentByRemoteID(shipment.shipmentId);
-	                		    
-		                		    if (isNull(orderFulfillment)){
-		                		    	var orderFulfillment = new Slatwall.model.entity.OrderFulfillment();
-		                		    }
-		                		    
-		                			orderFulfillment.setOrder(newOrder);
-		                			orderFulfillment.setRemoteID( shipment.shipmentId );
-		                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
-		                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
-		                			orderFulfillment.manualHandlingFeeFlag(true);//*
-		                			
-		                			//set the verifiedAddressFlag if verified.
-		                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
-		                				orderFulfillment.setVerifiedAddressFlag( true );
-		                			}else{
-		                				orderFulfillment.setVerifiedAddressFlag( false );
-		                			}
-		                			
-		                			if (orderFulfillment.getNewFlag()){
-		                		    	ormStatelessSession.insert("SlatwallOrderFulfillment", orderFulfillment);
-		                			}else{
-		                				ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
-		                			}
-		                			
-		                		    //Create the shipping address
-		                		    var newAddress = getAddressService().getAddressByRemoteID(shipment['shipmentId']);
-		                		    if (isNull(newAddress)){
-		                		    	var newAddress = new Slatwall.model.entity.Address();	
-		                		    }
-		                            
-		                            newAddress.setRemoteID( shipment['shipmentId']?:"" );
-		        			        newAddress.setName( shipment['ShipToName']?:"" );
-		        			        newAddress.setCity(shipment['ShipTo_City']?:"" );
-		        			        var addressConcat = (shipment['ShipToAddr2']?:"") & (shipment['ShipToAddr3']?:"");
-		        			        newAddress.setStreetAddress( (shipment['ShipToAddr1']?:""));
-		        			        newAddress.setStreet2Address( addressConcat );
-		        			        newAddress.setCity( shipment['ShipToCity']?:"" );
-		        			        newAddress.setPostalCode( shipment['ShipToZip']?:"" );
-		        			        newAddress.setPhoneNumber( shipment['ShipToPhone']?:"" );
-		        			        newAddress.setEmailAddress( shipment['EmailAddress']?:"" );
-	        			        
-		        			        if (structKeyExists(shipment, 'ShipToCountry')){
-		        			            //get the country by three digit
-		        			            var country = getAddressService().getCountryByCountryCode3Digit(shipment['ShipToCountry']?:"USA");
-		        			            if (!isNull(country)){
-		        			                newAddress.setCountryCode( country.getCountryCode() );  
-		        			                if (country.getStateCodeShowFlag()){
-		        			                    //using state
-		        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
-		        			                }else{
-		        			                    //using province
-		        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
-		        			                }
-		        			            }
-		        			        }
-	        			        
-		        			        if (newAddress.getNewFlag()){
-		        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
-		        			        }else{
-		        			        	ormStatelessSession.update("SlatwallAddress", newAddress);
-		        			        }
-		        			        
-		        			        orderFulfillment.setShippingAddress(newAddress);
-		                		    ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
-	                		    
-		                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
-		                			   
-		                			    for (var shipmentItem in shipment['Items']){
-		                			       
-		                			        //create an orderItem for the fulfillment and delivery.
-		                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
-	                			        		//find the orderLine
-	                			            	//create an order fulfillment item.
-	                			                //find the correct orderItem using the shipmentItem.orderLine  
-	                    			            
-	                    			            //create an order delivery item
-	                    			            for (var oi in newOrder.getOrderItems()){
-	                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
-	                    			            		
-	                    			            		// set this fulfillment on that orderLine
-	                    			            		oi.setOrderItemStatusType(oistFulfilled);
-	                    			            		oi.setOrderFulfillment(orderFulfillment);
-	                    			            		
-	                    			            		//save the oi.
-	                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
-	                    			            		
-	                    			            		//create a deliveryItem for this if quantityShipped > 0
-	                    			            		if (!isNull(shipmentItem['quantityShipped']) && shipmentItem['quantityShipped'] > 0){
-	                    			            			
-	                    			            			var orderDeliveryItem = getOrderService().getOrderDeliveryItemByRemoteID(shipmentItem.ShipmentDetailId);
-	                    			            			if (isNull(orderDeliveryItem)){
-		                    			            			var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
-	                    			            			}
-	                    			            			
-				                        			        orderDeliveryItem.setOrderDelivery( orderDelivery );
-				                        			        orderDeliveryItem.setCreatedDateTime( shipmentItem['ArchiveDate']?:now());//*
-				                        			        orderDeliveryItem.setOrderItem( oi );//*
-				                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
-				                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
-				                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
-				                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
-				                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
-				                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
-				                        			        
-				                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );
-				                        			        
-				                        			        if (orderDeliveryItem.getNewFlag()){
-				                        			        	ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
-				                        			        }else{
-				                        			        	ormStatelessSession.update("SlatwallOrderDeliveryItem", orderDeliveryItem);
-				                        			        }
-	                    			            		}
-	                    			            	}
-	                    			            }
-		                			        }
-		                			    }
-		                			}//end items
-	                		    }//end create fulfillment
-	                			//insert into the queue
-	                        }
-	                    }
-	                    
-	                    //update calculated properties
-	                    //ADD undeliverable order date to core.
-	                    ormStatelessSession.update("SlatwallOrder", newOrder);
-	                    //echo("updated order.");
-	    			}
-	    			//echo("committing all order.");
-	    			tx.commit();
-	    		}catch(e){
-	    			if (!isNull(tx) && tx.isActive()){
-	    			    tx.rollback();
-	    			}
-	    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
-	    			writeDump(e); // rollback the tx
-	    			
-	    		} 
-			    pageNumber++;
-			    
-			}
-			
-			/*for (var remoteID in listToArray(remoteIDs)){
-				//update calculated...
-			}*/
-			//update calculated properties.
-			
-			ormStatelessSession.close(); //must close the session regardless of errors.
-			writeDump("End: #pageNumber# - #pageSize# - #index# - #remoteIDs#");
+	        			        orderFulfillment.setShippingAddress(newAddress);
+	                		    ormStatelessSession.update("SlatwallOrderFulfillment", orderFulfillment);
+                		    
+	                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
+	                			   
+	                			    for (var shipmentItem in shipment['Items']){
+	                			       
+	                			        //create an orderItem for the fulfillment and delivery.
+	                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
+                			        		//find the orderLine
+                			            	//create an order fulfillment item.
+                			                //find the correct orderItem using the shipmentItem.orderLine  
+                    			            
+                    			            //create an order delivery item
+                    			            for (var oi in newOrder.getOrderItems()){
+                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
+                    			            		
+                    			            		// set this fulfillment on that orderLine
+                    			            		oi.setOrderItemStatusType(oistFulfilled);
+                    			            		oi.setOrderFulfillment(orderFulfillment);
+                    			            		
+                    			            		//save the oi.
+                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
+                    			            		
+                    			            		//create a deliveryItem for this if quantityShipped > 0
+                    			            		if (!isNull(shipmentItem['quantityShipped']) && shipmentItem['quantityShipped'] > 0){
+                    			            			
+                    			            			var orderDeliveryItem = getOrderService().getOrderDeliveryItemByRemoteID(shipmentItem.ShipmentDetailId);
+                    			            			if (isNull(orderDeliveryItem)){
+	                    			            			var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
+                    			            			}
+                    			            			
+			                        			        orderDeliveryItem.setOrderDelivery( orderDelivery );
+			                        			        orderDeliveryItem.setCreatedDateTime( shipmentItem['ArchiveDate']?:now());//*
+			                        			        orderDeliveryItem.setOrderItem( oi );//*
+			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
+			                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
+			                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
+			                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
+			                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
+			                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
+			                        			        
+			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );
+			                        			        
+			                        			        if (orderDeliveryItem.getNewFlag()){
+			                        			        	ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+			                        			        }else{
+			                        			        	ormStatelessSession.update("SlatwallOrderDeliveryItem", orderDeliveryItem);
+			                        			        }
+                    			            		}
+                    			            	}
+                    			            }
+	                			        }
+	                			    }
+	                			}//end items
+                		    }//end create fulfillment
+                			//insert into the queue
+                        }
+                    }
+                    
+                    //update calculated properties
+                    //ADD undeliverable order date to core.
+                    ormStatelessSession.update("SlatwallOrder", newOrder);
+                    //echo("updated order.");
+    			}
+    			//echo("committing all order.");
+    			tx.commit();
+    			ormGetSession().clear();//clear every page records...
+    		}catch(e){
+    			if (!isNull(tx) && tx.isActive()){
+    			    tx.rollback();
+    			}
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			ormGetSession().clear();
+    		} 
+		    pageNumber++;
+		    
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index# - #remoteIDs#");
 	}
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
