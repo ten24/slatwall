@@ -78788,7 +78788,7 @@ var PublicService = /** @class */ (function () {
                         if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
                             //if there are no errors then redirect.
                             this.orderPlaced = true;
-                            this.redirectExact('/order-confirmation/');
+                            this.redirectExact(this.confirmationUrl);
                         }
                     }
                 }
@@ -78832,6 +78832,14 @@ var PublicService = /** @class */ (function () {
             }
             return total;
         };
+        this.setOrderConfirmationUrl = function () {
+            if ('undefined' !== typeof hibachiConfig.orderConfirmationUrl) {
+                _this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+            }
+            else {
+                _this.confirmationUrl = "/order-confirmation";
+            }
+        };
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
@@ -78839,7 +78847,6 @@ var PublicService = /** @class */ (function () {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -78853,6 +78860,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.setOrderConfirmationUrl();
     }
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
