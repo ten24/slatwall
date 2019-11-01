@@ -61675,6 +61675,7 @@ var swfAccountController = /** @class */ (function () {
         this.publicService = publicService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.loadingOrders = false;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
         this.stateCodeOptions = [];
@@ -61735,6 +61736,7 @@ var swfAccountController = /** @class */ (function () {
                     pageNumber = _this.pageTracker + 1;
                 }
             }
+            _this.loadingOrders = true;
             return _this.publicService.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
                 var holdingArray = [];
@@ -61745,6 +61747,7 @@ var swfAccountController = /** @class */ (function () {
                 _this.totalPages = holdingArray;
                 _this.pageTracker = pageNumber;
                 _this.loading = false;
+                _this.loadingOrders = false;
             });
         };
         this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
