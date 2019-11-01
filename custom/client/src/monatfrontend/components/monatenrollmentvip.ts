@@ -22,7 +22,6 @@ class VIPController {
 
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService,public orderTemplateService) {
-		this.observerService.attach(this.getProductList, 'createSuccess'); 
 	}
 
 	public $onInit = () => {

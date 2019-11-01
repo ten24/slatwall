@@ -59917,7 +59917,6 @@ var VIPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.observerService.attach(this.getProductList, 'createSuccess');
     }
     return VIPController;
 }());
@@ -61477,6 +61476,7 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;
+            debugger;
             _this.lastAddedSkuID = skuID;
             var orderTemplateID = _this.orderTemplate;
             if (_this.type === 'flexship' || _this.type === 'VIPenrollment') {
