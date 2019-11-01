@@ -459,7 +459,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 && !isNull( arguments.data['year'] )
                 && !isNull( arguments.data['day'] )
             ) {
-                account.setDob( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
                 getAccountService().saveAccount( account );
             }
         }
