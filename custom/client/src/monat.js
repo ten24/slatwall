@@ -60385,6 +60385,7 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
@@ -60399,8 +60400,9 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         };
     }
     MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
-        //TODO frontend validation
         var _this = this;
+        //TODO frontend validation
+        this.loading = true;
         // make api request
         this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
             if (data.orderTemplate) {
@@ -60414,6 +60416,8 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         }).catch(function (error) {
             console.error(error);
             // TODO: show alert / handle error
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipNameModalController;
@@ -60632,7 +60636,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
-        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default]
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
@@ -60681,6 +60686,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+        this.loading = true;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
             payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
@@ -60709,6 +60715,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         }, function (reason) {
             throw (reason);
             // TODO: show alert
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipShippingMethodModalController;
