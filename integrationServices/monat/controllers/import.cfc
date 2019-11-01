@@ -7,6 +7,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="settingService";
 	property name="integrationService";
 	property name="siteService";
+	property name="promotionService";
+	property name="orderService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -1418,26 +1420,27 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    			for (var order in orders){
 	    			    index++;
 	    			    
-            			var newOrder = new Slatwall.model.entity.Order();
-            				
-        				var newUUID = rereplace(createUUID(), "-", "", "all");
-        				newOrder.setOrderID(newUUID);
+	    			    var newOrder = getOrderService().getOrderByRemoteID(order['OrderId']);
+	    			    var isNewOrderFlag = false;
+	    			    if (isNull(newOrder)){
+	    			    	isNewOrderFlag = true;
+            				var newOrder = new Slatwall.model.entity.Order();
+            				var newUUID = rereplace(createUUID(), "-", "", "all");
+            				newOrder.setOrderID(newUUID);
+	    			    }
+	    			    
         				newOrder.setRemoteID(order['OrderId']?:"");	
-        				//remoteIds = listAppend( remoteIds, order['OrderId'] );
-        				ormStatelessSession.insert("SlatwallOrder", newOrder);   
-            			
-	        			//newOrder.setOrderStatusType(getOrderStatusType(order['OrderStatusCode']?:"2"));
-	        			
-	        			//AllowUplineEmails added...
 	                    newOrder.setOrderNumber(order['OrderNumber']?:""); // *
 	                    //newOrder.setOrderPartnerNumber(order['PartnerNumber']?:"");
 	                    
 	                    newOrder.setShipMethodCode(order['ShipMethodCode']?:"");
 	                	newOrder.setOrderInvoiceNumber(order['InvoiceNumber']?:"");
-	                    
-	                    //newOrder.setOrderType( otSalesOrder );
-	                    
-	                    //newOrder.setOrderStatusType( ostClosed );
+	                	
+	                	if (isNewOrderFlag){
+	                    	ormStatelessSession.insert("SlatwallOrder", newOrder);  
+	                	}else{
+	                		ormStatelessSession.update("SlatwallOrder", newOrder);
+	                	}
 	                    
 	                    //Dates 
 	                    if (!isNull(order['entryDate']) && len(order['entryDate'])){
@@ -1459,10 +1462,34 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    
 					    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
 				        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
-				        newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
+				        
+				        /**
+				         * Handle discounts on the order. 
+				         **/
+				        
+				        if (!isNull(order['DiscountAmount']) && order['DiscountAmount'] > 0){
+				        	newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
+				        	
+				        	
+				        	var promotionApplied = getService("PromotionService").getPromotionAppliedByPromotionAppliedRemoteID( order["OrderID"] );
+				        	
+				        	if (isNull(promotionApplied)){
+				        		promotionApplied = new Slatwall.model.entity.PromotionApplied();
+				        	}
+				        	
+				        	promotionApplied.setManualDiscountAmountFlag(true);
+				        	promotionApplied.setDiscountAmount(order['DiscountAmount']);
+				        	promotionApplied.setRemoteID(order["OrderID"]);
+				        	promotionApplied.setComment(order['Comments']);
+				        	
+				        	if (promotionApplied.getNewFlag()){
+				        		ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied); //*
+				        	}else{
+				        		ormStatelessSession.update("SlatwallPromotionApplied", promotionApplied);
+				        	}
+				        }
 				        
 				        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
-    					
 				        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
 				        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
 				        
@@ -1585,7 +1612,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                     * Sets the order status to the Slatwall order status. 
 	                     **/
 	                    newOrder.setOrderStatusCode(order['OrderStatusCode']?:"");
-	                    //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped'
+	                    //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped' or canceled
 				        
 				        if (order['OrderStatusCode'] == "9"){
 				        	newOrder.setOrderStatus( ostCanceled );		
@@ -1597,7 +1624,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				         * Create order comments if needed. 
 				         **/
 				        if (!isNull(order['Comments'])){
-				        	var comment = new Slatwall.model.entity.Comment();
+				        	
+				        	var comment = getCommentService().getCommentByRemoteID(order["OrderID"]);
+				        	if (isNull(comment)){
+				        		var comment = new Slatwall.model.entity.Comment();
+				        	}
+				        	
 				        	var commentRelationship = new Slatwall.model.entity.CommentRelationship();
 				        	
 				        	comment.setRemoteID(order["OrderID"]);
