@@ -106,6 +106,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="promotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
 	property name="encodedPromotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
@@ -178,6 +179,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			variables.promotionalRewardSkuCollectionConfig = getService('OrderService').getPromotionalRewardSkuCollectionConfigForOrderTemplate(this);	
 		} 
 		return variables.promotionalRewardSkuCollectionConfig; 	
+	}
+
+	public struct function getPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
+			variables.promotionalFreeRewardSkuCollectionConfig = getService('OrderService').getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(this);	
+		} 
+		return variables.promotionalFreeRewardSkuCollectionConfig; 	
 	}
 
 	public string function getEncodedPromotionalRewardSkuCollectionConfig(){

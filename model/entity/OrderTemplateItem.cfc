@@ -52,6 +52,8 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="quantity" ormtype="integer";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
+	property name="temporaryFlag" ormtype="boolean" default="false";
+
 	property name="total" persistent="false" hb_formatType="currency"; 
 
 	// Remote properties
@@ -77,7 +79,7 @@ property name="commissionableVolumeTotal" persistent="false";
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getSku().getPriceByCurrencyCode(currencyCode=getOrderTemplate().getCurrencyCode(),accountID=getOrderTemplate().getAccount().getAccountID())*getQuantity();
+				variables.total += getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this) * getQuantity();
 			} 	
 		}
 		

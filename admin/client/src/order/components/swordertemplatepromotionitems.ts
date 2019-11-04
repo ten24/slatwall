@@ -7,7 +7,7 @@ class SWOrderTemplatePromotionItemsController{
     public orderTemplate;
     public addSkuCollection;
     
-    public filterOnZeroPriceFlag;
+    public showPrice;
     
     public skuCollectionConfig; 
     public skuColumns;
@@ -57,39 +57,16 @@ class SWOrderTemplatePromotionItemsController{
 	}
 	
 	public $onInit = () =>{
-		if(this.filterOnZeroPriceFlag == null){
-			this.filterOnZeroPriceFlag = false;
+		if(this.showPrice == null){
+			this.showPrice = true;
 		}
 		
 		this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
 		this.skuCollectionConfig['columns'] = [];//don't care about columns just filters
 		
-		var priceFilter = {
-			displayPropertyIdentifier:"Price",
-			displayValue: 0.00,
-			propertyIdentifier: "_sku.price",
-			value: 0,
-			comparisonOperator: '>',
-			logicalOperator: 'AND'
-		};
-		
-		if(this.filterOnZeroPriceFlag){
-			priceFilter['comparisonOperator'] = '=';
-		}
-		
-		for(var i=0; i<this.skuCollectionConfig.filterGroups.length; i++){
-			var filterGroup = this.skuCollectionConfig.filterGroups[i];
-			
-			if(filterGroup.filterGroup.length){
-				filterGroup.filterGroup.push(priceFilter);
-			}
-		}
-		
 		this.addSkuCollection.loadJson(this.skuCollectionConfig);
 		
-		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(this.addSkuCollection);
-		
-		//this.addSkuCollection.addFilter('skuPrices.price', 0);
+		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(this.addSkuCollection,this.showPrice);
 		
 		this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 		this.skuColumns.push(
@@ -117,7 +94,7 @@ class SWOrderTemplatePromotionItems implements ng.IDirective {
         skuPropertiesToDisplay: '@?',
         skuPropertyColumnConfigs: '<?',//array of column configs
         edit:"=?",
-        filterOnZeroPriceFlag:"=?"
+        showPrice:"=?"
 	};
 	public controller=SWOrderTemplatePromotionItemsController;
 	public controllerAs="swOrderTemplatePromotionItems";
