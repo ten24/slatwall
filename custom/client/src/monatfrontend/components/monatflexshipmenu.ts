@@ -182,13 +182,6 @@ class MonatFlexshipMenuController {
 			});
 	}
 	
-    public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth) => {
-
-        const flexshipID = this.orderTemplate.orderTemplateID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
-		
-        });
-    }
 }
 
 class MonatFlexshipMenu {
