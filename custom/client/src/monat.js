@@ -61325,6 +61325,27 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 console.error('unable to open model :', error);
             });
         };
+        this.showFlexshipEditFrequencyMethodModal = function () {
+            _this.ModalService.showModal({
+                component: 'monatFlexshipFrequencyModal',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                },
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
+            });
+        };
     }
     MonatFlexshipMenuController.prototype.activateFlexship = function () {
         var _this = this;
@@ -62235,6 +62256,7 @@ var monatenrollmentstep_1 = __webpack_require__(610);
 var monat_order_items_1 = __webpack_require__(607);
 var material_textarea_1 = __webpack_require__(605);
 var observe_event_1 = __webpack_require__(627);
+var monatflexship_modal_deliveryfrequency_1 = __webpack_require__(863);
 var swfreviewlisting_1 = __webpack_require__(630);
 var swfwishlist_1 = __webpack_require__(631);
 var swfmyaccount_1 = __webpack_require__(629);
@@ -62272,6 +62294,7 @@ var monatfrontendmodule = angular
     .directive('materialTextarea', material_textarea_1.MaterialTextarea.Factory())
     .directive('observeEvent', observe_event_1.ObserveEvent.Factory())
     .directive('sponsorSearchSelector', sponsor_search_selector_1.SponsorSearchSelector.Factory())
+    .directive('monatFlexshipFrequencyModal', monatflexship_modal_deliveryfrequency_1.MonatFlexshipFrequencyModal.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -90135,6 +90158,94 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
+
+
+/***/ }),
+/* 862 */,
+/* 863 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var monatFlexshipFrequencyModalController = /** @class */ (function () {
+    //@ngInject
+    function monatFlexshipFrequencyModalController(orderTemplateService, observerService, rbkeyService, publicService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.publicService = publicService;
+        this.loading = false;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
+                _this.frequencyTerms = response.frequencyTermOptions;
+            });
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['flexshiFrequency'] = _this.rbkeyService.rbKey('frontend.flexshipEdit.flexshipFrequency');
+        };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
+    }
+    monatFlexshipFrequencyModalController.prototype.setOrderTemplateFrequency = function (frequencyTermID) {
+        var _this = this;
+        //TODO frontend validation
+        this.loading = true;
+        // make api request
+        this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(function (data) {
+            if (data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency')) {
+                _this.observerService.notify("orderTemplateUpdated" + " " + _this.orderTemplate.orderTemplateID);
+                _this.closeModal();
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            // TODO: show alert / handle error
+        }).finally(function () {
+            _this.loading = false;
+        });
+    };
+    return monatFlexshipFrequencyModalController;
+}());
+var MonatFlexshipFrequencyModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipFrequencyModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            close: '=' //injected by angularModalService
+        };
+        this.controller = monatFlexshipFrequencyModalController;
+        this.controllerAs = "monatFlexshipFrequencyModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-deliveryfrequency.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipFrequencyModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipFrequencyModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipFrequencyModal;
+}());
+exports.MonatFlexshipFrequencyModal = MonatFlexshipFrequencyModal;
 
 
 /***/ })
