@@ -1,7 +1,7 @@
 export class OrderTemplateService { 
    
-   public orderTemplateTypeID:string='';
-   public orderTemplates:any;
+   private orderTemplateTypeID:string='';
+   private cachedGetOrderTemplatesResponse:any;
    
    //@ngInject
    constructor(
@@ -19,23 +19,33 @@ export class OrderTemplateService {
     * 
     * 
    */
-   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?, refresh=false) =>{
+   public getOrderTemplates = (orderTemplateTypeID:string, pageRecordsShow=100, currentPage=1, refresh=false,) =>{
        var deferred = this.$q.defer();
        
-       var data = {
-           currentPage:currentPage,
-           pageRecordsShow:pageRecordsShow,
-       }
-       if(orderTemplateTypeID == this.orderTemplateTypeID && refresh != true && this.orderTemplateTypeID != ''){
-           deferred.resolve(this.orderTemplates);
-       }
-       else if(orderTemplateTypeID && this.orderTemplateTypeID == ''){
+       // if we're gonna use pagination, we shoudn't cache 
+       if(orderTemplateTypeID == this.orderTemplateTypeID  && this.cachedGetOrderTemplatesResponse && !refresh){
+           deferred.resolve(this.cachedGetOrderTemplatesResponse);
+       } else {
+       
            this.orderTemplateTypeID = orderTemplateTypeID;
-           data['orderTemplateTypeID'] = orderTemplateTypeID;
-           this.publicService.doAction('?slatAction=api:public.getordertemplates', data).then(result =>{
-               this.orderTemplates = result;
-               deferred.resolve(this.orderTemplates);
+    
+            var data = {
+               currentPage: currentPage,
+               pageRecordsShow: pageRecordsShow,
+               orderTemplateTypeID: orderTemplateTypeID
+           }
+           
+           this.publicService.doAction('?slatAction=api:public.getordertemplates', data)
+           .then( (result) => {
+               
+               // TODO additional checks to make sure it's a successful response
+               this.cachedGetOrderTemplatesResponse = result; 
+               deferred.resolve(this.cachedGetOrderTemplatesResponse);
+               
            })
+           .catch( (e) => {
+               deferred.reject(e);
+           });
        }
        return deferred.promise;
    }
@@ -81,7 +91,7 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public setAsCurrentFlexship = (orderTemplateID) => {
+    public setAsCurrentFlexship = (orderTemplateID:string) => {
         let payload = {
             'orderTemplateID' : orderTemplateID
         };

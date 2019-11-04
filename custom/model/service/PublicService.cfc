@@ -361,7 +361,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account = setupEnrollmentInfo(account, 'marketPartner');
         }
         if(account.hasErrors()){
-            addErrors(arguments.data,account.getErrors());
+            addErrors(arguments.data, account.getProcessObject("create").getErrors());
         }
         return account;
     }
@@ -435,6 +435,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     addErrors(arguments.data,accountGovernmentIdentification.getErrors());
                 }
                 getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
+            }
+            if ( 
+                !isNull( arguments.data['month'] )
+                && !isNull( arguments.data['year'] )
+                && !isNull( arguments.data['day'] )
+            ) {
+                account.setDob( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                getAccountService().saveAccount( account );
             }
         }
         return account;
