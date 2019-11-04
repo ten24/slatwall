@@ -1978,6 +1978,28 @@ component  accessors="true" output="false"
 	} 
 	
 	
+	public any function applyGiftCardToOrderTemplate( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("applyGiftCard");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+    		
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+	}
+	
 	private void function setOrderTemplateItemAjaxResponse(required any data) {
 	    
 		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionForAccount(argumentCollection = arguments); 
@@ -2082,6 +2104,33 @@ component  accessors="true" output="false"
     }
     
     public void function editOrderTemplate(required any data){
+        param name="data.orderTemplateID" default="";
+        param name="data.orderTemplateName" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+	    if(len(arguments.data.orderTemplateName)) {
+ 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
+	    }
+	    
+	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            getHibachiScope().flushORMSession(); 
+            //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
+     public void function editOrderTemplate(required any data){
         param name="data.orderTemplateID" default="";
         param name="data.orderTemplateName" default="";
         
