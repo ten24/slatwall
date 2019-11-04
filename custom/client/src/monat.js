@@ -62404,11 +62404,11 @@ var MonatService = /** @class */ (function () {
             skuID: skuID,
             quantity: quantity,
         };
-        if (this.previouslySelectedStarterPackBundlSkuID) {
-            payload['previouslySelectedStarterPackBundlSkuID'] = this.previouslySelectedStarterPackBundlSkuID;
+        if (this.previouslySelectedStarterPackBundleSkuID) {
+            payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
         }
         this.lastAddedSkuID = skuID;
-        this.previouslySelectedStarterPackBundlSkuID = skuID;
+        this.previouslySelectedStarterPackBundleSkuID = skuID;
         return this.updateCart('selectStarterPackBundle', payload);
     };
     /**

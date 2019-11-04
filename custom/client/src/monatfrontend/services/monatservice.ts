@@ -8,7 +8,7 @@ declare var angular: any;
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
-	public previouslySelectedStarterPackBundlSkuID:string;
+	public previouslySelectedStarterPackBundleSkuID:string;
 
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
@@ -96,12 +96,12 @@ export class MonatService {
 			quantity: quantity,
 		};
 		
-		if(this.previouslySelectedStarterPackBundlSkuID) {
-			payload['previouslySelectedStarterPackBundlSkuID'] = this.previouslySelectedStarterPackBundlSkuID;
+		if(this.previouslySelectedStarterPackBundleSkuID) {
+			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
 		}
 		
 		this.lastAddedSkuID = skuID;
-		this.previouslySelectedStarterPackBundlSkuID = skuID;
+		this.previouslySelectedStarterPackBundleSkuID = skuID;
 		
 		return this.updateCart('selectStarterPackBundle', payload);
 	}

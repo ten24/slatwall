@@ -359,9 +359,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var cart = getHibachiScope().cart();
         
         //remove previously-selected StarterPackBundle
-        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundlSkuID') ) {
+        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
             for( orderItem in cart.getOrderItems() ) {
-                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundlSkuID'] ) {
+                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
                     arguments.data['orderItemID'] = orderItem.getOrderItemID();
                     getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
                     StructDelete(arguments.data, 'orderItemID');
