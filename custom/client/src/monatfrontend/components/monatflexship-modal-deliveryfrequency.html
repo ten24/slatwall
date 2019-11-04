@@ -17,9 +17,8 @@
 				</h6>
 
 				<div class="material-field">
-					<label ng-bind="monatFlexshipFrequencyModal.translations.flexshiFrequency"></label>
-              		<select class="form-control">
-  						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
+              		<select ng-model="frequencyTerm" class="form-control">
+						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
 						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" value="term.value">{{term.name}}</option>
 					</select>
 				</div>
@@ -29,7 +28,7 @@
 				<button
 					type="button"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipFrequencyModal.saveFlexshipName()"
+					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency(frequencyTerm)"
 					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
 				></button>
