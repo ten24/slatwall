@@ -448,6 +448,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return account;
     }
     
+    public any function getDaysToEditOrderTemplateSetting(){
+		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+    }
+    
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
 
