@@ -311,11 +311,12 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * Process external
 	 **/
 	public any function processExternal( required any requestBean ){
+		
 		// Execute request
 		var responseBean = getTransient('ExternalTransactionResponseBean');
 		
-		if (arguments.requestBean.getTransactionType() == "authorizeAndCharge" || arguments.requestBean.getTransactionType() == "chargePreAuthorization") { //admin triggers payment or schedule order
-			
+		if (arguments.requestBean.getTransactionType() == "authorizeAndCharge" || arguments.requestBean.getTransactionType() == "chargePreAuthorization" || arguments.requestBean.getTransactionType() == "receive") { //admin triggers payment or schedule order
+			//writeDump(var = arguments.requestBean.getOrderPayment(), top = 3); abort;
 			var response = this.createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
 			if(structKeyExists(response, "status") && response.status == "success")
 			{
@@ -328,7 +329,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			}
 			
 		} else if (arguments.requestBean.getTransactionType() == "credit") { //REFUND
-		
+			
 			var response = this.refundTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getTransactionID());
 			//setup transaction id from refund	
 			//setup amount credited
@@ -344,7 +345,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		} else {
 			responseBean.addError("Processing error", "Paypal Braintree Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
-		
 		return responseBean;
 	}
 	
