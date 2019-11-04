@@ -93015,7 +93015,7 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
-    SWListingDisplayController.prototype.makeQuertStringForAction = function (action, pageRecord) {
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
         var queryString = "";
         action = this.capitalize(action);
         var actionProppertyName = "record" + action + "ActionProperty";
