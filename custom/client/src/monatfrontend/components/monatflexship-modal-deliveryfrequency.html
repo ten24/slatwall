@@ -1,0 +1,45 @@
+<div class="modal" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipFrequencyModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="rename-flexship">
+				<h6 class="title-with-line mb-5">
+					<span sw-rbkey="'frontend.flexship.menu.editFrequency'"></span>
+				</h6>
+
+				<div class="material-field">
+					<label ng-bind="monatFlexshipFrequencyModal.translations.flexshiFrequency"></label>
+              		<select class="form-control">
+  						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
+						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" value="term.value">{{term.name}}</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="footer">
+				<button
+					type="button"
+					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipFrequencyModal.saveFlexshipName()"
+					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+				></button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipFrequencyModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
+				></button>
+			</div>
+		</div>
+	</div>
+</div>
