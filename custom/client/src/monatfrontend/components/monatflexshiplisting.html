@@ -1,6 +1,6 @@
-<div sw-loading="monatFlexshipListing.initialized">
+<div ng-if="monatFlexshipListing.initialized" ng-cloak>
     
-    <div ng-if="!monatFlexshipListing.orderTemplates.length">
+    <div ng-if="!monatFlexshipListing.orderTemplates.length && !monatFlexshipListing.loading">
         <h2 sw-rbkey="'frontend.flexship.noFlexships'"></h2>
     </div>
     
@@ -24,4 +24,5 @@
             data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
         ></monat-flexship-card>
     </div>
+
 </div>

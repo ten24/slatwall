@@ -59578,11 +59578,46 @@ var EnrollmentMPController = /** @class */ (function () {
         this.bundles = [];
         this.addedItemToCart = false;
         this.lastAddedProductName = '';
+        this.yearOptions = [];
+        this.dayOptions = [];
+        this.monthOptions = [];
         this.$onInit = function () {
             _this.getStarterPacks();
+            _this.getDateOptions();
             //this.getProductList()
             _this.observerService.attach(_this.getProductList, 'createSuccess');
             _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
+        };
+        this.getDateOptions = function () {
+            _this.currentDate = new Date();
+            // Setup Years
+            for (var i = _this.currentDate.getFullYear(); i >= 1900; i--) {
+                _this.yearOptions.push(i);
+            }
+            // Setup Months / Default Days
+            for (i = 1; i <= 31; i++) {
+                var label = ('0' + i).slice(-2);
+                if (i < 13) {
+                    _this.monthOptions.push(label);
+                }
+                _this.dayOptions.push(label);
+            }
+        };
+        this.setDayOptionsByDate = function (year, month) {
+            if (year === void 0) { year = null; }
+            if (month === void 0) { month = null; }
+            if (null === year) {
+                year = _this.currentDate.getFullYear();
+            }
+            if (null === month) {
+                year = _this.currentDate.getMonth();
+            }
+            var newDayOptions = [];
+            var daysInMonth = new Date(year, month, 0).getDate();
+            for (var i = 1; i <= daysInMonth; i++) {
+                newDayOptions.push(('0' + i).slice(-2));
+            }
+            _this.dayOptions = newDayOptions;
         };
         this.showAddToCartMessage = function () {
             var skuID = _this.monatService.lastAddedSkuID;
@@ -59808,9 +59843,13 @@ var VIPController = /** @class */ (function () {
         this.currentMpPage = 1;
         this.isVIPEnrollment = false;
         this.sponsorHasErrors = false;
+        this.flexshipDaysOfMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
         this.accountPriceGroupCode = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
         this.$onInit = function () {
             _this.getCountryCodeOptions();
+            _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
+                _this.frequencyTerms = response.frequencyTermOptions;
+            });
         };
         this.getCountryCodeOptions = function () {
             if (_this.countryCodeOptions.length) {
@@ -59868,6 +59907,13 @@ var VIPController = /** @class */ (function () {
             _this.loading = true;
             _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
                 _this.flexshipID = result.orderTemplate;
+                _this.loading = false;
+            });
+        };
+        this.setOrderTemplateFrequency = function (frequencyTermID, dayOfMonth) {
+            _this.loading = true;
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(function (result) {
                 _this.loading = false;
             });
         };
@@ -60385,6 +60431,7 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
@@ -60399,8 +60446,9 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         };
     }
     MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
-        //TODO frontend validation
         var _this = this;
+        //TODO frontend validation
+        this.loading = true;
         // make api request
         this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
             if (data.orderTemplate) {
@@ -60414,6 +60462,8 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
         }).catch(function (error) {
             console.error(error);
             // TODO: show alert / handle error
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipNameModalController;
@@ -60632,7 +60682,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
-        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default]
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
@@ -60681,6 +60732,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+        this.loading = true;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
             payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
@@ -60709,6 +60761,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         }, function (reason) {
             throw (reason);
             // TODO: show alert
+        }).finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipShippingMethodModalController;
@@ -61632,6 +61686,7 @@ var swfAccountController = /** @class */ (function () {
         this.publicService = publicService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.loadingOrders = false;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
         this.stateCodeOptions = [];
@@ -61692,6 +61747,7 @@ var swfAccountController = /** @class */ (function () {
                     pageNumber = _this.pageTracker + 1;
                 }
             }
+            _this.loadingOrders = true;
             return _this.publicService.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
                 var holdingArray = [];
@@ -61702,6 +61758,7 @@ var swfAccountController = /** @class */ (function () {
                 _this.totalPages = holdingArray;
                 _this.pageTracker = pageNumber;
                 _this.loading = false;
+                _this.loadingOrders = false;
             });
         };
         this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
@@ -78780,7 +78837,7 @@ var PublicService = /** @class */ (function () {
                         if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
                             //if there are no errors then redirect.
                             this.orderPlaced = true;
-                            this.redirectExact('/order-confirmation/');
+                            this.redirectExact(this.confirmationUrl);
                         }
                     }
                 }
@@ -78824,6 +78881,14 @@ var PublicService = /** @class */ (function () {
             }
             return total;
         };
+        this.setOrderConfirmationUrl = function () {
+            if ('undefined' !== typeof hibachiConfig.orderConfirmationUrl) {
+                _this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+            }
+            else {
+                _this.confirmationUrl = "/order-confirmation";
+            }
+        };
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
@@ -78831,7 +78896,6 @@ var PublicService = /** @class */ (function () {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -78845,6 +78909,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.setOrderConfirmationUrl();
     }
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
