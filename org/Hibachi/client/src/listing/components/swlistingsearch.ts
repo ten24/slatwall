@@ -93,11 +93,9 @@ class SWListingSearchController {
         //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
         // })
         
-        let listingSearchConfig = {};
         if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
-            listingSearchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
+            this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
-        this.configureListingSearchConfigControls(listingSearchConfig);
         
         this.selectedSearchColumn={title:'All'};
         this.configureSearchableColumns(this.selectedSearchColumn);
@@ -137,6 +135,7 @@ class SWListingSearchController {
     }
     
     private configureListingSearchConfigControls(searchConfig?) {
+        if(!searchConfig) return;
         if(angular.isDefined(searchConfig.selectedSearchFilterCode)){
              this.selectedSearchFilter = this.searchableFilterOptions
                                             .find(item => item.value === searchConfig.selectedSearchFilterCode );

@@ -4,11 +4,38 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		
 		var account = arguments.order.getAccount();
 
-		if(!isNull(account.getAccountStatusType()) && account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
-			account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
-			account.setActiveFlag(true);
-			account.getAccountNumber();
-			account.setRenewalDate(now());
+		if( 
+			!isNull(account.getAccountStatusType()) 
+			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
+		) {
+			
+			if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+				
+				account.setActiveFlag(true);
+				account.getAccountNumber();
+				account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
+				
+				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
+					//set renewal-date to one-year-from-enrolmentdate
+					if(IsNull(account.getEnrollmentDate())) {
+						account.setEnrollmentDate(now());
+					}
+					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
+					account.setRenewalDate(renewalDate);
+				}
+				
+			} else if ( 
+				account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
+				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
+				&& arguments.order.hasMPRenewalFee()
+			) {
+				
+				//set renewal-date to one-year-from-OrderOpenDateTime
+				var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
+				var renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
+				account.setRenewalDate(renewalDate);
+			}
+			
 			getService("accountService").saveAccount(account);
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),

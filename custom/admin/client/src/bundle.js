@@ -64875,6 +64875,22 @@ var OrderTemplateService = /** @class */ (function () {
             }, function (reason) {
             });
         };
+        this.addPromotionalOrderTemplateItem = function (state) {
+            var formDataToPost = {
+                entityID: _this.orderTemplateID,
+                entityName: 'OrderTemplate',
+                context: 'addOrderTemplateItem',
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList,
+                skuID: state.skuID,
+                quantity: state.quantity,
+                temporaryFlag: true
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            adminRequest.promise.then(function (response) {
+            }, function (reason) {
+            });
+        };
         this.editOrderTemplateItem = function (state) {
             var formDataToPost = {
                 entityID: state.orderTemplateItemID,
@@ -64932,6 +64948,7 @@ var OrderTemplateService = /** @class */ (function () {
             });
         };
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+        this.observerService.attach(this.addPromotionalOrderTemplateItem, 'addPromotionalOrderTemplateItem');
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
@@ -76983,7 +77000,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = null; }
         var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
@@ -77089,7 +77106,9 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            if (jsonCollection.listingSearchConfig) {
+                _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            }
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -77113,7 +77132,7 @@ var CollectionConfig = /** @class */ (function () {
             if (validate) {
                 _this.validateFilter(_this.filterGroups);
             }
-            return {
+            var options = {
                 baseEntityAlias: _this.baseEntityAlias,
                 baseEntityName: _this.baseEntityName,
                 columns: _this.columns,
@@ -77132,8 +77151,11 @@ var CollectionConfig = /** @class */ (function () {
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
+            return options;
         };
         this.getEntityName = function () {
             return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
@@ -77164,9 +77186,11 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
             }
@@ -89692,7 +89716,9 @@ var SWFFormController = /** @class */ (function () {
                 return result;
             _this.$timeout(function () {
                 _this.loading = false;
-                _this.observerService.notify(_this.afterSubmitEventName);
+                if (_this.afterSubmitEventName) {
+                    _this.observerService.notify(_this.afterSubmitEventName);
+                }
                 _this.successfulActions = result.successfulActions;
                 _this.failureActions = result.failureActions;
                 _this.errors = result.errors;
@@ -94326,11 +94352,9 @@ var SWListingSearchController = /** @class */ (function () {
             // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
             //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
             // })
-            var listingSearchConfig = {};
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
-                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+                _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
-            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -94526,6 +94550,8 @@ var SWListingSearchController = /** @class */ (function () {
             || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
     };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            return;
         if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
             this.selectedSearchFilter = this.searchableFilterOptions
                 .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });

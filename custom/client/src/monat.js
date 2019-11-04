@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 861);
+/******/ 	return __webpack_require__(__webpack_require__.s = 862);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(860)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(861)(module)))
 
 /***/ }),
 /* 2 */
@@ -5916,8 +5916,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var baseobject_1 = __webpack_require__(296);
-var Entities = __webpack_require__(729);
-var Processes = __webpack_require__(735);
+var Entities = __webpack_require__(730);
+var Processes = __webpack_require__(736);
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6276,91 +6276,91 @@ exports.MulticastOperator = MulticastOperator;
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var hibachiinterceptor_1 = __webpack_require__(748);
+var hibachiinterceptor_1 = __webpack_require__(749);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(749);
+var hibachipathbuilder_1 = __webpack_require__(750);
 //services
-var cacheservice_1 = __webpack_require__(740);
-var publicservice_1 = __webpack_require__(760);
-var accountservice_1 = __webpack_require__(739);
-var accountaddressservice_1 = __webpack_require__(738);
-var cartservice_1 = __webpack_require__(741);
-var draggableservice_1 = __webpack_require__(742);
-var utilityservice_1 = __webpack_require__(767);
-var selectionservice_1 = __webpack_require__(764);
-var observerservice_1 = __webpack_require__(757);
-var orderservice_1 = __webpack_require__(759);
-var orderpaymentservice_1 = __webpack_require__(758);
-var formservice_1 = __webpack_require__(746);
-var filterservice_1 = __webpack_require__(745);
-var expandableservice_1 = __webpack_require__(744);
-var hibachiauthenticationservice_1 = __webpack_require__(747);
-var metadataservice_1 = __webpack_require__(756);
-var rbkeyservice_1 = __webpack_require__(761);
-var typeaheadservice_1 = __webpack_require__(766);
-var hibachiservice_1 = __webpack_require__(751);
-var historyservice_1 = __webpack_require__(754);
-var localstorageservice_1 = __webpack_require__(755);
-var hibachiservicedecorator_1 = __webpack_require__(752);
-var hibachiscope_1 = __webpack_require__(750);
-var requestservice_1 = __webpack_require__(762);
-var scopeservice_1 = __webpack_require__(763);
-var skuservice_1 = __webpack_require__(765);
-var hibachivalidationservice_1 = __webpack_require__(753);
-var entityservice_1 = __webpack_require__(743);
+var cacheservice_1 = __webpack_require__(741);
+var publicservice_1 = __webpack_require__(761);
+var accountservice_1 = __webpack_require__(740);
+var accountaddressservice_1 = __webpack_require__(739);
+var cartservice_1 = __webpack_require__(742);
+var draggableservice_1 = __webpack_require__(743);
+var utilityservice_1 = __webpack_require__(768);
+var selectionservice_1 = __webpack_require__(765);
+var observerservice_1 = __webpack_require__(758);
+var orderservice_1 = __webpack_require__(760);
+var orderpaymentservice_1 = __webpack_require__(759);
+var formservice_1 = __webpack_require__(747);
+var filterservice_1 = __webpack_require__(746);
+var expandableservice_1 = __webpack_require__(745);
+var hibachiauthenticationservice_1 = __webpack_require__(748);
+var metadataservice_1 = __webpack_require__(757);
+var rbkeyservice_1 = __webpack_require__(762);
+var typeaheadservice_1 = __webpack_require__(767);
+var hibachiservice_1 = __webpack_require__(752);
+var historyservice_1 = __webpack_require__(755);
+var localstorageservice_1 = __webpack_require__(756);
+var hibachiservicedecorator_1 = __webpack_require__(753);
+var hibachiscope_1 = __webpack_require__(751);
+var requestservice_1 = __webpack_require__(763);
+var scopeservice_1 = __webpack_require__(764);
+var skuservice_1 = __webpack_require__(766);
+var hibachivalidationservice_1 = __webpack_require__(754);
+var entityservice_1 = __webpack_require__(744);
 //controllers
-var globalsearch_1 = __webpack_require__(717);
+var globalsearch_1 = __webpack_require__(718);
 //filters
-var percentage_1 = __webpack_require__(721);
-var entityrbkey_1 = __webpack_require__(720);
-var swcurrency_1 = __webpack_require__(722);
-var swtrim_1 = __webpack_require__(723);
-var swunique_1 = __webpack_require__(724);
-var datefilter_1 = __webpack_require__(718);
-var datereporting_1 = __webpack_require__(719);
+var percentage_1 = __webpack_require__(722);
+var entityrbkey_1 = __webpack_require__(721);
+var swcurrency_1 = __webpack_require__(723);
+var swtrim_1 = __webpack_require__(724);
+var swunique_1 = __webpack_require__(725);
+var datefilter_1 = __webpack_require__(719);
+var datereporting_1 = __webpack_require__(720);
 //directives
 //  components
-var swactioncaller_1 = __webpack_require__(676);
-var swtypeaheadsearch_1 = __webpack_require__(715);
-var swtypeaheadinputfield_1 = __webpack_require__(712);
-var swtypeaheadmultiselect_1 = __webpack_require__(713);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(716);
-var swtypeaheadremoveselection_1 = __webpack_require__(714);
-var swcollectionconfig_1 = __webpack_require__(680);
-var swcollectionfilter_1 = __webpack_require__(681);
-var swcollectionorderby_1 = __webpack_require__(682);
-var swcollectioncolumn_1 = __webpack_require__(679);
-var swcurrencyformatter_1 = __webpack_require__(685);
-var swactioncallerdropdown_1 = __webpack_require__(677);
-var swcolumnsorter_1 = __webpack_require__(683);
-var swconfirm_1 = __webpack_require__(684);
-var swdatepicker_1 = __webpack_require__(686);
-var swdraggable_1 = __webpack_require__(688);
-var swdraggablecontainer_1 = __webpack_require__(689);
-var swentityactionbar_1 = __webpack_require__(690);
-var swentityactionbarbuttongroup_1 = __webpack_require__(691);
-var swexpandablerecord_1 = __webpack_require__(692);
-var swexpiringsessionnotifier_1 = __webpack_require__(693);
-var swgravatar_1 = __webpack_require__(695);
-var swlogin_1 = __webpack_require__(698);
-var swmodallauncher_1 = __webpack_require__(699);
-var swmodalwindow_1 = __webpack_require__(700);
-var swnumbersonly_1 = __webpack_require__(701);
-var swloading_1 = __webpack_require__(697);
-var swscrolltrigger_1 = __webpack_require__(706);
-var swtabgroup_1 = __webpack_require__(710);
-var swtabcontent_1 = __webpack_require__(709);
-var swtooltip_1 = __webpack_require__(711);
-var swrbkey_1 = __webpack_require__(705);
-var swoptions_1 = __webpack_require__(702);
-var swselection_1 = __webpack_require__(707);
-var swclickoutside_1 = __webpack_require__(678);
-var swdirective_1 = __webpack_require__(687);
-var swexportaction_1 = __webpack_require__(694);
-var swhref_1 = __webpack_require__(696);
-var swprocesscaller_1 = __webpack_require__(704);
-var swsortable_1 = __webpack_require__(708);
-var sworderbycontrols_1 = __webpack_require__(703);
+var swactioncaller_1 = __webpack_require__(677);
+var swtypeaheadsearch_1 = __webpack_require__(716);
+var swtypeaheadinputfield_1 = __webpack_require__(713);
+var swtypeaheadmultiselect_1 = __webpack_require__(714);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(717);
+var swtypeaheadremoveselection_1 = __webpack_require__(715);
+var swcollectionconfig_1 = __webpack_require__(681);
+var swcollectionfilter_1 = __webpack_require__(682);
+var swcollectionorderby_1 = __webpack_require__(683);
+var swcollectioncolumn_1 = __webpack_require__(680);
+var swcurrencyformatter_1 = __webpack_require__(686);
+var swactioncallerdropdown_1 = __webpack_require__(678);
+var swcolumnsorter_1 = __webpack_require__(684);
+var swconfirm_1 = __webpack_require__(685);
+var swdatepicker_1 = __webpack_require__(687);
+var swdraggable_1 = __webpack_require__(689);
+var swdraggablecontainer_1 = __webpack_require__(690);
+var swentityactionbar_1 = __webpack_require__(691);
+var swentityactionbarbuttongroup_1 = __webpack_require__(692);
+var swexpandablerecord_1 = __webpack_require__(693);
+var swexpiringsessionnotifier_1 = __webpack_require__(694);
+var swgravatar_1 = __webpack_require__(696);
+var swlogin_1 = __webpack_require__(699);
+var swmodallauncher_1 = __webpack_require__(700);
+var swmodalwindow_1 = __webpack_require__(701);
+var swnumbersonly_1 = __webpack_require__(702);
+var swloading_1 = __webpack_require__(698);
+var swscrolltrigger_1 = __webpack_require__(707);
+var swtabgroup_1 = __webpack_require__(711);
+var swtabcontent_1 = __webpack_require__(710);
+var swtooltip_1 = __webpack_require__(712);
+var swrbkey_1 = __webpack_require__(706);
+var swoptions_1 = __webpack_require__(703);
+var swselection_1 = __webpack_require__(708);
+var swclickoutside_1 = __webpack_require__(679);
+var swdirective_1 = __webpack_require__(688);
+var swexportaction_1 = __webpack_require__(695);
+var swhref_1 = __webpack_require__(697);
+var swprocesscaller_1 = __webpack_require__(705);
+var swsortable_1 = __webpack_require__(709);
+var sworderbycontrols_1 = __webpack_require__(704);
 var alert_module_1 = __webpack_require__(294);
 var dialog_module_1 = __webpack_require__(299);
 var coremodule = angular.module('hibachi.core', [
@@ -31861,9 +31861,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-var alertcontroller_1 = __webpack_require__(635);
+var alertcontroller_1 = __webpack_require__(636);
 //services
-var alertservice_1 = __webpack_require__(637);
+var alertservice_1 = __webpack_require__(638);
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -31884,38 +31884,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(17);
 //services
-var collectionconfigservice_1 = __webpack_require__(674);
-var collectionservice_1 = __webpack_require__(675);
+var collectionconfigservice_1 = __webpack_require__(675);
+var collectionservice_1 = __webpack_require__(676);
 //controllers
-var collections_1 = __webpack_require__(669);
-var createcollection_1 = __webpack_require__(671);
-var confirmationcontroller_1 = __webpack_require__(670);
-var entity_createcollection_1 = __webpack_require__(672);
+var collections_1 = __webpack_require__(670);
+var createcollection_1 = __webpack_require__(672);
+var confirmationcontroller_1 = __webpack_require__(671);
+var entity_createcollection_1 = __webpack_require__(673);
 //directives
-var swcollection_1 = __webpack_require__(648);
-var swaddfilterbuttons_1 = __webpack_require__(647);
-var swdisplayoptions_1 = __webpack_require__(663);
-var swdisplayitem_1 = __webpack_require__(661);
-var swdisplayitemaggregate_1 = __webpack_require__(662);
-var swcollectiontable_1 = __webpack_require__(649);
-var swcolumnitem_1 = __webpack_require__(650);
-var swconditioncriteria_1 = __webpack_require__(651);
-var swcriteria_1 = __webpack_require__(652);
-var swcriteriaboolean_1 = __webpack_require__(653);
-var swcriteriadate_1 = __webpack_require__(654);
-var swcriteriamanytomany_1 = __webpack_require__(655);
-var swcriteriamanytoone_1 = __webpack_require__(656);
-var swcriterianumber_1 = __webpack_require__(657);
-var swcriteriaonetomany_1 = __webpack_require__(658);
-var swcriteriarelatedobject_1 = __webpack_require__(659);
-var swcriteriastring_1 = __webpack_require__(660);
-var sweditfilteritem_1 = __webpack_require__(664);
-var swfiltergroups_1 = __webpack_require__(666);
-var swfilteritem_1 = __webpack_require__(667);
-var swfiltergroupitem_1 = __webpack_require__(665);
-var swrestrictionconfig_1 = __webpack_require__(668);
+var swcollection_1 = __webpack_require__(649);
+var swaddfilterbuttons_1 = __webpack_require__(648);
+var swdisplayoptions_1 = __webpack_require__(664);
+var swdisplayitem_1 = __webpack_require__(662);
+var swdisplayitemaggregate_1 = __webpack_require__(663);
+var swcollectiontable_1 = __webpack_require__(650);
+var swcolumnitem_1 = __webpack_require__(651);
+var swconditioncriteria_1 = __webpack_require__(652);
+var swcriteria_1 = __webpack_require__(653);
+var swcriteriaboolean_1 = __webpack_require__(654);
+var swcriteriadate_1 = __webpack_require__(655);
+var swcriteriamanytomany_1 = __webpack_require__(656);
+var swcriteriamanytoone_1 = __webpack_require__(657);
+var swcriterianumber_1 = __webpack_require__(658);
+var swcriteriaonetomany_1 = __webpack_require__(659);
+var swcriteriarelatedobject_1 = __webpack_require__(660);
+var swcriteriastring_1 = __webpack_require__(661);
+var sweditfilteritem_1 = __webpack_require__(665);
+var swfiltergroups_1 = __webpack_require__(667);
+var swfilteritem_1 = __webpack_require__(668);
+var swfiltergroupitem_1 = __webpack_require__(666);
+var swrestrictionconfig_1 = __webpack_require__(669);
 //filters
-var aggregatefilter_1 = __webpack_require__(673);
+var aggregatefilter_1 = __webpack_require__(674);
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -32181,9 +32181,9 @@ exports.IStore = IStore;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-var dialogservice_1 = __webpack_require__(769);
+var dialogservice_1 = __webpack_require__(770);
 //controllers
-var pagedialog_1 = __webpack_require__(768);
+var pagedialog_1 = __webpack_require__(769);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -32319,7 +32319,9 @@ var SWFFormController = /** @class */ (function () {
                 return result;
             _this.$timeout(function () {
                 _this.loading = false;
-                _this.observerService.notify(_this.afterSubmitEventName);
+                if (_this.afterSubmitEventName) {
+                    _this.observerService.notify(_this.afterSubmitEventName);
+                }
                 _this.successfulActions = result.successfulActions;
                 _this.failureActions = result.failureActions;
                 _this.errors = result.errors;
@@ -32741,8 +32743,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*jshint browser:true */
-var basebootstrap_1 = __webpack_require__(638);
-var monatfrontend_module_1 = __webpack_require__(632);
+var basebootstrap_1 = __webpack_require__(639);
+var monatfrontend_module_1 = __webpack_require__(633);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -59908,6 +59910,7 @@ var VIPController = /** @class */ (function () {
             _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
                 _this.flexshipID = result.orderTemplate;
                 _this.loading = false;
+                _this.observerService.notify('onNext');
             });
         };
         this.setOrderTemplateFrequency = function (frequencyTermID, dayOfMonth) {
@@ -60424,6 +60427,93 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var monatFlexshipFrequencyModalController = /** @class */ (function () {
+    //@ngInject
+    function monatFlexshipFrequencyModalController(orderTemplateService, observerService, rbkeyService, publicService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.publicService = publicService;
+        this.loading = false;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
+                _this.frequencyTerms = response.frequencyTermOptions;
+            });
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['flexshiFrequency'] = _this.rbkeyService.rbKey('frontend.flexshipEdit.flexshipFrequency');
+        };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
+    }
+    monatFlexshipFrequencyModalController.prototype.setOrderTemplateFrequency = function (frequencyTermID) {
+        var _this = this;
+        //TODO frontend validation
+        this.loading = true;
+        // make api request
+        this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(function (data) {
+            if (data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency')) {
+                _this.observerService.notify("orderTemplateUpdated" + " " + _this.orderTemplate.orderTemplateID);
+                _this.closeModal();
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            // TODO: show alert / handle error
+        }).finally(function () {
+            _this.loading = false;
+        });
+    };
+    return monatFlexshipFrequencyModalController;
+}());
+var MonatFlexshipFrequencyModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipFrequencyModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            close: '=' //injected by angularModalService
+        };
+        this.controller = monatFlexshipFrequencyModalController;
+        this.controllerAs = "monatFlexshipFrequencyModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-deliveryfrequency.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipFrequencyModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipFrequencyModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipFrequencyModal;
+}());
+exports.MonatFlexshipFrequencyModal = MonatFlexshipFrequencyModal;
+
+
+/***/ }),
+/* 617 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipNameModalController = /** @class */ (function () {
     //@ngInject
     function MonatFlexshipNameModalController(orderTemplateService, observerService, rbkeyService) {
@@ -60503,7 +60593,7 @@ exports.MonatFlexshipNameModal = MonatFlexshipNameModal;
 
 
 /***/ }),
-/* 617 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60666,7 +60756,7 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 
 
 /***/ }),
-/* 618 */
+/* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60804,7 +60894,7 @@ exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
 
 
 /***/ }),
-/* 619 */
+/* 620 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60850,7 +60940,7 @@ exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
 
 
 /***/ }),
-/* 620 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60896,7 +60986,7 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 
 /***/ }),
-/* 621 */
+/* 622 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60956,7 +61046,7 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 
 
 /***/ }),
-/* 622 */
+/* 623 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61040,7 +61130,7 @@ exports.MonatFlexshipCard = MonatFlexshipCard;
 
 
 /***/ }),
-/* 623 */
+/* 624 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61098,7 +61188,7 @@ exports.MonatFlexshipDetail = MonatFlexshipDetail;
 
 
 /***/ }),
-/* 624 */
+/* 625 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61212,7 +61302,7 @@ exports.MonatFlexshipListing = MonatFlexshipListing;
 
 
 /***/ }),
-/* 625 */
+/* 626 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61325,6 +61415,27 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 console.error('unable to open model :', error);
             });
         };
+        this.showFlexshipEditFrequencyMethodModal = function () {
+            _this.ModalService.showModal({
+                component: 'monatFlexshipFrequencyModal',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                },
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
+            });
+        };
     }
     MonatFlexshipMenuController.prototype.activateFlexship = function () {
         var _this = this;
@@ -61404,7 +61515,7 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
-/* 626 */
+/* 627 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61535,7 +61646,7 @@ exports.MonatProductCard = MonatProductCard;
 
 
 /***/ }),
-/* 627 */
+/* 628 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61585,7 +61696,7 @@ exports.ObserveEvent = ObserveEvent;
 
 
 /***/ }),
-/* 628 */
+/* 629 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61671,7 +61782,7 @@ exports.SponsorSearchSelector = SponsorSearchSelector;
 
 
 /***/ }),
-/* 629 */
+/* 630 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61889,7 +62000,7 @@ exports.SWFAccount = SWFAccount;
 
 
 /***/ }),
-/* 630 */
+/* 631 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62044,7 +62155,7 @@ exports.SWFReviewListing = SWFReviewListing;
 
 
 /***/ }),
-/* 631 */
+/* 632 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62206,45 +62317,46 @@ exports.SWFWishlist = SWFWishlist;
 
 
 /***/ }),
-/* 632 */
+/* 633 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(304);
-var frontend_module_1 = __webpack_require__(804);
+var frontend_module_1 = __webpack_require__(805);
 //directives
-var monatflexshipcard_1 = __webpack_require__(622);
-var monatflexshipdetail_1 = __webpack_require__(623);
-var monatflexship_orderitem_1 = __webpack_require__(619);
-var monatflexship_shippingandbillingcard_1 = __webpack_require__(621);
-var monatflexship_ordertotalcard_1 = __webpack_require__(620);
-var monatflexship_modal_paymentmethod_1 = __webpack_require__(617);
-var monatflexship_modal_shippingmethod_1 = __webpack_require__(618);
+var monatflexshipcard_1 = __webpack_require__(623);
+var monatflexshipdetail_1 = __webpack_require__(624);
+var monatflexship_orderitem_1 = __webpack_require__(620);
+var monatflexship_shippingandbillingcard_1 = __webpack_require__(622);
+var monatflexship_ordertotalcard_1 = __webpack_require__(621);
+var monatflexship_modal_paymentmethod_1 = __webpack_require__(618);
+var monatflexship_modal_shippingmethod_1 = __webpack_require__(619);
 var monatflexship_modal_changeorskiporder_1 = __webpack_require__(615);
 var monatflexship_modal_cancel_1 = __webpack_require__(614);
-var monatflexship_modal_name_1 = __webpack_require__(616);
+var monatflexship_modal_name_1 = __webpack_require__(617);
 var monatflexship_cart_container_1 = __webpack_require__(612);
 var monatflexship_confirm_1 = __webpack_require__(613);
-var monatflexshiplisting_1 = __webpack_require__(624);
-var monatflexshipmenu_1 = __webpack_require__(625);
+var monatflexshiplisting_1 = __webpack_require__(625);
+var monatflexshipmenu_1 = __webpack_require__(626);
 var monatenrollment_1 = __webpack_require__(608);
 var monatenrollmentvip_1 = __webpack_require__(611);
 var monatenrollmentstep_1 = __webpack_require__(610);
 var monat_order_items_1 = __webpack_require__(607);
 var material_textarea_1 = __webpack_require__(605);
-var observe_event_1 = __webpack_require__(627);
-var swfreviewlisting_1 = __webpack_require__(630);
-var swfwishlist_1 = __webpack_require__(631);
-var swfmyaccount_1 = __webpack_require__(629);
-var monatproductcard_1 = __webpack_require__(626);
+var observe_event_1 = __webpack_require__(628);
+var monatflexship_modal_deliveryfrequency_1 = __webpack_require__(616);
+var swfreviewlisting_1 = __webpack_require__(631);
+var swfwishlist_1 = __webpack_require__(632);
+var swfmyaccount_1 = __webpack_require__(630);
+var monatproductcard_1 = __webpack_require__(627);
 var monatenrollmentmp_1 = __webpack_require__(609);
-var sponsor_search_selector_1 = __webpack_require__(628);
+var sponsor_search_selector_1 = __webpack_require__(629);
 var monat_minicart_1 = __webpack_require__(606);
 //services
-var monatservice_1 = __webpack_require__(633);
-var ordertemplateservice_1 = __webpack_require__(634);
+var monatservice_1 = __webpack_require__(634);
+var ordertemplateservice_1 = __webpack_require__(635);
 var monatfrontendmodule = angular
     .module('monatfrontend', [frontend_module_1.frontendmodule.name, 'angularModalService'])
     //constants
@@ -62272,6 +62384,7 @@ var monatfrontendmodule = angular
     .directive('materialTextarea', material_textarea_1.MaterialTextarea.Factory())
     .directive('observeEvent', observe_event_1.ObserveEvent.Factory())
     .directive('sponsorSearchSelector', sponsor_search_selector_1.SponsorSearchSelector.Factory())
+    .directive('monatFlexshipFrequencyModal', monatflexship_modal_deliveryfrequency_1.MonatFlexshipFrequencyModal.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
@@ -62290,7 +62403,7 @@ exports.monatfrontendmodule = monatfrontendmodule;
 
 
 /***/ }),
-/* 633 */
+/* 634 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62311,10 +62424,8 @@ var __rest = (this && this.__rest) || function (s, e) {
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
     if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -62411,7 +62522,7 @@ var MonatService = /** @class */ (function () {
                 .newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
                 .promise.then(function (data) {
                 var messages = data.messages, failureActions = data.failureActions, successfulActions = data.successfulActions, realOptions = __rest(data, ["messages", "failureActions", "successfulActions"]); //destructuring we dont want unwanted data in cached options
-                _this.cachedOptions = __assign(__assign({}, _this.cachedOptions), realOptions); // override and merge with old options
+                _this.cachedOptions = __assign({}, _this.cachedOptions, realOptions); // override and merge with old options
                 _this.sendOptionsBack(options, deferred);
                 //TODO handle errors
             });
@@ -62464,7 +62575,7 @@ exports.MonatService = MonatService;
 
 
 /***/ }),
-/* 634 */
+/* 635 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62729,7 +62840,7 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
-/* 635 */
+/* 636 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62749,7 +62860,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-/* 636 */
+/* 637 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62773,7 +62884,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-/* 637 */
+/* 638 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62782,7 +62893,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-var alert_1 = __webpack_require__(636);
+var alert_1 = __webpack_require__(637);
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -62852,7 +62963,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-/* 638 */
+/* 639 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63139,7 +63250,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-/* 639 */
+/* 640 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63151,13 +63262,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(17);
 //services
 //components
-var swcardlayout_1 = __webpack_require__(643);
-var swcardview_1 = __webpack_require__(646);
-var swcardheader_1 = __webpack_require__(641);
-var swcardbody_1 = __webpack_require__(640);
-var swcardicon_1 = __webpack_require__(642);
-var swcardprogressbar_1 = __webpack_require__(645);
-var swcardlistitem_1 = __webpack_require__(644);
+var swcardlayout_1 = __webpack_require__(644);
+var swcardview_1 = __webpack_require__(647);
+var swcardheader_1 = __webpack_require__(642);
+var swcardbody_1 = __webpack_require__(641);
+var swcardicon_1 = __webpack_require__(643);
+var swcardprogressbar_1 = __webpack_require__(646);
+var swcardlistitem_1 = __webpack_require__(645);
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63176,7 +63287,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-/* 640 */
+/* 641 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63223,7 +63334,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-/* 641 */
+/* 642 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63272,7 +63383,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-/* 642 */
+/* 643 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63323,7 +63434,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-/* 643 */
+/* 644 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63374,7 +63485,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-/* 644 */
+/* 645 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63428,7 +63539,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-/* 645 */
+/* 646 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63481,7 +63592,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-/* 646 */
+/* 647 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63533,7 +63644,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-/* 647 */
+/* 648 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63578,7 +63689,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-/* 648 */
+/* 649 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63621,7 +63732,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-/* 649 */
+/* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63715,7 +63826,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-/* 650 */
+/* 651 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63951,7 +64062,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-/* 651 */
+/* 652 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64849,7 +64960,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-/* 652 */
+/* 653 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64888,7 +64999,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-/* 653 */
+/* 654 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64984,7 +65095,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-/* 654 */
+/* 655 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65499,7 +65610,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-/* 655 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65640,7 +65751,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-/* 656 */
+/* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65802,7 +65913,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-/* 657 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66030,7 +66141,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-/* 658 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66178,7 +66289,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-/* 659 */
+/* 660 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66275,7 +66386,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-/* 660 */
+/* 661 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66453,7 +66564,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-/* 661 */
+/* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66517,7 +66628,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-/* 662 */
+/* 663 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66603,7 +66714,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-/* 663 */
+/* 664 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66887,7 +66998,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-/* 664 */
+/* 665 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67279,7 +67390,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-/* 665 */
+/* 666 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67352,7 +67463,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-/* 666 */
+/* 667 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67452,7 +67563,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-/* 667 */
+/* 668 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67520,7 +67631,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-/* 668 */
+/* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67581,7 +67692,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-/* 669 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67637,7 +67748,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-/* 670 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67676,7 +67787,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-/* 671 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67884,7 +67995,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-/* 672 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67923,7 +68034,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-/* 673 */
+/* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67954,7 +68065,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-/* 674 */
+/* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68031,7 +68142,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -68044,7 +68154,8 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -68149,7 +68260,9 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            if (jsonCollection.listingSearchConfig) {
+                _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            }
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -68173,7 +68286,7 @@ var CollectionConfig = /** @class */ (function () {
             if (validate) {
                 _this.validateFilter(_this.filterGroups);
             }
-            return {
+            var options = {
                 baseEntityAlias: _this.baseEntityAlias,
                 baseEntityName: _this.baseEntityName,
                 columns: _this.columns,
@@ -68192,8 +68305,11 @@ var CollectionConfig = /** @class */ (function () {
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
+            return options;
         };
         this.getEntityName = function () {
             return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
@@ -68224,9 +68340,11 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
             }
@@ -68879,7 +68997,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-/* 675 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69101,7 +69219,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-/* 676 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69429,7 +69547,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-/* 677 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69480,7 +69598,7 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-/* 678 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69531,7 +69649,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-/* 679 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69623,7 +69741,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-/* 680 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69791,7 +69909,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-/* 681 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69854,7 +69972,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-/* 682 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69905,7 +70023,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-/* 683 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69952,7 +70070,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-/* 684 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70106,7 +70224,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-/* 685 */
+/* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70169,7 +70287,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-/* 686 */
+/* 687 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70261,7 +70379,7 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
-/* 687 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70320,7 +70438,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-/* 688 */
+/* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70403,7 +70521,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-/* 689 */
+/* 690 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70538,7 +70656,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-/* 690 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70678,7 +70796,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-/* 691 */
+/* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70717,7 +70835,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-/* 692 */
+/* 693 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70925,7 +71043,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-/* 693 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70995,7 +71113,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-/* 694 */
+/* 695 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71029,7 +71147,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-/* 695 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71073,7 +71191,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-/* 696 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71107,7 +71225,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-/* 697 */
+/* 698 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71143,7 +71261,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-/* 698 */
+/* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71219,7 +71337,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-/* 699 */
+/* 700 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71360,7 +71478,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-/* 700 */
+/* 701 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71441,7 +71559,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-/* 701 */
+/* 702 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71500,7 +71618,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-/* 702 */
+/* 703 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71571,7 +71689,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-/* 703 */
+/* 704 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71723,7 +71841,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-/* 704 */
+/* 705 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71808,7 +71926,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-/* 705 */
+/* 706 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71852,7 +71970,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-/* 706 */
+/* 707 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71944,7 +72062,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-/* 707 */
+/* 708 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72041,7 +72159,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-/* 708 */
+/* 709 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72098,7 +72216,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-/* 709 */
+/* 710 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72186,7 +72304,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-/* 710 */
+/* 711 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72297,7 +72415,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-/* 711 */
+/* 712 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72380,7 +72498,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-/* 712 */
+/* 713 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72508,7 +72626,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-/* 713 */
+/* 714 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72664,7 +72782,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-/* 714 */
+/* 715 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72740,7 +72858,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-/* 715 */
+/* 716 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73144,7 +73262,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-/* 716 */
+/* 717 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73205,7 +73323,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-/* 717 */
+/* 718 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73355,7 +73473,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-/* 718 */
+/* 719 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73381,7 +73499,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-/* 719 */
+/* 720 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73422,7 +73540,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-/* 720 */
+/* 721 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73449,7 +73567,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-/* 721 */
+/* 722 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73476,7 +73594,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-/* 722 */
+/* 723 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73541,7 +73659,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-/* 723 */
+/* 724 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73583,7 +73701,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-/* 724 */
+/* 725 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73633,7 +73751,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-/* 725 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73674,7 +73792,7 @@ exports.Account = Account;
 
 
 /***/ }),
-/* 726 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73717,7 +73835,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-/* 727 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73750,7 +73868,7 @@ exports.Address = Address;
 
 
 /***/ }),
-/* 728 */
+/* 729 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73811,7 +73929,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-/* 729 */
+/* 730 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73819,24 +73937,24 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var account_1 = __webpack_require__(725);
+var account_1 = __webpack_require__(726);
 exports.Account = account_1.Account;
-var address_1 = __webpack_require__(727);
+var address_1 = __webpack_require__(728);
 exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(728);
+var cart_1 = __webpack_require__(729);
 exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(730);
+var orderitem_1 = __webpack_require__(731);
 exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(731);
+var orderpayment_1 = __webpack_require__(732);
 exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(732);
+var sku_1 = __webpack_require__(733);
 exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(726);
+var accountaddress_1 = __webpack_require__(727);
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-/* 730 */
+/* 731 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73869,7 +73987,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-/* 731 */
+/* 732 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73886,7 +74004,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-/* 732 */
+/* 733 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73926,7 +74044,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-/* 733 */
+/* 734 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73959,7 +74077,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-/* 734 */
+/* 735 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73980,7 +74098,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseprocess_1 = __webpack_require__(733);
+var baseprocess_1 = __webpack_require__(734);
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -73994,7 +74112,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-/* 735 */
+/* 736 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74002,12 +74120,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var order_addorderpayment_1 = __webpack_require__(734);
+var order_addorderpayment_1 = __webpack_require__(735);
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-/* 736 */
+/* 737 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74059,7 +74177,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-/* 737 */
+/* 738 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74119,7 +74237,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-/* 738 */
+/* 739 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74155,7 +74273,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-/* 739 */
+/* 740 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74191,7 +74309,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-/* 740 */
+/* 741 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74277,7 +74395,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-/* 741 */
+/* 742 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74314,7 +74432,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-/* 742 */
+/* 743 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74344,7 +74462,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-/* 743 */
+/* 744 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74382,7 +74500,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-/* 744 */
+/* 745 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74428,7 +74546,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-/* 745 */
+/* 746 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74490,7 +74608,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-/* 746 */
+/* 747 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74583,7 +74701,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-/* 747 */
+/* 748 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75098,7 +75216,7 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
-/* 748 */
+/* 749 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75298,7 +75416,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-/* 749 */
+/* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75335,7 +75453,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-/* 750 */
+/* 751 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75368,7 +75486,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-/* 751 */
+/* 752 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75912,7 +76030,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-/* 752 */
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76697,7 +76815,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-/* 753 */
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76986,7 +77104,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-/* 754 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77022,7 +77140,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-/* 755 */
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77080,7 +77198,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-/* 756 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77231,7 +77349,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-/* 757 */
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77401,7 +77519,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-/* 758 */
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77439,7 +77557,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-/* 759 */
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77480,20 +77598,13 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-/* 760 */
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -78617,7 +78728,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -78931,7 +79042,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-/* 761 */
+/* 762 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79054,7 +79165,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-/* 762 */
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79062,8 +79173,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var adminrequest_1 = __webpack_require__(736);
-var publicrequest_1 = __webpack_require__(737);
+var adminrequest_1 = __webpack_require__(737);
+var publicrequest_1 = __webpack_require__(738);
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -79093,7 +79204,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-/* 763 */
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79130,7 +79241,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-/* 764 */
+/* 765 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79256,7 +79367,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-/* 765 */
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79294,7 +79405,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-/* 766 */
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79335,10 +79446,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -79540,7 +79651,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-/* 767 */
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80013,7 +80124,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-/* 768 */
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80039,7 +80150,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-/* 769 */
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80083,7 +80194,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-/* 770 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80158,7 +80269,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-/* 771 */
+/* 772 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80189,7 +80300,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-/* 772 */
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80236,7 +80347,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-/* 773 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80255,7 +80366,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-/* 774 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80287,7 +80398,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-/* 775 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80304,12 +80415,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-var otherwisecontroller_1 = __webpack_require__(773);
-var routercontroller_1 = __webpack_require__(774);
+var otherwisecontroller_1 = __webpack_require__(774);
+var routercontroller_1 = __webpack_require__(775);
 //directives
-var swdetailtabs_1 = __webpack_require__(771);
-var swdetail_1 = __webpack_require__(770);
-var swlist_1 = __webpack_require__(772);
+var swdetailtabs_1 = __webpack_require__(772);
+var swdetail_1 = __webpack_require__(771);
+var swlist_1 = __webpack_require__(773);
 var core_module_1 = __webpack_require__(17);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -80367,7 +80478,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-/* 776 */
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80536,7 +80647,7 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-/* 777 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80593,7 +80704,7 @@ exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
 
 
 /***/ }),
-/* 778 */
+/* 779 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80677,7 +80788,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-/* 779 */
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80717,7 +80828,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-/* 780 */
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80819,7 +80930,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-/* 781 */
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81142,7 +81253,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-/* 782 */
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81422,7 +81533,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-/* 783 */
+/* 784 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81470,7 +81581,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-/* 784 */
+/* 785 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81513,7 +81624,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-/* 785 */
+/* 786 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81633,7 +81744,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-/* 786 */
+/* 787 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81701,7 +81812,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-/* 787 */
+/* 788 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81791,7 +81902,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-/* 788 */
+/* 789 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81853,7 +81964,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-/* 789 */
+/* 790 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81954,7 +82065,7 @@ exports.SWFSelect = SWFSelect;
 
 
 /***/ }),
-/* 790 */
+/* 791 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82319,7 +82430,7 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-/* 791 */
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82375,7 +82486,7 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
-/* 792 */
+/* 793 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82462,7 +82573,7 @@ exports.SWSimplePropertyDisplay = SWSimplePropertyDisplay;
 
 
 /***/ }),
-/* 793 */
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82557,7 +82668,7 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
-/* 794 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82568,30 +82679,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(17);
 //services
-var fileservice_1 = __webpack_require__(795);
+var fileservice_1 = __webpack_require__(796);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(790);
-var swfformfield_1 = __webpack_require__(780);
-var swform_1 = __webpack_require__(781);
+var swinput_1 = __webpack_require__(791);
+var swfformfield_1 = __webpack_require__(781);
+var swform_1 = __webpack_require__(782);
 var swfform_1 = __webpack_require__(300);
-var swfselect_1 = __webpack_require__(789);
-var swffileinput_1 = __webpack_require__(779);
-var swformfield_1 = __webpack_require__(782);
-var swformfieldfile_1 = __webpack_require__(783);
-var swformfieldjson_1 = __webpack_require__(784);
-var swformfieldsearchselect_1 = __webpack_require__(785);
-var swformregistrar_1 = __webpack_require__(786);
-var swerrordisplay_1 = __webpack_require__(778);
-var swaddressform_1 = __webpack_require__(776);
-var swisolatechildform_1 = __webpack_require__(791);
+var swfselect_1 = __webpack_require__(790);
+var swffileinput_1 = __webpack_require__(780);
+var swformfield_1 = __webpack_require__(783);
+var swformfieldfile_1 = __webpack_require__(784);
+var swformfieldjson_1 = __webpack_require__(785);
+var swformfieldsearchselect_1 = __webpack_require__(786);
+var swformregistrar_1 = __webpack_require__(787);
+var swerrordisplay_1 = __webpack_require__(779);
+var swaddressform_1 = __webpack_require__(777);
+var swisolatechildform_1 = __webpack_require__(792);
 var swpropertydisplay_1 = __webpack_require__(301);
-var swfpropertydisplay_1 = __webpack_require__(788);
-var swsimplepropertydisplay_1 = __webpack_require__(792);
-var swformsubscriber_1 = __webpack_require__(787);
-var swverifyaddressdialog_1 = __webpack_require__(793);
-var swcollectionconfigasproperty_1 = __webpack_require__(777);
+var swfpropertydisplay_1 = __webpack_require__(789);
+var swsimplepropertydisplay_1 = __webpack_require__(793);
+var swformsubscriber_1 = __webpack_require__(788);
+var swverifyaddressdialog_1 = __webpack_require__(794);
+var swcollectionconfigasproperty_1 = __webpack_require__(778);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -82621,7 +82732,7 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
-/* 795 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82668,7 +82779,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-/* 796 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82755,7 +82866,7 @@ exports.SWFAddressForm = SWFAddressForm;
 
 
 /***/ }),
-/* 797 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82820,7 +82931,7 @@ exports.SWFAlert = SWFAlert;
 
 
 /***/ }),
-/* 798 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82904,7 +83015,7 @@ exports.SWFCartItems = SWFCartItems;
 
 
 /***/ }),
-/* 799 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83011,7 +83122,7 @@ exports.SWFDirective = SWFDirective;
 
 
 /***/ }),
-/* 800 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83182,7 +83293,7 @@ exports.SWFNavigation = SWFNavigation;
 
 
 /***/ }),
-/* 801 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83249,7 +83360,7 @@ exports.SWFPromoBox = SWFPromoBox;
 
 
 /***/ }),
-/* 802 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83299,7 +83410,7 @@ exports.SWFSaveNotes = SWFSaveNotes;
 
 
 /***/ }),
-/* 803 */
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83322,7 +83433,7 @@ exports.FrontendController = FrontendController;
 
 
 /***/ }),
-/* 804 */
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83331,17 +83442,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //modules
-var hibachi_module_1 = __webpack_require__(806);
+var hibachi_module_1 = __webpack_require__(807);
 //controllers
-var frontend_1 = __webpack_require__(803);
+var frontend_1 = __webpack_require__(804);
 //directives
-var swfdirective_1 = __webpack_require__(799);
-var swfcartitems_1 = __webpack_require__(798);
-var swfpromobox_1 = __webpack_require__(801);
-var swfnavigation_1 = __webpack_require__(800);
-var swfaddressform_1 = __webpack_require__(796);
-var swfsavenotes_1 = __webpack_require__(802);
-var swfalert_1 = __webpack_require__(797);
+var swfdirective_1 = __webpack_require__(800);
+var swfcartitems_1 = __webpack_require__(799);
+var swfpromobox_1 = __webpack_require__(802);
+var swfnavigation_1 = __webpack_require__(801);
+var swfaddressform_1 = __webpack_require__(797);
+var swfsavenotes_1 = __webpack_require__(803);
+var swfalert_1 = __webpack_require__(798);
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
@@ -83383,7 +83494,7 @@ exports.frontendmodule = frontendmodule;
 
 
 /***/ }),
-/* 805 */
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83493,7 +83604,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-/* 806 */
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83503,17 +83614,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(294);
-var card_module_1 = __webpack_require__(639);
+var card_module_1 = __webpack_require__(640);
 var collection_module_1 = __webpack_require__(295);
-var listing_module_1 = __webpack_require__(822);
+var listing_module_1 = __webpack_require__(823);
 var dialog_module_1 = __webpack_require__(299);
-var entity_module_1 = __webpack_require__(775);
-var pagination_module_1 = __webpack_require__(825);
-var form_module_1 = __webpack_require__(794);
-var validation_module_1 = __webpack_require__(844);
-var workflow_module_1 = __webpack_require__(859);
+var entity_module_1 = __webpack_require__(776);
+var pagination_module_1 = __webpack_require__(826);
+var form_module_1 = __webpack_require__(795);
+var validation_module_1 = __webpack_require__(845);
+var workflow_module_1 = __webpack_require__(860);
 //directives
-var swsaveandfinish_1 = __webpack_require__(805);
+var swsaveandfinish_1 = __webpack_require__(806);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -83540,7 +83651,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-/* 807 */
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83589,7 +83700,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-/* 808 */
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83648,7 +83759,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-/* 809 */
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83808,7 +83919,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-/* 810 */
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83990,7 +84101,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-/* 811 */
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84053,7 +84164,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-/* 812 */
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84352,19 +84463,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
+                // this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
+                // this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
+                // this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('add');
+                // this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -84550,17 +84661,23 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
+        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionQueryStringName = recordActionName + 'QueryString';
-            var recordActionModalName = recordActionName + 'Modal';
+            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
+            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+        };
+        this.capitalize = function (s) {
+            if (typeof s !== 'string' || s.length === 0)
+                return s;
+            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -84671,6 +84788,29 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
+        var queryString = "";
+        action = this.capitalize(action);
+        var actionProppertyName = "record" + action + "ActionProperty";
+        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
+        if (this[actionProppertyName]) {
+            queryString += '&' + this[actionProppertyName];
+            if (this[actionPropertyIdentifierName]) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            }
+            else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        }
+        else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        var actionQueryStringName = "record" + action + "QueryString";
+        if (this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        }
+        return queryString;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -84717,23 +84857,25 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
+            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
+            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
-            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
+            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionIdProperty: "@?",
-            recordDetailActionIdKey: "@?",
+            recordDetailActionPropertyIdentifier: "@?",
             recordDetailQueryString: "@?",
-            recordDetailModal: "<?",
+            recordDeleteModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
+            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",
@@ -84838,7 +84980,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-/* 813 */
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85012,7 +85154,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-/* 814 */
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85089,7 +85231,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-/* 815 */
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85148,7 +85290,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-/* 816 */
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85187,7 +85329,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-/* 817 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85244,7 +85386,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-/* 818 */
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85292,7 +85434,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-/* 819 */
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85814,7 +85956,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-/* 820 */
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85878,7 +86020,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-/* 821 */
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85955,11 +86097,9 @@ var SWListingSearchController = /** @class */ (function () {
             // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
             //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
             // })
-            var listingSearchConfig = {};
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
-                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+                _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
-            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -86155,6 +86295,8 @@ var SWListingSearchController = /** @class */ (function () {
             || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
     };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            return;
         if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
             this.selectedSearchFilter = this.searchableFilterOptions
                 .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
@@ -86165,7 +86307,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -86201,7 +86343,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-/* 822 */
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86212,23 +86354,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(295);
 //services
-var listingservice_1 = __webpack_require__(823);
+var listingservice_1 = __webpack_require__(824);
 //directives
-var swlistingdisplay_1 = __webpack_require__(812);
-var swlistingreport_1 = __webpack_require__(819);
-var swlistingdisplaycell_1 = __webpack_require__(813);
-var swlistingcontrols_1 = __webpack_require__(810);
-var swlistingaggregate_1 = __webpack_require__(807);
-var swlistingcolorfilter_1 = __webpack_require__(808);
-var swlistingcolumn_1 = __webpack_require__(809);
-var swlistingdisablerule_1 = __webpack_require__(811);
-var swlistingexpandablerule_1 = __webpack_require__(814);
-var swlistingfilter_1 = __webpack_require__(815);
-var swlistingfiltergroup_1 = __webpack_require__(816);
-var swlistingorderby_1 = __webpack_require__(818);
-var swlistingrowsave_1 = __webpack_require__(820);
-var swlistingsearch_1 = __webpack_require__(821);
-var swlistingglobalsearch_1 = __webpack_require__(817);
+var swlistingdisplay_1 = __webpack_require__(813);
+var swlistingreport_1 = __webpack_require__(820);
+var swlistingdisplaycell_1 = __webpack_require__(814);
+var swlistingcontrols_1 = __webpack_require__(811);
+var swlistingaggregate_1 = __webpack_require__(808);
+var swlistingcolorfilter_1 = __webpack_require__(809);
+var swlistingcolumn_1 = __webpack_require__(810);
+var swlistingdisablerule_1 = __webpack_require__(812);
+var swlistingexpandablerule_1 = __webpack_require__(815);
+var swlistingfilter_1 = __webpack_require__(816);
+var swlistingfiltergroup_1 = __webpack_require__(817);
+var swlistingorderby_1 = __webpack_require__(819);
+var swlistingrowsave_1 = __webpack_require__(821);
+var swlistingsearch_1 = __webpack_require__(822);
+var swlistingglobalsearch_1 = __webpack_require__(818);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -86256,7 +86398,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-/* 823 */
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86300,11 +86442,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -87228,7 +87370,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-/* 824 */
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87274,7 +87416,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-/* 825 */
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87283,8 +87425,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-var paginationservice_1 = __webpack_require__(826);
-var swpaginationbar_1 = __webpack_require__(824);
+var paginationservice_1 = __webpack_require__(827);
+var swpaginationbar_1 = __webpack_require__(825);
 var core_module_1 = __webpack_require__(17);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -87301,7 +87443,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-/* 826 */
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87499,7 +87641,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-/* 827 */
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87888,7 +88030,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 828 */
+/* 829 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87920,7 +88062,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 829 */
+/* 830 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87953,7 +88095,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 830 */
+/* 831 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88017,7 +88159,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 831 */
+/* 832 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88047,7 +88189,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 832 */
+/* 833 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88077,7 +88219,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 833 */
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88111,7 +88253,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 834 */
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88144,7 +88286,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 835 */
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88178,7 +88320,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 836 */
+/* 837 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88211,7 +88353,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 837 */
+/* 838 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88241,7 +88383,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 838 */
+/* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88271,7 +88413,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 839 */
+/* 840 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88302,7 +88444,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 840 */
+/* 841 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88339,7 +88481,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 841 */
+/* 842 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88372,7 +88514,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 842 */
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88409,7 +88551,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 843 */
+/* 844 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88566,7 +88708,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 844 */
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88575,24 +88717,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(827);
-var swvalidationminlength_1 = __webpack_require__(835);
-var swvalidationdatatype_1 = __webpack_require__(828);
-var swvalidationeq_1 = __webpack_require__(829);
-var swvalidationeqproperty_1 = __webpack_require__(830);
-var swvalidationgte_1 = __webpack_require__(831);
-var swvalidationlte_1 = __webpack_require__(832);
-var swvalidationmaxlength_1 = __webpack_require__(833);
-var swvalidationmaxvalue_1 = __webpack_require__(834);
-var swvalidationminvalue_1 = __webpack_require__(836);
-var swvalidationneq_1 = __webpack_require__(837);
-var swvalidationnumeric_1 = __webpack_require__(838);
-var swvalidationregex_1 = __webpack_require__(839);
-var swvalidationrequired_1 = __webpack_require__(840);
-var swvalidationunique_1 = __webpack_require__(841);
-var swvalidationuniqueornull_1 = __webpack_require__(842);
+var swvalidate_1 = __webpack_require__(828);
+var swvalidationminlength_1 = __webpack_require__(836);
+var swvalidationdatatype_1 = __webpack_require__(829);
+var swvalidationeq_1 = __webpack_require__(830);
+var swvalidationeqproperty_1 = __webpack_require__(831);
+var swvalidationgte_1 = __webpack_require__(832);
+var swvalidationlte_1 = __webpack_require__(833);
+var swvalidationmaxlength_1 = __webpack_require__(834);
+var swvalidationmaxvalue_1 = __webpack_require__(835);
+var swvalidationminvalue_1 = __webpack_require__(837);
+var swvalidationneq_1 = __webpack_require__(838);
+var swvalidationnumeric_1 = __webpack_require__(839);
+var swvalidationregex_1 = __webpack_require__(840);
+var swvalidationrequired_1 = __webpack_require__(841);
+var swvalidationunique_1 = __webpack_require__(842);
+var swvalidationuniqueornull_1 = __webpack_require__(843);
 //services
-var validationservice_1 = __webpack_require__(843);
+var validationservice_1 = __webpack_require__(844);
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -88620,7 +88762,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 845 */
+/* 846 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88654,7 +88796,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 846 */
+/* 847 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88692,7 +88834,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 847 */
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88726,7 +88868,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 848 */
+/* 849 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88847,7 +88989,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 849 */
+/* 850 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88878,7 +89020,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 850 */
+/* 851 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88928,7 +89070,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 851 */
+/* 852 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88975,7 +89117,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 852 */
+/* 853 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89247,7 +89389,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 853 */
+/* 854 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89447,7 +89589,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 854 */
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89549,7 +89691,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 855 */
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89595,7 +89737,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 856 */
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89884,7 +90026,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 857 */
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89996,7 +90138,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 858 */
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90054,7 +90196,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 859 */
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90063,21 +90205,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(858);
-var scheduleservice_1 = __webpack_require__(857);
+var workflowconditionservice_1 = __webpack_require__(859);
+var scheduleservice_1 = __webpack_require__(858);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(845);
-var swworkflowbasic_1 = __webpack_require__(847);
-var swworkflowcondition_1 = __webpack_require__(848);
-var swworkflowconditiongroupitem_1 = __webpack_require__(849);
-var swworkflowconditiongroups_1 = __webpack_require__(850);
-var swworkflowtask_1 = __webpack_require__(851);
-var swworkflowtaskactions_1 = __webpack_require__(852);
-var swworkflowtasks_1 = __webpack_require__(853);
-var swworkflowtrigger_1 = __webpack_require__(854);
-var swworkflowtriggers_1 = __webpack_require__(856);
-var swworkflowtriggerhistory_1 = __webpack_require__(855);
-var swschedulepreview_1 = __webpack_require__(846);
+var swadmincreatesuperuser_1 = __webpack_require__(846);
+var swworkflowbasic_1 = __webpack_require__(848);
+var swworkflowcondition_1 = __webpack_require__(849);
+var swworkflowconditiongroupitem_1 = __webpack_require__(850);
+var swworkflowconditiongroups_1 = __webpack_require__(851);
+var swworkflowtask_1 = __webpack_require__(852);
+var swworkflowtaskactions_1 = __webpack_require__(853);
+var swworkflowtasks_1 = __webpack_require__(854);
+var swworkflowtrigger_1 = __webpack_require__(855);
+var swworkflowtriggers_1 = __webpack_require__(857);
+var swworkflowtriggerhistory_1 = __webpack_require__(856);
+var swschedulepreview_1 = __webpack_require__(847);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -90103,7 +90245,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 860 */
+/* 861 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -90131,7 +90273,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 861 */
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);
