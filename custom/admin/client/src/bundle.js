@@ -76975,7 +76975,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = null; }
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -77080,7 +77080,9 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            if (jsonCollection.listingSearchConfig) {
+                _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            }
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -77104,7 +77106,7 @@ var CollectionConfig = /** @class */ (function () {
             if (validate) {
                 _this.validateFilter(_this.filterGroups);
             }
-            return {
+            var options = {
                 baseEntityAlias: _this.baseEntityAlias,
                 baseEntityName: _this.baseEntityName,
                 columns: _this.columns,
@@ -77123,8 +77125,11 @@ var CollectionConfig = /** @class */ (function () {
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
+            return options;
         };
         this.getEntityName = function () {
             return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
@@ -77155,9 +77160,11 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
             }
@@ -87768,7 +87775,7 @@ var PublicService = /** @class */ (function () {
                         if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
                             //if there are no errors then redirect.
                             this.orderPlaced = true;
-                            this.redirectExact('/order-confirmation/');
+                            this.redirectExact(this.confirmationUrl);
                         }
                     }
                 }
@@ -87812,6 +87819,14 @@ var PublicService = /** @class */ (function () {
             }
             return total;
         };
+        this.setOrderConfirmationUrl = function () {
+            if ('undefined' !== typeof hibachiConfig.orderConfirmationUrl) {
+                _this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+            }
+            else {
+                _this.confirmationUrl = "/order-confirmation";
+            }
+        };
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
@@ -87819,7 +87834,6 @@ var PublicService = /** @class */ (function () {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -87833,6 +87847,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.setOrderConfirmationUrl();
     }
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
@@ -89586,6 +89601,9 @@ var SWFFormController = /** @class */ (function () {
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
+        };
+        this.resetMethod = function (newMethod) {
+            _this.method = newMethod;
         };
         this.getFormData = function () {
             var formData = {};
@@ -92679,19 +92697,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
+                // this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
+                // this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
+                // this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('add');
+                // this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -92877,17 +92895,23 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
+        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionQueryStringName = recordActionName + 'QueryString';
-            var recordActionModalName = recordActionName + 'Modal';
+            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
+            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+        };
+        this.capitalize = function (s) {
+            if (typeof s !== 'string' || s.length === 0)
+                return s;
+            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -92998,6 +93022,29 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
+        var queryString = "";
+        action = this.capitalize(action);
+        var actionProppertyName = "record" + action + "ActionProperty";
+        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
+        if (this[actionProppertyName]) {
+            queryString += '&' + this[actionProppertyName];
+            if (this[actionPropertyIdentifierName]) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            }
+            else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        }
+        else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        var actionQueryStringName = "record" + action + "QueryString";
+        if (this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        }
+        return queryString;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -93044,23 +93091,25 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
+            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
+            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
-            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
+            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionIdProperty: "@?",
-            recordDetailActionIdKey: "@?",
+            recordDetailActionPropertyIdentifier: "@?",
             recordDetailQueryString: "@?",
-            recordDetailModal: "<?",
+            recordDeleteModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
+            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",
@@ -94282,11 +94331,9 @@ var SWListingSearchController = /** @class */ (function () {
             // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
             //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
             // })
-            var listingSearchConfig = {};
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
-                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+                _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
-            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -94482,6 +94529,8 @@ var SWListingSearchController = /** @class */ (function () {
             || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
     };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            return;
         if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
             this.selectedSearchFilter = this.searchableFilterOptions
                 .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
