@@ -18,7 +18,7 @@ class MonatFlexshipListingController{
 	public initialized = false; 
 	
 	//@ngInject
-	constructor(public orderTemplateService, public $window, public publicService){
+	constructor(public orderTemplateService, public $window){
 		
 	}
 	

@@ -15,7 +15,7 @@ class MonatFlexshipCardController {
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	//@ngInject
-	constructor(public observerService, public ModalService, public publicService) {}
+	constructor(public observerService, public ModalService) {}
 
 	public $onInit = () => {
 		this.observerService.attach(
