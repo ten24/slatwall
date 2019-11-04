@@ -1676,7 +1676,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
                     			orderItem.setCurrencyCode( order['CurrencyCode']?:'USD' );//*
                     			
-                    			//orderItem.setParentOrderItem( order['ParentItemID'] );//always on line one.
                     			
                     			if (orderItem.getNewFlag()){
         			            	ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
@@ -1719,7 +1718,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                			orderItemSkuBundle.setSku(sku);
         			            	orderItemSkuBundle.setPrice(val(sku.getPrice()));//*
         			            	orderItemSkuBundle.setQuantity( detail['QtyOrdered']?:1 );//*
-		                			orderItemSkuBundle.setRemoteID( detail['OrderDetailId'] );
+		                			orderItemSkuBundle.setRemoteID( detail['OrderDetailId'] );//* uses the orderItem id from WS
 		                			
 		                			if (orderItemSkuBundle.getNewFlag()){
 		                				ormStatelessSession.insert("SlatwallOrderItemSkuBundle", orderItemSkuBundle);
@@ -1762,11 +1761,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             
                             //If another type
                             newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");//*
-                            ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
+                            
                             
                             //create a transaction for this payment
                             
-                            if (newOrderPayment.getNewFlag())
+                            if (newOrderPayment.getNewFlag()) {
+                            	ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
 	                            var paymentTransaction = new Slatwall.model.entity.PaymentTransaction();
 	                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
 	                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
@@ -1778,6 +1778,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                            
 	                            ormStatelessSession.insert("SlatwallPaymentTransaction", paymentTransaction);
                         	}else{
+                        		ormStatelessSession.update("SlatwallOrderPayment", newOrderPayment);
+                        		
                         		var paymentTransaction = getOrderService().getPaymentTransactionByRemoteID(orderPayment['orderPaymentID']);
                         		if (!isNull(paymentTransaction)){
 		                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
@@ -1847,15 +1849,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			if (isNull(orderDelivery)){
                 				var orderDelivery = new Slatwall.model.entity.OrderDelivery();
                 			}
-                			
                 			orderDelivery.setOrder(newOrder);
                 			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
                 			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
                 			orderDelivery.setShipmentTypeCode(shipment.ShipTypeSequence);//Add attribute
-                			orderDelivery.setShipToModifiedFlag(shipment.ShipToModFlag);//this would need to be added
-                			orderDelivery.setWarehouseCode(shipment.warehouseCode);//ADD
-                			orderDelivery.setFreightTypeCode(shipment.FreightTypeCode); //ADD
-                			orderDelivery.setCarrierCode(shipment.CarrierCode);//ADD
                 			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
                 			orderDelivery.setRemoteID( shipment.shipmentId );
                 			
@@ -1943,6 +1940,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
 	                			orderFulfillment.manualHandlingFeeFlag(true);//*
 	                			
+	                			//Added these 3 per Sumit.
+	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']);//ADD
+                				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
+                				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
+                				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
+                				orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
+                				
 	                			//set the verifiedAddressFlag if verified.
 	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
 	                				orderFulfillment.setVerifiedAddressFlag( true );
