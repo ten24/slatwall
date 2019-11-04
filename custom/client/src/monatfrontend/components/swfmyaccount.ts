@@ -24,10 +24,6 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-    public mostRecentFlexship:any;
-    public mostRecentFlexshipDeliveryDate:any;
-    public editFlexshipUntilDate:any;
-
     public totalPages:Array<number>;
     public pageTracker:number = 1;
 
@@ -72,10 +68,7 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' ){
-                this.getOrdersOnAccount(1);
-                this.getMostRecentFlexship();
-            }else if(window.location.pathname == '/my-account/order-history/'){
+            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
                 this.getOrdersOnAccount();
             };
             
@@ -89,21 +82,6 @@ class swfAccountController {
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
-    }
-    
-    public getMostRecentFlexship = () => {
-        this.loading = true;
-        const accountID = this.accountData.accountID;
-        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
-            if(result.mostRecentOrderTemplate.length){
-                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
-                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
-                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
-                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
-            }
-  
-            this.loading = false;
-        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
