@@ -23,6 +23,7 @@ import { MonatEnrollmentStep } from './components/monatenrollmentstep';
 import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
+import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
@@ -67,6 +68,7 @@ var monatfrontendmodule = angular
 	.directive('materialTextarea', MaterialTextarea.Factory())
 	.directive('observeEvent', ObserveEvent.Factory())
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
+	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
