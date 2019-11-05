@@ -1,0 +1,46 @@
+<div class="modal wishlist-modal fade" id="{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<i class="fas fa-times"></i>
+			</button>
+			
+			<h5 class="modal-title"><i class="fas fa-heart"></i><span id="wishlist-product-title"></span></h5>
+			<h3 ng-init="createWishList = {}">Choose a wishlist to save this product to.</h3>
+			
+			<form 
+			ng-model="createWishList"
+			>
+				<ul class="wishlist-names" 
+				swf-wishlist
+				ng-init="swfWishlist.getWishlistsLight()"
+				> 
+					<li ng-repeat="wishlist in swfWishlist.orderTemplates track by $index" ng-cloak>
+						<div class="radio">
+							<input ng-click="swfWishlist.setWishlistID(wishlist.orderTemplateID); swfWishlist.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
+							<label for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
+						</div>
+					</li>
+					<li>
+						<div ng-click="newWishlist = true" class="radio">
+							<input type="radio" name="wishlist" id="create-new" ng-value="''" ng-model="createWishList.orderTemplateID" >
+							<label for="create-new">Create a new wishlist</label>
+						</div>
+						<div class="new-wishlist-name">
+							<input ng-disabled="!newWishlist" placeholder="Name your wishlist" id="orderTemplateName" type="text" name="orderTemplateName" class="form-control success" value="newWishlist" ng-model="createWishList.orderTemplateName" swvalidationrequired="true">
+						</div>
+					</li>
+					<div class="text-center">
+						<a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
+							Save Changes
+						</a>
+						<a ng-if="createWishList.orderTemplateID" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
+							Save Changes
+						</a>
+					</div>
+				</ul>
+			</form>
+		</div>
+	</div>	
+</div>

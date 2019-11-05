@@ -155,21 +155,37 @@ class SWFWishlist  {
     public require          = {
         ngModel:'?^ngModel'    
     };
-    public priority=1000;
-    public restrict         = "A";
-    public scope            = true;
+    public priority = 1000;
+    public scope = true;
+	public templateUrl:string;
+    public restrict:string;
+
    /**
     * Binds all of our variables to the controller so we can access using this
     */
     public bindToController = {
         pageRecordsShow:"@?",
         currentPage:"@?",
+        skuID:"@?"
     };
     public controller       = SWFWishlistController;
     public controllerAs     = "swfWishlist";
-    // @ngInject
-    constructor() {
+    
+        /**
+     * Handles injecting the partials path into this class
+     */
+    public static Factory(){
+        var directive: any = (monatFrontendBasePath) => new SWFWishlist(
+			monatFrontendBasePath,
+        );
+		directive.$inject = ['monatFrontendBasePath'];
+        return directive;
     }
+    
+    // @ngInject
+	constructor(private monatFrontendBasePath){
+		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
+	}
     /**
         * Sets the context of this form
         */
@@ -177,15 +193,7 @@ class SWFWishlist  {
     {
     }
 
-    /**
-     * Handles injecting the partials path into this class
-     */
-    public static Factory(){
-        var directive = () => new SWFWishlist();
-        directive.$inject = [];
-        return directive;
-    }
-    
+  
 }
 export{
     SWFWishlist,

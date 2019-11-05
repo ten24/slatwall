@@ -19,7 +19,8 @@ class MonatProductCardController {
 		public orderTemplateService,
 		public $rootScope,
 		public monatService,
-        public observerService
+        public observerService,
+        public ModalService
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
@@ -110,6 +111,29 @@ class MonatProductCardController {
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
     }
+    
+	public launchWishlistModal = (skuID) => {
+		this.ModalService.showModal({
+			component: 'swfwishlist',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				skuID: skuID
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
+
 }
 
 class MonatProductCard {
