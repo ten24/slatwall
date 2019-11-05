@@ -13,7 +13,7 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
-	public overWrittenType:any;
+
 	// @ngInject
 	constructor(
 		//inject modal service
