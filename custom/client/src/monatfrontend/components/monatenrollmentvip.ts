@@ -18,11 +18,11 @@ class VIPController {
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
+	public flexshipItemList:any;
 
 
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService,public orderTemplateService) {
-		this.observerService.attach(this.getProductList, 'createSuccess'); 
 	}
 
 	public $onInit = () => {
@@ -30,6 +30,7 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
+    	this.observerService.attach(this.getFlexshipItems,"lastStep");
 	};
 
 	public getCountryCodeOptions = () => {
@@ -106,6 +107,24 @@ class VIPController {
             this.loading = false;
         });
     }
+    
+    public getFlexshipItems = () =>{
+    	this.loading = true;
+        const flexshipID = this.flexshipID;
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
+        	this.flexshipItemList = result.orderTemplateItems;
+			this.observerService.notify('onNext');
+            this.loading = false;
+        });
+    }
+    
+	public editFlexshipItems = () => {
+		this.observerService.notify('editFlexshipItems');
+	}
+	
+	public editFlexshipDate = () => {
+		this.observerService.notify('editFlexshipDate');
+	}
 }
 
 class MonatEnrollmentVIP {
