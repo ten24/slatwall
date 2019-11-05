@@ -114,9 +114,9 @@ component extends="Slatwall.model.service.OrderService" {
 		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
 		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
 
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
@@ -147,9 +147,10 @@ component extends="Slatwall.model.service.OrderService" {
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
 			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
 	
-			skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
-			skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct();
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 

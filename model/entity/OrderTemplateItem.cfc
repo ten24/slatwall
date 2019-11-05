@@ -79,7 +79,8 @@ property name="commissionableVolumeTotal" persistent="false";
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
-				variables.total += getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this) * getQuantity();
+				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
+				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
 			} 	
 		}
 		

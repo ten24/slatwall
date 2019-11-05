@@ -1187,9 +1187,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
 
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
@@ -1217,9 +1217,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
 			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
 
-			skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
-			skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct();
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
@@ -1640,8 +1640,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
+		return this.process(arguments.orderTemplate, {}, 'removeTemporaryItems'); 
+	}
 
-		return arguments.orderTemplate; 
+	public any function processOrderTemplate_removeTemporaryItems(required any orderTemplate, any data={}){
+
+		var orderTemplateItems = arguments.orderTemplate.getOrderTemplateItems(); 
+		var orderTemplateItemsCount = arrayLen(orderTemplateItems);
+
+		for(var i=orderTemplateItemsCount; i >= 1; i--){
+			if(orderTemplateItems[i].getTemporaryFlag()){
+				arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItems[i]);
+			} 
+		} 
+		
+		return this.saveOrderTemplate(arguments.orderTemplate); 
 	}
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
@@ -1649,12 +1662,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
 			var newOrderTemplateItem = this.newOrderTemplateItem();
 
 			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
 			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setTemporaryFlag(arguments.processObject.getTemporaryFlag()); 
 			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
 			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
 		
@@ -1689,7 +1704,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
-			
+		
+		this.logHibachi('removing oti is null #isNull(arguments.processObject.getOrderTemplateItem())#', true);
+		
+	
 		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
