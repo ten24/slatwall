@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
     public currentYear;
@@ -25,6 +26,9 @@ class swfAccountController {
     public isNewAddress:boolean;
     public totalPages:Array<number>;
     public pageTracker:number = 1;
+    public mostRecentFlexshipDeliveryDate:any;
+    public editFlexshipUntilDate:any;
+    public mostRecentFlexship:any;
 
     
     // @ngInject
@@ -67,7 +71,10 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
+            }else if(window.location.pathname == '/my-account/' ){
+                this.getOrdersOnAccount(1);
+                this.getMostRecentFlexship();
+            }else if(window.location.pathname == '/my-account/order-history/'){
                 this.getOrdersOnAccount();
             };
             
@@ -81,6 +88,21 @@ class swfAccountController {
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
+    }
+    
+    public getMostRecentFlexship = () => {
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+            if(result.mostRecentOrderTemplate.length){
+                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
+                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
+            }
+  
+            this.loading = false;
+        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
@@ -101,7 +123,8 @@ class swfAccountController {
                 pageNumber = this.pageTracker +1;
             }
         }
-
+        
+        this.loadingOrders = true;
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
@@ -116,6 +139,7 @@ class swfAccountController {
             this.totalPages = holdingArray;
             this.pageTracker = pageNumber;
             this.loading = false;
+            this.loadingOrders = false;
         });
     }
     

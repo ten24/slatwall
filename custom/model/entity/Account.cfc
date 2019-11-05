@@ -1,6 +1,7 @@
 component {
 	property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
@@ -56,7 +57,9 @@ component {
 	//custom validation methods
 		
 	public boolean function restrictRenewalDateToOneYearFromNow() {
-		
-		return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
+			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+		}
+		return true;
 	}
 } 

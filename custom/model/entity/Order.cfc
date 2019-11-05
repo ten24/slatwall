@@ -230,4 +230,18 @@ component {
 	   
 	}
 	
+	public struct function getListingSearchConfig() {
+	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	
+	
+	public boolean function hasMPRenewalFee() {
+	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
+            variables.orderHasMPRenewalFee = getService('orderService').orderHasMPRenewalFee(this.getOrderID());
+		}
+		return variables.orderHasMPRenewalFee;
+	}
+	
 }

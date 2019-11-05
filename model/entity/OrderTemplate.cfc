@@ -106,7 +106,9 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="promotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="encodedPromotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
 	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
@@ -179,6 +181,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.promotionalRewardSkuCollectionConfig; 	
 	}
 
+	public struct function getPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
+			variables.promotionalFreeRewardSkuCollectionConfig = getService('OrderService').getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(this);	
+		} 
+		return variables.promotionalFreeRewardSkuCollectionConfig; 	
+	}
+
 	public string function getEncodedPromotionalRewardSkuCollectionConfig(){
 		if(!structKeyExists(variables, 'encodedPromotionalRewardSkuCollectionConfig')){
 			variables.encodedPromotionalRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalRewardSkuCollectionConfig()));  
@@ -186,7 +195,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.encodedPromotionalRewardSkuCollectionConfig; 	
 		
 	}
-	
+
+	public string function getEncodedPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'encodedPromotionalFreeRewardSkuCollectionConfig')){
+			variables.encodedPromotionalFreeRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalFreeRewardSkuCollectionConfig()));  
+		} 
+		return variables.encodedPromotionalFreeRewardSkuCollectionConfig; 	
+		
+	}	
+
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
 		if(!structKeyExists(variables, 'canPlaceFutureScheduleOrderFlag')){
 			variables.canPlaceFutureScheduleOrderFlag = true;

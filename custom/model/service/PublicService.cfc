@@ -354,6 +354,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
+        
+    public any function selectStarterPackBundle(required struct data){
+        var cart = getHibachiScope().cart();
+        
+        //remove previously-selected StarterPackBundle
+        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
+            for( orderItem in cart.getOrderItems() ) {
+                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
+                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                    StructDelete(arguments.data, 'orderItemID');
+                    break;
+                }
+            }
+        }
+        
+        this.addOrderItem(argumentCollection = arguments);
+    }
+
+    
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
@@ -361,7 +381,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account = setupEnrollmentInfo(account, 'marketPartner');
         }
         if(account.hasErrors()){
-            addErrors(arguments.data,account.getErrors());
+            addErrors(arguments.data, account.getProcessObject("create").getErrors());
         }
         return account;
     }
@@ -436,8 +456,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 }
                 getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
             }
+            if ( 
+                !isNull( arguments.data['month'] )
+                && !isNull( arguments.data['year'] )
+                && !isNull( arguments.data['day'] )
+            ) {
+                account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                getAccountService().saveAccount( account );
+            }
         }
         return account;
+    }
+    
+    public any function getDaysToEditOrderTemplateSetting(){
+		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
     }
     
     public void function submitSponsor(required struct data){
@@ -481,7 +513,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
-        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
 
         var accountID = getHibachiScope().getAccount().getAccountID();
 		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
@@ -492,6 +524,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
     
+
+    public any function getMostRecentOrderTemplate (required any data){
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
+        
+        var daysToEditFlexship = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+        
+		var orderTemplateCollectionList = getService('OrderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');
+		orderTemplateCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		orderTemplateCollectionList.setPageRecordsShow(1);
+		collectionList = orderTemplateCollectionList.getPageRecords();
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+
     public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
@@ -566,5 +617,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         return productList;
     }
+
 
 }

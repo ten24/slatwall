@@ -1,6 +1,6 @@
-<div sw-loading="!monatFlexshipListing.initialized">
+<div ng-if="monatFlexshipListing.initialized" ng-cloak>
     
-    <div ng-if="!monatFlexshipListing.orderTemplates.length">
+    <div ng-if="!monatFlexshipListing.orderTemplates.length && !monatFlexshipListing.loading">
         <h2 sw-rbkey="'frontend.flexship.noFlexships'"></h2>
     </div>
     
@@ -9,6 +9,7 @@
         ng-click="monatFlexshipListing.createNewFlexship()" 
         class="btn bg-primary btn-add"
         ng-class="{loading: monatFlexshipListing.loading}"
+        ng-if="monatFlexshipListing.account.priceGroups.length && 2 != monatFlexshipListing.account.priceGroups[0].priceGroupCode"
     >Create Flexship</button>
 
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates">
@@ -20,8 +21,10 @@
             data-expiration-year-options="monatFlexshipListing.expirationYearOptions"
             data-shipping-method-options="monatFlexshipListing.shippingMethodOptions"
             data-state-code-options="monatFlexshipListing.stateCodeOptions"
+            data-days-to-edit-flexship="{{monatFlexshipListing.daysToEditFlexshipSetting}}"
             data-cancellation-reason-type-options="monatFlexshipListing.cancellationReasonTypeOptions"
             data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
         ></monat-flexship-card>
     </div>
+
 </div>

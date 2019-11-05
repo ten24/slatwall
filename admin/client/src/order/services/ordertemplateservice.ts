@@ -74,6 +74,7 @@ export class OrderTemplateService {
                 public utilityService
     ){
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+        this.observerService.attach(this.addPromotionalOrderTemplateItem, 'addPromotionalOrderTemplateItem')
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
@@ -142,7 +143,7 @@ export class OrderTemplateService {
 		}
     }
     
-    public initializeAddSkuCollection = (addSkuCollection?) =>{
+    public initializeAddSkuCollection = (addSkuCollection?,includePrice=true) =>{
     	
 		if(this.addSkuIntialized && addSkuCollection == null){
     		return this.addSkuCollection;
@@ -153,6 +154,10 @@ export class OrderTemplateService {
     	}
     			
 		for(var j=0; j<this.skuDisplayProperties.length; j++){
+			
+			if(!includePrice && this.pricePropertyIdentfierList.indexOf(this.skuDisplayProperties[j]) !== -1){
+				continue;
+			}
 			
 			var columnConfig = this.getColumnConfigForSkuOrOrderTemplateItemPropertyIdentifier(this.skuDisplayProperties[j],j,this.originalSkuDisplayPropertyLength);
 			addSkuCollection.addDisplayProperty(this.skuDisplayProperties[j], '', columnConfig);
@@ -185,8 +190,8 @@ export class OrderTemplateService {
 		return this.initializeViewAndEditOrderTemplateItemsCollection('edit');
 	}
 	
-	public getAddSkuCollection = (addSkuCollection?) =>{
-		return this.initializeAddSkuCollection(addSkuCollection);
+	public getAddSkuCollection = (addSkuCollection?,includePrice=true) =>{
+		return this.initializeAddSkuCollection(addSkuCollection,includePrice);
 	}
     
     public setOrderTemplateID = (orderTemplateID) =>{
@@ -277,6 +282,31 @@ export class OrderTemplateService {
 			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
 			skuID: state.skuID,
 			quantity: state.quantity
+		};
+		
+		var processUrl = this.$hibachi.buildUrl('api:main.post');
+		
+		var adminRequest = this.requestService.newAdminRequest(processUrl, formDataToPost);
+		
+		adminRequest.promise.then(
+		    (response)=>{
+		        
+		    }, 
+		    (reason)=>{
+		        
+		    }
+		);
+    }
+    
+    public addPromotionalOrderTemplateItem = (state) =>{
+    	var formDataToPost:any = {
+			entityID: this.orderTemplateID,
+			entityName: 'OrderTemplate',
+			context: 'addOrderTemplateItem',
+			propertyIdentifiersList: this.orderTemplatePropertyIdentifierList,
+			skuID: state.skuID,
+			quantity: state.quantity,
+			temporaryFlag: true
 		};
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
