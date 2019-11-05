@@ -238,7 +238,7 @@ class SWEditFilterItem{
                 };
 
                 scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
-                    $log.debug('saveFilter begin')
+                    $log.debug('saveFilter begin');
                     if(angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)){
                         return;
                     }
@@ -380,7 +380,7 @@ class SWEditFilterItem{
                                         filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
                                             filterItem.value = selectedFilterProperty.criteriaNumberOf;
-                                            filterItem.displayValue = '';
+
                                             switch(filterItem.measureType){
                                                 case 'd':
                                                     filterItem.displayValue +='Day ';
