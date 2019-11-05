@@ -118,6 +118,28 @@ class MonatFlexshipMenuController {
 			});
 	};
 
+	public showFlexshipEditFrequencyMethodModal = () => {
+		this.ModalService.showModal({
+			component: 'monatFlexshipFrequencyModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
 	public activateFlexship() {
 		// make api request
 		this.orderTemplateService
@@ -159,6 +181,7 @@ class MonatFlexshipMenuController {
 				// TODO: show alert
 			});
 	}
+	
 }
 
 class MonatFlexshipMenu {

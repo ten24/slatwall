@@ -408,7 +408,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionObjectListingSearchConfig() {
 		
 		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
-			this.setCollectionObjectListingSearchConfig({}); // will set the defaults
+			this.setCollectionObjectListingSearchConfig({
+				wildCardPosition : 'both',
+				ignoreSearchFilters : false	
+			}); 
 		}
 		
 		return variables.collectionObjectListingSearchConfig;
@@ -465,7 +468,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function updateListingSearchFilters() {
 		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
-		
+
+		if(!structKeyExists(listingSearchConfig, 'searchFilterPropertyIdentifier')){
+			return;
+		} 
+	
 		var searchFilterCondition = (
 				StructKeyExists(listingSearchConfig, 'selectedSearchFilterCode')
 				&& len( trim(listingSearchConfig.selectedSearchFilterCode) )
@@ -4209,7 +4216,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 		}
-		var searchConfig = this.getCollectionObjectListingSearchConfig(); 
+		var searchConfig = this.getCollectionObjectListingSearchConfig();
+ 
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {

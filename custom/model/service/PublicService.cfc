@@ -489,7 +489,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
-        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
 
         var accountID = getHibachiScope().getAccount().getAccountID();
 		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
@@ -500,6 +500,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
     
+
+    public any function getMostRecentOrderTemplate (required any data){
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
+        
+        var daysToEditFlexship = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+        
+		var orderTemplateCollectionList = getService('OrderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');
+		orderTemplateCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		orderTemplateCollectionList.setPageRecordsShow(1);
+		collectionList = orderTemplateCollectionList.getPageRecords();
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+
     public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
@@ -574,5 +593,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         return productList;
     }
+
 
 }

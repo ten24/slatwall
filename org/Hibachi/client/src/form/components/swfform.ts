@@ -141,7 +141,9 @@ class SWFFormController {
         if(!result) return result;
         this.$timeout(()=>{
         this.loading = false;
-        this.observerService.notify(this.afterSubmitEventName);
+        if(this.afterSubmitEventName){
+            this.observerService.notify(this.afterSubmitEventName);
+        }
         this.successfulActions = result.successfulActions;
         this.failureActions = result.failureActions;
         this.errors = result.errors;
