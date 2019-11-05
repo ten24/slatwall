@@ -76180,6 +76180,7 @@ var SWEditFilterItem = /** @class */ (function () {
                                         filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
                                             filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
                                             switch (filterItem.measureType) {
                                                 case 'd':
                                                     filterItem.displayValue += 'Day ';
