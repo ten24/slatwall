@@ -29,9 +29,6 @@ class MonatProductCardController {
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
-		
-
-				
 	}
 	public init = () => {
 		if(this.urlParams.get('type')){
