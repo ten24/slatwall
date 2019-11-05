@@ -238,7 +238,7 @@ class SWEditFilterItem{
                 };
 
                 scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
-                    $log.debug('saveFilter begin');
+                    $log.debug('saveFilter begin')
                     if(angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)){
                         return;
                     }
@@ -333,7 +333,6 @@ class SWEditFilterItem{
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is it null or a range
-
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
                                     filterItem.displayValue = filterItem.value;
@@ -376,6 +375,25 @@ class SWEditFilterItem{
                                             }
                                             filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
                                         }
+                                    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
+                                            switch(filterItem.measureType){
+                                                case 'd':
+                                                    filterItem.displayValue +='Day ';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue +='Month ';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue +='Year ';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += filterItem.value;
+                                        }
                                     }else{
                                         filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
@@ -389,9 +407,6 @@ class SWEditFilterItem{
                                 }
 
                                 break;
-                            
-                            
-
                         }
 
                         switch(selectedFilterProperty.fieldtype){
