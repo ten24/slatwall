@@ -10,6 +10,7 @@ class MonatOrderItemsController {
 	public $onInit = () => {
 		this.getOrderItems();
 	}
+	
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {

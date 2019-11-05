@@ -30,6 +30,7 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
+    	this.observerService.attach(this.getFlexshipItems,"lastStep");
 	};
 
 	public getCountryCodeOptions = () => {
@@ -116,6 +117,14 @@ class VIPController {
             this.loading = false;
         });
     }
+    
+	public editFlexshipItems = () => {
+		this.observerService.notify('editFlexshipItems');
+	}
+	
+	public editFlexshipDate = () => {
+		this.observerService.notify('editFlexshipDate');
+	}
 }
 
 class MonatEnrollmentVIP {
