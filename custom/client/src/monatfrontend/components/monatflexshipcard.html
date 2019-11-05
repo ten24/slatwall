@@ -1,14 +1,14 @@
 <div class="orderbox flexship-card">
 	<div class="subtext">
 		
-		<div class="flexship-card__top">
+		<div class="flexship-card__top w-100">
 			<div class="row">
 				<div class="col-md-6">
 					<h3 class="flexship-card__title" ng-bind="monatFlexshipCard.orderTemplate.orderTemplateName"></h3>
 					<a href="##" class="name flexship-card__link" ng-click="monatFlexshipCard.showEditFlexshipNameModal()"><span sw-rbkey="'define.edit'"></span> <span sw-rbkey="'define.name'"></span></a>
 				</div>
 				<div class="col-md-6">
-					<p class="flexship-card__description">You can make edits to your next order until <span>3pm on April 15</span></p>
+					<p class="flexship-card__description"><span sw-rbkey="'frontend.myaccount.editsUntil'"></span> <span>{{monatFlexshipCard.editFlexshipUntilDate | date:'MMMM dd'}}</span></p>
 				</div>
 			</div>
 		</div>
@@ -18,10 +18,12 @@
 			<div class="row">
 				
 				<!--- Delivery Frequency --->
-				<div class="col-md-6 col-lg-3">
+				<div ng-if="monatFlexshipCard.orderTemplate.frequencyTerm_termName" class="col-md-6 col-lg-3">
 					<div class="small-caps-title" sw-rbkey="'define.deliveryFrequency'"></div>
-					<p class="broad">
-						<span ng-bind="monatFlexshipCard.orderTemplate.frequencyTerm_termName"></span> <span sw-rbkey="'define.aroundThe'"></span> <span ng-bind="monatFlexshipCard.orderTemplate.scheduleOrderDayOfTheMonth"></span>
+					<p  class="broad">
+						<span ng-bind="monatFlexshipCard.orderTemplate.frequencyTerm_termName"></span>
+						<span sw-rbkey="'define.aroundThe'"></span> 
+						<span ng-bind="monatFlexshipCard.orderTemplate.scheduleOrderDayOfTheMonth"></span>
 					</p>
 				</div>
 				

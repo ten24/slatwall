@@ -12,7 +12,8 @@ class MonatFlexshipCardController {
 
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
-
+	public daysToEditFlexship:any;
+	public editFlexshipUntilDate:any;
 	//@ngInject
 	constructor(public observerService, public ModalService) {}
 
@@ -21,6 +22,13 @@ class MonatFlexshipCardController {
 			this.updateOrderTemplate,
 			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
 		);
+		
+		if(this.orderTemplate.scheduleOrderNextPlaceDateTime){
+			let mostRecentFlexshipDeliveryDate = Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime);
+			this.editFlexshipUntilDate = new Date(mostRecentFlexshipDeliveryDate);
+			this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() - this.daysToEditFlexship);          
+		}
+
 	};
 
 	public $onDestroy = () => {
@@ -70,6 +78,7 @@ class MonatFlexshipCard {
 		scheduleDateChangeReasonTypeOptions: '<',
 		expirationMonthOptions: '<',
 		expirationYearOptions: '<',
+		daysToEditFlexship:'@?'
 	};
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';
