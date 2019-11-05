@@ -103,6 +103,18 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	//begin order template functionality
+	private any function getOrderCreateProcessObjectForOrderTemplate(required any orderTemplate, required any order){
+		var processOrderCreate = arguments.order.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		processOrderCreate.setOrderOriginID('2c9380846e3d64e4016e3d678ae70004'); //flexship		
+
+		return processOrderCreate;
+	}
+
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		if(structKeyExists(request, 'orderTemplateOrderDetails')){
 			return request.orderTemplateOrderDetails;
