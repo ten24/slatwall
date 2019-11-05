@@ -11,8 +11,7 @@ class VIPController {
 	public currentMpPage: number = 1;
 	public isVIPEnrollment: boolean = false;
 	public productList;
-	public sponsorHasErrors: boolean = false;
-	public selectedMP: any;
+	public sponsorErrors: any = {};
 	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
@@ -68,17 +67,24 @@ class VIPController {
 	
 	public submitSponsor = () => {
 		this.loading = true;
-		if (this.selectedMP) {
-			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+		
+		var selectedSponsor = document.getElementById('selected-sponsor-id');
+		
+		if ( null !== selectedSponsor ) {
+			this.sponsorErrors.selected = false;
+			var accountID = (<HTMLInputElement>selectedSponsor).value;
+			
+			this.monatService.submitSponsor( accountID ).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
+					this.sponsorErrors = {};
 				}else{
-					this.sponsorHasErrors = true;
+					this.sponsorErrors.submit = true;
 				}
 				this.loading = false;
 			})
 		} else {
-			this.sponsorHasErrors = true;
+			this.sponsorErrors.selected = true;
 			this.loading = false;
 		}
 	};
