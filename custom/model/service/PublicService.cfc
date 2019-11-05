@@ -562,7 +562,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var pageRecords = productCollectionList.getPageRecords();
         if ( len( pageRecords ) ) {
             var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords, arguments.data.priceGroupCode,arguments.data.currencyCode);
-        	arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+            arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         } else {
             arguments.data['ajaxResponse']['productList'] = [];
         }
