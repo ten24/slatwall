@@ -240,8 +240,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			distributorData['companyname'] = arguments.account.getCompany(); // Distributor Company
 		}
 		
-		if(isDate(arguments.account.getDOB())){
-			distributorData['birthDate'] = dateFormat(arguments.account.getDOB(), 'yyyymmdd');//Member Birthday YYYYMMDD
+		if(isDate(arguments.account.getBirthDate())){
+			distributorData['birthDate'] = dateFormat(arguments.account.getBirthDate(), 'yyyymmdd');//Member Birthday YYYYMMDD
 		}
 		
 		if(len(arguments.account.getRenewalDate())){
