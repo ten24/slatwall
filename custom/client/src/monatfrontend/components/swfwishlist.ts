@@ -80,7 +80,6 @@ class SWFWishlistController {
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
         this.setWishlistName(orderTemplateName)
-        debugger;
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
