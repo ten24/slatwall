@@ -19,10 +19,11 @@ class VIPController {
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
 	public flexshipItemList:any;
+	public holdingShippingAddressID:any;
 
 
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService,public orderTemplateService) {
+	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
@@ -31,8 +32,25 @@ class VIPController {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
+    	
+		this.observerService.attach((accountAddress)=>{
+			this.holdingShippingAddressID = accountAddress.accountAddressID;
+			console.log(this.holdingShippingAddressID);
+		}, 'shippingAddressSelected');
+		
 	};
-
+	public setOrderTemplateShippingAddress = () =>{
+		this.loading = true;
+		let payload = {};
+		payload['orderTemplateID'] = this.flexshipID;
+		payload['shippingAccountAddress.value'] = this.holdingShippingAddressID;
+		
+		this.orderTemplateService.updateShipping(payload).then(response => {
+			this.loading = false;
+		})
+	}
+	
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
 			return this.countryCodeOptions;
