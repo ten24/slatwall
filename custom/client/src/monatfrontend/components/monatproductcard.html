@@ -53,7 +53,17 @@
         </div>
         
         <!-- Retail Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing && monatProductCard.type !='VIPenrollment' monatProductCard.type !='VIPenrollmentOrder' '" class="price">
+        <div 
+            ng-if="
+                monatProductCard.product.accountPriceGroup != 3 
+                && monatProductCard.product.accountPriceGroup != 1 
+                && monatProductCard.type != 'enrollment' 
+                && monatProductCard.type != 'productListing'
+                && monatProductCard.type != 'VIPenrollment' 
+                && monatProductCard.type != 'VIPenrollmentOrder'
+            " 
+            class="price"
+        >
             <strong>{{monatProductCard.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductCard.product.vipPrice}}</span>
         </div>
         
@@ -80,7 +90,20 @@
    </div>
    
    <!-- Wishlist Modal-->
-    <div ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' monatProductCard.type!='VIPenrollment' && monatProductCard.type!='VIPenrollmentOrder' " class="modal wishlist-modal fade" id="wishlist-modal" tabindex="-1" aria-labelledby="product-title" aria-hidden="true">
+    <div 
+        ng-if="
+            slatwall.account.userIsLoggedIn() 
+            && monatProductCard.type != 'wishlist' 
+            && monatProductCard.type != 'enrollment' 
+            && monatProductCard.type != 'VIPenrollment' 
+            && monatProductCard.type != 'VIPenrollmentOrder'
+        " 
+        class="modal wishlist-modal fade" 
+        id="wishlist-modal" 
+        tabindex="-1" 
+        aria-labelledby="product-title" 
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
