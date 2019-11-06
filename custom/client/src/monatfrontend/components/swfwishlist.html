@@ -1,12 +1,13 @@
 <div class="modal wishlist-modal" 	role="dialog" id="swf-wishlist{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
-			
+		
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="swfWishlist.closeModal()">
 				<i class="fas fa-times"></i>
 			</button>
 			
 			<h5 class="modal-title"><i class="fas fa-heart"></i><span id="wishlist-product-title"></span></h5>
+			
 			<h3 ng-init="createWishList = {}">Choose a wishlist to save this product to.</h3>
 			
 			<form 
