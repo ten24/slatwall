@@ -31,15 +31,27 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
+		
+		//checks to local storage in case user has refreshed
+		if(localStorage.getItem('shippingAddressID')){ 
+			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
+		}
+		
+		if(localStorage.getItem('shippingMethodID')){
+			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
+		}
+		
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
 
 		this.observerService.attach((accountAddress)=>{
+			localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
 			this.holdingShippingAddressID = accountAddress.accountAddressID;
 		}, 'shippingAddressSelected');
 		
 		this.observerService.attach((shippingMethod)=>{
+			localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
 			this.holdingShippingMethodID = shippingMethod.shippingMethodID;
 		}, 'shippingMethodSelected');
 		
