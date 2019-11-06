@@ -10,12 +10,12 @@
 		</li>
 		
 		<!-- Go to specific page --->
-		<li ng-click="paginationController.getNextPage(1, $index + 1)" ng-repeat="number in paginationController.displayPages | limitTo: paginationController.elipsesNum" class="page-item">
-			<a class="page-link" href="##" >{{number + 1}}</a>
+		<li ng-click="paginationController.getNextPage(number)" ng-repeat="number in paginationController.displayPages | limitTo: paginationController.elipsesNum" class="page-item">
+			<a class="page-link" href="##" >{{number}}</a>
 		</li>
 		
         <!--- Ellipsis to get next group of pages if total pages is greater than 10 --->
-        <li ng-if="paginationController.displayPages.length > paginationController.elipsesNum" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
+        <li ng-if="paginationController.displayPages.length >= paginationController.elipsesNum" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
             <a class="page-link" href="##" >...</a>
         </li>
         

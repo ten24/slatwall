@@ -24,11 +24,12 @@ class SWFPaginationController {
 	};
 	
 	public init = () => {
+	    debugger
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
-        const holdingArray = [];
-        const holdingDisplayPagesArray = [];
+        let holdingArray = [];
+        let holdingDisplayPagesArray = [];
 
-        for(var i = 0; i <= this.totalPages -1; i++){
+        for(var i = 1; i <= this.totalPages; i++){
             holdingArray.push(i);
             if(i <= this.elipsesNum){
                 holdingDisplayPagesArray.push(i);
@@ -52,6 +53,7 @@ class SWFPaginationController {
                 return pageNumber;
             }else if(this.pageTracker == this.displayPages[0]) {
                 newPages = true;
+                pageNumber = this.pageTracker -1;
             }
             else{
                 pageNumber = this.pageTracker -1;
@@ -69,11 +71,12 @@ class SWFPaginationController {
         //Ellipses Logic
 		if (newPages) {
 		    debugger;
-			pageNumber = (direction == 'prev') ? this.pageTracker -1 : this.displayPages.length;
+		    var x = this.displayPages[this.displayPages.length -1];
+			pageNumber = (direction == 'prev') ? this.displayPages[0] -1 : x + 1;
 			let manipulatePageNumber = pageNumber;
 			this.displayPages = [];
 			for(let i = 0; ; i++){
-			   if( i >= this.elipsesNum || manipulatePageNumber >= this.totalPageArray.length){ break; }
+			   if( i >= this.elipsesNum || manipulatePageNumber > this.totalPages){ break; }
 			   if(direction == 'prev'){
 			      this.displayPages.unshift(manipulatePageNumber--); 
 			   }else{
