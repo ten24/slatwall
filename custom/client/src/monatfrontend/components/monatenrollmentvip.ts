@@ -40,7 +40,7 @@ class VIPController {
 		
 		this.observerService.attach((shippingMethod)=>{
 			this.holdingShippingMethodID = shippingMethod.shippingMethodID;
-		}, 'shippingMethodUpdated');
+		}, 'shippingMethodSelected');
 		
 	};
 	public setOrderTemplateShippingAddress = () =>{
@@ -51,6 +51,18 @@ class VIPController {
 		payload['shippingMethod.shippingMethodID']= this.holdingShippingMethodID;
 		
 		this.orderTemplateService.updateShipping(payload).then(response => {
+			this.loading = false;
+		})
+	}
+	
+	public setOrderTemplateBilling = () =>{
+		this.loading = true;
+		let payload = {};
+		payload['orderTemplateID'] = this.flexshipID;
+		payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
+		payload['accountPaymentMethod.value']= this.holdingShippingMethodID;
+		
+		this.orderTemplateService.updateBilling(payload).then(response => {
 			this.loading = false;
 		})
 	}
