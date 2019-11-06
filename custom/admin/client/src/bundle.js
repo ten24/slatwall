@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BATCH:
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign(__assign({}, _this.state), { action: action });
+                    return __assign({}, _this.state, { action: action });
                 default:
                     return _this.state;
             }
@@ -64303,10 +64303,13 @@ var SWOrderTemplatePromotionItemsController = /** @class */ (function () {
             isEditable: false
         };
         this.$onInit = function () {
+            if (_this.showPrice == null) {
+                _this.showPrice = true;
+            }
             _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
             _this.skuCollectionConfig['columns'] = []; //don't care about columns just filters
             _this.addSkuCollection.loadJson(_this.skuCollectionConfig);
-            _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection(_this.addSkuCollection);
+            _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection(_this.addSkuCollection, _this.showPrice);
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -64334,7 +64337,8 @@ var SWOrderTemplatePromotionItems = /** @class */ (function () {
             skuCollectionConfig: '<?',
             skuPropertiesToDisplay: '@?',
             skuPropertyColumnConfigs: '<?',
-            edit: "=?"
+            edit: "=?",
+            showPrice: "=?"
         };
         this.controller = SWOrderTemplatePromotionItemsController;
         this.controllerAs = "swOrderTemplatePromotionItems";
@@ -64745,7 +64749,8 @@ var OrderTemplateService = /** @class */ (function () {
                     return;
             }
         };
-        this.initializeAddSkuCollection = function (addSkuCollection) {
+        this.initializeAddSkuCollection = function (addSkuCollection, includePrice) {
+            if (includePrice === void 0) { includePrice = true; }
             if (_this.addSkuIntialized && addSkuCollection == null) {
                 return _this.addSkuCollection;
             }
@@ -64753,6 +64758,9 @@ var OrderTemplateService = /** @class */ (function () {
                 var addSkuCollection = _this.addSkuCollection;
             }
             for (var j = 0; j < _this.skuDisplayProperties.length; j++) {
+                if (!includePrice && _this.pricePropertyIdentfierList.indexOf(_this.skuDisplayProperties[j]) !== -1) {
+                    continue;
+                }
                 var columnConfig = _this.getColumnConfigForSkuOrOrderTemplateItemPropertyIdentifier(_this.skuDisplayProperties[j], j, _this.originalSkuDisplayPropertyLength);
                 addSkuCollection.addDisplayProperty(_this.skuDisplayProperties[j], '', columnConfig);
             }
@@ -64775,8 +64783,9 @@ var OrderTemplateService = /** @class */ (function () {
         this.getEditOrderTemplateItemCollection = function () {
             return _this.initializeViewAndEditOrderTemplateItemsCollection('edit');
         };
-        this.getAddSkuCollection = function (addSkuCollection) {
-            return _this.initializeAddSkuCollection(addSkuCollection);
+        this.getAddSkuCollection = function (addSkuCollection, includePrice) {
+            if (includePrice === void 0) { includePrice = true; }
+            return _this.initializeAddSkuCollection(addSkuCollection, includePrice);
         };
         this.setOrderTemplateID = function (orderTemplateID) {
             _this.orderTemplateID = orderTemplateID;
@@ -64866,6 +64875,22 @@ var OrderTemplateService = /** @class */ (function () {
             }, function (reason) {
             });
         };
+        this.addPromotionalOrderTemplateItem = function (state) {
+            var formDataToPost = {
+                entityID: _this.orderTemplateID,
+                entityName: 'OrderTemplate',
+                context: 'addOrderTemplateItem',
+                propertyIdentifiersList: _this.orderTemplatePropertyIdentifierList,
+                skuID: state.skuID,
+                quantity: state.quantity,
+                temporaryFlag: true
+            };
+            var processUrl = _this.$hibachi.buildUrl('api:main.post');
+            var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
+            adminRequest.promise.then(function (response) {
+            }, function (reason) {
+            });
+        };
         this.editOrderTemplateItem = function (state) {
             var formDataToPost = {
                 entityID: state.orderTemplateItemID,
@@ -64923,6 +64948,7 @@ var OrderTemplateService = /** @class */ (function () {
             });
         };
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
+        this.observerService.attach(this.addPromotionalOrderTemplateItem, 'addPromotionalOrderTemplateItem');
         this.observerService.attach(this.editOrderTemplateItem, 'editOrderTemplateItem');
         this.observerService.attach(this.deleteOrderTemplateItem, 'deleteOrderTemplateItem');
         this.observerService.attach(this.removeOrderTemplatePromotionCode, 'OrderTemplateRemovePromotionCode');
@@ -74158,6 +74184,33 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "Match Day of Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Day'
+                                }
+                            },
+                            {
+                                display: "Match Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Match Year",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'y',
+                                    measureTypeDisplay: 'Year'
+                                }
+                            },
+                            {
                                 display: "Defined",
                                 comparisonOperator: "is not",
                                 value: "null"
@@ -74307,6 +74360,12 @@ var SWCriteriaDate = /** @class */ (function () {
                                 selectedCondition.showCriteriaStart = false;
                                 selectedCondition.showNumberOf = true;
                             }
+                        }
+                        if (selectedCondition.dateInfo.type === 'matchPart') {
+                            selectedCondition.showCriteriaStart = false;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.showNumberOf = true;
+                            selectedCondition.conditionDisplay = 'Enter ' + selectedCondition.dateInfo.measureTypeDisplay + ':';
                         }
                     }
                     else {
@@ -76116,6 +76175,26 @@ var SWEditFilterItem = /** @class */ (function () {
                                             filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
                                         }
                                     }
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
+                                            switch (filterItem.measureType) {
+                                                case 'd':
+                                                    filterItem.displayValue += 'Day ';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue += 'Month ';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue += 'Year ';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += filterItem.value;
+                                        }
+                                    }
                                     else {
                                         filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                         var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
@@ -76975,7 +77054,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
-        if (listingSearchConfig === void 0) { listingSearchConfig = {}; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = null; }
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -77080,7 +77159,9 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-            _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            if (jsonCollection.listingSearchConfig) {
+                _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            }
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -77104,7 +77185,7 @@ var CollectionConfig = /** @class */ (function () {
             if (validate) {
                 _this.validateFilter(_this.filterGroups);
             }
-            return {
+            var options = {
                 baseEntityAlias: _this.baseEntityAlias,
                 baseEntityName: _this.baseEntityName,
                 columns: _this.columns,
@@ -77123,8 +77204,11 @@ var CollectionConfig = /** @class */ (function () {
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
+            return options;
         };
         this.getEntityName = function () {
             return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
@@ -77155,9 +77239,11 @@ var CollectionConfig = /** @class */ (function () {
                 isReport: _this.isReport(),
                 periodInterval: _this.periodInterval,
                 enableAveragesAndSums: _this.enableAveragesAndSums,
-                listingSearchConfig: _this.listingSearchConfig,
                 customEndpoint: _this.customEndpoint
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
             }
@@ -86418,13 +86504,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -87548,7 +87627,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -87768,7 +87847,7 @@ var PublicService = /** @class */ (function () {
                         if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
                             //if there are no errors then redirect.
                             this.orderPlaced = true;
-                            this.redirectExact('/order-confirmation/');
+                            this.redirectExact(this.confirmationUrl);
                         }
                     }
                 }
@@ -87812,6 +87891,14 @@ var PublicService = /** @class */ (function () {
             }
             return total;
         };
+        this.setOrderConfirmationUrl = function () {
+            if ('undefined' !== typeof hibachiConfig.orderConfirmationUrl) {
+                _this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+            }
+            else {
+                _this.confirmationUrl = "/order-confirmation";
+            }
+        };
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
@@ -87819,7 +87906,6 @@ var PublicService = /** @class */ (function () {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -87833,6 +87919,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.setOrderConfirmationUrl();
     }
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
@@ -88258,10 +88345,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -89587,6 +89674,9 @@ var SWFFormController = /** @class */ (function () {
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
         };
+        this.resetMethod = function (newMethod) {
+            _this.method = newMethod;
+        };
         this.getFormData = function () {
             var formData = {};
             for (var key in _this.form) {
@@ -89679,7 +89769,9 @@ var SWFFormController = /** @class */ (function () {
                 return result;
             _this.$timeout(function () {
                 _this.loading = false;
-                _this.observerService.notify(_this.afterSubmitEventName);
+                if (_this.afterSubmitEventName) {
+                    _this.observerService.notify(_this.afterSubmitEventName);
+                }
                 _this.successfulActions = result.successfulActions;
                 _this.failureActions = result.failureActions;
                 _this.errors = result.errors;
@@ -92679,19 +92771,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
+                // this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
+                // this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
+                // this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('add');
+                // this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -92877,17 +92969,23 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
+        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionQueryStringName = recordActionName + 'QueryString';
-            var recordActionModalName = recordActionName + 'Modal';
+            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
+            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+        };
+        this.capitalize = function (s) {
+            if (typeof s !== 'string' || s.length === 0)
+                return s;
+            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -92998,6 +93096,29 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
+        var queryString = "";
+        action = this.capitalize(action);
+        var actionProppertyName = "record" + action + "ActionProperty";
+        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
+        if (this[actionProppertyName]) {
+            queryString += '&' + this[actionProppertyName];
+            if (this[actionPropertyIdentifierName]) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            }
+            else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        }
+        else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        var actionQueryStringName = "record" + action + "QueryString";
+        if (this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        }
+        return queryString;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -93044,23 +93165,25 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
+            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
+            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
-            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
+            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionIdProperty: "@?",
-            recordDetailActionIdKey: "@?",
+            recordDetailActionPropertyIdentifier: "@?",
             recordDetailQueryString: "@?",
-            recordDetailModal: "<?",
+            recordDeleteModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
+            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",
@@ -94282,11 +94405,9 @@ var SWListingSearchController = /** @class */ (function () {
             // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
             //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
             // })
-            var listingSearchConfig = {};
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
-                listingSearchConfig = _this.swListingDisplay.collectionConfig.listingSearchConfig;
+                _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
-            _this.configureListingSearchConfigControls(listingSearchConfig);
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -94482,6 +94603,8 @@ var SWListingSearchController = /** @class */ (function () {
             || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
     };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            return;
         if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
             this.selectedSearchFilter = this.searchableFilterOptions
                 .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
@@ -94492,7 +94615,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -94627,11 +94750,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }

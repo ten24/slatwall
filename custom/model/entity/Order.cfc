@@ -235,4 +235,13 @@ component {
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
+	
+	
+	public boolean function hasMPRenewalFee() {
+	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
+            variables.orderHasMPRenewalFee = getService('orderService').orderHasMPRenewalFee(this.getOrderID());
+		}
+		return variables.orderHasMPRenewalFee;
+	}
+	
 }

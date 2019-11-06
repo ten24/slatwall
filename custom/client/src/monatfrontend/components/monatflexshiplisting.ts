@@ -10,17 +10,36 @@ class MonatFlexshipListingController{
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
 	public loading: boolean = false;
+	public daysToEditFlexshipSetting:any;
+	public account:any;
+	
+		
+	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
 	public initialized = false; 
 	
 	//@ngInject
-	constructor(public orderTemplateService, public $window){
-		
-	}
+	constructor(
+		public orderTemplateService, 
+		public $window, 
+		public publicService
+	){}
 	
 	public $onInit = () => {
-		this.orderTemplateService.getOrderTemplates()
-			.then((data) => {
+		this.fetchFlexships();
+		this.orderTemplateService.getOrderTemplateSettings().then(data =>{
+			this.daysToEditFlexshipSetting = data.orderTemplateSettings;
+		});
+		
+		this.account = this.publicService.account;
+	}
+	
+	private fetchFlexships = () => {
+
+		this.orderTemplateService
+    		.getOrderTemplates(this.orderTemplateTypeID )
+			.then( (data) => {
+
 				this.accountAddresses = data.accountAddresses;
 				this.accountPaymentMethods = data.accountPaymentMethods;
 				this.shippingMethodOptions = data.shippingMethodOptions;
@@ -32,33 +51,39 @@ class MonatFlexshipListingController{
 				
 				//set this last so that ng repeat inits with all needed data
 				this.orderTemplates = data.orderTemplates; 
-			}, (reason) => {
-				console.error(reason);
-			}).finally(()=>{
+			})
+			.catch( (e) => {
+				console.error(e);
+			})
+			.finally( () => {
 				this.initialized=true; 
 			});
 	}
 	
 	public createNewFlexship = () => {
 		this.loading = true;
+		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
 				if(data.orderTemplate){
 					this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
 				} else{
 					throw(data);
-					this.loading = false;
 				}
 			})
-			.catch((error) => {
+			.catch((e) => {
+				console.error(e);
+			})
+			.finally( () => {
 				this.loading = false;
 			});
 	}
 	
-	public setAsCurrentFlexship(orderTemplate) {
+	public setAsCurrentFlexship(orderTemplateID:string) {
+
 		// make api request
 		this.orderTemplateService
-			.setAsCurrentFlexship(orderTemplate)
+			.setAsCurrentFlexship(orderTemplateID)
 			.then((data) => {
 				if (
 					data.successfulActions &&
@@ -67,13 +92,14 @@ class MonatFlexshipListingController{
 					this.$window.location.href = '/shop';
 				} else {
 					throw data;
-					this.loading = false;
 				}
 			})
-			.catch((error) => {
+			.catch( (error) => {
 				console.error('setAsCurrentFlexship :', error);
-				this.loading = false;
 				// TODO: show alert
+			})
+			.finally( () => {
+				//TODO
 			});
 	}
 
