@@ -9,6 +9,7 @@ class SWFPaginationController {
     public recordsCount:number;
     public totalPageArray:Array<any>;
     public productList:any;
+    public argumentsObject:any;
     
 	// @ngInject
 	constructor(
@@ -49,7 +50,10 @@ class SWFPaginationController {
             }
         }
         
-        return this.publicService.doAction(this.action, {pageRecordsShow: this.itemsPerPage, currentPage: pageNumber}).then(result=>{
+        this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
+        this.argumentsObject['currentPage'] = pageNumber;
+        
+        return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
             this.productList = result.productList;
             this.pageTracker = pageNumber;
         });
@@ -66,8 +70,9 @@ class SWFPagination {
 	public bindToController = {
 		recordsCount: '<?',
 		action: '@?',
-		itemsPerPage:'@?'
-		productList:'='
+		itemsPerPage:'@?',
+		productList:'=',
+		argumentsObject:'<?'
 		//create attribute with two way binding for product list
 	};
 
