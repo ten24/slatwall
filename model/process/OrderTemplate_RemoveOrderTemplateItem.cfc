@@ -55,6 +55,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplateItemID";
 
 	public any function getOrderTemplateItem(){
-		return getService('OrderService').getOrderTemplateItem(getOrderTemplateItemID());
+		if(!structKeyExists(variables, 'orderTemplateItemID') && !structKeyExists(variables, 'orderTemplateItem')){
+			return;
+		}  
+		if(!structKeyExists(variables, 'orderTemplateItem')){
+			variables.orderTemplateItem = getService('OrderService').getOrderTemplateItem(variables.orderTemplateItemID);
+		} 
+		if(structKeyExists(variables, 'orderTemplateItem')){
+			return variables.orderTemplateItem;
+		}
 	}
 }

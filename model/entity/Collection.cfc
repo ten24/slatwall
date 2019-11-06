@@ -81,6 +81,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hibachiService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
+	property name="hqlParamOrmTypes" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
 	property name="ignorePeriodInterval" type="boolean" persistent="false" default="false";
 
@@ -1270,7 +1271,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	//ADD FUNCTIONS
 
-	public void function addHQLParam(required string paramKey, required any paramValue) {
+	public void function addHQLParam(required string paramKey, required any paramValue, string ormType) {
+
+		//if using scrollable we need to format to make java happy
+		if( getUseScrollableFlag() && 
+			structKeyExists(arguments, 'ormType')
+		){
+			variables.hqlParamOrmTypes[ arguments.paramKey ] = arguments.ormType; 
+
+			if(arguments.ormType == 'boolean'){
+				if(arguments.paramValue == 'True'){
+					arguments.paramValue = true;
+				} else if( arguments.paramValue == 'False'){
+					arguments.paramValue = false;
+				}
+			}
+		
+			if(arguments.ormType == 'big_decimal'){
+				arguments.paramValue = javaCast('java.math.BigDecimal', arguments.paramValue);
+			}
+		} 
+
 		variables.hqlParams[ arguments.paramKey ] = arguments.paramValue;
 	}
 
@@ -2649,12 +2670,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//Add all of the params.
 							for (var param in HQLParams){
-								if(HQLParams[param] == 'True'){
-									HQLParams[param] = true;
-								}
-								if(HQLParams[param] == 'False'){
-									HQLParams[param] = false;
-								}
 								query.setParameter(param, HQLParams[param]);
 							}
 							// Set the pagination info.
@@ -3264,12 +3279,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if( StructKeyExists(range, "rangStartValue") && !isNull(range.rangStartValue) ) {
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID, range.rangStartValue);
+			addHQLParam(rangeStartParamID, range.rangStartValue, arguments.filter['ormtype']);
 		}
 		
 		if( StructKeyExists(range, "rangeEndValue") && !isNull(range.rangeEndValue) ) {
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, range.rangeEndValue);
+			addHQLParam(rangeEndParamID, range.rangeEndValue, arguments.filter['ormtype']);
 		}
 		
 		if(!isNull(rangeStartParamID) && !isNull(rangeEndParamID)) {
@@ -3294,10 +3309,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var rangeEndValue = ranges[2];
 			
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID,rangStartValue);
+			addHQLParam(rangeStartParamID,rangStartValue, arguments.filter['ormtype']);
 			
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, rangeEndValue);
+			addHQLParam(rangeEndParamID, rangeEndValue, arguments.filter['ormtype']);
 
 			numericRangePredicate = ":#rangeStartParamID# AND :#rangeEndParamID#";
 
@@ -3305,7 +3320,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 			var rangeEndValue = ranges[1];
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, rangeEndValue);
+			addHQLParam(rangeEndParamID, rangeEndValue, arguments.filter['ormtype']);
 			
 			var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
 			minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
@@ -3323,7 +3338,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var rangStartValue = ranges[1];
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID,rangStartValue);
+			addHQLParam(rangeStartParamID,rangStartValue, arguments.filter['ormtype']);
 			var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
 			maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
 			maxValueCollection.setPageRecordsShow(1);
@@ -3354,7 +3369,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 		} else {
 			var paramID = getParamID();
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value, arguments.filter['ormtype']);
 			rangePredicate = ":#paramID#";
 		}
 		
@@ -3395,7 +3410,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var values = listToArray(filter.value,this.getInlistDelimiter());
 				for(var value in values){
 					var paramID = getParamID();
-					addHQLParam(paramID,value);
+					addHQLParam(paramID, value, arguments.filter['ormtype']);
 					paramList = listAppend(paramList, ':#paramID#');
 				}
 				predicate = '(#paramList#)';
@@ -3425,13 +3440,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
 			predicate = ":#paramID#";
 		
 		} else {
 			
 			var paramID = getParamID();
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
 			predicate = ":#paramID#";
 		}
 		

@@ -10,6 +10,8 @@ class MonatFlexshipListingController{
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
 	public loading: boolean = false;
+	public daysToEditFlexshipSetting:any;
+	public account:any;
 	
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
@@ -17,12 +19,19 @@ class MonatFlexshipListingController{
 	public initialized = false; 
 	
 	//@ngInject
-	constructor(public orderTemplateService, public $window){
-		
-	}
+	constructor(
+		public orderTemplateService, 
+		public $window, 
+		public publicService
+	){}
 	
 	public $onInit = () => {
 		this.fetchFlexships();
+		this.orderTemplateService.getOrderTemplateSettings().then(data =>{
+			this.daysToEditFlexshipSetting = data.orderTemplateSettings;
+		});
+		
+		this.account = this.publicService.account;
 	}
 	
 	private fetchFlexships = () => {
@@ -30,6 +39,7 @@ class MonatFlexshipListingController{
 		this.orderTemplateService
     		.getOrderTemplates(this.orderTemplateTypeID )
 			.then( (data) => {
+
 				this.accountAddresses = data.accountAddresses;
 				this.accountPaymentMethods = data.accountPaymentMethods;
 				this.shippingMethodOptions = data.shippingMethodOptions;

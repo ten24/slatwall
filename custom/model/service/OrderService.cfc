@@ -114,9 +114,9 @@ component extends="Slatwall.model.service.OrderService" {
 		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
 		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
 
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
@@ -133,15 +133,24 @@ component extends="Slatwall.model.service.OrderService" {
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
-			ormFlush();
-		
+			getHibachiDAO().flushORMSession();	
+	
 			if(hasInfoForFulfillment){
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+
+			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
+			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
+	
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
