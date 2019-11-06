@@ -33,7 +33,8 @@ class VIPController {
 		})
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
-    	
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
+
 		this.observerService.attach((accountAddress)=>{
 			this.holdingShippingAddressID = accountAddress.accountAddressID;
 		}, 'shippingAddressSelected');
@@ -44,6 +45,9 @@ class VIPController {
 		
 	};
 	public setOrderTemplateShippingAddress = () =>{
+		if(!this.holdingShippingMethodID || !this.holdingShippingAddressID){
+			return;
+		}
 		this.loading = true;
 		let payload = {};
 		payload['orderTemplateID'] = this.flexshipID;
