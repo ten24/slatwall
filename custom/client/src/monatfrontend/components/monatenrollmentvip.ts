@@ -19,8 +19,8 @@ class VIPController {
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
 	public flexshipItemList:any;
-	public holdingShippingAddressID:any;
-
+	public holdingShippingAddressID:string;
+	public holdingShippingMethodID:string;
 
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -32,12 +32,15 @@ class VIPController {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
-    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	
 		this.observerService.attach((accountAddress)=>{
 			this.holdingShippingAddressID = accountAddress.accountAddressID;
-			console.log(this.holdingShippingAddressID);
 		}, 'shippingAddressSelected');
+		
+		this.observerService.attach((shippingMethod)=>{
+			this.holdingShippingMethodID = shippingMethod.shippingMethodID;
+		}, 'shippingMethodUpdated');
 		
 	};
 	public setOrderTemplateShippingAddress = () =>{
@@ -45,6 +48,7 @@ class VIPController {
 		let payload = {};
 		payload['orderTemplateID'] = this.flexshipID;
 		payload['shippingAccountAddress.value'] = this.holdingShippingAddressID;
+		payload['shippingMethod.shippingMethodID']= this.holdingShippingMethodID;
 		
 		this.orderTemplateService.updateShipping(payload).then(response => {
 			this.loading = false;
