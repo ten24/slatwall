@@ -58,27 +58,29 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 	
 	public string function getDisplayName() {
-		return "HyperWallet";
+		return "Hyperwallet";
 	}
-
+	
 	public struct function getSettings() {
 		var settings = {
-			apiUrlLive = {fieldType="text", defaultValue="https://api.hyperwallet.com"},
-			apiUrlTest = {fieldType="text", defaultValue="https://uat-api.paylution.com"},
-			issuerIdLive = {fieldType="text"},
-			issuerIdTest = {fieldType="text"},
 			passwordLive = {fieldType="password", encryptValue=true},
 			passwordTest = {fieldType="password", encryptValue=true},
 			testMode = {fieldType="yesno", defaultValue="1"},
 			usernameLive = {fieldType="text"},
-			usernameTest = {fieldType="text"}
+			usernameTest = {fieldType="text"},
+			program = {fieldType="text"},
+			vendorAccount = {fieldType="text"}
 		};
 		
 		return settings;
 	}
-
+	
 	public boolean function getAllowSiteSpecificSettingsFlag() {
-		return false;
+		return true;
 	}
-
+	
+	public string function getAllowedSiteSettingNames() {
+		return "program,vendorAccount";
+	}
+	
 }

@@ -52,37 +52,184 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		return "external";
 	}
 	
+	// Override allow site settings
+	public any function setting(required any requestBean) {
+		// Allows settings to be requested in the context of the site where the order was created
+		if (!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+		
+		return super.setting(argumentCollection=arguments);
+	}
+
+
 	public any function processExternal(required any requestBean){
 		
-		var requestXML = "";
 		var responseBean = getTransient("externalTransactionResponseBean");
 		
-		// writedump(var=responseBean, top=2, abort=true);
-		// if(listFindNoCase("authorize,authorizeAndCharge,credit", arguments.requestBean.getTransactionType())) {
-		// 	savecontent variable="requestXML" {
-		// 		include "xmltemplates/MerchantPayment.cfm"; 
-		// 	}
-		// } else if(listFindNoCase("chargePreAuthorization", arguments.requestBean.getTransactionType())) {
-		// 	savecontent variable="requestXML" {
-		// 		include "xmltemplates/MarkForCapture.cfm"; 
-		// 	}
-		// } else if(listFindNoCase("generateToken", arguments.requestBean.getTransactionType())) {
-		// 	savecontent variable="requestXML" {
-		// 		include "xmltemplates/ProfileAddRequest.cfm"; 
-		// 	}
-		// }
-
-		// // Get the response from Orbital
-		// try {
-		// 	var liveModeFlag = getLiveModeFlag(arguments.requestBean);
-		// 	var response = postRequest(requestXML,liveModeFlag);
-		// 	responseBean = getResponseBean(response.fileContent, requestXML, requestBean);
-		// } catch(any e) {
-		// 	/* An unexpected error happened, handled below */
-		// 	responseBean.addError("Processing error", e.message);
-		// }
+		// Set default currency
+		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
+			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
+		}
+		switch(arguments.requestBean.getTransactionType()){
+			case 'authorize':
+				sendRequestToAuthorize(arguments.requestBean, responseBean);
+				break;
+			case 'receive':
+			case 'authorizeAndCharge':
+			case 'chargePreAuthorization':
+				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
+				break;
+			case 'credit':
+				break;
+			default:
+				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+		}
 		
-		// return responseBean;
+		return responseBean;
 	}
 	
+	
+	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
+		// Request Data
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			writedump(var="#arguments.requestBean#", top=2); abort;
+			return;
+		}
+		var requestData = {
+			'clientTransferId' = arguments.requestBean.getAccount().getAccountID(),
+			'destinationAmount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+			'destinationCurrency' = arguments.requestBean.getTransactionCurrencyCode(),
+			'notes': "Partial-Balance Transfer", //TODO: Add order information
+			'memo': "TransferClientId56387",//TODO: Add order information
+			'sourceToken' = arguments.requestBean.getProviderToken(),
+			'destinationToken': setting(settingName='vendorAccount', requestBean=arguments.requestBean)
+		};
+
+		// Response Data
+		//try{
+		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers', requestData);
+		
+		if(IsJson(responseData.fileContent))
+		{
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
+		if(structKeyExists(responseData, 'token')){
+			arguments.responseBean.setAuthorizationCode(responseData.token);
+			arguments.responseBean.setAmountAuthorized(responseData.sourceAmount);
+		}else{
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
+		}
+		
+		// }catch(any e){
+		// 	arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
+		// }
+	}
+	
+	
+	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
+		sendRequestToAuthorize(argumentCollection = arguments);
+		if(arguments.responseBean.hasErrors()){
+			return;
+		}
+		
+		var requestData = {
+			'transition' = 'SCHEDULED',
+			'notes' = 'Completing the Partial-Balance Transfer'
+		};
+
+		// Response Data
+		var responseData = deserializeJSON(sendHttpAPIRequest(arguments.requestBean, 'transfers/#responseBean.getAuthorizationCode()#/status-transitions', requestData));
+			
+		if(structKeyExists(responseData, 'token')){
+			arguments.responseBean.setAuthorizationCode(responseData.token);
+			arguments.responseBean.setAmountAuthorized(responseData.sourceAmount);
+		}else{
+			arguments.responseBean.addError("Processing error", "Error attempting to Charge.");
+		}
+		
+	}
+	
+	
+	private void function sendRequestToCredit(required any requestBean, required any responseBean) {
+		// Request Data
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			return;
+		}
+
+		var requestData = {
+			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+			'clientPaymentId' = arguments.requestBean.getAccount().getAccountID(),
+			'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+			'destinationToken' = arguments.requestBean.getProviderToken(), //TODO: Figure out whos the destination (Should be Monat)
+			'programToken' = setting(settingName='program', requestBean=arguments.requestBean),
+			'purpose': 'OTHER'
+		};
+
+		// Response Data
+		var responseData = deserializeJSON(sendHttpAPIRequest(arguments.requestBean, 'payments', requestData));
+			
+		if(structKeyExists(responseData, 'token')){
+			arguments.responseBean.setAuthorizationCode(responseData.token);
+			arguments.responseBean.setAmountCredited(responseData.payments);
+		}else{
+			arguments.responseBean.addError("Processing error", "Error attempting to Credit.");
+		}
+		
+	}
+	
+	private any function sendHttpAPIRequest(required any requestBean, required string uri, required struct data) {
+		var apiUrl = 'https://uat-api.paylution.com/rest/v3/';
+		var password = setting(settingName='passwordTest', requestBean=arguments.requestBean);
+		var username = setting(settingName='usernameTest', requestBean=arguments.requestBean);
+		
+		// Set Live Endpoint Url if not testing
+		if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
+			apiUrl = 'https://api.paylution.com/rest/v3/';
+			password = setting(settingName='passwordLive', requestBean=arguments.requestBean);
+			username = setting(settingName='usernameLive', requestBean=arguments.requestBean);
+		}
+		
+		apiUrl &= uri;
+		
+		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
+
+		var httpRequest = new http();
+		httpRequest.setUrl(apiUrl);
+		httpRequest.setMethod('get');
+		httpRequest.setCharset('UTF-8');
+		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
+		httpRequest.addParam(type="header", name="Content-Type", value='application/json');
+		httpRequest.addParam(type="header", name="Accept", value='application/json');
+		httpRequest.addParam(type="body", value="");
+	
+		// Make HTTP request to endpoint
+		return httpRequest.send().getPrefix();
+	}
+	
+	public any function getAccountBalance(required any requestBean)
+	{
+		var responseBean = getTransient("externalTransactionResponseBean");
+		var requestData = {}
+		var responseData = sendHttpAPIRequest(arguments.requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
+		
+		if(IsJson(responseData.fileContent))
+		{
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
+		if(structKeyExists(responseData, 'data')){
+			dump(responseData);
+		}else{
+			responseBean.addError("Processing error", "Error while retriving balance.");
+		}
+		
+		return responseBean;
+	}
 }
