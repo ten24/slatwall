@@ -112,7 +112,7 @@ class MonatFlexshipListing {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
-		showCreateButton: '@?'
+		showCreateButton: '=?'
 	};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
