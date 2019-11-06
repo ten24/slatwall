@@ -171,7 +171,7 @@ class MonatFlexshipMenuController {
 					data.successfulActions &&
 					data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1
 				) {
-					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+					this.$window.location.href = '/shop';
 				} else {
 					throw data;
 				}

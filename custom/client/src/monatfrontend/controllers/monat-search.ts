@@ -3,12 +3,14 @@ class MonatSearchController {
 	public productList: Array<any> = [];
 	public loading: boolean = false;
 	public keyword: string = '';
+	public recordsCount:any;
 
 	// @ngInject
 	constructor(
 		public publicService,
 		public monatService,
-		public $location
+		public $location,
+		public observerService
 	) {}
 
 	public $onInit = () => {
@@ -29,8 +31,9 @@ class MonatSearchController {
 			}
 			
 			this.publicService.doAction( 'getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode } ).then(data => {
+				this.observerService.notify('PromiseComplete');
+				this.recordsCount = data.recordsCount;
 				this.productList = data.productList;
-				
 				this.loading = false;
 			})
 		})

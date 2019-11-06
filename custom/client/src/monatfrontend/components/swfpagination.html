@@ -1,0 +1,19 @@
+
+
+<nav ng-if="paginationController.totalPageArray.length > 1" class="product-pagination" aria-label="Product Pagination">
+	<ul class="pagination justify-content-center">
+		<li class="page-item">
+			<a ng-click="paginationController.getNextPage(1, 1, 'prev')" class="page-link" href="##" tabindex="-1" aria-disabled="true">
+				<i class="fas fa-chevron-left"></i>
+			</a>
+		</li>
+		<li ng-click="paginationController.getNextPage(1, $index + 1)" ng-repeat="number in paginationController.totalPageArray" class="page-item">
+			<a class="page-link" href="##" >{{number + 1}}</a>
+		</li>
+		<li ng-click="paginationController.getNextPage(1, 1, 'next')">
+			<a class="page-link" href="##">
+				<i class="fas fa-chevron-right"></i>
+			</a>				
+		</li>
+	</ul>
+</nav>
