@@ -167,13 +167,6 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 		}
 	}
 	
-	public string function getAuditTypeRBKeyValue() {
-		if(!StructKeyExists(variables,'auditTypeRBKeyValue')){
-			variables.auditTypeRBKeyValue = getHibachiScope().rbKey("entity.audit.auditType.#getAuditType()#");
-		}
-		return variables.auditTypeRBKeyValue;
-	}
-	
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================
