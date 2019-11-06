@@ -259,6 +259,33 @@ class SWCriteriaDate{
 								}
 							},
 							{
+								display:"Match Day of Month",
+								comparisonOperator:	"=",
+								dateInfo:{
+									type:'matchPart',
+									measureType:'d',
+									measureTypeDisplay:'Day'
+								}
+							},
+							{
+								display:"Match Month",
+								comparisonOperator:	"=",
+								dateInfo:{
+									type:'matchPart',
+									measureType:'m',
+									measureTypeDisplay:'Month'
+								}
+							},
+							{
+								display:"Match Year",
+								comparisonOperator:	"=",
+								dateInfo:{
+									type:'matchPart',
+									measureType:'y',
+									measureTypeDisplay:'Year'
+								}
+							},
+							{
 								display:"Defined",
 								comparisonOperator:"is not",
 								value:"null"
@@ -423,6 +450,12 @@ class SWCriteriaDate{
                                 selectedCondition.showCriteriaStart = false;
                                 selectedCondition.showNumberOf = true;
                             }
+				  		}
+				  		if(selectedCondition.dateInfo.type === 'matchPart'){
+				  			selectedCondition.showCriteriaStart = false;
+				  			selectedCondition.showCriteriaEnd = false;
+				  			selectedCondition.showNumberOf = true;
+				  			selectedCondition.conditionDisplay = 'Enter '+ selectedCondition.dateInfo.measureTypeDisplay+':';
 				  		}
 				  	}else{
 				  		selectedCondition.showCriteriaStart = false;
