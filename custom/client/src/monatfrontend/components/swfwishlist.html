@@ -1,8 +1,8 @@
-<div class="modal wishlist-modal fade" id="swf-wishlist{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
+<div class="modal wishlist-modal" 	role="dialog" id="swf-wishlist{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="swfWishlist.closeModal()">
 				<i class="fas fa-times"></i>
 			</button>
 			
