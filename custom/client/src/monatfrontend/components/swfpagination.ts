@@ -33,7 +33,7 @@ class SWFPaginationController {
         this.totalPageArray = holdingArray;
 	}
 	
-    public getNextPage = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
+    public getNextPage = ( pageNumber = 1, direction:any = false) => {
 
         if(direction === 'prev'){
             if(this.pageTracker === 1){
@@ -68,12 +68,13 @@ class SWFPagination {
 	public scope: boolean = true;
 
 	public bindToController = {
-		recordsCount: '<?',
-		action: '@?',
-		itemsPerPage:'@?',
-		productList:'=',
-		argumentsObject:'<?'
-		//create attribute with two way binding for product list
+		recordsCount: '<?', //total amount of records available from getRecordsCount call on backend
+		action: '@?', //endpoint to be called
+		itemsPerPage:'@?', //Number of items to display in a page
+		productList:'=', //Sets up two way binding so concurrent API responses overwrite it
+		argumentsObject:'<?', //optional object of arguments to pass in to the api call
+		beginPaginationAt:'@?' //this can be left blank unless the user wants the "..." pagination to begin at a number other than 11
+
 	};
 
 	public controller = SWFPaginationController;

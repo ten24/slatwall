@@ -1,19 +1,30 @@
 
-
 <nav ng-if="paginationController.totalPageArray.length > 1" class="product-pagination" aria-label="Product Pagination">
 	<ul class="pagination justify-content-center">
+	    
+		<!-- Back 1 Page --->
 		<li class="page-item">
 			<a ng-click="paginationController.getNextPage(1, 1, 'prev')" class="page-link" href="##" tabindex="-1" aria-disabled="true">
 				<i class="fas fa-chevron-left"></i>
 			</a>
 		</li>
-		<li ng-click="paginationController.getNextPage(1, $index + 1)" ng-repeat="number in paginationController.totalPageArray" class="page-item">
+		
+		<!-- Go to specific page --->
+		<li ng-click="paginationController.getNextPage(1, $index + 1)" ng-repeat="number in paginationController.totalPageArray | limitTo: 10" class="page-item">
 			<a class="page-link" href="##" >{{number + 1}}</a>
 		</li>
+		
+        <!--- Ellipsis to get next group of pages if total pages is greater than 10 --->
+        <li ng-if="paginationController.totalPageArray.length > 10" ng-click="enrollmentMp.getProductList(1, false, true)" class="page-item">
+            <a class="page-link" href="##" >...</a>
+        </li>
+        
+		<!-- Forward 1 Page --->
 		<li ng-click="paginationController.getNextPage(1, 1, 'next')">
 			<a class="page-link" href="##">
 				<i class="fas fa-chevron-right"></i>
 			</a>				
 		</li>
+		
 	</ul>
 </nav>

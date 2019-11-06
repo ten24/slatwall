@@ -27,7 +27,7 @@ class MonatSearchController {
 	}
 
 	public getProductsByKeyword = keyword => {
-		this.argumentsObject = {keyword: keyword, priceGroupCode: this.priceGroupCode}
+		this.argumentsObject = {keyword: keyword, priceGroupCode: this.priceGroupCode} // defining the arguments object to be passed into pagination directive
 		this.loading = true;
 		this.keyword = keyword;
 		let priceGroupCode = this.priceGroupCode
