@@ -185,6 +185,7 @@ class SWFWishlist  {
     // @ngInject
 	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
+		this.restrict = "E";
 	}
     /**
         * Sets the context of this form
