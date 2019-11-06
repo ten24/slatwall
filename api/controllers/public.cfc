@@ -23,6 +23,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateFrequency');
     this.publicMethods=ListAppend(this.publicMethods, 'applyGiftCardToOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplatePromotions');
     
 
     this.publicMethods=ListAppend(this.publicMethods, 'addOrderTemplateItem');
@@ -168,6 +169,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	public any function applyGiftCardToOrderTemplate( required struct rc ){
 		getPublicService().applyGiftCardToOrderTemplate(arguments.rc); 
 	} 
+	
+	public any function getOrderTemplatePromotions( required struct rc ){
+		getPublicService().getOrderTemplatePromotions(arguments.rc); 
+	} 
+	
 	
     public any function addOrderTemplateItem( required struct rc ){
 		getPublicService().addOrderTemplateItem(arguments.rc); 

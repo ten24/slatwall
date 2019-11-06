@@ -2004,6 +2004,22 @@ component  accessors="true" output="false"
         }
 	}
 	
+	public any function getOrderTemplatePromotions( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+	    var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	    
+	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfig(promotionsCollectionConfig);
+        
+        arguments.data['ajaxResponse']['orderTemplatePromotions'] = promotionsCollectionList.getPageRecords(); // there should be only one record;  
+	}
+	
 	private void function setOrderTemplateItemAjaxResponse(required any data) {
 	    
 		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionForAccount(argumentCollection = arguments); 
