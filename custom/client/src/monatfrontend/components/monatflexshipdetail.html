@@ -5,18 +5,15 @@
 		</h3>
 		<table class="table items-details-table">
 			<tbody>
-				
 				<monat-flexship-order-item 
 					ng-if="monatFlexshipDetail.orderTemplate.orderTemplateItems" 
 					ng-repeat="orderItem in monatFlexshipDetail.orderTemplate.orderTemplateItems" 
                     data-order-item="orderItem">
 				</monat-flexship-order-item>
-				
 			</tbody>
 		</table>
 	</div>
 	
-	  
 	<monat-flexship-shipping-and-billing-card ng-if="monatFlexshipDetail.orderTemplate"
          data-order-template="monatFlexshipDetail.orderTemplate">
 	</monat-flexship-shipping-and-billing-card>

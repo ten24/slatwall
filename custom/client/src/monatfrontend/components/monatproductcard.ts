@@ -12,21 +12,33 @@ class MonatProductCardController {
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
 	public orderTemplate;
+    public urlParams = new URLSearchParams(window.location.search);
 
 	// @ngInject
 	constructor(
 		//inject modal service
 		public orderTemplateService,
-		public $rootScope,
 		public monatService,
-        public observerService
+        public observerService,
+        public $scope
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
-
 	}
-
+	
+	public $onInit = () => {
+		this.$scope.$evalAsync(this.init);
+	}
+	public init = () => {
+		if(this.urlParams.get('type')){
+			this.type = this.urlParams.get('type');
+		}
+		
+		if(this.urlParams.get('orderTemplateId')){
+			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		}
+	}
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
 		setNewTemplates: boolean = true,
