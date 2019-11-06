@@ -11,7 +11,7 @@ class MonatFlexshipListingController{
 	public expirationYearOptions: any[];
 	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
-	public showCreateButton: string = 'true';
+	public showCreateButton;
 	public account:any;
 	
 		
@@ -33,6 +33,10 @@ class MonatFlexshipListingController{
 		});
 		
 		this.account = this.publicService.account;
+		
+		if ( null === this.showCreateButton ) {
+			this.showCreateButton = true;
+		}
 	}
 	
 	private fetchFlexships = () => {
