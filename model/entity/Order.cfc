@@ -281,7 +281,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="originalRMANumber" ormtype="string";
  property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
@@ -2041,6 +2040,15 @@ public numeric function getPersonalVolumeSubtotal(){
 	public struct function getListingSearchConfig() {
 	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
 	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	
+	
+	public boolean function hasMPRenewalFee() {
+	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
+            variables.orderHasMPRenewalFee = getService('orderService').orderHasMPRenewalFee(this.getOrderID());
+		}
+		return variables.orderHasMPRenewalFee;
 	}
 	//CUSTOM FUNCTIONS END
 }
