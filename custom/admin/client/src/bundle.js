@@ -63722,7 +63722,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.propertiesToDisplayList == null) {
-            this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+            this.propertiesToDisplayList = 'fulfillmentTotal,fulfillmentDiscount,subTotal,total';
         }
         else {
             this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
@@ -64680,7 +64680,7 @@ var OrderTemplateService = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.utilityService = utilityService;
-        this.orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal';
+        this.orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal,fulfillmentDiscount';
         this.orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
         this.editablePropertyIdentifierList = '';
         this.searchablePropertyIdentifierList = 'skuCode';
@@ -74184,6 +74184,33 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "Match Day of Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Day'
+                                }
+                            },
+                            {
+                                display: "Match Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Match Year",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'y',
+                                    measureTypeDisplay: 'Year'
+                                }
+                            },
+                            {
                                 display: "Defined",
                                 comparisonOperator: "is not",
                                 value: "null"
@@ -74333,6 +74360,12 @@ var SWCriteriaDate = /** @class */ (function () {
                                 selectedCondition.showCriteriaStart = false;
                                 selectedCondition.showNumberOf = true;
                             }
+                        }
+                        if (selectedCondition.dateInfo.type === 'matchPart') {
+                            selectedCondition.showCriteriaStart = false;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.showNumberOf = true;
+                            selectedCondition.conditionDisplay = 'Enter ' + selectedCondition.dateInfo.measureTypeDisplay + ':';
                         }
                     }
                     else {
@@ -76140,6 +76173,26 @@ var SWEditFilterItem = /** @class */ (function () {
                                                     break;
                                             }
                                             filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                        }
+                                    }
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
+                                            switch (filterItem.measureType) {
+                                                case 'd':
+                                                    filterItem.displayValue += 'Day ';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue += 'Month ';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue += 'Year ';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += filterItem.value;
                                         }
                                     }
                                     else {

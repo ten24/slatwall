@@ -49,8 +49,8 @@
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
-<cfset defaultCountryCode = 'US' />
-<cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
+<cfset local.defaultCountryCode = 'US' />
+<cfset local.stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 

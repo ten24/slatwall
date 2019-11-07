@@ -579,7 +579,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
-                    	newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    	newAccount.setSpouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
                     }
                     
                     if (!isNull(account['TerminateDate']) && len(account['TerminateDate'])){
