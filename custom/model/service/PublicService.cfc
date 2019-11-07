@@ -377,8 +377,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
-	    var currentSession = getHibachiScope().getSession();
-        var hibachiSessionService = getService('HibachiSessionService');
 
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
@@ -601,8 +599,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-        
-        var recordsCount = productCollectionList.getRecordsCount();
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), arguments.data.priceGroupCode,arguments.data.currencyCode);
+		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
