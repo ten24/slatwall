@@ -1186,6 +1186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request.orderTemplateOrderDetails = {}; 
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 
 		request.skuCollection = getSkuService().getSkuCollectionList();
 		request.skuCollection.addFilter('skuID','null','is'); 
@@ -1209,7 +1210,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getHibachiDAO().flushORMSession();
 		
 			if(hasInfoForFulfillment){	
-				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();

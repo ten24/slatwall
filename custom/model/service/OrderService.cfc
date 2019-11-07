@@ -123,6 +123,7 @@ component extends="Slatwall.model.service.OrderService" {
 		request.orderTemplateOrderDetails = {}; 
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
 		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
 

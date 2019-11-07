@@ -46,7 +46,7 @@ class SWCustomerAccountPaymentMethodCardController{
 		this.title = this.rbkeyService.rbKey('define.billing');
 		
 		if(this.propertiesToDisplayList == null){
-			this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+			this.propertiesToDisplayList = 'fulfillmentTotal,fulfillmentDiscount,subTotal,total';
 		} else {
 			this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
 		}

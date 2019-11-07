@@ -49,9 +49,9 @@
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
-<cfset orderTemplateTotalProperties = "fulfillmentTotal,commissionableVolumeTotal,personalVolumeTotal,subtotal,total" />
-<cfset defaultCountryCode = 'US' />
-<cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
+<cfset local.orderTemplateTotalProperties = "fulfillmentTotal,fulfillmentDiscount,commissionableVolumeTotal,personalVolumeTotal,subtotal,total" />
+<cfset local.defaultCountryCode = 'US' />
+<cfset local.stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
