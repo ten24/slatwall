@@ -63,7 +63,7 @@ class SWFPaginationController {
         }
         //END: direction logic
 
-        //Ellipses Logic
+        //Ellipsis Logic
 		if (newPage) {
 			pageNumber = (direction == 'prev') ? this.displayPages[0] -1 : lastDisplayPage + 1;
 			let manipulatePageNumber = pageNumber;
@@ -77,7 +77,7 @@ class SWFPaginationController {
 			   }
 			}
 		}
-        //END: Ellipses Logic
+        //END: Ellipsis Logic
 
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
@@ -102,7 +102,7 @@ class SWFPagination {
 		itemsPerPage:'@?', //Number of items to display in a page
 		recordList:'=', //Sets up two way binding so succeeding API responses overwrite the records with updated data
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
-		beginPaginationAt:'@?' //this can be left blank unless the user wants the "..." pagination to begin at a number other than 11
+		beginPaginationAt:'@?' //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
 	};
 
 	public controller = SWFPaginationController;
