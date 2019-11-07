@@ -8,7 +8,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -914,8 +914,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
             	
-				if(arguments.processMethod.getAmount()){
-					newOrderPayment.setAmount(arguments.processMethod.getAmount());
+				if(!isNull(arguments.processObject.getAmount())){
+					newOrderPayment.setAmount(arguments.processObject.getAmount());
 				} else if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
