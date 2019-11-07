@@ -125,11 +125,11 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	
 
 //CUSTOM PROPERTIES END
-	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	
-	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total', string persistentProperties=''){ 
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total', string persistentProperties=''){ 
 		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
 
 		var orderTemplateStruct = super.getStructRepresentation(properties);
