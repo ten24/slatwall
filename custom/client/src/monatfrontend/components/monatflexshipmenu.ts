@@ -143,7 +143,9 @@ class MonatFlexshipMenuController {
 	public activateFlexship() {
 		// make api request
 		this.orderTemplateService
-			.activateOrderTemplate(this.orderTemplate.orderTemplateID)
+			.activateOrderTemplate({
+				orderTemplateID :	this.orderTemplate.orderTemplateID
+			})
 			.then((data) => {
 				if (data.orderTemplate) {
 					this.orderTemplate = data.orderTemplate;
