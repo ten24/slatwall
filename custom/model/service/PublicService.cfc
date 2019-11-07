@@ -396,7 +396,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
-            getHibachiScope().getSession().setAccount(account)
+            getDAO('HibachiDAO').flushORMSession();
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         account.getAccountNumber();
         return account;
@@ -418,8 +420,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 account.setAccountStatusType(accountStatusType);
             }
             
-            getService('HibachiSessionService').persistSession(updateLoginCookies=true);
-            getHibachiScope().getSession().setAccount(account);
+            getDAO('HibachiDAO').flushORMSession();
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         return account;
     }
