@@ -2004,20 +2004,38 @@ component  accessors="true" output="false"
         }
 	}
 	
-	public any function getOrderTemplatePromotions( required any data ){
+	public any function getOrderTemplatePromotionSkuCollectionConfig( required any data ){
         param name="arguments.data.orderTemplateID" default="";
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
-	    
-	    var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+		
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkuCollectionConfig'] = orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	}
+	
+	public any function getOrderTemplatePromotions( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+        
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+		}
 	    
 	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(promotionsCollectionConfig);
+	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
-        arguments.data['ajaxResponse']['orderTemplatePromotions'] = promotionsCollectionList.getPageRecords(); // there should be only one record;  
+        arguments.data['ajaxResponse']['orderTemplatePromotionScus'] = promotionsCollectionList.getPageRecords(); 
 	}
 	
 	private void function setOrderTemplateItemAjaxResponse(required any data) {
