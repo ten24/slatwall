@@ -86,6 +86,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
         
         processObject.setSiteID(arguments.data.siteID);
+        
+        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
+            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+        }
+        
+        if( StructKeyExists(arguments.data, 'siteCode') ){
+            processObject.setSiteCode(arguments.data.siteCode);
+        }
+        
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         processObject.setAccountID(getHibachiScope().getAccount().getAccountID());

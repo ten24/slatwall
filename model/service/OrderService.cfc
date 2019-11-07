@@ -1416,13 +1416,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
-			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
-			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+			arguments.orderTemplate.setOrderTemplateStatusType( getTypeService().getTypeBySystemCode('otstDraft') );
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType( arguments.processObject.getOrderTemplateTypeID() ) );
+			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day( arguments.processObject.getScheduleOrderNextPlaceDateTime() ) );
+			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm( arguments.processObject.getFrequencyTermID() ) );
+			arguments.orderTemplate = this.saveOrderTemplate( arguments.orderTemplate, arguments.data ); 
 		}
 
 		return arguments.orderTemplate;
