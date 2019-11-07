@@ -82,6 +82,8 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			case 'chargePreAuthorization':
 				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
 				break;
+			case 'balance':
+				getAccountBalance(arguments.requestBean);
 			case 'credit':
 				break;
 			default:
@@ -184,10 +186,29 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 	}
 	
+	public any function getAccountBalance(required any providerToken)
+	{
+		var requestBean = getTransient("externalTransactionRequestBean");
+		var requestData = {};
+		var responseData = sendHttpAPIRequest(requestBean, 'users/#arguments.providerToken#/balances', requestData);
+		
+		if(IsJson(responseData.fileContent))
+		{
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
+		if(structKeyExists(responseData, 'data')){
+			return responseData.data[1].amount;
+		}else{
+			return "unable to get balance";
+		}
+	}
+	
 	private any function sendHttpAPIRequest(required any requestBean, required string uri, required struct data) {
 		var apiUrl = 'https://uat-api.paylution.com/rest/v3/';
 		var password = setting(settingName='passwordTest', requestBean=arguments.requestBean);
 		var username = setting(settingName='usernameTest', requestBean=arguments.requestBean);
+		var requestMethod = "POST";
 		
 		// Set Live Endpoint Url if not testing
 		if (!getTestModeFlag(arguments.requestBean, 'testMode')) {
@@ -198,38 +219,29 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 		apiUrl &= uri;
 		
+		if(find("users",arguments.uri) && find('balances',arguments.uri))
+		{
+			requestMethod = "GET";
+		}
+		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
-		httpRequest.setMethod('get');
+		httpRequest.setMethod('#requestMethod#');
 		httpRequest.setCharset('UTF-8');
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#");
 		httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 		httpRequest.addParam(type="header", name="Accept", value='application/json');
-		httpRequest.addParam(type="body", value="");
-	
+		if(structIsEmpty(arguments.data))
+		{
+			arguments.data = "";
+		}
+		else{
+			arguments.data = serializeJSON(arguments.data);
+		}
+		httpRequest.addParam(type="body", value=arguments.data);
 		// Make HTTP request to endpoint
 		return httpRequest.send().getPrefix();
-	}
-	
-	public any function getAccountBalance(required any requestBean)
-	{
-		var responseBean = getTransient("externalTransactionResponseBean");
-		var requestData = {}
-		var responseData = sendHttpAPIRequest(arguments.requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
-		
-		if(IsJson(responseData.fileContent))
-		{
-			responseData = deserializeJSON(responseData.fileContent);
-		}
-		
-		if(structKeyExists(responseData, 'data')){
-			dump(responseData);
-		}else{
-			responseBean.addError("Processing error", "Error while retriving balance.");
-		}
-		
-		return responseBean;
 	}
 }

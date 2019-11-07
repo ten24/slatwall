@@ -23,7 +23,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			'authorize', 				// 3
 			'chargePreAuthorization', 	// 4
 			'credit',					// 5
-			'void'						// 6
+			'void',						// 6
+			'balance'
 		];
 	
 		//Mock Payload
@@ -87,5 +88,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			]});
 	}
 	
+	/**
+	 * @test
+	 */
+	//public void function 
 	
 }

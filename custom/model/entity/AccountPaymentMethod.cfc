@@ -47,6 +47,10 @@ Notes:
 
 */
 component {
+    
+    property name="moMoneyBalance" persistent="false";
+    //property name="moMoneyWallet" fieldtype="boolean" persistent="false";
+    
     public array function getPaymentMethodOptions() {
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
 			var sl = getPaymentMethodOptionsSmartList();
@@ -61,6 +65,41 @@ component {
 			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
 		}
 		return variables.paymentMethodOptions;
+	}
+	
+	public any function isMoMoneyWallet()
+	{
+	    if(!StructKeyExists(variables,"moMoneyWallet"))
+	    {
+	        //Check if it's external payment method with Integration Service enabled
+	        var hyperwallet = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet');
+	        var paymentIntegration = getPaymentMethod().getPaymentIntegration();
+	        if( !structIsEmpty(hyperwallet) && !isNull(hyperwallet.getIntegrationID())
+	        	&&
+	        	!structIsEmpty(paymentIntegration) && !isNull(paymentIntegration.getIntegrationID()) && 
+	        	hyperwallet.getIntegrationID() == paymentIntegration.getIntegrationID()
+	        )
+	        {
+	            variables.moMoneyWallet =  true;
+	        }
+	        else{
+	        	variables.moMoneyWallet =  false;
+	        }
+	    }
+	    
+	    return variables.moMoneyWallet;
+	}
+	
+	public any function getMoMoneyBalance()
+	{
+		//always use isMoMoneyWallet check before getting the balance
+	    if(!StructKeyExists(variables,"moMoneyBalance"))
+	    {
+	        var hyperwallet = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet').getIntegrationCFC("Payment").getAccountBalance(getProviderToken());
+	        variables.moMoneyBalance = hyperwallet;
+	    }
+	    
+	    return variables.moMoneyBalance;
 	}
 
 }
