@@ -34,6 +34,9 @@ import { SponsorSearchSelector } from './components/sponsor-search-selector';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
+import { MonatSearchController } from './controllers/monat-search';
+
+
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
@@ -76,15 +79,21 @@ var monatfrontendmodule = angular
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())
-
+	
+	// Controllers
+	.controller('searchController', MonatSearchController)
+	
+	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 
 	.config([
 		'ModalServiceProvider',
-		function(ModalServiceProvider) {
+		'$locationProvider',
+		function(ModalServiceProvider, $locationProvider) {
 			// to set a default close delay on modals
 			ModalServiceProvider.configureOptions({ closeDelay: 0 });
+			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
 		},
 	]);
 

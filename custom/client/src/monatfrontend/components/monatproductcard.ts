@@ -12,21 +12,36 @@ class MonatProductCardController {
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
 	public orderTemplate;
+    public urlParams = new URLSearchParams(window.location.search);
 
 	// @ngInject
 	constructor(
 		//inject modal service
 		public orderTemplateService,
-		public $rootScope,
 		public monatService,
-        public observerService
+        public observerService,
+
+        public ModalService
+        public $scope
+
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
-
 	}
-
+	
+	public $onInit = () => {
+		this.$scope.$evalAsync(this.init);
+	}
+	public init = () => {
+		if(this.urlParams.get('type')){
+			this.type = this.urlParams.get('type');
+		}
+		
+		if(this.urlParams.get('orderTemplateId')){
+			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		}
+	}
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
 		setNewTemplates: boolean = true,
@@ -110,6 +125,30 @@ class MonatProductCardController {
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
     }
+    
+	public launchWishlistModal = (skuID) => {
+		let newSkuID = skuID
+		this.ModalService.showModal({
+			component: 'swfWishlist',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				sku: newSkuID
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
+
 }
 
 class MonatProductCard {
