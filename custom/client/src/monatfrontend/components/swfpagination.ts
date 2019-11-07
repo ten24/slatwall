@@ -24,7 +24,6 @@ class SWFPaginationController {
 	};
 	
 	public init = () => {
-	    debugger
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
@@ -41,6 +40,8 @@ class SWFPaginationController {
 	
     public getNextPage = ( pageNumber = 1, direction:any = false, newPages = false) => {
 		let setNew;
+		let newPage = newPages;
+		let lastDisplayPage = this.displayPages[this.displayPages.length -1];
 		
 		if (pageNumber === 1) {
 			setNew = true;
@@ -52,16 +53,15 @@ class SWFPaginationController {
             if(this.pageTracker === 1){
                 return pageNumber;
             }else if(this.pageTracker == this.displayPages[0]) {
-                newPages = true;
+                newPage = true;
                 pageNumber = this.pageTracker -1;
             }
             else{
                 pageNumber = this.pageTracker -1;
             }
         }else if(direction === 'next'){
-            if(this.pageTracker >= this.totalPages.length){
-                pageNumber = this.totalPages.length;
-                return pageNumber;
+            if(this.pageTracker >= lastDisplayPage){
+                newPage = true;
             }else{
                 pageNumber = this.pageTracker +1;
             }
@@ -69,10 +69,8 @@ class SWFPaginationController {
         //END: direction logic
 
         //Ellipses Logic
-		if (newPages) {
-		    debugger;
-		    var x = this.displayPages[this.displayPages.length -1];
-			pageNumber = (direction == 'prev') ? this.displayPages[0] -1 : x + 1;
+		if (newPage) {
+			pageNumber = (direction == 'prev') ? this.displayPages[0] -1 : lastDisplayPage + 1;
 			let manipulatePageNumber = pageNumber;
 			this.displayPages = [];
 			for(let i = 0; ; i++){

@@ -31,7 +31,7 @@ class MonatSearchController {
 		this.loading = true;
 		this.keyword = keyword;
 		let priceGroupCode = this.priceGroupCode
-		this.publicService.doAction( 'getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode, pageRecordsShow:4 } ).then(data => {
+		this.publicService.doAction( 'getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode } ).then(data => {
 			this.observerService.notify('PromiseComplete');
 			this.recordsCount = data.recordsCount;
 			this.productList = data.productList;
