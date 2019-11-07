@@ -8,7 +8,7 @@ class SWFPaginationController {
     public itemsPerPage:number = 10;
     public recordsCount:number;
     public totalPageArray:Array<any>;
-    public productList:any;
+    public recordList:any;
     public argumentsObject:any;
     public beginPaginationAt:number;
     public displayPages:any;
@@ -28,6 +28,7 @@ class SWFPaginationController {
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
 
+        //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
         for(var i = 1; i <= this.totalPages; i++){
             holdingArray.push(i);
             if(i <= this.elipsesNum){
@@ -39,18 +40,12 @@ class SWFPaginationController {
 	}
 	
     public getNextPage = ( pageNumber = 1, direction:any = false, newPages = false) => {
-		let setNew;
 		let newPage = newPages;
 		let lastDisplayPage = this.displayPages[this.displayPages.length -1];
 		
-		if (pageNumber === 1) {
-			setNew = true;
-		}
-		
         //direction logic
         if(direction === 'prev'){
-			setNew = false;
-            if(this.pageTracker === 1){
+            if(this.pageTracker === 1){ 
                 return pageNumber;
             }else if(this.pageTracker == this.displayPages[0]) {
                 newPage = true;
@@ -81,7 +76,6 @@ class SWFPaginationController {
 			       this.displayPages.push(manipulatePageNumber++);
 			   }
 			}
-			console.log(this.displayPages);
 		}
         //END: Ellipses Logic
 
@@ -89,7 +83,7 @@ class SWFPaginationController {
         this.argumentsObject['currentPage'] = pageNumber;
         
         return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
-            this.productList = result.productList;
+            this.recordList = result.productList;
             this.pageTracker = pageNumber;
         });
     }
@@ -106,7 +100,7 @@ class SWFPagination {
 		recordsCount: '<?', //total amount of records available from getRecordsCount call on backend
 		action: '@?', //endpoint to be called
 		itemsPerPage:'@?', //Number of items to display in a page
-		productList:'=', //Sets up two way binding so concurrent API responses overwrite it
+		recordList:'=', //Sets up two way binding so concurrent API responses overwrites the records
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
 		beginPaginationAt:'@?' //this can be left blank unless the user wants the "..." pagination to begin at a number other than 11
 	};
