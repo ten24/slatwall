@@ -1819,6 +1819,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
 										propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
 									}
+									if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
+										switch(filter.measureType){
+											case 'd':
+												propertyIdentifier = 'day(#propertyIdentifier#)';
+												break;
+											case 'm':
+												propertyIdentifier = 'month(#propertyIdentifier#)';
+												break;
+											case 'y':
+												propertyIdentifier = 'year(#propertyIdentifier#)';
+												break;
+										}
+									}
 									filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
 								}
 						}else{
@@ -3444,7 +3457,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = ":#paramID#";
 		
 		} else {
-			
 			var paramID = getParamID();
 			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
 			predicate = ":#paramID#";
