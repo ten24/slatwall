@@ -370,7 +370,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		arguments.orderItem.removeOrder( this );
 	}	
 	//CUSTOM FUNCTIONS BEGIN
-	public boolean function getCustomerCanCreateFlag(){
+
+public boolean function getCustomerCanCreateFlag(){
 			
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
@@ -416,6 +417,5 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  
-	//CUSTOM FUNCTIONS END
+	}  //CUSTOM FUNCTIONS END
 }

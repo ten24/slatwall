@@ -1186,6 +1186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request.orderTemplateOrderDetails = {}; 
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 
 		request.skuCollection = getSkuService().getSkuCollectionList();
 		request.skuCollection.addFilter('skuID','null','is'); 
