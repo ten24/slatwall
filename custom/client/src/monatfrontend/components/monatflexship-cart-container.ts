@@ -3,7 +3,8 @@ class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
-    
+    public urlParams = new URLSearchParams(window.location.search);
+
     //@ngInject
     constructor(
     	public orderTemplateService, 
@@ -36,6 +37,10 @@ class MonatFlexshipCartContainerController {
     }
     
     private fetchOrderTemplate = () => {
+		if(this.urlParams.get('orderTemplateId')){
+			this.orderTemplateId = this.urlParams.get('orderTemplateId');
+		}
+		
         this.orderTemplateService
         .getOrderTemplateDetails(this.orderTemplateId)
         .then(data => {

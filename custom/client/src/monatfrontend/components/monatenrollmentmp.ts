@@ -6,9 +6,8 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean = false;
 	public contentId: string;
-	public selectedMP: any;
 	public bundleHasErrors: boolean = false;
-	public sponsorHasErrors: boolean = false;
+	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
 	public bundles: any = [];
@@ -116,19 +115,20 @@ class EnrollmentMPController {
 		var selectedSponsor = document.getElementById('selected-sponsor-id');
 		
 		if ( null !== selectedSponsor ) {
+			this.sponsorErrors.selected = false;
 			var accountID = (<HTMLInputElement>selectedSponsor).value;
 			
 			this.monatService.submitSponsor( accountID ).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
-					this.sponsorHasErrors = false;
+					this.sponsorErrors = {};
 				}else{
-					this.sponsorHasErrors = true;
+					this.sponsorErrors.submit = true;
 				}
 				this.loading = false;
 			})
 		} else {
-			this.sponsorHasErrors = true;
+			this.sponsorErrors.selected = true;
 			this.loading = false;
 		}
 	};

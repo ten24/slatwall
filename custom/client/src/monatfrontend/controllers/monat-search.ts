@@ -2,6 +2,7 @@ class MonatSearchController {
 	
 	public productList: Array<any> = [];
 	public loading: boolean = false;
+	public keyword: string = '';
 
 	// @ngInject
 	constructor(
@@ -12,14 +13,14 @@ class MonatSearchController {
 
 	public $onInit = () => {
 		if ( 'undefined' !== typeof this.$location.search().keyword ) {
-			let keyword = this.$location.search().keyword;
-			this.getProductsByKeyword( keyword );
+			this.getProductsByKeyword( this.$location.search().keyword );
 		}
 	}
 	
 	public getProductsByKeyword = keyword => {
 		
 		this.loading = true;
+		this.keyword = keyword;
 		
 		this.publicService.getAccount().then(data => {
 			let priceGroupCode = "2";

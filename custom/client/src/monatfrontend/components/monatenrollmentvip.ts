@@ -11,18 +11,18 @@ class VIPController {
 	public currentMpPage: number = 1;
 	public isVIPEnrollment: boolean = false;
 	public productList;
-	public sponsorHasErrors: boolean = false;
-	public selectedMP: any;
+	public sponsorErrors: any = {};
 	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
 	public flexshipItemList:any;
-
+	public holdingShippingAddressID:string;
+	public holdingShippingMethodID:string;
 
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService,public orderTemplateService) {
+	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
@@ -30,9 +30,58 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
+		
+		//checks to local storage in case user has refreshed
+		if(localStorage.getItem('shippingAddressID')){ 
+			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
+		}
+		
+		if(localStorage.getItem('shippingMethodID')){
+			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
+		}
+		
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
-	};
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
 
+		this.observerService.attach((accountAddress)=>{
+			localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
+			this.holdingShippingAddressID = accountAddress.accountAddressID;
+		}, 'shippingAddressSelected');
+		
+		this.observerService.attach((shippingMethod)=>{
+			localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
+			this.holdingShippingMethodID = shippingMethod.shippingMethodID;
+		}, 'shippingMethodSelected');
+		
+	};
+	public setOrderTemplateShippingAddress = () =>{
+		if(!this.holdingShippingMethodID || !this.holdingShippingAddressID){
+			return;
+		}
+		this.loading = true;
+		let payload = {};
+		payload['orderTemplateID'] = this.flexshipID;
+		payload['shippingAccountAddress.value'] = this.holdingShippingAddressID;
+		payload['shippingMethod.shippingMethodID']= this.holdingShippingMethodID;
+		
+		this.orderTemplateService.updateShipping(payload).then(response => {
+			this.loading = false;
+		})
+	}
+	
+	public setOrderTemplateBilling = () =>{
+		this.loading = true;
+		let payload = {};
+		payload['orderTemplateID'] = this.flexshipID;
+		payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
+		payload['accountPaymentMethod.value']= this.holdingShippingMethodID;
+		
+		this.orderTemplateService.updateBilling(payload).then(response => {
+			this.loading = false;
+		})
+	}
+	
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
 			return this.countryCodeOptions;
@@ -68,17 +117,24 @@ class VIPController {
 	
 	public submitSponsor = () => {
 		this.loading = true;
-		if (this.selectedMP) {
-			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+		
+		var selectedSponsor = document.getElementById('selected-sponsor-id');
+		
+		if ( null !== selectedSponsor ) {
+			this.sponsorErrors.selected = false;
+			var accountID = (<HTMLInputElement>selectedSponsor).value;
+			
+			this.monatService.submitSponsor( accountID ).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
+					this.sponsorErrors = {};
 				}else{
-					this.sponsorHasErrors = true;
+					this.sponsorErrors.submit = true;
 				}
 				this.loading = false;
 			})
 		} else {
-			this.sponsorHasErrors = true;
+			this.sponsorErrors.selected = true;
 			this.loading = false;
 		}
 	};
