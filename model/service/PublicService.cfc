@@ -1964,7 +1964,7 @@ component  accessors="true" output="false"
         
         //try to activate if possible
         if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstDraft' 
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
             && orderTemplate.getCanPlaceOrderFlag()
         ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
@@ -2015,7 +2015,7 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['orderTemplatePromotionSkuCollectionConfig'] = orderTemplate.getPromotionalRewardSkuCollectionConfig();
 	}
 	
-	public any function getOrderTemplatePromotionScus( required any data ){
+	public any function getOrderTemplatePromotionSkus( required any data ){
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
@@ -2035,7 +2035,7 @@ component  accessors="true" output="false"
 	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
 	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
-        arguments.data['ajaxResponse']['orderTemplatePromotionScus'] = promotionsCollectionList.getPageRecords(); 
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
 	
 	private void function setOrderTemplateItemAjaxResponse(required any data) {
