@@ -100,7 +100,7 @@ class SWFPagination {
 		recordsCount: '<?', //total amount of records available from getRecordsCount call on backend
 		action: '@?', //endpoint to be called
 		itemsPerPage:'@?', //Number of items to display in a page
-		recordList:'=', //Sets up two way binding so concurrent API responses overwrites the records
+		recordList:'=', //Sets up two way binding so succeeding API responses overwrite the records with updated data
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
 		beginPaginationAt:'@?' //this can be left blank unless the user wants the "..." pagination to begin at a number other than 11
 	};
