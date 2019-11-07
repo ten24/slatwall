@@ -2,7 +2,7 @@
 <Table tableName="SwOrderOrigin">
 	<Columns>
 		<column name="orderOriginID" fieldtype="id" />
-		<column name="activeFlag" />
+		<column name="activeFlag" datatype="bit"  />
 		<column name="orderOriginName" />
 		<column name="orderOriginType" />
 	</Columns>

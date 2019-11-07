@@ -9,6 +9,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="siteService";
 	property name="promotionService";
 	property name="orderService";
+	property name="priceGroupService";
+	property name="commentService";
+	property name="skuService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -95,7 +98,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		ordersResponse = {hasErrors: false};
 		
 		var apiData = deserializeJson(orderJson.fileContent);
-		
+	
 		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
 			ordersResponse['Records'] = apiData.Data.Records;
 		    return ordersResponse;
@@ -254,12 +257,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
                     }
                     
+                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
+                    }
+                    
                     if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
-                    	newAccount.setModifiedDateTime( getDateFromString(account['LastActivityDate']));//*
+                    	newAccount.setLastActivityDate( getDateFromString(account['LastActivityDate']));//*
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
-                    	newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    	newAccount.setSpouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
                     }
                     
                     if (!isNull(account['TerminateDate']) && len(account['TerminateDate'])){
@@ -297,7 +304,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             		
                     //set the price group from the accountTypeName
                     if (structKeyExists(account,'accountType') && len(account['accountType'])){
-	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountType']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newAccount.setPriceGroupID(priceGroup);
@@ -416,12 +423,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			accountPhone.setPhoneNumber( phone.phoneNumber ); //*
                 			accountPhone.setRemoteID( phone.phoneID );//*
                 			
-                			if (!isNull(email['PhoneTypeName']) && structKeyExists(email, 'PhoneTypeName')){
-                            	if (email['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
-                            	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
-                            	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
-                            	if (email['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
-                            	//if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
+                			if (!isNull(phone['PhoneTypeName']) && structKeyExists(phone, 'PhoneTypeName')){
+                            	if (phone['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
+                            	if (phone['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
+                            	if (phone['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
+                            	if (phone['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
+                            	if (phone['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
                             }
                             
                 			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
@@ -579,7 +586,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
-                    	newAccount.spouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
+                    	newAccount.setSpouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
                     }
                     
                     if (!isNull(account['TerminateDate']) && len(account['TerminateDate'])){
@@ -628,7 +635,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             		
                     //set the price group from the accountTypeName
                     if (structKeyExists(account,'accountType') && len(account['accountType'])){
-	                    var priceGroup = getPriceGroup(findPriceGroupID(account['accountType']));
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountType']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newAccount.setPriceGroup(priceGroup);
@@ -813,12 +820,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			accountPhone.setPhoneNumber( phone.phoneNumber ); //*
                 			accountPhone.setRemoteID( phone.phoneID );//*
                 			
-                			if (!isNull(email['PhoneTypeName']) && structKeyExists(email, 'PhoneTypeName')){
-                            	if (email['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
-                            	if (email['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
-                            	if (email['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
-                            	if (email['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
-                            	if (email['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
+                			if (!isNull(phone['PhoneTypeName']) && structKeyExists(phone, 'PhoneTypeName')){
+                            	if (phone['PhoneTypeName'] == "Home")  { accountPhone.setAccountPhoneType(aptHome); } //*
+                            	if (phone['PhoneTypeName'] == "Work") { accountPhone.setAccountPhoneType(aptWork); }//*
+                            	if (phone['PhoneTypeName'] == "Mobile")  { accountPhone.setAccountPhoneType(aptMobile); } //*
+                            	if (phone['PhoneTypeName'] == "Fax") { accountPhone.setAccountPhoneType(aptFax); }//*
+                            	if (phone['PhoneTypeName'] == "Ship To")  { accountPhone.setAccountPhoneType(aptShipTo); } //*
                             }
                             
                 			accountPhone.setCountryCallingCode( phone.countryCallingCode ); // *
@@ -1105,7 +1112,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
     				
     				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
-	                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupIDByPriceLevel(order['PriceLevelCode']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newOrder.setPriceGroup(priceGroup);
@@ -1452,7 +1459,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
 			        	
 			        	
-			        	var promotionApplied = getService("PromotionService").getPromotionAppliedByPromotionAppliedRemoteID( order["OrderID"] );
+			        	var promotionApplied = getService("PromotionService").getPromotionAppliedByRemoteID( order["OrderID"] );
 			        	
 			        	if (isNull(promotionApplied)){
 			        		promotionApplied = new Slatwall.model.entity.PromotionApplied();
@@ -1472,11 +1479,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        
 			        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
-			        newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);
+			        //newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);on fulfillment instead
 			        
 			        //RMAOrigOrderNumber
 			        if (!isNull(order['RMAOrigOrderNumber'])){
-			        	newOrder.setImportOriginalRMAIDNumber( order['RMAOrigOrderNumber']?:0 );
+			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        }
 			        
 			        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
@@ -1511,7 +1518,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         //set the account if we have the account, otherwise, skip this for now...
                         var foundAccount = getAccountService().getAccountByAccountNumber(order['AccountNumber']);
                         if (!isNull(foundAccount)){
-                        	echo("Account found, adding...");	
+                        	//echo("Account found, adding...");	
                         	newOrder.setAccount(foundAccount); // * This is for order.account.accountNumber accountType
                         }
                     }
@@ -1531,7 +1538,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
     				
     				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
-	                    var priceGroup = getPriceGroup(findPriceGroupIDByPriveLevel(order['PriceLevelCode']));
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupIDByPriceLevel(order['PriceLevelCode']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newOrder.setPriceGroup(priceGroup);
@@ -1543,7 +1550,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                      * otReplacementOrder, otSalesOrder,otExchangeOrder,otReturnOrder,otRefundOrder
                      **/
                     newOrder.setOrderTypeCode(order['OrderTypeCode']?:"");
-                    newOrder.setOrderType(getOrderTypeFromOrderTypeCode(order['OrderTypeCode']) ?:"" );
+                    
+                    var orderTypeCode = order['OrderTypeCode'];
+                    var ot = 
+                    (orderTypeCode == "I" || orderTypeCode == "D" || orderTypeCode == "Y") ? otSalesOrder :
+		    		(orderTypeCode == "R") ? otReplacementOrder : 
+		    		(orderTypeCode == "E" || orderTypeCode == "X") ? otExchangeOrder : 
+		    		(orderTypeCode == "C") ? otReturnOrder : otSalesOrder;
+                    
+                    if (!isNull(ot)){
+                    	newOrder.setOrderType( ot );
+                    }
                     
                     //If this is a return or a return order, we will need to create an order return instead of fulfillment.
                     var createOrderReturn = false;
@@ -1564,7 +1581,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                    var origin = getOrderService().getOrderOriginByOrderOriginName(originName);
 		                    
 		                    if (!isNull(origin)){
-		                    	newOrder.setOrderOrigin();
+		                    	newOrder.setOrderOrigin(origin);
 		                    }
 	                    }
                     }
@@ -1576,9 +1593,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     //getOrderStatusFromOrderStatusCode(order['OrderStatusCode']) ?:"" will use in future, now, is just 'shipped' or canceled
 			        
 			        if (order['OrderStatusCode'] == "9"){
-			        	newOrder.setOrderStatus( ostCanceled );		
+			        	newOrder.setOrderStatusType( ostCanceled );		
 			        }else{
-			        	newOrder.setOrderStatus( ostClosed );
+			        	newOrder.setOrderStatusType( ostClosed );
 			        }
 			        
 			        /**
@@ -1594,11 +1611,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	
 			        	comment.setRemoteID(order["OrderID"]);
 			        	comment.setComment(order['Comments']);
-			        	
+			        	comment.setPublicFlag(false);
+			        	comment.setCreatedDateTime(now());
 			        	if (comment.getNewFlag()){
 			        		ormStatelessSession.insert("SlatwallComment", comment); 
 			        		commentRelationship.setOrder( newOrder );
 			        		commentRelationship.setComment( comment );
+			        		
 			        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
 			        	}else{
 			        		ormStatelessSession.update("SlatwallComment", comment); 
@@ -1641,7 +1660,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		 * This is found using KitFlagCode M (Master), versus C (Component).
                     		 * 
                     		 **/
-                    		var isKit = isParentSku(detail['KitFlagCode']);
+                    		var isKit = isParentSku(detail['KitFlagCode']?:false);
                     		
                     		if (isKit) {
                     			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
@@ -1654,7 +1673,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			            	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
     			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
-    			                
+    			                //echo("Finding order item by remoteID");
     			                if (isNull(orderItem)){
     			                	var orderItem = new Slatwall.model.entity.OrderItem();
     			                }
@@ -1691,7 +1710,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            //Taxbase
         			            
         			            //adds the tax for the order to the first Line Item
-        			            if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
+        			            /*if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
         			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
         			            	taxApplied.setOrderItem(orderItem);//*
         			            	taxApplied.setManualTaxAmountFlag(true);//*
@@ -1699,14 +1718,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            	taxApplied.setTaxAmount(order['SalesTax']);//*
         			            	
         			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
-        			            }
+        			            }*/
         			            //returnLineID, must be imported in post processing. ***Note
     			            } else if(!isNull(sku) && detail['KitFlagCode'] == "C") {
     			            	// Is a component, need to create a orderItemSkuBundle
     			            	var componentKitName = detail['KitFlagName'].replace(" Component", "");
-    			            	if (structKeyExists(parentKits[componentKitName])){
+    			            	if (structKeyExists(parentKits, "componentKitName")){
     			            		//found the orderItem
-    			            		var parentOrderItem = parentKits[componentKitName]);
+    			            		var parentOrderItem = parentKits[componentKitName];
     			            		
     			            		//create the orderItemSkuBundle and set the orderItem.
     			            		var orderItemSkuBundle = getOrderService().getOrderItemSkuBundleByRemoteID();
@@ -1845,14 +1864,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			
                 			
                 			// Create a order delivery
-                			var orderDelivery = getOrderService().getOrderDeliveryByRemoteID();
+                			var orderDelivery = getOrderService().getOrderDeliveryByRemoteID(shipment.shipmentId);
                 			if (isNull(orderDelivery)){
                 				var orderDelivery = new Slatwall.model.entity.OrderDelivery();
                 			}
                 			orderDelivery.setOrder(newOrder);
                 			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
                 			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
-                			orderDelivery.setShipmentTypeCode(shipment.ShipTypeSequence);//Add attribute
                 			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
                 			orderDelivery.setRemoteID( shipment.shipmentId );
                 			
@@ -1938,20 +1956,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			orderFulfillment.setRemoteID( shipment.shipmentId );
 	                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
 	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
-	                			orderFulfillment.manualHandlingFeeFlag(true);//*
+	                			orderFulfillment.setManualHandlingFeeFlag(true);//*
 	                			
 	                			//Added these 3 per Sumit.
 	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']);//ADD
                 				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
                 				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
                 				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
-                				orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
+                				//orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
                 				
 	                			//set the verifiedAddressFlag if verified.
 	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
-	                				orderFulfillment.setVerifiedAddressFlag( true );
+	                				orderFulfillment.setVerifiedShippingAddressFlag( true );
 	                			}else{
-	                				orderFulfillment.setVerifiedAddressFlag( false );
+	                				orderFulfillment.setVerifiedShippingAddressFlag( false );
 	                			}
 	                			
 	                			if (orderFulfillment.getNewFlag()){
@@ -2072,14 +2090,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			}
     			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
     			writeDump(e); // rollback the tx
+    			
     			ormGetSession().clear();
+    			abort;
     		} 
 		    pageNumber++;
 		    
 		}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		writeDump("End: #pageNumber# - #pageSize# - #index# - #remoteIDs#");
+		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
 	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){

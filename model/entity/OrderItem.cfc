@@ -195,7 +195,8 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
     
    
- property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="lineNumber" ormtype="string";
+ property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}

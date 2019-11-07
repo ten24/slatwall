@@ -261,28 +261,33 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-    
+    property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
-    
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-    
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+	
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
+ property name="importFlexshipNumber" ormtype="string";
+ property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
  property name="orderPartnerNumber" ormtype="string";
- property name="orderInvoiceNumber" ormtype="string";
+ property name="invoiceNumber" ormtype="string";
  property name="miscChargeAmount" ormtype="string";
  property name="redeemPoints" ormtype="string";
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="originalRMANumber" ormtype="string";
- property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
+ property name="importOriginalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+ property name="priceLevelCode" ormtype="string";
+ property name="orderTypeCode" ormtype="string";
+ property name="orderStatusCode" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
