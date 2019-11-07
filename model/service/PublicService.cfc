@@ -2015,7 +2015,7 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['orderTemplatePromotionSkuCollectionConfig'] = orderTemplate.getPromotionalRewardSkuCollectionConfig();
 	}
 	
-	public any function getOrderTemplatePromotions( required any data ){
+	public any function getOrderTemplatePromotionScus( required any data ){
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
