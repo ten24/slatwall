@@ -2635,7 +2635,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(required any order, struct data = {}){
-
 		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
 			return true;
 		}
@@ -2653,7 +2652,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_placeOrder(required any order, struct data={}) {
-		
+		//Remove extraneous payment data
+		if(structKeyExists(data,'accountPaymentMethodID') && len(data.accountPaymentMethodID)
+			&& structKeyExists(data,'newOrderPayment.paymentMethod.paymentMethodID')){
+			structDelete(data,'newOrderPayment.paymentMethod.paymentMethodID');
+		}
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
 			arguments.order.setPlaceOrderFlag(true);
@@ -2686,10 +2689,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								&& !arguments.order.hasSavedAccountPaymentMethod()
 							)
 							) {
+
 								arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 							}
 						}
-
 
 
 						//set an error
