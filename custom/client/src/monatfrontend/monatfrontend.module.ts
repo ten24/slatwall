@@ -40,6 +40,7 @@ import { MonatSearchController } from './controllers/monat-search';
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
+import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 
 //declare variables out of scope
 declare var $: any;
@@ -86,14 +87,19 @@ var monatfrontendmodule = angular
 	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
+	.service('monatHttpInterceptor', MonatHttpInterceptor)
 
 	.config([
 		'ModalServiceProvider',
 		'$locationProvider',
-		function(ModalServiceProvider, $locationProvider) {
+		'$httpProvider',
+		(ModalServiceProvider, $locationProvider, $httpProvider) => {
 			// to set a default close delay on modals
 			ModalServiceProvider.configureOptions({ closeDelay: 0 });
 			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
+			
+			//adding monat-http-interceptor
+			$httpProvider.interceptors.push('monatHttpInterceptor');
 		},
 	]);
 
