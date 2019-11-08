@@ -33,9 +33,6 @@ class VIPController {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
 		
-		this.publicService.doAction('getAccount'){
-			
-		}
 		//checks to local storage in case user has refreshed
 		if(localStorage.getItem('shippingAddressID')){ 
 			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
@@ -176,19 +173,16 @@ class VIPController {
         });
     }
     
-    public setOrderTemplateFrequencyName = (name) =>{
-    	debugger;
-		this.flexshipFrequencyName = name;
-    	localStorage.setItem('flexshipFrequency', name);
-    }
-    
-    public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth, frequencyTermName) => {
+    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
+        debugger;
+        let newTerm = JSON.parse(frequencyTerm);
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
         localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-    
+		this.flexshipFrequencyName = newTerm.name;
+    	localStorage.setItem('flexshipFrequency', newTerm.name);
         const flexshipID = this.flexshipID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
+        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(result => {
             this.loading = false;
         });
     }
