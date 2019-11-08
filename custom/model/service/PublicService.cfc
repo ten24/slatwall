@@ -658,7 +658,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getTypeID() == '2c9180836dacb117016dad1329790012'){
+        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
                 var VIPSkuID = getProductService().getProductByProductType('VIPEnrollmentFee').getDefaultSku().getSkuID(); //getVIP default sku here
                 return addOrderItem({skuID:VIPSkuID});
