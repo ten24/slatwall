@@ -942,19 +942,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private string function findPriceGroupIDByPriceLevel( priceLevel ){
 		switch (arguments.priceLevel) {
-			case "MarketPartner": 
+			case "1": 
 				return "045f95c3ab9d4a73bcc9df7e753a2080";
 				break;
-			case "VIP": 
+			case "3": 
 				return "84a7a5c187b04705a614eb1b074959d4";
 				break;
-			case "Employee": 
+			case "15": 
 				return "76a3339386f840f8a71f5e5867141edb";
 				break;
-			case "Customer": 
+			case "2": 
 				return "c540802645814b36b42d012c5d113745";
 				break;
-			case "VIP Upgrade": 
+			case "4": 
 				return "5cf7693358c640cb9e5ef63e0b6aa56f";
 				break;
 			default: return "";
@@ -1468,6 +1468,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	promotionApplied.setManualDiscountAmountFlag(true);
 			        	promotionApplied.setDiscountAmount(order['DiscountAmount']);
 			        	promotionApplied.setRemoteID(order["OrderID"]);
+			        	promotionApplied.setOrder(newOrder);
 			        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
 			        	
 			        	if (promotionApplied.getNewFlag()){
@@ -1538,11 +1539,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newOrder.setPriceLevelCode(order['PriceLevelCode']?:"");
     				
     				if (structKeyExists(order,'PriceLevelCode') && len(order['PriceLevelCode'])){
-	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupIDByPriceLevel(order['PriceLevelCode']));
+	                    var priceGroup = getPriceGroupService().getPriceGroupByPriceGroupID(findPriceGroupIDByPriceLevel(order['PriceLevelCode']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newOrder.setPriceGroup(priceGroup);
 	                    }
+                    }
+                    
+                    if (structKeyExists(order,'accountType') && len(order['accountType'])){
+	                    newOrder.setAccountType(order['accountType']);
                     }
                     
                     /**
@@ -1648,7 +1653,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        }
 			        
 			        newOrder.setCurrencyCode(currencyCode); //*
-			        
+			       
                     ///->Add order items...
                     var parentKits = {};
                     if (!isNull(order['Details'])){
@@ -1663,16 +1668,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		var isKit = isParentSku(detail['KitFlagCode']?:false);
                     		
                     		if (isKit) {
-                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
+                    			try{
+                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
+                    			}catch(skuError){
+                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
+                    			}
                     		} else {
                     			var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
                     		}
                     		
-                    		// Create an orderitem for the order if its a kit parent item OR if the 
-    			            if (!isNull(sku) && isKit || isNull(detail['KitFlagCode'])){
+                    		// Create an orderitem for the order if its a kit parent item OR if its not part of a kit.
+    			            if ((!isNull(sku) && isKit) || !isNull(sku) && isNull(detail['KitFlagCode'])){
     			            	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
     			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
+    			                
     			                //echo("Finding order item by remoteID");
     			                if (isNull(orderItem)){
     			                	var orderItem = new Slatwall.model.entity.OrderItem();
@@ -1703,8 +1713,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     			}
         			            
         			            if (isKit) {
-        			            	var kitName = detail['KitFlagName'].replace(" Master", "");
-    			            		parentKits[kitName] = orderItem;	
+        			            	var kitName = replace(detail['KitFlagName'], " Master", "");
+    			            		parentKits[kitName] = orderItem;	 // set the parent so we can use on the children.
     			            	}
     			            	
         			            //Taxbase
@@ -1722,13 +1732,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            //returnLineID, must be imported in post processing. ***Note
     			            } else if(!isNull(sku) && detail['KitFlagCode'] == "C") {
     			            	// Is a component, need to create a orderItemSkuBundle
-    			            	var componentKitName = detail['KitFlagName'].replace(" Component", "");
-    			            	if (structKeyExists(parentKits, "componentKitName")){
+    			            	var componentKitName = replace(detail['KitFlagName'], " Component", "");
+    			            	if (structKeyExists(parentKits, componentKitName)){
     			            		//found the orderItem
     			            		var parentOrderItem = parentKits[componentKitName];
     			            		
     			            		//create the orderItemSkuBundle and set the orderItem.
-    			            		var orderItemSkuBundle = getOrderService().getOrderItemSkuBundleByRemoteID();
+    			            		var orderItemSkuBundle = getOrderService().getOrderItemSkuBundleByRemoteID(detail['OrderDetailId']);
 		                			if (isNull(orderItemSkuBundle)){
 		                				var orderItemSkuBundle = new Slatwall.model.entity.OrderItemSkuBundle();
 		                			}
