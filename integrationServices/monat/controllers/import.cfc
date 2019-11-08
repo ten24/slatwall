@@ -12,6 +12,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="priceGroupService";
 	property name="commentService";
 	property name="skuService";
+	property name="paymentService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -109,6 +110,42 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		
 		return ordersResponse;
+	}
+	
+	private any function getFlexshipData(pageNumber,pageSize){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
+		var authKeyName = "authkey";
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+	
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+	    
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var flexshipJson = httpService.send().getPrefix();
+		
+		fsResponse = {hasErrors: false};
+		
+		var apiData = deserializeJson(flexshipJson.fileContent);
+	
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			fsResponse['Records'] = apiData.Data.Records;
+		    return fsResponse;
+		}
+		
+		writeDump("Could not import flexships on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		fsResponse.hasErrors = true;
+		
+		
+		return fsResponse;
 	}
 	
 	public any function getDateFromString(date) {
@@ -1365,7 +1402,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
 
-		while (pageNumber <= pageMax){
+		while (pageNumber < pageMax){
            
     		var flexshipResponse = getFlexshipData(pageNumber, pageSize);
 			
@@ -1375,7 +1412,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    continue;
     		}
 
-			var flexships = flexshipResponse.Flexships;
+			var flexships = flexshipResponse.Records;
+			//writeDump(flexships);abort;
     		var startTick = getTickCount();
     		var transactionClosed = false;
     		var index = 0;
@@ -1407,7 +1445,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
 						
 						// UPDATE THE ACCOUNT
-						var customerAccount = getAccountService().getAccountByRemoteID(flexship['AccountID'], false);
+						var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
 						
 						if(isNull(customerAccount)){
 							echo("can't find customer account: #flexship['AccountID']# flexship #flexship['FlexShipId']#<br>");
@@ -1608,10 +1646,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 
 		    pageNumber++;
-		}
 
-			
-			
 		}//end pageNumber
     }
 	
