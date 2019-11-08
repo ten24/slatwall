@@ -25,8 +25,11 @@
 	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart">
-					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
+				<li 
+					ng-class="{loading: item.loading }"
+					ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart"
+				>
+					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">

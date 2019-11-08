@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiDAO";
 	property name="orderDAO";
 	property name="productDAO";
 	property name="promotionDAO";
@@ -1185,10 +1186,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request.orderTemplateOrderDetails = {}; 
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
@@ -1205,12 +1207,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
-			ormFlush();
+			getHibachiDAO().flushORMSession();
 		
 			if(hasInfoForFulfillment){	
-				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+
+			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
+			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
+
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
@@ -1236,6 +1247,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
+	}
+	
+	public struct function getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['promotionalFreeRewardSkuCollectionConfig']; 
 	}
 
 	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
@@ -1453,6 +1468,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
+	private any function getOrderCreateProcessObjectForOrderTemplate(required any orderTemplate, required any order){
+		var processOrderCreate = arguments.order.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		//do we need location
+
+		return processOrderCreate;
+	} 
+
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 
 		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
@@ -1461,15 +1488,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
-
-		var processOrderCreate = newOrder.getProcessObject('create'); 
-		processOrderCreate.setNewAccountFlag(false); 
-		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
-		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
-		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
-		//do we need location
-		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
+		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
@@ -1627,8 +1646,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
+		return this.process(arguments.orderTemplate, {}, 'removeTemporaryItems'); 
+	}
 
-		return arguments.orderTemplate; 
+	public any function processOrderTemplate_removeTemporaryItems(required any orderTemplate, any data={}){
+
+		var orderTemplateItems = arguments.orderTemplate.getOrderTemplateItems(); 
+		var orderTemplateItemsCount = arrayLen(orderTemplateItems);
+
+		for(var i=orderTemplateItemsCount; i >= 1; i--){
+			if(orderTemplateItems[i].getTemporaryFlag()){
+				arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItems[i]);
+			} 
+		} 
+		
+		return this.saveOrderTemplate(arguments.orderTemplate); 
 	}
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
@@ -1636,12 +1668,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
 			var newOrderTemplateItem = this.newOrderTemplateItem();
 
 			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
 			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setTemporaryFlag(arguments.processObject.getTemporaryFlag()); 
 			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
 			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
 		
@@ -1676,7 +1710,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
-			
+		
+		this.logHibachi('removing oti is null #isNull(arguments.processObject.getOrderTemplateItem())#', true);
+		
+	
 		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
@@ -1894,7 +1931,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
-		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID";
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
@@ -3189,8 +3226,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
 		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
-		logHibachi("order['orderAmounts.orderSubtotalAfterItemDiscounts']: #arguments.order.getSubtotalAfterItemDiscounts()#");
-		logHibachi("order['orderAmounts.orderDiscountAmountTotal']: #arguments.order.getOrderDiscountAmountTotal()#");
 		
 		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
 		var actualAllocatedAmountTotal = 0;
@@ -3239,17 +3274,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		    orderItem.setAllocatedOrderDiscountAmount(currentOrderItemAllocationAmount);
 		    
 		    // Collect details for debugging/logging
-		    logHibachi("orderItem[#orderItemCount#]: Start");
-		    logHibachi("orderItem[#orderItemCount#]['extendedPriceAfterOrderItemDiscount']: #orderItem.getExtendedPriceAfterDiscount()#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAmountAsPercentage']: #currentOrderItemAmountAsPercentage * 100#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotalUnadjusted']: #actualAllocatedAmountTotalUnadjusted#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
-		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
-		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
 		}
 		
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");

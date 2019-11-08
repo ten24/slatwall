@@ -11,6 +11,7 @@ class MonatEnrollmentController {
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
+	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 
 
@@ -32,6 +33,9 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
+    	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
+    	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+
 	}
 
 	public handleCreateAccount = () => {
@@ -97,6 +101,22 @@ class MonatEnrollmentController {
 			step.selected = false;
 		});
 		this.steps[this.position].selected = true;
+	}
+	
+	public editFlexshipItems = () => {
+		this.reviewContext = true;
+		this.navigate(this.position - 2);
+	}
+	
+	public editFlexshipDate = () => {
+		this.reviewContext = true;
+		this.previous();
+	}
+	
+	public goToLastStep = () => {
+		this.observerService.notify('lastStep')
+		this.navigate(this.steps.length -1);
+		this.reviewContext = false;
 	}
 }
 

@@ -103,6 +103,18 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	//begin order template functionality
+	private any function getOrderCreateProcessObjectForOrderTemplate(required any orderTemplate, required any order){
+		var processOrderCreate = arguments.order.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		processOrderCreate.setOrderOriginID('2c9380846e3d64e4016e3d678ae70004'); //flexship		
+
+		return processOrderCreate;
+	}
+
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		if(structKeyExists(request, 'orderTemplateOrderDetails')){
 			return request.orderTemplateOrderDetails;
@@ -111,12 +123,13 @@ component extends="Slatwall.model.service.OrderService" {
 		request.orderTemplateOrderDetails = {}; 
 	
 		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
 		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
 
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
 
@@ -133,15 +146,24 @@ component extends="Slatwall.model.service.OrderService" {
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
-			ormFlush();
-		
+			getHibachiDAO().flushORMSession();	
+	
 			if(hasInfoForFulfillment){
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+
+			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
+			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
+	
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+
 			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
@@ -420,6 +442,19 @@ component extends="Slatwall.model.service.OrderService" {
 		getHibachiScope().flushORMSession();
 		
 		return arguments.orderDelivery;
+	}
+	
+	
+	public boolean function orderHasMPRenewalFee(required orderID) {
+
+		var renewalFeeMPProductType = getService('productService').getProductTypeBySystemCode('RenewalFee-MP');
+		
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.setDisplayProperties('orderItemID');
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeIDPath()#%','Like');
+		
+		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 }
 
