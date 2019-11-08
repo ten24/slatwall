@@ -168,6 +168,12 @@ class VIPController {
         const flexshipID = this.flexshipID;
         this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
+        	
+			  for(let key of this.flexshipItemList) {
+				var x = key.vipPrice.replace( /^\D+/g, '');
+				key.vipPrice = x * key.quantity
+			}
+			
 			this.observerService.notify('onNext');
             this.loading = false;
         });
