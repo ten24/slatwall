@@ -562,7 +562,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod AccountPaymentMethod_Delete
      */
-    public void function deleteAccountPaymentMethod() {
+    public void function deleteAccountPaymentMethod(required struct data) {
         param name="data.accountPaymentMethodID" default="";
         
         var accountPaymentMethod = getAccountService().getAccountPaymentMethod( data.accountPaymentMethodID );
@@ -570,6 +570,10 @@ component  accessors="true" output="false"
         if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
+            
+            if(!deleteOk) {
+                ArrayAppend(arguments.data.messages, accountPaymentMethod.getErrors(), true);
+            }
         } else {
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", true ); 
         }
