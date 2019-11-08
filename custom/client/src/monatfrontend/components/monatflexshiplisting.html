@@ -9,6 +9,11 @@
         ng-click="monatFlexshipListing.createNewFlexship()" 
         class="btn bg-primary btn-add"
         ng-class="{loading: monatFlexshipListing.loading}"
+        ng-if="
+            monatFlexshipListing.account.priceGroups.length 
+            && 2 != monatFlexshipListing.account.priceGroups[0].priceGroupCode
+            && monatFlexshipListing.showCreateButton
+        "
     >Create Flexship</button>
 
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates">
@@ -20,6 +25,7 @@
             data-expiration-year-options="monatFlexshipListing.expirationYearOptions"
             data-shipping-method-options="monatFlexshipListing.shippingMethodOptions"
             data-state-code-options="monatFlexshipListing.stateCodeOptions"
+            data-days-to-edit-flexship="{{monatFlexshipListing.daysToEditFlexshipSetting}}"
             data-cancellation-reason-type-options="monatFlexshipListing.cancellationReasonTypeOptions"
             data-schedule-date-change-reason-type-options="monatFlexshipListing.scheduleDateChangeReasonTypeOptions"
         ></monat-flexship-card>

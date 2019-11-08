@@ -59433,9 +59433,10 @@ exports.MonatMiniCart = MonatMiniCart;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatOrderItemsController = /** @class */ (function () {
     //@ngInject
-    function MonatOrderItemsController(monatService) {
+    function MonatOrderItemsController(monatService, orderTemplateService) {
         var _this = this;
         this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
         this.orderItems = []; // orderTemplateDetails
         this.productPacks = []; // orderTemplateDetails
         this.todaysOrder = []; // orderTemplateDetails
@@ -59503,6 +59504,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.showMiniCart = false;
         this.style = 'position:static; display:none';
         this.cartText = 'Show Cart';
+        this.reviewContext = false;
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
             if (_this.currentAccountID.length && (!_this.$rootScope.slatwall.errors || !_this.$rootScope.slatwall.errors.length)) {
@@ -59531,6 +59533,19 @@ var MonatEnrollmentController = /** @class */ (function () {
             _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
             _this.cartText = _this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
         };
+        this.editFlexshipItems = function () {
+            _this.reviewContext = true;
+            _this.navigate(_this.position - 2);
+        };
+        this.editFlexshipDate = function () {
+            _this.reviewContext = true;
+            _this.previous();
+        };
+        this.goToLastStep = function () {
+            _this.observerService.notify('lastStep');
+            _this.navigate(_this.steps.length - 1);
+            _this.reviewContext = false;
+        };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
         }
@@ -59544,6 +59559,8 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
         this.observerService.attach(this.getCart.bind(this), "addOrderItemSuccess");
+        this.observerService.attach(this.editFlexshipItems.bind(this), "editFlexshipItems");
+        this.observerService.attach(this.editFlexshipDate.bind(this), "editFlexshipDate");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
@@ -59687,7 +59704,7 @@ var EnrollmentMPController = /** @class */ (function () {
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
                 _this.loading = true;
-                _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
+                _this.monatService.selectStarterPackBundle(_this.selectedBundleID).then(function (data) {
                     _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
@@ -59893,6 +59910,7 @@ var VIPController = /** @class */ (function () {
             _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
                 _this.frequencyTerms = response.frequencyTermOptions;
             });
+            _this.observerService.attach(_this.getFlexshipItems, "lastStep");
         };
         this.getCountryCodeOptions = function () {
             if (_this.countryCodeOptions.length) {
@@ -59961,7 +59979,21 @@ var VIPController = /** @class */ (function () {
                 _this.loading = false;
             });
         };
-        this.observerService.attach(this.getProductList, 'createSuccess');
+        this.getFlexshipItems = function () {
+            _this.loading = true;
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.getWishlistItems(flexshipID).then(function (result) {
+                _this.flexshipItemList = result.orderTemplateItems;
+                _this.observerService.notify('onNext');
+                _this.loading = false;
+            });
+        };
+        this.editFlexshipItems = function () {
+            _this.observerService.notify('editFlexshipItems');
+        };
+        this.editFlexshipDate = function () {
+            _this.observerService.notify('editFlexshipDate');
+        };
     }
     return VIPController;
 }());
@@ -61101,6 +61133,11 @@ var MonatFlexshipCardController = /** @class */ (function () {
         this.ModalService = ModalService;
         this.$onInit = function () {
             _this.observerService.attach(_this.updateOrderTemplate, 'orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
+            if (_this.orderTemplate.scheduleOrderNextPlaceDateTime) {
+                var mostRecentFlexshipDeliveryDate = Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime);
+                _this.editFlexshipUntilDate = new Date(mostRecentFlexshipDeliveryDate);
+                _this.editFlexshipUntilDate.setDate(_this.editFlexshipUntilDate.getDate() - _this.daysToEditFlexship);
+            }
         };
         this.$onDestroy = function () {
             _this.observerService.detachById('orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
@@ -61151,6 +61188,7 @@ var MonatFlexshipCard = /** @class */ (function () {
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
             expirationYearOptions: '<',
+            daysToEditFlexship: '@?'
         };
         this.controller = MonatFlexshipCardController;
         this.controllerAs = 'monatFlexshipCard';
@@ -61246,6 +61284,9 @@ var MonatFlexshipListingController = /** @class */ (function () {
         this.initialized = false;
         this.$onInit = function () {
             _this.fetchFlexships();
+            _this.orderTemplateService.getOrderTemplateSettings().then(function (data) {
+                _this.daysToEditFlexshipSetting = data.orderTemplateSettings;
+            });
         };
         this.fetchFlexships = function () {
             _this.orderTemplateService
@@ -61862,7 +61903,11 @@ var swfAccountController = /** @class */ (function () {
                 if (_this.urlParams.get('orderid')) {
                     _this.getOrderItemsByOrderID();
                 }
-                else if (window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/') {
+                else if (window.location.pathname == '/my-account/') {
+                    _this.getOrdersOnAccount(1);
+                    _this.getMostRecentFlexship();
+                }
+                else if (window.location.pathname == '/my-account/order-history/') {
                     _this.getOrdersOnAccount();
                 }
                 ;
@@ -61875,6 +61920,19 @@ var swfAccountController = /** @class */ (function () {
                 var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
                 _this.accountAge = _this.currentYear - accountCreatedYear;
             }
+        };
+        this.getMostRecentFlexship = function () {
+            _this.loading = true;
+            var accountID = _this.accountData.accountID;
+            return _this.publicService.doAction("getMostRecentOrderTemplate", { 'accountID': accountID }).then(function (result) {
+                if (result.mostRecentOrderTemplate.length) {
+                    _this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                    _this.mostRecentFlexshipDeliveryDate = Date.parse(_this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                    _this.editFlexshipUntilDate = new Date(_this.mostRecentFlexshipDeliveryDate);
+                    _this.editFlexshipUntilDate.setDate(_this.editFlexshipUntilDate.getDate() - result.daysToEditFlexship);
+                }
+                _this.loading = false;
+            });
         };
         this.getOrdersOnAccount = function (pageRecordsShow, pageNumber, direction) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 5; }
@@ -62550,6 +62608,19 @@ var MonatService = /** @class */ (function () {
     MonatService.prototype.submitSponsor = function (sponsorID) {
         return this.publicService.doAction('submitSponsor', { sponsorID: sponsorID });
     };
+    MonatService.prototype.selectStarterPackBundle = function (skuID, quantity) {
+        if (quantity === void 0) { quantity = 1; }
+        var payload = {
+            skuID: skuID,
+            quantity: quantity,
+        };
+        if (this.previouslySelectedStarterPackBundleSkuID) {
+            payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
+        }
+        this.lastAddedSkuID = skuID;
+        this.previouslySelectedStarterPackBundleSkuID = skuID;
+        return this.updateCart('selectStarterPackBundle', payload);
+    };
     /**
      * options = {optionName:refresh, ---> option2:true, o3:false}
      */
@@ -62875,6 +62946,9 @@ var OrderTemplateService = /** @class */ (function () {
             return _this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', { ordertemplateTypeID: orderTemplateTypeID });
         };
     }
+    OrderTemplateService.prototype.getOrderTemplateSettings = function () {
+        return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+    };
     return OrderTemplateService;
 }());
 exports.OrderTemplateService = OrderTemplateService;

@@ -354,6 +354,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
+        
+    public any function selectStarterPackBundle(required struct data){
+        var cart = getHibachiScope().cart();
+        
+        //remove previously-selected StarterPackBundle
+        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
+            for( orderItem in cart.getOrderItems() ) {
+                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
+                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                    StructDelete(arguments.data, 'orderItemID');
+                    break;
+                }
+            }
+        }
+        
+        this.addOrderItem(argumentCollection = arguments);
+    }
+
+    
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
@@ -441,11 +461,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 && !isNull( arguments.data['year'] )
                 && !isNull( arguments.data['day'] )
             ) {
-                account.setDob( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
                 getAccountService().saveAccount( account );
             }
         }
         return account;
+    }
+    
+    public any function getDaysToEditOrderTemplateSetting(){
+		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
     }
     
     public void function submitSponsor(required struct data){
@@ -518,12 +542,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
+    
+    public any function getProductsByKeyword(required any data) {
+        param name="arguments.data.keyword" default="";
+        param name="arguments.data.priceGroupCode" default="2";
+        param name="arguments.data.currencyCode" default="USD";
+        param name="arguments.data.currentPage" default="1";
+        param name="arguments.data.pageRecordsShow" default="12";
+        
+        var productCollectionList = super.getBaseProductCollectionList(arguments.data);
+        
+        if ( len( arguments.data.keyword ) ) {
+            productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
+        }
+        
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        var pageRecords = productCollectionList.getPageRecords();
+        if ( len( pageRecords ) ) {
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords, arguments.data.priceGroupCode,arguments.data.currencyCode);
+            arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        } else {
+            arguments.data['ajaxResponse']['productList'] = [];
+        }
+    }
 
     public any function getProductsByCategoryOrContentID(required any data){
         param name="arguments.data.categoryID" default="";
         param name="arguments.data.contentID" default="";
         param name="arguments.data.priceGroupCode" default="2";
-        param name="arguments.data.currencyCode" default="USD";//TODO make Dynamic
+        param name="arguments.data.currencyCode" default="USD"; //TODO make Dynamic
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
                 
@@ -550,7 +599,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var upgradedPriceGroupCode;
         var upgradedPriceGroupID;
-        var skuCurrencyCode = #arguments.currencyCode#; 
+        var skuCurrencyCode = arguments.currencyCode; 
         
         
         if(arguments.priceGroupCode == 3 || arguments.priceGroupCode == 1){
