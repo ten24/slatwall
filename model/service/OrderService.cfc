@@ -1213,7 +1213,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-
+	
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
@@ -1222,7 +1222,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
 			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
-			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 

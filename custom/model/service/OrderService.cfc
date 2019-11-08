@@ -152,6 +152,11 @@ component extends="Slatwall.model.service.OrderService" {
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
+			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
+			
+			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# transient order subtotal #request.orderTemplateOrderDetails['subtotal']# and total #request.orderTemplateOrderDetails['total']#',true);
+			
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
@@ -164,11 +169,16 @@ component extends="Slatwall.model.service.OrderService" {
 			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 
-			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
+
+			if(structCount(request.orderTemplateOrderDetails['canPlaceOrderDetails'])){
+				this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# canPlaceOrderDetails #serializeJson(request.orderTemplateOrderDetails['canPlaceOrderDetails'])#', true);
+			}
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
