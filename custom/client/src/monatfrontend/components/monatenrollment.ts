@@ -59,10 +59,10 @@ class MonatEnrollmentController {
 
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		localStorage.setItem('accountID', this.currentAccountID);
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
+		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
 	public getCart = (refresh = true) => {
