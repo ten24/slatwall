@@ -20,6 +20,8 @@ class VIPController {
 	public flexshipItemList:any;
 	public holdingShippingAddressID:string;
 	public holdingShippingMethodID:string;
+	public flexshipDeliveryDate;
+	public flexshipFrequencyName;
 
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -31,6 +33,9 @@ class VIPController {
 			this.frequencyTerms = response.frequencyTermOptions;
 		})
 		
+		this.publicService.doAction('getAccount'){
+			
+		}
 		//checks to local storage in case user has refreshed
 		if(localStorage.getItem('shippingAddressID')){ 
 			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
@@ -38,6 +43,20 @@ class VIPController {
 		
 		if(localStorage.getItem('shippingMethodID')){
 			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
+		}
+		
+				
+		if(localStorage.getItem('flexshipDayOfMonth')){
+    		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
+		}
+		
+		if(localStorage.getItem('flexshipFrequency')){
+	    	this.flexshipFrequencyName = localStorage.getItem('flexshipFrequency');
+		}
+		
+		if(localStorage.getItem('flexshipID')){
+			//add check to see if user is logged in here, if not clear local storage
+	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
@@ -151,13 +170,23 @@ class VIPController {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
         	this.flexshipID = result.orderTemplate;
+        	localStorage.setItem('flexshipID', this.flexshipID);
             this.loading = false;
             this.observerService.notify('onNext');
         });
     }
     
-    public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth) => {
+    public setOrderTemplateFrequencyName = (name) =>{
+    	debugger;
+		this.flexshipFrequencyName = name;
+    	localStorage.setItem('flexshipFrequency', name);
+    }
+    
+    public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth, frequencyTermName) => {
         this.loading = true;
+        this.flexshipDeliveryDate = dayOfMonth;
+        localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
+    
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
             this.loading = false;

@@ -16,7 +16,7 @@ class MonatEnrollmentController {
 
 
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -28,6 +28,7 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
+
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
@@ -38,8 +39,28 @@ class MonatEnrollmentController {
 
 	}
 
+	public $onInit = () => {
+		this.publicService.getAccount(true).then(result=>{
+			console.log('account', result);
+			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){
+				this.publicService.getCart().then(result=>{
+					this.goToLastStep();
+				})
+			
+			}else{
+				//if its a new account clear data in local storage
+				localStorage.clear()
+				this.publicService.doAction('logout').then(result=>{
+					this.observerService.alert('logout')
+				})
+			}
+		})
+
+	}
+
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
+		localStorage.setItem('accountID', this.currentAccountID);
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
