@@ -185,7 +185,6 @@ class VIPController {
         	}
         	
             this.loading = false;
-            this.observerService.notify('onNext');
         });
     }
     
