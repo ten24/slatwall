@@ -52,7 +52,6 @@ class VIPController {
 		}
 		
 		if(localStorage.getItem('flexshipID')){
-			//add check to see if user is logged in here, if not clear local storage
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		

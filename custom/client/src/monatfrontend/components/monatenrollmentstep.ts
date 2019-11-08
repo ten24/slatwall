@@ -7,7 +7,8 @@ class MonatEnrollmentStep {
 	public scope ={
 		stepClass : '@',
 		showMiniCart : '@',
-		onNext : '=?'
+		onNext : '=?',
+		showFlexshipCart : '@',
 	}
 	public require = '^monatEnrollment';
 

@@ -13,7 +13,7 @@ class MonatEnrollmentController {
 	public style:string = 'position:static; display:none';
 	public cartText:string = 'Show Cart'
 	public reviewContext:boolean = false;
-
+	public showFlexshipCart: boolean = false;
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -41,17 +41,16 @@ class MonatEnrollmentController {
 
 	public $onInit = () => {
 		this.publicService.getAccount(true).then(result=>{
-			console.log('account', result);
-			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){
+			//if account has a flexship send to checkout review
+			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
 					this.goToLastStep();
 				})
-			
 			}else{
-				//if its a new account clear data in local storage
+				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
 				this.publicService.doAction('logout').then(result=>{
-					this.observerService.alert('logout')
+					this.observerService.notify('logout')
 				})
 			}
 		})
@@ -114,6 +113,7 @@ class MonatEnrollmentController {
 		this.position = index;
 		
 		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
 			step.selected = false;
