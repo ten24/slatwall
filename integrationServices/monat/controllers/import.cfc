@@ -1353,7 +1353,267 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				        
     };
     
-    
+    public void function upsertFlexships(rc) { 
+    	getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:20;
+		var pageMax = rc.pageMax?:1;
+
+		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
+		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
+		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
+
+		while (pageNumber <= pageMax){
+           
+    		var flexshipResponse = getFlexshipData(pageNumber, pageSize);
+			
+			if (flexshipResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+
+			var flexships = flexshipResponse.Flexships;
+    		var startTick = getTickCount();
+    		var transactionClosed = false;
+    		var index = 0;
+			var count = 1;   		
+
+			index=0;
+			
+			
+			//always stateless
+			//stateless
+			var ormStatelessSession = ormGetSessionFactory().openStatelessSession(); 
+			
+			try{
+
+					var tx = ormStatelessSession.beginTransaction();
+
+					for(var flexship in flexships){
+						
+						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId']);
+						
+						if (isNull(orderTemplate)){
+							var orderTemplate = new Slatwall.model.entity.OrderTemplate();
+						}
+						
+						orderTemplate.setRemoteID(flexship['FlexShipId']); 
+						orderTemplate.setOrderTemplateName(flexship['FlexShipNumber']?:"");
+						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
+						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
+						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
+						
+						// UPDATE THE ACCOUNT
+						var customerAccount = getAccountService().getAccountByRemoteID(flexship['AccountID'], false);
+						
+						if(isNull(customerAccount)){
+							echo("can't find customer account: #flexship['AccountID']# flexship #flexship['FlexShipId']#<br>");
+							//clear orm here.
+							continue;
+						}else{
+							orderTemplate.setAccount(customerAccount);
+						}
+						
+						// UPDATE THE SHIPPING ADDRESS
+						var flexshipShippingAddressRemoteID = 'fss' & flexship['FlexShipId'];
+						//get it by remoteID if it exists.
+						var shippingAccountAddress = getAccountService().getAccountAddressByRemoteID(flexshipShippingAddressRemoteID, false); 
+				
+						if(isNull(shippingAccountAddress)){
+							//create the shipping address
+							var shippingAccountAddress = new Slatwall.model.entity.AccountAddress();
+							shippingAccountAddress.setRemoteID(flexshipShippingAddressRemoteID);
+							shippingAccountAddress.setAccount(customerAccount);
+							
+						}
+						
+						// Saves the shipping account address.
+						if (shippingAccountAddress.getNewFlag()){
+		                	ormStatelessSession.insert("SlatwallAccountAddress", shippingAccountAddress);
+		                }else{
+		                	ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
+		                }
+		                
+		                //SAVE it on the orderTemplate 
+		                orderTemplate.setShippingAccountAddress(shippingAccountAddress); 
+						
+						
+						//CREATE a shipping address or update it.
+						var shippingAddress = getAddressService().getAddressByRemoteID(flexshipShippingAddressRemoteID);
+						
+						if (isNull(shippingAddress)){
+							var shippingAddress = new Slatwall.model.entity.Address();
+						}
+						
+						shippingAddress.setRemoteID(flexshipShippingAddressRemoteID);
+						shippingAddress.setStreetAddress(flexship['ShipToAddr1']);   
+						shippingAddress.setStreet2Address(flexship['ShipToAddr2']?:""); 
+						shippingAddress.setStateCode(flexship['ShipToState']?:"");   
+						shippingAddress.setCity(flexship['ShipToCity']);
+						shippingAddress.setPostalCode(flexship['ShipToZip']);
+						shippingAddress.setCountryCode(flexship['ShipToCountry']);
+						shippingAddress.setName(flexship['ShipToName']); 
+						
+						if (shippingAddress.getNewFlag()){
+		                	ormStatelessSession.insert("SlatwallAddress", shippingAddress);
+		                }else{
+		                	ormStatelessSession.update("SlatwallAddress", shippingAddress);
+		                }
+		                
+		                //Sets the address on shipping account address now that its saved.
+		                shippingAccountAddress.setAddress(shippingAddress); 
+		                ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
+		                
+		                //ADD a FLEXSHIP PAYMENT
+						if ( structKeyExists(flexship, "FlexShipPayment") && arrayLen(flexship.FlexShipPayment)){
+							var flexshipPayment = flexship.FlexShipPayment[1];
+				
+							//FIND or CREATE the payment method
+							var accountPaymentMethod = getAccountService().getAccountPaymentMethodByRemoteID(flexshipPayment['FlexShipPaymentId'], false);
+							
+							if(isNull(accountPaymentMethod)){	
+								var accountPaymentMethod = new Slatwall.model.entity.AccountPaymentMethod();
+							} 
+							
+							accountPaymentMethod.setRemoteID(flexshipPayment['FlexShipPaymentId']);
+							accountPaymentMethod.setAccountRemoteID(flexship['AccountId']);
+							accountPaymentMethod.setCurrencyCode(flexship['currencyCode']);
+							accountPaymentMethod.setCreditCardType(flexshipPayment['CcType']?:""); 
+							accountPaymentMethod.setExpirationYear(flexshipPayment['CcExpYy']?:""); 
+							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
+							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
+							accountPaymentMethod.setPaymentMethod(paymentMethod);
+				
+							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
+							
+							//FIND or CREATE the billing account address
+							var billingAccountAddress = getAccountService().getAccountAddressByRemoteID(flexshipBillingAddressRemoteID,false);
+							
+							if(isNull(billingAccountAddress)){
+								var billingAccountAddress = new Slatwall.model.entity.AccountAddress();
+							}  
+				
+							billingAccountAddress.setRemoteID(flexshipbillingAddressRemoteID);
+							billingAccountAddress.setAccount(customerAccount);
+							
+							//may be same as shipping
+							if(!structKeyExists(flexshipPayment, 'BillCity')){
+								//this.logHibachi('use shipping address? #shippingAddress.getAddressID()# #shippingAddress.getRemoteID()# #shippingAddress.getNewFlag()#',true)
+								var billingAddress = getAddressService().copyAddress(shippingAddress);
+								billingAddress.setRemoteID(flexshipBillingAddressRemoteID);
+								
+								
+							} else {
+				
+								if(!billingAccountAddress.getNewFlag()){
+									var billingAddress = billingAccountAddress.getAddress(false);
+								}	
+				
+								var billingAddress = getAddressByRemoteID(flexshipBillingAddressRemoteID, arguments.statefulSession); 			
+				
+								if(isNull(billingAddress)){
+									var billingAddress = new Slatwall.model.entity.Address();
+								}	
+				
+								billingAccountAddress.setAddress(billingAddress); 	
+				
+								billingAddress.setRemoteID(flexshipBillingAddressRemoteID);
+								billingAddress.setName(flexshipPayment['BillOtherName']?:''); 
+								billingAddress.setFirstName(flexshipPayment['BillFirstName']?:''); 
+								billingAddress.setLastName(flexshipPayment['BillLastName']?:''); 
+								billingAddress.setStreetAddress(flexshipPayment['BillAddr1']?:'');   
+								billingAddress.setStreet2Address(flexshipPayment['BillAddr2']?:''); 
+								billingAddress.setLocality(flexshipPayment['BillAddr3']?:''); 
+								billingAddress.setStateCode(flexshipPayment['BillState']?:'');   
+								billingAddress.setCity(flexshipPayment['BillCity']);
+								billingAddress.setPostalCode(flexshipPayment['BillZip']);
+								billingAddress.setCountryCode(flexshipPayment['BillCountryCode']);
+				
+							}
+							
+							// Save Billing Account Address
+							billingAccountAddress.setAddress(billingAddress); 
+							ormStatelessSession.update("SlatwallAccountAddress", billingAccountAddress);
+							
+							// Save Account Payment Method
+							accountPaymentMethod.setBillingAddress(billingAddress);
+							accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
+							ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							
+							// Save order template
+							orderTemplate.setAccountPaymentMethod(accountPaymentMethod); 
+							orderTemplate.setBillingAccountAddress(billingAccountAddress); 
+							
+							ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
+						}
+				
+						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
+							for (var flexshipItem in flexship.FlexShipDetails){
+				
+				
+								if(structKeyExists(arguments, 'statefulSession')){
+									var sku = getSkuBySkuCode(flexshipItem['ItemCode'], arguments.statefulSession);
+								} else {
+									var sku = getSkuService().getSkuBySkuCode(flexshipItem['ItemCode']);
+								}
+				
+								if(isNull(sku)){
+									this.logHibachi('Could not find sku with code #flexshipItem['ItemCode']# for flexship #flexship['FlexShipId']#', true);
+									continue; 
+								} 
+				
+								var orderTemplateItem = getOrderService().getOrderTemplateItemByRemoteID(flexshipItem['FlexShipDetailId'], false);	
+								
+								if(isNull(orderTemplateItem)){
+									var orderTemplateItem = new Slatwall.model.entity.OrderTemplateItem();
+									orderTemplateItem.setRemoteID(flexshipItem['FlexShipDetailId']); 
+								}
+								
+								orderTemplateItem.setSku(sku);
+								orderTemplateItem.setQuantity(flexshipItem['quantity']);
+								orderTemplateItem.setOrderTemplate(orderTemplate);
+								
+								if (shippingAddress.getNewFlag()){
+				                	ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
+				                }else{
+				                	ormStatelessSession.update("SlatwallOrderTemplateItem", orderTemplateItem);
+				                }
+							}
+						}
+						
+						this.logHibachi( "inserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
+					} 				
+
+					tx.commit();
+
+			} catch (e){
+
+				if (!isNull(tx) && tx.isActive()){
+    			    tx.rollback();
+    			}
+
+				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
+    			writeDump(flexship); // rollback the tx
+    			writeDump(e); // rollback the tx
+
+    		} finally{
+
+			    // close the stateless before opening the statefull again...
+				if (ormStatelessSession.isOpen()){
+					ormStatelessSession.close();
+				}
+			}
+
+		    pageNumber++;
+		}
+
+			
+			
+		}//end pageNumber
+    }
 	
 	//http://monat/Slatwall/?slatAction=monat:import.upsertOrders&pageNumber=1&pageMax=2&pageSize=25
 	public void function upsertOrders(rc) { 
