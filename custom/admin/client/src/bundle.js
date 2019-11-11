@@ -98392,7 +98392,7 @@ var ScheduleService = /** @class */ (function (_super) {
             if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
             _this.clearSchedulePreview();
             var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
-            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
+            var endTime = (scheduleObject.frequencyEndTime && scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
             var now = new Date();
             var startPoint = new Date();
             startPoint.setHours(startTime.getHours());
