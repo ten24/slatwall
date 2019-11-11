@@ -180,7 +180,7 @@ class VIPController {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
         	this.flexshipID = result.orderTemplate;
-        	if(this.isNotSafariPrivate){
+        	if(this.isNotSafariPrivate && this.flexshipID){
         		localStorage.setItem('flexshipID', this.flexshipID);
         	}
         	
@@ -189,7 +189,7 @@ class VIPController {
     }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
-        debugger;
+
         let newTerm = JSON.parse(frequencyTerm);
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
@@ -210,12 +210,6 @@ class VIPController {
         const flexshipID = this.flexshipID;
         this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
-        	
-			  for(let key of this.flexshipItemList) {
-				var x = key.vipPrice.replace( /^\D+/g, '');
-				key.vipPrice = x * key.quantity;
-			}
-			
 			this.observerService.notify('onNext');
             this.loading = false;
         });
