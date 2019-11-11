@@ -4,41 +4,46 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
         super.setup();
         
         variables.service = variables.mockservice.getIntegrationServiceMock();
-	}
-
-	/**
-	 * @test
-	 */
-	 
-	public void function testAuthorize() {
-		
-		//Get Integration and Payment CFC
-		var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('hyperwallet');
-		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
-	
-		//Allowed Transaction types
-		var transactionTypes = [
+        
+        variables.accountPaymentMethodID = '2c9480846e4a3848016e4a8fc21b0018';
+        variables.accountID = '2c9180866adeb3fc016adeea531b001d';
+        variables.orderID = '2c9180856b8e1aeb016b8e9ec98e0133';
+        
+        //Allowed Transaction types
+		variables.transactionTypes = [
 			'generateToken',			// 1
 			'authorizeAndCharge',		// 2
 			'authorize', 				// 3
 			'chargePreAuthorization', 	// 4
 			'credit',					// 5
 			'void',						// 6
-			'balance'
+			'balance',					// 7
+			'receive'					// 8
 		];
-	
+		
+		variables.integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('hyperwallet');
+		variables.paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
+	}
+
+	/**
+	 * @test
+	 */
+	 
+	public void function testPayment() {
+		
 		//Mock Payload
 		var values = {
 			currencyCode = 'USD',
-			amount = 10.00,
-			transactionType = transactionTypes[3]
+			amount = 1.00,
+			transactionType = variables.transactionTypes[8]
 		};
 	
 		// Setup objects
 		var paymentTransaction = request.slatwallScope.getBean("paymentService").newPaymentTransaction();
 		var payment = createMock(object=request.slatwallScope.getBean("paymentService").newOrderPayment());
 		var order = createMock(object=request.slatwallScope.getBean('orderService').newOrder());
-		var account = createMock(object=request.slatwallScope.getBean('accountService').getAccount('2c928084699c53da01699c672f82000b'));
+		var account = createMock(object=request.slatwallScope.getBean('accountService').getAccount('2c9180866adeb3fc016adeea531b001d'));
+		//2c928084699c53da01699c672f82000b
 		var address = createMock(object=request.slatwallScope.getBean('addressService').newAddress());
 		var emailAddress = createMock(object=request.slatwallScope.getBean('accountService').newAccountEmailAddress());
 		var site = createMock(object=request.slatwallScope.getBean('siteService').getSite('2c97808468a979b50168a97b20290021'));
@@ -54,8 +59,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setPrimaryEmailAddress(emailAddress);
 		account.setAccountID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
 		
-		var moMoney = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('2c9280846bd82ef4016be77e88d0005a');
-
+		var moMoney = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('2c9480846e4a3848016e4a8fc21b0018');
+		//2c9280846bd82ef4016be77e88d0005a
 		payment.copyFromAccountPaymentMethod(moMoney);
 		paymentTransaction.setOrderPayment(payment);
 		
@@ -69,7 +74,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		requestBean.populatePaymentInfoWithOrderPayment( paymentTransaction.getPayment() );
 		
 		// Run transaction
-		var responseBean = paymentIntegrationCFC.getAccountBalance(requestBean);
+		var responseBean = variables.paymentIntegrationCFC.processExternal(requestBean);
 		//writeDump(var = responseBean, top = 2); abort;
 		//assertFalse(responseBean.hasErrors());
 			
@@ -90,20 +95,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	 * @test
 	 */
-	public void function testPayment()
+	public void function testGetBalance()
 	{
 		var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
-		requestBean.setTransactionID("2c9580846e4b1e47016e4b41ef750028"); //paymentTransactionID
-		requestBean.setTransactionAmount("10");
-		requestBean.setTransactionCurrencyCode("USD");
-		requestBean.setTransactionType("");
 		
-		//Get Integration and Payment CFC
-		var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('hyperwallet');
-		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
-		
-		var responseBean = paymentIntegrationCFC.processExternal(requestBean);
-		writeDump(responseBean); abort;
+		var moMoney = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('#variables.accountPaymentMethodID#');
+		requestBean.setProviderToken(moMoney.getProviderToken()); //Set Provider Token
+		requestBean.setTransactionType(variables.transactionTypes[7]);
+		var responseBean = variables.paymentIntegrationCFC.processExternal(requestBean);
+		writeDump(responseBean.getAmountAuthorized()); abort;
 	}
 	
 }

@@ -63,8 +63,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 		return super.setting(argumentCollection=arguments);
 	}
-
-
+	
 	public any function processExternal(required any requestBean){
 		
 		var responseBean = getTransient("externalTransactionResponseBean");
@@ -85,7 +84,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
 				break;
 			case 'balance':
-				getAccountBalance(arguments.requestBean);
+				getAccountBalance(arguments.requestBean, responseBean);
 			case 'credit':
 				break;
 			default:
@@ -94,7 +93,6 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 		return responseBean;
 	}
-	
 	
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 		// Request Data
@@ -105,7 +103,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			return;
 		}
 		var requestData = {
-			'clientTransferId' = arguments.requestBean.getAccount().getAccountID(),
+			'clientTransferId' = arguments.requestBean.getTransactionID(),
 			'destinationAmount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
 			'destinationCurrency' = arguments.requestBean.getTransactionCurrencyCode(),
 			'notes': "Partial-Balance Transfer", //TODO: Add order information
@@ -135,7 +133,6 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		// }
 	}
 	
-	
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 		sendRequestToAuthorize(argumentCollection = arguments);
 		if(arguments.responseBean.hasErrors()){
@@ -148,17 +145,22 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		};
 
 		// Response Data
-		var responseData = deserializeJSON(sendHttpAPIRequest(arguments.requestBean, 'transfers/#responseBean.getAuthorizationCode()#/status-transitions', requestData));
-			
+		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers/#arguments.responseBean.getAuthorizationCode()#/status-transitions', requestData);
+		
+		if(IsJson(responseData.fileContent))
+		{
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
+		
 		if(structKeyExists(responseData, 'token')){
 			arguments.responseBean.setAuthorizationCode(responseData.token);
-			arguments.responseBean.setAmountAuthorized(responseData.sourceAmount);
+			//arguments.responseBean.setAmountAuthorized(responseData.sourceAmount);
 		}else{
 			arguments.responseBean.addError("Processing error", "Error attempting to Charge.");
 		}
 		
 	}
-	
 	
 	private void function sendRequestToCredit(required any requestBean, required any responseBean) {
 		// Request Data
@@ -169,7 +171,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 
 		var requestData = {
 			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-			'clientPaymentId' = arguments.requestBean.getAccount().getAccountID(),
+			'clientPaymentId' = arguments.requestBean.getTransactionID(),
 			'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 			'destinationToken' = arguments.requestBean.getProviderToken(), //TODO: Figure out whos the destination (Should be Monat)
 			'programToken' = setting(settingName='program', requestBean=arguments.requestBean),
@@ -177,8 +179,13 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		};
 
 		// Response Data
-		var responseData = deserializeJSON(sendHttpAPIRequest(arguments.requestBean, 'payments', requestData));
-			
+		var responseData = sendHttpAPIRequest(arguments.requestBean, 'payments', requestData);
+		
+		if(IsJson(responseData.fileContent))
+		{
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
 		if(structKeyExists(responseData, 'token')){
 			arguments.responseBean.setAuthorizationCode(responseData.token);
 			arguments.responseBean.setAmountCredited(responseData.payments);
@@ -188,11 +195,16 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		
 	}
 	
-	public any function getAccountBalance(required any providerToken)
+	private void function getAccountBalance(required any requestBean, required any responseBean)
 	{
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			return;
+		}
 		var requestBean = getTransient("externalTransactionRequestBean");
+		
 		var requestData = {};
-		var responseData = sendHttpAPIRequest(requestBean, 'users/#arguments.providerToken#/balances', requestData);
+		var responseData = sendHttpAPIRequest(requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
 		
 		if(IsJson(responseData.fileContent))
 		{
@@ -200,9 +212,9 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		}
 		
 		if(structKeyExists(responseData, 'data')){
-			return responseData.data[1].amount;
+			arguments.responseBean.setAmountAuthorized(responseData.data[1].amount);
 		}else{
-			return "unable to get balance";
+			arguments.responseBean.addError("Processing error", "Error attempting to fetch account balance.");
 		}
 	}
 	

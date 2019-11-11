@@ -49,7 +49,7 @@ Notes:
 component {
     
     property name="moMoneyBalance" persistent="false";
-    //property name="moMoneyWallet" fieldtype="boolean" persistent="false";
+	property name="moMoneyWallet" fieldtype="boolean" persistent="false";
     
     public array function getPaymentMethodOptions() {
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
@@ -67,7 +67,7 @@ component {
 		return variables.paymentMethodOptions;
 	}
 	
-	public any function isMoMoneyWallet()
+	public any function getMoMoneyWallet()
 	{
 	    if(!StructKeyExists(variables,"moMoneyWallet"))
 	    {
@@ -102,8 +102,19 @@ component {
 		//always use isMoMoneyWallet check before getting the balance
 	    if(!StructKeyExists(variables,"moMoneyBalance"))
 	    {
-	        var hyperwallet = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet').getIntegrationCFC("Payment").getAccountBalance(getProviderToken());
-	        variables.moMoneyBalance = hyperwallet;
+	    	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+	    	requestBean.setProviderToken(getProviderToken());
+			requestBean.setTransactionType("balance");
+			
+	        var responseBean = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet').getIntegrationCFC("Payment").processExternal(requestBean);
+	        if(!responseBean.hasErrors())
+	        {
+	        	variables.moMoneyBalance = responseBean.getAmountAuthorized();
+	        }
+	        else{
+	        	//Setup Error
+	        	writeOutput("setup error message");
+	        }
 	    }
 	    
 	    return variables.moMoneyBalance;
