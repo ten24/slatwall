@@ -84,6 +84,7 @@
 							  data-save-event="saveOrderTemplate"
 							  data-edit-action="editOrderTemplate"
 							  data-edit-event="editOrderTemplate"
+							  data-show-delete="#!getHibachiScope().validate(rc.orderTemplate,'delete',false).hasErrors()#"
 							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
 							  data-type="detail" 
 							  data-edit="#rc.edit#">

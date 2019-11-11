@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel,batchCancel" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -124,7 +124,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	
-
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
@@ -368,21 +367,62 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
-	}	
+	}
+
+	//Email Template Helpers
+	public string function getOrderTemplateItemDetailsHTML(){
+		var html = "<ul>";
+
+		var columnConfig = {
+			'arguments': {
+				'currencyCode': this.getCurrencyCode(),
+				'accountID': this.getAccount().getAccountID()
+			}
+		}
+
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
+		orderTemplateItemCollection.setDisplayProperties('sku.skuCode, sku.skuDefinition, sku.priceByCurrencyCode, quantity', columnConfig);
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(formatRecords=false);
+
+		for( var orderTemplateItem in orderTemplateItems ){
+			html &= "<li>";
+			
+			html &= orderTemplateItem['sku_skuCode'] & ' - ';
+			html &= orderTemplateItem['sku_skuDefinition'];
+			
+			html &= ' ' & rbKey('define.price') & ': ';
+			html &= orderTemplateItem['sku_priceByCurrencyCode'];
+			
+			html &= ' ' & rbKey('define.quantity') & ': ';
+			html &= orderTemplateItem['quantity'];
+			
+			html &= "</li>";
+		} 
+
+		html &= "</ul>";
+
+		return getHibachiScope().hibachiHTMLEditFormat(html); 
+	}
+
+	
 	//CUSTOM FUNCTIONS BEGIN
 
 public boolean function getCustomerCanCreateFlag(){
 			
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
-			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
+			if( !isNull(getSite()) && 
+				!isNull(getAccount()) && 
+				!isNull(getAccount().getEnrollmentDate()) && 
+				getAccount().getAccountType() == 'MarketPartner'
+			){
 				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
 				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
 			} 
 		}
 
 		return variables.customerCanCreateFlag; 
-	} 
+	}
 
 	public numeric function getPersonalVolumeTotal(){
 	

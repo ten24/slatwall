@@ -13,10 +13,10 @@ class MonatEnrollmentController {
 	public style:string = 'position:static; display:none';
 	public cartText:string = 'Show Cart'
 	public reviewContext:boolean = false;
-
+	public showFlexshipCart: boolean = false;
 
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -28,6 +28,7 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
+
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
@@ -38,11 +39,30 @@ class MonatEnrollmentController {
 
 	}
 
+	public $onInit = () => {
+		this.publicService.getAccount(true).then(result=>{
+			//if account has a flexship send to checkout review
+			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
+				this.publicService.getCart().then(result=>{
+					this.goToLastStep();
+				})
+			}else{
+				//if its a new account clear data in local storage and ensure they are logged out
+				localStorage.clear()
+				this.publicService.doAction('logout').then(result=>{
+					this.observerService.notify('logout')
+				})
+			}
+		})
+
+	}
+
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
+		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
 	public getCart = (refresh = true) => {
@@ -93,6 +113,7 @@ class MonatEnrollmentController {
 		this.position = index;
 		
 		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
 			step.selected = false;
