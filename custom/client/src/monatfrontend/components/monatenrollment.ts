@@ -64,7 +64,7 @@ class MonatEnrollmentController {
 	
 	public getCart = (refresh = true) => {
 		this.monatService.getCart(refresh).then(data =>{
-			let cartData = this.removeProductPacksFromCart( data );
+			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
 		});
 	}
@@ -135,7 +135,7 @@ class MonatEnrollmentController {
 		this.reviewContext = false;
 	}
 	
-	public removeProductPacksFromCart = cart => {
+	public removeStarterKitsFromCart = cart => {
 		if ( 'undefined' === typeof cart.orderItems ) {
 			return cart;
 		}
@@ -149,7 +149,7 @@ class MonatEnrollmentController {
 		cart.orderItems.forEach( (item, index) => {
 			let productType = item.sku.product.productType.productTypeName;
 			
-			// If the product type is productPack, we don't want to add it to our new cart.
+			// If the product type is Starter Kit, we don't want to add it to our new cart.
 			if ( 'Starter Kit' === productType ) {
 				return;
 			} else {
