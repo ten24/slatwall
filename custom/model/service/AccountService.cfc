@@ -82,5 +82,10 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
-
+	//custom validation methods
+	
+	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
+		var oneYearFromNow = DateAdd('yyyy', 1, Now());
+		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
+	}
 }

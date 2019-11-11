@@ -1,11 +1,15 @@
 export class OrderTemplateService { 
    
+   private orderTemplateTypeID:string='';
+   private cachedGetOrderTemplatesResponse:any;
+   
    //@ngInject
    constructor(
         public requestService,
         public $hibachi,
         public $rootScope,
-        public publicService
+        public publicService,
+        public $q
        ){
 
    } 
@@ -15,15 +19,35 @@ export class OrderTemplateService {
     * 
     * 
    */
-   public getOrderTemplates = (pageRecordsShow=100, currentPage=1, orderTemplateTypeID?) =>{
-       var data = {
-           currentPage:currentPage,
-           pageRecordsShow:pageRecordsShow,
+   public getOrderTemplates = (orderTemplateTypeID:string, pageRecordsShow=100, currentPage=1, refresh=false,) =>{
+       var deferred = this.$q.defer();
+       
+       // if we're gonna use pagination, we shoudn't cache 
+       if(orderTemplateTypeID == this.orderTemplateTypeID  && this.cachedGetOrderTemplatesResponse && !refresh){
+           deferred.resolve(this.cachedGetOrderTemplatesResponse);
+       } else {
+       
+           this.orderTemplateTypeID = orderTemplateTypeID;
+    
+            var data = {
+               currentPage: currentPage,
+               pageRecordsShow: pageRecordsShow,
+               orderTemplateTypeID: orderTemplateTypeID
+           }
+           
+           this.publicService.doAction('?slatAction=api:public.getordertemplates', data)
+           .then( (result) => {
+               
+               // TODO additional checks to make sure it's a successful response
+               this.cachedGetOrderTemplatesResponse = result; 
+               deferred.resolve(this.cachedGetOrderTemplatesResponse);
+               
+           })
+           .catch( (e) => {
+               deferred.reject(e);
+           });
        }
-       if(orderTemplateTypeID){
-           data['orderTemplateTypeID'] = orderTemplateTypeID;
-       }
-       return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
+       return deferred.promise;
    }
    
    public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
@@ -67,7 +91,7 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public setAsCurrentFlexship = (orderTemplateID) => {
+    public setAsCurrentFlexship = (orderTemplateID:string) => {
         let payload = {
             'orderTemplateID' : orderTemplateID
         };
@@ -261,5 +285,9 @@ export class OrderTemplateService {
    public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{
        return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID})
    }
+   
+   	public getOrderTemplateSettings(){
+		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+	}
 
 }
