@@ -1417,16 +1417,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			var site = getSiteService().getSite( processObject.getSiteID()); 
-			arguments.orderTemplate.setSite(site);
+			
+			var site = arguments.processObject.getSite() 
+			arguments.orderTemplate.setSite( site  );
+			
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 			
 			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
 				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
 			} 
 
 			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
@@ -1952,6 +1954,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
+		orderTemplateCollection.addOrderBy('modifiedDateTime|DESC');
 		return orderTemplateCollection; 
 	}  
 

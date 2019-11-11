@@ -119,7 +119,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
-								ng-options="state as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions track by state.value"
+								ng-options="state.value as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions"
 							>
 								<option disabled></option>
 							</select>
@@ -251,7 +251,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
-								ng-options="year as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions track by year.VALUE"
+								ng-options="year.VALUE as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions"
 							>
 								<option disabled></option>
 							</select>
