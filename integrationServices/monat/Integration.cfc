@@ -14,6 +14,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 
     public struct function getSettings() {
         return {
+            siteMaximumFlexshipGiftCardAmount = {fieldtype="text", defaultValue=20, validate={dataType="numeric", required=true, minValue=0}},
             siteDaysAfterMarketPartnerEnrollmentFlexshipCreate = {fieldtype="text", defaultValue=0, validate={dataType="numeric", required=true, minValue=0}},
             baseImportURL = {fieldType="text", defaultValue=""},
 			authKey = {fieldType="password", encryptValue=true}

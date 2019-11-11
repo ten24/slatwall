@@ -79573,6 +79573,9 @@ var SWEntityActionBarController = /** @class */ (function () {
             if (_this.edit == null) {
                 _this.edit = false;
             }
+            if (_this.showDelete == null) {
+                _this.showDelete = true;
+            }
             if (angular.isDefined(_this.pageTitleRbKey)) {
                 _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
             }
