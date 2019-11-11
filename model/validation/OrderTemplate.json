@@ -30,6 +30,7 @@
 		"canPlaceFutureScheduleOrderFlag": [
 			{ "contexts": "createAndPlaceOrder", "conditions": "activeScheduleOrderTemplate", "eq": true }
 		],
+		"currencyCode": [{ "contexts" : "save", "required": true }],
 		"orderTemplateType": [{ "contexts": "save", "required": true }],
 		"shippingAccountAddress": [{ "contexts": "createAndPlaceOrder", "required": true }],
 		"frequencyTerm": [

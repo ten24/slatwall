@@ -1418,7 +1418,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			arguments.orderTemplate.setAccount(account);
 			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
+			var site = getSiteService().getSite( processObject.getSiteID()); 
+			arguments.orderTemplate.setSite(site);
+			
+			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
+				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
+			} 
+
 			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
