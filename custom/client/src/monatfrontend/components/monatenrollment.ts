@@ -152,19 +152,12 @@ class MonatEnrollmentController {
 			// If the product type is Starter Kit, we don't want to add it to our new cart.
 			if ( 'Starter Kit' === productType ) {
 				return;
-			} else {
-				console.log( 'not sk' );
-				console.log( item );
 			}
 			
 			formattedCart.orderItems.push( item );
 			formattedCart.totalItemQuantity += item.quantity;
 			formattedCart.total += item.extendedUnitPriceAfterDiscount * item.quantity;
 		});
-		
-		console.log( 'formatted cart' );
-		console.log( cart );
-		console.log( formattedCart );
 		
 		return formattedCart;
 	}
