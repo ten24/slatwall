@@ -35,6 +35,7 @@ import { SponsorSearchSelector } from './components/sponsor-search-selector';
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
 import { MonatSearchController } from './controllers/monat-search';
+import { MonatCheckoutController } from './controllers/monat-checkout';
 
 
 //services
@@ -83,6 +84,7 @@ var monatfrontendmodule = angular
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)
+	.controller('checkoutController', MonatCheckoutController)
 	
 	// Services
 	.service('monatService', MonatService)
