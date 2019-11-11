@@ -20,6 +20,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
+	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 		
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -72,7 +73,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getOrderData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -83,6 +84,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    /*
 	    "Filters": {
 				"EntryDate": {
+					"StartDate": "2017-09-30T00:00:00.000",
+					"EndDate": "2019-09-30T00:00:00.000"
+				}
+			}
+			
+			
+			"Filters": {
+				"OrderTypeCode": {
 					"StartDate": "2017-09-30T00:00:00.000",
 					"EndDate": "2019-09-30T00:00:00.000"
 				}
@@ -1397,7 +1406,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:20;
 		var pageMax = rc.pageMax?:1;
-
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
 		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
@@ -1442,6 +1450,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setOrderTemplateName(flexship['FlexShipNumber']?:"");
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
+						
+						//set created and modified date times.
+						if (!isNull(order['EntryDate']) && len(order['EntryDate'])){
+							var entry = getDateFromString(flexship['entryDate']);
+	                    	orderTemplate.setCreatedDateTime( entry );//*
+	                    	orderTemplate.setModifiedDateTime( entry );//*
+	                    }
+	                    
 						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
 						
 						// UPDATE THE ACCOUNT
@@ -1494,7 +1510,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						shippingAddress.setPostalCode(flexship['ShipToZip']);
 						shippingAddress.setCountryCode(flexship['ShipToCountry']);
 						shippingAddress.setName(flexship['ShipToName']); 
-						
+						shippingAddress.setPhoneNumber(flexship['ShipToPhone']);
 						if (shippingAddress.getNewFlag()){
 		                	ormStatelessSession.insert("SlatwallAddress", shippingAddress);
 		                }else{
@@ -1506,8 +1522,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
 		                
 		                //ADD a FLEXSHIP PAYMENT
-						if ( structKeyExists(flexship, "FlexShipPayment") && arrayLen(flexship.FlexShipPayment)){
-							var flexshipPayment = flexship.FlexShipPayment[1];
+						if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
+							var flexshipPayment = flexship.FlexShipPayments[1];
 				
 							//FIND or CREATE the payment method
 							var accountPaymentMethod = getAccountService().getAccountPaymentMethodByRemoteID(flexshipPayment['FlexShipPaymentId'], false);
@@ -1569,6 +1585,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								billingAddress.setCity(flexshipPayment['BillCity']);
 								billingAddress.setPostalCode(flexshipPayment['BillZip']);
 								billingAddress.setCountryCode(flexshipPayment['BillCountryCode']);
+								billingAddress.setPhoneNumber(flexshipPayment['BillPhone']);
 				
 							}
 							
@@ -2268,6 +2285,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
                 				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
                 				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
+                				
+                				
+                				
+                				
+                				
+                				
+                				
                 				//orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
                 				
 	                			//set the verifiedAddressFlag if verified.
