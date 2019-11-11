@@ -171,7 +171,7 @@ class VIPController {
         	
 			  for(let key of this.flexshipItemList) {
 				var x = key.vipPrice.replace( /^\D+/g, '');
-				key.vipPrice = x * key.quantity
+				key.vipPrice = x * key.quantity;
 			}
 			
 			this.observerService.notify('onNext');

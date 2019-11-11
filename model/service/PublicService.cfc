@@ -1781,7 +1781,7 @@ component  accessors="true" output="false"
 			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID(),   
-  			      "quantity"                    :       wishListItem.getQuantity(),       
+  			      "quantity"                    :       wishListItem.getQuantity()    
 
 			    };
 
