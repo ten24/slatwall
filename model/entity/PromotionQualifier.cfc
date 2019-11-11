@@ -299,7 +299,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		}
 		skuCollection.setPageRecordsShow(1);
 		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
+		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasSku;
 	}
 	
@@ -310,12 +310,15 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getOrderCollection();
+
 		if(isNull(orderCollection)){
 			return false;
 		}
+
 		orderCollection.setPageRecordsShow(1); 
 		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+
+		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasOrder;
 	}
 	
