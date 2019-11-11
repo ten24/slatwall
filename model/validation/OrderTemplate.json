@@ -4,6 +4,12 @@
 			"statusCode": { "eq": "otstActive" },
 			"typeCode": { "eq": "ottSchedule" }
 		},
+		"draftOrderTemplate": {
+			"statusCode": { "eq": "otstDraft" }
+		},
+		"scheduleOrderTemplate": {
+			"typeCode": { "eq": "ottSchedule" }
+		},
 		"isWishList": {
 			"typeCode": { "eq": "ottWishList" }
 		}
@@ -24,6 +30,7 @@
 		"canPlaceFutureScheduleOrderFlag": [
 			{ "contexts": "createAndPlaceOrder", "conditions": "activeScheduleOrderTemplate", "eq": true }
 		],
+		"currencyCode": [{ "contexts" : "save", "required": true }],
 		"orderTemplateType": [{ "contexts": "save", "required": true }],
 		"shippingAccountAddress": [{ "contexts": "activate,createAndPlaceOrder", "required": true }],
 		"statusCode": [{ "contexts": "createAndPlaceOrder", "eq": "otstActive" }],
@@ -32,6 +39,16 @@
 				"contexts": "save,createAndPlaceOrder",
 				"conditions": "activeScheduleOrderTemplate",
 				"required": true
+			}
+		],
+		"statusCode": [
+			{ 
+				"contexts": "createAndPlaceOrder", 
+				"eq": "otstActive" 
+			},
+			{
+				"contexts": "delete", 
+				"eq": "otstDraft"
 			}
 		],
 		"typeCode": [{ "contexts": "delete", "eq": "ottWishList" }]
