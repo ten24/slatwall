@@ -367,7 +367,44 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
-	}	
+	}
+
+	//Email Template Helpers
+	public string function getOrderTemplateItemDetailsHTML(){
+		var html = "<ul>";
+
+		var columnConfig = {
+			'arguments': {
+				'currencyCode': this.getCurrencyCode(),
+				'accountID': this.getAccount().getAccountID()
+			}
+		}
+
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
+		orderTemplateItemCollection.setDisplayProperties('sku.skuCode, sku.skuDefinition, sku.priceByCurrencyCode, quantity', columnConfig);
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(formatRecords=false);
+
+		for( var orderTemplateItem in orderTemplateItems ){
+			html &= "<li>";
+			
+			html &= orderTemplateItem['sku_skuCode'] & ' - ';
+			html &= orderTemplateItem['sku_skuDefinition'];
+			
+			html &= ' ' & rbKey('define.price') & ': ';
+			html &= orderTemplateItem['sku_priceByCurrencyCode'];
+			
+			html &= ' ' & rbKey('define.quantity') & ': ';
+			html &= orderTemplateItem['quantity'];
+			
+			html &= "</li>";
+		} 
+
+		html &= "</ul>";
+
+		return getHibachiScope().hibachiHTMLEditFormat(html); 
+	}
+
+	
 	//CUSTOM FUNCTIONS BEGIN
 
 public boolean function getCustomerCanCreateFlag(){
