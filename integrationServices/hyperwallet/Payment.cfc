@@ -73,6 +73,8 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
 			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
 		}
+		
+		
 		switch(arguments.requestBean.getTransactionType()){
 			case 'authorize':
 				sendRequestToAuthorize(arguments.requestBean, responseBean);
@@ -96,10 +98,10 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 	
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 		// Request Data
+		//var transaction = arguments.requestBean.
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
-			writedump(var="#arguments.requestBean#", top=2); abort;
 			return;
 		}
 		var requestData = {

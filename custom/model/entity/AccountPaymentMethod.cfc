@@ -73,7 +73,14 @@ component {
 	    {
 	        //Check if it's external payment method with Integration Service enabled
 	        var hyperwallet = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet');
-	        var paymentIntegration = getPaymentMethod().getPaymentIntegration();
+	        if(!isNull(getPaymentMethod()))
+	        {
+	        	var paymentIntegration = getPaymentMethod().getPaymentIntegration();
+	        }
+	        else{
+	        	var paymentIntegration = {};
+	        }
+	        
 	        if( !structIsEmpty(hyperwallet) && !isNull(hyperwallet.getIntegrationID())
 	        	&&
 	        	!structIsEmpty(paymentIntegration) && !isNull(paymentIntegration.getIntegrationID()) && 

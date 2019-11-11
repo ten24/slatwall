@@ -50,10 +50,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		order.setBillingAddress(address);
 		order.setOrderCreatedSite(site);
 		emailAddress.setAccount(account);
-		emailAddress.setEmailAddress('irta.john@ten24web.com');		
+		emailAddress.setEmailAddress('irta.john@ten24web.com');
 		account.setPrimaryEmailAddress(emailAddress);
 		account.setAccountID(request.slatwallScope.getService("hibachiService").createHibachiUUID());
-		
 		
 		var moMoney = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('2c9280846bd82ef4016be77e88d0005a');
 
@@ -91,6 +90,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	 * @test
 	 */
-	//public void function 
+	public void function testPayment()
+	{
+		var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+		requestBean.setTransactionID("2c9580846e4b1e47016e4b41ef750028"); //paymentTransactionID
+		requestBean.setTransactionAmount("10");
+		requestBean.setTransactionCurrencyCode("USD");
+		requestBean.setTransactionType("");
+		
+		//Get Integration and Payment CFC
+		var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('hyperwallet');
+		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
+		
+		var responseBean = paymentIntegrationCFC.processExternal(requestBean);
+		writeDump(responseBean); abort;
+	}
 	
 }
