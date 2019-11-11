@@ -124,7 +124,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	
-
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
@@ -375,14 +374,18 @@ public boolean function getCustomerCanCreateFlag(){
 			
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
-			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
+			if( !isNull(getSite()) && 
+				!isNull(getAccount()) && 
+				!isNull(getAccount().getEnrollmentDate()) && 
+				getAccount().getAccountType() == 'MarketPartner'
+			){
 				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
 				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
 			} 
 		}
 
 		return variables.customerCanCreateFlag; 
-	} 
+	}
 
 	public numeric function getPersonalVolumeTotal(){
 	
