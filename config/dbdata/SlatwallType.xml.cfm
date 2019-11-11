@@ -95,6 +95,9 @@
 		<Record typeID="2c9480846a9e35d1016a9e5463c10006" typeIDPath="2c9480846a9e35d1016a9e5463c10006" parentTypeID="NULL" typeName="Order Template Cancellation Reason Type" systemCode="orderTemplateCancellationReasonType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c9680846ab15673016ab172b08c000c" typeIDPath="2c9480846a9e35d1016a9e5463c10006,2c9680846ab15673016ab172b08c000c" parentTypeID="2c9480846a9e35d1016a9e5463c10006" typeName="Other" typeDescription="Other" systemCode="otcrtOther" />
 
+		<Record typeID="2c9280846e5ae975016e5b2286c7000a" typeIDPath="2c9280846e5ae975016e5b2286c7000a" parentTypeID="NULL" typeName="Order Template System Cancellation Reason Type" systemCode="orderTemplateSystemCancellationReasonType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c9280846e5ae975016e5b2505b7000b" typeIDPath="2c9280846e5ae975016e5b2286c7000a,2c9280846e5ae975016e5b2505b7000b" parentTypeID="2c9280846e5ae975016e5b2286c7000a" typeName="Batch Cancelled By Admin" typeDescription="Schedule Order Template was cancelled by admin as part of a workflow" systemCode="otscrtBatch" sortOrder="1" />
+
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
 		<Record typeID="444df2eac18fa589af0f054442e12733" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2eac18fa589af0f054442e12733" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Return" systemCode="oitReturn" sortOrder="2" />
