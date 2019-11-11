@@ -1382,7 +1382,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
+    
+   	public any function processOrderTemplate_batchCancel(required any orderTemplate, any processObject, required struct data={}) { 
+		
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstActive'){
+			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
+			return arguments.orderTemplate;
+		} 
 
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getTypeBySystemCode('otscrtBatch'));
+		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		
+		return this.saveOrderTemplate(arguments.orderTemplate); 
+	}
+	
 	public any function processOrderTemplate_cancel(required any orderTemplate, any processObject, required struct data={}) { 
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstActive'){
