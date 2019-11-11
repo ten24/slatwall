@@ -16,10 +16,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 	} 
 
 	public numeric function getSiteMaximumGiftCardAmount(){
-		if( !isNull(getOrderTemplate()) && 
-			!isNull(getOrderTemplate().getSite())
+		if(!isNull(getOrderTemplate()) && 
+			!isNull(getOrderTemplate().getSite()) 
 		){
-			return getOrderTemplate().getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
+			return getOrderTemplate().getSite().setting('integrationmonatSiteMaximumFlexshipGiftCardAmount');  
 		}
 	} 	
 }
