@@ -152,6 +152,9 @@ component extends="Slatwall.model.service.OrderService" {
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
+			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
+			
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
@@ -164,11 +167,12 @@ component extends="Slatwall.model.service.OrderService" {
 			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 
-			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
