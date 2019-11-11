@@ -30,8 +30,8 @@ component extends="Slatwall.model.service.OrderService" {
         
         return super.processOrderTemplate_create(argumentCollection = arguments);
     }
-    
-    
+
+ 
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
 	     for(var priceField in variables.customPriceFields){
