@@ -4,6 +4,9 @@
 			"statusCode": { "eq": "otstActive" },
 			"typeCode": { "eq": "ottSchedule" }
 		},
+		"scheduleOrderTemplate": {
+			"typeCode": { "eq": "ottSchedule" }
+		},
 		"isWishList": {
 			"typeCode": { "eq": "ottWishList" }
 		}
