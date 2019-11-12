@@ -85,6 +85,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 				break;
 			case 'balance':
 				getAccountBalance(arguments.requestBean, responseBean);
+				break;
 			case 'credit':
 				break;
 			default:
@@ -201,10 +202,9 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
-		var requestBean = getTransient("externalTransactionRequestBean");
 		
 		var requestData = {};
-		var responseData = sendHttpAPIRequest(requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
+		var responseData = sendHttpAPIRequest(arguments.requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
 		
 		if(IsJson(responseData.fileContent))
 		{

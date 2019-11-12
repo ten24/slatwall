@@ -71,21 +71,8 @@ component {
 	{
 	    if(!StructKeyExists(variables,"moMoneyWallet"))
 	    {
-	        //Check if it's external payment method with Integration Service enabled
-	        var hyperwallet = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet');
-	        if(!isNull(getPaymentMethod()))
-	        {
-	        	var paymentIntegration = getPaymentMethod().getPaymentIntegration();
-	        }
-	        else{
-	        	var paymentIntegration = {};
-	        }
-	        
-	        if( !structIsEmpty(hyperwallet) && !isNull(hyperwallet.getIntegrationID())
-	        	&&
-	        	!structIsEmpty(paymentIntegration) && !isNull(paymentIntegration.getIntegrationID()) && 
-	        	hyperwallet.getIntegrationID() == paymentIntegration.getIntegrationID()
-	        )
+	    	
+	    	if(!isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getPaymentIntegration()) && getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'hyperwallet')
 	        {
 	            variables.moMoneyWallet =  true;
 	        }
@@ -99,7 +86,7 @@ component {
 	
 	public any function getMoMoneyBalance()
 	{
-		//always use isMoMoneyWallet check before getting the balance
+		//always use getMoMoneyWallet check before getting the balance
 	    if(!StructKeyExists(variables,"moMoneyBalance"))
 	    {
 	    	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
@@ -112,8 +99,9 @@ component {
 	        	variables.moMoneyBalance = responseBean.getAmountAuthorized();
 	        }
 	        else{
-	        	//Setup Error
-	        	writeOutput("setup error message");
+	        	//addErrors(responseBean.getErrors());
+	        	getHibachiScope().addErrors(responseBean.getErrors());
+	        	variables.moMoneyBalance = 0;
 	        }
 	    }
 	    
