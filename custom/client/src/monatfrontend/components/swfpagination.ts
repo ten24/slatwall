@@ -83,7 +83,7 @@ class SWFPaginationController {
         this.argumentsObject['currentPage'] = pageNumber;
         
         return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
-            this.recordList = result.productList;
+            this.recordList = result.productList ? result.productList : result.pageRecords;
             this.pageTracker = pageNumber;
         });
     }
