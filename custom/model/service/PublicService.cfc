@@ -86,6 +86,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
         
         processObject.setSiteID(arguments.data.siteID);
+        
+        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
+            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+        }
+        
+        if( StructKeyExists(arguments.data, 'siteCode') ){
+            processObject.setSiteCode(arguments.data.siteCode);
+        }
+        
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
@@ -377,8 +386,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
+
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
+            getDAO('HibachiDAO').flushORMSession();
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
@@ -390,6 +403,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
+            getDAO('HibachiDAO').flushORMSession();
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         account.getAccountNumber();
         return account;
@@ -402,6 +418,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.setAccountType('VIP');
             account.setActiveFlag(false);
             var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('3');
+
             if(!isNull(priceGroup)){
                 account.addPriceGroup(priceGroup);
             }
@@ -409,6 +426,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(!isNull(accountStatusType)){
                 account.setAccountStatusType(accountStatusType);
             }
+            
+            getDAO('HibachiDAO').flushORMSession();
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         return account;
     }
@@ -642,6 +663,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         return productList;
     }
-
 
 }

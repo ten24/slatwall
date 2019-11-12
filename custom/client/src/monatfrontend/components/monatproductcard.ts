@@ -21,7 +21,7 @@ class MonatProductCardController {
 		public monatService,
         public observerService,
 
-        public ModalService
+        public ModalService,
         public $scope
 
 	) { 
