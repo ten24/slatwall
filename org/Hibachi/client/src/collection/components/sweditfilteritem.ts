@@ -376,7 +376,10 @@ class SWEditFilterItem{
                                                     filterItem.displayValue +=' Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
+                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
+                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') 
+                                                ? filterItem.displayValue += ' Ago'
+                                                : filterItem.displayValue += ' from Now';
                                         }
                                     }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
                                         filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
