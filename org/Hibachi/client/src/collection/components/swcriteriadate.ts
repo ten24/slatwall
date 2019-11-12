@@ -259,6 +259,15 @@ class SWCriteriaDate{
 								}
 							},
 							{
+                                display:"Exact N Day(s) From Now",
+                                comparisonOperator:	"between",
+                                dateInfo:{
+                                    type:'exactDateFuture',
+                                    measureType:'d',
+                                    measureTypeDisplay:'Days'
+                                }
+                            },
+							{
 								display:"Match Day of Month",
 								comparisonOperator:	"=",
 								dateInfo:{
@@ -437,7 +446,6 @@ class SWCriteriaDate{
 				  			selectedCondition.disableCriteriaStart = false;
                             selectedCondition.disableCriteriaEnd = true;
 
-
                             if(!selectedCondition.dateInfo.measureType){
                                 selectedCondition.conditionDisplay = '';
                                 selectedCondition.showCriteriaStart = true;
@@ -447,6 +455,25 @@ class SWCriteriaDate{
                                 selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
                             }else{
                                 selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' ago?';
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.showNumberOf = true;
+                            }
+				  		}
+				  		if(selectedCondition.dateInfo.type === 'exactDateFuture'){
+				  			selectedCondition.showCriteriaStart = true;
+				  			selectedCondition.showCriteriaEnd = false;
+				  			selectedCondition.disableCriteriaStart = false;
+                            selectedCondition.disableCriteriaEnd = true;
+
+                            if(!selectedCondition.dateInfo.measureType){
+                                selectedCondition.conditionDisplay = '';
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.showNumberOf = false;
+
+                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+                            }else{
+                                selectedCondition.conditionDisplay = 'How many '+ selectedCondition.dateInfo.measureTypeDisplay+' from now?';
                                 selectedCondition.showCriteriaStart = false;
                                 selectedCondition.showNumberOf = true;
                             }
@@ -474,8 +501,8 @@ class SWCriteriaDate{
 					  $log.debug('criteriaRangeChanged');
 					  $log.debug(selectedFilterProperty);
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+				  	var measureCount = selectedFilterProperty.criteriaNumberOf;
 				  	if(selectedCondition.dateInfo.type === 'calculation'){
-					  	var measureCount = selectedFilterProperty.criteriaNumberOf;
 		  				switch(selectedCondition.dateInfo.measureType){
 		  					case 'h':
 		  						var today = Date.parse('today');
@@ -530,6 +557,18 @@ class SWCriteriaDate{
 	  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
 	  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
 	  				}
+	  				
+	  				if(selectedCondition.dateInfo.type === 'exactDateFuture'){
+						console.log('calculate Condition exactDateFuture', selectedCondition);
+						switch(selectedCondition.dateInfo.measureType){
+							case 'd':
+								var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+								selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0,0,0,0);
+								selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+								break;
+						}
+	  				}
+	  				
 	  				if(selectedCondition.dateInfo.type === 'range' ){
 	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart) ){
 	  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
