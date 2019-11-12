@@ -86,6 +86,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
         
         processObject.setSiteID(arguments.data.siteID);
+        
+        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
+            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+        }
+        
+        if( StructKeyExists(arguments.data, 'siteCode') ){
+            processObject.setSiteCode(arguments.data.siteCode);
+        }
+        
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
@@ -568,6 +577,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
         }
         
+        var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         
@@ -578,6 +588,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         } else {
             arguments.data['ajaxResponse']['productList'] = [];
         }
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+
     }
 
     public any function getProductsByCategoryOrContentID(required any data){
@@ -596,11 +608,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         else if(len(arguments.data.categoryID)){
             productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.categoryID, "=" );
         }
-
+        
+        var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), arguments.data.priceGroupCode,arguments.data.currencyCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){

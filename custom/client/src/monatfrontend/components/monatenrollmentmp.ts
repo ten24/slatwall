@@ -82,7 +82,7 @@ class EnrollmentMPController {
 				}
 			});
 			
-			if ( 'ProductPack' !== orderItem.sku.product.baseProductType ) {
+			if ( 'Starter Kit' !== orderItem.sku.product.productType.productTypeName ) {
 				this.lastAddedProductName = orderItem.sku.product.productName;
 				this.addedItemToCart = true;
 			}

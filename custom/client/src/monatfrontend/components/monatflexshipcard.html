@@ -1,4 +1,29 @@
 <div class="orderbox flexship-card">
+	
+	
+	<div ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length" class="alert alert-warning alert-dismissible">
+		No Delivery Address on this Flexaship
+		<a href="#" ng-click="monatFlexshipCard.showFlexshipEditShippingMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
+	</div>
+	
+	<div ng-if="!monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length" 
+	class="alert alert-warning alert-dismissible">
+		No Billing details on this Flexaship
+		<a href="#" ng-click="monatFlexshipCard.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
+	</div>
+	
+	
+	<div ng-if="monatFlexshipCard.orderTemplate.canPlaceOrderFlag && monatFlexshipCard.orderTemplate.statusCode === 'otstDraft'" 
+	class="alert alert-success alert-dismissible">
+		Your Flexaship is ready to activate
+		<a href="#" ng-click="monatFlexshipCard.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
+	</div>
+	
+	
+	
 	<div class="subtext">
 		
 		<div class="flexship-card__top w-100">

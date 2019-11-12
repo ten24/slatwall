@@ -180,7 +180,7 @@ class VIPController {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
         	this.flexshipID = result.orderTemplate;
-        	if(this.isNotSafariPrivate){
+        	if(this.isNotSafariPrivate && this.flexshipID){
         		localStorage.setItem('flexshipID', this.flexshipID);
         	}
         	
@@ -189,7 +189,7 @@ class VIPController {
     }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
-        debugger;
+
         let newTerm = JSON.parse(frequencyTerm);
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;

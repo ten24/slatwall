@@ -1,6 +1,6 @@
 class MonatOrderItemsController {
 	public orderItems: any = []; // orderTemplateDetails
-	public productPacks: any = []; // orderTemplateDetails
+	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
 	public orderFees; 
 
@@ -24,14 +24,13 @@ class MonatOrderItemsController {
 	
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
-			var productType = item.sku.product.productType.systemCode;
+			var productType = item.sku.product.productType.productTypeName;
 			
-			if ( 'ProductPack' === productType ) {
-				this.productPacks.push( item );
-			}else if('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType){
+			if ( 'Starter Kit' === productType ) {
+				this.starterKits.push( item );
+			} else if('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
-			}	
-			else{
+			}	else {
 				this.todaysOrder.push( item );
 			}
 		});
