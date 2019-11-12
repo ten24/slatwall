@@ -35,7 +35,7 @@ class MonatFlexshipConfirmController {
     };
     
     public cancel = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null); 
     };
     
     public translations = {};
@@ -59,7 +59,6 @@ class MonatFlexshipConfirmController {
     		console.error("setAsCurrentFlexship :",error);	
             // TODO: handle errors
     	}).finally(() => { 
-    		
     	});
     	
     }
@@ -73,7 +72,7 @@ class MonatFlexshipConfirm {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    redirectUrl: '@',
+	    redirectUrl: '<',
 	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipConfirmController;

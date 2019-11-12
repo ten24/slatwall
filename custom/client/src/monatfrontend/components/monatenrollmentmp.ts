@@ -6,9 +6,8 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean = false;
 	public contentId: string;
-	public selectedMP: any;
 	public bundleHasErrors: boolean = false;
-	public sponsorHasErrors: boolean = false;
+	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
 	public bundles: any = [];
@@ -18,18 +17,58 @@ class EnrollmentMPController {
 	public totalPages: Array<number>;
 	public addedItemToCart: boolean = false;
 	public lastAddedProductName: string = '';
+	public yearOptions: Array<number|string> = [];
+	public dayOptions: Array<number|string> = [];
+	public monthOptions: Array<number|string> = [];
+	public currentDate: any;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
-		this.getCountryCodeOptions();
 		this.getStarterPacks();
+		this.getDateOptions();
 		//this.getProductList()
 		
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 	};
+	
+	public getDateOptions = () => {
+		this.currentDate = new Date();
+		
+		// Setup Years
+		for ( var i = this.currentDate.getFullYear(); i >= 1900; i-- ) {
+			this.yearOptions.push( i );
+		}
+		
+		// Setup Months / Default Days
+		for ( i = 1; i <= 31; i++ ) {
+			var label = ( '0' + i ).slice(-2);
+			if ( i < 13 ) {
+				this.monthOptions.push( label );
+			}
+			this.dayOptions.push( label );
+		}
+	}
+	
+	public setDayOptionsByDate = ( year = null, month = null ) => {
+		
+		if ( null === year ) {
+			year = this.currentDate.getFullYear();
+		}
+		
+		if ( null === month ) {
+			year = this.currentDate.getMonth();
+		}
+		
+		var newDayOptions = [];
+		var daysInMonth = new Date( year, month, 0 ).getDate();
+		for ( var i = 1; i <= daysInMonth; i++ ) {
+			newDayOptions.push( ( '0' + i ).slice(-2) );
+		}
+		this.dayOptions = newDayOptions;
+	}
 	
 	public showAddToCartMessage = () => {
 		var skuID = this.monatService.lastAddedSkuID;
@@ -43,7 +82,7 @@ class EnrollmentMPController {
 				}
 			});
 			
-			if ( 'ProductPack' !== orderItem.sku.product.baseProductType ) {
+			if ( 'Starter Kit' !== orderItem.sku.product.productType.productTypeName ) {
 				this.lastAddedProductName = orderItem.sku.product.productName;
 				this.addedItemToCart = true;
 			}
@@ -61,7 +100,7 @@ class EnrollmentMPController {
 	public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-        	this.monatService.addToCart( this.selectedBundleID, 1 ).then(data => {
+        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
         		this.loading = false;
             	this.observerService.notify('onNext');
         	})
@@ -72,17 +111,24 @@ class EnrollmentMPController {
 
 	public submitSponsor = () => {
 		this.loading = true;
-		if (this.selectedMP) {
-			this.monatService.submitSponsor(this.selectedMP.accountID).then(data=> {
+		
+		var selectedSponsor = document.getElementById('selected-sponsor-id');
+		
+		if ( null !== selectedSponsor ) {
+			this.sponsorErrors.selected = false;
+			var accountID = (<HTMLInputElement>selectedSponsor).value;
+			
+			this.monatService.submitSponsor( accountID ).then(data=> {
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
+					this.sponsorErrors = {};
 				}else{
-					this.sponsorHasErrors = true;
+					this.sponsorErrors.submit = true;
 				}
 				this.loading = false;
 			})
 		} else {
-			this.sponsorHasErrors = true;
+			this.sponsorErrors.selected = true;
 			this.loading = false;
 		}
 	};
@@ -99,47 +145,6 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getMpResults = (model) => {
-		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'/?slatAction=monat:public.getmarketpartners' +
-				'&search=' +
-				model.mpSearchText +
-				'&currentPage=' +
-				1 +
-				'&accountSearchType=marketPartner' +
-				'&countryCode=' +
-				model.currentCountryCode +
-				'&stateCode=' +
-				model.currentStateCode,
-		);
-	};
-
-	public getCountryCodeOptions = () => {
-		if (this.countryCodeOptions.length) {
-			return this.countryCodeOptions;
-		}
-
-		this.publicService.getCountries().then((data) => {
-			this.countryCodeOptions = data.countryCodeOptions;
-		});
-	};
-
-	public getStateCodeOptions = (countryCode) => {
-		this.currentCountryCode = countryCode;
-
-		this.publicService.getStates(countryCode).then((data) => {
-			this.stateCodeOptions = data.stateCodeOptions;
-		});
-	};
-
-	public setOwnerAccount = (ownerAccountID) => {
-		//this.loading = true;
-		this.publicService
-			.doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
-			.then((result) => {
-				//this.loading = false;
-			});
-	};
 
 	public getProductList = (pageNumber = 1, direction: any = false, newPages = false) => {
 		this.loading = true;

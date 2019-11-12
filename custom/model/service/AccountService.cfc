@@ -32,7 +32,19 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	
 	public string function getSimpleRepresentation(required any account){
-		return arguments.account.getFullName() & ' - ' & arguments.account.getAccountNumber();
+		var accountType = arguments.account.getAccountType();
+		if(isNull(accountType)){
+			accountType = '';
+		}
+		var typeReps = {
+			'marketPartner':'MP',
+			'vip':'VIP',
+			'customer':'Retail'
+		}
+		if(structKeyExists(typeReps,accountType)){
+			accountType = typeReps[accountType];
+		}
+		return arguments.account.getFullName() & ' ( ' & arguments.account.getAccountNumber() & ' - ' & accountType & ' )';
 	}
 	
 	public any function getAllOrdersOnAccount(struct data={}) {
@@ -70,5 +82,10 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
-
+	//custom validation methods
+	
+	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
+		var oneYearFromNow = DateAdd('yyyy', 1, Now());
+		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
+	}
 }

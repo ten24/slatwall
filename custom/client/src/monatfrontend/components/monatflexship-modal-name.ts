@@ -2,6 +2,7 @@
 class MonatFlexshipNameModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
+	public loading: boolean = false;
 
 	public orderTemplateName;
 
@@ -23,7 +24,8 @@ class MonatFlexshipNameModalController {
     public saveFlexshipName() {
 
     	//TODO frontend validation
-
+		this.loading = true;
+		
     	// make api request
         this.orderTemplateService.editOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
@@ -39,6 +41,8 @@ class MonatFlexshipNameModalController {
         }).catch(error => {
             console.error(error);
             // TODO: show alert / handle error
+        }).finally(() => {
+        	this.loading = false;
         });
     }
     

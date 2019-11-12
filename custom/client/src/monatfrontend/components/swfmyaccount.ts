@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
     public currentYear;
@@ -23,58 +24,83 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-
-
     public totalPages:Array<number>;
     public pageTracker:number = 1;
+    public mostRecentFlexshipDeliveryDate:any;
+    public editFlexshipUntilDate:any;
+    public mostRecentFlexship:any;
 
     
     // @ngInject
     constructor(
-        public $rootScope,
+        public publicService,
         public $scope,
         public observerService
     ){
+        this.observerService.attach(this.getAccount,"loginSuccess"); 
+        this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
+        this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-
+        
         do {
             this.yearOptions.push(manipulateableYear++)
         }
         while(this.yearOptions.length <= 9);
-        
-        this.observerService.attach(this.getAccount,"loginSuccess"); 
-        
     }
-    // Determine how many years old the account is
-    public checkAndApplyAccountAge = () => {
-        if(this.accountData.ownerAccount.createdDateTime){
-            const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
-            this.accountAge = this.currentYear - accountCreatedYear;
-        }
-    }
+    
 	public $onInit = () =>{
         this.getAccount();
 	}
-	
+
     public getAccount = () => {
         this.loading = true;
         this.accountData = {};
         this.accountPaymentMethods = [];
-        const account = this.$rootScope.hibachiScope.getAccount();
+         
         //Do this when then account data returns
-        //Optimize when get orders on account is called, only needed on account overview and orders overview
-        account.then((response)=>{
+        
+        this.publicService.getAccount(true).then((response)=>{
+            
             this.accountData = response;
             this.checkAndApplyAccountAge();
-            this.getOrdersOnAccount();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
+            }else if(window.location.pathname == '/my-account/' ){
+                this.getOrdersOnAccount(1);
+                this.getMostRecentFlexship();
+            }else if(window.location.pathname == '/my-account/order-history/'){
+                this.getOrdersOnAccount();
             };
             
+            this.loading = false;
+        });
+    }
+    
+    // Determine how many years old the account owner is
+    public checkAndApplyAccountAge = () => {
+        if(this.accountData && this.accountData.ownerAccount){
+            const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
+            this.accountAge = this.currentYear - accountCreatedYear;
+        }
+    }
+    
+    public getMostRecentFlexship = () => {
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+            if(result.mostRecentOrderTemplate.length){
+                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
+                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
+            }
+  
             this.loading = false;
         });
     }
@@ -97,10 +123,9 @@ class swfAccountController {
                 pageNumber = this.pageTracker +1;
             }
         }
-
         
-        
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
+        this.loadingOrders = true;
+        return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             const holdingArray = [];
@@ -114,6 +139,7 @@ class swfAccountController {
             this.totalPages = holdingArray;
             this.pageTracker = pageNumber;
             this.loading = false;
+            this.loadingOrders = false;
         });
     }
     
@@ -121,7 +147,7 @@ class swfAccountController {
         this.loading = true;
         
         const accountID = this.accountData.accountID
-        return this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
             result.OrderItemsByOrderID.forEach(orderItem =>{
                 this.orderItems.push(orderItem);
             });
@@ -135,7 +161,7 @@ class swfAccountController {
             return this.countryCodeOptions;
         }
 
-        return this.$rootScope.hibachiScope.doAction("getCountries").then(result=>{
+        return this.publicService.doAction("getCountries").then(result=>{
             this.countryCodeOptions = result.countryCodeOptions;
             this.loading = false;
         });
@@ -149,7 +175,7 @@ class swfAccountController {
         }
         
         this.cachedCountryCode = countryCode;
-        return this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
+        return this.publicService.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
             //Resets the state code options on each click so they dont add up incorrectly
             if(this.stateCodeOptions.length){
                 this.stateCodeOptions = [];
@@ -164,7 +190,7 @@ class swfAccountController {
     
     public setPrimaryPaymentMethod = (methodID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
+        return this.publicService.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
             this.loading = false;
         });
     }
@@ -186,25 +212,41 @@ class swfAccountController {
     
     public deletePaymentMethod = (paymentMethodID, index) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
+        return this.publicService.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
             this.accountPaymentMethods.splice(index, 1);
             this.loading = false;
             return this.accountPaymentMethods
         });
     }
     
-
-    
     public setEditAddress = (newAddress = true, address) => {
-       this.editAddress = address ? address : {};
-       this.isNewAddress = newAddress;
+        this.editAddress = {};
+        this.editAddress = address ? address : {};
+        if(!newAddress){
+            this.getStateCodeOptions(address.address.countryCode)
+        }
+        this.isNewAddress = newAddress;
+        console.log(this.editAddress);
+
     }
     
     public setPrimaryAddress = (addressID) => {
         this.loading = true;
-        return this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
+        return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
         });
+    }
+    
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
     }
 }
 

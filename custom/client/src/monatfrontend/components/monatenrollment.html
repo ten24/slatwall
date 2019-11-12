@@ -12,18 +12,23 @@
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<div class="d-flex align-items-center">
 			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
-				<i class="fas fa-chevron-left"></i>
+				<span class="last" sw-rbkey="'frontend.global.back'"></span>
+				<i class="fas fa-chevron-left"></i> 
 			</a>
 
 			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
 				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
-				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">Show Cart</small>
+				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{monatEnrollment.cartText}}</small>
 			</span>
 		</div>
 		
 		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
+		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
+			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</a>
+		<a href data-ng-click="monatEnrollment.goToLastStep()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</a>
@@ -34,6 +39,11 @@
 	<!--- Mini cart ---> 	
 	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
 	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
+	</div>
+	
+	<!--- Flexship cart ---> 	
+	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
+		<monat-flexship-cart-container data-context="enrollment"></monat-flexship-cart-container>	
 	</div>
 
 </footer>

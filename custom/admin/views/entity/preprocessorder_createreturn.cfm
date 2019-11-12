@@ -150,9 +150,12 @@ Notes:
 					currency-code="#rc.order.getCurrencyCode()#" 
 					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
 					order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
-					order-total="#rc.order.getRefundableAmount()#"
+					fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 					<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 						refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
+						order-total="#rc.order.getRefundableAmount()#"
+					<cfelse>
+						order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
 					</cfif>
 				></sw-return-order-items>
 				

@@ -3,7 +3,7 @@
 	role="dialog"
 	id="flexship-modal-payment-method{{ monatFlexshipPaymentMethodModal.orderTemplate.orderTemplateID }}"
 >
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<!-- Modal Close -->
 			<button
@@ -52,93 +52,102 @@
 				<!--- Conditional: Add New Shipping Address form --->
 				<div
 					ng-show="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+					class="row"
 				>
-					<span class="label">
-						{{ monatFlexshipPaymentMethodModal.translations.addNewBillingAddress }}
-					</span>
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newAddress_nickName
-							}}"
-						/>
+					<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.addNewBillingAddress"></div>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_nickName"></label>
+						</div>
 					</div>
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
-							placeholder="{{ monatFlexshipPaymentMethodModal.translations.newAddress_name }}"
-						/>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_name"></label>
+						</div>
 					</div>
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newAddress_address
-							}}"
-						/>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address"></label>
+						</div>
 					</div>
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.street2Address"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newAddress_address2
-							}}"
-						/>
-					</div>
-
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.countryCode"
-							readonly
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newAddress_country
-							}}"
-						/>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.street2Address"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address2"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<select
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
-							ng-options="state as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions track by state.value"
-							placeholder="{{ monatFlexshipPaymentMethodModal.translations.newAddress_state }}"
-						>
-							<option value="">
-								{{ monatFlexshipPaymentMethodModal.translations.newAddress_selectYourState }}
-								`
-							</option>
-						</select>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.countryCode"
+								readonly
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_country"></label>
+						</div>
+					</div>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<select
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
+								ng-options="state.value as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions"
+							>
+								<option disabled></option>
+							</select>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_state"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.city"
-							placeholder="{{ monatFlexshipPaymentMethodModal.translations.newAddress_city }}"
-						/>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.city"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_city"></label>
+						</div>
 					</div>
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAddress.postalCode"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newAddress_zipCode
-							}}"
-						/>
+					
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAddress.postalCode"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_zipCode"></label>
+						</div>
 					</div>
 				</div>
 				<!-- end add new account address-->
@@ -185,89 +194,80 @@
 				<!-- Conditional: Add New Payment Address form -->
 				<div
 					ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+					class="row"
 				>
-					<span class="label">
-						{{ monatFlexshipPaymentMethodModal.translations.newCreditCard }}
-					</span>
+					<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard"></div>
 
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_nickName
-							}}"
-						/>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nickName"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_creditCardNumber
-							}}"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.creditCardNumber"
-						/>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.creditCardNumber"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_creditCardNumber"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_nameOnCard
-							}}"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard"
-						/>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nameOnCard"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<select
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
-							ng-options="month for month in monatFlexshipPaymentMethodModal.expirationMonthOptions"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationMonth
-							}}"
-						>
-							<option value="">
-								{{
-									monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationMonth
-								}}
-							</option>
-						</select>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<select
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
+								ng-options="month for month in monatFlexshipPaymentMethodModal.expirationMonthOptions"
+							>
+								<option disabled></option>
+							</select>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationMonth"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<select
-							type="text"
-							class="form-control"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
-							ng-options="year as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions track by year.VALUE"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationYear
-							}}"
-						>
-							<option value="">
-								{{
-									monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationYear
-								}}
-							</option>
-						</select>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<select
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+								ng-options="year.VALUE as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions"
+							>
+								<option disabled></option>
+							</select>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationYear"></label>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<input
-							type="text"
-							class="form-control"
-							placeholder="{{
-								monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode
-							}}"
-							ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
-						/>
+					<div class="col-12 col-md-6">
+						<div class="material-field">
+							<input
+								type="text"
+								class="form-control"
+								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
+							/>
+							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
+						</div>
 					</div>
 				</div>
 			</div>

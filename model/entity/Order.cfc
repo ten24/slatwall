@@ -78,7 +78,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
 	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
-	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID";
+	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true";
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID" hb_optionsNullRBKey="define.none";
@@ -175,6 +175,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
 	property name="taxTotal" persistent="false" hb_formatType="currency";
+	property name="taxTotalNotRefunded" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
 	property name="totalItemQuantity" persistent="false"; 
@@ -182,6 +183,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
 	
     //======= Mocking Injection for Unit Test ======	
@@ -279,7 +281,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="originalRMANumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -767,15 +769,24 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
+	public numeric function getFulfillmentChargeAfterDiscountPreTaxTotal() {
+		var fulfillmentChargeAfterDiscountTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
+		}
+
+		return fulfillmentChargeAfterDiscountTotal;
+	}
+	
 	public numeric function getFulfillmentChargeNotRefunded() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountTotal() - getFulfillmentRefundTotalOnReferencingOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundTotalOnReferencingOrders());
 	}
 	
 	public numeric function getFulfillmentRefundTotalOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
 			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundTotal();
-			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountTotal();
+			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
 		}
 		return fulfillmentRefundTotal;
 	}
@@ -1069,6 +1080,26 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return variables.refundableAmount;
 	}
+	/* This function does exactly what it says, don't @ me */
+	public numeric function getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge(){
+		return getRefundableAmount() - getTaxTotalNotRefunded() - getFulfillmentChargeNotRefunded();
+	}
+	
+	public numeric function getTaxTotalNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() - getTaxTotalOnReturnOrders());
+	}
+	
+	public numeric function getTaxTotalOnReturnOrders(){
+		var taxTotalOnReturnOrders = 0;
+		
+		for(var referencingOrder in getReferencingOrders()){
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
+			}
+		}
+		return taxTotalOnReturnOrders;
+	}
+
 
 	public any function getPaymentMethodOptionsSmartList() {
 		if(!structKeyExists(variables, "paymentMethodOptionsSmartList")) {
@@ -1401,13 +1432,22 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			}
 		}
 
-		for(var orderFulfillment in this.getOrderFulfillments()) {
-			taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
-		}
+		taxTotal += getFulfillmentChargeTaxAmount();
 
 		variables.taxTotal = taxTotal;
 
 		return taxTotal;
+	}
+	
+	public numeric function getFulfillmentChargeTaxAmount(){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+			var taxTotal = 0;
+			for(var orderFulfillment in this.getOrderFulfillments()) {
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
+			}
+			variables.fulfillmentChargeTaxAmount = taxTotal;
+		}
+		return variables.fulfillmentChargeTaxAmount;
 	}
 
 	public numeric function getTotal() {
@@ -1905,7 +1945,8 @@ public numeric function getPersonalVolumeSubtotal(){
     public numeric function getCustomPriceFieldSubtotal(required string customPriceField){
         var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
-		for(var i=1; i<=arrayLen(orderItems); i++) {
+		var orderItemsCount = arrayLen(orderItems);
+		for(var i=1; i<=orderItemsCount; i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
@@ -1995,5 +2036,52 @@ public numeric function getPersonalVolumeSubtotal(){
 	    }
 	   
 	}
+	
+	public struct function getListingSearchConfig() {
+	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	
+	
+	public boolean function hasMPRenewalFee() {
+	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
+            variables.orderHasMPRenewalFee = getService('orderService').orderHasMPRenewalFee(this.getOrderID());
+		}
+		return variables.orderHasMPRenewalFee;
+	}
+
+	public boolean function subtotalWithinAllowedPercentage(){
+	    var referencedOrder = this.getReferencedOrder();
+	    if(isNull(referencedOrder)){
+	        return true;
+	    }
+	    
+	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    if(dateDiff <= 30){
+	        return true;
+	    }else if(dateDiff > 365){
+	        return false;
+	    }else{
+	        var originalSubtotal = referencedOrder.getSubTotal();
+	        
+	        var returnSubtotal = 0;
+	        
+	        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
+	        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
+	        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
+	        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
+	        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
+	        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
+	        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
+	        
+	        for(var order in originalOrderReturns){
+	            returnSubtotal += order['calculatedSubTotal'];
+	        }
+
+	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
+	    }
+	}
+
 	//CUSTOM FUNCTIONS END
 }

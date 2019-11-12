@@ -617,7 +617,7 @@ property name="SAPItemCode" ormtype="string";
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 
 		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID')){
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}
 		if(!structKeyExists(arguments,'priceGroups')){

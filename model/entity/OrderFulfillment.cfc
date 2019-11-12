@@ -389,6 +389,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public numeric function getChargeAfterDiscount() {
 		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
 	}
+	
+	public numeric function getChargeAfterDiscountPreTax() {
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
+	}
 
 	public numeric function getDiscountAmount() {
 		var discountAmount = 0;

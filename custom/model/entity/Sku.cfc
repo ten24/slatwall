@@ -70,7 +70,7 @@ component {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID')){
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}	
 
