@@ -99,18 +99,14 @@
 			</div>
 		</div>
 	</div>
+
+	<pagination-controller 
+		record-list="sponsorSearchSelector.searchResults" 
+		items-per-page="9" 
+		records-count="sponsorSearchSelector.recordsCount" 
+		action="?slatAction=monat:public.getmarketpartners"
+		arguments-object="sponsorSearchSelector.argumentsObject" 
+	>
+	</pagination-controller>
 	
-	<!--- Load more results. TODO: Pagination --->
-	<button
-		role="button"
-		ng-if="
-			sponsorSearchSelector.searchResults.length
-			&& sponsorSearchSelector.selectedSponsor == undefined
-		" 
-		class="btn btn-secondary" 
-		ng-click="
-			sponsorSearchSelector.currentPage = sponsorSearchSelector.currentPage + 1;
-			sponsorSearchSelector.getSearchResults();
-		"
-	>More</button>
 </div>

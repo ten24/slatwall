@@ -2,13 +2,13 @@ class SponsorSearchSelectorController {
 	private title: string;
 	private siteCountryCode: string;
 	private accountSearchType: string;
-	
 	public countryCodeOptions: any;
 	public stateCodeOptions: any;
 	public searchResults: any;
-	
 	public loadingResults: boolean = false;
 	public currentPage: number = 1;
+	public argumentsObject:any;
+	public recordsCount:number;
 
 	// Form fields for the sponsor search.
 	public form: any = {
@@ -19,7 +19,8 @@ class SponsorSearchSelectorController {
 
 	// @ngInject
 	constructor(
-		private publicService
+		private publicService,
+		public observerService
 	) {}
 	
 	public $onInit = () => {
@@ -64,13 +65,22 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
+
+		this.argumentsObject = {
+			search:this.form.text,
+			accountSearchType:this.accountSearchType,
+			countryCode:this.form.countryCode,
+			stateCode:this.form.stateCode,
+			returnJsonObjects:''
+		}
+
 		this.publicService.marketPartnerResults = this.publicService.doAction(
 			'?slatAction=monat:public.getmarketpartners',data
 		).then(data => {
-			
+			this.observerService.notify('PromiseComplete');
 			this.loadingResults = false;
 			this.searchResults = data.pageRecords;
-			
+			this.recordsCount = data.recordsCount;
 		});
 	}
 

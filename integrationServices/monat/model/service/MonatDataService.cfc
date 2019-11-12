@@ -14,7 +14,7 @@ component extends="Slatwall.model.service.HibachiService" {
         return productReviewCollection.getPageRecords();
     }
     
-    public array function getMarketPartners(required struct data){
+    public struct function getMarketPartners(required struct data){
         param name="arguments.data.pageRecordsShow" default=9;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
@@ -27,8 +27,12 @@ component extends="Slatwall.model.service.HibachiService" {
         }
         
         var marketPartnerCollection = this.getAccountCollection(arguments.data);
-
-        return marketPartnerCollection.getPageRecords(formatRecords=false);
+        
+        var marketPartnerObject = {
+            accountCollection: marketPartnerCollection.accountCollection.getPageRecords(formatRecords=false),
+            recordsCount: marketPartnerCollection.recordsCount
+        }
+        return marketPartnerObject;
     }
     
     private any function getAccountCollection(required struct data){
@@ -41,8 +45,6 @@ component extends="Slatwall.model.service.HibachiService" {
 
         var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
-        accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
         accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:true});
         accountCollection.addDisplayProperty('firstName', 'firstName', {isVisible:true, isSearchable: false});
         accountCollection.addDisplayProperty('lastName', 'lastName', {isVisible:true, isSearchable: false});
@@ -50,7 +52,6 @@ component extends="Slatwall.model.service.HibachiService" {
         accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode','primaryAddress_address_countryCode', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.stateCode','primaryAddress_address_stateCode', {isVisible:true, isSearchable:false});
-        
         accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
         accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
         
@@ -83,7 +84,17 @@ component extends="Slatwall.model.service.HibachiService" {
         if(!isNull(arguments.data.search) && len(arguments.data.search)){
             accountCollection.setKeywords(arguments.data.search);
         }
-        return accountCollection; 
+        
+        var recordsCount = accountCollection.getRecordsCount();
+        
+        accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+        accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        var returnObject = {
+            accountCollection: accountCollection,
+            recordsCount: recordsCount
+        }
+        return returnObject; 
     }
     
     public numeric function getProductReviewCount(required struct data){

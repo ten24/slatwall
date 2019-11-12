@@ -27,8 +27,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     public void function getMarketPartners(required struct rc){
         
         var marketPartners = getMonatDataService().getMarketPartners(data=arguments.rc);
-        arguments.rc.ajaxResponse['pageRecords'] = marketPartners;
-        
+        arguments.rc.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
+        arguments.rc.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+
     }
     
     	
