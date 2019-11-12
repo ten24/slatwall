@@ -14,9 +14,11 @@ class SWFWishlistController {
     private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
     public wishlistTemplateName:string;
-    public skuID:string;
+    public sku:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
+	public close; // injected from angularModalService
+
     
     // @ngInject
     constructor(
@@ -32,11 +34,12 @@ class SWFWishlistController {
         if(!this.currentPage){
             this.currentPage = 1;
         }
+        console.log(this.sku)
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModals,"addItemSuccess"); 
+        this.observerService.attach(this.closeModal,"createWishlistSuccess"); 
+        this.observerService.attach(this.closeModal,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
@@ -66,8 +69,8 @@ class SWFWishlistController {
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
-        this.setSkuIDFromAttribute();
-        this.orderTemplateService.addOrderTemplateItem(this.skuID ? this.skuID : skuID, this.wishlistTemplateID)
+
+        this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
             return result;
@@ -76,10 +79,8 @@ class SWFWishlistController {
 
     public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
         this.loading = true;
-        this.setSkuIDFromAttribute();
         this.setWishlistName(orderTemplateName)
-        
-        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.skuID, quantity).then(result=>{
+        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
@@ -87,23 +88,24 @@ class SWFWishlistController {
         });
     }
     
-    public setSkuIDFromAttribute = ()=>{
-        let newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-        this.skuID = newskuID;
-    }
-    
     public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
         this.loading = true;
         
         this.orderTemplateService
-        .getOrderTemplates(pageRecordsToShow,this.currentPage,this.wishlistTypeID)
-        .then(result=>{
+        .getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
+        .then( (result) => {
             
             if(setNewTemplates){
                 this.orderTemplates = result['orderTemplates'];                
             } else if(setNewTemplateID){
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
+        })
+        .cache( (e) => {
+            //TODO
+            console.error(e);
+        })
+        .finally( () => {
             this.loading = false;
         });
     }
@@ -136,10 +138,10 @@ class SWFWishlistController {
     public search =()=>{
     }
     
-    public closeModals = () =>{
-        $('.modal').modal('hide')
-        $('.modal-backdrop').remove() 
-    }
+    
+    public closeModal = () => {
+     	this.close(null); // close, but give 100ms to animate
+    };
     
 }
 
@@ -149,21 +151,39 @@ class SWFWishlist  {
     public require          = {
         ngModel:'?^ngModel'    
     };
-    public priority=1000;
-    public restrict         = "A";
-    public scope            = true;
+    public priority = 1000;
+    public scope = true;
+	public templateUrl:string;
+    public restrict:string;
+
    /**
     * Binds all of our variables to the controller so we can access using this
     */
     public bindToController = {
         pageRecordsShow:"@?",
         currentPage:"@?",
+        sku:"<?",
+        close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;
     public controllerAs     = "swfWishlist";
-    // @ngInject
-    constructor() {
+    
+        /**
+     * Handles injecting the partials path into this class
+     */
+    public static Factory(){
+        var directive: any = (monatFrontendBasePath) => new SWFWishlist(
+			monatFrontendBasePath,
+        );
+		directive.$inject = ['monatFrontendBasePath'];
+        return directive;
     }
+    
+    // @ngInject
+	constructor(private monatFrontendBasePath){
+		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
+		this.restrict = "E";
+	}
     /**
         * Sets the context of this form
         */
@@ -171,15 +191,7 @@ class SWFWishlist  {
     {
     }
 
-    /**
-     * Handles injecting the partials path into this class
-     */
-    public static Factory(){
-        var directive = () => new SWFWishlist();
-        directive.$inject = [];
-        return directive;
-    }
-    
+  
 }
 export{
     SWFWishlist,

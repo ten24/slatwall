@@ -110,16 +110,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 			var opSmartList = getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+			var orderPayments = opSmartList.getRecords();
+			opSmartList.addFilter('paymentMethod.paymentMethodType','giftCard');
+			var giftCardPayments = opSmartList.getRecords(refresh=true);
 			
-			for(var orderPayment in opSmartList.getRecords()) {
+			for(var orderPayment in giftCardPayments){
 				arrayAppend(variables.refundOrderPaymentIDOptions, 
 					{
 						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
 						"value"=orderPayment.getOrderPaymentID(),
 						"amountToRefund"=orderPayment.getRefundableAmount(),
-						"amount"=0
+						"amount"=0,
+						"paymentMethodType"=orderPayment.getPaymentMethod().getPaymentMethodType()
 					}
 				);
+			}
+			
+			for(var orderPayment in orderPayments) {
+				if(orderPayment.getPaymentMethod().getPaymentMethodType() != 'giftCard'){
+					arrayAppend(variables.refundOrderPaymentIDOptions, 
+						{
+							"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
+							"value"=orderPayment.getOrderPaymentID(),
+							"amountToRefund"=orderPayment.getRefundableAmount(),
+							"amount"=0,
+							"paymentMethodType"=orderPayment.getPaymentMethod().getPaymentMethodType()
+						}
+					);
+				}
 			}
 		}
 		return variables.refundOrderPaymentIDOptions;
@@ -185,7 +203,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public numeric function getFulfillmentTaxAmountNotRefunded(){
-		return getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount();
+		if(!isNull(getFulfillmentAmount()) && getFulfillmentAmount() != 0){
+			return getService('HibachiUtilityService').precisionCalculate(getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount());
+		}
+		return 0;
 	}
 	
 	public boolean function getReceiveItemsFlag() {

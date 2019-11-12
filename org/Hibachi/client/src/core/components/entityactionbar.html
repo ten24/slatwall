@@ -79,7 +79,8 @@
 					</sw-action-caller>
 					
 					
-					<sw-action-caller data-title-rb-key="define.delete"
+					<sw-action-caller ng-if="swEntityActionBar.showDelete"
+									  data-title-rb-key="define.delete"
 									  data-event="{{swEntityActionBar.deleteEvent}}"
 									  data-payload="swEntityActionBar.payload"
 									  data-action="{{swEntityActionBar.deleteAction}}"

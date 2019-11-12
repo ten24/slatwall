@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
     public currentYear;
@@ -29,6 +30,9 @@ class swfAccountController {
 
     public totalPages:Array<number>;
     public pageTracker:number = 1;
+    public mostRecentFlexshipDeliveryDate:any;
+    public editFlexshipUntilDate:any;
+    public mostRecentFlexship:any;
 
     
     // @ngInject
@@ -40,6 +44,7 @@ class swfAccountController {
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+        this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
 
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -71,7 +76,10 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
+            }else if(window.location.pathname == '/my-account/' ){
+                this.getOrdersOnAccount(1);
+                this.getMostRecentFlexship();
+            }else if(window.location.pathname == '/my-account/order-history/'){
                 this.getOrdersOnAccount();
             };
             
@@ -85,6 +93,21 @@ class swfAccountController {
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
+    }
+    
+    public getMostRecentFlexship = () => {
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+            if(result.mostRecentOrderTemplate.length){
+                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
+                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
+            }
+  
+            this.loading = false;
+        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
@@ -105,12 +128,8 @@ class swfAccountController {
                 pageNumber = this.pageTracker +1;
             }
         }
-
-<<<<<<< HEAD
-        return this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
-=======
+        
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
->>>>>>> db6cfe55b783843282143b92eae91bc4e1f820e8
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             const holdingArray = [];
@@ -124,6 +143,7 @@ class swfAccountController {
             this.totalPages = holdingArray;
             this.pageTracker = pageNumber;
             this.loading = false;
+            this.loadingOrders = false;
         });
     }
     
@@ -221,7 +241,6 @@ class swfAccountController {
         });
     }
     
-<<<<<<< HEAD
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
         this.stars = ['','','','',''];
@@ -230,7 +249,6 @@ class swfAccountController {
         };
     }
     
-=======
     public deleteAccountAddress = (addressID, index) => {
         this.loading = true;
         return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
@@ -242,7 +260,6 @@ class swfAccountController {
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
     }
->>>>>>> db6cfe55b783843282143b92eae91bc4e1f820e8
 }
 
 class SWFAccount  {

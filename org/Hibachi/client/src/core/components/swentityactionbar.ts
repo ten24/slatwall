@@ -11,6 +11,7 @@ class SWEntityActionBarController{
     public cancelAction:string;
     public cancelQueryString:string; 
     
+    public showDelete:boolean;
     public deleteAction:string;
     public deleteQueryString:string;
     
@@ -49,6 +50,10 @@ class SWEntityActionBarController{
         
         if(this.edit == null){
             this.edit = false; 
+        }
+        
+        if(this.showDelete == null){
+            this.showDelete = true;
         }
         
         if(angular.isDefined(this.pageTitleRbKey)){

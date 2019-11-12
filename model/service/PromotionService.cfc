@@ -1053,6 +1053,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
 	}
 
+	public struct function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
+		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate();
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
+		
+		var currencyCode = orderTemplate.getCurrencyCode();
+		var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
+
+
+		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
+														sku=arguments.orderTemplateItem.getSku(),
+														originalPrice=originalPrice,
+														currencyCode=currencyCode );
+
+		return {'#arguments.orderTemplateItem.getOrderTemplateItemID()#':priceDetails};
+	}
+	
 	public struct function getPriceDetailsForPromoRewards(required array promoRewards, 
 															required any sku,
 															required string originalPrice,
@@ -1151,19 +1167,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
-		var canPlaceOrder = true;
+		return getOrderQualifierDetailsForCanPlaceOrderReward( argumentCollection=arguments )['canPlaceOrder'];
+	}
+
+	public struct function getOrderQualifierDetailsForCanPlaceOrderReward( required any order ){
+		var canPlaceOrderDetails = {
+			'canPlaceOrder':true,
+			'activePromotionRewards':[]
+		};
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
+		
 		if(arraylen(promotionRewards)){
-			canPlaceOrder = false;
+			
+			canPlaceOrderDetails['canPlaceOrder'] = false;
+			
 			for(var promoReward in promotionRewards){
+				
+				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
+				
 				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
 				if(qualificationDetails.qualificationsMeet){
-					canPlaceOrder = true;
-					break;
+					qualificationDetails['canPlaceOrder'] = true;
+					return qualificationDetails; 
 				}
 			}
 		}
-		return canPlaceOrder;
+		return canPlaceOrderDetails; 
 	}
 	
 	public array function getQualifiedPromotionRewardsForOrder( required any order ){
@@ -1206,6 +1235,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return rewardSkus;
 	}
 
+	public string function getQualifiedFreePromotionRewardSkuIDs( required any order ){
+		var qualifiedFreePromotionRewardSkuIDList = '';	
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			
+			var skuCollection = promotionReward.getSkuCollection();
+		
+			if(isNull(skuCollection)){
+				continue; 
+			}
+			
+			if( promotionReward.getAmountType() == 'percentageOff' && 
+			    promotionReward.getAmount() == 100
+			){
+				continue; 
+			}
+	
+			if( promotionReward.getAmountType() == 'amount' && 
+			    promotionReward.getAmount() > 0
+			){
+				continue; 
+			} 
+			
+			qualifiedFreePromotionRewardSkuIDList = listAppend(qualifiedFreePromotionRewardSkuIDList, skuCollection.getPrimaryIDList())	
+		}
+		return qualifiedFreePromotionRewardSkuIDList;  
+	}
+
 	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
 		var masterSkuCollection = getSkuService().getSkuCollectionList(); 
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
@@ -1218,14 +1275,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
+	
+			filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
 			
-			if(filterGroupIndex > 1){
-				filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
-			}
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
-				this.logHibachi('inner filter #serializeJson(innerFilterOrFilterGroup)#',true);
+				this.logHibachi('promotion reward #promotionReward.getPromotionRewardID()# innerFilterGroup #serializeJson(innerFilterOrFilterGroup)#',true);
 				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
 			} 
 		} 
