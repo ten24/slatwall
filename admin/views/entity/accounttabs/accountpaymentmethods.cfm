@@ -65,6 +65,7 @@ Notes:
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.accountPaymentMethod')#" />
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="giftCardBalanceAmountFormatted" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
 
@@ -73,7 +74,7 @@ Notes:
 	<cfset smartList = $.slatwall.getService("paymentService").getPaymentMethodSmartList() />
 	<cfset smartList.addFilter('activeFlag', 1) />
 	<cfset smartList.addFilter('allowSaveFlag', 1) />
-	<cfset smartList.addInFilter('paymentMethodType', 'creditCard,external,termPayment') />
+	<cfset smartList.addInFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment') />
 	<cfif smartList.getRecordsCount() eq 0>
 		<cfset disabled = true />
 		<cfset disabledText = $.slatwall.rbKey('admin.entity.accounttabs.accountpaymentmethods.adddisabled') />
