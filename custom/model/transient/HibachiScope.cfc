@@ -50,4 +50,21 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			return variables.currentRequestSite;
 		}
 	}
+	
+	public any function getAvailableAccountPropertyList() {
+		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+			primaryAddress.accountAddressID,
+			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
+			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName
+			,accountAddresses.address.emailAddress,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,
+			accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,
+			accountAddresses.address.company,accountAddresses.accountAddressName,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,
+			accountPaymentMethods.moMoneyWallet,
+			accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,primaryShippingAddress.address.streetAddress,primaryShippingAddress.address.street2Address,
+			primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,primaryShippingAddress.address.countrycode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,
+			accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag,ownerAccount.firstName,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,
+			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
+			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode","[[:space:]]","","all");
+
+	}
 }

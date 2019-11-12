@@ -3,7 +3,8 @@ class MonatCheckoutController {
 	// @ngInject
 	constructor(
 		public publicService,
-		public observerService
+		public observerService,
+		public $rootScope
 	) {}
 
 	public $onInit = () => {
@@ -13,7 +14,6 @@ class MonatCheckoutController {
 	private closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
 	}
-	
 }
 
 export { MonatCheckoutController };

@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
 <cfparam name="rc.accountPaymentMethod" type="any">
@@ -78,6 +78,10 @@ Notes:
 					<cfset paymentMethodSavedValue = rc.accountPaymentMethod.getPaymentMethod().getPaymentMethodID() />
 				<cfelse>
 					<cfset paymentMethodSavedValue = "" />
+				</cfif>
+				
+				<cfif rc.accountPaymentMethod.getMoMoneyWallet() EQ true >
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="moMoneyBalance">	
 				</cfif>
 				
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#" >
