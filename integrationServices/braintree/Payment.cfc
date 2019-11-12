@@ -58,17 +58,29 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return "external";
 	}
 	
+	// Override allow site settings
+	public any function setting(required any requestBean) {
+		// Allows settings to be requested in the context of the site where the order was created
+		if (!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+		
+		return super.setting(argumentCollection=arguments);
+	}
+	
 	/**
 	 * Method to set API Header for HTTP call
 	 * @params - object paymentMethod
 	 * @return http Object
 	 **/
-	public http function getApiHeader(required any paymentMethod)
+	public http function getApiHeader(required any requestBean)
 	{
 		var httpRequest = new http();
-		var server_token = ToBase64(arguments.paymentMethod.getIntegration().setting('braintreeAccountToken'));
+		var server_token = ToBase64(setting(settingName='braintreeAccountToken', requestBean=arguments.requestBean));
 		httpRequest.setMethod("POST");
-		if( arguments.paymentMethod.getIntegration().setting('braintreeAccountSandboxFlag') ) {
+		if( setting(settingName='braintreeAccountSandboxFlag', requestBean=arguments.requestBean) ) {
 			httpRequest.setUrl( variables.sandboxURL );
 		} else {
 			httpRequest.setUrl( variables.productionURL );
@@ -136,9 +148,15 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @return : custom Object
 	 **/
 	public any function authorizePayment( required any paymentMethod, required string token) {
-		var responseData = {};
-
+		
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			return;
+		}
+		
 		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
+		
 		var payload = { "query" : "mutation VaultWithTypeFragment($input: VaultPaymentMethodInput!) { vaultPaymentMethod(input: $input) {paymentMethod { id usage details {__typename}}verification {status} } }",
 			"variables" : { "input": { "paymentMethodId": "#arguments.token#" } }
 		};
@@ -251,14 +269,17 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				&& fileContent.data.chargePaymentMethod.transaction.status == "SETTLING"
 				)
 			{
-				responseData['status'] = "success";
-				responseData['transactionID'] = fileContent.data.chargePaymentMethod.transaction.id;
-				responseData['amount'] = total;
+				
+				arguments.responseBean.setProviderTransactionID(fileContent.data.chargePaymentMethod.transaction.id);
+				arguments.responseBean.setAmountAuthorized(total);
+				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				responseData['status'] = "failure";
-				responseData['ERROR'] = fileContent;
+				responseBean.addError("Processing error", fileContent);
 			}
+		}
+		else{
+			responseBean.addError("Processing error", "Not able to process this request.");
 		}
 		
 		return responseData;
@@ -315,18 +336,36 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		// Execute request
 		var responseBean = getTransient('ExternalTransactionResponseBean');
 		
+		// Set default currency
+		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
+			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
+		}
+		
+		switch(arguments.requestBean.getTransactionType()){
+			case 'authorize':
+				sendRequestToAuthorize(arguments.requestBean, responseBean);
+				break;
+			case 'receive':
+			case 'authorizeAndCharge':
+			case 'chargePreAuthorization':
+				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
+				createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
+				break;
+			case 'balance':
+				getAccountBalance(arguments.requestBean, responseBean);
+				break;
+			case 'credit':
+				break;
+			default:
+				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+		}
+		
+		return responseBean;
+		
 		if (arguments.requestBean.getTransactionType() == "authorizeAndCharge" || arguments.requestBean.getTransactionType() == "chargePreAuthorization" || arguments.requestBean.getTransactionType() == "receive") { //admin triggers payment or schedule order
 			//writeDump(var = arguments.requestBean.getOrderPayment(), top = 3); abort;
-			var response = this.createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
-			if(structKeyExists(response, "status") && response.status == "success")
-			{
-				arguments.responseBean.setProviderTransactionID(response.transactionID);
-				arguments.responseBean.setAmountAuthorized(response.amount);
-				arguments.responseBean.setAmountReceived(response.amount);
-			}
-			else{
-				responseBean.addError("Processing error", response);
-			}
+			
+			
 			
 		} else if (arguments.requestBean.getTransactionType() == "credit") { //REFUND
 			

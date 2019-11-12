@@ -60,7 +60,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 		
 	public string function getDisplayName() {
-		return "Braintree Updated";
+		return "Braintree";
 	}
 
 	public struct function getSettings() {
