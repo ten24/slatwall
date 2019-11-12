@@ -440,6 +440,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
 				orderItems.sku.product.brand.brandName,
 				orderItems.sku.product.productType.productTypeName,
+				orderItems.sku.product.productType.systemCode,
 				orderItems.sku.product.productDescription,
 			";
 		}

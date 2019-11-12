@@ -2,6 +2,7 @@ class MonatOrderItemsController {
 	public orderItems: any = []; // orderTemplateDetails
 	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
+	public orderFees; 
 
 	//@ngInject
 	constructor(public monatService, public orderTemplateService) {
@@ -27,7 +28,9 @@ class MonatOrderItemsController {
 			
 			if ( 'Starter Kit' === productType ) {
 				this.starterKits.push( item );
-			} else {
+			} else if('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType){
+				this.orderFees = item.extendedUnitPriceAfterDiscount;
+			}	else {
 				this.todaysOrder.push( item );
 			}
 		});

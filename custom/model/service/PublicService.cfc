@@ -668,5 +668,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         return productList;
     }
+    
+    public any function addEnrollmentFee(){
+        var account = getHibachiScope().getAccount();
+        
+        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+            if(account.getAccountType() == 'VIP'){
+                var VIPSkuID = getProductService().getProductByProductType('VIPEnrollmentFee').getDefaultSku().getSkuID(); //getVIP default sku here
+                return addOrderItem({skuID:VIPSkuID});
+            }else if(account.getAccountType() == 'marketPartner'){
+                var MPSkuID = getProductService().getProductByProductCode('MPFEE000011').getDefaultSku().getSkuID(); //getmp default sku here
+                return addOrderItem({skuID:MPSkuID});
+            }
+            
+        }
+        
+    }
 
 }
