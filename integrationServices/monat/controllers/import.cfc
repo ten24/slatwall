@@ -627,9 +627,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	newAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) );//*
                     }
                     
-                    if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
-                    	newAccount.setModifiedDateTime( getDateFromString(account['LastActivityDate']));//*
+                    if (!isNull(account['UpdateDate']) && len(account['UpdateDate'])){
+                    	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
                     }
+                    
+                    /*if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
+                    	newAccount.setLastActivityDateTime( getDateFromString(account['LastActivityDate']));//*
+                    }*/
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
                     	newAccount.setSpouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
@@ -1439,11 +1443,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					var tx = ormStatelessSession.beginTransaction();
 
 					for(var flexship in flexships){
-						
-						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId']);
-						
+						//echo("Importing<br>");
+						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
+						var isNewFlexship = false;
+						//writedump(orderTemplate);abort;
 						if (isNull(orderTemplate)){
 							var orderTemplate = new Slatwall.model.entity.OrderTemplate();
+							var newUUID = rereplace(createUUID(), "-", "", "all");
+							orderTemplate.setOrderTemplateID(newUUID);
+							isNewFlexship = true;
 						}
 						
 						orderTemplate.setRemoteID(flexship['FlexShipId']); 
@@ -1453,11 +1461,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						
 						//set created and modified date times.
 						if (!isNull(order['EntryDate']) && len(order['EntryDate'])){
-							var entry = getDateFromString(flexship['entryDate']);
+							var entry = getDateFromString(flexship['EntryDate']);
 	                    	orderTemplate.setCreatedDateTime( entry );//*
 	                    	orderTemplate.setModifiedDateTime( entry );//*
 	                    }
 	                    
+	                    //writedump(orderTemplate.getNewFlag());
+	                    //writedump(orderTemplate.getOrderTemplateID());
+	                    //writeDump(var=orderTemplate, top=2);abort;
+	                    
+	                    if (isNewFlexship){
+		                	ormStatelessSession.insert("SlatwallOrderTemplate", orderTemplate);
+		                }
+		                
 						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
 						
 						// UPDATE THE ACCOUNT
@@ -1474,15 +1490,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						// UPDATE THE SHIPPING ADDRESS
 						var flexshipShippingAddressRemoteID = 'fss' & flexship['FlexShipId'];
 						//get it by remoteID if it exists.
+						
 						var shippingAccountAddress = getAccountService().getAccountAddressByRemoteID(flexshipShippingAddressRemoteID, false); 
 				
 						if(isNull(shippingAccountAddress)){
 							//create the shipping address
 							var shippingAccountAddress = new Slatwall.model.entity.AccountAddress();
-							shippingAccountAddress.setRemoteID(flexshipShippingAddressRemoteID);
-							shippingAccountAddress.setAccount(customerAccount);
 							
 						}
+						
+						
+						shippingAccountAddress.setRemoteID(flexshipShippingAddressRemoteID);
+						shippingAccountAddress.setAccount(customerAccount);
+						shippingAccountAddress.setAccountAddressName("Shipping");
+						shippingAccountAddress.setCreatedDateTime(getDateFromString(flexship['entryDate']));
+						shippingAccountAddress.setModifiedDateTime(now());
 						
 						// Saves the shipping account address.
 						if (shippingAccountAddress.getNewFlag()){
@@ -1496,7 +1518,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						
 						
 						//CREATE a shipping address or update it.
-						var shippingAddress = getAddressService().getAddressByRemoteID(flexshipShippingAddressRemoteID);
+						var shippingAddress = getAddressService().getAddressByRemoteID(flexshipShippingAddressRemoteID, false);
 						
 						if (isNull(shippingAddress)){
 							var shippingAddress = new Slatwall.model.entity.Address();
@@ -1511,6 +1533,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						shippingAddress.setCountryCode(flexship['ShipToCountry']);
 						shippingAddress.setName(flexship['ShipToName']); 
 						shippingAddress.setPhoneNumber(flexship['ShipToPhone']);
+						
 						if (shippingAddress.getNewFlag()){
 		                	ormStatelessSession.insert("SlatwallAddress", shippingAddress);
 		                }else{
@@ -1532,18 +1555,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								var accountPaymentMethod = new Slatwall.model.entity.AccountPaymentMethod();
 							} 
 							
+							accountPaymentMethod.setAccount(customerAccount);
 							accountPaymentMethod.setRemoteID(flexshipPayment['FlexShipPaymentId']);
-							accountPaymentMethod.setAccountRemoteID(flexship['AccountId']);
 							accountPaymentMethod.setCurrencyCode(flexship['currencyCode']);
 							accountPaymentMethod.setCreditCardType(flexshipPayment['CcType']?:""); 
 							accountPaymentMethod.setExpirationYear(flexshipPayment['CcExpYy']?:""); 
 							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
-				
+							
+							orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
 							
 							//FIND or CREATE the billing account address
+							
 							var billingAccountAddress = getAccountService().getAccountAddressByRemoteID(flexshipBillingAddressRemoteID,false);
 							
 							if(isNull(billingAccountAddress)){
@@ -1552,6 +1577,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				
 							billingAccountAddress.setRemoteID(flexshipbillingAddressRemoteID);
 							billingAccountAddress.setAccount(customerAccount);
+							
+							billingAccountAddress.setAccountAddressName("Billing");
+							billingAccountAddress.setCreatedDateTime(getDateFromString(flexship['entryDate']));
+							billingAccountAddress.setModifiedDateTime(now());
 							
 							//may be same as shipping
 							if(!structKeyExists(flexshipPayment, 'BillCity')){
@@ -1566,7 +1595,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 									var billingAddress = billingAccountAddress.getAddress(false);
 								}	
 				
-								var billingAddress = getAddressByRemoteID(flexshipBillingAddressRemoteID, arguments.statefulSession); 			
+								var billingAddress = getAddressService().getAddressByRemoteID(flexshipBillingAddressRemoteID, false); 			
 				
 								if(isNull(billingAddress)){
 									var billingAddress = new Slatwall.model.entity.Address();
@@ -1589,6 +1618,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				
 							}
 							
+							//SAVE the address
+							if (billingAddress.getNewFlag()){
+		                		ormStatelessSession.insert("SlatwallAddress", billingAddress);
+			                }else{
+			                	ormStatelessSession.update("SlatwallAddress", billingAddress);
+			                }
+		                
 							// Save Billing Account Address
 							billingAccountAddress.setAddress(billingAddress); 
 							ormStatelessSession.update("SlatwallAccountAddress", billingAccountAddress);
@@ -1596,13 +1632,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							// Save Account Payment Method
 							accountPaymentMethod.setBillingAddress(billingAddress);
 							accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
-							ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							//ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
 							
 							// Save order template
 							orderTemplate.setAccountPaymentMethod(accountPaymentMethod); 
 							orderTemplate.setBillingAccountAddress(billingAccountAddress); 
 							
-							ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
+							//ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
 						}
 				
 						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
@@ -1630,15 +1666,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								orderTemplateItem.setSku(sku);
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
 								orderTemplateItem.setOrderTemplate(orderTemplate);
+								orderTemplateItem.setCreatedDatetime(now());
+								orderTemplateItem.setModifiedDatetime(now());
 								
-								if (shippingAddress.getNewFlag()){
+								/*if (shippingAddress.getNewFlag()){
 				                	ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
+				                	orderTemplateItem.setOrderTemplate(orderTemplate);
 				                }else{
 				                	ormStatelessSession.update("SlatwallOrderTemplateItem", orderTemplateItem);
-				                }
+				                	orderTemplateItem.setOrderTemplate(orderTemplate);
+				                }*/
 							}
 						}
 						
+						ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);
 						this.logHibachi( "inserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
 					} 				
 
@@ -1646,14 +1687,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 			} catch (e){
 
-				if (!isNull(tx) && tx.isActive()){
+				/*if (!isNull(tx) && tx.isActive()){
     			    tx.rollback();
-    			}
+    			}*/
 
 				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
-    			writeDump(flexship); // rollback the tx
+    			//writeDump(flexship); // rollback the tx
     			writeDump(e); // rollback the tx
-
+				abort;
     		} finally{
 
 			    // close the stateless before opening the statefull again...
@@ -1792,6 +1833,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        
 			        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
+			        
+			        // *** This must be a payment transaction either + or - added to the payment.
+			        
+			        
+			        
+			        
 			        //newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);on fulfillment instead
 			        
 			        //RMAOrigOrderNumber
@@ -2110,7 +2157,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             	ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
 	                            var paymentTransaction = new Slatwall.model.entity.PaymentTransaction();
 	                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
-	                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
+	                            paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
 	                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
 	                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
 	                            paymentTransaction.setTransactionType( "received" );
@@ -2124,7 +2171,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         		var paymentTransaction = getOrderService().getPaymentTransactionByRemoteID(orderPayment['orderPaymentID']);
                         		if (!isNull(paymentTransaction)){
 		                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
-		                            paymentTransaction.setAuthorizationCode( orderPayment.OrigAuth?:"" ); // Add this
+		                            paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
 		                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
 		                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
 		                            paymentTransaction.setTransactionType( "received" );
