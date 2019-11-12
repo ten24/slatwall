@@ -2291,6 +2291,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
+					data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'ItemNote':
 					data['ItemNote'] = Trim(fieldValue);
@@ -2453,7 +2454,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
+		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -2553,6 +2554,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			pageNumber++
 		}
+
 		abort;
 	}
 

@@ -121,6 +121,10 @@
           "sourceColumnDataGenerator":"'Monat'",
           "propertyIdentifier": "product.brand.brandName",
           "key":true
+        },
+        {
+          "sourceColumn": "URLTitle",
+          "propertyIdentifier": "product.urlTitle"
         }
     ]
 }
