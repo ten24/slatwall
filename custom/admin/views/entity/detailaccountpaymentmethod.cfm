@@ -80,7 +80,7 @@ Notes:
 					<cfset paymentMethodSavedValue = "" />
 				</cfif>
 				
-				<cfif rc.accountPaymentMethod.getMoMoneyWallet()==true >
+				<cfif rc.accountPaymentMethod.getMoMoneyWallet() EQ true >
 					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="moMoneyBalance">	
 				</cfif>
 				
