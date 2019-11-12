@@ -149,22 +149,17 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 	}
 
+	public string function getTypeCode() {
+		if(!isNull(getOrderTemplateType()) ){
+			return getOrderTemplateType().getSystemCode();
+		}
+	}
+
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
 		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
 		return shippingMethodCollection.getRecords();
-	}
-
-	public string function getTypeCode() {
-		if(!isNull(getOrderTemplateType()) 
-		&& isNull(getOrderTemplateType().getTypeCode())
-		&& !len(trim(getOrderTemplateType().getTypeCode()))
-		){
-			return getOrderTemplateType().getSystemCode();
-		}else{
-			return getOrderTemplateType().getTypeCode();
-		}
 	}
 	
 	public boolean function getCanPlaceOrderFlag(){

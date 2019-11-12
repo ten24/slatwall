@@ -84,7 +84,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			accountID = getHibachiScope().getAccount().getAccountID(); 
 		}
 		sql &= "'#accountID#' as createdByAccountID, ";
-		sql &= "'#accountID#' as modifiedByAccountID ";
+		sql &= "'#accountID#' as modifiedByAccountID, ";
 		sql &= "0 as tryCount ";
 		
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
