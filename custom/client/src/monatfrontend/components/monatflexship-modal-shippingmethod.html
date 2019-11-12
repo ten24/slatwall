@@ -138,7 +138,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.stateCode"
-								ng-options="state as state.name for state in monatFlexshipShippingMethodModal.stateCodeOptions track by state.value"
+								ng-options="state.value as state.name for state in monatFlexshipShippingMethodModal.stateCodeOptions"
 								placeholder="{{ monatFlexshipShippingMethodModal.translations.newAddress_state }}"
 							>
 								<option disabled></option>

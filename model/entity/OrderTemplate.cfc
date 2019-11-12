@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel,batchCancel" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -149,22 +149,17 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 	}
 
+	public string function getTypeCode() {
+		if(!isNull(getOrderTemplateType()) ){
+			return getOrderTemplateType().getSystemCode();
+		}
+	}
+
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
 		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
 		return shippingMethodCollection.getRecords();
-	}
-
-	public string function getTypeCode() {
-		if(!isNull(getOrderTemplateType()) 
-		&& isNull(getOrderTemplateType().getTypeCode())
-		&& !len(trim(getOrderTemplateType().getTypeCode()))
-		){
-			return getOrderTemplateType().getSystemCode();
-		}else{
-			return getOrderTemplateType().getTypeCode();
-		}
 	}
 	
 	public boolean function getCanPlaceOrderFlag(){

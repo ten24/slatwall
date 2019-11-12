@@ -20,7 +20,10 @@ class VIPController {
 	public flexshipItemList:any;
 	public holdingShippingAddressID:string;
 	public holdingShippingMethodID:string;
-
+	public flexshipDeliveryDate;
+	public flexshipFrequencyName;
+	public isNotSafariPrivate:boolean;
+	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
@@ -40,21 +43,47 @@ class VIPController {
 			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
 		}
 		
+				
+		if(localStorage.getItem('flexshipDayOfMonth')){
+    		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
+		}
+		
+		if(localStorage.getItem('flexshipFrequency')){
+	    	this.flexshipFrequencyName = localStorage.getItem('flexshipFrequency');
+		}
+		
+		if(localStorage.getItem('flexshipID')){
+	    	this.flexshipID = localStorage.getItem('flexshipID');
+		}
+		
     	this.observerService.attach(this.getFlexshipItems,"lastStep");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
-
-		this.observerService.attach((accountAddress)=>{
-			localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
-			this.holdingShippingAddressID = accountAddress.accountAddressID;
-		}, 'shippingAddressSelected');
-		
-		this.observerService.attach((shippingMethod)=>{
-			localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
-			this.holdingShippingMethodID = shippingMethod.shippingMethodID;
-		}, 'shippingMethodSelected');
-		
-	};
+		this.localStorageCheck(); 
+		if(this.isNotSafariPrivate){
+			this.observerService.attach((accountAddress)=>{
+				localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
+				this.holdingShippingAddressID = accountAddress.accountAddressID;
+			}, 'shippingAddressSelected');
+			
+			this.observerService.attach((shippingMethod)=>{
+				localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
+				this.holdingShippingMethodID = shippingMethod.shippingMethodID;
+			}, 'shippingMethodSelected');			
+		}
+	
+	}
+	
+	//check to see if we can use local storage
+	public localStorageCheck = () => {
+		try {
+			localStorage.setItem('test', '1');
+			localStorage.removeItem('test');
+			this.isNotSafariPrivate = true;
+		} catch (error) {
+			this.isNotSafariPrivate = false;
+		}
+	}
 	public setOrderTemplateShippingAddress = () =>{
 		if(!this.holdingShippingMethodID || !this.holdingShippingAddressID){
 			return;
@@ -151,14 +180,27 @@ class VIPController {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
         	this.flexshipID = result.orderTemplate;
+        	if(this.isNotSafariPrivate && this.flexshipID){
+        		localStorage.setItem('flexshipID', this.flexshipID);
+        	}
+        	
             this.loading = false;
         });
     }
     
-    public setOrderTemplateFrequency = (frequencyTermID, dayOfMonth) => {
+    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
+
+        let newTerm = JSON.parse(frequencyTerm);
         this.loading = true;
+        this.flexshipDeliveryDate = dayOfMonth;
+		this.flexshipFrequencyName = newTerm.name;
+		if(this.isNotSafariPrivate){
+			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
+			localStorage.setItem('flexshipFrequency', newTerm.name);	
+		}
+    
         const flexshipID = this.flexshipID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTermID, dayOfMonth).then(result => {
+        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(result => {
             this.loading = false;
         });
     }

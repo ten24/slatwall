@@ -12,11 +12,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
+	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
-		
+
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
@@ -2035,7 +2036,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		if(listFindNoCase(arguments.rc.includeSegments,'sku')){
-    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
+    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varchar';
     		var skuCodeQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.skufileName, columnTypeList);
             
             // Sanitize names
@@ -2551,6 +2552,53 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 			}
 			pageNumber++
+		}
+		abort;
+	}
+
+	public void function importVibeAccounts(){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		var importSuccess = true;
+
+		try{
+			var userNameQuery = "UPDATE swaccount a 
+								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+								 SET a.userName = temp.userName";
+			var accountAuthQuery = "INSERT INTO swaccountauthentication (
+										accountAuthenticationID, 
+										password, 
+										activeFlag, 
+										createdDateTime, 
+										accountID, 
+										legacyPassword
+									) 
+									SELECT
+										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
+										'LEGACY' password,
+										1 activeFlag,
+										NOW() createdDateTime,
+										a.accountID accountID,
+										temp.encrypted_password legacyPassword
+										FROM swaccount a 
+										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
+										WHERE aa.accountID IS NULL
+									";
+
+
+			var usernameQuery = QueryExecute(userNameQuery);
+			var accountAuthQuery = QueryExecute(accountAuthQuery);
+
+		} catch(any e){
+			importSuccess = false;
+			writeDump("Something Went Wrong!!!");
+			writeDump(var=e, label="ERROR");
+		}
+
+		if(importSuccess){
+			writeDump("Import Success!!!");
+			writedump(usernameQuery);
+			writedump(accountAuthQuery);
 		}
 		abort;
 	}

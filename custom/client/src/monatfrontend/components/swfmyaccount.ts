@@ -24,6 +24,10 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
+    public newProductReview:any = {};
+    public stars:Array<any> = ['','','','',''];
+
+
     public totalPages:Array<number>;
     public pageTracker:number = 1;
     public mostRecentFlexshipDeliveryDate:any;
@@ -40,6 +44,7 @@ class swfAccountController {
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+        this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
 
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -124,7 +129,6 @@ class swfAccountController {
             }
         }
         
-        this.loadingOrders = true;
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
@@ -235,6 +239,14 @@ class swfAccountController {
         return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
         });
+    }
+    
+    public setRating = (rating) => {
+        this.newProductReview.rating = rating;
+        this.stars = ['','','','',''];
+        for(let i = 0; i <= rating - 1; i++) {
+            this.stars[i] = "color: #d0d00b";
+        };
     }
     
     public deleteAccountAddress = (addressID, index) => {

@@ -90,6 +90,10 @@ export class MonatService {
 		return this.publicService.doAction('submitSponsor',{sponsorID});
 	}
 	
+	public addEnrollmentFee( sponsorID:string ) {
+		return this.publicService.doAction('addEnrollmentFee');
+	}
+	
 	public selectStarterPackBundle(skuID: string, quantity: number = 1) {
 		let payload = {
 			skuID: skuID,
