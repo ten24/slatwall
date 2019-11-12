@@ -562,7 +562,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod AccountPaymentMethod_Delete
      */
-    public void function deleteAccountPaymentMethod() {
+    public void function deleteAccountPaymentMethod(required struct data) {
         param name="data.accountPaymentMethodID" default="";
         
         var accountPaymentMethod = getAccountService().getAccountPaymentMethod( data.accountPaymentMethodID );
@@ -570,6 +570,10 @@ component  accessors="true" output="false"
         if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
+            
+            if(!deleteOk) {
+                ArrayAppend(arguments.data.messages, accountPaymentMethod.getErrors(), true);
+            }
         } else {
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", true ); 
         }
@@ -1963,7 +1967,10 @@ component  accessors="true" output="false"
         orderTemplate.clearProcessObject("updateFrequency");
         
         //try to activate if possible
-        if(orderTemplate.getCanPlaceOrderFlag()) {
+        if( 
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
+            && orderTemplate.getCanPlaceOrderFlag()
+        ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
             getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
             
@@ -1999,6 +2006,40 @@ component  accessors="true" output="false"
         } else {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
+	}
+	
+	public any function getOrderTemplatePromotionSkuCollectionConfig( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkuCollectionConfig'] = orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	}
+	
+	public any function getOrderTemplatePromotionSkus( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+        
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+		}
+	    
+	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+        
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
 	
 	private void function setOrderTemplateItemAjaxResponse(required any data) {

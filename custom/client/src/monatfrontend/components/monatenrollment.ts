@@ -28,7 +28,6 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
-
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
@@ -36,7 +35,6 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
-
 	}
 
 	public $onInit = () => {
@@ -54,7 +52,6 @@ class MonatEnrollmentController {
 				})
 			}
 		})
-
 	}
 
 	public handleCreateAccount = () => {
@@ -67,7 +64,8 @@ class MonatEnrollmentController {
 	
 	public getCart = (refresh = true) => {
 		this.monatService.getCart(refresh).then(data =>{
-			this.cart = data;
+			let cartData = this.removeStarterKitsFromCart( data );
+			this.cart = cartData;
 		});
 	}
 
@@ -135,6 +133,33 @@ class MonatEnrollmentController {
 		this.observerService.notify('lastStep')
 		this.navigate(this.steps.length -1);
 		this.reviewContext = false;
+	}
+	
+	public removeStarterKitsFromCart = cart => {
+		if ( 'undefined' === typeof cart.orderItems ) {
+			return cart;
+		}
+		
+		// Start building a new cart, reset totals & items.
+		let formattedCart = Object.assign({}, cart);
+		formattedCart.totalItemQuantity = 0;
+		formattedCart.total = 0;
+		formattedCart.orderItems = [];
+
+		cart.orderItems.forEach( (item, index) => {
+			let productType = item.sku.product.productType.productTypeName;
+			
+			// If the product type is Starter Kit, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType ) {
+				return;
+			}
+			
+			formattedCart.orderItems.push( item );
+			formattedCart.totalItemQuantity += item.quantity;
+			formattedCart.total += item.extendedUnitPriceAfterDiscount * item.quantity;
+		});
+		
+		return formattedCart;
 	}
 }
 
