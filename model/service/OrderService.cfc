@@ -4582,6 +4582,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function createTransactionAndCheckErrors(required any orderPayment, required any processData){
   		// Call the processing method
+  		
   		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
 
   		// If there was expected authorize, receive, or credit

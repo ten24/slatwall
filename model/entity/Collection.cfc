@@ -4114,9 +4114,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			//if the request's comming from the listing displays
-			if( StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')) {
-				this.updateListingSearchFilters();
-			}
+			// if( StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')) {
+			// 	this.updateListingSearchFilters();
+			// }
 			
 
 			//build select
@@ -4258,7 +4258,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				switch(searchConfig.wildCardPosition){
+				switch('left'){
 					case "left":
 							currentFilter['value']="%#keyword#";
 						break;
