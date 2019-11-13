@@ -1649,7 +1649,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newOrder.setPaymentTryCount(1);
 					newOrder.setPaymentLastRetryDateTime(now());
 
-					//fire retry payment so order payment retry can be utilized in workflows
+					//fire retry payment failure event so it can be utilized in workflows
 					getHibachiEventService().announceEvent("afterOrderProcess_RetryPaymentFailure");
 				} 
 			}
