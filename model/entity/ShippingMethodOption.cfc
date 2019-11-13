@@ -140,7 +140,7 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 
 		var shippingMethodName = nullReplace(getShippingMethodRate().getShippingMethod().getShippingMethodName(), "");
 		if(structKeyExists(arguments,'forAudit') && arguments.forAudit == true){
-				return '#shippingMethodName#';
+				return shippingMethodName;
 		}
 		
 		var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
