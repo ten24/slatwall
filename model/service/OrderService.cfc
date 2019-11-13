@@ -8,7 +8,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -914,8 +914,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
             	
-				if(arguments.processMethod.getAmount()){
-					newOrderPayment.setAmount(arguments.processMethod.getAmount());
+				if(!isNull(arguments.processObject.getAmount())){
+					newOrderPayment.setAmount(arguments.processObject.getAmount());
 				} else if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
@@ -1430,16 +1430,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			var site = getSiteService().getSite( processObject.getSiteID()); 
-			arguments.orderTemplate.setSite(site);
+			
+			var site = arguments.processObject.getSite() 
+			arguments.orderTemplate.setSite( site  );
+			
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 			
 			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
 				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
 			} 
 
 			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
@@ -1968,6 +1970,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
+		orderTemplateCollection.addOrderBy('modifiedDateTime|DESC');
 		return orderTemplateCollection; 
 	}  
 
@@ -2658,7 +2661,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(required any order, struct data = {}){
-
 		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
 			return true;
 		}
@@ -2676,7 +2678,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_placeOrder(required any order, struct data={}) {
-		
+		//Remove extraneous payment data
+		if(structKeyExists(data,'accountPaymentMethodID') && len(data.accountPaymentMethodID)
+			&& structKeyExists(data,'newOrderPayment.paymentMethod.paymentMethodID')){
+			structDelete(data,'newOrderPayment.paymentMethod.paymentMethodID');
+		}
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
 			arguments.order.setPlaceOrderFlag(true);
@@ -2709,10 +2715,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								&& !arguments.order.hasSavedAccountPaymentMethod()
 							)
 							) {
+
 								arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 							}
 						}
-
 
 
 						//set an error
@@ -3789,6 +3795,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
 				giftCard_create.setCreditGiftCardFlag(true);
 				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				giftCard_create.setOrder(orderItem.getOrder());
 				if (!isNull(term)) {
 					giftCard_create.setGiftCardExpirationTerm(term);
 				}
@@ -3814,6 +3821,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
 				giftCard_create.setCreditGiftCardFlag(true);
 				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				giftCard_create.setOrder(orderItem.getOrder());
 				if (!isNull(term)) {
 					giftCard_create.setGiftCardExpirationTerm(term);
 				}
@@ -3849,7 +3857,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipient);
 						giftCard_create.setOriginalOrderItem(orderItem);
-	
+						giftCard_create.setOrder(orderItem.getOrder());
 						// Manual gift card code
 						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
 							giftCardCodeIndex++;

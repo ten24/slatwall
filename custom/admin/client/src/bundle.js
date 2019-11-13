@@ -71286,7 +71286,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.validateAmount = function (orderPayment) {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
-                return (payment == orderPayment) ? total : total += payment.amount;
+                if (payment != orderPayment) {
+                    if (payment.paymentMethodType == 'giftCard') {
+                        payment.amount = payment.amountToRefund;
+                    }
+                    return total += payment.amount;
+                }
+                return total;
             }, 0);
             var maxRefund = Math.min(orderPayment.amountToRefund, _this.refundTotal - paymentTotal);
             if (orderPayment.amount == undefined) {
