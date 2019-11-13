@@ -43,7 +43,13 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 		
 		var account = arguments.order.getAccount();
-
+		
+		//snapshot the pricegroups on the order.
+		if (!isNull(account) && !isNull(account.getPriceGroups())){
+            var firstPriceGroup = account.getPriceGroups()[1];
+            order.setPriceGroup(firstPriceGroup);
+        }
+        
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
