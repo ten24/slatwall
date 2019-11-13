@@ -1083,6 +1083,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
 		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
+		var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
 		var fulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodID("444df2fb93d5fa960ba2966ba2017953");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
@@ -1510,10 +1511,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						if (shippingAccountAddress.getNewFlag()){
 		                	ormStatelessSession.insert("SlatwallAccountAddress", shippingAccountAddress);
 		                }else{
-		                	ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
+		                	//ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
 		                }
 		                
-		                //SAVE it on the orderTemplate 
+		                /**
+		                 * Because we are saving this on the orderTemplate, we may not need to update it on its own,
+		                 * and could cause an ORM error because the batch update ormStatelessSession.update on account address
+		                 * doesn't match whats in the db. In other workds, this line below means you don't need to save it on its own.
+		                 * It will get saved already when the orderTemplate gets saved.
+		                 **/
 		                orderTemplate.setShippingAccountAddress(shippingAccountAddress); 
 						
 						
@@ -1720,6 +1726,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var ostCanceled = getTypeService().getTypeByTypeCode("9");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
+		var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
 		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
@@ -1928,8 +1935,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     //If this is a return or a return order, we will need to create an order return instead of fulfillment.
                     var createOrderReturn = false;
-                    if (order['OrderTypeCode'] == "C"){
+                    var isReturn = false;
+                    if (order['OrderTypeCode'] == "C" || order['OrderTypeCode'] == "R"){
                     	createOrderReturn = true;
+                    	isReturn = true;
                     }
                     
                     /**
@@ -2053,7 +2062,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setSkuPrice(val(sku.getPrice()));//*
         			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
         			        	orderItem.setOrder(newOrder);//*
-        			        	orderItem.setOrderItemType(oitSale);//*
+        			        	
+        			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
+        			        	if (isReturn){
+        			        		orderItem.setOrderItemType(oitReturn);
+        			        	}else { 
+        			        		orderItem.setOrderItemType(oitSale);//*
+        			        	}
+        			        	
         			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
         			            orderItem.setTaxableAmount(detail['TaxBase']);//*
         			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
@@ -2156,11 +2172,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             if (newOrderPayment.getNewFlag()) {
                             	ormStatelessSession.insert("SlatwallOrderPayment", newOrderPayment);
 	                            var paymentTransaction = new Slatwall.model.entity.PaymentTransaction();
-	                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
+	                            if (isReturn){
+	                            	paymentTransaction.setTransactionType( "credited" );
+	                            	paymentTransaction.setAmountCredited( orderPayment.amountReceived?:0 );
+	                            }else{
+	                            	paymentTransaction.setTransactionType( "received" );
+	                            	paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );	
+	                            }
+	                            
 	                            paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
 	                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
 	                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
-	                            paymentTransaction.setTransactionType( "received" );
+	                            
 	                            paymentTransaction.setOrderPayment(newOrderPayment);
 	                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
 	                            
@@ -2170,7 +2193,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         		
                         		var paymentTransaction = getOrderService().getPaymentTransactionByRemoteID(orderPayment['orderPaymentID']);
                         		if (!isNull(paymentTransaction)){
-		                            paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );
+		                            if (isReturn){
+		                            	paymentTransaction.setAmountCredited( orderPayment.amountReceived?:0 );
+		                            }else{
+		                            	paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );	
+		                            }
 		                            paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
 		                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
 		                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
