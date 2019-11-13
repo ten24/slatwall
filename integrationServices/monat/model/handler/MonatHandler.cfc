@@ -45,7 +45,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		var account = arguments.order.getAccount();
 		
 		//snapshot the pricegroups on the order.
-		if (!isNull(account) && !isNull(account.getPriceGroups())){
+		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
             var firstPriceGroup = account.getPriceGroups()[1];
             order.setPriceGroup(firstPriceGroup);
         }
