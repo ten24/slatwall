@@ -387,7 +387,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!isNull(arguments.data.account)){
             var account = arguments.data.account;
-            var accountID= account.getAccountID();
             getDAO('HibachiDAO').flushORMSession();
             var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
             getHibachiSessionService().loginAccount(account, accountAuthentication); 
