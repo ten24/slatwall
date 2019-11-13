@@ -390,7 +390,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
             getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
             getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         if(account.hasErrors()){
