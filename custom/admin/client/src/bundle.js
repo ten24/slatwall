@@ -32129,22 +32129,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BATCH:
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32154,7 +32154,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32167,49 +32167,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 default:
                     return _this.state;
             }
@@ -74190,6 +74190,15 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "Exact N Day(s) From Now",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'exactDateFuture',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Days'
+                                }
+                            },
+                            {
                                 display: "Match Day of Month",
                                 comparisonOperator: "=",
                                 dateInfo: {
@@ -74367,6 +74376,24 @@ var SWCriteriaDate = /** @class */ (function () {
                                 selectedCondition.showNumberOf = true;
                             }
                         }
+                        if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                            selectedCondition.showCriteriaStart = true;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.disableCriteriaStart = false;
+                            selectedCondition.disableCriteriaEnd = true;
+                            if (!selectedCondition.dateInfo.measureType) {
+                                selectedCondition.conditionDisplay = '';
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.showNumberOf = false;
+                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' from now?';
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.showNumberOf = true;
+                            }
+                        }
                         if (selectedCondition.dateInfo.type === 'matchPart') {
                             selectedCondition.showCriteriaStart = false;
                             selectedCondition.showCriteriaEnd = false;
@@ -74389,8 +74416,8 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
                     var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                    var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
-                        var measureCount = selectedFilterProperty.criteriaNumberOf;
                         switch (selectedCondition.dateInfo.measureType) {
                             case 'h':
                                 var today = Date.parse('today');
@@ -74441,6 +74468,16 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
                         selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
                         selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                    }
+                    if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                        console.log('calculate Condition exactDateFuture', selectedCondition);
+                        switch (selectedCondition.dateInfo.measureType) {
+                            case 'd':
+                                var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+                                selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                                break;
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
                         if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
@@ -76153,7 +76190,8 @@ var SWEditFilterItem = /** @class */ (function () {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
                                         }
                                     }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') {
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate' ||
+                                        selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDateFuture')) {
                                         if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
                                             filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                             filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
@@ -76178,7 +76216,10 @@ var SWEditFilterItem = /** @class */ (function () {
                                                     filterItem.displayValue += ' Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
+                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate')
+                                                ? filterItem.displayValue += ' Ago'
+                                                : filterItem.displayValue += ' from Now';
                                         }
                                     }
                                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
@@ -77047,6 +77088,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -77060,7 +77102,6 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -86513,6 +86554,13 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -87636,7 +87684,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -88354,10 +88402,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -94393,12 +94441,12 @@ var SWListingSearchController = /** @class */ (function () {
         ];
         this.wildCardPositionOptions = [
             {
-                title: 'Match from start',
-                value: 'left'
+                title: 'Match from Start',
+                value: 'right'
             },
             {
-                title: 'Match from end',
-                value: 'right'
+                title: 'Match from End',
+                value: 'left'
             },
             {
                 title: 'Match Anywhere',
@@ -94624,7 +94672,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -94759,11 +94807,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
