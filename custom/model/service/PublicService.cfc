@@ -383,9 +383,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
 
     private any function loginEnrolledAccount(required any account){
-        var account = arguments.account;
         getDAO('HibachiDAO').flushORMSession();
-        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=arguments.account.getAccountID());
         getHibachiSessionService().loginAccount(account, accountAuthentication); 
     }    
     
