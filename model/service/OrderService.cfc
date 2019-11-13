@@ -1648,6 +1648,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
 					newOrder.setPaymentTryCount(1);
 					newOrder.setPaymentLastRetryDateTime(now());
+
+					//fire retry payment so order payment retry can be utilized in workflows
+					getHibachiEventService().announceEvent("afterOrderProcess_RetryPaymentFailure");
 				} 
 			}
 		}
