@@ -13,6 +13,7 @@ class SWFPaginationController {
     public beginPaginationAt:number;
     public displayPages:any;
     public elipsesNum;
+
 	// @ngInject
 	constructor(public observerService, public $scope,public publicService) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
@@ -81,10 +82,12 @@ class SWFPaginationController {
 
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
+        this.publicService.paginationIsLoading = true;
         
         return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
             this.recordList = result.productList ? result.productList : result.pageRecords;
             this.pageTracker = pageNumber;
+            this.publicService.paginationIsLoading = false;
         });
     }
 
