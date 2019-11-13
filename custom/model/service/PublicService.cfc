@@ -383,14 +383,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
 
     public any function loginEnrolledAccount(required struct data){
-        param name="arguments.data.account" default=""; 
-        
-        if(!isNull(arguments.data.account)){
-            var account = arguments.data.account;
-            getDAO('HibachiDAO').flushORMSession();
-            var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
-        }
+        var account = arguments.data.account;
+        getDAO('HibachiDAO').flushORMSession();
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
+        getHibachiSessionService().loginAccount(account, accountAuthentication); 
     }    
     
     public any function createMarketPartnerEnrollment(required struct data){
