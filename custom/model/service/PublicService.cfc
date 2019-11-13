@@ -382,8 +382,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
-    public any function loginEnrolledAccount(required struct data){
-        var account = arguments.data.account;
+    private any function loginEnrolledAccount(required any account){
+        var account = arguments.account;
         getDAO('HibachiDAO').flushORMSession();
         var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
         getHibachiSessionService().loginAccount(account, accountAuthentication); 
@@ -394,7 +394,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
-            loginEnrolledAccount({account: account})
+            loginEnrolledAccount(account)
         }
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
@@ -406,7 +406,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
-            loginEnrolledAccount({account: account})
+            loginEnrolledAccount(account)
         }
         account.getAccountNumber();
         return account;
@@ -428,7 +428,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 account.setAccountStatusType(accountStatusType);
             }
             
-            loginEnrolledAccount({account: account})
+            loginEnrolledAccount(account)
         }
         return account;
     }
