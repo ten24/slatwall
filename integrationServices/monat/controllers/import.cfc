@@ -1490,10 +1490,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setModifiedDateTime( entry );//*
 	                    }
 	                    
-	                    //writedump(orderTemplate.getNewFlag());
-	                    //writedump(orderTemplate.getOrderTemplateID());
-	                    //writeDump(var=orderTemplate, top=2);abort;
-	                    
 	                    if (isNewFlexship){
 		                	ormStatelessSession.insert("SlatwallOrderTemplate", orderTemplate);
 		                }
