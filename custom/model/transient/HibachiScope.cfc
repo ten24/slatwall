@@ -33,12 +33,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			if(domainParts[1] == 'www'){
 				ArrayDeleteAt(domainParts, 1);
 			}
-			if(!listFindNoCase(domainParts[1],'monat,mymonat,monatglobal')){
-				try {
-					variables.currentRequestSiteOwner = getService('accountService').getAccountByUsername(domainParts[1]);
-				} catch (any e) {
-					this.logHibachi('could not determine currentRequestSiteOwner encountered error: #serializeJson(e)#',true);
-				} 
+			if(!listFindNoCase('monat,mymonat,monatglobal',domainParts[1])){
+				variables.currentRequestSiteOwner = getService('accountService').getAccountByUsername(domainParts[1]);
 			}
   
 			if(isNull(variables.currentRequestSite)){
