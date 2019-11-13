@@ -599,7 +599,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
-                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
+                                giftCardProcessObject.setOrderPayment(arguments.paymentTransaction.getOrderPayment());
                                 giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
 
                                 giftCardProcessObject.setCreditAmount(amount);

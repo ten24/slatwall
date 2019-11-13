@@ -221,7 +221,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 
 	//CUSTOM PROPERTIES BEGIN
-property name="disableOnFlexshipFlag" ormtype="boolean";
+property name="SAPItemCode" ormtype="string";
+    property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
     property name="onTheFlyKitFlag" ormtype="boolean";
     property name="personalVolumeByCurrencyCode" persistent="false";
@@ -2086,7 +2087,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID')){
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}	
 

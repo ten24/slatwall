@@ -20,10 +20,8 @@ class MonatProductCardController {
 		public orderTemplateService,
 		public monatService,
         public observerService,
-
-        public ModalService
+        public ModalService,
         public $scope
-
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 

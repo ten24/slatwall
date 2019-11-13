@@ -11,12 +11,13 @@ class MonatEnrollmentController {
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
-	public cartText:string = 'Show Cart'
 	public reviewContext:boolean = false;
+	public cartText:string = 'Show Cart';
+	public showFlexshipCart: boolean = false;
 
 
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -35,7 +36,23 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+	}
 
+	public $onInit = () => {
+		this.publicService.getAccount(true).then(result=>{
+			//if account has a flexship send to checkout review
+			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
+				this.publicService.getCart().then(result=>{
+					this.goToLastStep();
+				})
+			}else{
+				//if its a new account clear data in local storage and ensure they are logged out
+				localStorage.clear()
+				this.publicService.doAction('logout').then(result=>{
+					this.observerService.notify('logout')
+				})
+			}
+		})
 	}
 
 	public handleCreateAccount = () => {
@@ -43,11 +60,13 @@ class MonatEnrollmentController {
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			this.next();
 		}
+		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
 	public getCart = (refresh = true) => {
 		this.monatService.getCart(refresh).then(data =>{
-			this.cart = data;
+			let cartData = this.removeStarterKitsFromCart( data );
+			this.cart = cartData;
 		});
 	}
 
@@ -72,6 +91,9 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
+		if(this.position + 1 == this.steps.length){
+			this.monatService.addEnrollmentFee();
+		}
 	}
 
 	public previous() {
@@ -93,6 +115,7 @@ class MonatEnrollmentController {
 		this.position = index;
 		
 		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
 			step.selected = false;
@@ -114,6 +137,33 @@ class MonatEnrollmentController {
 		this.observerService.notify('lastStep')
 		this.navigate(this.steps.length -1);
 		this.reviewContext = false;
+	}
+	
+	public removeStarterKitsFromCart = cart => {
+		if ( 'undefined' === typeof cart.orderItems ) {
+			return cart;
+		}
+		
+		// Start building a new cart, reset totals & items.
+		let formattedCart = Object.assign({}, cart);
+		formattedCart.totalItemQuantity = 0;
+		formattedCart.total = 0;
+		formattedCart.orderItems = [];
+
+		cart.orderItems.forEach( (item, index) => {
+			let productType = item.sku.product.productType.productTypeName;
+			
+			// If the product type is Starter Kit, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType ) {
+				return;
+			}
+			
+			formattedCart.orderItems.push( item );
+			formattedCart.totalItemQuantity += item.quantity;
+			formattedCart.total += item.extendedUnitPriceAfterDiscount * item.quantity;
+		});
+		
+		return formattedCart;
 	}
 }
 

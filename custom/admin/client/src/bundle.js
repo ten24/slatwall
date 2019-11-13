@@ -71286,7 +71286,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.validateAmount = function (orderPayment) {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
-                return (payment == orderPayment) ? total : total += payment.amount;
+                if (payment != orderPayment) {
+                    if (payment.paymentMethodType == 'giftCard') {
+                        payment.amount = payment.amountToRefund;
+                    }
+                    return total += payment.amount;
+                }
+                return total;
             }, 0);
             var maxRefund = Math.min(orderPayment.amountToRefund, _this.refundTotal - paymentTotal);
             if (orderPayment.amount == undefined) {
@@ -74184,6 +74190,15 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "Exact N Day(s) From Now",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'exactDateFuture',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Days'
+                                }
+                            },
+                            {
                                 display: "Match Day of Month",
                                 comparisonOperator: "=",
                                 dateInfo: {
@@ -74361,6 +74376,24 @@ var SWCriteriaDate = /** @class */ (function () {
                                 selectedCondition.showNumberOf = true;
                             }
                         }
+                        if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                            selectedCondition.showCriteriaStart = true;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.disableCriteriaStart = false;
+                            selectedCondition.disableCriteriaEnd = true;
+                            if (!selectedCondition.dateInfo.measureType) {
+                                selectedCondition.conditionDisplay = '';
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.showNumberOf = false;
+                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' from now?';
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.showNumberOf = true;
+                            }
+                        }
                         if (selectedCondition.dateInfo.type === 'matchPart') {
                             selectedCondition.showCriteriaStart = false;
                             selectedCondition.showCriteriaEnd = false;
@@ -74383,8 +74416,8 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
                     var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                    var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
-                        var measureCount = selectedFilterProperty.criteriaNumberOf;
                         switch (selectedCondition.dateInfo.measureType) {
                             case 'h':
                                 var today = Date.parse('today');
@@ -74435,6 +74468,16 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
                         selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
                         selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                    }
+                    if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                        console.log('calculate Condition exactDateFuture', selectedCondition);
+                        switch (selectedCondition.dateInfo.measureType) {
+                            case 'd':
+                                var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+                                selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                                break;
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
                         if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
@@ -76147,7 +76190,8 @@ var SWEditFilterItem = /** @class */ (function () {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
                                         }
                                     }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') {
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate' ||
+                                        selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDateFuture')) {
                                         if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
                                             filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                             filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
@@ -76172,7 +76216,10 @@ var SWEditFilterItem = /** @class */ (function () {
                                                     filterItem.displayValue += ' Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
+                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate')
+                                                ? filterItem.displayValue += ' Ago'
+                                                : filterItem.displayValue += ' from Now';
                                         }
                                     }
                                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
@@ -79572,6 +79619,9 @@ var SWEntityActionBarController = /** @class */ (function () {
         this.$onInit = function () {
             if (_this.edit == null) {
                 _this.edit = false;
+            }
+            if (_this.showDelete == null) {
+                _this.showDelete = true;
             }
             if (angular.isDefined(_this.pageTitleRbKey)) {
                 _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
@@ -98389,7 +98439,9 @@ var ScheduleService = /** @class */ (function (_super) {
             if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
             _this.clearSchedulePreview();
             var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
-            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
+            var endTime = (scheduleObject.frequencyEndTime && scheduleObject.frequencyEndTime.trim())
+                ? new Date(Date.parse(scheduleObject.frequencyEndTime))
+                : false;
             var now = new Date();
             var startPoint = new Date();
             startPoint.setHours(startTime.getHours());

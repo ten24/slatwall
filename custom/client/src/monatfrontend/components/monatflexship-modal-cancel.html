@@ -20,7 +20,7 @@
 					type="text"
 					class="form-control"
 					ng-model="monatFlexshipCancelModal.formData.typeID"
-					ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions track by reason.value"
+					ng-options="reason.value as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions"
 					placeholder="{{ monatFlexshipCancelModal.translations.flexshipCancelReason }}"
 				>
 					<option value="">{{ monatFlexshipCancelModal.translations.whyAreYouCancelling }}</option>

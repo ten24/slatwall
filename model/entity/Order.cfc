@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment" {
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -235,30 +235,30 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="vipEnrollmentOrderFlag" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
-    property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal";
-    property name="calculatedTaxableAmountSubtotal" ormtype="big_decimal";
-    property name="calculatedCommissionableVolumeSubtotal" ormtype="big_decimal";
-    property name="calculatedRetailCommissionSubtotal" ormtype="big_decimal";
-    property name="calculatedProductPackVolumeSubtotal" ormtype="big_decimal";
-    property name="calculatedRetailValueVolumeSubtotal" ormtype="big_decimal";
-    property name="calculatedPersonalVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedTaxableAmountSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedCommissionableVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedRetailCommissionSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedProductPackVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedRetailValueVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal";
-    property name="calculatedPersonalVolumeTotal" ormtype="big_decimal";
-    property name="calculatedTaxableAmountTotal" ormtype="big_decimal";
-    property name="calculatedCommissionableVolumeTotal" ormtype="big_decimal";
-    property name="calculatedRetailCommissionTotal" ormtype="big_decimal";
-    property name="calculatedProductPackVolumeTotal" ormtype="big_decimal";
-    property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal";
-    property name="calculatedPersonalVolumeDiscountTotal" ormtype="big_decimal";
-    property name="calculatedTaxableAmountDiscountTotal" ormtype="big_decimal";
-    property name="calculatedCommissionableVolumeDiscountTotal" ormtype="big_decimal";
-    property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal";
-    property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal";
-    property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal";
+    property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
     
@@ -270,18 +270,24 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
+ property name="importFlexshipNumber" ormtype="string";
+ property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
  property name="orderPartnerNumber" ormtype="string";
- property name="orderInvoiceNumber" ormtype="string";
+ property name="invoiceNumber" ormtype="string";
  property name="miscChargeAmount" ormtype="string";
  property name="redeemPoints" ormtype="string";
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
+ property name="importOriginalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+ property name="priceLevelCode" ormtype="string";
+ property name="orderTypeCode" ormtype="string";
+ property name="orderStatusCode" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -2050,7 +2056,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		return variables.orderHasMPRenewalFee;
 	}
-
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
@@ -2082,6 +2088,5 @@ public numeric function getPersonalVolumeSubtotal(){
 	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
 	    }
 	}
-
 	//CUSTOM FUNCTIONS END
 }
