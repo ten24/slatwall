@@ -404,7 +404,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
             getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
             getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         account.getAccountNumber();
@@ -428,7 +428,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
             getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
+			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
             getHibachiSessionService().loginAccount(account, accountAuthentication); 
         }
         return account;
