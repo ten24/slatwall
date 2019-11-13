@@ -61995,7 +61995,7 @@ var SponsorSearchSelectorController = /** @class */ (function () {
             _this.form.countryCode = _this.siteCountryCode;
             _this.getCountryCodeOptions();
             _this.getStateCodeOptions(_this.form.countryCode);
-            //this.getSearchResults();
+            _this.getSearchResults();
         };
         this.getCountryCodeOptions = function () {
             // We dont't need to get country code options more than once.
