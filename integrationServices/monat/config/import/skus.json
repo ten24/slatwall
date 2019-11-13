@@ -37,7 +37,7 @@
         },
         {
           "sourceColumn":"SAPItemCode",
-          "propertyIdentifier":"SAPItemCode"
+          "propertyIdentifier":"sapItemCode"
         },
         {
           "sourceColumn":"EntryDate",
@@ -121,6 +121,10 @@
           "sourceColumnDataGenerator":"'Monat'",
           "propertyIdentifier": "product.brand.brandName",
           "key":true
+        },
+        {
+          "sourceColumn": "URLTitle",
+          "propertyIdentifier": "product.urlTitle"
         }
     ]
 }

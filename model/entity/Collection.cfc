@@ -409,10 +409,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionObjectListingSearchConfig() {
 		
 		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
-			this.setCollectionObjectListingSearchConfig({
-				wildCardPosition : 'both',
-				ignoreSearchFilters : false	
-			}); 
+			this.setCollectionObjectListingSearchConfig({}); 
 		}
 		
 		return variables.collectionObjectListingSearchConfig;

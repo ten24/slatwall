@@ -90,4 +90,10 @@ component {
 		}
 		return true;
 	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "right";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
 } 
