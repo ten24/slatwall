@@ -382,16 +382,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
-    
+    private any function loginEnrolledAccount(required any account){
+        getDAO('HibachiDAO').flushORMSession();
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=arguments.account.getAccountID());
+        getHibachiSessionService().loginAccount(account, accountAuthentication); 
+    }    
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
 
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount(account)
         }
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
@@ -403,9 +405,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount(account)
         }
         account.getAccountNumber();
         return account;
@@ -427,9 +427,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 account.setAccountStatusType(accountStatusType);
             }
             
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByUsername(username=arguments.data.username);
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount(account)
         }
         return account;
     }
