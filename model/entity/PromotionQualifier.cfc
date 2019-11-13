@@ -314,12 +314,13 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(orderCollection)){
 			return false;
 		}
-
+    orderCollection.setDisplayProperties('orderID'); 
 		orderCollection.setPageRecordsShow(1); 
 		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
 
 		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasOrder;
+
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
