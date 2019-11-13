@@ -2559,7 +2559,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function importVibeAccounts(){
-		getService("HibachiTagService").cfsetting(requesttimeout="100");
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		var importSuccess = true;
 
 		try{
