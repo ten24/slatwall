@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment" {
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -270,18 +270,24 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
+ property name="importFlexshipNumber" ormtype="string";
+ property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
  property name="orderPartnerNumber" ormtype="string";
- property name="orderInvoiceNumber" ormtype="string";
+ property name="invoiceNumber" ormtype="string";
  property name="miscChargeAmount" ormtype="string";
  property name="redeemPoints" ormtype="string";
  property name="remoteAmountTotal" ormtype="string";
  property name="orderSourceCode" ormtype="string";
  property name="FSNumber" ormtype="string";
- property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";//CUSTOM PROPERTIES END
+ property name="importOriginalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+ property name="priceLevelCode" ormtype="string";
+ property name="orderTypeCode" ormtype="string";
+ property name="orderStatusCode" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -2050,7 +2056,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		return variables.orderHasMPRenewalFee;
 	}
-
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
@@ -2082,6 +2088,5 @@ public numeric function getPersonalVolumeSubtotal(){
 	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
 	    }
 	}
-
 	//CUSTOM FUNCTIONS END
 }
