@@ -96,28 +96,94 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return httpRequest;
 	}
 	
+	
+	/**
+	 * Process external
+	 **/
+	public any function processExternal( required any requestBean ){
+		//writeDump(var = arguments.requestBean, top = 3); abort;
+		// Execute request
+		var responseBean = getTransient('ExternalTransactionResponseBean');
+		
+		// Set default currency
+		// if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
+		// 	arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
+		// }
+		
+		switch(arguments.requestBean.getTransactionType()){
+			case 'authorize':
+				sendRequestToAuthorize(arguments.requestBean, responseBean);
+				break;
+			case 'receive':
+			case 'authorizeAndCharge':
+			case 'chargePreAuthorization':
+				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
+				createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
+				break;
+			case 'authorizeAccount':
+				authorizeAccount(arguments.requestBean, responseBean);
+				break;
+			case 'externalHTML':
+				return getExternalPaymentHTML(arguments.requestBean, responseBean);
+			case 'credit':
+				break;
+			default:
+				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
+		}
+		
+		return responseBean;
+	}
+	
+	
 	/**
 	 * Method to set client side external HTML
 	 * @params - object paymentMethod
 	 * @return : HTML (success)
 	 * @return : empty string (fail) - Slatwall Log
 	 **/
-	public string function getExternalPaymentHTML( required any paymentMethod, required any order = request.slatwallScope.cart() ) {
-		var returnHTML = "";
-		var client_auth_token = "";
-		var customerId = arguments.order.getAccount().getAccountID();
-		var currency = arguments.order.getCurrencyCode();
-		var merchantAccountId = arguments.paymentMethod.getIntegration().setting('braintreeAccountMerchantID');
-		if( arguments.paymentMethod.getIntegration().setting('braintreeAccountSandboxFlag') ) {
-			var client_payment_mode="sandbox";
-		} else {
-			var client_payment_mode="production";
-		}
-		var cart_amount = arguments.order.getTotal();
+	private string function getExternalPaymentHTML( required any requestBean, required any responseBean ) {
+		authorizeAccount(arguments.requestBean, arguments.responseBean);
 		
-		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
+		if(arguments.responseBean.hasErrors()){
+			return;
+		}
+		
+		if (isNull(arguments.responseBean.getAuthorizationCode()) || !len(arguments.responseBean.getAuthorizationCode())) {
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review Authorization Code.");
+			return;
+		}
+		
+		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode()) || isNull(arguments.requestBean.getTransactionAmount()) ||!len(arguments.requestBean.getTransactionAmount())  ) {
+			arguments.responseBean.addError("Processing error", "Error in processing Transaction. please check transction request.");
+			return;
+		}
+		
+		var returnHTML = "";
+		var clientAuthToken = arguments.responseBean.getAuthorizationCode();
+		var currency = arguments.requestBean.getTransactionCurrencyCode();
+		var transactionAmount = LSParseNumber(arguments.requestBean.getTransactionAmount());
+		
+		if( setting(settingName='braintreeAccountSandboxFlag', requestBean=arguments.requestBean)) {
+			var clientPaymentMode="sandbox";
+		} else {
+			var clientPaymentMode="production";
+		}
+		
+		savecontent variable="returnHTML" {
+			include "views/main/externalpayment.cfm";
+		};
+		
+		//arguments.responseBean.addExternalHTML(returnHTML);
+		return returnHTML;
+	}
+	
+	private any function authorizeAccount(required any requestBean, required any responseBean)
+	{
+		var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);//arguments.paymentMethod.getIntegration().setting('braintreeAccountMerchantID');
+		
+		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
 		var payload = { "query" : "mutation ClientToken($input: CreateClientTokenInput) { createClientToken(input: $input) { clientToken } }",
-			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#customerId#" } }
+			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		
@@ -127,18 +193,21 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		{
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (structKeyExists(fileContent, 'errors')){
-				writeLog(fileContent);
-				return "";
+				//writeDump(fileContent);
+				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
 			}
 			else{
-				client_auth_token = fileContent.data.createClientToken.clientToken;
+				arguments.responseBean.setAuthorizationCode(fileContent.data.createClientToken.clientToken);
 			}
 		}
-		
-		savecontent variable="returnHTML" {
-			include "views/main/externalpayment.cfm";
-		};
-		return returnHTML;
+		else{
+			arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
+		}
+	}
+	
+	public any function renderHTML()
+	{
+		dump("here");
 	}
 	
 	/**
@@ -328,64 +397,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return responseData;
 	}
 	
-	/**
-	 * Process external
-	 **/
-	public any function processExternal( required any requestBean ){
-		
-		// Execute request
-		var responseBean = getTransient('ExternalTransactionResponseBean');
-		
-		// Set default currency
-		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
-			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
-		}
-		
-		switch(arguments.requestBean.getTransactionType()){
-			case 'authorize':
-				sendRequestToAuthorize(arguments.requestBean, responseBean);
-				break;
-			case 'receive':
-			case 'authorizeAndCharge':
-			case 'chargePreAuthorization':
-				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
-				createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
-				break;
-			case 'balance':
-				getAccountBalance(arguments.requestBean, responseBean);
-				break;
-			case 'credit':
-				break;
-			default:
-				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
-		}
-		
-		return responseBean;
-		
-		if (arguments.requestBean.getTransactionType() == "authorizeAndCharge" || arguments.requestBean.getTransactionType() == "chargePreAuthorization" || arguments.requestBean.getTransactionType() == "receive") { //admin triggers payment or schedule order
-			//writeDump(var = arguments.requestBean.getOrderPayment(), top = 3); abort;
-			
-			
-			
-		} else if (arguments.requestBean.getTransactionType() == "credit") { //REFUND
-			
-			var response = this.refundTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getTransactionID());
-			//setup transaction id from refund	
-			//setup amount credited
-			if(structKeyExists(respose, "status") && respose.status == "success")
-			{
-				arguments.responseBean.setProviderTransactionID(response.transactionID);
-				arguments.responseBean.setAmountCredited(respose.amount);
-			}
-			else{
-				responseBean.addError("Processing error", response);
-			}
-			
-		} else {
-			responseBean.addError("Processing error", "Paypal Braintree Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
-		}
-		return responseBean;
-	}
+	
 	
 	/**
 	 * Method to assign payment method against customer Account

@@ -60,7 +60,7 @@
 
     <div id="paypal-button"></div>
     <script type="text/javascript">
-            var CLIENT_AUTHORIZATION = "<cfoutput>#client_auth_token#</cfoutput>";
+            var CLIENT_AUTHORIZATION = "<cfoutput>#clientAuthToken#</cfoutput>";
             
             // Create a client.
             braintree.client.create({
@@ -90,14 +90,14 @@
 
                 // Set up PayPal with the checkout.js library
                 paypal.Button.render({
-                    env: '<cfoutput>#client_payment_mode#</cfoutput>',
+                    env: '<cfoutput>#clientPaymentMode#</cfoutput>',
                     
                     payment: function () {
                         return paypalCheckoutInstance.createPayment({
                             flow: 'vault',
                             billingAgreementDescription: '',
                             enableShippingAddress: false,
-                            amount: <cfoutput>#cart_amount#</cfoutput>, // Required
+                            amount: <cfoutput>#transactionAmount#</cfoutput>, // Required
                             currency: "<cfoutput>#currency#</cfoutput>", // Required
                             // Your PayPal options here. For available options, see
                             // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
@@ -111,7 +111,7 @@
                             jQuery.ajax({
 								type: 'post',
 								url: '?slatAction=braintree:main.initiatePayment',
-								data: {'payment_nonce' : payload.nonce, 'paymentMethodID' : "<cfoutput>#paymentMethod.getPaymentMethodID()#</cfoutput>"},
+								data: {'payment_nonce' : payload.nonce, 'paymentMethodID' : "<cfoutput>DUMMYMETHODID</cfoutput>"},
 								dataType: "json",
 								context: document.body,
 								headers: { 'X-Hibachi-AJAX': true },
