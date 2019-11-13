@@ -2559,13 +2559,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function importVibeAccounts(){
-		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getService("HibachiTagService").cfsetting(requesttimeout="100");
 		var importSuccess = true;
 
 		try{
 			var userNameQuery = "UPDATE swaccount a 
 								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = temp.userName";
+								 SET a.userName = 
+									CASE 
+										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
+										THEN temp.username
+										ELSE temp.consultant_id
+									END
+									a.modifiedDateTime = NOW()";
 			var accountAuthQuery = "INSERT INTO swaccountauthentication (
 										accountAuthenticationID, 
 										password, 
