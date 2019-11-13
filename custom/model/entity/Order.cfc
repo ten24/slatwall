@@ -232,7 +232,7 @@ component {
 	
 	public struct function getListingSearchConfig() {
 	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to show only last 3 months of record by default
-	    param name = "arguments.wildCardPosition" default = "left";
+	    param name = "arguments.wildCardPosition" default = "right";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
