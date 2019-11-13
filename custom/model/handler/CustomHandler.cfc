@@ -1,16 +1,5 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     
-    /**
-     * Snapshots the accounts pricegroup on place orders (if it exists). 
-     **/
-    public void function afterProcessOrder_placeOrderSuccess(any slatwallScope, any order, any data) { 
-        if (!isNull(order.getAccount()) && !isNull(order.getAccount().getPriceGroups())){
-            var firstPriceGroup = order.getAccount().getPriceGroups()[1];
-            order.setPriceGroup(firstPriceGroup);
-            slatwallScope.getService("OrderService").saveOrder(order);
-        }
-    }
-    
     public void function beforeOrderSave(any slatwallScope, any order, any data) {
         
         // Sets the actual order created site from the account.
