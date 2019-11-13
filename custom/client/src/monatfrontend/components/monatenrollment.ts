@@ -11,9 +11,10 @@ class MonatEnrollmentController {
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
-	public cartText:string = 'Show Cart'
 	public reviewContext:boolean = false;
+	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
+
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -90,6 +91,9 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
+		if(this.position + 1 == this.steps.length){
+			this.monatService.addEnrollmentFee();
+		}
 	}
 
 	public previous() {

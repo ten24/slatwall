@@ -92,7 +92,7 @@
 		</sw-entity-action-bar>
 
 		<div class="panel-group s-pannel-group row">	
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
 										  data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'
 										  data-base-entity-name="OrderTemplate"
@@ -101,7 +101,7 @@
 				</sw-customer-account-card> 
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
 													<cfif not isNull(rc.orderTemplate.getShippingMethod())>
 														data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
@@ -118,9 +118,11 @@
 													data-default-country-code="US"
 													>
 				</sw-account-shipping-address-card>
-			</div>
+			</div>		
+		</div>
 
-			<div class="col-md-6">
+		<div class="panel-group s-pannel-group row">	
+			<div class="col-md-12">
 				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
 														<cfif not isNull(rc.orderTemplate.getAccountPaymentMethod())>
 															data-account-payment-method="#rc.orderTemplate.getAccountPaymentMethod().getEncodedJsonRepresentation()#"
@@ -140,7 +142,7 @@
 														data-properties-to-display-list="#orderTemplateTotalProperties#"
 														>
 				</sw-customer-account-payment-method-card>
-			</div>		
+			</div>
 		</div>
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderTemplate#">
