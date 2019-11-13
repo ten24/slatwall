@@ -1785,7 +1785,10 @@ component  accessors="true" output="false"
 			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
 			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
-			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()        
+			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
+  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
+  			      "total"                       :       wishListItem.getTotal()?:""
+
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);

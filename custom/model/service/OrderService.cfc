@@ -30,8 +30,8 @@ component extends="Slatwall.model.service.OrderService" {
         
         return super.processOrderTemplate_create(argumentCollection = arguments);
     }
-    
-    
+
+ 
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
 	     for(var priceField in variables.customPriceFields){
@@ -152,6 +152,9 @@ component extends="Slatwall.model.service.OrderService" {
 				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
 			}
+			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
+			
 			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
@@ -164,11 +167,12 @@ component extends="Slatwall.model.service.OrderService" {
 			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 
-			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
 	
@@ -286,7 +290,7 @@ component extends="Slatwall.model.service.OrderService" {
 
 		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
 		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
+		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,sku.product.productID,sku.skuID');
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');

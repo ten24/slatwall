@@ -31,10 +31,12 @@ import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
 import { SponsorSearchSelector } from './components/sponsor-search-selector';
+import { SWFPagination } from './components/swfpagination';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
 import { MonatSearchController } from './controllers/monat-search';
+import { MonatCheckoutController } from './controllers/monat-checkout';
 
 
 //services
@@ -73,6 +75,7 @@ var monatfrontendmodule = angular
 	.directive('observeEvent', ObserveEvent.Factory())
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
 	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
+	.directive('paginationController', SWFPagination.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
@@ -83,6 +86,7 @@ var monatfrontendmodule = angular
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)
+	.controller('checkoutController', MonatCheckoutController)
 	
 	// Services
 	.service('monatService', MonatService)

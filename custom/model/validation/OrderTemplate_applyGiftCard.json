@@ -1,5 +1,12 @@
 {
 	"properties": {
-		"amountToApply": [{ "required": true, "dataType": "numeric", "lte": 20,  "gte": 0 }]
+		"amountToApply": [
+			{ 
+				"required": true, 
+				"dataType": "numeric", 
+				"lteProperty": "siteMaximumGiftCardAmount",  
+				"gte": 0 
+			}
+		]
 	}
 }

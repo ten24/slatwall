@@ -42,7 +42,7 @@
 		],
 		"subscriptionUsages": [{ "contexts": "delete", "maxCollection": 0 }],
 		"paymentTransactions": [{ "contexts": "delete", "method": "hasOnlyGenerateTokenTransactions" }],
-		"orderTemplates": [{ "contexts": "delete", "maxCollection": 0 }],
+		"orderTemplates": [{ "contexts": "delete", "maxCollection": 0 }]
 	},
 	"populatedPropertyValidation": {
 		"billingAddress": [{ "validate": "full" }]

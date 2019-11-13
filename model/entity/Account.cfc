@@ -154,28 +154,40 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 
+
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
+ property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
- property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="birthDate" ormtype="timestamp" hb_formatType="date";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="accountStatus" ormtype="string" hb_formFieldType="select";
+ property name="complianceStatus" ormtype="string" hb_formFieldType="select";
+ property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="gender" ormtype="string" hb_formFieldType="select";
- property name="birthDate" ormtype="timestamp" hb_formatType="date";
  property name="accountNumber" ormtype="string";
  property name="payerName" ormtype="string";
- property name="driverLicense" ormtype="string";
+ property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
- //CUSTOM PROPERTIES END
+ property name="terminationDate" ormtype="timestamp" hb_formatType="date";
+ property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";
+ property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -1220,5 +1232,14 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!isNull(variables.accountNumber))
 		return variables.accountNumber;
 	}
-//CUSTOM FUNCTIONS END
+
+
+	//custom validation methods
+		
+	public boolean function restrictRenewalDateToOneYearFromNow() {
+		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
+			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+		}
+		return true;
+	}//CUSTOM FUNCTIONS END
 }
