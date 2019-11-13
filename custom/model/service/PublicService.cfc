@@ -382,16 +382,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
-    
+    public any function loginEnrolledAccount(required struct data){
+        param name="arguments.data.account" default=""; 
+        
+        if(!isNull(arguments.data.account)){
+            var account = arguments.data.account;
+            var accountID= account.getAccountID();
+            getDAO('HibachiDAO').flushORMSession();
+            var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
+            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+        }
+    }    
     
     public any function createMarketPartnerEnrollment(required struct data){
         var account = super.createAccount(arguments.data);
 
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'marketPartner');
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount({account: account})
         }
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
@@ -403,9 +411,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = super.createAccount(arguments.data);
         if(!account.hasErrors()){
             account = setupEnrollmentInfo(account, 'customer');
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount({account: account})
         }
         account.getAccountNumber();
         return account;
@@ -427,9 +433,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 account.setAccountStatusType(accountStatusType);
             }
             
-            getDAO('HibachiDAO').flushORMSession();
-			var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
-            getHibachiSessionService().loginAccount(account, accountAuthentication); 
+            loginEnrolledAccount({account: account})
         }
         return account;
     }

@@ -100,13 +100,16 @@
 		</div>
 	</div>
 
-	<pagination-controller 
-		record-list="sponsorSearchSelector.searchResults" 
-		items-per-page="9" 
-		records-count="sponsorSearchSelector.recordsCount" 
-		action="?slatAction=monat:public.getmarketpartners"
-		arguments-object="sponsorSearchSelector.argumentsObject" 
-	>
-	</pagination-controller>
+	<div>
+		<pagination-controller 
+			record-list="sponsorSearchSelector.searchResults" 
+			items-per-page="9" 
+			records-count="sponsorSearchSelector.recordsCount" 
+			action="?slatAction=monat:public.getmarketpartners"
+			arguments-object="sponsorSearchSelector.argumentsObject" 
+			ng-show="sponsorSearchSelector.selectedSponsor == undefined"
+		>
+		</pagination-controller>	
+	</div>
 	
 </div>
