@@ -63,6 +63,7 @@ component  accessors="true" output="false"
     property name="validationService" type="any";
     property name="hibachiService" type="any";
     property name="typeService" type="any";
+    property name="giftCardService";
 
 
     variables.publicContexts = [];
@@ -1985,8 +1986,22 @@ component  accessors="true" output="false"
         }
 	} 
 	
+	public any function getAccountGiftCards( required struct data) {
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        
+        var giftCardCollectionList = getGiftCardService().getGiftCardCollectionList();    
+        
+        giftCardCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		giftCardCollectionList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		giftCardCollectionList.addFilter('ownerAccount.accountID', getHibachiScope().getAccount().getAccountID());
 	
-	public any function applyGiftCardToOrderTemplate( required any data ){
+
+		arguments.data['ajaxResponse']['giftCards'] = giftCardCollectionList.getPageRecords();  
+	
+	}
+	
+	public any function applyGiftCardToOrderTemplate( required struct data ){
         param name="arguments.data.orderTemplateID" default="";
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
