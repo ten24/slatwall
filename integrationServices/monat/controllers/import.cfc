@@ -1413,7 +1413,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:20;
 		var pageMax = rc.pageMax?:1;
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
-		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
+		var orderTemplateStatusTypeActive = getTypeService().getTypeBYSystemCode('otstActive'); 
+		var orderTemplateStatusTypeInactive = getTypeService().getTypeBYSystemCode('otstInActive');
+		var orderTemplateStatusTypeCancelled = getTypeService().getTypeBYSystemCode('otstCancelled'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
 
 		while (pageNumber < pageMax){
@@ -1460,6 +1462,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setOrderTemplateName(flexship['FlexShipNumber']?:"");
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
+						
+						//set the order template status type.
+						/**
+						 *   1- AutoShip
+						 *	 2- Inactive
+						 *	 3- Business Protect
+						 *	 4- Inactive BP
+						 *	 5- Subscription Billing
+						 *	 6- Inactive Sub
+						 *	 9-Deleted (ID = 7) 
+						 **/
+						if (structKeyExists(flexship, "FlexShipStatusCode")){
+							if (listContains("2,4,6", flexship['FlexShipStatusCode'])){
+								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeInactive);
+							}else if(listContains("1,3,5", flexship['FlexShipStatusCode']) ){
+								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeActive);
+							}else if(flexship['FlexShipStatusCode'] == "9"){
+								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeCancelled);
+							}
+						}
 						
 						//set created and modified date times.
 						if (!isNull(order['EntryDate']) && len(order['EntryDate'])){
@@ -1511,7 +1533,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						// Saves the shipping account address.
 						if (shippingAccountAddress.getNewFlag()){
 		                	ormStatelessSession.insert("SlatwallAccountAddress", shippingAccountAddress);
-		                }else{
+		                } else {
 		                	//ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
 		                }
 		                
