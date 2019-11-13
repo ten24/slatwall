@@ -270,7 +270,7 @@ property name="accountRemoteID" ormtype="string"; //CUSTOM PROPERTIES END
 			sl.addSelect('paymentMethodName', 'name');
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodType', 'paymentmethodtype');
-
+			
 			variables.paymentMethodOptions = sl.getRecords();
 			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
 		}
@@ -478,5 +478,22 @@ property name="accountRemoteID" ormtype="string"; //CUSTOM PROPERTIES END
 
 	// =================== START: ORM Event Hooks  =========================
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+
+public array function getPaymentMethodOptions() {
+		if(!structKeyExists(variables, "paymentMethodOptions")) {
+			var sl = getPaymentMethodOptionsSmartList();
+			sl.addSelect('paymentMethodName', 'name');
+			sl.addSelect('paymentMethodID', 'value');
+			sl.addSelect('paymentMethodType', 'paymentmethodtype');
+		    
+		    //Restrict backend to add any external gateway as payment method	
+			sl.addWhereCondition("paymentMethodType != 'external' ");
+			
+			variables.paymentMethodOptions = sl.getRecords();
+			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
+		}
+		return variables.paymentMethodOptions;
+	}
+//CUSTOM FUNCTIONS END
 }

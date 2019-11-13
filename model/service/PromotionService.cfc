@@ -1167,19 +1167,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
-		var canPlaceOrder = true;
+		return getOrderQualifierDetailsForCanPlaceOrderReward( argumentCollection=arguments )['canPlaceOrder'];
+	}
+
+	public struct function getOrderQualifierDetailsForCanPlaceOrderReward( required any order ){
+		var canPlaceOrderDetails = {
+			'canPlaceOrder':true,
+			'activePromotionRewards':[]
+		};
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
+		
 		if(arraylen(promotionRewards)){
-			canPlaceOrder = false;
+			
+			canPlaceOrderDetails['canPlaceOrder'] = false;
+			
 			for(var promoReward in promotionRewards){
+				
+				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
+				
 				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
 				if(qualificationDetails.qualificationsMeet){
-					canPlaceOrder = true;
-					break;
+					qualificationDetails['canPlaceOrder'] = true;
+					return qualificationDetails; 
 				}
 			}
 		}
-		return canPlaceOrder;
+		return canPlaceOrderDetails; 
 	}
 	
 	public array function getQualifiedPromotionRewardsForOrder( required any order ){
@@ -1268,7 +1281,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
-				this.logHibachi('inner filter #serializeJson(innerFilterOrFilterGroup)#',true);
+				this.logHibachi('promotion reward #promotionReward.getPromotionRewardID()# innerFilterGroup #serializeJson(innerFilterOrFilterGroup)#',true);
 				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
 			} 
 		} 

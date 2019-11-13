@@ -13,17 +13,25 @@
 			</span>
 		</div>
 		<span
+			ng-if="monatFlexshipCartContainer.context != 'enrollment'"
 			class="steps"
 			ng-bind-html="monatFlexshipCartContainer.translations.currentStepOfTtotalSteps"
 		></span>
 		<div class="go-to-cart">
+			
 			<button
+				ng-if="monatFlexshipCartContainer.context != 'enrollment' "
 				class="btn bg-primary btn-block"
 				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 			>
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
 			</button>
+			
+			<a ng-if="monatFlexshipCartContainer.context == 'enrollment' " href data-ng-click="monatFlexshipCartContainer.next()" class="forward">
+				<span>Next</span>
+				<i class="fas fa-chevron-right"></i>
+			</a>
 		</div>
 	</div>
 
