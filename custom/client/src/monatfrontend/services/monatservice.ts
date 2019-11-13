@@ -8,6 +8,8 @@ declare var angular: any;
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
+	public previouslySelectedStarterPackBundleSkuID:string;
+
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
@@ -87,6 +89,27 @@ export class MonatService {
 	public submitSponsor( sponsorID:string ) {
 		return this.publicService.doAction('submitSponsor',{sponsorID});
 	}
+	
+	public addEnrollmentFee( sponsorID:string ) {
+		return this.publicService.doAction('addEnrollmentFee');
+	}
+	
+	public selectStarterPackBundle(skuID: string, quantity: number = 1) {
+		let payload = {
+			skuID: skuID,
+			quantity: quantity,
+		};
+		
+		if(this.previouslySelectedStarterPackBundleSkuID) {
+			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
+		}
+		
+		this.lastAddedSkuID = skuID;
+		this.previouslySelectedStarterPackBundleSkuID = skuID;
+		
+		return this.updateCart('selectStarterPackBundle', payload);
+	}
+	
 
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}
@@ -143,4 +166,6 @@ export class MonatService {
 		}
 		return deferred.promise;
 	}
+	
+
 }

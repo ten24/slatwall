@@ -299,7 +299,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		var deleteOK = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
 
 		// SUCCESS
-		if (deleteOK) {
+		if (!isNull(deleteOK) && deleteOK) {
 			// Show the Generica Action Success Message
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'), "all" ), "success");
 

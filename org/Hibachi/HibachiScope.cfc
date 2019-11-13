@@ -1,4 +1,7 @@
 component output="false" accessors="true" extends="HibachiTransient" {
+	
+	property name="hibachiAuthenticationService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	property name="account" type="any";
 	property name="content" type="any";
@@ -18,7 +21,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
-	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
@@ -433,6 +435,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	public string function getRBKey(required string key, struct replaceStringData) {
 		return rbKey(argumentcollection=arguments);
+	}
+
+	//convenience method for validate
+	public any function validate(required any object, string context="", boolean setErrors=true) {
+		return getService('hibachiValidationService').validate(argumentCollection=arguments); 
 	}
 
 	public boolean function authenticateAction( required string action,string processContext="" ) {

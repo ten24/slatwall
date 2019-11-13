@@ -16,12 +16,12 @@
           "propertyIdentifier":"skuName"
         },
         {
-          "sourceColumn":"Amount",
-          "propertyIdentifier":"price"
+          "sourceColumn":"ItemNote",
+          "propertyIdentifier":"skuDescription"
         },
         {
-          "sourceColumn":"SecondName",
-          "propertyIdentifier":"skuDescription"
+          "sourceColumn":"Amount",
+          "propertyIdentifier":"price"
         },
         {
           "sourceColumn":"DisableOnRegularOrders",
@@ -32,12 +32,24 @@
           "propertyIdentifier":"disableOnFlexshipFlag"
         },
         {
+          "sourceColumn":"SalesCategoryCode",
+          "propertyIdentifier":"salesCategoryCode"
+        },
+        {
+          "sourceColumn":"SAPItemCode",
+          "propertyIdentifier":"sapItemCode"
+        },
+        {
+          "sourceColumn":"EntryDate",
+          "propertyIdentifier":"createdDateTime"
+        },
+        {
           "sourceColumn":"ImageFile",
           "sourceColumnDataGenerator":"lCase(SKUItemCode) + '.jpg'",
           "propertyIdentifier":"imageFile"
         },
         {
-          "sourceColumn":"SKUItemCode",
+          "sourceColumn":"PRODUCTItemCode",
           "propertyIdentifier":"product.productCode",
           "key":true
         },
@@ -49,6 +61,10 @@
         {
           "sourceColumn":"ItemName",
           "propertyIdentifier":"product.productName"
+        },
+        {
+          "sourceColumn":"EntryDate",
+          "propertyIdentifier":"product.createdDateTime"
         },
         {
           "sourceColumn":"ItemCategoryAccounting",
@@ -105,6 +121,10 @@
           "sourceColumnDataGenerator":"'Monat'",
           "propertyIdentifier": "product.brand.brandName",
           "key":true
+        },
+        {
+          "sourceColumn": "URLTitle",
+          "propertyIdentifier": "product.urlTitle"
         }
     ]
 }

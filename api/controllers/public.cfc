@@ -22,6 +22,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateBilling');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateFrequency');
+    this.publicMethods=ListAppend(this.publicMethods, 'applyGiftCardToOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplatePromotionSkuCollectionConfig');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplatePromotionSkus');
 
     this.publicMethods=ListAppend(this.publicMethods, 'addOrderTemplateItem');
     this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplateItem');
@@ -52,6 +55,21 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         request.layout = false;
         if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
+        }
+        
+        //set custom headers on rc
+        if( StructKeyExists(arguments.rc.requestHeaderData, "headers")) {
+            var headers = arguments.rc.requestHeaderData.headers;
+        	for (var key in headers) { 
+        	    if( key.startsWith('SWX-') ) {
+        	        var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
+        	        
+        	        //check to prevent overriding anything on rc, we can't really trust these headers
+        	        if(!StructKeyExists(arguments.rc, headerName)) {
+        	            arguments.rc[headerName] = headers[key]; 
+        	        }
+        	    }
+        	}
         }
         
         if(structKeyExists(arguments.rc,'cmsSiteID')){
@@ -163,6 +181,19 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().updateOrderTemplateFrequency(arguments.rc); 
 	} 
 	
+	public any function applyGiftCardToOrderTemplate( required struct rc ){
+		getPublicService().applyGiftCardToOrderTemplate(arguments.rc); 
+	} 
+	
+	public any function getOrderTemplatePromotionSkuCollectionConfig( required struct rc ){
+		getPublicService().getOrderTemplatePromotionSkuCollectionConfig(arguments.rc); 
+	} 
+	
+	public any function getOrderTemplatePromotionSkus( required struct rc ){
+		getPublicService().getOrderTemplatePromotionSkus(arguments.rc); 
+	} 
+	
+	
     public any function addOrderTemplateItem( required struct rc ){
 		getPublicService().addOrderTemplateItem(arguments.rc); 
 	}
@@ -190,6 +221,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	public any function updateOrderItemQuantity(required struct rc) {
 	    getPublicService().updateOrderItemQuantity(arguments.rc);
+	}
+	
+	public any function selectStarterPackBundle(required struct rc) {
+	    getPublicService().selectStarterPackBundle(arguments.rc);
 	}
 	
 	

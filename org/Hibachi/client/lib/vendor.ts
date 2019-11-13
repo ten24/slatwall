@@ -18,3 +18,4 @@ import "./angularjs-datetime-picker/angularjs-datetime-picker.js";
 import "../../HibachiAssets/js/jquery-typewatch-2.0.js";
 import "../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js";
 import "./chart.js/Chart.min.js";
+import "./pacejs/pace.min.js";

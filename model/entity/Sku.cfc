@@ -221,13 +221,19 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 
 	//CUSTOM PROPERTIES BEGIN
-property name="disableOnFlexshipFlag" ormtype="boolean";
+property name="sapItemCode" ormtype="string";
+    property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="vipFlag" ormtype="boolean" default="1";
+	property name="mpFlag" ormtype="boolean" default="1";
+	property name="retailFlag" ormtype="boolean" default="1";
+	
+	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
-    property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
-   
+
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -2022,7 +2028,25 @@ property name="disableOnFlexshipFlag" ormtype="boolean";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+public boolean function canBePurchased(required any account){
+		
+		var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
+		if(notValidVipItem){
+			return false;
+		}
+		var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
+		if(notValidMpItem){
+			return false;
+		}
+		var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
+		if(notValidRetailItem){
+			return false;
+		}
+
+        return true; 
+	}
+
+    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}
@@ -2086,7 +2110,7 @@ public any function getPersonalVolumeByCurrencyCode(string currencyCode, string 
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
 	
 		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID')){
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}	
 

@@ -23,6 +23,7 @@ import { MonatEnrollmentStep } from './components/monatenrollmentstep';
 import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
+import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
@@ -30,12 +31,18 @@ import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
 import { SponsorSearchSelector } from './components/sponsor-search-selector';
+import { SWFPagination } from './components/swfpagination';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
+
+import { MonatSearchController } from './controllers/monat-search';
+import { MonatCheckoutController } from './controllers/monat-checkout';
+
 
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
+import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 
 //declare variables out of scope
 declare var $: any;
@@ -67,6 +74,8 @@ var monatfrontendmodule = angular
 	.directive('materialTextarea', MaterialTextarea.Factory())
 	.directive('observeEvent', ObserveEvent.Factory())
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
+	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
+	.directive('paginationController', SWFPagination.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
@@ -74,15 +83,27 @@ var monatfrontendmodule = angular
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())
-
+	
+	// Controllers
+	.controller('searchController', MonatSearchController)
+	.controller('checkoutController', MonatCheckoutController)
+	
+	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
+	.service('monatHttpInterceptor', MonatHttpInterceptor)
 
 	.config([
 		'ModalServiceProvider',
-		function(ModalServiceProvider) {
+		'$locationProvider',
+		'$httpProvider',
+		(ModalServiceProvider, $locationProvider, $httpProvider) => {
 			// to set a default close delay on modals
 			ModalServiceProvider.configureOptions({ closeDelay: 0 });
+			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
+			
+			//adding monat-http-interceptor
+			$httpProvider.interceptors.push('monatHttpInterceptor');
 		},
 	]);
 
