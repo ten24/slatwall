@@ -1690,6 +1690,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								
 								orderTemplateItem.setSku(sku);
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
+								orderTemplateItem.setTemporaryFlag(false);
 								orderTemplateItem.setOrderTemplate(orderTemplate);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
