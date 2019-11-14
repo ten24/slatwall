@@ -678,10 +678,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
-                var VIPSkuID = getService('SettingService').getSettingValue('globalVIPEnrollmentFeeSkuID');
+                var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
             }else if(account.getAccountType() == 'marketPartner'){
-                var MPSkuID = getService('SettingService').getSettingValue('globalMPEnrollmentFeeSkuID');
+                var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
