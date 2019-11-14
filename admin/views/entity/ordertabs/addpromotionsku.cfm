@@ -69,7 +69,7 @@ Notes:
 	
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
 	<cfset local.accountID = "#rc.order.getAccount().getAccountID()#">
-	<cfset local.promotionSkuIDs = "rc.order.getQualifiedPromotionRewardSkuIDs()">
+	<cfset local.promotionSkuIDs = "rc.order.getQualifiedFreePromotionRewardSkuIDs()">
 
 	<sw-add-promotion-order-items-by-sku data-promotion-skus="#local.promotionSkuIDs#" data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'"></sw-add-promotion-order-items-by-sku>
 	
