@@ -1508,6 +1508,12 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return variables.qualifiedRewardSkuIDs;
 	}
+	
+	public string function getQualifiedFreePromotionRewardSkuIDs( numeric pageRecordsShow=25 ){
+		
+		return getService('PromotionService').getQualifiedFreePromotionRewardSkuIDs( order=this, pageRecordsShow=arguments.pageRecordsShow )?:"";
+		
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -2052,11 +2058,10 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public struct function getListingSearchConfig() {
-	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "right";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
-	
-	
 	
 	public boolean function hasMPRenewalFee() {
 	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
