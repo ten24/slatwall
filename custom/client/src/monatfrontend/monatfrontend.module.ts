@@ -45,9 +45,6 @@ import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 
-// Filters
-import { OrdinalFilter } from './filters/ordinal';
-
 //declare variables out of scope
 declare var $: any;
 
@@ -97,9 +94,6 @@ var monatfrontendmodule = angular
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
-	
-	// Filters
-	.filter('ordinal', OrdinalFilter.Factory)
 
 	.config([
 		'ModalServiceProvider',
