@@ -33,7 +33,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			if(domainParts[1] == 'www'){
 				ArrayDeleteAt(domainParts, 1);
 			}
-			if(!listFindNoCase(domainParts[1],'monat,mymonat,monatglobal')){
+			if(!listFindNoCase('monat,mymonat,monatglobal',domainParts[1])){
 				variables.currentRequestSiteOwner = getService('accountService').getAccountByUsername(domainParts[1]);
 			}
   
