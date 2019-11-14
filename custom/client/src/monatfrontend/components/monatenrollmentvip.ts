@@ -22,6 +22,7 @@ class VIPController {
 	public holdingShippingMethodID:string;
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
+	public flexshipFrequencyHasErrors: boolean = false;
 	public isNotSafariPrivate:boolean;
 	
 	// @ngInject
@@ -188,9 +189,20 @@ class VIPController {
         });
     }
     
-    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
-
-        let newTerm = JSON.parse(frequencyTerm);
+    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
+		
+		if (
+			'undefined' === typeof frequencyTerm
+			|| 'undefined' === typeof dayOfMonth
+		) {
+			this.flexshipFrequencyHasErrors = true;
+			return false;
+		} else {
+			this.flexshipFrequencyHasErrors = false;
+		}
+		
+		var newTerm = JSON.parse(frequencyTerm);
+		
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = newTerm.name;
@@ -201,7 +213,7 @@ class VIPController {
     
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(result => {
-            this.loading = false;
+            this.getFlexshipItems();
         });
     }
     
