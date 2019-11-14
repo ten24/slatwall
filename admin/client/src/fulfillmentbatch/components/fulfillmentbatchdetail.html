@@ -129,7 +129,7 @@
                         <span class="s-date"> <small> {{comment.createdDateTime}} </small><!--10 hours ago---></span>
                         <!--- Should only be able to edit own comments. --->
                         <span class="s-actions" style="float: right" ng-if="$root.slatwall.account.accountID && $root.slatwall.account.accountID == comment.createdByAccountID">
-                            <a sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this comment." callback="swFulfillmentBatchDetailController.userDeletingComment(comment)"><i class="fa fa-remove"></i></a>
+                            <a sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this comment." callback="swFulfillmentBatchDetailController.userDeletingComment(comment)"><i class="fa fa-times"></i></a>
                             <a href="#" type="button" ng-click="swFulfillmentBatchDetailController.userEditingComment(comment)"><i class="fas fa-pen"></i></a>
                         </span>
                     </div>
@@ -353,7 +353,7 @@
                                                         </td>
                                                         <td>
                                                             <button class="btn btn-default btn-xs s-remove" ng-click="swFulfillmentBatchDetailController.userRemovingBox($index)">
-                                                                <i class="fa fa-remove"></i>
+                                                                <i class="fa fa-times"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
