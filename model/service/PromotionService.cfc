@@ -1247,7 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			if( promotionReward.getAmountType() == 'percentageOff' && 
-			    promotionReward.getAmount() == 100
+			    promotionReward.getAmount() != 100
 			){
 				continue; 
 			}
