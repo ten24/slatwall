@@ -117,14 +117,18 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			case 'receive':
 			case 'authorizeAndCharge':
 			case 'chargePreAuthorization':
-				sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
-				createTransaction(arguments.requestBean.getAccountPaymentMethod(), arguments.requestBean.getOrder());
+				//sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
+				createTransaction(arguments.requestBean, responseBean);
 				break;
 			case 'authorizeAccount':
 				authorizeAccount(arguments.requestBean, responseBean);
 				break;
+			case 'authorizePayment':
+				authorizePayment(arguments.requestBean, responseBean);
+				break;
 			case 'externalHTML':
 				return getExternalPaymentHTML(arguments.requestBean, responseBean);
+				break;
 			case 'credit':
 				break;
 			default:
@@ -134,6 +138,33 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return responseBean;
 	}
 	
+	private any function authorizeAccount(required any requestBean, required any responseBean)
+	{
+		var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);//arguments.paymentMethod.getIntegration().setting('braintreeAccountMerchantID');
+		
+		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
+		var payload = { "query" : "mutation ClientToken($input: CreateClientTokenInput) { createClientToken(input: $input) { clientToken } }",
+			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
+		};
+		httpRequest.addParam(type="body",value=SerializeJson(payload));
+		
+		var response = httpRequest.send().getPrefix();
+		
+		if (IsJSON(response.FileContent))
+		{
+			var fileContent = DeserializeJSON(response.FileContent);
+			if (structKeyExists(fileContent, 'errors')){
+				//writeDump(fileContent);
+				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
+			}
+			else{
+				arguments.responseBean.setAuthorizationCode(fileContent.data.createClientToken.clientToken);
+			}
+		}
+		else{
+			arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
+		}
+	}
 	
 	/**
 	 * Method to set client side external HTML
@@ -172,42 +203,9 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		savecontent variable="returnHTML" {
 			include "views/main/externalpayment.cfm";
 		};
-		
+		//writeDump(returnHTML);
 		//arguments.responseBean.addExternalHTML(returnHTML);
 		return returnHTML;
-	}
-	
-	private any function authorizeAccount(required any requestBean, required any responseBean)
-	{
-		var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);//arguments.paymentMethod.getIntegration().setting('braintreeAccountMerchantID');
-		
-		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
-		var payload = { "query" : "mutation ClientToken($input: CreateClientTokenInput) { createClientToken(input: $input) { clientToken } }",
-			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
-		};
-		httpRequest.addParam(type="body",value=SerializeJson(payload));
-		
-		var response = httpRequest.send().getPrefix();
-		
-		if (IsJSON(response.FileContent))
-		{
-			var fileContent = DeserializeJSON(response.FileContent);
-			if (structKeyExists(fileContent, 'errors')){
-				//writeDump(fileContent);
-				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
-			}
-			else{
-				arguments.responseBean.setAuthorizationCode(fileContent.data.createClientToken.clientToken);
-			}
-		}
-		else{
-			arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
-		}
-	}
-	
-	public any function renderHTML()
-	{
-		dump("here");
 	}
 	
 	/**
@@ -216,36 +214,41 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @params : string token
 	 * @return : custom Object
 	 **/
-	public any function authorizePayment( required any paymentMethod, required string token) {
-		
+	public any function authorizePayment( required any requestBean, required any responseBean)
+	{
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
 		
-		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
+		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
 		
 		var payload = { "query" : "mutation VaultWithTypeFragment($input: VaultPaymentMethodInput!) { vaultPaymentMethod(input: $input) {paymentMethod { id usage details {__typename}}verification {status} } }",
-			"variables" : { "input": { "paymentMethodId": "#arguments.token#" } }
+			"variables" : { "input": { "paymentMethodId": "#arguments.requestBean.getProviderToken()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
+		//writeDump(response); abort;
 		if (IsJSON(response.FileContent))
 		{
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (structKeyExists(fileContent, 'errors')){
 				//to be reviewed
-				responseData['status'] = "failure";
-				responseData['ERROR'] = fileContent;
+				// responseData['status'] = "failure";
+				// responseData['ERROR'] = fileContent;
+				arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
 			}
 			else{
-				responseData['status'] = "success";
-				responseData['token'] = fileContent.data.vaultPaymentMethod.paymentMethod.id;
+				// responseData['status'] = "success";
+				// responseData['token'] = fileContent.data.vaultPaymentMethod.paymentMethod.id;
+				//writeDump(fileContent); abort;
+				arguments.responseBean.setProviderToken(fileContent.data.vaultPaymentMethod.paymentMethod.id);
 			}
 		}
-
-		return responseData;
+		else{
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
+		}
 	}
 	
 	/**
@@ -254,17 +257,31 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @params : order object
 	 * @return : custom object
 	 **/
-	public any function createTransaction(required any paymentMethod, any order = request.slatwallScope.cart() )
+	public any function createTransaction(required any requestBean, required any responseBean)
 	{
+		if(arguments.responseBean.hasErrors()){
+			return;
+		}
+		
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			return;
+		}
+		
+		// writeDump(var = arguments.requestBean, top = 2);
+		// writeDump(var = arguments.requestBean.getOrder(), top = 2);
+		// writeDump(var = arguments.requestBean.getAccount(), top = 2);
+		// abort;
+		
 		var responseData = {};
 		//Create Transaction
-		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
+		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
 		var item_payload = {};
 		var discount = 0;
 		
 		//Populate line order items
-		for( var i=1; i <= arrayLen(arguments.order.getOrderItems()); ++i){
-			var orderItem = arguments.order.getOrderItems()[i];
+		for( var i=1; i <= arrayLen(arguments.requestBean.getOrder().getOrderItems()); ++i){
+			var orderItem = arguments.requestBean.getOrder().getOrderItems()[i];
 			//don't run this logic for child order items.
 			if (isNull(orderItem.getParentOrderItem())){
 				
@@ -290,24 +307,24 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		
 		//writeDump(item_payload);
 		// define discount
-		if(arguments.order.getDiscountTotal() > 0){
-			discount += arguments.order.getOrderAndItemDiscountAmountTotal();
+		if(arguments.requestBean.getOrder().getDiscountTotal() > 0){
+			discount += arguments.requestBean.getOrder().getOrderAndItemDiscountAmountTotal();
 		}
 
-		var itemSubTotal = arguments.order.getSubTotalAfterItemDiscounts();
-		if(arguments.order.getOrderDiscountAmountTotal() > 0){
-			itemSubTotal -= arguments.order.getOrderDiscountAmountTotal();
+		var itemSubTotal = arguments.requestBean.getOrder().getSubTotalAfterItemDiscounts();
+		if(arguments.requestBean.getOrder().getOrderDiscountAmountTotal() > 0){
+			itemSubTotal -= arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
 		}
 
-		var total = arguments.order.getTotal(); 
+		var total = arguments.requestBean.getOrder().getTotal(); 
 		
-		if(arguments.order.hasGiftCardOrderPaymentAmount()){
-			discount += arguments.order.getGiftCardOrderPaymentAmount();
-			itemSubTotal -= arguments.order.getGiftCardOrderPaymentAmount();
-			total -= arguments.order.getGiftCardOrderPaymentAmount(); 
+		if(arguments.requestBean.getOrder().hasGiftCardOrderPaymentAmount()){
+			discount += arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
+			itemSubTotal -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
+			total -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount(); 
 		}	
 		
-		var client_token = this.getAccountPaymentToken(arguments.order.getAccount(), arguments.paymentMethod);
+		var client_token = arguments.requestBean.getProviderToken();
 		
 		//Formatting total to be 2 decimal places
 		total = NumberFormat(total, "0.00");
@@ -316,10 +333,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
 				"amount" : '#total#',
-				"orderId" : "#arguments.order.getOrderID()#",
+				"orderId" : "#arguments.requestBean.getOrder().getOrderID()#",
 				'discountAmount' : '#discount#',
-				'shipping' : { 'shippingAmount': '#arguments.order.getfulfillmentChargeAfterDiscountTotal()#' },
-				'tax' : { 'taxAmount': '#arguments.order.getTaxTotal()#' },
+				'shipping' : { 'shippingAmount': '#arguments.requestBean.getOrder().getfulfillmentChargeAfterDiscountTotal()#' },
+				'tax' : { 'taxAmount': '#arguments.requestBean.getOrder().getTaxTotal()#' },
 				'lineItems' : item_payload,
 			} } }
 		};
@@ -344,7 +361,9 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				responseBean.addError("Processing error", fileContent);
+				//writeDump(fileContent); abort;
+				//responseBean.addError("Processing error", fileContent);
+				responseBean.addError("Processing error", "Not able to process this request.");
 			}
 		}
 		else{

@@ -55,11 +55,12 @@ component accessors="true" output="false" {
 
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'processResponse');
+	this.publicMethods=listAppend(this.publicMethods, 'callbackPaypal');
 
 	this.anyAdminMethods='';
 
 	this.secureMethods='';
-	this.secureMethods=listAppend(this.secureMethods, 'main');
+	//this.secureMethods=listAppend(this.secureMethods, 'main');
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -120,5 +121,10 @@ component accessors="true" output="false" {
 				cart.addError('BraintreeErrorDetail',responseData);
 			}
 		}
+	}
+	
+	public void function callbackPaypal( required struct rc)
+	{
+		writeDump(var = arguments.rc.$.slatwall.getAccount(), top = 2);
 	}
 }

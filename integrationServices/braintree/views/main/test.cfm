@@ -15,6 +15,7 @@
 	var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('braintree');
 	var paymentIntegrationCFC = request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC);
     var responseBean = paymentIntegrationCFC.processExternal(requestBean);
+    
     if(isObject(responseBean) && responseBean.hasErrors())
     {
         dump(responseBean.getErrors()); abort;

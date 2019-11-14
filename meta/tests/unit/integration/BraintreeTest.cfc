@@ -3,15 +3,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     public void function setUp() {
         super.setup();
         
-        //bc6e5629-23c7-0bf7-7137-da11e4e58355
-
         variables.service = variables.mockservice.getIntegrationServiceMock();
-        
-        variables.paymentMethodID = '2c9580846bfaeee2016bfaf16f440006';
         variables.accountID = '2c9180846d25c254016d25c3aeb8000d';
-        variables.orderID = '2c9180856b8e1aeb016b8e9ec98e0133';
+        variables.paymentMethodID = '2c9580846bfaeee2016bfaf16f440006';
         
-        variables.braintree_token = "cGF5bWVudG1ldGhvZF9wcF84NDZtc2s";
+        variables.paymentNonce = "a10fdd08-c132-08c8-72d7-1956e65cd610"; //One Time Use
+        
+        variables.token = "cGF5bWVudG1ldGhvZF9wcF82ZjY3dHY";
         
         //Allowed Transaction types
 		variables.transactionTypes = [
@@ -22,7 +20,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			'credit',					// 5
 			'void',						// 6
 			'authorizeAccount',		    // 7
-			'externalHTML'				// 8
+			'externalHTML',				// 8
+			'authorizePayment'			// 9
 		];
 		
 		variables.integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('braintree');
@@ -77,7 +76,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
             dump(responseBean.getErrors());
         }
         else{
-            
+            dump(responseBean);
         }
 	 }
 	 
@@ -87,17 +86,48 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
       **/  
     public void function testAuthorizePayment()
     {
-        var paymentMethod = request.slatwallScope.getBean("PaymentService").getPaymentMethod(paymentMethodID);
-        
-        //configureAccountPaymentMethod
-	 	var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('braintree');
- 		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
- 		var response = paymentIntegrationCFC.authorizePayment(paymentMethod, variables.braintree_token);
- 		debug(response);
+    	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+    	requestBean.setProviderToken(variables.paymentNonce);
+ 		requestBean.setTransactionType(variables.transactionTypes[9]);
+		var responseBean = variables.paymentIntegrationCFC.processExternal(requestBean);
+		writeDump(responseBean); abort;
+    }
+    
+    /**
+      * @test
+      * Test Authorize Payment Method
+      **/  
+    public void function testAddNewPaymentMethod()
+    {
+    	var account = request.slatwallScope.getAccount('#variables.accountID#');
+    	//if(!isNull(account.getPaymentMethod()) && !isNull(account.getPaymentMethod().getPaymentIntegration()) && account.getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'braintree')
+    	if(false)
+    	{
+    		//get existing payment method
+    		var accountPaymentMethod = "";
+    	}
+    	else
+    	{
+    		var paymentIntegration = request.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('braintree');
+    		var paymentMethod = request.slatwallScope.getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
+    		
+    		//Create a New One
+            var accountPaymentMethod = request.slatwallScope.getService('accountService').newAccountPaymentMethod();
+            accountPaymentMethod.setAccountPaymentMethodName("Paypal - Braintree");
+            accountPaymentMethod.setAccount( account );
+            accountPaymentMethod.setPaymentMethod( paymentMethod );
+    	}
+    	
+    	//Update / Save provider Token
+    	accountPaymentMethod.setProviderToken(variables.token);
+    	
+    	//Save method in account.
+        request.slatwallScope.getService('accountService').saveAccountPaymentMethod(accountPaymentMethod);
+        ormFlush();
     }
 	 
 	/**
-    * @test
+    * 
     * Account Payment Method Assignment
     **/
     public void function testConfigureAccountPaymentMethod()
@@ -114,7 +144,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     
     
     /**
-    * @test
+    * 
     * Test Account Payment Token Assignment
     **/
     public void function testAccountPaymentToken()
@@ -131,7 +161,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     }
     
 	 /**
-	 * @test
+	 * 
 	 * Test Create Transaction Method
 	 **/
 	 public void function testCreateTransaction()
@@ -147,7 +177,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	 }
 	 
 	 /**
-	 * @test
+	 * 
 	 * Test Create Transaction Method
 	 **/
 	 public void function testRefundTransaction()
