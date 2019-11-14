@@ -63,6 +63,29 @@ class MonatFlexshipCardController {
 			});
 	};
 	
+	public showAddGiftCardModal = () => {
+		this.ModalService.closeModals();
+		this.ModalService.showModal({
+			component: 'monatFlexshipAddGiftCardModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	};
+	
 	
 		//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
 	public showCancelFlexshipModal = () => {

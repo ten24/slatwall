@@ -1247,7 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			if( promotionReward.getAmountType() == 'percentageOff' && 
-			    promotionReward.getAmount() == 100
+			    promotionReward.getAmount() != 100
 			){
 				continue; 
 			}
@@ -1288,6 +1288,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return masterSkuCollection.getCollectionConfigStruct();
 	}  
+	
+	public any function getQualifiedPromotionRewardSkuIDsForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+		var rewardSkuIDs = "";
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollection = promotionReward.getSkuCollection();
+			if(!isNull(skuCollection)){
+				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
+				
+				if (isArray(skus)){
+					for(var sku in skus){
+						rewardSkuIDs = listAppend(rewardSkuIDs, sku['skuID']);
+					}
+				}else if (isStruct(skus)){
+					rewardSkuIDs = listAppend(rewardSkuIDs, skus['skuID']);
+				}
+				
+			}
+		}
+		
+		return rewardSkuIDs;
+	}
 
 	// ===================== START: Logical Methods ===========================
 
