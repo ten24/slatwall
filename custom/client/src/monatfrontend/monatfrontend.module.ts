@@ -13,6 +13,7 @@ import { MonatFlexshipShippingMethodModal } from './components/monatflexship-mod
 import { MonatFlexshipChangeOrSkipOrderModal } from './components/monatflexship-modal-changeorskiporder';
 import { MonatFlexshipCancelModal } from './components/monatflexship-modal-cancel';
 import { MonatFlexshipNameModal } from './components/monatflexship-modal-name';
+import { MonatFlexshipAddGiftCardModal } from './components/monatflexship-modal-add-giftcard';
 import { MonatFlexshipCartContainer } from './components/monatflexship-cart-container';
 import { MonatFlexshipConfirm } from './components/monatflexship-confirm';
 import { MonatFlexshipListing } from './components/monatflexshiplisting';
@@ -63,6 +64,7 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipChangeOrSkipOrderModal', MonatFlexshipChangeOrSkipOrderModal.Factory())
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
 	.directive('monatFlexshipNameModal', MonatFlexshipNameModal.Factory())
+	.directive('monatFlexshipAddGiftCardModal', MonatFlexshipAddGiftCardModal.Factory())
 	.directive('monatFlexshipCartContainer', MonatFlexshipCartContainer.Factory())
 	.directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 	.directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())

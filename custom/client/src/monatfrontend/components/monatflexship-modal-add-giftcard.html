@@ -1,0 +1,59 @@
+<div class="modal" id="flexship-modal-name{{ monatFlexshipAddGiftCardModal.orderTemplate.orderTemplateID }}">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipAddGiftCardModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="rename-flexship">
+				<h6 class="title-with-line mb-5">
+					{{ monatFlexshipAddGiftCardModal.translations.giftCards }}
+				</h6>
+
+				<div
+					class="custom-radio form-group"
+					ng-repeat="giftCard in monatFlexshipAddGiftCardModal.giftCards"
+					ng-click="$parent.monatFlexshipAddGiftCardModal.setSelectedGiftCard(giftCard)"
+				>
+					<input 
+						type="radio" 
+						name="giftCardID"
+						ng-checked="giftCard.giftCardID === monatFlexshipAddGiftCardModal.selectedGiftCard.giftCardID"
+					/>
+					<label for="giftCardID" > {{ giftCard.giftCardCode }} - {{ giftCard.calculatedBalanceAmount | currency }}</label>
+				</div>
+
+				<div class="material-field">
+					<input
+						type="number"
+						class="form-control"
+						ng-model="monatFlexshipAddGiftCardModal.amountToApply"
+					/>
+					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
+				</div>
+			</div>
+
+			<div class="footer">
+				<button
+					type="button"
+					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipAddGiftCardModal.applyGiftCard()"
+					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+				></button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipAddGiftCardModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
+				></button>
+			</div>
+		</div>
+	</div>
+</div>
