@@ -8,16 +8,6 @@
 				"dataType": "numeric",
 				"method": "hasValidExpirationMonth"
 			}
-		],
-		"expirationYear": [
-			{
-				"contexts": "save",
-				"conditions": "paymentTypeCreditCard",
-				"required": true,
-				"dataType": "numeric",
-				"method": "hasValidExpirationYear"
-			}
 		]
-		
 	}
 }
