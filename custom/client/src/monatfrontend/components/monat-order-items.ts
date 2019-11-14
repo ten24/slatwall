@@ -25,8 +25,6 @@ class MonatOrderItemsController {
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
-			var productCode = item.sku.product.productCode;
-			
 
 			if ( 'Starter Kit' === productType ) {
 				this.starterKits.push( item );
