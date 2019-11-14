@@ -2175,6 +2175,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             
                             //Which payment methods are we pulling in for legacy data?
                             newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode
+                            newOrderPayment.setAmount(orderPayment['amountReceived'] ?:0);
                             newOrderPayment.setProviderToken(orderPayment['PaymentToken']); //*
                             newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:""); //*
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
