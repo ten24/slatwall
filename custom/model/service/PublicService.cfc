@@ -674,13 +674,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
+        var settingService = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
         
         if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
-                var VIPSkuID = getProductService().getProductByProductCode('VIPFEE000012').getDefaultSku().getSkuID(); //getVIP default sku here
+                var VIPSkuID = getService('SettingService').getSettingValue('globalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
             }else if(account.getAccountType() == 'marketPartner'){
-                var MPSkuID = getProductService().getProductByProductCode('MPFEE000012').getDefaultSku().getSkuID(); //getmp default sku here
+                var MPSkuID = getService('SettingService').getSettingValue('globalMPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
