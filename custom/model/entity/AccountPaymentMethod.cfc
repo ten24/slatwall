@@ -107,5 +107,28 @@ component {
 	    
 	    return variables.moMoneyBalance;
 	}
-
+	
+	public boolean function hasValidExpirationYear(){
+		var currentYear = DatePart("yyyy", now());
+		var expirationYear = getExpirationYear();
+		
+		if (expirationYear < currentYear){
+			return false;
+		}
+		return true;
+	}
+	
+	public any function hasValidExpirationMonth(){
+		var currentYear = DatePart("yyyy", now());
+		var currentMonth = DatePart("m", now());
+		var expirationYear = getExpirationYear();
+		var expirationMonth = getExpirationMonth();
+		
+		//make sure the month is not in the past if the year is this year.
+		if (expirationYear == currentYear && expirationMonth < currentMonth){
+			return false;
+		}
+		
+		return true;
+	}
 }
