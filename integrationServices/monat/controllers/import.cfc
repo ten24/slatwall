@@ -2571,7 +2571,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 										THEN temp.username
 										ELSE temp.consultant_id
 									END
-									a.modifiedDateTime = NOW()";
+									a.modifiedDateTime = NOW()
+									WHERE a.remoteID IS NOT NULL";
 			var accountAuthQuery = "INSERT INTO swaccountauthentication (
 										accountAuthenticationID, 
 										password, 
