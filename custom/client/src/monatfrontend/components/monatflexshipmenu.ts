@@ -10,7 +10,11 @@ class MonatFlexshipMenuController {
 	public showCancelFlexshipModal = () => {
 		this.monatFlexshipCard.showCancelFlexshipModal();
 	};
-
+	
+	public showAddGiftCardModal = () => {
+		this.monatFlexshipCard.showAddGiftCardModal();
+	};
+	
 	public showDelayOrSkipFlexshipModal = () => {
 		this.monatFlexshipCard.showDelayOrSkipFlexshipModal();
 	};

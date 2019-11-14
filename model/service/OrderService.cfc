@@ -1680,7 +1680,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemsCount = arrayLen(orderTemplateItems);
 
 		for(var i=orderTemplateItemsCount; i >= 1; i--){
-			if(orderTemplateItems[i].getTemporaryFlag()){
+			if(!isNull(orderTemplateItems[i].getTemporaryFlag()) && orderTemplateItems[i].getTemporaryFlag()){
 				arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItems[i]);
 			} 
 		} 
