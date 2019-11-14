@@ -13,16 +13,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="commentService";
 	property name="skuService";
 	property name="paymentService";
+	property name="locationService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
-	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
-
+		
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
@@ -1413,9 +1413,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:20;
 		var pageMax = rc.pageMax?:1;
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
-		var orderTemplateStatusTypeActive = getTypeService().getTypeBYSystemCode('otstActive'); 
-		var orderTemplateStatusTypeInactive = getTypeService().getTypeBYSystemCode('otstInActive');
-		var orderTemplateStatusTypeCancelled = getTypeService().getTypeBYSystemCode('otstCancelled'); 
+		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
 
 		while (pageNumber < pageMax){
@@ -1463,32 +1461,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
 						
-						//set the order template status type.
-						/**
-						 *   1- AutoShip
-						 *	 2- Inactive
-						 *	 3- Business Protect
-						 *	 4- Inactive BP
-						 *	 5- Subscription Billing
-						 *	 6- Inactive Sub
-						 *	 9-Deleted (ID = 7) 
-						 **/
-						if (structKeyExists(flexship, "FlexShipStatusCode")){
-							if (listContains("2,4,6", flexship['FlexShipStatusCode'])){
-								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeInactive);
-							}else if(listContains("1,3,5", flexship['FlexShipStatusCode']) ){
-								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeActive);
-							}else if(flexship['FlexShipStatusCode'] == "9"){
-								orderTemplate.setOrderTemplateStatusType(orderTemplateStatusTypeCancelled);
-							}
-						}
-						
 						//set created and modified date times.
 						if (!isNull(order['EntryDate']) && len(order['EntryDate'])){
 							var entry = getDateFromString(flexship['EntryDate']);
 	                    	orderTemplate.setCreatedDateTime( entry );//*
 	                    	orderTemplate.setModifiedDateTime( entry );//*
 	                    }
+	                    
+	                    //writedump(orderTemplate.getNewFlag());
+	                    //writedump(orderTemplate.getOrderTemplateID());
+	                    //writeDump(var=orderTemplate, top=2);abort;
 	                    
 	                    if (isNewFlexship){
 		                	ormStatelessSession.insert("SlatwallOrderTemplate", orderTemplate);
@@ -1529,7 +1511,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						// Saves the shipping account address.
 						if (shippingAccountAddress.getNewFlag()){
 		                	ormStatelessSession.insert("SlatwallAccountAddress", shippingAccountAddress);
-		                } else {
+		                }else{
 		                	//ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
 		                }
 		                
@@ -1690,7 +1672,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								
 								orderTemplateItem.setSku(sku);
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
-								orderTemplateItem.setTemporaryFlag(false);
 								orderTemplateItem.setOrderTemplate(orderTemplate);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
@@ -1755,6 +1736,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
 		var otReplacementOrder = getTypeService().getTypeBySystemCode("otReplacementOrder");
 		var otRefundOrder = getTypeService().getTypeBySystemCode("otRefundOrder");
+		var returnLocation = getLocationService().getLocationByLocationName("Default");
 	    var index=0;
 	    var MASTER = "M";
         var COMPONENT = "C";
@@ -1910,6 +1892,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         }
                     }
                     
+                    // Snapshot the accountType on the order
+                    newOrder.setAccountType(account['AccountTypeName']?:""); //*
+                    
                     /**
                      * Sets the order created site. 
                      **/
@@ -2042,6 +2027,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        
 			        newOrder.setCurrencyCode(currencyCode); //*
 			       
+			       
+			        //Create the orderReturn if needed
+			        // Create an order return
+			        
+        		    if (createOrderReturn){
+        		    	
+        		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(order["OrderID"], false);
+        		    
+            		    if (isNull(orderReturn)){
+            		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
+            		    }
+            		    
+            			orderReturn.setOrder(newOrder);
+            			orderReturn.setRemoteID( order["OrderID"] );
+            			orderReturn.setReturnLocation(returnLocation);
+            			
+            			if (orderReturn.getNewFlag()){
+            		    	ormStatelessSession.insert("SlatwallOrderReturn", orderReturn);
+            			}else{
+            				ormStatelessSession.update("SlatwallOrderReturn", orderReturn);
+            			}
+            			
+        		    }
+        		    
                     ///->Add order items...
                     var parentKits = {};
                     if (!isNull(order['Details'])){
@@ -2085,7 +2094,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        	
         			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
         			        	if (isReturn){
+        			        		
         			        		orderItem.setOrderItemType(oitReturn);
+        			        		orderItem.setOrderReturn(orderReturn);
+        			        		
         			        	}else { 
         			        		orderItem.setOrderItemType(oitSale);//*
         			        	}
@@ -2171,12 +2183,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             			    }
             			    
                             newOrderPayment.setRemoteID(calculatedRemoteID);//* use orderPayment
-                            
-                            //If CC
-                            
-                            //Which payment methods are we pulling in for legacy data?
-                            newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode
-                            newOrderPayment.setAmount(orderPayment['amountReceived'] ?:0);
+                            newOrderPayment.setAmount(orderPayment['amountReceived']?:0);//*
+                            newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode *
                             newOrderPayment.setProviderToken(orderPayment['PaymentToken']); //*
                             newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:""); //*
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
@@ -2317,51 +2325,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 		    
                 		    ormStatelessSession.update("SlatwallOrderDelivery", orderDelivery);
                 		    
-                		    // Create an order return
-                		    if (createOrderReturn){
-                		    	var orderReturn = getOrderService().getOrderReturnByRemoteID(shipment.shipmentId, false);
-                		    
-	                		    if (isNull(orderReturn)){
-	                		    	var orderReturn = new Slatwall.model.entity.OrderReturn();
-	                		    }
-	                		    
-	                			orderReturn.setOrder(newOrder);
-	                			orderReturn.setRemoteID( shipment.shipmentId );
-	                			
-	                			if (orderReturn.getNewFlag()){
-	                		    	ormStatelessSession.insert("SlatwallOrderReturn", orderReturn);
-	                			}else{
-	                				ormStatelessSession.update("SlatwallOrderReturn", orderReturn);
-	                			}
-	                			
-	                			// Create the return items.
-	                			if (structKeyExists(shipment, "Items") && arrayLen(shipment['Items'])){
-	                			   
-	                			    for (var shipmentItem in shipment['Items']){
-	                			       
-	                			        //create an orderItem for the fulfillment and delivery.
-	                			        if (structKeyExists(shipmentItem, "OrderLine") && len(shipmentItem['OrderLine'])){
-                			        		//find the orderLine
-                			            	//create an order fulfillment item.
-                			                //find the correct orderItem using the shipmentItem.orderLine  
-                    			            
-                    			            //create an order delivery item
-                    			            for (var oi in newOrder.getOrderItems()){
-                    			            	if (oi.getOrderItemLineNumber() == shipmentItem['OrderLine']){
-                    			            		
-                    			            		// set this return on that orderLine
-                    			            		oi.setOrderItemStatusType(oistFulfilled);
-                    			            		oi.setOrderReturn(orderReturn);
-                    			            		
-                    			            		//save the oi.
-                    			            		ormStatelessSession.update("SlatwallOrderItem", oi);
-                    			            		
-                    			            	}
-                    			            }
-	                			        }
-	                			    }
-	                			}//end return items
-                		    }else{
+                		    if (!createOrderReturn){
                 		    	//Create the Order fulfillment
                 		    	var orderFulfillment = getOrderService().getOrderFulfillmentByRemoteID(shipment.shipmentId);
                 		    
@@ -2580,7 +2544,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		if(listFindNoCase(arguments.rc.includeSegments,'sku')){
-    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varcharvarchar,varchar,varchar,varchar,varchar,varchar';
+    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
     		var skuCodeQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.skufileName, columnTypeList);
             
             // Sanitize names
@@ -2675,140 +2639,57 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private array function getSkuPriceDataFlattened(required any skuPriceData, required struct skuData){ 
 		var skuPrices = [];
 		var sku = arguments.skuData;
-		var skuPriceData = arguments.skuPriceData;
 
-		if(ArrayLen(sku['KitLines'])){
-			var currentCountryCode = "";
-			var previousCountryCode = "";
-			var index = 0;
+		ArrayEach(arguments.skuPriceData, function(item){
+			var skuPrice = {};
+			var itemData = arguments.item;
+			skuPrice["ItemCode"] = sku.ItemCode;
 
-
-			ArrayEach(arguments.skuData['KitLines'], function(item){
-
-				switch (arguments.item['CountryCode']){	
-					case 'CAN':
-						currentCountryCode = 'CAD';
-						break;
-					case 'GBR':
-						currentCountryCode = 'GBP';
-						break;
-					case 'USA':
-						currentCountryCode = 'USD';
-						break;
-				}
-
-				if(currentCountryCode != previousCountryCode){
-					
-					ArrayEach(skuPriceData, function(item){
-						var skuPrice = {};
-						var itemData = arguments.item;
-						skuPrice["ItemCode"] = sku.ItemCode & currentCountryCode;
-
-						StructEach(itemData, function(key, value){
-							
-							switch(arguments.key){
-								case 'CommissionableVolume':
-									skuPrice['Commission'] = arguments.value;
-									break;
-								case 'QualifyingVolume':
-									skuPrice['QualifyingPrice'] = arguments.value;
-									break;
-								case 'RetailProfit':
-									skuPrice['RetailsCommissions'] = arguments.value;
-									break;
-								case 'RetailVolume':
-									skuPrice['RetailValueVolume'] = arguments.value;
-									break;
-								case 'SellingPrice':
-									skuPrice['SellingPrice'] = arguments.value;
-									break;
-								case 'TaxablePrice':
-									skuPrice['TaxablePrice'] = arguments.value;
-									break;
-								case 'ProductPackVolume':
-									skuPrice['ProductPackBonus'] = arguments.value;
-									break;
-								case 'PriceLevelCode':
-									skuPrice['PriceLevel'] = arguments.value;
-									break;
-								case 'CountryCode':
-									switch (arguments.value){	
-										case 'CAN':
-											skuPrice['CountryCode'] = 'CAD';
-											break;
-										case 'GBR':
-											skuPrice['CountryCode'] = 'GBP';
-											break;
-										case 'USA':
-											skuPrice['CountryCode'] = 'USD';
-											break;
-									}
-									break;
-							}
-						}, true, 10);
-						
-						ArrayAppend(skuPrices, skuPrice);
-					}, true, 10);
-				}
-
-				previousCountryCode = currentCountryCode;
-			});
-
-		} else {
-			ArrayEach(skuPriceData, function(item){
-				var skuPrice = {};
-				var itemData = arguments.item;
-				skuPrice["ItemCode"] = sku.ItemCode;
-
-				StructEach(itemData, function(key, value){
-					
-					switch(arguments.key){
-						case 'CommissionableVolume':
-							skuPrice['Commission'] = arguments.value;
-							break;
-						case 'QualifyingVolume':
-							skuPrice['QualifyingPrice'] = arguments.value;
-							break;
-						case 'RetailProfit':
-							skuPrice['RetailsCommissions'] = arguments.value;
-							break;
-						case 'RetailVolume':
-							skuPrice['RetailValueVolume'] = arguments.value;
-							break;
-						case 'SellingPrice':
-							skuPrice['SellingPrice'] = arguments.value;
-							break;
-						case 'TaxablePrice':
-							skuPrice['TaxablePrice'] = arguments.value;
-							break;
-						case 'ProductPackVolume':
-							skuPrice['ProductPackBonus'] = arguments.value;
-							break;
-						case 'PriceLevelCode':
-							skuPrice['PriceLevel'] = arguments.value;
-							break;
-						case 'CountryCode':
-							switch (arguments.value){	
-								case 'CAN':
-									skuPrice['CountryCode'] = 'CAD';
-									break;
-								case 'GBR':
-									skuPrice['CountryCode'] = 'GBP';
-									break;
-								case 'USA':
-									skuPrice['CountryCode'] = 'USD';
-									break;
-							}
-							break;
-					}
-				}, true, 10);
+			StructEach(itemData, function(key, value){
 				
-				ArrayAppend(skuPrices, skuPrice);
+				switch(arguments.key){
+					case 'CommissionableVolume':
+						skuPrice['CommissionableVolume'] = arguments.value;
+						break;
+					case 'QualifyingVolume':
+						skuPrice['QualifyingPrice'] = arguments.value;
+						break;
+					case 'RetailProfit':
+						skuPrice['RetailsCommissions'] = arguments.value;
+						break;
+					case 'RetailVolume':
+						skuPrice['RetailValueVolume'] = arguments.value;
+						break;
+					case 'SellingPrice':
+						skuPrice['SellingPrice'] = arguments.value;
+						break;
+					case 'TaxablePrice':
+						skuPrice['TaxablePrice'] = arguments.value;
+						break;
+					case 'ProductPackVolume':
+						skuPrice['ProductPackBonus'] = arguments.value;
+						break;
+					case 'PriceLevelCode':
+						skuPrice['PriceLevel'] = arguments.value;
+						break;
+					case 'CountryCode':
+						switch (arguments.value){	
+							case 'CAN':
+								skuPrice['CountryCode'] = 'CAD';
+								break;
+							case 'GBR':
+								skuPrice['CountryCode'] = 'GBP';
+								break;
+							case 'USA':
+								skuPrice['CountryCode'] = 'USD';
+								break;
+						}
+						break;
+				}
 			}, true, 10);
-		}
-
-
-		
+			
+			ArrayAppend(skuPrices, skuPrice);
+		}, true, 10);
 		
 		return skuPrices;
 	}
@@ -2820,6 +2701,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
+			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
+										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+										
+				return hasDefaultSkuPrice; 
+			},true, 10);
+
+			if(ArrayLen(defaultSkuPrice)){
+				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+			}
 		}
 
 		StructEach(arguments.skuData, function(key, value){
@@ -2831,18 +2723,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			switch(skuField){
 				case 'ItemCode':
 					data['SKUItemCode'] = Trim(fieldValue);
-					data['PRODUCTItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
 					break;
-				case 'ItemNote':
-					data['ItemNote'] = Trim(fieldValue);
-					break;
-				case 'SalesCategoryCode':
-					data['SalesCategoryCode'] = Trim(fieldValue);
-					break;
-				case 'DisableInDTX':
+				case 'DisableOnRegularOrders':
 					data['DisableOnRegularOrders'] = fieldValue;
 					break;
 				case 'DisableInFlexShip':
@@ -2854,84 +2739,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemCategoryName':
 					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
-				case 'EntryDate':
-					data['EntryDate'] = fieldValue;
-					break;
-				case 'SAPItemCodes':
-					if (ArrayLen(fieldValue)) {
-						data['SAPItemCode'] = fieldValue[1]['SAPItemCode'];
-					}
-					break;
 			}
 		}, true, 10);
 
-		// create skubundle data
-		if(ArrayLen(arguments.skuData['KitLines'])){
-			var currentCountryCode = "";
-			var previousCountryCode = "";
-			var index = 0;
-
-			ArrayEach(arguments.skuData['KitLines'], function(item){
-
-				switch (arguments.item['CountryCode']){	
-					case 'CAN':
-						currentCountryCode = 'CAD';
-						break;
-					case 'GBR':
-						currentCountryCode = 'GBP';
-						break;
-					case 'USA':
-						currentCountryCode = 'USD';
-						break;
-				}
-
-				if(currentCountryCode != previousCountryCode){
-					if(!arrayIsEmpty(skuPriceData)){
-						var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-							var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
-													(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-													(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-													
-							return hasDefaultSkuPrice; 
-						},true, 10);
-					}
-
-					if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
-						data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-					}
-
-					if(index > 0){
-						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
-						data['SKUItemCode'] &= currentCountryCode;
-					} else {
-						data['SKUItemCode'] &= currentCountryCode;
-					}
-					
-					QueryAddRow(query, data);
-					index++;
-				}
-
-				previousCountryCode = currentCountryCode;
-			});
-
-		} else {
-
-			if(!arrayIsEmpty(skuPriceData)){
-				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-					var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
-											(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-											(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-											
-					return hasDefaultSkuPrice; 
-				},true, 10);
-
-				if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
-					data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-				}
-			}
-
-			QueryAddRow(query, data);
-		}
+		QueryAddRow(query, data);
 
 		return query;
 	}
@@ -2944,7 +2755,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var priceLevels = skuData.PriceLevels;
 			skuPriceData = skuData.PriceLevels;
 		}
-		
+
 		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
 
 		ArrayEach(skuPricesFlattened, function(item){
@@ -2954,58 +2765,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return arguments.skuPriceQuery;
 	}
 
-	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
-		var query = arguments.skuBundleQuery;
-		var skuData = arguments.skuData;
-		var currentCountryCode = "";
-		ArrayEach(arguments.skuData.KitLines, function(item){
-			var skuBundleData = {};
-			switch (arguments.item['CountryCode']){	
-				case 'CAN':
-					currentCountryCode = 'CAD';
-					break;
-				case 'GBR':
-					currentCountryCode = 'GBP';
-					break;
-				case 'USA':
-					currentCountryCode = 'USD';
-					break;
-			}
-
-			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
-
-			StructEach(arguments.item, function(key, value){
-				switch (arguments.key){
-					case 'OnTheFlyFlag':
-						skuBundleData['ontheflykit'] = arguments.value;
-						break;
-					case 'ComponentItemCode':
-						skuBundleData['ComponentItemCode'] = arguments.value;
-						break;
-					case 'ComponentQty':
-						skuBundleData['ComponentQuantity'] = arguments.value;
-						break;
-				}
-			}, true, 10);
-			if(StructIsEmpty(skuBundleData)){
-				continue;
-			}
-			QueryAddRow(query, skuBundleData);
-		}, true, 10);
-
-		return query;
-	}
-
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate";
+		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
 	}
 
 	private string function getSkuPriceColumnsList(){
 		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
-	}
-	
-	private string function getSkuBundleColumnsList(){
-		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 
 	public void function importMonatProducts(){
@@ -3015,14 +2780,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var totalPages = 1;
-
 		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			totalPages = initProductData['Data']['TotalPages'];
 		}
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
-		var importSkuBundles = rc.importSkuBundles?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -3034,10 +2797,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var skuPriceColumns = this.getSkuPriceColumnsList();
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-		
-		var skuBundleColumns = this.getSkuBundleColumnsList();
-		skuBundleColumnTypes = [];
-		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
+
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -3050,99 +2810,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
 
-			if(!importSkuBundles){
-
-				try{
-					
-					var skuQuery = QueryNew(skuColumns, skuColumnTypes);
-					var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
-
-					for (var skuData in monatProducts){
-						
-						skuQuery = this.populateSkuQuery(skuQuery, skuData);
-
-						if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
-						}
-					}
-
-					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
-
-					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-				} catch (any e){
-					writeDump(e); // rollback the tx
-				}
-			} else {
-
-				try{
-					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
-
-					for (var skuData in monatProducts){
-						if(arrayLen(skuData['KitLines'])){
-							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
-
-							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-
-							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-						}
-					}
+    		try{
 				
-				} catch (any e){
-					writeDump(e); // rollback the tx
+				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
+
+				for (var skuData in monatProducts){
+					
+					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
+
+					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
+						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+					}
 				}
+				
+				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+
+				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+			} catch (any e){
+    			writeDump(e); // rollback the tx
 			}
 			pageNumber++
-		}
-		abort;
-	}
-
-	public void function importVibeAccounts(){
-		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		var importSuccess = true;
-
-		try{
-			var userNameQuery = "UPDATE swaccount a 
-								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = temp.userName";
-			var accountAuthQuery = "INSERT INTO swaccountauthentication (
-										accountAuthenticationID, 
-										password, 
-										activeFlag, 
-										createdDateTime, 
-										accountID, 
-										legacyPassword
-									) 
-									SELECT
-										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
-										'LEGACY' password,
-										1 activeFlag,
-										NOW() createdDateTime,
-										a.accountID accountID,
-										temp.encrypted_password legacyPassword
-										FROM swaccount a 
-										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
-										WHERE aa.accountID IS NULL
-									";
-
-
-			var usernameQuery = QueryExecute(userNameQuery);
-			var accountAuthQuery = QueryExecute(accountAuthQuery);
-
-		} catch(any e){
-			importSuccess = false;
-			writeDump("Something Went Wrong!!!");
-			writeDump(var=e, label="ERROR");
-		}
-
-		if(importSuccess){
-			writeDump("Import Success!!!");
-			writedump(usernameQuery);
-			writedump(accountAuthQuery);
 		}
 		abort;
 	}
