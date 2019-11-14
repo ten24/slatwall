@@ -1351,12 +1351,13 @@ public any function getPersonalVolume(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
     }
     
-    private numeric function getCustomPriceFieldAmount(required string priceField){
-        var account = this.getOrder().getAccount();
-        if(isNull(account)){
-            account = getService('accountService').newAccount();
-        }
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode(),this.getQuantity(),account.getPriceGroups());
+	private numeric function getCustomPriceFieldAmount(required string customPriceField){
+        arguments.currencyCode = this.getCurrencyCode();
+		arguments.quantity = this.getQuantity();
+		if(!isNull(this.getOrder().getAccount())){ 
+			arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		}
+        var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
         }
@@ -1380,19 +1381,19 @@ public any function getPersonalVolume(){
 	}
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
-		if(!structKeyExists(variables,'extended#priceField#')){
+		if(!structKeyExists(variables,'extended#arguments.priceField#')){
 			var price = 0;
 			
 			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
-			var manualPrice = this.invokeMethod('getManual#priceField#');
+			var manualPrice = this.invokeMethod('getManual#arguments.priceField#');
 		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
-				price = this.invokeMethod('getManual#priceField#');
-			} else if(!isNull(this.invokeMethod('get#priceField#'))){
-				price = this.invokeMethod('get#priceField#');
+				price = this.invokeMethod('getManual#arguments.priceField#');
+			} else if(!isNull(this.invokeMethod('get#arguments.priceField#'))){
+				price = this.invokeMethod('get#arguments.priceField#');
 			}
-			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+			variables['extended#arguments.priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 		}
-		return variables['extended#priceField#'];
+		return variables['extended#arguments.priceField#'];
 	}
 	
 	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){

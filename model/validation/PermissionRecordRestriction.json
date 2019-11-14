@@ -1,7 +1,5 @@
 {
-	"properties":{
-		"permissionRecordRestrictionName":							[{"contexts":"save","required":true}]
+	"properties": {
+		"permissionRecordRestrictionName": [{ "contexts": "save", "required": true }]
 	}
 }
-
-

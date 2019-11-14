@@ -30,8 +30,8 @@ component extends="Slatwall.model.service.OrderService" {
         
         return super.processOrderTemplate_create(argumentCollection = arguments);
     }
-    
-    
+
+ 
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
 	     for(var priceField in variables.customPriceFields){
@@ -102,7 +102,100 @@ component extends="Slatwall.model.service.OrderService" {
 		return returnOrder;
 	}
 
-    private any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	//begin order template functionality
+	private any function getOrderCreateProcessObjectForOrderTemplate(required any orderTemplate, required any order){
+		var processOrderCreate = arguments.order.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		processOrderCreate.setOrderOriginID('2c9380846e3d64e4016e3d678ae70004'); //flexship		
+
+		return processOrderCreate;
+	}
+
+	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+		if(structKeyExists(request, 'orderTemplateOrderDetails')){
+			return request.orderTemplateOrderDetails;
+		} 
+		
+		request.orderTemplateOrderDetails = {}; 
+	
+		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
+		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
+		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
+
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
+		
+		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplate = arguments.orderTemplate; 	
+		
+		thread name="#threadName#"
+			   action="run" 
+		{
+
+			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
+			//only update amounts if we can
+			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
+			transientOrder.updateCalculatedProperties(); 	
+			getHibachiDAO().flushORMSession();	
+	
+			if(hasInfoForFulfillment){
+				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
+			}
+			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
+			
+			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
+			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
+
+			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
+			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
+	
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
+
+			var deleteOk = this.deleteOrder(transientOrder); 
+
+			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+
+			ormFlush();	
+	
+		}
+		//join thread so we can return synchronously
+		threadJoin(threadName);
+		//if we have any error we probably don't have the required data for returning the total
+		if(structKeyExists(evaluate(threadName), "ERROR")){
+			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		} 
+
+		return request.orderTemplateOrderDetails;
+	}
+
+	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
+	}
+	
+	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
+	}
+    
+	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
@@ -197,7 +290,7 @@ component extends="Slatwall.model.service.OrderService" {
 
 		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
 		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
+		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,sku.product.productID,sku.skuID');
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
@@ -322,7 +415,9 @@ component extends="Slatwall.model.service.OrderService" {
         }
 	    
 	    arguments.order = super.processOrder_releaseCredits(argumentCollection=arguments);
-	    arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    if(!order.hasErrors()){
+	    	arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    }
 	    return order;
 	}
 	
@@ -351,6 +446,19 @@ component extends="Slatwall.model.service.OrderService" {
 		getHibachiScope().flushORMSession();
 		
 		return arguments.orderDelivery;
+	}
+	
+	
+	public boolean function orderHasMPRenewalFee(required orderID) {
+
+		var renewalFeeMPProductType = getService('productService').getProductTypeBySystemCode('RenewalFee-MP');
+		
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.setDisplayProperties('orderItemID');
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#renewalFeeMPProductType.getProductTypeIDPath()#%','Like');
+		
+		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 }
 

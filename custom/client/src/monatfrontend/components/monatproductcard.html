@@ -1,9 +1,9 @@
-<div class="product-box" ng-class="{'border-0': monatProductCard.type == 'enrollment', 'mx-md-4': monatProductCard.type == 'enrollment'}">
+<div ng-class="{'border-0': monatProductCard.type == 'enrollment', 'mx-md-4': monatProductCard.type == 'enrollment', 'product-box': monatProductCard.type != 'productListing'}">
    <div class="pr-box">
     <!-- Product Card -->
     
-        <!-- If the product is not being viewed as a wishlist item, show the button to launch add to wishlist modal -->
- 	    <button ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment' " type="button" data-toggle="modal" data-target="#wishlist-modal" class="wishlist" data-skuID="{{monatProductCard.product.skuID}}" data-title="#local.productName#"><i class="far fa-heart"></i></button>  
+        <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
+ 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
@@ -34,20 +34,36 @@
         </figure>
       
         <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
-      
+         
+        <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
+        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' " class="price">
+            <strong>{{monatProductCard.product.price | currency }} /</strong> 
+            <span class="vip-price"><span ng-bind-html="monatProductCard.product.upgradedPriceGroupCode == 3 ? 'VIP' : (monatProductCard.product.upgradedPriceGroupCode == 2 ? 'RETAIL': '') "></span> {{monatProductCard.product.upgradedPricing.price | currency }}</span>
+        </div>
+        
         <!-- Market Partner Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
             <strong>{{monatProductCard.product.marketPartnerPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
             <br><strong>PV {{monatProductCard.product.personalVolume}}</strong>
         </div>
         
         <!-- VIP Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment'" class="price">
+        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
             <strong>{{monatProductCard.product.vipPrice}} /</strong> <span class="vip-price">Retail {{monatProductCard.product.retailPrice}}</span>
         </div>
         
         <!-- Retail Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup != 3 && monatProductCard.product.accountPriceGroup != 1 && monatProductCard.type !='enrollment'" class="price">
+        <div 
+            ng-if="
+                monatProductCard.product.accountPriceGroup != 3 
+                && monatProductCard.product.accountPriceGroup != 1 
+                && monatProductCard.type != 'enrollment' 
+                && monatProductCard.type != 'productListing'
+                && monatProductCard.type != 'VIPenrollment' 
+                && monatProductCard.type != 'VIPenrollmentOrder'
+            " 
+            class="price"
+        >
             <strong>{{monatProductCard.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductCard.product.vipPrice}}</span>
         </div>
         
@@ -68,59 +84,12 @@
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship'" >Add To Cart</span>
-             <span ng-if="monatProductCard.type == 'flexship'">Add To Flexship</span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" >Add To Cart</span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
          </button>
    </div>
-   
-   <!-- Wishlist Modal-->
-    <div ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type!='wishlist' && monatProductCard.type!='enrollment'" class="modal wishlist-modal fade" id="wishlist-modal" tabindex="-1" aria-labelledby="product-title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <h5 class="modal-title"><i class="fas fa-heart"></i><span id="wishlist-product-title">{{monatProductCard.product.productName}}</span></h5>
-                <h3 ng-click="getWishlists()" ng-init="createWishList = {}">Choose a wishlist to save this product to.</h3>
-                
-                <form 
-                ng-model="createWishList"
-                >
-                    <ul class="wishlist-names" 
-                    ng-init="monatProductCard.getAllWishlists()"
-                    > 
-                        <li ng-repeat="wishlist in monatProductCard.orderTemplates track by $index" ng-cloak>
-                            <div class="radio">
-                                <input ng-click="monatProductCard.setWishlistID(wishlist.orderTemplateID); monatProductCard.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
-                                <label for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
-                            </div>
-                        </li>
-                    
-                        <li>
-                            <div ng-click="newWishlist = true" class="radio">
-                                <input type="radio" name="wishlist" id="create-new" ng-value="''" ng-model="createWishList.orderTemplateID" >
-                                <label for="create-new">Create a new wishlist</label>
-                            </div>
-                            <div class="new-wishlist-name">
-                                <input ng-disabled="!newWishlist" placeholder="Name your wishlist" id="orderTemplateName" type="text" name="orderTemplateName" class="form-control success" value="newWishlist" ng-model="createWishList.orderTemplateName" swvalidationrequired="true">
-                            </div>
-                        </li>
-                        
-                        <div class="text-center">
-                            <a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="monatProductCard.addItemAndCreateWishlist(createWishList.orderTemplateName, monatProductCard.product.skuID); " data-dismiss="modal" class="btn text-white bg-primary">
-                                Save Changes
-                            </a>
-                            <a ng-if="createWishList.orderTemplateID" data-dismiss="modal" ng-click="monatProductCard.addWishlistItem(monatProductCard.product.skuID)" class="btn text-white bg-primary">
-                                Save Changes
-                            </a>
-                        </div>
-                    </ul>
-                </form>
-            </div>
-        </div>
-    </div>            
 </div>
+
 
 <!--- Delete Wishlist Item Modal --->
 <div
@@ -158,9 +127,9 @@
 						/>
 						<button
 							class="btn bg-primary w-100"
-							data-dismiss="modal"
 							ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
 							sw-rbKey="'define.yes'"
+							ng-class="{loading: monatProductCard.loading}"
 						></button>
 					</div>
 				</div>

@@ -1,12 +1,12 @@
 {
-	"conditions":{
-	    "isNotGlobal":{
-	        "getGlobalFlag":{"eq":0}
-	    }
+	"conditions": {
+		"isNotGlobal": {
+			"getGlobalFlag": { "eq": 0 }
+		}
 	},
-	"properties":{
-		"priceGroup":				[{"contexts":"save","required":true}],
-		"amountType":				[{"contexts":"save","required":true}],
-		"amount":					[{"contexts":"save","required":true,"dataType":"numeric"}]
+	"properties": {
+		"priceGroup": [{ "contexts": "save", "required": true }],
+		"amountType": [{ "contexts": "save", "required": true }],
+		"amount": [{ "contexts": "save", "required": true, "dataType": "numeric" }]
 	}
 }

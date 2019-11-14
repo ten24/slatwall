@@ -14,7 +14,7 @@ component extends="Slatwall.model.service.HibachiService" {
         return productReviewCollection.getPageRecords();
     }
     
-    public array function getMarketPartners(required struct data){
+    public struct function getMarketPartners(required struct data){
         param name="arguments.data.pageRecordsShow" default=9;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
@@ -27,8 +27,12 @@ component extends="Slatwall.model.service.HibachiService" {
         }
         
         var marketPartnerCollection = this.getAccountCollection(arguments.data);
-
-        return marketPartnerCollection.getPageRecords();
+        
+        var marketPartnerObject = {
+            accountCollection: marketPartnerCollection.accountCollection.getPageRecords(formatRecords=false),
+            recordsCount: marketPartnerCollection.recordsCount
+        }
+        return marketPartnerObject;
     }
     
     private any function getAccountCollection(required struct data){
@@ -39,15 +43,17 @@ component extends="Slatwall.model.service.HibachiService" {
         param name="arguments.data.countryCode" default="";
         param name="arguments.data.accountSearchType" default="false";
 
-        var accountCollection = getService('productService').getAccountCollectionList();
+        var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
-        accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
-
-        accountCollection.setDisplayProperties("firstName,lastName,primaryAddress.address.stateCode", {isSearchable: true});
-        accountCollection.addDisplayProperty('accountID');
-        accountCollection.addDisplayProperty('primaryAddress.address.city');
-        accountCollection.addDisplayProperty('primaryAddress.address.countryCode');
+        accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:true});
+        accountCollection.addDisplayProperty('firstName', 'firstName', {isVisible:true, isSearchable: false});
+        accountCollection.addDisplayProperty('lastName', 'lastName', {isVisible:true, isSearchable: false});
+        accountCollection.addDisplayProperty('accountID','accountID', {isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.countryCode','primaryAddress_address_countryCode', {isVisible:true, isSearchable:false});
+        accountCollection.addDisplayProperty('primaryAddress.address.stateCode','primaryAddress_address_stateCode', {isVisible:true, isSearchable:false});
+        accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
+        accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
         
         if(arguments.data.accountSearchType == 'VIP'){
             accountCollection.addFilter(
@@ -75,9 +81,20 @@ component extends="Slatwall.model.service.HibachiService" {
         if ( len( arguments.data.stateCode ) ) {
             accountCollection.addFilter( 'primaryAddress.address.stateCode', arguments.data.stateCode );
         }
-
-        accountCollection.setKeywords(arguments.data.search);
-        return accountCollection; 
+        if(!isNull(arguments.data.search) && len(arguments.data.search)){
+            accountCollection.setKeywords(arguments.data.search);
+        }
+        
+        var recordsCount = accountCollection.getRecordsCount();
+        
+        accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+        accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        var returnObject = {
+            accountCollection: accountCollection,
+            recordsCount: recordsCount
+        }
+        return returnObject; 
     }
     
     public numeric function getProductReviewCount(required struct data){

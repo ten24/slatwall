@@ -1,14 +1,28 @@
-{	"conditions":{
-		"rewardTypeNotCanPlaceOrder":{
-			"rewardType":{"neq":"canPlaceOrder"}
+{
+	"conditions": {
+		"rewardTypeNotCanPlaceOrder": {
+			"rewardType": { "neq": "canPlaceOrder" }
 		}
 	},
-	"properties":{
-		"amountType":					[{"conditions":"rewardTypeNotCanPlaceOrder","contexts":"save","required":true}],
-		"amount":						[{"conditions":"rewardTypeNotCanPlaceOrder","contexts":"save","required":true,"dataType":"numeric"}],
-		"maximumUsePerOrder":			[{"conditions":"rewardTypeNotCanPlaceOrder","contexts":"save","dataType":"numeric"}],
-		"maximumUsePerItem":			[{"conditions":"rewardTypeNotCanPlaceOrder","contexts":"save","dataType":"numeric"}],
-		"maximumUsePerQualification":	[{"conditions":"rewardTypeNotCanPlaceOrder","contexts":"save","dataType":"numeric"}],
-		"promotionRewardID":			[{"contexts":"delete","method":"getIsDeletableFlag"}]
+	"properties": {
+		"amountType": [{ "conditions": "rewardTypeNotCanPlaceOrder", "contexts": "save", "required": true }],
+		"amount": [
+			{
+				"conditions": "rewardTypeNotCanPlaceOrder",
+				"contexts": "save",
+				"required": true,
+				"dataType": "numeric"
+			}
+		],
+		"maximumUsePerOrder": [
+			{ "conditions": "rewardTypeNotCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"maximumUsePerItem": [
+			{ "conditions": "rewardTypeNotCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"maximumUsePerQualification": [
+			{ "conditions": "rewardTypeNotCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"promotionRewardID": [{ "contexts": "delete", "method": "getIsDeletableFlag" }]
 	}
 }
