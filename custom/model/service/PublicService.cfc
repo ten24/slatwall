@@ -677,11 +677,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
-                var VIPSkuID = getProductService().getProductByProductType('VIPEnrollmentFee').getDefaultSku().getSkuID(); //getVIP default sku here
-                return addOrderItem({skuID:VIPSkuID});
+                var VIPSkuID = getProductService().getProductByProductCode('VIPFEE000012').getDefaultSku().getSkuID(); //getVIP default sku here
+                return addOrderItem({skuID:VIPSkuID, quantity: 1});
             }else if(account.getAccountType() == 'marketPartner'){
-                var MPSkuID = getProductService().getProductByProductCode('MPFEE000011').getDefaultSku().getSkuID(); //getmp default sku here
-                return addOrderItem({skuID:MPSkuID});
+                var MPSkuID = getProductService().getProductByProductCode('MPFEE000012').getDefaultSku().getSkuID(); //getmp default sku here
+                return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
         }
