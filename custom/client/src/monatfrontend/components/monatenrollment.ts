@@ -51,7 +51,6 @@ class MonatEnrollmentController {
 			}
 		})
 		
-		this.publicService.doAction('getOrderTemplateItemsLight', {orderTemplateID: '2c9c80846e6cf1d2016e6d004f9f0016'}).then(res => console.log(res));
 	}
 
 	public handleCreateAccount = () => {
