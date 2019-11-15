@@ -1749,13 +1749,14 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
 
-		public void function getWishlistItems(required any data){
+	public void function getWishlistItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default=""; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		arguments.data['ajaxResponse']['orderTotal'] = 0;
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
 		
@@ -1790,8 +1791,12 @@ component  accessors="true" output="false"
   			      "total"                       :       wishListItem.getTotal()?:""
 
 			    };
+                
+                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 
-			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
+                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
+                }
 		    }
 		}catch (e){
             throw(e)
