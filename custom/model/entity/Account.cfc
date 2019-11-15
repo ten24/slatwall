@@ -92,7 +92,7 @@ component {
 	}
 	
 	public struct function getListingSearchConfig() {
-	    param name = "arguments.wildCardPosition" default = "right";
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
