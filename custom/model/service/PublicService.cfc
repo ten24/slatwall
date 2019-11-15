@@ -741,7 +741,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'price' : item.price,
                 'productName' : item.productName,
                 'quantity' : item.quantity,
-                'skuImagePath' : imageService.getResizedImageByProfileName('#item.skuID#','small'),
+                'skuImagePath' : imageService.getResizedImageByProfileName(item.skuID,'small'), //TODO: find a faster method
                 'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
                 'orderTemplateID' :	item.orderTemplateID,
                 'orderTemplateItemID' : item.orderTemplateItemID		
