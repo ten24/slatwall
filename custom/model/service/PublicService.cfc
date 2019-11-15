@@ -702,5 +702,54 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
     }
+    
+    public any function getOrderTemplateItemsLight(){
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.priceGroupCode" default="3";
+        
+        if(isNull(arguments.data.orderTemplateID)){
+            return;
+        }
+        
+        if(arguments.data.priceGroupCode == 1){
+            var priceGroupID = "045f95c3ab9d4a73bcc9df7e753a2080";
+        } else if(arguments.data.priceGroupCode == 2){
+            var priceGroupID = "c540802645814b36b42d012c5d113745";
+        }else{
+            var priceGroupID = "84a7a5c187b04705a614eb1b074959d4";
+        }
+            
+    	var orderTemplateItems = [];
+    	var productService = getService('productService');
+    	var imageService = getService('ImageService');
+
+    	
+        var orderTemplateItemsQueryList = QueryExecute("
+        SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle
+        FROM swordertemplateitem oti
+        LEFT JOIN swsku s ON oti.skuID = s.skuID
+        INNER JOIN swskuprice p ON p.skuID = oti.skuID
+        INNER JOIN swproduct pd ON pd.productID = s.productID
+        WHERE oti.orderTemplateID=:aorderTemplateID AND p.priceGroupID = :apriceGroupID
+        GROUP BY skuID;
+        ",{aorderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, apriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
+        
+        
+        for(item in orderTemplateItemsQueryList){
+    		 arrayAppend(orderTemplateItems,{
+                'skuID' : item.skuID,
+                'price' : item.price,
+                'productName' : item.productName,
+                'quantity' : item.quantity,
+                'skuImagePath' : imageService.getResizedImageByProfileName('#item.skuID#','small'),
+                'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
+                'orderTemplateID' :	item.orderTemplateID,
+                'orderTemplateItemID' : item.orderTemplateItemID		
+            });
+        }
+            
+            
+		arguments.data['ajaxResponse']['orderTemplateItems'] = orderTemplateItems;
+    }
 
 }
