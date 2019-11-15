@@ -46,56 +46,31 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.accountSmartList" type="any" />
+<cfparam name="rc.order" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.addSkuAddStockType" type="string" default="oitSale"/>
 
 <cfoutput>
-
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
-
-	<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
-
-	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username"/>
-	<cfset accountCollectionList.setDisplayProperties(
-	searchableDisplayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
+	<cfset local.orderFulfillmentID = "new">
+	<cfset local.simpleRepresentation = "">
+	<cfif !isNull(rc.order.getOrderFulfillments())>
+		<cfset orderFulfillments = rc.order.getOrderFulfillments()>
+		<cfloop index="local.orderFulfillment" array="#orderFulfillments#">
+			<cfif !isNull(orderFulfillment.getOrderFulfillmentID())>
+				<cfset orderFulfillmentID = orderFulfillment.getOrderFulfillmentID()>
+				<cfset simpleRepresentation = orderFulfillment.getSimpleRepresentation()>
+				<cfbreak>
+			</cfif>
+		</cfloop>
+	</cfif>
 	
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryEmailAddress.emailAddress',
-	columnConfig={
-		isVisible=true,
-		isSearchable=false,
-		isDeletable=true
-	})/>
-
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='accountID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
+	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
+	<cfset local.accountID = "#rc.order.getAccount().getAccountID()#">
+	<cfset local.promotionSkuIDs = "#rc.order.getQualifiedFreePromotionRewardSkuIDs()#">
 	
-	<hb:HibachiListingDisplay 
-		collectionList="#accountCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
-
+	<sw-add-promotion-order-items-by-sku data-promotion-skus="#local.promotionSkuIDs#" data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'"></sw-add-promotion-order-items-by-sku>
+	
 </cfoutput>
