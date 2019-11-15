@@ -49,6 +49,14 @@ class SWListingSearchController {
     
     public searchableFilterOptions = [
             {
+                title:'Last 1 Month',
+                value:'lastOneMonth',
+            },
+            {
+                title:'Last 2 Months',
+                value:'lastTwoMonths',
+            },
+            {
                 title:'Last 3 Months',
                 value:'lastThreeMonths',
             },
@@ -68,16 +76,20 @@ class SWListingSearchController {
         
     public wildCardPositionOptions = [
         {
-            title:'Match from Start',
+            title:'Starts with',
             value:'right'
         },
         {
-            title:'Match from End',
+            title:'Ends with',
             value:'left'
         },
         {
             title:'Match Anywhere',
             value:'both'
+        },
+        {
+            title:'Exact Match',
+            value:'exact'
         }
     ];
 
@@ -124,17 +136,8 @@ class SWListingSearchController {
         }
     }
     
-    public shouldShowSearchFilterDropdown() {
-        console.log("calling shouldShowSearchFilterDropdown");
-
-        //the controls with new config
-        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
-        
-        return ( this.swListingDisplay.searchText && this.swListingDisplay.searchText.length )
-                || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
-    }
-    
-    private configureListingSearchConfigControls(searchConfig?) {
+    public configureListingSearchConfigControls(searchConfig?) {
+        if(!searchConfig) searchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
         if(!searchConfig) return;
         if(angular.isDefined(searchConfig.selectedSearchFilterCode)){
              this.selectedSearchFilter = this.searchableFilterOptions
