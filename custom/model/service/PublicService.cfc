@@ -705,7 +705,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getOrderTemplateItemsLight(){
         param name="arguments.data.orderTemplateID" default="";
-        param name="arguments.data.priceGroupCode" default="3";
+        param name="arguments.data.priceGroupCode" default="2";
         
         if(isNull(arguments.data.orderTemplateID)){
             return;
