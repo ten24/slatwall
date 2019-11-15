@@ -68,16 +68,20 @@ class SWListingSearchController {
         
     public wildCardPositionOptions = [
         {
-            title:'Match from Start',
+            title:'Starts with',
             value:'right'
         },
         {
-            title:'Match from End',
+            title:'Ends with',
             value:'left'
         },
         {
             title:'Match Anywhere',
             value:'both'
+        },
+        {
+            title:'Exact Match',
+            value:'exact'
         }
     ];
 

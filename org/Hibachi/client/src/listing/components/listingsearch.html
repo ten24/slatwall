@@ -44,7 +44,7 @@
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.swListingDisplay.searchText"
-                data-ng-model-options='{ debounce: 500 }'
+                data-ng-model-options='{ debounce: 1000 }'
                 data-ng-change="swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
                 data-ng-if="swListingSearch.swListingDisplay.searchText"

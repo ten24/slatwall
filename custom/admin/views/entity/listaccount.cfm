@@ -64,22 +64,12 @@ Notes:
 
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username,primaryEmailAddress.emailAddress"/>
-	<cfset accountCollectionList.setDisplayProperties(
-	searchableDisplayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='accountID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
+	<cfset accountCollectionList.setDisplayProperties('accountNumber',{isVisible=true,isSearchable=true,isDeletable=true})/>
+	<cfset accountCollectionList.addDisplayProperty(displayProperty='firstName',columnConfig={isVisible=true,isSearchable=false,isDeletable=true})/>
+	<cfset accountCollectionList.addDisplayProperty(displayProperty='lastName',columnConfig={isVisible=true,isSearchable=false,isDeletable=true})/>
+	<cfset accountCollectionList.addDisplayProperty(displayProperty='username',columnConfig={isVisible=true,isSearchable=false,isDeletable=true})/>
+	<cfset accountCollectionList.addDisplayProperty(displayProperty='primaryEmailAddress.emailAddress',columnConfig={isVisible=true,isSearchable=false,isDeletable=true})/>
+	<cfset accountCollectionList.addDisplayProperty(displayProperty='accountID',columnConfig={isVisible=false,isSearchable=false,isDeletable=false})/>
 	
 	<hb:HibachiListingDisplay 
 		collectionList="#accountCollectionList#"

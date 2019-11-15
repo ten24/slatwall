@@ -144,6 +144,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useScrollableFlag" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
+	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
 
 	
@@ -465,6 +466,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function updateListingSearchFilters() {
+		if(structKeyExists(variables, 'listingSearchFiltersApplied') && variables.listingSearchFiltersApplied){
+			return;
+		}
+		
 		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
 
 		if(!structKeyExists(listingSearchConfig, 'searchFilterPropertyIdentifier')){
@@ -508,6 +513,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			comparisonOperator = ">=",
 		    filterGroupAlias = "listingSearchFilters"
 		);
+		variables.listingSearchFiltersApplied = true;
 	
 	}
 
@@ -4269,14 +4275,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var currentFilter = { "comparisonOperator" = "like"}; //
 				switch(searchConfig.wildCardPosition){
 					case "left":
-							currentFilter['value']="%#keyword#";
+							currentFilter['value'] = "%#keyword#";
 						break;
 					case "right":
-							currentFilter['value']="#keyword#%";
+							currentFilter['value'] = "#keyword#%";
+						break;
+					case "exact":
+							currentFilter['value'] = keyword;
+							currentFilter['comparisonOperator'] = '=';
 						break;
 					case "both":
 					default:
-							currentFilter['value']="%#keyword#%";
+							currentFilter['value'] = "%#keyword#%";
 						break;
 				}
 				
