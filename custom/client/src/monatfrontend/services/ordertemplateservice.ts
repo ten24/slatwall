@@ -327,5 +327,9 @@ export class OrderTemplateService {
    	public getOrderTemplateSettings(){
 		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
 	}
+	
+   	public deleteOrderTemplate(orderTemplateID){
+		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
+	}
 
 }
