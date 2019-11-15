@@ -52,7 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				"PageNumber": "#arguments.pageNumber#"
 			}
 		};
-	    
+	    //"AccountNumber": "2195472"
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
@@ -1461,12 +1461,35 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
 						
+						// Will uncomment on being added to web service
+						//orderTemplate.setWarehouseCode(shipment['WarehouseCode']);//ADD
+                		//orderTemplate.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
+                		//orderTemplate.setCarrierCode(shipment['CarrierCode']);//ADD
+                		//orderTemplate.setShippingMethodCode(shipment['ShipMethodCode']);//ADD
+						
+						//lastOrderNumber
+						orderTemplate.setLastOrderNumber(flexship['LastOrderNumber']?:"");
+						
+						//Snapshot the priceLevelCode
+						orderTemplate.setPriceLevelCode(flexship['PriceLevelCode']?:"");
+						
+						//add a date field for this.
+						if (!isNull(flexship['DateLastGenerated']) && len(flexship['DateLastGenerated'])){
+							orderTemplate.setLastGeneratedDate( getDateFromString(flexship['DateLastGenerated'] ));
+						}
+						
 						//set created and modified date times.
-						if (!isNull(order['EntryDate']) && len(order['EntryDate'])){
-							var entry = getDateFromString(flexship['EntryDate']);
-	                    	orderTemplate.setCreatedDateTime( entry );//*
-	                    	orderTemplate.setModifiedDateTime( entry );//*
+						if (!isNull(orderTemplate['DeleteDate']) && len(orderTemplate['DeleteDate'])){
+							var deleteDate = getDateFromString(flexship['DeleteDate']);
+	                    	orderTemplate.setDeletedDateTime( deleteDate );//*
 	                    }
+	                    
+	                    if (!isNull(orderTemplate['CanceledCode']) && len(orderTemplate['CanceledCode'])){
+							var canceledCode = getDateFromString(flexship['CanceledCode']);
+	                    	orderTemplate.setCanceledCode( canceledCode );//*
+	                    }
+	                    
+	                    
 	                    
 	                    //writedump(orderTemplate.getNewFlag());
 	                    //writedump(orderTemplate.getOrderTemplateID());
@@ -1871,13 +1894,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	newOrder.setLastGeneratedDate( getDateFromString(order['DateLastGen']) ); //Date field ADD THIS
 			        }*/
 			        
-			        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month - Year ADD THIS
-			        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //ADD THIS
+			        newOrder.setCommissionPeriod( order['CommissionPeriod']?:"" ); // String Month
+			        newOrder.setCommissionPeriodCode( order['CommissionPeriodType']?:"" ); //PB = Monthly Plan || SB = Weekly Plan, add Attribute for the name, Names: 
+			        newOrder.setInitialOrderFlag( order['InitialOrderFlag']?:false ); //*
 			        
 			        //Handle Tax
 			        newOrder.setTaxableAmountTotal(order['TaxableAmount']?:0); //*
 			        newOrder.setCalculatedTaxableAmountTotal(order['TaxableAmount']?:0); //*
 			        newOrder.setCalculatedTaxTotal(order['SalesTax']?:0);//*
+			        
+			        
 			        
 			        /**
 			         * Find the orders account. 
@@ -1944,6 +1970,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     if (order['OrderTypeCode'] == "C" || order['OrderTypeCode'] == "R"){
                     	createOrderReturn = true;
                     	isReturn = true;
+                    	
                     }
                     
                     /**
@@ -2097,7 +2124,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        		
         			        		orderItem.setOrderItemType(oitReturn);
         			        		orderItem.setOrderReturn(orderReturn);
-        			        		
+        			        		orderItem.setReturnsReceived(detail['ReturnsReceived']);
+        			        		//orderItem.setReturnsRestocked();
         			        	}else { 
         			        		orderItem.setOrderItemType(oitSale);//*
         			        	}
@@ -2344,11 +2372,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
                 				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
                 				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
-                				
-                				
-                				
-                				
-                				
                 				
                 				
                 				//orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
