@@ -77285,7 +77285,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -77299,6 +77298,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -94842,14 +94842,9 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
     }
-    SWListingSearchController.prototype.shouldShowSearchFilterDropdown = function () {
-        console.log("calling shouldShowSearchFilterDropdown");
-        //the controls with new config
-        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
-        return (this.swListingDisplay.searchText && this.swListingDisplay.searchText.length)
-            || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
-    };
     SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            searchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
         if (!searchConfig)
             return;
         if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
