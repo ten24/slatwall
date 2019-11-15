@@ -2658,7 +2658,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						saveState();
 						
 						if(getUseScrollableFlag()){
-							this.logHibachi('collections using scrollable');
 							
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
