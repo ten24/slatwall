@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
-		rc.orderCollectionList.addFilter('orderOpenDateTime',dateAdd('m','-3',now()),'>');
+		rc.orderCollectionList.addFilter('orderOpenDateTime',dateAdd('m','-1',now()),'>');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
@@ -123,7 +123,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true});
 		rc.accountCollectionList.addDisplayProperty('accountID',javacast('null',''),{hidden=true});
 		rc.accountCollectionList.addFilter('activeFlag','1','=');
-		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-3',now()),'>');
+		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-1',now()),'>');
 		rc.accountCollectionList.setOrderBy('createdDateTime|DESC');
 
 		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
