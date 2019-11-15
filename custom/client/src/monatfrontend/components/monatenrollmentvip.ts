@@ -201,18 +201,16 @@ class VIPController {
 			this.flexshipFrequencyHasErrors = false;
 		}
 		
-		var newTerm = JSON.parse(frequencyTerm);
-		
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
-		this.flexshipFrequencyName = newTerm.name;
+		this.flexshipFrequencyName = frequencyTerm.name;
 		if(this.isNotSafariPrivate){
 			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-			localStorage.setItem('flexshipFrequency', newTerm.name);	
+			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
 		}
     
         const flexshipID = this.flexshipID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(result => {
+        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipItems();
         });
     }

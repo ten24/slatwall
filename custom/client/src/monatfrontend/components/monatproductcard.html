@@ -1,4 +1,13 @@
-<div ng-class="{'border-0': monatProductCard.type == 'enrollment', 'mx-md-4': monatProductCard.type == 'enrollment', 'product-box': monatProductCard.type != 'productListing'}">
+<div 
+    ng-class="{
+        'border-0': monatProductCard.type === 'enrollment', 
+        'mx-md-4': monatProductCard.type === 'enrollment', 
+        'product-box': 
+            monatProductCard.type != 'productListing' 
+            && monatProductCard.type !== 'VIPenrollmentOrder' 
+            && monatProductCard.type !== 'VIPenrollment'
+    }"
+>
    <div class="pr-box">
     <!-- Product Card -->
     
