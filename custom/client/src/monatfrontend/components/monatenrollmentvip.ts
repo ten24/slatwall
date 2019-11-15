@@ -211,7 +211,7 @@ class VIPController {
     
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
-            this.getFlexshipItems();
+            this.getFlexshipDetails();
         });
     }
     
