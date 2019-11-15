@@ -2658,6 +2658,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						saveState();
 						
 						if(getUseScrollableFlag()){
+							this.logHibachi('collections using scrollable');
 							
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
@@ -2669,15 +2670,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//build the scrollable query.
 							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+	    					scrollableSession.setDefaultReadOnly(true);
+							
 							var cacheMode = createObject("java","org.hibernate.CacheMode");
 	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
 
+							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
+							var tx = scrollableSession.beginTransaction();
+
 	    					var query = scrollableSession.createQuery(HQL)
-	    					.setCacheMode(cacheMode.IGNORE)
-	    					.setFirstResult(getPageRecordsStart()-1)
-	    					.setMaxResults(getPageRecordsShow())
-	    					.setReadOnly(true)
-							.setFetchSize(getPageRecordsShow());
+								.setCacheMode(cacheMode.IGNORE)
+								.setFirstResult(getPageRecordsStart()-1)
+								.setMaxResults(getPageRecordsShow())
+								.setFetchSize(getPageRecordsShow());
 
 							//Add all of the params.
 							for (var param in HQLParams){
@@ -2698,9 +2703,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-							}catch(var ormError){
+							}catch(any ormError){
 								throw(ormError);
 							}finally{
+								tx.commit();//not committing anything really	
 								if (scrollableSession.isOpen()){
 									scrollableSession.close();
 								}
