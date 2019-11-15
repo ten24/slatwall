@@ -730,9 +730,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         INNER JOIN swsku s ON oti.skuID = s.skuID
         INNER JOIN swskuprice p ON p.skuID = oti.skuID
         INNER JOIN swproduct pd ON pd.productID = s.productID
-        WHERE oti.orderTemplateID=:aorderTemplateID AND p.priceGroupID = :apriceGroupID
+        WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
         GROUP BY skuID;
-        ",{aorderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, apriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
+        ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
         
         
         for(item in orderTemplateItemsQueryList){
