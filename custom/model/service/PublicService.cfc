@@ -49,7 +49,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function authorizePaypal(required struct data)
     {
-        arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = "THISISMYTOKEN";
+        
+        var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
+		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
+		
+		//Create a New One
+        var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
+        accountPaymentMethod.setAccountPaymentMethodName("Paypal - Braintree");
+        accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+        accountPaymentMethod.setPaymentMethod( paymentMethod );
+        accountPaymentMethod.setProviderToken(data.paymentToken);
+        accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
+        
+        arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
     }
     
     public any function createWishlist( required struct data ) {

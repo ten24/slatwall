@@ -58,15 +58,25 @@ class MonatCheckoutController {
 
                     onAuthorize: function (data, actions) {
                         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-							that.publicService.doAction('authorizePaypal', {payload : payload}).then(response => {
-								if(response.newPaypalPaymentMethod && response.newPaypalPaymentMethod != "")
-								{
-									that.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.newPaypalPaymentMethod;
-								}
-								else{
-									console.log("Error in saving account payment method.");
-								}
-							});
+                        	if(payload.nonce && payload.nonce != "")
+                        	{
+								that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
+									if(response.newPaypalPaymentMethod && response.newPaypalPaymentMethod != "")
+									{
+										//that.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.newPaypalPaymentMethod;
+										that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
+											"copyFromType":"accountPaymentMethod",
+											"newOrderPayment.requireBillingAddress":0
+										});
+									}
+									else{
+										console.log("Error in saving account payment method.");
+									}
+								});
+                        	}
+                        	else{
+                        		console.log("Error in tokenizing the payment method.");
+                        	}
                         });
                     },
 
