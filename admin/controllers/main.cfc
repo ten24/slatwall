@@ -104,7 +104,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderSmartList.setPageRecordsShow(10);
 
 		rc.orderCollectionList = getOrderService().getOrderCollectionList();
-		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
+		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true, isSearchable:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		rc.orderCollectionList.addFilter('orderOpenDateTime',dateAdd('m','-1',now()),'>');
@@ -115,12 +115,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewSmartList.setPageRecordsShow(10);
 
 		rc.productReviewCollectionList = getProductService().getProductReviewCollectionList();
-		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
+		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true, isSearchable:true});
 		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
 		rc.productReviewCollectionList.addFilter('activeFlag',0);
 
 		rc.accountCollectionList = getAccountService().getAccountCollectionList();
-		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true});
+		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true, isSearchable:true});
 		rc.accountCollectionList.addDisplayProperty('accountID',javacast('null',''),{hidden=true});
 		rc.accountCollectionList.addFilter('activeFlag','1','=');
 		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-1',now()),'>');

@@ -440,6 +440,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		// TODO: see if we'd like to make it more configurable
 		return [
 					{
+		                title:'Last Month',
+		                code:'lastOneMonth',
+		                criteria:"m:1",
+		            },
+		            {
+		                title:'Last Two Months',
+		                code:'lastTwoMonths',
+		                criteria:"m:2",
+		            },
+					{
 		                title:'Last 3 Months',
 		                code:'lastThreeMonths',
 		                criteria:"m:3",
