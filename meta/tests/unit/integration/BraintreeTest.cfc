@@ -100,8 +100,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     public void function testAddNewPaymentMethod()
     {
     	var account = request.slatwallScope.getAccount('#variables.accountID#');
-    	//if(!isNull(account.getPaymentMethod()) && !isNull(account.getPaymentMethod().getPaymentIntegration()) && account.getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'braintree')
-    	if(false)
+    	if(!isNull(account.getPaymentMethod()) && !isNull(account.getPaymentMethod().getPaymentIntegration()) && account.getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'braintree')
     	{
     		//get existing payment method
     		var accountPaymentMethod = "";

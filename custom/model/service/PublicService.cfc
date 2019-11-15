@@ -46,7 +46,12 @@ Notes:
 
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
-
+    
+    public any function authorizePaypal(required struct data)
+    {
+        arguments.data['ajaxResponse']['paypalPaymentMethod'] = "THISISMYTOKEN";
+    }
+    
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";

@@ -46,17 +46,6 @@
 	Notes:
 	
 --->
-    <!-- Load PayPal's checkout.js Library. -->
-    <script src="https://www.paypalobjects.com/api/checkout.js" data-version-4 log-level="warn"></script>
-
-    <!-- Load the client component. -->
-    <script src="https://js.braintreegateway.com/web/3.46.0/js/client.min.js"></script>
-
-    <!-- Load the PayPal Checkout component. -->
-    <script src="https://js.braintreegateway.com/web/3.46.0/js/paypal-checkout.min.js"></script>
-    
-    <!-- Load Jquery library for Ajax Call -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
     <div id="paypal-button"></div>
     <script type="text/javascript">
@@ -107,10 +96,12 @@
 
                     onAuthorize: function (data, actions) {
                         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+                            jQuery("#paypalAPISuccess, #paypalAPIError").hide();
+                            
                             // Submit `payload.nonce` to server.
                             jQuery.ajax({
 								type: 'post',
-								url: '?slatAction=braintree:main.initiatePayment',
+								url: 'http://monat:8906/Slatwall/index.cfm/api/scope/authorizePaypal',
 								data: {'payment_nonce' : payload.nonce, 'paymentMethodID' : "<cfoutput>DUMMYMETHODID</cfoutput>"},
 								dataType: "json",
 								context: document.body,
@@ -118,8 +109,31 @@
 								error: function( err ) {
 									console.log('There was an error processing request: ' + err);
 								},
-								success: function(r) {
-								    console.log('Payment request has been processed : ' + r);
+								success: function(response) {
+								    if(response.paypalPaymentMethod)
+								    {
+								        if(jQuery("#paypal-paymentMethod").length)
+								        {
+								            console.log("Method ID : "+response.paypalPaymentMethod);
+								            jQuery("#paypal-paymentMethod").val(response.paypalPaymentMethod).change();
+								            jQuery("#paypalAPISuccess").show();
+								            jQuery("#paypal-paymentMethod").trigger('input');
+								            jQuery("#paypal-paymentMethod").trigger('change');
+								        }
+								        else{
+								            console.log("Error 1 ");
+								            jQuery("#paypalAPIError").html("Error in loading paypal for your account.").show();
+								            
+								        }
+								    }
+								    else if(response.paypalError) {
+								        console.log("Error 2 ");
+								        jQuery("#paypalAPIError").html(response.paypalError).show();
+								    }
+								    else{
+								        console.log("Error 3 ");
+								        jQuery("#paypalAPIError").html("Error in loading paypal for your account.").show();
+								    }
 								}
                             });
                             
