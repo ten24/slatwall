@@ -13,9 +13,11 @@
         </ul>
     </div>
     
-    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown" 
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown && (
+                ( swListingSearch.swListingDisplay.searchText && swListingSearch.swListingDisplay.searchText.length )
+                || swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode)" 
         class="input-group-btn search-panel"
-        ng-show="swListingSearch.shouldShowSearchFilterDropdown()">
+        ng-init="swListingSearch.configureListingSearchConfigControls()">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchFilter.title"></span> <span class="caret"></span>
         </button>
