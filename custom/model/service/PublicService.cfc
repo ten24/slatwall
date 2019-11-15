@@ -49,7 +49,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function authorizePaypal(required struct data)
     {
-        arguments.data['ajaxResponse']['paypalPaymentMethod'] = "THISISMYTOKEN";
+        arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = "THISISMYTOKEN";
     }
     
     public any function createWishlist( required struct data ) {
