@@ -727,7 +727,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplateItemsQueryList = QueryExecute("
         SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle
         FROM swordertemplateitem oti
-        LEFT JOIN swsku s ON oti.skuID = s.skuID
+        INNER JOIN swsku s ON oti.skuID = s.skuID
         INNER JOIN swskuprice p ON p.skuID = oti.skuID
         INNER JOIN swproduct pd ON pd.productID = s.productID
         WHERE oti.orderTemplateID=:aorderTemplateID AND p.priceGroupID = :apriceGroupID
