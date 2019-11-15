@@ -2,6 +2,7 @@ export class OrderTemplateService {
    
    private orderTemplateTypeID:string='';
    private cachedGetOrderTemplatesResponse:any;
+   private cachedGetAccountGiftCardsResponse:any;
    
    //@ngInject
    constructor(
@@ -50,7 +51,44 @@ export class OrderTemplateService {
        return deferred.promise;
    }
    
-   public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
+   
+   public getAccountGiftCards(refresh = false) {
+		var deferred = this.$q.defer();
+		
+		if (refresh || !this.cachedGetAccountGiftCardsResponse) {
+			
+			this.publicService
+				.doAction('?slatAction=api:public.getAccountGiftCards')
+				.then((data) => {
+				    if(data && data.giftCards) {
+    					this.cachedGetAccountGiftCardsResponse = data.giftCards;
+    					deferred.resolve(this.cachedGetAccountGiftCardsResponse);
+				    } else {
+				        throw(data);
+				    }
+				})
+				.catch((e) => {
+					deferred.reject(e);
+				});
+				
+		} else {
+			deferred.resolve(this.cachedGetAccountGiftCardsResponse);
+		}
+		return deferred.promise;
+	}
+	
+	
+	public applyGiftCardToOrderTemplate = (orderTemplateID, giftCardID, amountToApply) => {
+	    var data = {
+            'orderTemplateID' : orderTemplateID,
+            'giftCardID' : giftCardID,
+            'amountToApply' : amountToApply
+       }
+      
+       return this.requestService.newPublicRequest('?slatAction=api:public.applyGiftCardToOrderTemplate',data).promise;
+	}
+   
+    public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {
            'orderTemplateID' : orderTemplateID,
            'currentPage' : currentPage,

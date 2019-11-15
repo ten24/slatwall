@@ -2348,11 +2348,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
-			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
-			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
-				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			if (left(propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				propertyIdentifier = right(propertyIdentifier, len(propertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
+			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),replace(arguments.propertyIdentifier, '_', '.', 'all'));
+			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
 		}
 		return convertedPropertyIdentifier;
 	}
