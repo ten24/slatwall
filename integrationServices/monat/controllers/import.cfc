@@ -44,7 +44,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getAccountData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -166,6 +166,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	//monat:import.importAccounts&pageNumber=33857&pageSize=50&pageMax=36240
+	//monat:import.importAccounts&pageNumber=1&pageSize=100&pageMax=18000 //36240
 	public void function importAccounts(rc){ 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
@@ -193,7 +194,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		//var accountsResponse = getAccountData(pageNumber, pageSize);
 		//writedump(accountsResponse);abort;
 		while (pageNumber < pageMax){
-			echo("Starting #pageNumber#");
+			
     		var accountsResponse = getAccountData(pageNumber, pageSize);
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
@@ -248,13 +249,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newAccount.setFirstName(account['FirstName']?:"");//*
         			newAccount.setLastName(account['LastName']?:"");//*
                     newAccount.setAccountNumber(account['AccountNumber']?:"");//*
-                    newAccount.setAllowCorporateEmailsFlag(account['AllowCorporateEmails']?:false);//*- changed to Flag
-                    newAccount.setAllowUplineEmailsFlag(account['AllowUplineEmails']?:false);//* - changed to Flag
+                    
+                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && account['AllowCorporateEmails'] == true){
+                    	newAccount.setAllowCorporateEmailsFlag(true);//*- changed to Flag
+                    }else{
+                    	newAccount.setAllowCorporateEmailsFlag(false);
+                    }
+                    
+                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && account['AllowUplineEmails'] contains "T"){
+                    	newAccount.setAllowUplineEmailsFlag(true);//*- changed to Flag
+                    }else{
+                    	newAccount.setAllowUplineEmailsFlag(false);
+                    }
+                    
                     newAccount.setGender(account['Gender']?:""); // * attribute with attribute options exist.
                     newAccount.setBusinessAccountFlag(account['BusinessAccount']?:false); //boolean *
                     newAccount.setCompany(account['BusinessName']?:"");//*
                     newAccount.setActiveFlag( false ); 
-            		newAccount.setTestAccountFlag( account['TestAccount']?:false );
+                    
+                    if (structKeyExists(account, "TestAccount") && len(account['TestAccount'])){
+                    	newAccount.setTestAccountFlag( account['TestAccount']?:false );	
+                    }else{
+                    	newAccount.setTestAccountFlag( false );
+                    }
+            		
             		newAccount.setCareerTitle( account['CareerTitle']?:"" );
             		newAccount.setUplineMarketPartnerNumber( account['UplineMPNumber']?:"" );
             		
@@ -309,7 +327,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
-                    	newAccount.setLastActivityDate( getDateFromString(account['LastActivityDate']));//*
+                    	newAccount.setLastActivityDateTime( getDateFromString(account['LastActivityDate']));//*
                     }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
@@ -350,13 +368,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
             		
                     //set the price group from the accountTypeName
-                    if (structKeyExists(account,'accountType') && len(account['accountType'])){
-	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountType']));
-	                    
+                    /*if (structKeyExists(account,'accountTypeName') && len(account['accountTypeName'])){
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountTypeName']));
 	                    if (!isNull(priceGroup)){
-	                    	newAccount.setPriceGroupID(priceGroup);
+	                    	newAccount.addPriceGroup([priceGroup]);
 	                    }
-                    }
+                    }*/
                     
                     //set the language preference with a default to English *
                     newAccount.setLanguagePreference( this.getLanguagePreference(account['Language']?:"ENG") );//*
@@ -370,8 +387,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     //save the account.
                     //writedump(newAccount);abort;
+
                     ormStatelessSession.insert("SlatwallAccount", newAccount);
-                    //echo("Inserts account");
+
                     //This sets the parent child account relationship and creates the owner account. *
                     
                     if (!isNull(account['AccountNumber']) && !isNull(account['SponsorNumber']) && len(account['AccountNumber']) && len(account['SponsorNumber']) && account['AccountNumber'] != account['SponsorNumber']){
@@ -497,9 +515,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			}*/
     			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
     			writeDump(e); // rollback the tx
-    			//abort;
+    			abort;
     		}
     		//echo("Clear session");
+    		this.logHibachi('Import (Create) Page #pageNumber# completed ', true);
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
@@ -572,13 +591,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newAccount.setFirstName(account['FirstName']?:"");//*
         			newAccount.setLastName(account['LastName']?:"");//*
                     newAccount.setAccountNumber(account['AccountNumber']?:"");//*
-                    newAccount.setAllowCorporateEmailsFlag(account['AllowCorporateEmails']?:false);//*- changed to Flag
-                    newAccount.setAllowUplineEmailsFlag(account['AllowUplineEmails']?:false);//* - changed to Flag
+                    
+                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && account['AllowCorporateEmails'] == true){
+                    	newAccount.setAllowCorporateEmailsFlag(true);//*- changed to Flag
+                    }else{
+                    	newAccount.setAllowCorporateEmailsFlag(false);
+                    }
+                    
+                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && account['AllowUplineEmails'] contains "T"){
+                    	newAccount.setAllowUplineEmailsFlag(true);//*- changed to Flag
+                    }else{
+                    	newAccount.setAllowUplineEmailsFlag(false);
+                    }
+                    
                     newAccount.setGender(account['Gender']?:""); // * attribute with attribute options exist.
                     newAccount.setBusinessAccountFlag(account['BusinessAccount']?:false); //boolean *
                     newAccount.setCompany(account['BusinessName']?:"");//*
                     newAccount.setActiveFlag( false ); 
-            		newAccount.setTestAccountFlag( account['TestAccount']?:false );
+            		
+            		if (structKeyExists(account, "TestAccount") && len(account['TestAccount']) && account['TestAccount'] == true){
+                    	newAccount.setTestAccountFlag( true );	
+                    }else{
+                    	newAccount.setTestAccountFlag( false );
+                    }
+            		
             		newAccount.setCareerTitle( account['CareerTitle']?:"" );
             		newAccount.setUplineMarketPartnerNumber( account['UplineMPNumber']?:"" );
             		
@@ -632,9 +668,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	newAccount.setModifiedDateTime( getDateFromString(account['UpdateDate']));//*
                     }
                     
-                    /*if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
+                    if (!isNull(account['LastActivityDate']) && len(account['LastActivityDate'])){
                     	newAccount.setLastActivityDateTime( getDateFromString(account['LastActivityDate']));//*
-                    }*/
+                    }
                     
                     if (!isNull(account['SpouseBirthDate']) && len(account['SpouseBirthDate'])){
                     	newAccount.setSpouseBirthDay( getDateFromString(account['SpouseBirthDate']) );//*
@@ -685,13 +721,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
             		
                     //set the price group from the accountTypeName
-                    if (structKeyExists(account,'accountType') && len(account['accountType'])){
-	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountType']));
+                    /*if (structKeyExists(account,'accountTypeName') && len(account['accountTypeName'])){
+	                    var priceGroup = getPriceGroupService().getPriceGroup(findPriceGroupID(account['accountTypeName']));
 	                    
 	                    if (!isNull(priceGroup)){
 	                    	newAccount.setPriceGroup(priceGroup);
 	                    }
-                    }
+                    }*/
                     
                     //set the language preference with a default to English *
                     newAccount.setLanguagePreference( this.getLanguagePreference(account['Language']?:"ENG") );//*
@@ -709,6 +745,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     if (isNewAccount){
                     	ormStatelessSession.insert("SlatwallAccount", newAccount);
                     }else{
+                    	//writedump(newAccount);abort;
                     	ormStatelessSession.update("SlatwallAccount", newAccount);
                     }
                     
@@ -907,6 +944,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			abort;
     		}
     		//echo("Clear session");
+    		
+    		//runAsync(function(){
+			this.logHibachi('Import (Upsert) Page #pageNumber# completed ', true);
+			//});
+    		
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
