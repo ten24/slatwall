@@ -1,14 +1,10 @@
 class MonatProductListingController {
     public loading:boolean;
     public accountData:any;
-    public priceGroupCode:number;
-    public currencyCode:string;
-    public categoryID:string = '';
-    public contentID:string = '';
     public cmsContentID:string = '';  
     public argumentsObject:any = {};
     public productList:any;
-    public productListLoading:boolean
+    public categoryFilterFlag:boolean;
     
 	// @ngInject
 	constructor(
@@ -17,35 +13,21 @@ class MonatProductListingController {
 		public $rootScope
 	) {}
 
-	public $onInit = () => {
-	    this.getAccount();
+	public $postLink = () => {
+	    this.getProducts();
 	}
 	
-    public getAccount = () => {
+    public getProducts = () => {
         this.loading = true;
-        
-        this.publicService.getAccount(true).then((response)=>{
-            this.accountData = response;
-            this.priceGroupCode = this.accountData.priceGroups.length ? this.accountData.priceGroups[0].priceGroupCode : 2;
+        if(this.cmsContentID.length && this.categoryFilterFlag) this.argumentsObject['cmsContentID'] = this.cmsContentID;  
+
+        this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
+            this.productList = result.productList;
             this.loading = false;
-            this.argumentsObject['priceGroupCode'] = this.priceGroupCode;
-            this.argumentsObject['currencyCode'] = this.currencyCode;
-            
-            if(this.contentID.length){
-                this.argumentsObject['contentID'] = this.contentID;  
-            }else if(this.categoryID.length){
-                this.argumentsObject['categoryID'] = this.categoryID;  
-            }else if(this.cmsContentID.length){
-                this.argumentsObject['cmsContentID'] = this.cmsContentID;  
-            }
-            
-            this.productListLoading = true;
-            this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
-                this.productList = result.productList;
-                this.productListLoading = false;
-            })
         })
     }
 }
+
+
 
 export {  MonatProductListingController };

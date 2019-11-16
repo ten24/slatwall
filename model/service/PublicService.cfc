@@ -2297,8 +2297,10 @@ component  accessors="true" output="false"
     
 
     public any function getBaseProductCollectionList(required any data){
-        param name="arguments.data.currencyCode" default=""; 
-        param name="arguments.data.priceGroupCode" default="";
+        var account = getHibachiScope().getAccount();
+        var holdingPriceGroups = account.getPriceGroups();
+        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
         
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -2314,9 +2316,9 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
 
-        return productCollectionList
+        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
     }   
 }
