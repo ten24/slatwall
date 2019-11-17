@@ -697,7 +697,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
         }
+    }
+    
+    public any function getMoMoneyBalance(){
+        var account = getHibachiScope().getAccount();
+        var paymentMethods = account.getAccountPaymentMethods();
+        var balance = 0;
         
+        for(method in paymentMethods){
+            balance += method.getMoMoneyBalance();
+        }
+        arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
 
 }
