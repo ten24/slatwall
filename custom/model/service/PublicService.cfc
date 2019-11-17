@@ -606,22 +606,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
 
     public any function getProductsByCategoryOrContentID(required any data){
-        param name="arguments.data.categoryID" default="";
-        param name="arguments.data.contentID" default="";
-        param name="arguments.data.cmsContentID" default="";
-        param name="arguments.data.cmsSiteID" default="";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
-
+        param name="arguments.data.cmsContentFilterFlag" default= false; //Filter based off cms category for uses like content modules
+        param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
+        param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
 
         var returnObject = super.getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
-
-        if(!isNull(arguments.data.requestHeaderData.SWX-contentID) && len(arguments.data.requestHeaderData.SWX-contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.requestHeaderData.SWX-contentID,"=" );
-        if(!isNull(arguments.data.requestHeaderData.SWX-cmsCategoryID) && len(arguments.data.requestHeaderData.SWX-cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.requestHeaderData.SWX-cmsCategoryID, "=" );
-        if(len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); // this is not being on sent on header in case of module - loops
+  
+        if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
+        if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
+        if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
