@@ -24,6 +24,8 @@ class VIPController {
 	public flexshipFrequencyName;
 	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
+	public flexshipTotal:number = 0;
+	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
@@ -212,7 +214,8 @@ class VIPController {
         	this.flexshipItemList = result.orderTemplateItems;
         	
         	for(let item of this.flexshipItemList){
-				item['total'] = item.price * item.quantity
+				item['total'] = item.price * item.quantity;
+				this.flexshipTotal += item['total'];
 			}
         	
 			this.observerService.notify('onNext');
