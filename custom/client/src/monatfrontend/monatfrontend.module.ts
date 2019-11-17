@@ -90,7 +90,7 @@ var monatfrontendmodule = angular
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
-	.controller('plpController', MonatProductListingController)
+	.controller('productListingController', MonatProductListingController)
 
 	// Services
 	.service('monatService', MonatService)
