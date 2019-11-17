@@ -195,7 +195,6 @@ class MonatFlexshipCardController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
 				orderTemplate: this.orderTemplate,
-
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -257,13 +256,11 @@ class MonatFlexshipCardController {
 	}
 	
 	public showDeleteOrderTemplateModal = () => {
-		debugger;
-		const id = this.orderTemplate.orderTemplateID
 		this.ModalService.showModal({
 			component: 'MonatFlexshipDeleteModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				orderTemplateID: id,
+				orderTemplate: this.orderTemplate,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
