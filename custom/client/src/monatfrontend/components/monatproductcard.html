@@ -37,8 +37,8 @@
          
         <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
         <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' " class="price">
-            <strong>{{monatProductCard.product.price | currency }} /</strong> 
-            <span class="vip-price"><span ng-bind-html="monatProductCard.product.upgradedPriceGroupCode == 3 ? 'VIP' : (monatProductCard.product.upgradedPriceGroupCode == 2 ? 'RETAIL': '') "></span> {{monatProductCard.product.upgradedPricing.price | currency }}</span>
+            <strong>{{monatProductCard.product.price | currency }} <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
+            <span class="vip-price"><span ng-if="monatProductCard.product.upgradedPricing.price != null " ng-bind-html="monatProductCard.product.upgradedPriceGroupCode == 3 ? 'VIP' : (monatProductCard.product.upgradedPriceGroupCode == 2 ? 'RETAIL': '') "></span> {{monatProductCard.product.upgradedPricing.price | currency }}</span>
         </div>
         
         <!-- Market Partner Pricing -->
