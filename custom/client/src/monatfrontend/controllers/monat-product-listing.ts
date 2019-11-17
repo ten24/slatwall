@@ -50,7 +50,7 @@ class MonatProductListingController {
     2. ng-init a filter flag as true if you would like it applied,
         the corresponding ID is already being sent in the headers (with exception of cmsContentID for content-module loops, this will need an ng-init)
     3. ng-repeat using monat-product-card
-    4. Use pagination directive and pass in the controllers paginationArguments if you would like to paginate
+    4. Use pagination directive and pass in the controller's argumentsObject if you would like to paginate
     
 *******************/
 
