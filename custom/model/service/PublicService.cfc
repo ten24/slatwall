@@ -735,7 +735,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
         
         
-        for(item in orderTemplateItemsQueryList){
+        for(var item in orderTemplateItemsQueryList){
     		 arrayAppend(orderTemplateItems,{
                 'skuID' : item.skuID,
                 'price' : item.price,

@@ -17,13 +17,13 @@ class VIPController {
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
-	public flexshipItemList:any;
+	public flexshipOrderTemplate:any;
 	public holdingShippingAddressID:string;
 	public holdingShippingMethodID:string;
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
 	public isNotSafariPrivate:boolean;
-	
+	public flexshipItemList:any;
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
@@ -56,7 +56,7 @@ class VIPController {
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
-    	this.observerService.attach(this.getFlexshipItems,"lastStep");
+    	this.observerService.attach(this.getFlexshipDetails,"lastStep");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
 		this.localStorageCheck(); 
@@ -205,7 +205,7 @@ class VIPController {
         });
     }
     
-    public getFlexshipItems = () =>{
+    public getFlexshipDetails = () => {
     	this.loading = true;
         const flexshipID = this.flexshipID;
         this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, this.accountPriceGroupCode).then(result => {
@@ -216,7 +216,7 @@ class VIPController {
 			}
         	
 			this.observerService.notify('onNext');
-            this.loading = false;
+        	this.loading = false;
         });
     }
     
