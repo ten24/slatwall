@@ -579,12 +579,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getProductsByKeyword(required any data) {
         param name="arguments.data.keyword" default="";
-        param name="arguments.data.priceGroupCode" default="2";
-        param name="arguments.data.currencyCode" default="USD";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
         
-        var productCollectionList = super.getBaseProductCollectionList(arguments.data);
+        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var productCollectionList = returnObject.productCollectionList;
+        var priceGroupCode = returnObject.priceGroupCode;
+        var currencyCode = returnObject.currencyCode;
        
         if ( len( arguments.data.keyword ) ) {
             productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
@@ -596,7 +597,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var pageRecords = productCollectionList.getPageRecords();
         if ( len( pageRecords ) ) {
-            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords, arguments.data.priceGroupCode,arguments.data.currencyCode);
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         } else {
             arguments.data['ajaxResponse']['productList'] = [];
@@ -661,7 +662,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
-                'upgradedPriceGroupCode':upgradedPriceGroupCode
+                'upgradedPriceGroupCode': upgradedPriceGroupCode
             });
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
@@ -674,7 +675,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
         });           
 
-        
         //Add upgraded sku prices into the collection list 
         for(price in upgradedSkuPrices){
             productList[index].upgradedPricing = price;
