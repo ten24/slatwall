@@ -61,6 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fulfillmentService";
 	property name="giftCardService";
 	property name="hibachiUtilityService";
+	property name="hibachiEntityQueueService";
 	property name="hibachiAuthenticationService";
 	property name="integrationService";
 	property name="locationService";
@@ -904,7 +905,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if((!len(arguments.processObject.getCopyFromType()) || arguments.processObject.getCopyFromType()=="accountGiftCard")
+			if((!len(arguments.processObject.getCopyFromType()) || arguments.processObject.getCopyFromType()=="accountGiftCard")
             	&& !isNull(arguments.processObject.getGiftCard())
             ){
 	            var giftCard = arguments.processObject.getGiftCard();
@@ -1579,24 +1580,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 
-		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a');
 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
-			var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-			processOrderAddOrderPayment.setGiftCardID(orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID());
-			processOrderAddOrderPayment.setAmount(orderTemplateAppliedGiftCard.getAmountToApply());
 
-			newOrderPayment = this.newOrderPayment(); 
-			newOrderPayment.setPaymentMethod(giftCardPaymentMethod);
-			
-			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment);
-			processOrderAddOrderPayment.setUpdateOrderAmountFlag(false);  
+			var processData = {	
+				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
+				'amount' : orderTemplateAppliedGiftCard.getAmountToApply(),
+				'copyFromType' : 'accountGiftCard', 
+				'newOrderPayment':	{
+					'orderPaymentID' : '',
+					'paymentMethod' : {
+						'paymentMethodID' : '50d8cd61009931554764385482347f3a'//giftcard payment method
+					}
+				},
+				'updateOrderAmountFlag' : false  
+			}
 
-			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
 
 		}  
-		
-		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
+	
+
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'removeAppliedGiftCards');	
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
@@ -1614,12 +1619,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
-		
-		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
-		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
+	
+		var addOrderPaymentProcessData = {	
+			'accountPaymentMethodID':arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
+			'accountAddressID':arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID()
+		}
 
-		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
 	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
@@ -1671,7 +1677,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
-		return this.process(arguments.orderTemplate, {}, 'removeTemporaryItems'); 
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'removeTemporaryItems');	
+
+		return arguments.orderTemplate; 
 	}
 
 	public any function processOrderTemplate_removeTemporaryItems(required any orderTemplate, any data={}){
