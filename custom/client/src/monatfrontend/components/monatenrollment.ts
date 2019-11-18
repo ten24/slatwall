@@ -48,9 +48,6 @@ class MonatEnrollmentController {
 			}else{
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
-				this.publicService.doAction('logout').then(result=>{
-					this.observerService.notify('logout')
-				})
 			}
 		})
 	}

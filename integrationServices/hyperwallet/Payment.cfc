@@ -254,7 +254,11 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		else{
 			arguments.data = serializeJSON(arguments.data);
 		}
-		httpRequest.addParam(type="body", value=arguments.data);
+		
+		if(requestMethod != 'GET') {
+			httpRequest.addParam(type="body", value=arguments.data);
+		}
+		
 		// Make HTTP request to endpoint
 		return httpRequest.send().getPrefix();
 	}

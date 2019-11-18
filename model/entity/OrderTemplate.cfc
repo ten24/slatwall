@@ -103,6 +103,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
+	property name="orderTemplateItemDetailsHTML" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
