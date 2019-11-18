@@ -390,7 +390,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,primaryShippingAddress.address.countrycode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,
 			accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag,ownerAccount.firstName,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,
 			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
-			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,primaryAddress.address.countrycode","[[:space:]]","","all");
+			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode","[[:space:]]","","all");
 
 	}
 	
@@ -440,6 +440,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
 				orderItems.sku.product.brand.brandName,
 				orderItems.sku.product.productType.productTypeName,
+				orderItems.sku.product.productType.systemCode,
 				orderItems.sku.product.productDescription,
 			";
 		}

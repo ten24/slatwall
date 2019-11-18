@@ -722,6 +722,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			collectionOptions['enableAveragesAndSums'] = arguments.data['enableAveragesAndSums'];
 		}
 		
+		if(structKeyExists(arguments.data,'listingSearchConfig')){
+			collectionOptions['listingSearchConfig'] = arguments.data['listingSearchConfig'];
+		}
+		
 		return collectionOptions;
 	}
 
@@ -892,6 +896,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 				arguments.collectionEntity.setDisableAveragesAndSumsFlag(!collectionOptions.enableAveragesAndSums);
 			}  
+			
+			if(structKeyExists(collectionOptions,'listingSearchConfig')){
+				arguments.collectionEntity.getCollectionConfigStruct()['listingSearchConfig'] = collectionOptions.listingSearchConfig;
+			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 

@@ -15,13 +15,9 @@
 <cfset colorWarning = "##eca552" />
 
 <cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
-	<cfset accountLink = "http://monat.ten24dev.com/my-account" />
-	<cfset siteLink = "http://monat.ten24dev.com" />
-	<cfset storeLink = "http://monat.ten24dev.com/store" />
+	<cfset local.siteLink = "http://monat.ten24dev.com/" />
 <cfelse>
-	<cfset accountLink = "https://www.monat.com/my-account" />
-	<cfset siteLink = "https://www.monat.com" />
-	<cfset storeLink = "https://www.monat.com/store" />
+	<cfset local.siteLink = "https://monatglobal.com/" />
 </cfif>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -46,11 +42,11 @@ table { border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
 td { vertical-align: top; }
 /* Grid */
 .email_table, .content_section, .column, .column_cell { width: 100%; min-width: 100%; }
-.email_body { font-size: 0 !important; line-height: 100%; text-align: center; padding-left: 16px; padding-right: 16px; }
+.email_body { line-height: 100%; text-align: center; padding-left: 16px; padding-right: 16px; }
 .email_start { padding-top: 32px; }
 .email_end { padding-bottom: 32px; }
 .email_body, html, body { background-color: #colorBackground#; }
-.email_container, .email_row, .col_0, .col_1, .col_2, .col_3, .col_4, .col_5, .col_6, .col_2_lg { font-size: 0; display: inline-block; width: 100%; min-width: 100%; min-width: 0 !important; vertical-align: top; }
+.email_container, .email_row, .col_0, .col_1, .col_2, .col_3, .col_4, .col_5, .col_6, .col_2_lg { display: inline-block; width: 100%; min-width: 100%; min-width: 0 !important; vertical-align: top; }
 .content_cell { width: 100%; min-width: 100%; min-width: 0 !important; }
 .column_cell { padding-top: 16px; padding-bottom: 16px; vertical-align: top; }
 .email_container { max-width: 632px; margin: 0 auto; text-align: center; }
@@ -67,7 +63,7 @@ td { vertical-align: top; }
 .email_body a, .email_body a span { text-decoration: none; color: #colorAccent#; }
 .email_body a.td, .email_body a.td span { color: #colorText#; }
 .column_cell, .column_cell td, .xlabel_c, p { font-family: "Miller-Banner-Roman", sans-serif; }
-.email_body .column_cell, .column_cell, .min_table td, .xlabel_c, p { font-size: 16px; line-height: 23px; color: #colorText#; mso-line-height-rule: exactly; }
+.email_body .column_cell, .column_cell, .min_table td, .xlabel_c, p { font-size: 16px; line-height: 23px; mso-line-height-rule: exactly; }
 p { display: block; margin-top: 0; margin-bottom: 16px; }
 p .small { font-size: 14px; }
 p.small.mb_0 { font-size: 14px; color: #colorContainerAccent#; }
@@ -81,9 +77,9 @@ h3 { font-size: 23px; line-height: 30px; }
 h4 { font-size: 19px; line-height: 25px; }
 h5 { font-size: 16px; line-height: 21px; }
 h6 { font-size: 13px; line-height: 20px; }
-.footer_c .column_cell, .footer_c p { color: #colorLighterText#; }
+.footer_c .column_cell { color: #colorLighterText#; }
 .footer_c a, .footer_c a span { color: #colorLighterText#; text-decoration: underline; }
-.content_cell, .bank_cell { width: 100%; font-size: 0; text-align: center; vertical-align: top; padding-left: 16px; padding-right: 16px; }
+.content_cell, .bank_cell { width: 100%; text-align: center; vertical-align: top; padding-left: 16px; padding-right: 16px; }
 .content_cell { background-color: #colorContainer#; }
 .hdr_menu { text-align: right; }
 .hdr_menu p { line-height: 100%; }
@@ -94,14 +90,14 @@ h6 { font-size: 13px; line-height: 20px; }
 .ncard_c { color: #colorText#; overflow: hidden; }
 .content_cell .sc, .sc td, .sc { color: #colorContainer#; }
 .sc h1, .sc h2, .sc h3, .sc h4, .sc h5, .sc h6, .sc p, .sc a, .sc a span { color: #colorContainer#; }
-.hr_rl, .hr_ep { font-size: 0; line-height: 1px; mso-line-height-rule: exactly; min-height: 1px; overflow: hidden; height: 2px; background-color: transparent !important; }
+.hr_rl, .hr_ep { line-height: 1px; mso-line-height-rule: exactly; min-height: 1px; overflow: hidden; height: 2px; background-color: transparent !important; }
 .default_b { background-color: #colorBackground#; }
 .active_b { background-color: #colorAccent#; }
 .success_b { background-color: #colorSuccess#; }
 .danger_b { background-color: #colorDanger#; }
 .warning_b { background-color: #colorWarning#; }
 .light_b { background-color: #colorContainerAccent#; }
-.imgr { clear: both; font-size: 0; line-height: 100%; }
+.imgr { clear: both; line-height: 100%; }
 .imgr a, .imgr a span { line-height: 1; }
 .imgr img { width: 100% !important; max-width: 568px; height: auto !important; }
 .imgr24 img { max-width: 24px; }
@@ -120,7 +116,7 @@ h6 { font-size: 13px; line-height: 20px; }
 .ic_h img { max-width: 32px; width: 32px; height: 32px; display: block; line-height: 100%; }
 .ic_h a { line-height: 100%; }
 .ic_h td { text-align: center; vertical-align: middle; line-height: 100%; mso-line-height-rule: exactly; padding: 16px; border-radius: 80px; }
-.email_summary { display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; }
+.email_summary { display: none; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; }
 p.small { display: block; }
 .brt { border-radius: 4px 4px 0 0; }
 .brb { border-radius: 0 0 4px 4px; }
@@ -171,7 +167,7 @@ table.tr { margin-left: auto; margin-right: 0; }
 .bt { border-top: 1px solid #colorLighterText#; }
 .bb { border-bottom: 1px solid #colorLighterText#; }
 .btw, .bt.btw, .bbw.btw { border-color: #colorContainer#; }
-.clear { content: ' '; display: block; clear: both; height: 1px; overflow: hidden; font-size: 0; }
+.clear { content: ' '; display: block; clear: both; height: 1px; overflow: hidden; }
 
 @media only screen {
   /* latin */
@@ -214,24 +210,26 @@ table.tr { margin-left: auto; margin-right: 0; }
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 		<tbody>
 			<tr>
-				<td class="email_body email_start tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;padding-top: 32px;background-color: #colorBackground#;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
+				<td class="email_body email_start tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;padding-top: 32px;background-color: #colorBackground#;">
+				
+					<div class="email_container" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
 						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 							<tbody>
 								<tr>
-									<td class="content_cell default_b header_c brt pt pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;border-radius: 4px 4px 0 0;padding-top: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
+									<td class="content_cell default_b header_c brt pt pb" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;text-align: center;padding-left: 16px;padding-right: 16px;border-radius: 4px 4px 0 0;padding-top: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
 										<!-- col-2-4 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: left;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="200" style="width:200px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_2" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 200px;line-height: inherit;min-width: 0 !important;margin-bottom: 20px;">
+										<div class="email_row" style="box-sizing: border-box;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: left;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
+										
+											<div class="col_2" style="box-sizing: border-box;display: inline-block;width: 100%;vertical-align: top;max-width: 200px;line-height: inherit;min-width: 0 !important;margin-bottom: 20px;">
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 													<tbody>
 														<tr>
-															
-															
 															<!------- LOGO IMAGE ------->
-															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="#siteLink#/themes/monat/assets/images/logo.svg" width="100" height="49" alt="logo" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;height: auto !important;"></td>
+															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+																	<a href="#local.siteLink#" style="text-decoration: none;line-height: inherit;">
+																		<img src="#local.siteLink#themes/monat/assets/images/logo.svg" alt="logo" style="width:100px; height:50px; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;">
+																	</a>
+																</td>
 														</tr>
 													</tbody>
 												</table>

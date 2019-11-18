@@ -30,22 +30,29 @@
 	<cfparam name="attributes.recordEditEvent" type="string" default="" />
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordEditActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditIcon" type="string" default="" />
+	
 	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordDetailActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordDetailQueryString" type="string" default="" />
 	<cfparam name="attributes.recordDetailModal" type="boolean" default="false" />
+	
 	<cfparam name="attributes.recordDeleteEvent" type="string" default="" />
 	<cfparam name="attributes.recordDeleteAction" type="string" default="" />
 	<cfparam name="attributes.recordDeleteActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordDeleteActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordDeleteQueryString" type="string" default="" />
+	
 	<cfparam name="attributes.recordProcessEvent" type="string" default="" />
 	<cfparam name="attributes.recordProcessAction" type="string" default="" />
 	<cfparam name="attributes.recordProcessActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordProcessActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordProcessQueryString" type="string" default="" />
 	<cfparam name="attributes.recordProcessContext" type="string" default="" />
 	<cfparam name="attributes.recordProcessEntity" type="any" default="" />
@@ -110,6 +117,7 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
+				<cfset attributes.collectionList.getCollectionConfigStruct()["listingSearchConfig"] = attributes.collectionList.getCollectionObjectListingSearchConfig() /> <!--- setting listing-search-config --->
 				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 
@@ -139,6 +147,7 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+				
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
 				</cfif>
@@ -163,10 +172,28 @@
 				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
+				record-detail-query-string="#attributes.recordDetailQueryString#"
+				record-detail-action-property="#attributes.recordDetailActionProperty#"
+				record-detail-action-id-key="#attributes.recordDetailActionPropertyIdentifier#"
+
+				record-edit-event="#attributes.recordEditEvent#"
+				record-edit-action="#attributes.recordEditAction#"
+				record-edit-modal="#attributes.recordEditModal#"
+				record-edit-query-string="#attributes.recordEditQueryString#"
+				record-edit-action-property="#attributes.recordEditActionProperty#"
+				record-edit-action-id-key="#attributes.recordEditActionPropertyIdentifier#"
+				
 				record-delete-event="#attributes.recordDeleteEvent#"
 				record-delete-action="#attributes.recordDeleteAction#"
+				record-delete-query-string="#attributes.recordDeleteQueryString#"
+				record-delete-action-property="#attributes.recordDeleteActionProperty#"
+				record-delete-action-id-key="#attributes.recordDeleteActionPropertyIdentifier#"
+				
+				<!---TODO: process--->
+				
 				record-add-event="#attributes.recordProcessEvent#"
 				record-add-action="#attributes.recordProcessAction#"
+			
 				report-action="#attributes.reportAction#"
 				show-report="#attributes.showReport#"
 				data-is-angular-route="false"

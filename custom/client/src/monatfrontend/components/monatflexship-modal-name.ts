@@ -2,11 +2,12 @@
 class MonatFlexshipNameModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
+	public loading: boolean = false;
 
 	public orderTemplateName;
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService) {
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -23,27 +24,33 @@ class MonatFlexshipNameModalController {
     public saveFlexshipName() {
 
     	//TODO frontend validation
-
+		this.loading = true;
+		
     	// make api request
         this.orderTemplateService.editOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
         	this.orderTemplateName, 
-	    ).then(data => {
+	    ).then( (data) => {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                this.monatAlertService.success("Your flexship's name has been updated successfully");
                 this.closeModal();
         	} else {
         		throw(data);
         	}
-        }).catch(error => {
+        })
+        .catch( (error) => {
             console.error(error);
-            // TODO: show alert / handle error
+            this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally( () => {
+        	this.loading = false;
         });
     }
     
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 }
 

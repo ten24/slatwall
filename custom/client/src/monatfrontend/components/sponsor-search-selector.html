@@ -1,0 +1,114 @@
+<div class="sponsor-search-selector">
+	
+	<p class="partner">
+		<span ng-bind="sponsorSearchSelector.title"></span>
+		<i class="fas fa-question-circle modal-after-load" data-toggle="modal" data-target="#sponsor-selector-tooltip"></i>
+		<span ng-if="sponsorSearchSelector.selectedSponsor" ng-click="sponsorSearchSelector.selectedSponsor = undefined">(change)</span>
+	</p>
+	
+	<input 
+		id="selected-sponsor-id" 
+		ng-if="sponsorSearchSelector.selectedSponsor.accountID"
+		type="hidden" 
+		name="sponsorID" 
+		ng-value="sponsorSearchSelector.selectedSponsor.accountID" 
+	/>
+
+	<div class="row" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+		
+		<!--- Name / Member ID ( text ) --->
+		<div class="sub col-12 col-lg-6">
+			<div class="material-field">
+				<input 
+					class="form-control slctfrm" 
+					id="market-partner-name-field" 
+					type="text" 
+					ng-model="sponsorSearchSelector.form.text"
+				/>
+				<label for="market-partner-name-field">Name/Member ID</label>
+			</div>
+		</div>
+		
+		<!--- Country --->
+		<div class="sub col-12 col-md-6 col-lg-3">
+			<div class="material-field">
+				<select 
+					id="marketPartner_countryCode"
+					class="form-control slctfrm"
+					ng-model="sponsorSearchSelector.form.countryCode"
+					ng-change="sponsorSearchSelector.getStateCodeOptions( sponsorSearchSelector.form.countryCode )"
+				>
+					<option disabled></option>
+					<option ng-repeat="country in sponsorSearchSelector.countryCodeOptions" value="{{country.value}}">{{country.name}}</option>
+				</select>
+				<label for="marketPartner_countryCode">Country</label>
+			</div>
+		</div> 
+		
+		<!--- State / Locality --->
+		<div class="sub col-12 col-md-6 col-lg-3" ng-cloak>
+			<div class="material-field" ng-if="sponsorSearchSelector.stateCodeOptions.length">
+				<select 
+					id="marketPartner_state"
+					class="form-control slctfrm" 
+					name="stateCode"
+					ng-model="sponsorSearchSelector.form.stateCode"
+				>
+					<option disabled></option>
+					<option ng-repeat="state in sponsorSearchSelector.stateCodeOptions" value="{{state.value}}">{{state.name}}</option>
+				</select>
+				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'US'">State</label>
+				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'CA'">Province</label>
+			</div>
+			<div class="material-field" ng-if="!sponsorSearchSelector.stateCodeOptions.length">
+				<input 
+					class="form-control slctfrm" 
+					id="marketPartner_locality" 
+					type="text" 
+					name="stateCode"
+					ng-model="sponsorSearchSelector.form.stateCode"
+				/>
+				<label for="marketPartner_locality">Locality</label>
+			</div>
+		</div> 
+		
+	</div>
+	
+	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+		<button 
+			class="bg-primary btn" 
+			ng-click="sponsorSearchSelector.getSearchResults()"
+			ng-class="{ loading: sponsorSearchSelector.loadingResults }"
+		>Search</button>
+	</div>
+	
+	<!--- Results --->
+	<div class="row signup-mp__form__results">
+		<div 
+			ng-repeat="item in sponsorSearchSelector.searchResults"
+			ng-click="sponsorSearchSelector.selectedSponsor = item"
+			class="column col-12 col-sm-6"
+			ng-show="
+				sponsorSearchSelector.selectedSponsor == undefined 
+				|| sponsorSearchSelector.selectedSponsor.accountID == item.accountID
+			"
+		>
+			<div ng-class="sponsorSearchSelector.selectedSponsor.accountID == item.accountID ? 'signup-mp__form__item active' : 'signup-mp__form__item'">
+				<h3 class="title">{{item.firstName}} {{item.lastName}}</h3>
+				<p class="location" ng-if="item.primaryAddress_address_city.trim().length">{{item.primaryAddress_address_city}}, {{item.primaryAddress_address_stateCode}}. {{item.primaryAddress_address_countryCode}}</span>
+			</div>
+		</div>
+	</div>
+
+	<div ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+		<pagination-controller 
+			record-list="sponsorSearchSelector.searchResults" 
+			items-per-page="9" 
+			records-count="sponsorSearchSelector.recordsCount" 
+			action="?slatAction=monat:public.getmarketpartners"
+			arguments-object="sponsorSearchSelector.argumentsObject" 
+		>
+		</pagination-controller>	
+	</div>
+	
+</div>

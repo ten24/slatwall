@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 857);
+/******/ 	return __webpack_require__(__webpack_require__.s = 870);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,7 +74,7 @@ var hibachi =
 "use strict";
 
 var root_1 = __webpack_require__(10);
-var toSubscriber_1 = __webpack_require__(603);
+var toSubscriber_1 = __webpack_require__(605);
 var observable_1 = __webpack_require__(37);
 var pipe_1 = __webpack_require__(59);
 /**
@@ -2234,7 +2234,7 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(308)("./" + name);
+                __webpack_require__(310)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(856)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(869)(module)))
 
 /***/ }),
 /* 2 */
@@ -5312,7 +5312,7 @@ var isPromise_1 = __webpack_require__(292);
 var isObject_1 = __webpack_require__(291);
 var Observable_1 = __webpack_require__(0);
 var iterator_1 = __webpack_require__(26);
-var InnerSubscriber_1 = __webpack_require__(310);
+var InnerSubscriber_1 = __webpack_require__(312);
 var observable_1 = __webpack_require__(37);
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
     var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -5916,8 +5916,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var baseobject_1 = __webpack_require__(296);
-var Entities = __webpack_require__(725);
-var Processes = __webpack_require__(731);
+var Entities = __webpack_require__(738);
+var Processes = __webpack_require__(744);
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6276,91 +6276,91 @@ exports.MulticastOperator = MulticastOperator;
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var hibachiinterceptor_1 = __webpack_require__(744);
+var hibachiinterceptor_1 = __webpack_require__(757);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(745);
+var hibachipathbuilder_1 = __webpack_require__(758);
 //services
-var cacheservice_1 = __webpack_require__(736);
-var publicservice_1 = __webpack_require__(756);
-var accountservice_1 = __webpack_require__(735);
-var accountaddressservice_1 = __webpack_require__(734);
-var cartservice_1 = __webpack_require__(737);
-var draggableservice_1 = __webpack_require__(738);
-var utilityservice_1 = __webpack_require__(763);
-var selectionservice_1 = __webpack_require__(760);
-var observerservice_1 = __webpack_require__(753);
-var orderservice_1 = __webpack_require__(755);
-var orderpaymentservice_1 = __webpack_require__(754);
-var formservice_1 = __webpack_require__(742);
-var filterservice_1 = __webpack_require__(741);
-var expandableservice_1 = __webpack_require__(740);
-var hibachiauthenticationservice_1 = __webpack_require__(743);
-var metadataservice_1 = __webpack_require__(752);
-var rbkeyservice_1 = __webpack_require__(757);
-var typeaheadservice_1 = __webpack_require__(762);
-var hibachiservice_1 = __webpack_require__(747);
-var historyservice_1 = __webpack_require__(750);
-var localstorageservice_1 = __webpack_require__(751);
-var hibachiservicedecorator_1 = __webpack_require__(748);
-var hibachiscope_1 = __webpack_require__(746);
-var requestservice_1 = __webpack_require__(758);
-var scopeservice_1 = __webpack_require__(759);
-var skuservice_1 = __webpack_require__(761);
-var hibachivalidationservice_1 = __webpack_require__(749);
-var entityservice_1 = __webpack_require__(739);
+var cacheservice_1 = __webpack_require__(749);
+var publicservice_1 = __webpack_require__(769);
+var accountservice_1 = __webpack_require__(748);
+var accountaddressservice_1 = __webpack_require__(747);
+var cartservice_1 = __webpack_require__(750);
+var draggableservice_1 = __webpack_require__(751);
+var utilityservice_1 = __webpack_require__(776);
+var selectionservice_1 = __webpack_require__(773);
+var observerservice_1 = __webpack_require__(766);
+var orderservice_1 = __webpack_require__(768);
+var orderpaymentservice_1 = __webpack_require__(767);
+var formservice_1 = __webpack_require__(755);
+var filterservice_1 = __webpack_require__(754);
+var expandableservice_1 = __webpack_require__(753);
+var hibachiauthenticationservice_1 = __webpack_require__(756);
+var metadataservice_1 = __webpack_require__(765);
+var rbkeyservice_1 = __webpack_require__(770);
+var typeaheadservice_1 = __webpack_require__(775);
+var hibachiservice_1 = __webpack_require__(760);
+var historyservice_1 = __webpack_require__(763);
+var localstorageservice_1 = __webpack_require__(764);
+var hibachiservicedecorator_1 = __webpack_require__(761);
+var hibachiscope_1 = __webpack_require__(759);
+var requestservice_1 = __webpack_require__(771);
+var scopeservice_1 = __webpack_require__(772);
+var skuservice_1 = __webpack_require__(774);
+var hibachivalidationservice_1 = __webpack_require__(762);
+var entityservice_1 = __webpack_require__(752);
 //controllers
-var globalsearch_1 = __webpack_require__(713);
+var globalsearch_1 = __webpack_require__(726);
 //filters
-var percentage_1 = __webpack_require__(717);
-var entityrbkey_1 = __webpack_require__(716);
-var swcurrency_1 = __webpack_require__(718);
-var swtrim_1 = __webpack_require__(719);
-var swunique_1 = __webpack_require__(720);
-var datefilter_1 = __webpack_require__(714);
-var datereporting_1 = __webpack_require__(715);
+var percentage_1 = __webpack_require__(730);
+var entityrbkey_1 = __webpack_require__(729);
+var swcurrency_1 = __webpack_require__(731);
+var swtrim_1 = __webpack_require__(732);
+var swunique_1 = __webpack_require__(733);
+var datefilter_1 = __webpack_require__(727);
+var datereporting_1 = __webpack_require__(728);
 //directives
 //  components
-var swactioncaller_1 = __webpack_require__(672);
-var swtypeaheadsearch_1 = __webpack_require__(711);
-var swtypeaheadinputfield_1 = __webpack_require__(708);
-var swtypeaheadmultiselect_1 = __webpack_require__(709);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(712);
-var swtypeaheadremoveselection_1 = __webpack_require__(710);
-var swcollectionconfig_1 = __webpack_require__(676);
-var swcollectionfilter_1 = __webpack_require__(677);
-var swcollectionorderby_1 = __webpack_require__(678);
-var swcollectioncolumn_1 = __webpack_require__(675);
-var swcurrencyformatter_1 = __webpack_require__(681);
-var swactioncallerdropdown_1 = __webpack_require__(673);
-var swcolumnsorter_1 = __webpack_require__(679);
-var swconfirm_1 = __webpack_require__(680);
-var swdatepicker_1 = __webpack_require__(682);
-var swdraggable_1 = __webpack_require__(684);
-var swdraggablecontainer_1 = __webpack_require__(685);
-var swentityactionbar_1 = __webpack_require__(686);
-var swentityactionbarbuttongroup_1 = __webpack_require__(687);
-var swexpandablerecord_1 = __webpack_require__(688);
-var swexpiringsessionnotifier_1 = __webpack_require__(689);
-var swgravatar_1 = __webpack_require__(691);
-var swlogin_1 = __webpack_require__(694);
-var swmodallauncher_1 = __webpack_require__(695);
-var swmodalwindow_1 = __webpack_require__(696);
-var swnumbersonly_1 = __webpack_require__(697);
-var swloading_1 = __webpack_require__(693);
-var swscrolltrigger_1 = __webpack_require__(702);
-var swtabgroup_1 = __webpack_require__(706);
-var swtabcontent_1 = __webpack_require__(705);
-var swtooltip_1 = __webpack_require__(707);
-var swrbkey_1 = __webpack_require__(701);
-var swoptions_1 = __webpack_require__(698);
-var swselection_1 = __webpack_require__(703);
-var swclickoutside_1 = __webpack_require__(674);
-var swdirective_1 = __webpack_require__(683);
-var swexportaction_1 = __webpack_require__(690);
-var swhref_1 = __webpack_require__(692);
-var swprocesscaller_1 = __webpack_require__(700);
-var swsortable_1 = __webpack_require__(704);
-var sworderbycontrols_1 = __webpack_require__(699);
+var swactioncaller_1 = __webpack_require__(685);
+var swtypeaheadsearch_1 = __webpack_require__(724);
+var swtypeaheadinputfield_1 = __webpack_require__(721);
+var swtypeaheadmultiselect_1 = __webpack_require__(722);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(725);
+var swtypeaheadremoveselection_1 = __webpack_require__(723);
+var swcollectionconfig_1 = __webpack_require__(689);
+var swcollectionfilter_1 = __webpack_require__(690);
+var swcollectionorderby_1 = __webpack_require__(691);
+var swcollectioncolumn_1 = __webpack_require__(688);
+var swcurrencyformatter_1 = __webpack_require__(694);
+var swactioncallerdropdown_1 = __webpack_require__(686);
+var swcolumnsorter_1 = __webpack_require__(692);
+var swconfirm_1 = __webpack_require__(693);
+var swdatepicker_1 = __webpack_require__(695);
+var swdraggable_1 = __webpack_require__(697);
+var swdraggablecontainer_1 = __webpack_require__(698);
+var swentityactionbar_1 = __webpack_require__(699);
+var swentityactionbarbuttongroup_1 = __webpack_require__(700);
+var swexpandablerecord_1 = __webpack_require__(701);
+var swexpiringsessionnotifier_1 = __webpack_require__(702);
+var swgravatar_1 = __webpack_require__(704);
+var swlogin_1 = __webpack_require__(707);
+var swmodallauncher_1 = __webpack_require__(708);
+var swmodalwindow_1 = __webpack_require__(709);
+var swnumbersonly_1 = __webpack_require__(710);
+var swloading_1 = __webpack_require__(706);
+var swscrolltrigger_1 = __webpack_require__(715);
+var swtabgroup_1 = __webpack_require__(719);
+var swtabcontent_1 = __webpack_require__(718);
+var swtooltip_1 = __webpack_require__(720);
+var swrbkey_1 = __webpack_require__(714);
+var swoptions_1 = __webpack_require__(711);
+var swselection_1 = __webpack_require__(716);
+var swclickoutside_1 = __webpack_require__(687);
+var swdirective_1 = __webpack_require__(696);
+var swexportaction_1 = __webpack_require__(703);
+var swhref_1 = __webpack_require__(705);
+var swprocesscaller_1 = __webpack_require__(713);
+var swsortable_1 = __webpack_require__(717);
+var sworderbycontrols_1 = __webpack_require__(712);
 var alert_module_1 = __webpack_require__(294);
 var dialog_module_1 = __webpack_require__(299);
 var coremodule = angular.module('hibachi.core', [
@@ -7195,7 +7195,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var root_1 = __webpack_require__(10);
-var Action_1 = __webpack_require__(584);
+var Action_1 = __webpack_require__(586);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -7342,7 +7342,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Scheduler_1 = __webpack_require__(312);
+var Scheduler_1 = __webpack_require__(314);
 var AsyncScheduler = (function (_super) {
     __extends(AsyncScheduler, _super);
     function AsyncScheduler() {
@@ -10450,9 +10450,9 @@ module.exports = charenc;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
-  var crypt = __webpack_require__(306),
+  var crypt = __webpack_require__(308),
       utf8 = __webpack_require__(63).utf8,
-      isBuffer = __webpack_require__(307),
+      isBuffer = __webpack_require__(309),
       bin = __webpack_require__(63).bin,
 
   // The core
@@ -23116,9 +23116,9 @@ var isArray_1 = __webpack_require__(12);
 var isArrayLike_1 = __webpack_require__(290);
 var isPromise_1 = __webpack_require__(292);
 var PromiseObservable_1 = __webpack_require__(197);
-var IteratorObservable_1 = __webpack_require__(453);
+var IteratorObservable_1 = __webpack_require__(455);
 var ArrayObservable_1 = __webpack_require__(14);
-var ArrayLikeObservable_1 = __webpack_require__(442);
+var ArrayLikeObservable_1 = __webpack_require__(444);
 var iterator_1 = __webpack_require__(26);
 var Observable_1 = __webpack_require__(0);
 var observeOn_1 = __webpack_require__(34);
@@ -23814,7 +23814,7 @@ exports.of = ArrayObservable_1.ArrayObservable.of;
 
 "use strict";
 
-var TimerObservable_1 = __webpack_require__(458);
+var TimerObservable_1 = __webpack_require__(460);
 exports.timer = TimerObservable_1.TimerObservable.create;
 //# sourceMappingURL=timer.js.map
 
@@ -25711,7 +25711,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
-var Set_1 = __webpack_require__(600);
+var Set_1 = __webpack_require__(602);
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -26746,8 +26746,8 @@ var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(6);
 var Observable_1 = __webpack_require__(0);
 var Subject_1 = __webpack_require__(7);
-var Map_1 = __webpack_require__(598);
-var FastMap_1 = __webpack_require__(596);
+var Map_1 = __webpack_require__(600);
+var FastMap_1 = __webpack_require__(598);
 /* tslint:enable:max-line-length */
 /**
  * Groups the items emitted by an Observable according to a specified criterion,
@@ -27953,7 +27953,7 @@ var PairwiseSubscriber = (function (_super) {
 
 "use strict";
 
-var not_1 = __webpack_require__(602);
+var not_1 = __webpack_require__(604);
 var filter_1 = __webpack_require__(50);
 /**
  * Splits the source Observable into two, one with values that satisfy a
@@ -31502,8 +31502,8 @@ exports.VirtualAction = VirtualAction;
 
 "use strict";
 
-var AsapAction_1 = __webpack_require__(587);
-var AsapScheduler_1 = __webpack_require__(588);
+var AsapAction_1 = __webpack_require__(589);
+var AsapScheduler_1 = __webpack_require__(590);
 /**
  *
  * Asap Scheduler
@@ -31547,8 +31547,8 @@ exports.asap = new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
 
 "use strict";
 
-var QueueAction_1 = __webpack_require__(589);
-var QueueScheduler_1 = __webpack_require__(590);
+var QueueAction_1 = __webpack_require__(591);
+var QueueScheduler_1 = __webpack_require__(592);
 /**
  *
  * Queue Scheduler
@@ -31838,7 +31838,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(604);
+__webpack_require__(606);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -31861,9 +31861,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-var alertcontroller_1 = __webpack_require__(631);
+var alertcontroller_1 = __webpack_require__(644);
 //services
-var alertservice_1 = __webpack_require__(633);
+var alertservice_1 = __webpack_require__(646);
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -31884,38 +31884,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(17);
 //services
-var collectionconfigservice_1 = __webpack_require__(670);
-var collectionservice_1 = __webpack_require__(671);
+var collectionconfigservice_1 = __webpack_require__(683);
+var collectionservice_1 = __webpack_require__(684);
 //controllers
-var collections_1 = __webpack_require__(665);
-var createcollection_1 = __webpack_require__(667);
-var confirmationcontroller_1 = __webpack_require__(666);
-var entity_createcollection_1 = __webpack_require__(668);
+var collections_1 = __webpack_require__(678);
+var createcollection_1 = __webpack_require__(680);
+var confirmationcontroller_1 = __webpack_require__(679);
+var entity_createcollection_1 = __webpack_require__(681);
 //directives
-var swcollection_1 = __webpack_require__(644);
-var swaddfilterbuttons_1 = __webpack_require__(643);
-var swdisplayoptions_1 = __webpack_require__(659);
-var swdisplayitem_1 = __webpack_require__(657);
-var swdisplayitemaggregate_1 = __webpack_require__(658);
-var swcollectiontable_1 = __webpack_require__(645);
-var swcolumnitem_1 = __webpack_require__(646);
-var swconditioncriteria_1 = __webpack_require__(647);
-var swcriteria_1 = __webpack_require__(648);
-var swcriteriaboolean_1 = __webpack_require__(649);
-var swcriteriadate_1 = __webpack_require__(650);
-var swcriteriamanytomany_1 = __webpack_require__(651);
-var swcriteriamanytoone_1 = __webpack_require__(652);
-var swcriterianumber_1 = __webpack_require__(653);
-var swcriteriaonetomany_1 = __webpack_require__(654);
-var swcriteriarelatedobject_1 = __webpack_require__(655);
-var swcriteriastring_1 = __webpack_require__(656);
-var sweditfilteritem_1 = __webpack_require__(660);
-var swfiltergroups_1 = __webpack_require__(662);
-var swfilteritem_1 = __webpack_require__(663);
-var swfiltergroupitem_1 = __webpack_require__(661);
-var swrestrictionconfig_1 = __webpack_require__(664);
+var swcollection_1 = __webpack_require__(657);
+var swaddfilterbuttons_1 = __webpack_require__(656);
+var swdisplayoptions_1 = __webpack_require__(672);
+var swdisplayitem_1 = __webpack_require__(670);
+var swdisplayitemaggregate_1 = __webpack_require__(671);
+var swcollectiontable_1 = __webpack_require__(658);
+var swcolumnitem_1 = __webpack_require__(659);
+var swconditioncriteria_1 = __webpack_require__(660);
+var swcriteria_1 = __webpack_require__(661);
+var swcriteriaboolean_1 = __webpack_require__(662);
+var swcriteriadate_1 = __webpack_require__(663);
+var swcriteriamanytomany_1 = __webpack_require__(664);
+var swcriteriamanytoone_1 = __webpack_require__(665);
+var swcriterianumber_1 = __webpack_require__(666);
+var swcriteriaonetomany_1 = __webpack_require__(667);
+var swcriteriarelatedobject_1 = __webpack_require__(668);
+var swcriteriastring_1 = __webpack_require__(669);
+var sweditfilteritem_1 = __webpack_require__(673);
+var swfiltergroups_1 = __webpack_require__(675);
+var swfilteritem_1 = __webpack_require__(676);
+var swfiltergroupitem_1 = __webpack_require__(674);
+var swrestrictionconfig_1 = __webpack_require__(677);
 //filters
-var aggregatefilter_1 = __webpack_require__(669);
+var aggregatefilter_1 = __webpack_require__(682);
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -32147,7 +32147,7 @@ exports.Request = Request;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = __webpack_require__(311);
+var rxjs_1 = __webpack_require__(313);
 var IStore = /** @class */ (function () {
     //@ngInject
     function IStore(initialState, reducer, middleware) {
@@ -32181,9 +32181,9 @@ exports.IStore = IStore;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-var dialogservice_1 = __webpack_require__(765);
+var dialogservice_1 = __webpack_require__(778);
 //controllers
-var pagedialog_1 = __webpack_require__(764);
+var pagedialog_1 = __webpack_require__(777);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -32223,6 +32223,9 @@ var SWFFormController = /** @class */ (function () {
         this.fileFlag = false;
         this.uploadProgressPercentage = 0;
         this.$onInit = function () {
+        };
+        this.resetMethod = function (newMethod) {
+            _this.method = newMethod;
         };
         this.getFormData = function () {
             var formData = {};
@@ -32316,7 +32319,9 @@ var SWFFormController = /** @class */ (function () {
                 return result;
             _this.$timeout(function () {
                 _this.loading = false;
-                _this.observerService.notify(_this.afterSubmitEventName);
+                if (_this.afterSubmitEventName) {
+                    _this.observerService.notify(_this.afterSubmitEventName);
+                }
                 _this.successfulActions = result.successfulActions;
                 _this.failureActions = result.failureActions;
                 _this.errors = result.errors;
@@ -32535,6 +32540,9 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 if (_this.object.$$isPersisted()) {
                     _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
                 }
+                else {
+                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Create', _this.object.className, _this.propertyIdentifier);
+                }
             }
         };
         this.onChange = function (result) {
@@ -32735,8 +32743,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*jshint browser:true */
-var basebootstrap_1 = __webpack_require__(634);
-var monatfrontend_module_1 = __webpack_require__(628);
+var basebootstrap_1 = __webpack_require__(647);
+var monatfrontend_module_1 = __webpack_require__(639);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -32767,6 +32775,536 @@ module.exports = 'angularModalService';
 
 /***/ }),
 /* 305 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(306);
+module.exports = "toaster";
+
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports) {
+
+/* global angular */
+/*
+    * @license
+    * AngularJS Toaster
+    * Version: 3.0.0
+    *
+    * Copyright 2013-2019 Jiri Kavulak, Stabzs.
+    * All Rights Reserved.
+    * Use, reproduction, distribution, and modification of this code is subject to the terms and
+    * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+    *
+    * Authors: Jiri Kavulak, Stabzs
+    * Related to project of John Papa, Hans Fjällemark and Nguyễn Thiện Hùng (thienhung1989)
+*/
+(function(window, document) {
+    'use strict';
+
+    angular.module('toaster', []).constant(
+        'toasterConfig', {
+            'limit': 0,                   // limits max number of toasts
+            'tap-to-dismiss': true,
+            'close-button': false,
+            'close-html': '<button class="toast-close-button" type="button">&times;</button>',
+            'newest-on-top': true,
+            'time-out': 5000,
+            'icon-classes': {
+                error: 'toast-error',
+                info: 'toast-info',
+                wait: 'toast-wait',
+                success: 'toast-success',
+                warning: 'toast-warning'
+            },
+            'body-output-type': '', // Options: '', 'html', 'trustedHtml', 'template', 'templateWithData', 'directive'
+            'body-template': 'toasterBodyTmpl.html',
+            'icon-class': 'toast-info',
+            'position-class': 'toast-top-right', // Options (see CSS):
+            // 'toast-top-full-width', 'toast-bottom-full-width', 'toast-center',
+            // 'toast-top-left', 'toast-top-center', 'toast-top-right',
+            // 'toast-bottom-left', 'toast-bottom-center', 'toast-bottom-right',
+            'title-class': 'toast-title',
+            'message-class': 'toast-message',
+            'prevent-duplicates': false,
+            'mouseover-timer-stop': true // stop timeout on mouseover and restart timer on mouseout
+        }
+    ).run(['$templateCache', function($templateCache) {
+            $templateCache.put('angularjs-toaster/toast.html',
+                '<div id="toast-container" ng-class="[config.position, config.animation]">' +
+                    '<div ng-repeat="toaster in toasters" class="toast" ng-class="toaster.type" ng-click="click($event, toaster)" ng-mouseover="stopTimer(toaster)" ng-mouseout="restartTimer(toaster)">' +
+                        '<div ng-if="toaster.showCloseButton" ng-click="click($event, toaster, true)" ng-bind-html="toaster.closeHtml"></div>' +
+                        '<div ng-class="config.title">{{toaster.title}}</div>' +
+                        '<div ng-class="config.message" ng-switch on="toaster.bodyOutputType">' +
+                        '<div ng-switch-when="html" ng-bind-html="toaster.body"></div>' +
+                        '<div ng-switch-when="trustedHtml" ng-bind-html="toaster.html"></div>' +
+                        '<div ng-switch-when="template"><div ng-include="toaster.bodyTemplate"></div></div>' +
+                        '<div ng-switch-when="templateWithData"><div ng-include="toaster.bodyTemplate"></div></div>' +
+                        '<div ng-switch-when="directive"><div directive-template directive-name="{{toaster.html}}" directive-data="toaster.directiveData"></div></div>' +
+                        '<div ng-switch-default >{{toaster.body}}</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>');
+        }
+    ]).service(
+        'toaster', [
+            '$rootScope', 'toasterConfig', function($rootScope, toasterConfig) {
+                // http://stackoverflow.com/questions/26501688/a-typescript-guid-class
+                var Guid = (function() {
+                    var Guid = {};
+                    Guid.newGuid = function() {
+                        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                            return v.toString(16);
+                        });
+                    };
+                    return Guid;
+                }());
+
+                this.pop = function(type, title, body, timeout, bodyOutputType, clickHandler, toasterId, showCloseButton, toastId, onHideCallback) {
+                    if (angular.isObject(type)) {
+                        var params = type; // Enable named parameters as pop argument
+                        this.toast = {
+                            type: params.type,
+                            title: params.title,
+                            body: params.body,
+                            timeout: params.timeout,
+                            bodyOutputType: params.bodyOutputType,
+                            clickHandler: params.clickHandler,
+                            showCloseButton: params.showCloseButton,
+                            closeHtml: params.closeHtml,
+                            toastId: params.toastId,
+                            onShowCallback: params.onShowCallback,
+                            onHideCallback: params.onHideCallback,
+                            directiveData: params.directiveData,
+                            tapToDismiss: params.tapToDismiss
+                        };
+                        toasterId = params.toasterId;
+                    } else {
+                        this.toast = {
+                            type: type,
+                            title: title,
+                            body: body,
+                            timeout: timeout,
+                            bodyOutputType: bodyOutputType,
+                            clickHandler: clickHandler,
+                            showCloseButton: showCloseButton,
+                            toastId: toastId,
+                            onHideCallback: onHideCallback
+                        };
+                    }
+
+                    if (!this.toast.toastId || !this.toast.toastId.length) {
+                        this.toast.toastId = Guid.newGuid();
+                    }
+
+                    $rootScope.$emit('toaster-newToast', toasterId, this.toast.toastId);
+                    
+                    return {
+                        toasterId: toasterId,
+                        toastId: this.toast.toastId
+                    };
+                };
+
+                this.clear = function(toasterId, toastId) {
+                    if (angular.isObject(toasterId)) {
+                        $rootScope.$emit('toaster-clearToasts', toasterId.toasterId, toasterId.toastId);
+                    } else {
+                        $rootScope.$emit('toaster-clearToasts', toasterId, toastId);
+                    }
+                };
+
+                // Create one method per icon class, to allow to call toaster.info() and similar
+                for (var type in toasterConfig['icon-classes']) {
+                    this[type] = createTypeMethod(type);
+                }
+
+                function createTypeMethod(toasterType) {
+                    return function(title, body, timeout, bodyOutputType, clickHandler, toasterId, showCloseButton, toastId, onHideCallback) {
+                        if (angular.isString(title)) {
+                            return this.pop(
+                                toasterType,
+                                title,
+                                body,
+                                timeout,
+                                bodyOutputType,
+                                clickHandler,
+                                toasterId,
+                                showCloseButton,
+                                toastId,
+                                onHideCallback);
+                        } else { // 'title' is actually an object with options
+                            return this.pop(angular.extend(title, { type: toasterType }));
+                        }
+                    };
+                }
+            }]
+        ).factory(
+        'toasterEventRegistry', [
+            '$rootScope', function($rootScope) {
+                var deregisterNewToast = null, deregisterClearToasts = null, newToastEventSubscribers = [], clearToastsEventSubscribers = [], toasterFactory;
+
+                toasterFactory = {
+                    setup: function() {
+                        if (!deregisterNewToast) {
+                            deregisterNewToast = $rootScope.$on(
+                                'toaster-newToast', function(event, toasterId, toastId) {
+                                    for (var i = 0, len = newToastEventSubscribers.length; i < len; i++) {
+                                        newToastEventSubscribers[i](event, toasterId, toastId);
+                                    }
+                                });
+                        }
+
+                        if (!deregisterClearToasts) {
+                            deregisterClearToasts = $rootScope.$on(
+                                'toaster-clearToasts', function(event, toasterId, toastId) {
+                                    for (var i = 0, len = clearToastsEventSubscribers.length; i < len; i++) {
+                                        clearToastsEventSubscribers[i](event, toasterId, toastId);
+                                    }
+                                });
+                        }
+                    },
+
+                    subscribeToNewToastEvent: function(onNewToast) {
+                        newToastEventSubscribers.push(onNewToast);
+                    },
+                    subscribeToClearToastsEvent: function(onClearToasts) {
+                        clearToastsEventSubscribers.push(onClearToasts);
+                    },
+                    unsubscribeToNewToastEvent: function(onNewToast) {
+                        var index = newToastEventSubscribers.indexOf(onNewToast);
+                        if (index >= 0) {
+                            newToastEventSubscribers.splice(index, 1);
+                        }
+
+                        if (newToastEventSubscribers.length === 0) {
+                            deregisterNewToast();
+                            deregisterNewToast = null;
+                        }
+                    },
+                    unsubscribeToClearToastsEvent: function(onClearToasts) {
+                        var index = clearToastsEventSubscribers.indexOf(onClearToasts);
+                        if (index >= 0) {
+                            clearToastsEventSubscribers.splice(index, 1);
+                        }
+
+                        if (clearToastsEventSubscribers.length === 0) {
+                            deregisterClearToasts();
+                            deregisterClearToasts = null;
+                        }
+                    }
+                };
+                return {
+                    setup: toasterFactory.setup,
+                    subscribeToNewToastEvent: toasterFactory.subscribeToNewToastEvent,
+                    subscribeToClearToastsEvent: toasterFactory.subscribeToClearToastsEvent,
+                    unsubscribeToNewToastEvent: toasterFactory.unsubscribeToNewToastEvent,
+                    unsubscribeToClearToastsEvent: toasterFactory.unsubscribeToClearToastsEvent
+                };
+            }]
+        )
+        .directive('directiveTemplate', ['$compile', '$injector', function($compile, $injector) {
+            return {
+                restrict: 'A',
+                scope: {
+                    directiveName: '@directiveName',
+                    directiveData: '=directiveData'
+                },
+                replace: true,
+                link: function(scope, elm, attrs) {
+                    scope.$watch('directiveName', function(directiveName) {
+                        if (angular.isUndefined(directiveName) || directiveName.length <= 0)
+                            throw new Error('A valid directive name must be provided via the toast body argument when using bodyOutputType: directive');
+
+                        var directive;
+
+                        try {
+                            directive = $injector.get(attrs.$normalize(directiveName) + 'Directive');
+                        } catch (e) {
+                            throw new Error(directiveName + ' could not be found. ' +
+                                'The name should appear as it exists in the markup, not camelCased as it would appear in the directive declaration,' +
+                                ' e.g. directive-name not directiveName.');
+                        }
+
+
+                        var directiveDetails = directive[0];
+
+                        if (directiveDetails.scope !== true && directiveDetails.scope) {
+                            throw new Error('Cannot use a directive with an isolated scope. ' +
+                                'The scope must be either true or falsy (e.g. false/null/undefined). ' +
+                                'Occurred for directive ' + directiveName + '.');
+                        }
+
+                        if (directiveDetails.restrict.indexOf('A') < 0) {
+                            throw new Error('Directives must be usable as attributes. ' +
+                                'Add "A" to the restrict option (or remove the option entirely). Occurred for directive ' +
+                                directiveName + '.');
+                        }
+
+                        if (scope.directiveData)
+                            scope.directiveData = angular.fromJson(scope.directiveData);
+
+                        var template = $compile('<div ' + directiveName + '></div>')(scope);
+
+                        elm.append(template);
+                    });
+                }
+            };
+        }])
+        .directive(
+        'toasterContainer', [
+            '$parse', '$rootScope', '$interval', '$sce', 'toasterConfig', 'toaster', 'toasterEventRegistry',
+            function($parse, $rootScope, $interval, $sce, toasterConfig, toaster, toasterEventRegistry) {
+                return {
+                    replace: true,
+                    restrict: 'EA',
+                    scope: true, // creates an internal scope for this directive (one per directive instance)
+                    link: function(scope, elm, attrs) {
+                        var mergedConfig;
+
+                        // Merges configuration set in directive with default one
+                        mergedConfig = angular.extend({}, toasterConfig, scope.$eval(attrs.toasterOptions));
+
+                        scope.config = {
+                            toasterId: mergedConfig['toaster-id'],
+                            position: mergedConfig['position-class'],
+                            title: mergedConfig['title-class'],
+                            message: mergedConfig['message-class'],
+                            tap: mergedConfig['tap-to-dismiss'],
+                            closeButton: mergedConfig['close-button'],
+                            closeHtml: mergedConfig['close-html'],
+                            animation: mergedConfig['animation-class'],
+                            mouseoverTimer: mergedConfig['mouseover-timer-stop']
+                        };
+
+                        scope.$on(
+                            "$destroy", function() {
+                                toasterEventRegistry.unsubscribeToNewToastEvent(scope._onNewToast);
+                                toasterEventRegistry.unsubscribeToClearToastsEvent(scope._onClearToasts);
+                            }
+                        );
+
+                        function setTimeout(toast, time) {
+                            toast.timeoutPromise = $interval(
+                                function() {
+                                    scope.removeToast(toast.toastId);
+                                }, time, 1
+                            );
+                        }
+
+                        scope.configureTimer = function(toast) {
+                            var timeout = angular.isNumber(toast.timeout) ? toast.timeout : mergedConfig['time-out'];
+                            if (typeof timeout === "object") timeout = timeout[toast.type];
+                            if (timeout > 0) {
+                                setTimeout(toast, timeout);
+                            }
+                        };
+
+                        function addToast(toast, toastId) {
+                            toast.type = mergedConfig['icon-classes'][toast.type];
+                            if (!toast.type) {
+                                toast.type = mergedConfig['icon-class'];
+                            }
+
+                            if (mergedConfig['prevent-duplicates'] === true && scope.toasters.length) {
+                                if (scope.toasters[scope.toasters.length - 1].body === toast.body) {
+                                    return;
+                                } else {
+                                    var i, len, dupFound = false;
+                                    for (i = 0, len = scope.toasters.length; i < len; i++) {
+                                        if (scope.toasters[i].toastId === toastId) {
+                                            dupFound = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (dupFound) return;
+                                }
+                            }
+
+
+                            // set the showCloseButton property on the toast so that
+                            // each template can bind directly to the property to show/hide
+                            // the close button
+                            var closeButton = mergedConfig['close-button'];
+
+                            // if toast.showCloseButton is a boolean value,
+                            // it was specifically overriden in the pop arguments
+                            if (typeof toast.showCloseButton === "boolean") {
+
+                            } else if (typeof closeButton === "boolean") {
+                                toast.showCloseButton = closeButton;
+                            } else if (typeof closeButton === "object") {
+                                var closeButtonForType = closeButton[toast.type];
+
+                                if (typeof closeButtonForType !== "undefined" && closeButtonForType !== null) {
+                                    toast.showCloseButton = closeButtonForType;
+                                }
+                            } else {
+                                // if an option was not set, default to false.
+                                toast.showCloseButton = false;
+                            }
+
+                            if (toast.showCloseButton) {
+                                toast.closeHtml = $sce.trustAsHtml(toast.closeHtml || scope.config.closeHtml);
+                            }
+
+                            // Set the toast.bodyOutputType to the default if it isn't set
+                            toast.bodyOutputType = toast.bodyOutputType || mergedConfig['body-output-type'];
+                            switch (toast.bodyOutputType) {
+                                case 'trustedHtml':
+                                    toast.html = $sce.trustAsHtml(toast.body);
+                                    break;
+                                case 'template':
+                                    toast.bodyTemplate = toast.body || mergedConfig['body-template'];
+                                    break;
+                                case 'templateWithData':
+                                    var fcGet = $parse(toast.body || mergedConfig['body-template']);
+                                    var templateWithData = fcGet(scope);
+                                    toast.bodyTemplate = templateWithData.template;
+                                    toast.data = templateWithData.data;
+                                    break;
+                                case 'directive':
+                                    toast.html = toast.body;
+                                    break;
+                            }
+
+                            scope.configureTimer(toast);
+
+                            if (mergedConfig['newest-on-top'] === true) {
+                                scope.toasters.unshift(toast);
+                                if (mergedConfig['limit'] > 0 && scope.toasters.length > mergedConfig['limit']) {
+                                    removeToast(scope.toasters.length - 1);
+                                }
+                            } else {
+                                scope.toasters.push(toast);
+                                if (mergedConfig['limit'] > 0 && scope.toasters.length > mergedConfig['limit']) {
+                                    removeToast(0);
+                                }
+                            }
+
+                            if (angular.isFunction(toast.onShowCallback)) {
+                                toast.onShowCallback(toast);
+                            }
+                        }
+
+                        scope.removeToast = function(toastId) {
+                            var i, len;
+                            for (i = 0, len = scope.toasters.length; i < len; i++) {
+                                if (scope.toasters[i].toastId === toastId) {
+                                    removeToast(i);
+                                    break;
+                                }
+                            }
+                        };
+
+                        function removeToast(toastIndex) {
+                            var toast = scope.toasters[toastIndex];
+
+                            // toast is always defined since the index always has a match
+                            if (toast.timeoutPromise) {
+                                $interval.cancel(toast.timeoutPromise);
+                            }
+                            scope.toasters.splice(toastIndex, 1);
+
+                            if (angular.isFunction(toast.onHideCallback)) {
+                                toast.onHideCallback(toast);
+                            }
+                        }
+
+                        function removeAllToasts(toastId) {
+                            for (var i = scope.toasters.length - 1; i >= 0; i--) {
+                                if (isUndefinedOrNull(toastId)) {
+                                    removeToast(i);
+                                } else {
+                                    if (scope.toasters[i].toastId == toastId) {
+                                        removeToast(i);
+                                    }
+                                }
+                            }
+                        }
+
+                        scope.toasters = [];
+
+                        function isUndefinedOrNull(val) {
+                            return angular.isUndefined(val) || val === null;
+                        }
+
+                        scope._onNewToast = function(event, toasterId, toastId) {
+                            // Compatibility: if toaster has no toasterId defined, and if call to display
+                            // hasn't either, then the request is for us
+                            if ((isUndefinedOrNull(scope.config.toasterId) && isUndefinedOrNull(toasterId)) || (!isUndefinedOrNull(scope.config.toasterId) && !isUndefinedOrNull(toasterId) && scope.config.toasterId == toasterId)) {
+                                addToast(toaster.toast, toastId);
+                            }
+                        };
+                        scope._onClearToasts = function(event, toasterId, toastId) {
+                            // Compatibility: if toaster has no toasterId defined, and if call to display
+                            // hasn't either, then the request is for us
+                            if (toasterId == '*' || (isUndefinedOrNull(scope.config.toasterId) && isUndefinedOrNull(toasterId)) || (!isUndefinedOrNull(scope.config.toasterId) && !isUndefinedOrNull(toasterId) && scope.config.toasterId == toasterId)) {
+                                removeAllToasts(toastId);
+                            }
+                        };
+
+                        toasterEventRegistry.setup();
+
+                        toasterEventRegistry.subscribeToNewToastEvent(scope._onNewToast);
+                        toasterEventRegistry.subscribeToClearToastsEvent(scope._onClearToasts);
+                    },
+                    controller: [
+                        '$scope', '$element', '$attrs', function($scope, $element, $attrs) {
+                            // Called on mouseover
+                            $scope.stopTimer = function(toast) {
+                                if ($scope.config.mouseoverTimer === true) {
+                                    if (toast.timeoutPromise) {
+                                        $interval.cancel(toast.timeoutPromise);
+                                        toast.timeoutPromise = null;
+                                    }
+                                }
+                            };
+
+                            // Called on mouseout
+                            $scope.restartTimer = function(toast) {
+                                if ($scope.config.mouseoverTimer === true) {
+                                    if (!toast.timeoutPromise) {
+                                        $scope.configureTimer(toast);
+                                    }
+                                } else if (toast.timeoutPromise === null) {
+                                    $scope.removeToast(toast.toastId);
+                                }
+                            };
+
+                            $scope.click = function(event, toast, isCloseButton) {
+                                event.stopPropagation();
+
+                                var tapToDismiss = typeof toast.tapToDismiss === "boolean" 
+                                                        ? toast.tapToDismiss 
+                                                        : $scope.config.tap;
+                                if (tapToDismiss === true || (toast.showCloseButton === true && isCloseButton === true)) {
+                                    var removeToast = true;
+                                    if (toast.clickHandler) {
+                                        if (angular.isFunction(toast.clickHandler)) {
+                                            removeToast = toast.clickHandler(toast, isCloseButton);
+                                        } else if (angular.isFunction($scope.$parent.$eval(toast.clickHandler))) {
+                                            removeToast = $scope.$parent.$eval(toast.clickHandler)(toast, isCloseButton);
+                                        } else {
+                                            console.log("TOAST-NOTE: Your click handler is not inside a parent scope of toaster-container.");
+                                        }
+                                    }
+                                    if (removeToast) {
+                                        $scope.removeToast(toast.toastId);
+                                    }
+                                }
+                            };
+                        }],
+                    templateUrl: 'angularjs-toaster/toast.html'
+                };
+            }]
+        );
+})(window, document);
+
+
+/***/ }),
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -47452,7 +47990,7 @@ return src;
 
 
 /***/ }),
-/* 306 */
+/* 308 */
 /***/ (function(module, exports) {
 
 (function() {
@@ -47554,7 +48092,7 @@ return src;
 
 
 /***/ }),
-/* 307 */
+/* 309 */
 /***/ (function(module, exports) {
 
 /*!
@@ -47581,7 +48119,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 308 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -47854,10 +48392,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 308;
+webpackContext.id = 310;
 
 /***/ }),
-/* 309 */
+/* 311 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -48047,7 +48585,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 310 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48089,7 +48627,7 @@ exports.InnerSubscriber = InnerSubscriber;
 //# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ }),
-/* 311 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48106,13 +48644,11 @@ var Observable_1 = __webpack_require__(0);
 exports.Observable = Observable_1.Observable;
 // statics
 /* tslint:disable:no-use-before-declare */
-__webpack_require__(313);
-__webpack_require__(314);
 __webpack_require__(315);
 __webpack_require__(316);
 __webpack_require__(317);
-__webpack_require__(320);
-__webpack_require__(321);
+__webpack_require__(318);
+__webpack_require__(319);
 __webpack_require__(322);
 __webpack_require__(323);
 __webpack_require__(324);
@@ -48121,22 +48657,22 @@ __webpack_require__(326);
 __webpack_require__(327);
 __webpack_require__(328);
 __webpack_require__(329);
-__webpack_require__(334);
 __webpack_require__(330);
 __webpack_require__(331);
+__webpack_require__(336);
 __webpack_require__(332);
 __webpack_require__(333);
+__webpack_require__(334);
 __webpack_require__(335);
-__webpack_require__(338);
-__webpack_require__(336);
 __webpack_require__(337);
+__webpack_require__(340);
+__webpack_require__(338);
 __webpack_require__(339);
+__webpack_require__(341);
 //dom
-__webpack_require__(318);
-__webpack_require__(319);
+__webpack_require__(320);
+__webpack_require__(321);
 //operators
-__webpack_require__(342);
-__webpack_require__(343);
 __webpack_require__(344);
 __webpack_require__(345);
 __webpack_require__(346);
@@ -48148,35 +48684,35 @@ __webpack_require__(351);
 __webpack_require__(352);
 __webpack_require__(353);
 __webpack_require__(354);
-__webpack_require__(360);
 __webpack_require__(355);
 __webpack_require__(356);
+__webpack_require__(362);
 __webpack_require__(357);
 __webpack_require__(358);
 __webpack_require__(359);
+__webpack_require__(360);
 __webpack_require__(361);
-__webpack_require__(362);
 __webpack_require__(363);
 __webpack_require__(364);
-__webpack_require__(367);
-__webpack_require__(368);
-__webpack_require__(369);
 __webpack_require__(365);
+__webpack_require__(366);
+__webpack_require__(369);
 __webpack_require__(370);
 __webpack_require__(371);
+__webpack_require__(367);
 __webpack_require__(372);
 __webpack_require__(373);
 __webpack_require__(374);
 __webpack_require__(375);
 __webpack_require__(376);
 __webpack_require__(377);
-__webpack_require__(340);
-__webpack_require__(341);
 __webpack_require__(378);
 __webpack_require__(379);
-__webpack_require__(366);
+__webpack_require__(342);
+__webpack_require__(343);
 __webpack_require__(380);
 __webpack_require__(381);
+__webpack_require__(368);
 __webpack_require__(382);
 __webpack_require__(383);
 __webpack_require__(384);
@@ -48193,10 +48729,10 @@ __webpack_require__(394);
 __webpack_require__(395);
 __webpack_require__(396);
 __webpack_require__(397);
-__webpack_require__(399);
 __webpack_require__(398);
-__webpack_require__(400);
+__webpack_require__(399);
 __webpack_require__(401);
+__webpack_require__(400);
 __webpack_require__(402);
 __webpack_require__(403);
 __webpack_require__(404);
@@ -48237,6 +48773,8 @@ __webpack_require__(438);
 __webpack_require__(439);
 __webpack_require__(440);
 __webpack_require__(441);
+__webpack_require__(442);
+__webpack_require__(443);
 /* tslint:disable:no-unused-variable */
 var Subscription_1 = __webpack_require__(6);
 exports.Subscription = Subscription_1.Subscription;
@@ -48266,7 +48804,7 @@ var timeInterval_1 = __webpack_require__(202);
 exports.TimeInterval = timeInterval_1.TimeInterval;
 var timestamp_1 = __webpack_require__(57);
 exports.Timestamp = timestamp_1.Timestamp;
-var TestScheduler_1 = __webpack_require__(594);
+var TestScheduler_1 = __webpack_require__(596);
 exports.TestScheduler = TestScheduler_1.TestScheduler;
 var VirtualTimeScheduler_1 = __webpack_require__(281);
 exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
@@ -48279,11 +48817,11 @@ exports.pipe = pipe_1.pipe;
 var asap_1 = __webpack_require__(282);
 var async_1 = __webpack_require__(5);
 var queue_1 = __webpack_require__(283);
-var animationFrame_1 = __webpack_require__(591);
+var animationFrame_1 = __webpack_require__(593);
 var rxSubscriber_1 = __webpack_require__(38);
 var iterator_1 = __webpack_require__(26);
 var observable_1 = __webpack_require__(37);
-var _operators = __webpack_require__(582);
+var _operators = __webpack_require__(584);
 exports.operators = _operators;
 /* tslint:enable:no-unused-variable */
 /**
@@ -48328,7 +48866,7 @@ exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
 
 /***/ }),
-/* 312 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48383,40 +48921,40 @@ exports.Scheduler = Scheduler;
 //# sourceMappingURL=Scheduler.js.map
 
 /***/ }),
-/* 313 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var bindCallback_1 = __webpack_require__(460);
-Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
-//# sourceMappingURL=bindCallback.js.map
-
-/***/ }),
-/* 314 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var bindNodeCallback_1 = __webpack_require__(461);
-Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
-//# sourceMappingURL=bindNodeCallback.js.map
-
-/***/ }),
 /* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineLatest_1 = __webpack_require__(462);
+var bindCallback_1 = __webpack_require__(462);
+Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
+//# sourceMappingURL=bindCallback.js.map
+
+/***/ }),
+/* 316 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var bindNodeCallback_1 = __webpack_require__(463);
+Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
+//# sourceMappingURL=bindNodeCallback.js.map
+
+/***/ }),
+/* 317 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var combineLatest_1 = __webpack_require__(464);
 Observable_1.Observable.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 316 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48427,37 +48965,15 @@ Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 317 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var defer_1 = __webpack_require__(463);
-Observable_1.Observable.defer = defer_1.defer;
-//# sourceMappingURL=defer.js.map
-
-/***/ }),
-/* 318 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var ajax_1 = __webpack_require__(465);
-Observable_1.Observable.ajax = ajax_1.ajax;
-//# sourceMappingURL=ajax.js.map
-
-/***/ }),
 /* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var webSocket_1 = __webpack_require__(466);
-Observable_1.Observable.webSocket = webSocket_1.webSocket;
-//# sourceMappingURL=webSocket.js.map
+var defer_1 = __webpack_require__(465);
+Observable_1.Observable.defer = defer_1.defer;
+//# sourceMappingURL=defer.js.map
 
 /***/ }),
 /* 320 */
@@ -48466,9 +48982,9 @@ Observable_1.Observable.webSocket = webSocket_1.webSocket;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var empty_1 = __webpack_require__(467);
-Observable_1.Observable.empty = empty_1.empty;
-//# sourceMappingURL=empty.js.map
+var ajax_1 = __webpack_require__(467);
+Observable_1.Observable.ajax = ajax_1.ajax;
+//# sourceMappingURL=ajax.js.map
 
 /***/ }),
 /* 321 */
@@ -48477,12 +48993,34 @@ Observable_1.Observable.empty = empty_1.empty;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var forkJoin_1 = __webpack_require__(468);
+var webSocket_1 = __webpack_require__(468);
+Observable_1.Observable.webSocket = webSocket_1.webSocket;
+//# sourceMappingURL=webSocket.js.map
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var empty_1 = __webpack_require__(469);
+Observable_1.Observable.empty = empty_1.empty;
+//# sourceMappingURL=empty.js.map
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var forkJoin_1 = __webpack_require__(470);
 Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 //# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
-/* 322 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48493,37 +49031,15 @@ Observable_1.Observable.from = from_1.from;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
-/* 323 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var fromEvent_1 = __webpack_require__(469);
-Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
-//# sourceMappingURL=fromEvent.js.map
-
-/***/ }),
-/* 324 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var fromEventPattern_1 = __webpack_require__(470);
-Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
-//# sourceMappingURL=fromEventPattern.js.map
-
-/***/ }),
 /* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var fromPromise_1 = __webpack_require__(471);
-Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
-//# sourceMappingURL=fromPromise.js.map
+var fromEvent_1 = __webpack_require__(471);
+Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
+//# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
 /* 326 */
@@ -48532,9 +49048,9 @@ Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var generate_1 = __webpack_require__(472);
-Observable_1.Observable.generate = generate_1.generate;
-//# sourceMappingURL=generate.js.map
+var fromEventPattern_1 = __webpack_require__(472);
+Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
+//# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
 /* 327 */
@@ -48543,9 +49059,9 @@ Observable_1.Observable.generate = generate_1.generate;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var if_1 = __webpack_require__(473);
-Observable_1.Observable.if = if_1._if;
-//# sourceMappingURL=if.js.map
+var fromPromise_1 = __webpack_require__(473);
+Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
+//# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
 /* 328 */
@@ -48554,12 +49070,34 @@ Observable_1.Observable.if = if_1._if;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var interval_1 = __webpack_require__(474);
+var generate_1 = __webpack_require__(474);
+Observable_1.Observable.generate = generate_1.generate;
+//# sourceMappingURL=generate.js.map
+
+/***/ }),
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var if_1 = __webpack_require__(475);
+Observable_1.Observable.if = if_1._if;
+//# sourceMappingURL=if.js.map
+
+/***/ }),
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var interval_1 = __webpack_require__(476);
 Observable_1.Observable.interval = interval_1.interval;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
-/* 329 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48570,18 +49108,18 @@ Observable_1.Observable.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-/* 330 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var never_1 = __webpack_require__(475);
+var never_1 = __webpack_require__(477);
 Observable_1.Observable.never = never_1.never;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
-/* 331 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48592,29 +49130,29 @@ Observable_1.Observable.of = of_1.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
-/* 332 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var onErrorResumeNext_1 = __webpack_require__(476);
+var onErrorResumeNext_1 = __webpack_require__(478);
 Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 333 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pairs_1 = __webpack_require__(477);
+var pairs_1 = __webpack_require__(479);
 Observable_1.Observable.pairs = pairs_1.pairs;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
-/* 334 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48625,29 +49163,29 @@ Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 335 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var range_1 = __webpack_require__(478);
+var range_1 = __webpack_require__(480);
 Observable_1.Observable.range = range_1.range;
 //# sourceMappingURL=range.js.map
 
 /***/ }),
-/* 336 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var throw_1 = __webpack_require__(479);
+var throw_1 = __webpack_require__(481);
 Observable_1.Observable.throw = throw_1._throw;
 //# sourceMappingURL=throw.js.map
 
 /***/ }),
-/* 337 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48658,37 +49196,15 @@ Observable_1.Observable.timer = timer_1.timer;
 //# sourceMappingURL=timer.js.map
 
 /***/ }),
-/* 338 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var using_1 = __webpack_require__(480);
-Observable_1.Observable.using = using_1.using;
-//# sourceMappingURL=using.js.map
-
-/***/ }),
-/* 339 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var zip_1 = __webpack_require__(481);
-Observable_1.Observable.zip = zip_1.zip;
-//# sourceMappingURL=zip.js.map
-
-/***/ }),
 /* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var audit_1 = __webpack_require__(482);
-Observable_1.Observable.prototype.audit = audit_1.audit;
-//# sourceMappingURL=audit.js.map
+var using_1 = __webpack_require__(482);
+Observable_1.Observable.using = using_1.using;
+//# sourceMappingURL=using.js.map
 
 /***/ }),
 /* 341 */
@@ -48697,9 +49213,9 @@ Observable_1.Observable.prototype.audit = audit_1.audit;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var auditTime_1 = __webpack_require__(483);
-Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
-//# sourceMappingURL=auditTime.js.map
+var zip_1 = __webpack_require__(483);
+Observable_1.Observable.zip = zip_1.zip;
+//# sourceMappingURL=zip.js.map
 
 /***/ }),
 /* 342 */
@@ -48708,9 +49224,9 @@ Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var buffer_1 = __webpack_require__(484);
-Observable_1.Observable.prototype.buffer = buffer_1.buffer;
-//# sourceMappingURL=buffer.js.map
+var audit_1 = __webpack_require__(484);
+Observable_1.Observable.prototype.audit = audit_1.audit;
+//# sourceMappingURL=audit.js.map
 
 /***/ }),
 /* 343 */
@@ -48719,9 +49235,9 @@ Observable_1.Observable.prototype.buffer = buffer_1.buffer;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferCount_1 = __webpack_require__(485);
-Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
-//# sourceMappingURL=bufferCount.js.map
+var auditTime_1 = __webpack_require__(485);
+Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
+//# sourceMappingURL=auditTime.js.map
 
 /***/ }),
 /* 344 */
@@ -48730,9 +49246,9 @@ Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferTime_1 = __webpack_require__(486);
-Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
-//# sourceMappingURL=bufferTime.js.map
+var buffer_1 = __webpack_require__(486);
+Observable_1.Observable.prototype.buffer = buffer_1.buffer;
+//# sourceMappingURL=buffer.js.map
 
 /***/ }),
 /* 345 */
@@ -48741,9 +49257,9 @@ Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferToggle_1 = __webpack_require__(487);
-Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
-//# sourceMappingURL=bufferToggle.js.map
+var bufferCount_1 = __webpack_require__(487);
+Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
+//# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
 /* 346 */
@@ -48752,9 +49268,9 @@ Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferWhen_1 = __webpack_require__(488);
-Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
-//# sourceMappingURL=bufferWhen.js.map
+var bufferTime_1 = __webpack_require__(488);
+Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
+//# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
 /* 347 */
@@ -48763,10 +49279,9 @@ Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var catch_1 = __webpack_require__(489);
-Observable_1.Observable.prototype.catch = catch_1._catch;
-Observable_1.Observable.prototype._catch = catch_1._catch;
-//# sourceMappingURL=catch.js.map
+var bufferToggle_1 = __webpack_require__(489);
+Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
+//# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
 /* 348 */
@@ -48775,9 +49290,9 @@ Observable_1.Observable.prototype._catch = catch_1._catch;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineAll_1 = __webpack_require__(490);
-Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
-//# sourceMappingURL=combineAll.js.map
+var bufferWhen_1 = __webpack_require__(490);
+Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
+//# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
 /* 349 */
@@ -48786,9 +49301,10 @@ Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineLatest_1 = __webpack_require__(491);
-Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
-//# sourceMappingURL=combineLatest.js.map
+var catch_1 = __webpack_require__(491);
+Observable_1.Observable.prototype.catch = catch_1._catch;
+Observable_1.Observable.prototype._catch = catch_1._catch;
+//# sourceMappingURL=catch.js.map
 
 /***/ }),
 /* 350 */
@@ -48797,9 +49313,9 @@ Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concat_1 = __webpack_require__(492);
-Observable_1.Observable.prototype.concat = concat_1.concat;
-//# sourceMappingURL=concat.js.map
+var combineAll_1 = __webpack_require__(492);
+Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
+//# sourceMappingURL=combineAll.js.map
 
 /***/ }),
 /* 351 */
@@ -48808,9 +49324,9 @@ Observable_1.Observable.prototype.concat = concat_1.concat;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatAll_1 = __webpack_require__(493);
-Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
-//# sourceMappingURL=concatAll.js.map
+var combineLatest_1 = __webpack_require__(493);
+Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
+//# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
 /* 352 */
@@ -48819,9 +49335,9 @@ Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatMap_1 = __webpack_require__(494);
-Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
-//# sourceMappingURL=concatMap.js.map
+var concat_1 = __webpack_require__(494);
+Observable_1.Observable.prototype.concat = concat_1.concat;
+//# sourceMappingURL=concat.js.map
 
 /***/ }),
 /* 353 */
@@ -48830,9 +49346,9 @@ Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatMapTo_1 = __webpack_require__(495);
-Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
-//# sourceMappingURL=concatMapTo.js.map
+var concatAll_1 = __webpack_require__(495);
+Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
+//# sourceMappingURL=concatAll.js.map
 
 /***/ }),
 /* 354 */
@@ -48841,9 +49357,9 @@ Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var count_1 = __webpack_require__(496);
-Observable_1.Observable.prototype.count = count_1.count;
-//# sourceMappingURL=count.js.map
+var concatMap_1 = __webpack_require__(496);
+Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
+//# sourceMappingURL=concatMap.js.map
 
 /***/ }),
 /* 355 */
@@ -48852,9 +49368,9 @@ Observable_1.Observable.prototype.count = count_1.count;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var debounce_1 = __webpack_require__(497);
-Observable_1.Observable.prototype.debounce = debounce_1.debounce;
-//# sourceMappingURL=debounce.js.map
+var concatMapTo_1 = __webpack_require__(497);
+Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
+//# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
 /* 356 */
@@ -48863,9 +49379,9 @@ Observable_1.Observable.prototype.debounce = debounce_1.debounce;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var debounceTime_1 = __webpack_require__(498);
-Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
-//# sourceMappingURL=debounceTime.js.map
+var count_1 = __webpack_require__(498);
+Observable_1.Observable.prototype.count = count_1.count;
+//# sourceMappingURL=count.js.map
 
 /***/ }),
 /* 357 */
@@ -48874,9 +49390,9 @@ Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var defaultIfEmpty_1 = __webpack_require__(499);
-Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-//# sourceMappingURL=defaultIfEmpty.js.map
+var debounce_1 = __webpack_require__(499);
+Observable_1.Observable.prototype.debounce = debounce_1.debounce;
+//# sourceMappingURL=debounce.js.map
 
 /***/ }),
 /* 358 */
@@ -48885,9 +49401,9 @@ Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmp
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var delay_1 = __webpack_require__(500);
-Observable_1.Observable.prototype.delay = delay_1.delay;
-//# sourceMappingURL=delay.js.map
+var debounceTime_1 = __webpack_require__(500);
+Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
+//# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
 /* 359 */
@@ -48896,9 +49412,9 @@ Observable_1.Observable.prototype.delay = delay_1.delay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var delayWhen_1 = __webpack_require__(501);
-Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
-//# sourceMappingURL=delayWhen.js.map
+var defaultIfEmpty_1 = __webpack_require__(501);
+Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
+//# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
 /* 360 */
@@ -48907,9 +49423,9 @@ Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var dematerialize_1 = __webpack_require__(502);
-Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
-//# sourceMappingURL=dematerialize.js.map
+var delay_1 = __webpack_require__(502);
+Observable_1.Observable.prototype.delay = delay_1.delay;
+//# sourceMappingURL=delay.js.map
 
 /***/ }),
 /* 361 */
@@ -48918,9 +49434,9 @@ Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinct_1 = __webpack_require__(503);
-Observable_1.Observable.prototype.distinct = distinct_1.distinct;
-//# sourceMappingURL=distinct.js.map
+var delayWhen_1 = __webpack_require__(503);
+Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
+//# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
 /* 362 */
@@ -48929,9 +49445,9 @@ Observable_1.Observable.prototype.distinct = distinct_1.distinct;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinctUntilChanged_1 = __webpack_require__(504);
-Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-//# sourceMappingURL=distinctUntilChanged.js.map
+var dematerialize_1 = __webpack_require__(504);
+Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
+//# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
 /* 363 */
@@ -48940,9 +49456,9 @@ Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinctUntilKeyChanged_1 = __webpack_require__(505);
-Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-//# sourceMappingURL=distinctUntilKeyChanged.js.map
+var distinct_1 = __webpack_require__(505);
+Observable_1.Observable.prototype.distinct = distinct_1.distinct;
+//# sourceMappingURL=distinct.js.map
 
 /***/ }),
 /* 364 */
@@ -48951,10 +49467,9 @@ Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChan
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var do_1 = __webpack_require__(506);
-Observable_1.Observable.prototype.do = do_1._do;
-Observable_1.Observable.prototype._do = do_1._do;
-//# sourceMappingURL=do.js.map
+var distinctUntilChanged_1 = __webpack_require__(506);
+Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
+//# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
 /* 365 */
@@ -48963,9 +49478,9 @@ Observable_1.Observable.prototype._do = do_1._do;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var elementAt_1 = __webpack_require__(507);
-Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
-//# sourceMappingURL=elementAt.js.map
+var distinctUntilKeyChanged_1 = __webpack_require__(507);
+Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
+//# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
 /* 366 */
@@ -48974,9 +49489,10 @@ Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var every_1 = __webpack_require__(508);
-Observable_1.Observable.prototype.every = every_1.every;
-//# sourceMappingURL=every.js.map
+var do_1 = __webpack_require__(508);
+Observable_1.Observable.prototype.do = do_1._do;
+Observable_1.Observable.prototype._do = do_1._do;
+//# sourceMappingURL=do.js.map
 
 /***/ }),
 /* 367 */
@@ -48985,9 +49501,9 @@ Observable_1.Observable.prototype.every = every_1.every;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var exhaust_1 = __webpack_require__(509);
-Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
-//# sourceMappingURL=exhaust.js.map
+var elementAt_1 = __webpack_require__(509);
+Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
+//# sourceMappingURL=elementAt.js.map
 
 /***/ }),
 /* 368 */
@@ -48996,9 +49512,9 @@ Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var exhaustMap_1 = __webpack_require__(510);
-Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
-//# sourceMappingURL=exhaustMap.js.map
+var every_1 = __webpack_require__(510);
+Observable_1.Observable.prototype.every = every_1.every;
+//# sourceMappingURL=every.js.map
 
 /***/ }),
 /* 369 */
@@ -49007,9 +49523,9 @@ Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var expand_1 = __webpack_require__(511);
-Observable_1.Observable.prototype.expand = expand_1.expand;
-//# sourceMappingURL=expand.js.map
+var exhaust_1 = __webpack_require__(511);
+Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
+//# sourceMappingURL=exhaust.js.map
 
 /***/ }),
 /* 370 */
@@ -49018,9 +49534,9 @@ Observable_1.Observable.prototype.expand = expand_1.expand;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var filter_1 = __webpack_require__(512);
-Observable_1.Observable.prototype.filter = filter_1.filter;
-//# sourceMappingURL=filter.js.map
+var exhaustMap_1 = __webpack_require__(512);
+Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
+//# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
 /* 371 */
@@ -49029,10 +49545,9 @@ Observable_1.Observable.prototype.filter = filter_1.filter;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var finally_1 = __webpack_require__(513);
-Observable_1.Observable.prototype.finally = finally_1._finally;
-Observable_1.Observable.prototype._finally = finally_1._finally;
-//# sourceMappingURL=finally.js.map
+var expand_1 = __webpack_require__(513);
+Observable_1.Observable.prototype.expand = expand_1.expand;
+//# sourceMappingURL=expand.js.map
 
 /***/ }),
 /* 372 */
@@ -49041,9 +49556,9 @@ Observable_1.Observable.prototype._finally = finally_1._finally;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var find_1 = __webpack_require__(514);
-Observable_1.Observable.prototype.find = find_1.find;
-//# sourceMappingURL=find.js.map
+var filter_1 = __webpack_require__(514);
+Observable_1.Observable.prototype.filter = filter_1.filter;
+//# sourceMappingURL=filter.js.map
 
 /***/ }),
 /* 373 */
@@ -49052,9 +49567,10 @@ Observable_1.Observable.prototype.find = find_1.find;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var findIndex_1 = __webpack_require__(515);
-Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
-//# sourceMappingURL=findIndex.js.map
+var finally_1 = __webpack_require__(515);
+Observable_1.Observable.prototype.finally = finally_1._finally;
+Observable_1.Observable.prototype._finally = finally_1._finally;
+//# sourceMappingURL=finally.js.map
 
 /***/ }),
 /* 374 */
@@ -49063,9 +49579,9 @@ Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var first_1 = __webpack_require__(516);
-Observable_1.Observable.prototype.first = first_1.first;
-//# sourceMappingURL=first.js.map
+var find_1 = __webpack_require__(516);
+Observable_1.Observable.prototype.find = find_1.find;
+//# sourceMappingURL=find.js.map
 
 /***/ }),
 /* 375 */
@@ -49074,9 +49590,9 @@ Observable_1.Observable.prototype.first = first_1.first;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var groupBy_1 = __webpack_require__(517);
-Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
-//# sourceMappingURL=groupBy.js.map
+var findIndex_1 = __webpack_require__(517);
+Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
+//# sourceMappingURL=findIndex.js.map
 
 /***/ }),
 /* 376 */
@@ -49085,9 +49601,9 @@ Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var ignoreElements_1 = __webpack_require__(518);
-Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
-//# sourceMappingURL=ignoreElements.js.map
+var first_1 = __webpack_require__(518);
+Observable_1.Observable.prototype.first = first_1.first;
+//# sourceMappingURL=first.js.map
 
 /***/ }),
 /* 377 */
@@ -49096,9 +49612,9 @@ Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElemen
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var isEmpty_1 = __webpack_require__(519);
-Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
-//# sourceMappingURL=isEmpty.js.map
+var groupBy_1 = __webpack_require__(519);
+Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
+//# sourceMappingURL=groupBy.js.map
 
 /***/ }),
 /* 378 */
@@ -49107,9 +49623,9 @@ Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var last_1 = __webpack_require__(520);
-Observable_1.Observable.prototype.last = last_1.last;
-//# sourceMappingURL=last.js.map
+var ignoreElements_1 = __webpack_require__(520);
+Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
+//# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
 /* 379 */
@@ -49118,10 +49634,9 @@ Observable_1.Observable.prototype.last = last_1.last;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var let_1 = __webpack_require__(521);
-Observable_1.Observable.prototype.let = let_1.letProto;
-Observable_1.Observable.prototype.letBind = let_1.letProto;
-//# sourceMappingURL=let.js.map
+var isEmpty_1 = __webpack_require__(521);
+Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
+//# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
 /* 380 */
@@ -49130,9 +49645,9 @@ Observable_1.Observable.prototype.letBind = let_1.letProto;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var map_1 = __webpack_require__(522);
-Observable_1.Observable.prototype.map = map_1.map;
-//# sourceMappingURL=map.js.map
+var last_1 = __webpack_require__(522);
+Observable_1.Observable.prototype.last = last_1.last;
+//# sourceMappingURL=last.js.map
 
 /***/ }),
 /* 381 */
@@ -49141,9 +49656,10 @@ Observable_1.Observable.prototype.map = map_1.map;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mapTo_1 = __webpack_require__(523);
-Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
-//# sourceMappingURL=mapTo.js.map
+var let_1 = __webpack_require__(523);
+Observable_1.Observable.prototype.let = let_1.letProto;
+Observable_1.Observable.prototype.letBind = let_1.letProto;
+//# sourceMappingURL=let.js.map
 
 /***/ }),
 /* 382 */
@@ -49152,9 +49668,9 @@ Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var materialize_1 = __webpack_require__(524);
-Observable_1.Observable.prototype.materialize = materialize_1.materialize;
-//# sourceMappingURL=materialize.js.map
+var map_1 = __webpack_require__(524);
+Observable_1.Observable.prototype.map = map_1.map;
+//# sourceMappingURL=map.js.map
 
 /***/ }),
 /* 383 */
@@ -49163,9 +49679,9 @@ Observable_1.Observable.prototype.materialize = materialize_1.materialize;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var max_1 = __webpack_require__(525);
-Observable_1.Observable.prototype.max = max_1.max;
-//# sourceMappingURL=max.js.map
+var mapTo_1 = __webpack_require__(525);
+Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
+//# sourceMappingURL=mapTo.js.map
 
 /***/ }),
 /* 384 */
@@ -49174,9 +49690,9 @@ Observable_1.Observable.prototype.max = max_1.max;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var merge_1 = __webpack_require__(526);
-Observable_1.Observable.prototype.merge = merge_1.merge;
-//# sourceMappingURL=merge.js.map
+var materialize_1 = __webpack_require__(526);
+Observable_1.Observable.prototype.materialize = materialize_1.materialize;
+//# sourceMappingURL=materialize.js.map
 
 /***/ }),
 /* 385 */
@@ -49185,9 +49701,9 @@ Observable_1.Observable.prototype.merge = merge_1.merge;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeAll_1 = __webpack_require__(527);
-Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
-//# sourceMappingURL=mergeAll.js.map
+var max_1 = __webpack_require__(527);
+Observable_1.Observable.prototype.max = max_1.max;
+//# sourceMappingURL=max.js.map
 
 /***/ }),
 /* 386 */
@@ -49196,10 +49712,9 @@ Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeMap_1 = __webpack_require__(528);
-Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
-Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
-//# sourceMappingURL=mergeMap.js.map
+var merge_1 = __webpack_require__(528);
+Observable_1.Observable.prototype.merge = merge_1.merge;
+//# sourceMappingURL=merge.js.map
 
 /***/ }),
 /* 387 */
@@ -49208,10 +49723,9 @@ Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeMapTo_1 = __webpack_require__(529);
-Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
-Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
-//# sourceMappingURL=mergeMapTo.js.map
+var mergeAll_1 = __webpack_require__(529);
+Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
+//# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
 /* 388 */
@@ -49220,9 +49734,10 @@ Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeScan_1 = __webpack_require__(530);
-Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
-//# sourceMappingURL=mergeScan.js.map
+var mergeMap_1 = __webpack_require__(530);
+Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
+Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
+//# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
 /* 389 */
@@ -49231,9 +49746,10 @@ Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var min_1 = __webpack_require__(531);
-Observable_1.Observable.prototype.min = min_1.min;
-//# sourceMappingURL=min.js.map
+var mergeMapTo_1 = __webpack_require__(531);
+Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
+Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
+//# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
 /* 390 */
@@ -49242,9 +49758,9 @@ Observable_1.Observable.prototype.min = min_1.min;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var multicast_1 = __webpack_require__(532);
-Observable_1.Observable.prototype.multicast = multicast_1.multicast;
-//# sourceMappingURL=multicast.js.map
+var mergeScan_1 = __webpack_require__(532);
+Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
+//# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
 /* 391 */
@@ -49253,9 +49769,9 @@ Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var observeOn_1 = __webpack_require__(533);
-Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
-//# sourceMappingURL=observeOn.js.map
+var min_1 = __webpack_require__(533);
+Observable_1.Observable.prototype.min = min_1.min;
+//# sourceMappingURL=min.js.map
 
 /***/ }),
 /* 392 */
@@ -49264,9 +49780,9 @@ Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var onErrorResumeNext_1 = __webpack_require__(534);
-Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-//# sourceMappingURL=onErrorResumeNext.js.map
+var multicast_1 = __webpack_require__(534);
+Observable_1.Observable.prototype.multicast = multicast_1.multicast;
+//# sourceMappingURL=multicast.js.map
 
 /***/ }),
 /* 393 */
@@ -49275,9 +49791,9 @@ Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErro
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pairwise_1 = __webpack_require__(535);
-Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
-//# sourceMappingURL=pairwise.js.map
+var observeOn_1 = __webpack_require__(535);
+Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
+//# sourceMappingURL=observeOn.js.map
 
 /***/ }),
 /* 394 */
@@ -49286,9 +49802,9 @@ Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var partition_1 = __webpack_require__(536);
-Observable_1.Observable.prototype.partition = partition_1.partition;
-//# sourceMappingURL=partition.js.map
+var onErrorResumeNext_1 = __webpack_require__(536);
+Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+//# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
 /* 395 */
@@ -49297,9 +49813,9 @@ Observable_1.Observable.prototype.partition = partition_1.partition;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pluck_1 = __webpack_require__(537);
-Observable_1.Observable.prototype.pluck = pluck_1.pluck;
-//# sourceMappingURL=pluck.js.map
+var pairwise_1 = __webpack_require__(537);
+Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
+//# sourceMappingURL=pairwise.js.map
 
 /***/ }),
 /* 396 */
@@ -49308,9 +49824,9 @@ Observable_1.Observable.prototype.pluck = pluck_1.pluck;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publish_1 = __webpack_require__(538);
-Observable_1.Observable.prototype.publish = publish_1.publish;
-//# sourceMappingURL=publish.js.map
+var partition_1 = __webpack_require__(538);
+Observable_1.Observable.prototype.partition = partition_1.partition;
+//# sourceMappingURL=partition.js.map
 
 /***/ }),
 /* 397 */
@@ -49319,9 +49835,9 @@ Observable_1.Observable.prototype.publish = publish_1.publish;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishBehavior_1 = __webpack_require__(539);
-Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
-//# sourceMappingURL=publishBehavior.js.map
+var pluck_1 = __webpack_require__(539);
+Observable_1.Observable.prototype.pluck = pluck_1.pluck;
+//# sourceMappingURL=pluck.js.map
 
 /***/ }),
 /* 398 */
@@ -49330,9 +49846,9 @@ Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBeh
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishLast_1 = __webpack_require__(540);
-Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
-//# sourceMappingURL=publishLast.js.map
+var publish_1 = __webpack_require__(540);
+Observable_1.Observable.prototype.publish = publish_1.publish;
+//# sourceMappingURL=publish.js.map
 
 /***/ }),
 /* 399 */
@@ -49341,9 +49857,9 @@ Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishReplay_1 = __webpack_require__(541);
-Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
-//# sourceMappingURL=publishReplay.js.map
+var publishBehavior_1 = __webpack_require__(541);
+Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
+//# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
 /* 400 */
@@ -49352,9 +49868,9 @@ Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var race_1 = __webpack_require__(542);
-Observable_1.Observable.prototype.race = race_1.race;
-//# sourceMappingURL=race.js.map
+var publishLast_1 = __webpack_require__(542);
+Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
+//# sourceMappingURL=publishLast.js.map
 
 /***/ }),
 /* 401 */
@@ -49363,9 +49879,9 @@ Observable_1.Observable.prototype.race = race_1.race;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var reduce_1 = __webpack_require__(543);
-Observable_1.Observable.prototype.reduce = reduce_1.reduce;
-//# sourceMappingURL=reduce.js.map
+var publishReplay_1 = __webpack_require__(543);
+Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
+//# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
 /* 402 */
@@ -49374,9 +49890,9 @@ Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var repeat_1 = __webpack_require__(544);
-Observable_1.Observable.prototype.repeat = repeat_1.repeat;
-//# sourceMappingURL=repeat.js.map
+var race_1 = __webpack_require__(544);
+Observable_1.Observable.prototype.race = race_1.race;
+//# sourceMappingURL=race.js.map
 
 /***/ }),
 /* 403 */
@@ -49385,9 +49901,9 @@ Observable_1.Observable.prototype.repeat = repeat_1.repeat;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var repeatWhen_1 = __webpack_require__(545);
-Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
-//# sourceMappingURL=repeatWhen.js.map
+var reduce_1 = __webpack_require__(545);
+Observable_1.Observable.prototype.reduce = reduce_1.reduce;
+//# sourceMappingURL=reduce.js.map
 
 /***/ }),
 /* 404 */
@@ -49396,9 +49912,9 @@ Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var retry_1 = __webpack_require__(546);
-Observable_1.Observable.prototype.retry = retry_1.retry;
-//# sourceMappingURL=retry.js.map
+var repeat_1 = __webpack_require__(546);
+Observable_1.Observable.prototype.repeat = repeat_1.repeat;
+//# sourceMappingURL=repeat.js.map
 
 /***/ }),
 /* 405 */
@@ -49407,9 +49923,9 @@ Observable_1.Observable.prototype.retry = retry_1.retry;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var retryWhen_1 = __webpack_require__(547);
-Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
-//# sourceMappingURL=retryWhen.js.map
+var repeatWhen_1 = __webpack_require__(547);
+Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
+//# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
 /* 406 */
@@ -49418,9 +49934,9 @@ Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sample_1 = __webpack_require__(548);
-Observable_1.Observable.prototype.sample = sample_1.sample;
-//# sourceMappingURL=sample.js.map
+var retry_1 = __webpack_require__(548);
+Observable_1.Observable.prototype.retry = retry_1.retry;
+//# sourceMappingURL=retry.js.map
 
 /***/ }),
 /* 407 */
@@ -49429,9 +49945,9 @@ Observable_1.Observable.prototype.sample = sample_1.sample;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sampleTime_1 = __webpack_require__(549);
-Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
-//# sourceMappingURL=sampleTime.js.map
+var retryWhen_1 = __webpack_require__(549);
+Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
+//# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
 /* 408 */
@@ -49440,9 +49956,9 @@ Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var scan_1 = __webpack_require__(550);
-Observable_1.Observable.prototype.scan = scan_1.scan;
-//# sourceMappingURL=scan.js.map
+var sample_1 = __webpack_require__(550);
+Observable_1.Observable.prototype.sample = sample_1.sample;
+//# sourceMappingURL=sample.js.map
 
 /***/ }),
 /* 409 */
@@ -49451,9 +49967,9 @@ Observable_1.Observable.prototype.scan = scan_1.scan;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sequenceEqual_1 = __webpack_require__(551);
-Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
-//# sourceMappingURL=sequenceEqual.js.map
+var sampleTime_1 = __webpack_require__(551);
+Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
+//# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
 /* 410 */
@@ -49462,9 +49978,9 @@ Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var share_1 = __webpack_require__(552);
-Observable_1.Observable.prototype.share = share_1.share;
-//# sourceMappingURL=share.js.map
+var scan_1 = __webpack_require__(552);
+Observable_1.Observable.prototype.scan = scan_1.scan;
+//# sourceMappingURL=scan.js.map
 
 /***/ }),
 /* 411 */
@@ -49473,9 +49989,9 @@ Observable_1.Observable.prototype.share = share_1.share;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var shareReplay_1 = __webpack_require__(553);
-Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
-//# sourceMappingURL=shareReplay.js.map
+var sequenceEqual_1 = __webpack_require__(553);
+Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
+//# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
 /* 412 */
@@ -49484,9 +50000,9 @@ Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var single_1 = __webpack_require__(554);
-Observable_1.Observable.prototype.single = single_1.single;
-//# sourceMappingURL=single.js.map
+var share_1 = __webpack_require__(554);
+Observable_1.Observable.prototype.share = share_1.share;
+//# sourceMappingURL=share.js.map
 
 /***/ }),
 /* 413 */
@@ -49495,9 +50011,9 @@ Observable_1.Observable.prototype.single = single_1.single;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skip_1 = __webpack_require__(555);
-Observable_1.Observable.prototype.skip = skip_1.skip;
-//# sourceMappingURL=skip.js.map
+var shareReplay_1 = __webpack_require__(555);
+Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
+//# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
 /* 414 */
@@ -49506,9 +50022,9 @@ Observable_1.Observable.prototype.skip = skip_1.skip;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipLast_1 = __webpack_require__(556);
-Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
-//# sourceMappingURL=skipLast.js.map
+var single_1 = __webpack_require__(556);
+Observable_1.Observable.prototype.single = single_1.single;
+//# sourceMappingURL=single.js.map
 
 /***/ }),
 /* 415 */
@@ -49517,9 +50033,9 @@ Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipUntil_1 = __webpack_require__(557);
-Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
-//# sourceMappingURL=skipUntil.js.map
+var skip_1 = __webpack_require__(557);
+Observable_1.Observable.prototype.skip = skip_1.skip;
+//# sourceMappingURL=skip.js.map
 
 /***/ }),
 /* 416 */
@@ -49528,9 +50044,9 @@ Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipWhile_1 = __webpack_require__(558);
-Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
-//# sourceMappingURL=skipWhile.js.map
+var skipLast_1 = __webpack_require__(558);
+Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
+//# sourceMappingURL=skipLast.js.map
 
 /***/ }),
 /* 417 */
@@ -49539,9 +50055,9 @@ Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var startWith_1 = __webpack_require__(559);
-Observable_1.Observable.prototype.startWith = startWith_1.startWith;
-//# sourceMappingURL=startWith.js.map
+var skipUntil_1 = __webpack_require__(559);
+Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
+//# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
 /* 418 */
@@ -49550,9 +50066,9 @@ Observable_1.Observable.prototype.startWith = startWith_1.startWith;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var subscribeOn_1 = __webpack_require__(560);
-Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
-//# sourceMappingURL=subscribeOn.js.map
+var skipWhile_1 = __webpack_require__(560);
+Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
+//# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
 /* 419 */
@@ -49561,10 +50077,9 @@ Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switch_1 = __webpack_require__(561);
-Observable_1.Observable.prototype.switch = switch_1._switch;
-Observable_1.Observable.prototype._switch = switch_1._switch;
-//# sourceMappingURL=switch.js.map
+var startWith_1 = __webpack_require__(561);
+Observable_1.Observable.prototype.startWith = startWith_1.startWith;
+//# sourceMappingURL=startWith.js.map
 
 /***/ }),
 /* 420 */
@@ -49573,9 +50088,9 @@ Observable_1.Observable.prototype._switch = switch_1._switch;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switchMap_1 = __webpack_require__(562);
-Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
-//# sourceMappingURL=switchMap.js.map
+var subscribeOn_1 = __webpack_require__(562);
+Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
+//# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
 /* 421 */
@@ -49584,9 +50099,10 @@ Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switchMapTo_1 = __webpack_require__(563);
-Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
-//# sourceMappingURL=switchMapTo.js.map
+var switch_1 = __webpack_require__(563);
+Observable_1.Observable.prototype.switch = switch_1._switch;
+Observable_1.Observable.prototype._switch = switch_1._switch;
+//# sourceMappingURL=switch.js.map
 
 /***/ }),
 /* 422 */
@@ -49595,9 +50111,9 @@ Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var take_1 = __webpack_require__(564);
-Observable_1.Observable.prototype.take = take_1.take;
-//# sourceMappingURL=take.js.map
+var switchMap_1 = __webpack_require__(564);
+Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
+//# sourceMappingURL=switchMap.js.map
 
 /***/ }),
 /* 423 */
@@ -49606,9 +50122,9 @@ Observable_1.Observable.prototype.take = take_1.take;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeLast_1 = __webpack_require__(565);
-Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
-//# sourceMappingURL=takeLast.js.map
+var switchMapTo_1 = __webpack_require__(565);
+Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
+//# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
 /* 424 */
@@ -49617,9 +50133,9 @@ Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeUntil_1 = __webpack_require__(566);
-Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
-//# sourceMappingURL=takeUntil.js.map
+var take_1 = __webpack_require__(566);
+Observable_1.Observable.prototype.take = take_1.take;
+//# sourceMappingURL=take.js.map
 
 /***/ }),
 /* 425 */
@@ -49628,9 +50144,9 @@ Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeWhile_1 = __webpack_require__(567);
-Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
-//# sourceMappingURL=takeWhile.js.map
+var takeLast_1 = __webpack_require__(567);
+Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
+//# sourceMappingURL=takeLast.js.map
 
 /***/ }),
 /* 426 */
@@ -49639,9 +50155,9 @@ Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var throttle_1 = __webpack_require__(568);
-Observable_1.Observable.prototype.throttle = throttle_1.throttle;
-//# sourceMappingURL=throttle.js.map
+var takeUntil_1 = __webpack_require__(568);
+Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
+//# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
 /* 427 */
@@ -49650,12 +50166,34 @@ Observable_1.Observable.prototype.throttle = throttle_1.throttle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var throttleTime_1 = __webpack_require__(569);
+var takeWhile_1 = __webpack_require__(569);
+Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
+//# sourceMappingURL=takeWhile.js.map
+
+/***/ }),
+/* 428 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var throttle_1 = __webpack_require__(570);
+Observable_1.Observable.prototype.throttle = throttle_1.throttle;
+//# sourceMappingURL=throttle.js.map
+
+/***/ }),
+/* 429 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var throttleTime_1 = __webpack_require__(571);
 Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-/* 428 */
+/* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49666,37 +50204,15 @@ Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-/* 429 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var timeout_1 = __webpack_require__(570);
-Observable_1.Observable.prototype.timeout = timeout_1.timeout;
-//# sourceMappingURL=timeout.js.map
-
-/***/ }),
-/* 430 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var timeoutWith_1 = __webpack_require__(571);
-Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
-//# sourceMappingURL=timeoutWith.js.map
-
-/***/ }),
 /* 431 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timestamp_1 = __webpack_require__(572);
-Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
-//# sourceMappingURL=timestamp.js.map
+var timeout_1 = __webpack_require__(572);
+Observable_1.Observable.prototype.timeout = timeout_1.timeout;
+//# sourceMappingURL=timeout.js.map
 
 /***/ }),
 /* 432 */
@@ -49705,17 +50221,20 @@ Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var toArray_1 = __webpack_require__(573);
-Observable_1.Observable.prototype.toArray = toArray_1.toArray;
-//# sourceMappingURL=toArray.js.map
+var timeoutWith_1 = __webpack_require__(573);
+Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
+//# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
 /* 433 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
-// leaving this module here to prevent breakage.
-//# sourceMappingURL=toPromise.js.map
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var timestamp_1 = __webpack_require__(574);
+Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
+//# sourceMappingURL=timestamp.js.map
 
 /***/ }),
 /* 434 */
@@ -49724,20 +50243,17 @@ Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var window_1 = __webpack_require__(574);
-Observable_1.Observable.prototype.window = window_1.window;
-//# sourceMappingURL=window.js.map
+var toArray_1 = __webpack_require__(575);
+Observable_1.Observable.prototype.toArray = toArray_1.toArray;
+//# sourceMappingURL=toArray.js.map
 
 /***/ }),
 /* 435 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var windowCount_1 = __webpack_require__(575);
-Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
-//# sourceMappingURL=windowCount.js.map
+// HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
+// leaving this module here to prevent breakage.
+//# sourceMappingURL=toPromise.js.map
 
 /***/ }),
 /* 436 */
@@ -49746,9 +50262,9 @@ Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowTime_1 = __webpack_require__(576);
-Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
-//# sourceMappingURL=windowTime.js.map
+var window_1 = __webpack_require__(576);
+Observable_1.Observable.prototype.window = window_1.window;
+//# sourceMappingURL=window.js.map
 
 /***/ }),
 /* 437 */
@@ -49757,9 +50273,9 @@ Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowToggle_1 = __webpack_require__(577);
-Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
-//# sourceMappingURL=windowToggle.js.map
+var windowCount_1 = __webpack_require__(577);
+Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
+//# sourceMappingURL=windowCount.js.map
 
 /***/ }),
 /* 438 */
@@ -49768,9 +50284,9 @@ Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowWhen_1 = __webpack_require__(578);
-Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
-//# sourceMappingURL=windowWhen.js.map
+var windowTime_1 = __webpack_require__(578);
+Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
+//# sourceMappingURL=windowTime.js.map
 
 /***/ }),
 /* 439 */
@@ -49779,9 +50295,9 @@ Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var withLatestFrom_1 = __webpack_require__(579);
-Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
-//# sourceMappingURL=withLatestFrom.js.map
+var windowToggle_1 = __webpack_require__(579);
+Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
+//# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
 /* 440 */
@@ -49790,9 +50306,9 @@ Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFr
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var zip_1 = __webpack_require__(580);
-Observable_1.Observable.prototype.zip = zip_1.zipProto;
-//# sourceMappingURL=zip.js.map
+var windowWhen_1 = __webpack_require__(580);
+Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
+//# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
 /* 441 */
@@ -49801,12 +50317,34 @@ Observable_1.Observable.prototype.zip = zip_1.zipProto;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var zipAll_1 = __webpack_require__(581);
+var withLatestFrom_1 = __webpack_require__(581);
+Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
+//# sourceMappingURL=withLatestFrom.js.map
+
+/***/ }),
+/* 442 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var zip_1 = __webpack_require__(582);
+Observable_1.Observable.prototype.zip = zip_1.zipProto;
+//# sourceMappingURL=zip.js.map
+
+/***/ }),
+/* 443 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var zipAll_1 = __webpack_require__(583);
 Observable_1.Observable.prototype.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-/* 442 */
+/* 444 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49882,7 +50420,7 @@ exports.ArrayLikeObservable = ArrayLikeObservable;
 //# sourceMappingURL=ArrayLikeObservable.js.map
 
 /***/ }),
-/* 443 */
+/* 445 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50152,7 +50690,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundCallbackObservable.js.map
 
 /***/ }),
-/* 444 */
+/* 446 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50421,7 +50959,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundNodeCallbackObservable.js.map
 
 /***/ }),
-/* 445 */
+/* 447 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50526,7 +51064,7 @@ var DeferSubscriber = (function (_super) {
 //# sourceMappingURL=DeferObservable.js.map
 
 /***/ }),
-/* 446 */
+/* 448 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50615,7 +51153,7 @@ exports.ErrorObservable = ErrorObservable;
 //# sourceMappingURL=ErrorObservable.js.map
 
 /***/ }),
-/* 447 */
+/* 449 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50823,7 +51361,7 @@ var ForkJoinSubscriber = (function (_super) {
 //# sourceMappingURL=ForkJoinObservable.js.map
 
 /***/ }),
-/* 448 */
+/* 450 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51045,7 +51583,7 @@ exports.FromEventObservable = FromEventObservable;
 //# sourceMappingURL=FromEventObservable.js.map
 
 /***/ }),
-/* 449 */
+/* 451 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51164,7 +51702,7 @@ exports.FromEventPatternObservable = FromEventPatternObservable;
 //# sourceMappingURL=FromEventPatternObservable.js.map
 
 /***/ }),
-/* 450 */
+/* 452 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51305,7 +51843,7 @@ exports.GenerateObservable = GenerateObservable;
 //# sourceMappingURL=GenerateObservable.js.map
 
 /***/ }),
-/* 451 */
+/* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51372,7 +51910,7 @@ var IfSubscriber = (function (_super) {
 //# sourceMappingURL=IfObservable.js.map
 
 /***/ }),
-/* 452 */
+/* 454 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51466,7 +52004,7 @@ exports.IntervalObservable = IntervalObservable;
 //# sourceMappingURL=IntervalObservable.js.map
 
 /***/ }),
-/* 453 */
+/* 455 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51635,7 +52173,7 @@ function sign(value) {
 //# sourceMappingURL=IteratorObservable.js.map
 
 /***/ }),
-/* 454 */
+/* 456 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51700,7 +52238,7 @@ exports.NeverObservable = NeverObservable;
 //# sourceMappingURL=NeverObservable.js.map
 
 /***/ }),
-/* 455 */
+/* 457 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51791,7 +52329,7 @@ exports.PairsObservable = PairsObservable;
 //# sourceMappingURL=PairsObservable.js.map
 
 /***/ }),
-/* 456 */
+/* 458 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51893,7 +52431,7 @@ exports.RangeObservable = RangeObservable;
 //# sourceMappingURL=RangeObservable.js.map
 
 /***/ }),
-/* 457 */
+/* 459 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51950,7 +52488,7 @@ exports.SubscribeOnObservable = SubscribeOnObservable;
 //# sourceMappingURL=SubscribeOnObservable.js.map
 
 /***/ }),
-/* 458 */
+/* 460 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52063,7 +52601,7 @@ exports.TimerObservable = TimerObservable;
 //# sourceMappingURL=TimerObservable.js.map
 
 /***/ }),
-/* 459 */
+/* 461 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52130,27 +52668,27 @@ var UsingSubscriber = (function (_super) {
 //# sourceMappingURL=UsingObservable.js.map
 
 /***/ }),
-/* 460 */
+/* 462 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var BoundCallbackObservable_1 = __webpack_require__(443);
+var BoundCallbackObservable_1 = __webpack_require__(445);
 exports.bindCallback = BoundCallbackObservable_1.BoundCallbackObservable.create;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
-/* 461 */
+/* 463 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var BoundNodeCallbackObservable_1 = __webpack_require__(444);
+var BoundNodeCallbackObservable_1 = __webpack_require__(446);
 exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObservable.create;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
-/* 462 */
+/* 464 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52292,17 +52830,17 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 463 */
+/* 465 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var DeferObservable_1 = __webpack_require__(445);
+var DeferObservable_1 = __webpack_require__(447);
 exports.defer = DeferObservable_1.DeferObservable.create;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
-/* 464 */
+/* 466 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52320,7 +52858,7 @@ var root_1 = __webpack_require__(10);
 var ReplaySubject_1 = __webpack_require__(30);
 var tryCatch_1 = __webpack_require__(9);
 var errorObject_1 = __webpack_require__(8);
-var assign_1 = __webpack_require__(601);
+var assign_1 = __webpack_require__(603);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -52558,7 +53096,7 @@ exports.WebSocketSubject = WebSocketSubject;
 //# sourceMappingURL=WebSocketSubject.js.map
 
 /***/ }),
-/* 465 */
+/* 467 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52568,17 +53106,17 @@ exports.ajax = AjaxObservable_1.AjaxObservable.create;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
-/* 466 */
+/* 468 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var WebSocketSubject_1 = __webpack_require__(464);
+var WebSocketSubject_1 = __webpack_require__(466);
 exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
-/* 467 */
+/* 469 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52588,37 +53126,37 @@ exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
-/* 468 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var ForkJoinObservable_1 = __webpack_require__(447);
-exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
-//# sourceMappingURL=forkJoin.js.map
-
-/***/ }),
-/* 469 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var FromEventObservable_1 = __webpack_require__(448);
-exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
-//# sourceMappingURL=fromEvent.js.map
-
-/***/ }),
 /* 470 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var FromEventPatternObservable_1 = __webpack_require__(449);
+var ForkJoinObservable_1 = __webpack_require__(449);
+exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
+//# sourceMappingURL=forkJoin.js.map
+
+/***/ }),
+/* 471 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var FromEventObservable_1 = __webpack_require__(450);
+exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
+//# sourceMappingURL=fromEvent.js.map
+
+/***/ }),
+/* 472 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var FromEventPatternObservable_1 = __webpack_require__(451);
 exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
 //# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
-/* 471 */
+/* 473 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52628,34 +53166,14 @@ exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
 //# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
-/* 472 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var GenerateObservable_1 = __webpack_require__(450);
-exports.generate = GenerateObservable_1.GenerateObservable.create;
-//# sourceMappingURL=generate.js.map
-
-/***/ }),
-/* 473 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var IfObservable_1 = __webpack_require__(451);
-exports._if = IfObservable_1.IfObservable.create;
-//# sourceMappingURL=if.js.map
-
-/***/ }),
 /* 474 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var IntervalObservable_1 = __webpack_require__(452);
-exports.interval = IntervalObservable_1.IntervalObservable.create;
-//# sourceMappingURL=interval.js.map
+var GenerateObservable_1 = __webpack_require__(452);
+exports.generate = GenerateObservable_1.GenerateObservable.create;
+//# sourceMappingURL=generate.js.map
 
 /***/ }),
 /* 475 */
@@ -52663,12 +53181,32 @@ exports.interval = IntervalObservable_1.IntervalObservable.create;
 
 "use strict";
 
-var NeverObservable_1 = __webpack_require__(454);
+var IfObservable_1 = __webpack_require__(453);
+exports._if = IfObservable_1.IfObservable.create;
+//# sourceMappingURL=if.js.map
+
+/***/ }),
+/* 476 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var IntervalObservable_1 = __webpack_require__(454);
+exports.interval = IntervalObservable_1.IntervalObservable.create;
+//# sourceMappingURL=interval.js.map
+
+/***/ }),
+/* 477 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var NeverObservable_1 = __webpack_require__(456);
 exports.never = NeverObservable_1.NeverObservable.create;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
-/* 476 */
+/* 478 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52678,34 +53216,14 @@ exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 477 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var PairsObservable_1 = __webpack_require__(455);
-exports.pairs = PairsObservable_1.PairsObservable.create;
-//# sourceMappingURL=pairs.js.map
-
-/***/ }),
-/* 478 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var RangeObservable_1 = __webpack_require__(456);
-exports.range = RangeObservable_1.RangeObservable.create;
-//# sourceMappingURL=range.js.map
-
-/***/ }),
 /* 479 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var ErrorObservable_1 = __webpack_require__(446);
-exports._throw = ErrorObservable_1.ErrorObservable.create;
-//# sourceMappingURL=throw.js.map
+var PairsObservable_1 = __webpack_require__(457);
+exports.pairs = PairsObservable_1.PairsObservable.create;
+//# sourceMappingURL=pairs.js.map
 
 /***/ }),
 /* 480 */
@@ -52713,12 +53231,32 @@ exports._throw = ErrorObservable_1.ErrorObservable.create;
 
 "use strict";
 
-var UsingObservable_1 = __webpack_require__(459);
+var RangeObservable_1 = __webpack_require__(458);
+exports.range = RangeObservable_1.RangeObservable.create;
+//# sourceMappingURL=range.js.map
+
+/***/ }),
+/* 481 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var ErrorObservable_1 = __webpack_require__(448);
+exports._throw = ErrorObservable_1.ErrorObservable.create;
+//# sourceMappingURL=throw.js.map
+
+/***/ }),
+/* 482 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var UsingObservable_1 = __webpack_require__(461);
 exports.using = UsingObservable_1.UsingObservable.create;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
-/* 481 */
+/* 483 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52728,7 +53266,7 @@ exports.zip = zip_1.zipStatic;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-/* 482 */
+/* 484 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52781,7 +53319,7 @@ exports.audit = audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-/* 483 */
+/* 485 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52838,7 +53376,7 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-/* 484 */
+/* 486 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52883,7 +53421,7 @@ exports.buffer = buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-/* 485 */
+/* 487 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52938,7 +53476,7 @@ exports.bufferCount = bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-/* 486 */
+/* 488 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53011,7 +53549,7 @@ exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-/* 487 */
+/* 489 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53062,7 +53600,7 @@ exports.bufferToggle = bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-/* 488 */
+/* 490 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53108,7 +53646,7 @@ exports.bufferWhen = bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-/* 489 */
+/* 491 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53180,7 +53718,7 @@ exports._catch = _catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
-/* 490 */
+/* 492 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53233,7 +53771,7 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-/* 491 */
+/* 493 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53294,7 +53832,7 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 492 */
+/* 494 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53363,7 +53901,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 493 */
+/* 495 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53425,7 +53963,7 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-/* 494 */
+/* 496 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53498,7 +54036,7 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-/* 495 */
+/* 497 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53568,7 +54106,7 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-/* 496 */
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53629,7 +54167,7 @@ exports.count = count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-/* 497 */
+/* 499 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53684,7 +54222,7 @@ exports.debounce = debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-/* 498 */
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53745,7 +54283,7 @@ exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-/* 499 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53790,7 +54328,7 @@ exports.defaultIfEmpty = defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-/* 500 */
+/* 502 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53844,7 +54382,7 @@ exports.delay = delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-/* 501 */
+/* 503 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53902,7 +54440,7 @@ exports.delayWhen = delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-/* 502 */
+/* 504 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53955,7 +54493,7 @@ exports.dematerialize = dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-/* 503 */
+/* 505 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54013,7 +54551,7 @@ exports.distinct = distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-/* 504 */
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54066,7 +54604,7 @@ exports.distinctUntilChanged = distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-/* 505 */
+/* 507 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54137,7 +54675,7 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-/* 506 */
+/* 508 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54194,7 +54732,7 @@ exports._do = _do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
-/* 507 */
+/* 509 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54249,7 +54787,7 @@ exports.elementAt = elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-/* 508 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54276,7 +54814,7 @@ exports.every = every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-/* 509 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54324,7 +54862,7 @@ exports.exhaust = exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-/* 510 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54383,7 +54921,7 @@ exports.exhaustMap = exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-/* 511 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54445,7 +54983,7 @@ exports.expand = expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-/* 512 */
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54498,7 +55036,7 @@ exports.filter = filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-/* 513 */
+/* 515 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54519,7 +55057,7 @@ exports._finally = _finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
-/* 514 */
+/* 516 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54566,7 +55104,7 @@ exports.find = find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-/* 515 */
+/* 517 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54613,7 +55151,7 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-/* 516 */
+/* 518 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54675,7 +55213,7 @@ exports.first = first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 517 */
+/* 519 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54757,7 +55295,7 @@ exports.groupBy = groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-/* 518 */
+/* 520 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54781,7 +55319,7 @@ exports.ignoreElements = ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-/* 519 */
+/* 521 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54803,7 +55341,7 @@ exports.isEmpty = isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-/* 520 */
+/* 522 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54834,7 +55372,7 @@ exports.last = last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-/* 521 */
+/* 523 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54852,7 +55390,7 @@ exports.letProto = letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
-/* 522 */
+/* 524 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54898,7 +55436,7 @@ exports.map = map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
-/* 523 */
+/* 525 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54937,7 +55475,7 @@ exports.mapTo = mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-/* 524 */
+/* 526 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54994,7 +55532,7 @@ exports.materialize = materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-/* 525 */
+/* 527 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55038,7 +55576,7 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-/* 526 */
+/* 528 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55104,7 +55642,7 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-/* 527 */
+/* 529 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55162,7 +55700,7 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
-/* 528 */
+/* 530 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55235,7 +55773,7 @@ exports.mergeMap = mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
-/* 529 */
+/* 531 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55293,7 +55831,7 @@ exports.mergeMapTo = mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-/* 530 */
+/* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55338,7 +55876,7 @@ exports.mergeScan = mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-/* 531 */
+/* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55382,7 +55920,7 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-/* 532 */
+/* 534 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55490,7 +56028,7 @@ exports.multicast = multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-/* 533 */
+/* 535 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55550,7 +56088,7 @@ exports.observeOn = observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
-/* 534 */
+/* 536 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55629,7 +56167,7 @@ exports.onErrorResumeNext = onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 535 */
+/* 537 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55677,7 +56215,7 @@ exports.pairwise = pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-/* 536 */
+/* 538 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55731,7 +56269,7 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-/* 537 */
+/* 539 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55774,7 +56312,7 @@ exports.pluck = pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-/* 538 */
+/* 540 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55801,7 +56339,7 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-/* 539 */
+/* 541 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55820,7 +56358,7 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-/* 540 */
+/* 542 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55839,7 +56377,7 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-/* 541 */
+/* 543 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55862,7 +56400,7 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-/* 542 */
+/* 544 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55891,7 +56429,7 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 543 */
+/* 545 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55957,7 +56495,7 @@ exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
-/* 544 */
+/* 546 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55983,7 +56521,7 @@ exports.repeat = repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-/* 545 */
+/* 547 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56010,7 +56548,7 @@ exports.repeatWhen = repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-/* 546 */
+/* 548 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56040,7 +56578,7 @@ exports.retry = retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-/* 547 */
+/* 549 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56067,7 +56605,7 @@ exports.retryWhen = retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-/* 548 */
+/* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56114,7 +56652,7 @@ exports.sample = sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-/* 549 */
+/* 551 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56165,7 +56703,7 @@ exports.sampleTime = sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-/* 550 */
+/* 552 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56219,7 +56757,7 @@ exports.scan = scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-/* 551 */
+/* 553 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56284,7 +56822,7 @@ exports.sequenceEqual = sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-/* 552 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56314,7 +56852,7 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-/* 553 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56332,7 +56870,7 @@ exports.shareReplay = shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-/* 554 */
+/* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56361,7 +56899,7 @@ exports.single = single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-/* 555 */
+/* 557 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56385,7 +56923,7 @@ exports.skip = skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-/* 556 */
+/* 558 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56430,7 +56968,7 @@ exports.skipLast = skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-/* 557 */
+/* 559 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56455,7 +56993,7 @@ exports.skipUntil = skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-/* 558 */
+/* 560 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56480,7 +57018,7 @@ exports.skipWhile = skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-/* 559 */
+/* 561 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56512,12 +57050,12 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-/* 560 */
+/* 562 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var subscribeOn_1 = __webpack_require__(583);
+var subscribeOn_1 = __webpack_require__(585);
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -56537,7 +57075,7 @@ exports.subscribeOn = subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-/* 561 */
+/* 563 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56592,7 +57130,7 @@ exports._switch = _switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
-/* 562 */
+/* 564 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56653,7 +57191,7 @@ exports.switchMap = switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-/* 563 */
+/* 565 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56709,7 +57247,7 @@ exports.switchMapTo = switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-/* 564 */
+/* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56755,7 +57293,7 @@ exports.take = take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-/* 565 */
+/* 567 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56804,7 +57342,7 @@ exports.takeLast = takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-/* 566 */
+/* 568 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56850,7 +57388,7 @@ exports.takeUntil = takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-/* 567 */
+/* 569 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56899,7 +57437,7 @@ exports.takeWhile = takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-/* 568 */
+/* 570 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56953,7 +57491,7 @@ exports.throttle = throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
-/* 569 */
+/* 571 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57009,7 +57547,7 @@ exports.throttleTime = throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-/* 570 */
+/* 572 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57089,7 +57627,7 @@ exports.timeout = timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-/* 571 */
+/* 573 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57152,7 +57690,7 @@ exports.timeoutWith = timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-/* 572 */
+/* 574 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57173,7 +57711,7 @@ exports.timestamp = timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-/* 573 */
+/* 575 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57209,7 +57747,7 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-/* 574 */
+/* 576 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57258,7 +57796,7 @@ exports.window = window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-/* 575 */
+/* 577 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57320,7 +57858,7 @@ exports.windowCount = windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-/* 576 */
+/* 578 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57354,7 +57892,7 @@ exports.windowTime = windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-/* 577 */
+/* 579 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57408,7 +57946,7 @@ exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-/* 578 */
+/* 580 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57459,7 +57997,7 @@ exports.windowWhen = windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-/* 579 */
+/* 581 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57515,7 +58053,7 @@ exports.withLatestFrom = withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-/* 580 */
+/* 582 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57539,7 +58077,7 @@ exports.zipProto = zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-/* 581 */
+/* 583 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57558,7 +58096,7 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-/* 582 */
+/* 584 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57775,12 +58313,12 @@ exports.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=operators.js.map
 
 /***/ }),
-/* 583 */
+/* 585 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var SubscribeOnObservable_1 = __webpack_require__(457);
+var SubscribeOnObservable_1 = __webpack_require__(459);
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -57812,7 +58350,7 @@ var SubscribeOnOperator = (function () {
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-/* 584 */
+/* 586 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57862,7 +58400,7 @@ exports.Action = Action;
 //# sourceMappingURL=Action.js.map
 
 /***/ }),
-/* 585 */
+/* 587 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57873,7 +58411,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AsyncAction_1 = __webpack_require__(24);
-var AnimationFrame_1 = __webpack_require__(595);
+var AnimationFrame_1 = __webpack_require__(597);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -57923,7 +58461,7 @@ exports.AnimationFrameAction = AnimationFrameAction;
 //# sourceMappingURL=AnimationFrameAction.js.map
 
 /***/ }),
-/* 586 */
+/* 588 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57966,7 +58504,7 @@ exports.AnimationFrameScheduler = AnimationFrameScheduler;
 //# sourceMappingURL=AnimationFrameScheduler.js.map
 
 /***/ }),
-/* 587 */
+/* 589 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57976,7 +58514,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Immediate_1 = __webpack_require__(597);
+var Immediate_1 = __webpack_require__(599);
 var AsyncAction_1 = __webpack_require__(24);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -58027,7 +58565,7 @@ exports.AsapAction = AsapAction;
 //# sourceMappingURL=AsapAction.js.map
 
 /***/ }),
-/* 588 */
+/* 590 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58070,7 +58608,7 @@ exports.AsapScheduler = AsapScheduler;
 //# sourceMappingURL=AsapScheduler.js.map
 
 /***/ }),
-/* 589 */
+/* 591 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58125,7 +58663,7 @@ exports.QueueAction = QueueAction;
 //# sourceMappingURL=QueueAction.js.map
 
 /***/ }),
-/* 590 */
+/* 592 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58147,13 +58685,13 @@ exports.QueueScheduler = QueueScheduler;
 //# sourceMappingURL=QueueScheduler.js.map
 
 /***/ }),
-/* 591 */
+/* 593 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var AnimationFrameAction_1 = __webpack_require__(585);
-var AnimationFrameScheduler_1 = __webpack_require__(586);
+var AnimationFrameAction_1 = __webpack_require__(587);
+var AnimationFrameScheduler_1 = __webpack_require__(588);
 /**
  *
  * Animation Frame Scheduler
@@ -58188,7 +58726,7 @@ exports.animationFrame = new AnimationFrameScheduler_1.AnimationFrameScheduler(A
 //# sourceMappingURL=animationFrame.js.map
 
 /***/ }),
-/* 592 */
+/* 594 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58240,7 +58778,7 @@ applyMixins_1.applyMixins(ColdObservable, [SubscriptionLoggable_1.SubscriptionLo
 //# sourceMappingURL=ColdObservable.js.map
 
 /***/ }),
-/* 593 */
+/* 595 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58294,7 +58832,7 @@ applyMixins_1.applyMixins(HotObservable, [SubscriptionLoggable_1.SubscriptionLog
 //# sourceMappingURL=HotObservable.js.map
 
 /***/ }),
-/* 594 */
+/* 596 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58306,8 +58844,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Notification_1 = __webpack_require__(19);
-var ColdObservable_1 = __webpack_require__(592);
-var HotObservable_1 = __webpack_require__(593);
+var ColdObservable_1 = __webpack_require__(594);
+var HotObservable_1 = __webpack_require__(595);
 var SubscriptionLog_1 = __webpack_require__(284);
 var VirtualTimeScheduler_1 = __webpack_require__(281);
 var defaultMaxFrame = 750;
@@ -58523,7 +59061,7 @@ exports.TestScheduler = TestScheduler;
 //# sourceMappingURL=TestScheduler.js.map
 
 /***/ }),
-/* 595 */
+/* 597 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58563,7 +59101,7 @@ exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 //# sourceMappingURL=AnimationFrame.js.map
 
 /***/ }),
-/* 596 */
+/* 598 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58600,7 +59138,7 @@ exports.FastMap = FastMap;
 //# sourceMappingURL=FastMap.js.map
 
 /***/ }),
-/* 597 */
+/* 599 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58816,18 +59354,18 @@ exports.Immediate = new ImmediateDefinition(root_1.root);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(293).clearImmediate, __webpack_require__(293).setImmediate))
 
 /***/ }),
-/* 598 */
+/* 600 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var root_1 = __webpack_require__(10);
-var MapPolyfill_1 = __webpack_require__(599);
+var MapPolyfill_1 = __webpack_require__(601);
 exports.Map = root_1.root.Map || (function () { return MapPolyfill_1.MapPolyfill; })();
 //# sourceMappingURL=Map.js.map
 
 /***/ }),
-/* 599 */
+/* 601 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58880,7 +59418,7 @@ exports.MapPolyfill = MapPolyfill;
 //# sourceMappingURL=MapPolyfill.js.map
 
 /***/ }),
-/* 600 */
+/* 602 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58919,7 +59457,7 @@ exports.Set = root_1.root.Set || minimalSetImpl();
 //# sourceMappingURL=Set.js.map
 
 /***/ }),
-/* 601 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58951,7 +59489,7 @@ exports.assign = getAssign(root_1.root);
 //# sourceMappingURL=assign.js.map
 
 /***/ }),
-/* 602 */
+/* 604 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58968,7 +59506,7 @@ exports.not = not;
 //# sourceMappingURL=not.js.map
 
 /***/ }),
-/* 603 */
+/* 605 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58994,7 +59532,7 @@ exports.toSubscriber = toSubscriber;
 //# sourceMappingURL=toSubscriber.js.map
 
 /***/ }),
-/* 604 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -59184,10 +59722,51 @@ exports.toSubscriber = toSubscriber;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62), __webpack_require__(309)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62), __webpack_require__(311)))
 
 /***/ }),
-/* 605 */
+/* 607 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MaterialTextareaController = /** @class */ (function () {
+    // @ngInject
+    function MaterialTextareaController($element) {
+        var _this = this;
+        this.$element = $element;
+        this.$onInit = function () {
+            _this.$element[0].rows = '1';
+            _this.$element[0].oninput = function (event) {
+                event.target.style.height = 'auto';
+                event.target.style.height = event.target.scrollHeight + 7 + 'px';
+            };
+        };
+    }
+    return MaterialTextareaController;
+}());
+var MaterialTextarea = /** @class */ (function () {
+    function MaterialTextarea() {
+        this.restrict = 'A';
+        this.scope = {};
+        this.bindToController = {};
+        this.controller = MaterialTextareaController;
+        this.controllerAs = 'materialTextarea';
+    }
+    MaterialTextarea.Factory = function () {
+        var _this = this;
+        var directive = function () { return new _this(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MaterialTextarea;
+}());
+exports.MaterialTextarea = MaterialTextarea;
+
+
+/***/ }),
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59201,7 +59780,10 @@ var MonatMiniCartController = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
         this.observerService = observerService;
-        this.cartAsAttribute = false; //declares if cart data is being bound through attribute binding or not
+        this.cartAsAttribute = false; //declares if cart data is bound through with attribute or not
+        this.currentPage = 0;
+        this.pageSize = 6;
+        this.recordsStart = 0;
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.cart == null) {
@@ -59286,6 +59868,15 @@ var MonatMiniCartController = /** @class */ (function () {
                 //TODO hide loader...
             });
         };
+        this.changePage = function (dir) {
+            if (dir === 'next' && ((_this.currentPage + 1) * _this.pageSize) <= _this.cart.orderItems.length - 1) {
+                _this.currentPage++;
+            }
+            else if (dir === 'back' && _this.currentPage != 0) {
+                _this.currentPage--;
+            }
+            _this.recordsStart = (_this.currentPage * _this.pageSize);
+        };
         this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
     }
     return MonatMiniCartController;
@@ -59323,7 +59914,70 @@ exports.MonatMiniCart = MonatMiniCart;
 
 
 /***/ }),
-/* 606 */
+/* 609 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatOrderItemsController = /** @class */ (function () {
+    //@ngInject
+    function MonatOrderItemsController(monatService, orderTemplateService) {
+        var _this = this;
+        this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
+        this.orderItems = []; // orderTemplateDetails
+        this.starterKits = []; // orderTemplateDetails
+        this.todaysOrder = []; // orderTemplateDetails
+        this.$onInit = function () {
+            _this.getOrderItems();
+        };
+        this.getOrderItems = function () {
+            _this.monatService.getCart().then(function (data) {
+                if (undefined !== data.orderItems) {
+                    _this.orderItems = data.orderItems;
+                    _this.aggregateOrderItems(data.orderItems);
+                }
+            });
+        };
+        this.aggregateOrderItems = function (orderItems) {
+            orderItems.forEach(function (item) {
+                var productType = item.sku.product.productType.productTypeName;
+                if ('Starter Kit' === productType) {
+                    _this.starterKits.push(item);
+                }
+                else if ('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType) {
+                    _this.orderFees = item.extendedUnitPriceAfterDiscount;
+                }
+                else {
+                    _this.todaysOrder.push(item);
+                }
+            });
+        };
+    }
+    return MonatOrderItemsController;
+}());
+var MonatOrderItems = /** @class */ (function () {
+    function MonatOrderItems() {
+        this.restrict = 'A';
+        this.scope = true;
+        this.bindToController = {};
+        this.controller = MonatOrderItemsController;
+        this.controllerAs = 'monatOrderItems';
+        this.link = function (scope, element, attrs) { };
+    }
+    MonatOrderItems.Factory = function () {
+        var directive = function () { return new MonatOrderItems(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return MonatOrderItems;
+}());
+exports.MonatOrderItems = MonatOrderItems;
+
+
+/***/ }),
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59331,27 +59985,46 @@ exports.MonatMiniCart = MonatMiniCart;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatEnrollmentController = /** @class */ (function () {
     //@ngInject
-    function MonatEnrollmentController(monatService, observerService, $rootScope) {
+    function MonatEnrollmentController(monatService, observerService, $rootScope, publicService) {
         var _this = this;
         this.monatService = monatService;
         this.observerService = observerService;
         this.$rootScope = $rootScope;
+        this.publicService = publicService;
         this.backUrl = '/';
         this.position = 0;
         this.steps = [];
         this.showMiniCart = false;
         this.style = 'position:static; display:none';
+        this.reviewContext = false;
         this.cartText = 'Show Cart';
+        this.showFlexshipCart = false;
+        this.$onInit = function () {
+            _this.publicService.getAccount(true).then(function (result) {
+                //if account has a flexship send to checkout review
+                if (localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID) {
+                    _this.publicService.getCart().then(function (result) {
+                        _this.goToLastStep();
+                    });
+                }
+                else {
+                    //if its a new account clear data in local storage and ensure they are logged out
+                    localStorage.clear();
+                }
+            });
+        };
         this.handleCreateAccount = function () {
             _this.currentAccountID = _this.$rootScope.slatwall.account.accountID;
-            if (_this.currentAccountID.length) {
+            if (_this.currentAccountID.length && (!_this.$rootScope.slatwall.errors || !_this.$rootScope.slatwall.errors.length)) {
                 _this.next();
             }
+            localStorage.setItem('accountID', _this.currentAccountID); //if in safari private and errors here its okay.
         };
         this.getCart = function (refresh) {
             if (refresh === void 0) { refresh = true; }
             _this.monatService.getCart(refresh).then(function (data) {
-                _this.cart = data;
+                var cartData = _this.removeStarterKitsFromCart(data);
+                _this.cart = cartData;
             });
         };
         this.addStep = function (step) {
@@ -59370,6 +60043,40 @@ var MonatEnrollmentController = /** @class */ (function () {
             _this.style = _this.style == 'position:static; display:block' ? 'position:static; display:none' : 'position:static; display:block';
             _this.cartText = _this.cartText == 'Show Cart' ? 'Hide Cart' : 'Show Cart';
         };
+        this.editFlexshipItems = function () {
+            _this.reviewContext = true;
+            _this.navigate(_this.position - 2);
+        };
+        this.editFlexshipDate = function () {
+            _this.reviewContext = true;
+            _this.previous();
+        };
+        this.goToLastStep = function () {
+            _this.observerService.notify('lastStep');
+            _this.navigate(_this.steps.length - 1);
+            _this.reviewContext = false;
+        };
+        this.removeStarterKitsFromCart = function (cart) {
+            if ('undefined' === typeof cart.orderItems) {
+                return cart;
+            }
+            // Start building a new cart, reset totals & items.
+            var formattedCart = Object.assign({}, cart);
+            formattedCart.totalItemQuantity = 0;
+            formattedCart.total = 0;
+            formattedCart.orderItems = [];
+            cart.orderItems.forEach(function (item, index) {
+                var productType = item.sku.product.productType.productTypeName;
+                // If the product type is Starter Kit, we don't want to add it to our new cart.
+                if ('Starter Kit' === productType) {
+                    return;
+                }
+                formattedCart.orderItems.push(item);
+                formattedCart.totalItemQuantity += item.quantity;
+                formattedCart.total += item.extendedUnitPriceAfterDiscount * item.quantity;
+            });
+            return formattedCart;
+        };
         if (hibachiConfig.baseSiteURL) {
             this.backUrl = hibachiConfig.baseSiteURL;
         }
@@ -59382,13 +60089,15 @@ var MonatEnrollmentController = /** @class */ (function () {
         this.observerService.attach(this.handleCreateAccount.bind(this), "createSuccess");
         this.observerService.attach(this.next.bind(this), "onNext");
         this.observerService.attach(this.next.bind(this), "updateSuccess");
-        this.observerService.attach(this.getCart, "addOrderItemSuccess");
-        this.observerService.attach(this.getCart, "removeOrderItemSuccess");
-        this.observerService.attach(this.getCart, "updateOrderItemSuccess");
-        this.getCart();
+        this.observerService.attach(this.getCart.bind(this), "addOrderItemSuccess");
+        this.observerService.attach(this.editFlexshipItems.bind(this), "editFlexshipItems");
+        this.observerService.attach(this.editFlexshipDate.bind(this), "editFlexshipDate");
     }
     MonatEnrollmentController.prototype.next = function () {
         this.navigate(this.position + 1);
+        if (this.position + 1 == this.steps.length) {
+            this.monatService.addEnrollmentFee();
+        }
     };
     MonatEnrollmentController.prototype.previous = function () {
         this.navigate(this.position - 1);
@@ -59406,6 +60115,7 @@ var MonatEnrollmentController = /** @class */ (function () {
         }
         this.position = index;
         this.showMiniCart = (this.steps[this.position].showMiniCart == 'true');
+        this.showFlexshipCart = (this.steps[this.position].showFlexshipCart == 'true');
         angular.forEach(this.steps, function (step) {
             step.selected = false;
         });
@@ -59439,7 +60149,7 @@ exports.MonatEnrollment = MonatEnrollment;
 
 
 /***/ }),
-/* 607 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59458,13 +60168,66 @@ var EnrollmentMPController = /** @class */ (function () {
         this.currentCountryCode = '';
         this.loading = false;
         this.bundleHasErrors = false;
-        this.sponsorHasErrors = false;
+        this.sponsorErrors = {};
         this.selectedBundleID = '';
         this.bundles = [];
+        this.addedItemToCart = false;
+        this.lastAddedProductName = '';
+        this.yearOptions = [];
+        this.dayOptions = [];
+        this.monthOptions = [];
         this.$onInit = function () {
-            _this.getCountryCodeOptions();
             _this.getStarterPacks();
-            _this.getProductList();
+            _this.getDateOptions();
+            //this.getProductList()
+            _this.observerService.attach(_this.getProductList, 'createSuccess');
+            _this.observerService.attach(_this.showAddToCartMessage, 'addOrderItemSuccess');
+        };
+        this.getDateOptions = function () {
+            _this.currentDate = new Date();
+            // Setup Years
+            for (var i = _this.currentDate.getFullYear(); i >= 1900; i--) {
+                _this.yearOptions.push(i);
+            }
+            // Setup Months / Default Days
+            for (i = 1; i <= 31; i++) {
+                var label = ('0' + i).slice(-2);
+                if (i < 13) {
+                    _this.monthOptions.push(label);
+                }
+                _this.dayOptions.push(label);
+            }
+        };
+        this.setDayOptionsByDate = function (year, month) {
+            if (year === void 0) { year = null; }
+            if (month === void 0) { month = null; }
+            if (null === year) {
+                year = _this.currentDate.getFullYear();
+            }
+            if (null === month) {
+                year = _this.currentDate.getMonth();
+            }
+            var newDayOptions = [];
+            var daysInMonth = new Date(year, month, 0).getDate();
+            for (var i = 1; i <= daysInMonth; i++) {
+                newDayOptions.push(('0' + i).slice(-2));
+            }
+            _this.dayOptions = newDayOptions;
+        };
+        this.showAddToCartMessage = function () {
+            var skuID = _this.monatService.lastAddedSkuID;
+            _this.monatService.getCart().then(function (data) {
+                var orderItem;
+                data.orderItems.forEach(function (item) {
+                    if (item.sku.skuID === skuID) {
+                        orderItem = item;
+                    }
+                });
+                if ('Starter Kit' !== orderItem.sku.product.productType.productTypeName) {
+                    _this.lastAddedProductName = orderItem.sku.product.productName;
+                    _this.addedItemToCart = true;
+                }
+            });
         };
         this.getStarterPacks = function () {
             _this.publicService
@@ -59475,8 +60238,9 @@ var EnrollmentMPController = /** @class */ (function () {
         };
         this.submitStarterPack = function () {
             if (_this.selectedBundleID.length) {
-                _this.monatService.addToCart(_this.selectedBundleID, 1).then(function (data) {
-                    console.log(data);
+                _this.loading = true;
+                _this.monatService.selectStarterPackBundle(_this.selectedBundleID).then(function (data) {
+                    _this.loading = false;
                     _this.observerService.notify('onNext');
                 });
             }
@@ -59485,11 +60249,25 @@ var EnrollmentMPController = /** @class */ (function () {
             }
         };
         this.submitSponsor = function () {
-            if (_this.selectedMP) {
-                _this.observerService.notify('onNext');
+            _this.loading = true;
+            var selectedSponsor = document.getElementById('selected-sponsor-id');
+            if (null !== selectedSponsor) {
+                _this.sponsorErrors.selected = false;
+                var accountID = selectedSponsor.value;
+                _this.monatService.submitSponsor(accountID).then(function (data) {
+                    if (data.successfulActions && data.successfulActions.length) {
+                        _this.observerService.notify('onNext');
+                        _this.sponsorErrors = {};
+                    }
+                    else {
+                        _this.sponsorErrors.submit = true;
+                    }
+                    _this.loading = false;
+                });
             }
             else {
-                _this.sponsorHasErrors = true;
+                _this.sponsorErrors.selected = true;
+                _this.loading = false;
             }
         };
         this.selectBundle = function (bundleID) {
@@ -59501,41 +60279,6 @@ var EnrollmentMPController = /** @class */ (function () {
             var tmp = document.createElement('div');
             tmp.innerHTML = html;
             return tmp.textContent || tmp.innerText || '';
-        };
-        this.getMpResults = function (model) {
-            _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners' +
-                '&search=' +
-                model.mpSearchText +
-                '&currentPage=' +
-                1 +
-                '&accountSearchType=marketPartner' +
-                '&countryCode=' +
-                model.currentCountryCode +
-                '&stateCode=' +
-                model.currentStateCode);
-        };
-        this.getCountryCodeOptions = function () {
-            if (_this.countryCodeOptions.length) {
-                return _this.countryCodeOptions;
-            }
-            _this.publicService.getCountries().then(function (data) {
-                _this.countryCodeOptions = data.countryCodeOptions;
-            });
-        };
-        this.getStateCodeOptions = function (countryCode) {
-            _this.currentCountryCode = countryCode;
-            _this.publicService.getStates(countryCode).then(function (data) {
-                _this.stateCodeOptions = data.stateCodeOptions;
-            });
-        };
-        this.setOwnerAccount = function (ownerAccountID) {
-            _this.loading = true;
-            _this.publicService
-                .doAction('setOwnerAccountOnAccount', { ownerAccountID: ownerAccountID })
-                .then(function (result) {
-                console.log(result);
-                _this.loading = false;
-            });
         };
         this.getProductList = function (pageNumber, direction, newPages) {
             if (pageNumber === void 0) { pageNumber = 1; }
@@ -59632,7 +60375,7 @@ exports.MonatEnrollmentMP = MonatEnrollmentMP;
 
 
 /***/ }),
-/* 608 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59647,7 +60390,8 @@ var MonatEnrollmentStep = /** @class */ (function () {
         this.scope = {
             stepClass: '@',
             showMiniCart: '@',
-            onNext: '=?'
+            onNext: '=?',
+            showFlexshipCart: '=?',
         };
         this.require = '^monatEnrollment';
         this.link = function (scope, element, attrs, monatEnrollment) {
@@ -59673,7 +60417,7 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 
 
 /***/ }),
-/* 609 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59681,9 +60425,13 @@ exports.MonatEnrollmentStep = MonatEnrollmentStep;
 Object.defineProperty(exports, "__esModule", { value: true });
 var VIPController = /** @class */ (function () {
     // @ngInject
-    function VIPController(publicService) {
+    function VIPController(publicService, observerService, monatService, orderTemplateService) {
         var _this = this;
         this.publicService = publicService;
+        this.observerService = observerService;
+        this.monatService = monatService;
+        this.orderTemplateService = orderTemplateService;
+        this.loading = false;
         this.countryCodeOptions = [];
         this.stateCodeOptions = [];
         this.currentCountryCode = '';
@@ -59691,8 +60439,78 @@ var VIPController = /** @class */ (function () {
         this.mpSearchText = '';
         this.currentMpPage = 1;
         this.isVIPEnrollment = false;
+        this.sponsorErrors = {};
+        this.flexshipDaysOfMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
+        this.accountPriceGroupCode = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
         this.$onInit = function () {
             _this.getCountryCodeOptions();
+            _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
+                _this.frequencyTerms = response.frequencyTermOptions;
+            });
+            //checks to local storage in case user has refreshed
+            if (localStorage.getItem('shippingAddressID')) {
+                _this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
+            }
+            if (localStorage.getItem('shippingMethodID')) {
+                _this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
+            }
+            if (localStorage.getItem('flexshipDayOfMonth')) {
+                _this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
+            }
+            if (localStorage.getItem('flexshipFrequency')) {
+                _this.flexshipFrequencyName = localStorage.getItem('flexshipFrequency');
+            }
+            if (localStorage.getItem('flexshipID')) {
+                _this.flexshipID = localStorage.getItem('flexshipID');
+            }
+            _this.observerService.attach(_this.getFlexshipItems, "lastStep");
+            _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingMethodUsingShippingMethodIDSuccess");
+            _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingAddressUsingAccountAddressSuccess");
+            _this.localStorageCheck();
+            if (_this.isNotSafariPrivate) {
+                _this.observerService.attach(function (accountAddress) {
+                    localStorage.setItem('shippingAddressID', accountAddress.accountAddressID);
+                    _this.holdingShippingAddressID = accountAddress.accountAddressID;
+                }, 'shippingAddressSelected');
+                _this.observerService.attach(function (shippingMethod) {
+                    localStorage.setItem('shippingMethodID', shippingMethod.shippingMethodID);
+                    _this.holdingShippingMethodID = shippingMethod.shippingMethodID;
+                }, 'shippingMethodSelected');
+            }
+        };
+        //check to see if we can use local storage
+        this.localStorageCheck = function () {
+            try {
+                localStorage.setItem('test', '1');
+                localStorage.removeItem('test');
+                _this.isNotSafariPrivate = true;
+            }
+            catch (error) {
+                _this.isNotSafariPrivate = false;
+            }
+        };
+        this.setOrderTemplateShippingAddress = function () {
+            if (!_this.holdingShippingMethodID || !_this.holdingShippingAddressID) {
+                return;
+            }
+            _this.loading = true;
+            var payload = {};
+            payload['orderTemplateID'] = _this.flexshipID;
+            payload['shippingAccountAddress.value'] = _this.holdingShippingAddressID;
+            payload['shippingMethod.shippingMethodID'] = _this.holdingShippingMethodID;
+            _this.orderTemplateService.updateShipping(payload).then(function (response) {
+                _this.loading = false;
+            });
+        };
+        this.setOrderTemplateBilling = function () {
+            _this.loading = true;
+            var payload = {};
+            payload['orderTemplateID'] = _this.flexshipID;
+            payload['billingAccountAddress.value'] = _this.holdingShippingAddressID;
+            payload['accountPaymentMethod.value'] = _this.holdingShippingMethodID;
+            _this.orderTemplateService.updateBilling(payload).then(function (response) {
+                _this.loading = false;
+            });
         };
         this.getCountryCodeOptions = function () {
             if (_this.countryCodeOptions.length) {
@@ -59708,17 +60526,86 @@ var VIPController = /** @class */ (function () {
                 _this.stateCodeOptions = data.stateCodeOptions;
             });
         };
-        this.getMpResults = function () {
+        this.getMpResults = function (model) {
             _this.publicService.marketPartnerResults = _this.publicService.doAction('/?slatAction=monat:public.getmarketpartners' +
                 '&search=' +
-                _this.mpSearchText +
+                model.mpSearchText +
                 '&currentPage=' +
                 _this.currentMpPage +
                 '&accountSearchType=VIP' +
                 '&countryCode=' +
-                _this.currentCountryCode +
+                model.currentCountryCode +
                 '&stateCode=' +
-                _this.currentStateCode);
+                model.currentStateCode);
+        };
+        this.submitSponsor = function () {
+            _this.loading = true;
+            var selectedSponsor = document.getElementById('selected-sponsor-id');
+            if (null !== selectedSponsor) {
+                _this.sponsorErrors.selected = false;
+                var accountID = selectedSponsor.value;
+                _this.monatService.submitSponsor(accountID).then(function (data) {
+                    if (data.successfulActions && data.successfulActions.length) {
+                        _this.observerService.notify('onNext');
+                        _this.sponsorErrors = {};
+                    }
+                    else {
+                        _this.sponsorErrors.submit = true;
+                    }
+                    _this.loading = false;
+                });
+            }
+            else {
+                _this.sponsorErrors.selected = true;
+                _this.loading = false;
+            }
+        };
+        this.getProductList = function () {
+            _this.loading = true;
+            _this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': _this.accountPriceGroupCode, 'currencyCode': _this.currencyCode }).then(function (result) {
+                _this.productList = result.productList;
+                _this.loading = false;
+            });
+        };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            if (orderTemplateSystemCode === void 0) { orderTemplateSystemCode = 'ottSchedule'; }
+            _this.loading = true;
+            _this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(function (result) {
+                _this.flexshipID = result.orderTemplate;
+                if (_this.isNotSafariPrivate && _this.flexshipID) {
+                    localStorage.setItem('flexshipID', _this.flexshipID);
+                }
+                _this.loading = false;
+            });
+        };
+        this.setOrderTemplateFrequency = function (frequencyTerm, dayOfMonth, frequencyTermName) {
+            var newTerm = JSON.parse(frequencyTerm);
+            _this.loading = true;
+            _this.flexshipDeliveryDate = dayOfMonth;
+            _this.flexshipFrequencyName = newTerm.name;
+            if (_this.isNotSafariPrivate) {
+                localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
+                localStorage.setItem('flexshipFrequency', newTerm.name);
+            }
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(function (result) {
+                _this.loading = false;
+            });
+        };
+        this.getFlexshipItems = function () {
+            _this.loading = true;
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.getWishlistItems(flexshipID).then(function (result) {
+                _this.flexshipItemList = result.orderTemplateItems;
+                _this.observerService.notify('onNext');
+                _this.loading = false;
+            });
+        };
+        this.editFlexshipItems = function () {
+            _this.observerService.notify('editFlexshipItems');
+        };
+        this.editFlexshipDate = function () {
+            _this.observerService.notify('editFlexshipDate');
         };
     }
     return VIPController;
@@ -59750,7 +60637,7 @@ exports.MonatEnrollmentVIP = MonatEnrollmentVIP;
 
 
 /***/ }),
-/* 610 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59758,11 +60645,13 @@ exports.MonatEnrollmentVIP = MonatEnrollmentVIP;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCartContainerController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipCartContainerController(orderTemplateService, rbkeyService, ModalService) {
+    function MonatFlexshipCartContainerController(orderTemplateService, rbkeyService, ModalService, observerService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.ModalService = ModalService;
+        this.observerService = observerService;
+        this.urlParams = new URLSearchParams(window.location.search);
         this.$onInit = function () {
             _this.makeTranslations();
             if (_this.orderTemplate == null) {
@@ -59785,6 +60674,12 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
             _this.translations['currentStepOfTtotalSteps'] = _this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
         };
         this.fetchOrderTemplate = function () {
+            if (_this.urlParams.get('orderTemplateId')) {
+                _this.orderTemplateId = _this.urlParams.get('orderTemplateId');
+            }
+            else if (localStorage.getItem('flexshipID') && _this.context == 'enrollment') {
+                _this.orderTemplateId = localStorage.getItem('flexshipID');
+            }
             _this.orderTemplateService
                 .getOrderTemplateDetails(_this.orderTemplateId)
                 .then(function (data) {
@@ -59872,7 +60767,12 @@ var MonatFlexshipCartContainerController = /** @class */ (function () {
                 console.error("unable to open showFlexshipConfirmModal :", error);
             });
         };
+        this.observerService.attach(this.fetchOrderTemplate, 'addItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate, 'removeItemSuccess');
     }
+    MonatFlexshipCartContainerController.prototype.next = function () {
+        this.observerService.notify('onNext');
+    };
     return MonatFlexshipCartContainerController;
 }());
 var MonatFlexshipCartContainer = /** @class */ (function () {
@@ -59884,7 +60784,8 @@ var MonatFlexshipCartContainer = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplateId: '@',
-            orderTemplate: '<?'
+            orderTemplate: '<?',
+            context: '@?'
         };
         this.controller = MonatFlexshipCartContainerController;
         this.controllerAs = "monatFlexshipCartContainer";
@@ -59909,7 +60810,7 @@ exports.MonatFlexshipCartContainer = MonatFlexshipCartContainer;
 
 
 /***/ }),
-/* 611 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59935,7 +60836,7 @@ var MonatFlexshipConfirmController = /** @class */ (function () {
             });
         };
         this.cancel = function () {
-            _this.close(null); // close, but give 100ms to animate
+            _this.close(null);
         };
         this.translations = {};
         this.makeTranslations = function () {
@@ -59970,7 +60871,7 @@ var MonatFlexshipConfirm = /** @class */ (function () {
         this.scope = {};
         this.bindToController = {
             orderTemplate: '<',
-            redirectUrl: '@',
+            redirectUrl: '<',
             close: '=' //injected by angularModalService;
         };
         this.controller = MonatFlexshipConfirmController;
@@ -59996,7 +60897,109 @@ exports.MonatFlexshipConfirm = MonatFlexshipConfirm;
 
 
 /***/ }),
-/* 612 */
+/* 616 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipAddGiftCardModalController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipAddGiftCardModalController(orderTemplateService, observerService, rbkeyService, monatAlertService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.monatAlertService = monatAlertService;
+        this.loading = false;
+        this.$onInit = function () {
+            _this.fetchGiftCrds();
+            _this.makeTranslations();
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['giftCards'] = _this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.giftCards');
+            _this.translations['amountToApply'] = _this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.amountToApply');
+        };
+        this.closeModal = function () {
+            _this.close(null);
+        };
+    }
+    MonatFlexshipAddGiftCardModalController.prototype.fetchGiftCrds = function () {
+        var _this = this;
+        this.orderTemplateService.getAccountGiftCards()
+            .then(function (giftCards) {
+            _this.giftCards = giftCards;
+        })
+            .catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
+        });
+    };
+    MonatFlexshipAddGiftCardModalController.prototype.setSelectedGiftCard = function (giftCard) {
+        this.selectedGiftCard = giftCard;
+    };
+    MonatFlexshipAddGiftCardModalController.prototype.applyGiftCard = function () {
+        var _this = this;
+        //TODO frontend validation
+        this.loading = true;
+        // make api request
+        this.orderTemplateService.applyGiftCardToOrderTemplate(this.orderTemplate.orderTemplateID, this.selectedGiftCard.giftCardID, this.amountToApply).then(function (data) {
+            if (data.orderTemplate) {
+                _this.orderTemplate = data.orderTemplate;
+                _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.monatAlertService.success("GiftCard has been successfully added to the flexship");
+                _this.closeModal();
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(function () {
+            _this.loading = false;
+        });
+    };
+    return MonatFlexshipAddGiftCardModalController;
+}());
+var MonatFlexshipAddGiftCardModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipAddGiftCardModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            close: '=' //injected by angularModalService
+        };
+        this.controller = MonatFlexshipAddGiftCardModalController;
+        this.controllerAs = "monatFlexshipAddGiftCardModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-add-giftcard.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipAddGiftCardModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipAddGiftCardModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipAddGiftCardModal;
+}());
+exports.MonatFlexshipAddGiftCardModal = MonatFlexshipAddGiftCardModal;
+
+
+/***/ }),
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60082,7 +61085,7 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 
 
 /***/ }),
-/* 613 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60090,11 +61093,12 @@ exports.MonatFlexshipCancelModal = MonatFlexshipCancelModal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService, rbkeyService) {
+    function MonatFlexshipChangeOrSkipOrderModalController(orderTemplateService, observerService, rbkeyService, monatAlertService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.monatAlertService = monatAlertService;
         this.endDayOfTheMonth = 25;
         this.formData = {
             delayOrSkip: '',
@@ -60138,21 +61142,12 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
             }
         };
         this.closeModal = function () {
-            _this.close(null); // close, but give 100ms to animate
+            _this.close(null);
         };
     }
     MonatFlexshipChangeOrSkipOrderModalController.prototype.updateSchedule = function () {
         //TODO frontend validation
         var _this = this;
-        /**
-         * payload => {
-            orderTemplateID:string'',
-            orderTemplateScheduleDateChangeReasonTypeID:string'',
-            otherScheduleDateChangeReasonNotes?:string '',
-            scheduleOrderNextPlaceDateTime?:string '',
-            skipNextMonthFlag?: boolean;
-           }
-         */
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
@@ -60167,20 +61162,21 @@ var MonatFlexshipChangeOrSkipOrderModalController = /** @class */ (function () {
         }
         payload = this.orderTemplateService.getFlattenObject(payload);
         // make api request
-        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(function (data) {
+        this.orderTemplateService.updateOrderTemplateSchedule(payload)
+            .then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.monatAlertService.success("Your flexship has been updated successfully");
                 _this.closeModal();
             }
             else {
-                console.error(data);
-                //TODO handle errors
+                throw (data);
             }
-            // TODO: show alert
-        }, function (reason) {
-            throw (reason);
-            // TODO: show alert
+        })
+            .catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
         });
     };
     return MonatFlexshipChangeOrSkipOrderModalController;
@@ -60220,7 +61216,96 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 
 
 /***/ }),
-/* 614 */
+/* 619 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var monatFlexshipFrequencyModalController = /** @class */ (function () {
+    //@ngInject
+    function monatFlexshipFrequencyModalController(orderTemplateService, observerService, rbkeyService, publicService, monatAlertService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
+        this.publicService = publicService;
+        this.monatAlertService = monatAlertService;
+        this.loading = false;
+        this.$onInit = function () {
+            _this.makeTranslations();
+            _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
+                _this.frequencyTerms = response.frequencyTermOptions;
+            });
+        };
+        this.translations = {};
+        this.makeTranslations = function () {
+            //TODO make translations for success/failure alert messages
+            _this.translations['flexshiFrequency'] = _this.rbkeyService.rbKey('frontend.flexshipEdit.flexshipFrequency');
+        };
+        this.closeModal = function () {
+            _this.close(null);
+        };
+    }
+    monatFlexshipFrequencyModalController.prototype.setOrderTemplateFrequency = function (frequencyTermID) {
+        var _this = this;
+        //TODO frontend validation
+        this.loading = true;
+        // make api request
+        this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(function (data) {
+            if (data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency')) {
+                _this.observerService.notify("orderTemplateUpdated" + " " + _this.orderTemplate.orderTemplateID);
+                _this.monatAlertService.success("Your flexship has been updated successfully");
+                _this.closeModal();
+            }
+            else {
+                throw (data);
+            }
+        }).catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(function () {
+            _this.loading = false;
+        });
+    };
+    return monatFlexshipFrequencyModalController;
+}());
+var MonatFlexshipFrequencyModal = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipFrequencyModal(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplate: '<',
+            close: '=' //injected by angularModalService
+        };
+        this.controller = monatFlexshipFrequencyModalController;
+        this.controllerAs = "monatFlexshipFrequencyModal";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-deliveryfrequency.html";
+        this.restrict = "E";
+    }
+    MonatFlexshipFrequencyModal.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipFrequencyModal(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipFrequencyModal;
+}());
+exports.MonatFlexshipFrequencyModal = MonatFlexshipFrequencyModal;
+
+
+/***/ }),
+/* 620 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60228,11 +61313,13 @@ exports.MonatFlexshipChangeOrSkipOrderModal = MonatFlexshipChangeOrSkipOrderModa
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipNameModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipNameModalController(orderTemplateService, observerService, rbkeyService) {
+    function MonatFlexshipNameModalController(orderTemplateService, observerService, rbkeyService, monatAlertService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.monatAlertService = monatAlertService;
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.orderTemplateName = _this.orderTemplate.orderTemplateName;
@@ -60243,25 +61330,31 @@ var MonatFlexshipNameModalController = /** @class */ (function () {
             _this.translations['flexshipName'] = _this.rbkeyService.rbKey('frontend.nameFlexshipModal.flexshipName');
         };
         this.closeModal = function () {
-            _this.close(null); // close, but give 100ms to animate
+            _this.close(null);
         };
     }
     MonatFlexshipNameModalController.prototype.saveFlexshipName = function () {
-        //TODO frontend validation
         var _this = this;
+        //TODO frontend validation
+        this.loading = true;
         // make api request
         this.orderTemplateService.editOrderTemplate(this.orderTemplate.orderTemplateID, this.orderTemplateName).then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.monatAlertService.success("Your flexship's name has been updated successfully");
                 _this.closeModal();
             }
             else {
                 throw (data);
             }
-        }).catch(function (error) {
+        })
+            .catch(function (error) {
             console.error(error);
-            // TODO: show alert / handle error
+            _this.monatAlertService.showErrorsFromResponse(error);
+        })
+            .finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipNameModalController;
@@ -60301,7 +61394,7 @@ exports.MonatFlexshipNameModal = MonatFlexshipNameModal;
 
 
 /***/ }),
-/* 615 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60309,11 +61402,12 @@ exports.MonatFlexshipNameModal = MonatFlexshipNameModal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService, rbkeyService) {
+    function MonatFlexshipPaymentMethodModalController(orderTemplateService, observerService, rbkeyService, monatAlertService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.monatAlertService = monatAlertService;
         this.selectedBillingAccountAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedAccountPaymentMethod = { accountPaymentMethodID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
@@ -60366,7 +61460,7 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
             _this.translations['newAddress_zipCode'] = _this.rbkeyService.rbKey('frontend.newAddress.zipCode');
         };
         this.closeModal = function () {
-            _this.close(null); // close, but give 100ms to animate
+            _this.close(null);
         };
     }
     MonatFlexshipPaymentMethodModalController.prototype.setSelectedBillingAccountAddressID = function (accountAddressID) {
@@ -60397,7 +61491,8 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
         //flattning it for hibachi
         payload = this.orderTemplateService.getFlattenObject(payload);
         // make api request
-        this.orderTemplateService.updateBilling(payload).then(function (response) {
+        this.orderTemplateService.updateBilling(payload)
+            .then(function (response) {
             if (response.orderTemplate) {
                 _this.orderTemplate = response.orderTemplate;
                 if (response.newAccountAddress) {
@@ -60410,17 +61505,17 @@ var MonatFlexshipPaymentMethodModalController = /** @class */ (function () {
                 }
                 _this.setSelectedBillingAccountAddressID(_this.orderTemplate.billingAccountAddress_accountAddressID);
                 _this.setSelectedAccountPaymentMethodID(_this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
+                _this.monatAlertService.success("Your flexship has been updated successfully");
                 _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
                 _this.closeModal();
             }
             else {
-                //TODO handle errors
-                console.error(response);
+                throw (response);
             }
-            // TODO: show alerts
-        }, function (reason) {
-            throw (reason);
-            // TODO: show alert
+        })
+            .catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
         });
     };
     return MonatFlexshipPaymentMethodModalController;
@@ -60464,7 +61559,7 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 
 
 /***/ }),
-/* 616 */
+/* 622 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60472,15 +61567,17 @@ exports.MonatFlexshipPaymentMethodModal = MonatFlexshipPaymentMethodModal;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService, rbkeyService) {
+    function MonatFlexshipShippingMethodModalController(orderTemplateService, observerService, rbkeyService, monatAlertService) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.monatAlertService = monatAlertService;
         this.selectedShippingAddress = { accountAddressID: 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.selectedShippingMethod = { shippingMethodID: undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
         this.newAccountAddress = {};
-        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default
+        this.newAddress = { 'countryCode': 'US' }; //TODO: hard-coded default]
+        this.loading = false;
         this.$onInit = function () {
             _this.makeTranslations();
             _this.existingAccountAddress = _this.accountAddresses.find(function (item) {
@@ -60529,6 +61626,7 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         var payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
         payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+        this.loading = true;
         if (this.selectedShippingAddress.accountAddressID !== 'new') {
             payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
         }
@@ -60538,7 +61636,8 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
         }
         payload = this.orderTemplateService.getFlattenObject(payload);
         // make api request
-        this.orderTemplateService.updateShipping(payload).then(function (response) {
+        this.orderTemplateService.updateShipping(payload)
+            .then(function (response) {
             if (response.orderTemplate) {
                 _this.orderTemplate = response.orderTemplate;
                 _this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
@@ -60548,15 +61647,19 @@ var MonatFlexshipShippingMethodModalController = /** @class */ (function () {
                 }
                 _this.setSelectedAccountAddressID(_this.orderTemplate.shippingAccountAddress_accountAddressID);
                 _this.setSelectedShippingMethodID(_this.orderTemplate.shippingMethod_shippingMethodID);
+                _this.monatAlertService.success("Your flexship has been updated successfully");
                 _this.closeModal();
             }
             else {
-                console.error(response); //
+                throw (response);
             }
-            // TODO: show alert
-        }, function (reason) {
-            throw (reason);
-            // TODO: show alert
+        })
+            .catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
+        })
+            .finally(function () {
+            _this.loading = false;
         });
     };
     return MonatFlexshipShippingMethodModalController;
@@ -60598,7 +61701,7 @@ exports.MonatFlexshipShippingMethodModal = MonatFlexshipShippingMethodModal;
 
 
 /***/ }),
-/* 617 */
+/* 623 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60644,7 +61747,7 @@ exports.MonatFlexshipOrderItem = MonatFlexshipOrderItem;
 
 
 /***/ }),
-/* 618 */
+/* 624 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60690,7 +61793,7 @@ exports.MonatFlexshipOrderTotalCard = MonatFlexshipOrderTotalCard;
 
 
 /***/ }),
-/* 619 */
+/* 625 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60750,7 +61853,7 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 
 
 /***/ }),
-/* 620 */
+/* 626 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60758,12 +61861,20 @@ exports.MonatFlexshipShippingAndBillingCard = MonatFlexshipShippingAndBillingCar
 Object.defineProperty(exports, "__esModule", { value: true });
 var MonatFlexshipCardController = /** @class */ (function () {
     //@ngInject
-    function MonatFlexshipCardController(observerService, ModalService) {
+    function MonatFlexshipCardController(observerService, orderTemplateService, $window, ModalService, monatAlertService) {
         var _this = this;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
+        this.$window = $window;
         this.ModalService = ModalService;
+        this.monatAlertService = monatAlertService;
         this.$onInit = function () {
             _this.observerService.attach(_this.updateOrderTemplate, 'orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
+            if (_this.orderTemplate.scheduleOrderNextPlaceDateTime) {
+                var mostRecentFlexshipDeliveryDate = Date.parse(_this.orderTemplate.scheduleOrderNextPlaceDateTime);
+                _this.editFlexshipUntilDate = new Date(mostRecentFlexshipDeliveryDate);
+                _this.editFlexshipUntilDate.setDate(_this.editFlexshipUntilDate.getDate() - _this.daysToEditFlexship);
+            }
         };
         this.$onDestroy = function () {
             _this.observerService.detachById('orderTemplateUpdated' + _this.orderTemplate.orderTemplateID);
@@ -60794,184 +61905,28 @@ var MonatFlexshipCardController = /** @class */ (function () {
                 console.error('unable to open model :', error);
             });
         };
-    }
-    return MonatFlexshipCardController;
-}());
-var MonatFlexshipCard = /** @class */ (function () {
-    function MonatFlexshipCard(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.scope = {};
-        this.bindToController = {
-            orderTemplate: '<',
-            accountAddresses: '<',
-            accountPaymentMethods: '<',
-            shippingMethodOptions: '<',
-            stateCodeOptions: '<',
-            cancellationReasonTypeOptions: '<',
-            scheduleDateChangeReasonTypeOptions: '<',
-            expirationMonthOptions: '<',
-            expirationYearOptions: '<',
-        };
-        this.controller = MonatFlexshipCardController;
-        this.controllerAs = 'monatFlexshipCard';
-        this.link = function (scope, element, attrs) { };
-        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
-        this.restrict = 'EA';
-    }
-    MonatFlexshipCard.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
-            return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
-        };
-        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
-        return directive;
-    };
-    return MonatFlexshipCard;
-}());
-exports.MonatFlexshipCard = MonatFlexshipCard;
-
-
-/***/ }),
-/* 621 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatFlexshipDetailController = /** @class */ (function () {
-    //@ngInject
-    function MonatFlexshipDetailController(orderTemplateService) {
-        var _this = this;
-        this.orderTemplateService = orderTemplateService;
-        this.$onInit = function () {
-            if (_this.orderTemplate == null) {
-                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
-                    .then(function (response) {
-                    _this.orderTemplate = response.orderTemplate;
-                }, function (reason) {
-                    throw (reason);
-                });
-            }
-        };
-    }
-    return MonatFlexshipDetailController;
-}());
-var MonatFlexshipDetail = /** @class */ (function () {
-    function MonatFlexshipDetail(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.scope = {};
-        this.bindToController = {
-            orderTemplateId: '@',
-            orderTemplate: '<'
-        };
-        this.controller = MonatFlexshipDetailController;
-        this.controllerAs = "monatFlexshipDetail";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipdetail.html";
-        this.restrict = "EA";
-    }
-    MonatFlexshipDetail.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipDetail(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
-        return directive;
-    };
-    return MonatFlexshipDetail;
-}());
-exports.MonatFlexshipDetail = MonatFlexshipDetail;
-
-
-/***/ }),
-/* 622 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatFlexshipListingController = /** @class */ (function () {
-    //@ngInject
-    function MonatFlexshipListingController(orderTemplateService) {
-        var _this = this;
-        this.orderTemplateService = orderTemplateService;
-        this.initialized = false;
-        this.$onInit = function () {
-            _this.orderTemplateService.getOrderTemplates()
-                .then(function (data) {
-                _this.accountAddresses = data.accountAddresses;
-                _this.accountPaymentMethods = data.accountPaymentMethods;
-                _this.shippingMethodOptions = data.shippingMethodOptions;
-                _this.stateCodeOptions = data.stateCodeOptions;
-                _this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
-                _this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
-                _this.expirationMonthOptions = data.expirationMonthOptions;
-                _this.expirationYearOptions = data.expirationYearOptions;
-                //set this last so that ng repeat inits with all needed data
-                _this.orderTemplates = data.orderTemplates;
-            }, function (reason) {
-                console.error(reason);
-            }).finally(function () {
-                _this.initialized = true;
+        this.showAddGiftCardModal = function () {
+            _this.ModalService.closeModals();
+            _this.ModalService.showModal({
+                component: 'monatFlexshipAddGiftCardModal',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                },
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
             });
         };
-    }
-    return MonatFlexshipListingController;
-}());
-var MonatFlexshipListing = /** @class */ (function () {
-    function MonatFlexshipListing(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.monatFrontendBasePath = monatFrontendBasePath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.scope = {};
-        this.bindToController = {};
-        this.controller = MonatFlexshipListingController;
-        this.controllerAs = "monatFlexshipListing";
-        this.link = function (scope, element, attrs) {
-        };
-        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshiplisting.html";
-        this.restrict = "EA";
-    }
-    MonatFlexshipListing.Factory = function () {
-        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipListing(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
-        directive.$inject = [
-            'monatFrontendBasePath',
-            '$hibachi',
-            'rbkeyService',
-            'requestService'
-        ];
-        return directive;
-    };
-    return MonatFlexshipListing;
-}());
-exports.MonatFlexshipListing = MonatFlexshipListing;
-
-
-/***/ }),
-/* 623 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var MonatFlexshipMenuController = /** @class */ (function () {
-    //@ngInject
-    function MonatFlexshipMenuController(orderTemplateService, observerService, $window, ModalService) {
-        var _this = this;
-        this.orderTemplateService = orderTemplateService;
-        this.observerService = observerService;
-        this.$window = $window;
-        this.ModalService = ModalService;
-        this.$onInit = function () { };
         //TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
         this.showCancelFlexshipModal = function () {
             _this.ModalService.showModal({
@@ -61070,28 +62025,51 @@ var MonatFlexshipMenuController = /** @class */ (function () {
                 console.error('unable to open model :', error);
             });
         };
+        this.showFlexshipEditFrequencyMethodModal = function () {
+            _this.ModalService.showModal({
+                component: 'monatFlexshipFrequencyModal',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    orderTemplate: _this.orderTemplate,
+                },
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
+            });
+        };
     }
-    MonatFlexshipMenuController.prototype.activateFlexship = function () {
+    MonatFlexshipCardController.prototype.activateFlexship = function () {
         var _this = this;
         // make api request
         this.orderTemplateService
-            .activateOrderTemplate(this.orderTemplate.orderTemplateID)
+            .activateOrderTemplate({
+            orderTemplateID: this.orderTemplate.orderTemplateID
+        })
             .then(function (data) {
             if (data.orderTemplate) {
                 _this.orderTemplate = data.orderTemplate;
                 _this.observerService.notify('orderTemplateUpdated' + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                _this.monatAlertService.success("Your flexship has been Activated successfully");
             }
             else {
-                console.error(data);
+                throw (data);
             }
-            // TODO: show alert
         })
-            .catch(function (reason) {
-            throw reason;
-            // TODO: show alert
+            .catch(function (error) {
+            console.error(error);
+            _this.monatAlertService.showErrorsFromResponse(error);
         });
     };
-    MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
+    MonatFlexshipCardController.prototype.setAsCurrentFlexship = function () {
         var _this = this;
         // make api request
         this.orderTemplateService
@@ -61099,7 +62077,7 @@ var MonatFlexshipMenuController = /** @class */ (function () {
             .then(function (data) {
             if (data.successfulActions &&
                 data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
-                _this.$window.location.href = '/shop';
+                _this.$window.location.href = "/shop/?type=flexship&orderTemplateId=" + _this.orderTemplate.orderTemplateID;
             }
             else {
                 throw data;
@@ -61110,10 +62088,10 @@ var MonatFlexshipMenuController = /** @class */ (function () {
             // TODO: show alert
         });
     };
-    return MonatFlexshipMenuController;
+    return MonatFlexshipCardController;
 }());
-var MonatFlexshipMenu = /** @class */ (function () {
-    function MonatFlexshipMenu(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+var MonatFlexshipCard = /** @class */ (function () {
+    function MonatFlexshipCard(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
         this.monatFrontendBasePath = monatFrontendBasePath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.$hibachi = $hibachi;
@@ -61129,6 +62107,259 @@ var MonatFlexshipMenu = /** @class */ (function () {
             scheduleDateChangeReasonTypeOptions: '<',
             expirationMonthOptions: '<',
             expirationYearOptions: '<',
+            daysToEditFlexship: '@?'
+        };
+        this.controller = MonatFlexshipCardController;
+        this.controllerAs = 'monatFlexshipCard';
+        this.link = function (scope, element, attrs) { };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
+        this.restrict = 'EA';
+    }
+    MonatFlexshipCard.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) {
+            return new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
+        };
+        directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
+        return directive;
+    };
+    return MonatFlexshipCard;
+}());
+exports.MonatFlexshipCard = MonatFlexshipCard;
+
+
+/***/ }),
+/* 627 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipDetailController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipDetailController(orderTemplateService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$onInit = function () {
+            if (_this.orderTemplate == null) {
+                _this.orderTemplateService.getOrderTemplateDetails(_this.orderTemplateId)
+                    .then(function (response) {
+                    _this.orderTemplate = response.orderTemplate;
+                }, function (reason) {
+                    throw (reason);
+                });
+            }
+        };
+    }
+    return MonatFlexshipDetailController;
+}());
+var MonatFlexshipDetail = /** @class */ (function () {
+    function MonatFlexshipDetail(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            orderTemplateId: '@',
+            orderTemplate: '<'
+        };
+        this.controller = MonatFlexshipDetailController;
+        this.controllerAs = "monatFlexshipDetail";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipdetail.html";
+        this.restrict = "EA";
+    }
+    MonatFlexshipDetail.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipDetail(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipDetail;
+}());
+exports.MonatFlexshipDetail = MonatFlexshipDetail;
+
+
+/***/ }),
+/* 628 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipListingController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipListingController(orderTemplateService, $window, publicService) {
+        var _this = this;
+        this.orderTemplateService = orderTemplateService;
+        this.$window = $window;
+        this.publicService = publicService;
+        this.loading = false;
+        this.orderTemplateTypeID = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
+        this.initialized = false;
+        this.$onInit = function () {
+            _this.fetchFlexships();
+            _this.orderTemplateService.getOrderTemplateSettings().then(function (data) {
+                _this.daysToEditFlexshipSetting = data.orderTemplateSettings;
+            });
+            _this.account = _this.publicService.account;
+            if (null === _this.showCreateButton) {
+                _this.showCreateButton = true;
+            }
+        };
+        this.fetchFlexships = function () {
+            _this.orderTemplateService
+                .getOrderTemplates(_this.orderTemplateTypeID)
+                .then(function (data) {
+                _this.accountAddresses = data.accountAddresses;
+                _this.accountPaymentMethods = data.accountPaymentMethods;
+                _this.shippingMethodOptions = data.shippingMethodOptions;
+                _this.stateCodeOptions = data.stateCodeOptions;
+                _this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
+                _this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+                _this.expirationMonthOptions = data.expirationMonthOptions;
+                _this.expirationYearOptions = data.expirationYearOptions;
+                //set this last so that ng repeat inits with all needed data
+                _this.orderTemplates = data.orderTemplates;
+            })
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
+                _this.initialized = true;
+            });
+        };
+        this.createNewFlexship = function () {
+            _this.loading = true;
+            _this.orderTemplateService.createOrderTemplate('ottSchedule')
+                .then(function (data) {
+                if (data.orderTemplate) {
+                    _this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+                }
+                else {
+                    throw (data);
+                }
+            })
+                .catch(function (e) {
+                console.error(e);
+            })
+                .finally(function () {
+                _this.loading = false;
+            });
+        };
+    }
+    MonatFlexshipListingController.prototype.setAsCurrentFlexship = function (orderTemplateID) {
+        var _this = this;
+        // make api request
+        this.orderTemplateService
+            .setAsCurrentFlexship(orderTemplateID)
+            .then(function (data) {
+            if (data.successfulActions &&
+                data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1) {
+                _this.$window.location.href = '/shop';
+            }
+            else {
+                throw data;
+            }
+        })
+            .catch(function (error) {
+            console.error('setAsCurrentFlexship :', error);
+            // TODO: show alert
+        })
+            .finally(function () {
+            //TODO
+        });
+    };
+    return MonatFlexshipListingController;
+}());
+var MonatFlexshipListing = /** @class */ (function () {
+    function MonatFlexshipListing(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.bindToController = {
+            showCreateButton: '=?'
+        };
+        this.controller = MonatFlexshipListingController;
+        this.controllerAs = "monatFlexshipListing";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshiplisting.html";
+        this.restrict = "EA";
+    }
+    MonatFlexshipListing.Factory = function () {
+        var directive = function (monatFrontendBasePath, $hibachi, rbkeyService, requestService) { return new MonatFlexshipListing(monatFrontendBasePath, $hibachi, rbkeyService, requestService); };
+        directive.$inject = [
+            'monatFrontendBasePath',
+            '$hibachi',
+            'rbkeyService',
+            'requestService'
+        ];
+        return directive;
+    };
+    return MonatFlexshipListing;
+}());
+exports.MonatFlexshipListing = MonatFlexshipListing;
+
+
+/***/ }),
+/* 629 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatFlexshipMenuController = /** @class */ (function () {
+    //@ngInject
+    function MonatFlexshipMenuController() {
+        var _this = this;
+        this.$onInit = function () { };
+        this.showCancelFlexshipModal = function () {
+            _this.monatFlexshipCard.showCancelFlexshipModal();
+        };
+        this.showAddGiftCardModal = function () {
+            _this.monatFlexshipCard.showAddGiftCardModal();
+        };
+        this.showDelayOrSkipFlexshipModal = function () {
+            _this.monatFlexshipCard.showDelayOrSkipFlexshipModal();
+        };
+        this.showFlexshipEditPaymentMethodModal = function () {
+            _this.monatFlexshipCard.showFlexshipEditPaymentMethodModal();
+        };
+        this.showFlexshipEditShippingMethodModal = function () {
+            _this.monatFlexshipCard.showFlexshipEditShippingMethodModal();
+        };
+        this.showFlexshipEditFrequencyMethodModal = function () {
+            _this.monatFlexshipCard.showFlexshipEditFrequencyMethodModal();
+        };
+    }
+    MonatFlexshipMenuController.prototype.activateFlexship = function () {
+        this.monatFlexshipCard.activateFlexship();
+    };
+    MonatFlexshipMenuController.prototype.setAsCurrentFlexship = function () {
+        this.monatFlexshipCard.setAsCurrentFlexship();
+    };
+    return MonatFlexshipMenuController;
+}());
+var MonatFlexshipMenu = /** @class */ (function () {
+    function MonatFlexshipMenu(monatFrontendBasePath, slatwallPathBuilder, $hibachi, rbkeyService) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.slatwallPathBuilder = slatwallPathBuilder;
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
+        this.scope = {};
+        this.require = {
+            monatFlexshipCard: "^monatFlexshipCard"
+        };
+        this.bindToController = {
+            orderTemplate: '='
         };
         this.controller = MonatFlexshipMenuController;
         this.controllerAs = 'monatFlexshipMenu';
@@ -61149,7 +62380,7 @@ exports.MonatFlexshipMenu = MonatFlexshipMenu;
 
 
 /***/ }),
-/* 624 */
+/* 630 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61159,21 +62390,35 @@ var MonatProductCardController = /** @class */ (function () {
     // @ngInject
     function MonatProductCardController(
     //inject modal service
-    orderTemplateService, $rootScope, monatService) {
+    orderTemplateService, monatService, observerService, ModalService, $scope) {
         var _this = this;
         this.orderTemplateService = orderTemplateService;
-        this.$rootScope = $rootScope;
         this.monatService = monatService;
+        this.observerService = observerService;
+        this.ModalService = ModalService;
+        this.$scope = $scope;
         this.pageRecordsShow = 5;
         this.currentPage = 1;
         this.wishlistTypeID = '2c9280846b712d47016b75464e800014';
+        this.urlParams = new URLSearchParams(window.location.search);
+        this.$onInit = function () {
+            _this.$scope.$evalAsync(_this.init);
+        };
+        this.init = function () {
+            if (_this.urlParams.get('type')) {
+                _this.type = _this.urlParams.get('type');
+            }
+            if (_this.urlParams.get('orderTemplateId')) {
+                _this.orderTemplate = _this.urlParams.get('orderTemplateId');
+            }
+        };
         this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
             if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
             if (setNewTemplates === void 0) { setNewTemplates = true; }
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -61221,8 +62466,12 @@ var MonatProductCardController = /** @class */ (function () {
         };
         this.addToCart = function (skuID, skuCode) {
             _this.loading = true;
-            if (_this.type === 'flexship') {
-                //flexship logic
+            _this.lastAddedSkuID = skuID;
+            var orderTemplateID = _this.orderTemplate;
+            if (_this.type === 'flexship' || _this.type === 'VIPenrollment') {
+                _this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then(function (result) {
+                    _this.loading = false;
+                });
             }
             else {
                 _this.monatService.addToCart(skuID, 1).then(function (result) {
@@ -61236,6 +62485,35 @@ var MonatProductCardController = /** @class */ (function () {
         this.setWishlistName = function (newName) {
             _this.wishlistTemplateName = newName;
         };
+        this.closeModals = function () {
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+        };
+        this.launchWishlistModal = function (skuID) {
+            var newSkuID = skuID;
+            _this.ModalService.showModal({
+                component: 'swfWishlist',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    sku: newSkuID
+                },
+                preClose: function (modal) {
+                    modal.element.modal('hide');
+                    _this.ModalService.closeModals();
+                },
+            })
+                .then(function (modal) {
+                //it's a bootstrap element, use 'modal' to show it
+                modal.element.modal();
+                modal.close.then(function (result) { });
+            })
+                .catch(function (error) {
+                console.error('unable to open model :', error);
+            });
+        };
+        this.observerService.attach(this.closeModals, "createWishlistSuccess");
+        this.observerService.attach(this.closeModals, "addItemSuccess");
+        this.observerService.attach(this.closeModals, "deleteOrderTemplateItemSuccess");
     }
     return MonatProductCardController;
 }());
@@ -61250,6 +62528,7 @@ var MonatProductCard = /** @class */ (function () {
             type: '@',
             index: '@',
             allProducts: '<?',
+            orderTemplate: '<?',
         };
         this.controller = MonatProductCardController;
         this.controllerAs = 'monatProductCard';
@@ -61267,7 +62546,153 @@ exports.MonatProductCard = MonatProductCard;
 
 
 /***/ }),
-/* 625 */
+/* 631 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ObserveEventController = /** @class */ (function () {
+    // @ngInject
+    function ObserveEventController(observerService, $timeout) {
+        var _this = this;
+        this.observerService = observerService;
+        this.$timeout = $timeout;
+        this.eventCalled = false;
+        this.$onInit = function () {
+            _this.observerService.attach(_this.handleEventCalled, _this.event);
+        };
+        this.handleEventCalled = function () {
+            _this.eventCalled = true;
+            if (angular.isDefined(_this.timeout)) {
+                _this.$timeout(function () {
+                    _this.eventCalled = false;
+                }, +_this.timeout);
+            }
+        };
+    }
+    return ObserveEventController;
+}());
+var ObserveEvent = /** @class */ (function () {
+    function ObserveEvent() {
+        this.restrict = 'A';
+        this.scope = true;
+        this.bindToController = {
+            event: '@',
+            timeout: '@?'
+        };
+        this.controller = ObserveEventController;
+        this.controllerAs = 'observeEvent';
+    }
+    ObserveEvent.Factory = function () {
+        var _this = this;
+        var directive = function () { return new _this(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return ObserveEvent;
+}());
+exports.ObserveEvent = ObserveEvent;
+
+
+/***/ }),
+/* 632 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SponsorSearchSelectorController = /** @class */ (function () {
+    // @ngInject
+    function SponsorSearchSelectorController(publicService, observerService) {
+        var _this = this;
+        this.publicService = publicService;
+        this.observerService = observerService;
+        this.loadingResults = false;
+        this.currentPage = 1;
+        // Form fields for the sponsor search.
+        this.form = {
+            text: '',
+            countryCode: null,
+            state: '',
+        };
+        this.$onInit = function () {
+            // Set the default country code based on the current site.
+            _this.form.countryCode = _this.siteCountryCode;
+            _this.getCountryCodeOptions();
+            _this.getStateCodeOptions(_this.form.countryCode);
+            _this.getSearchResults();
+        };
+        this.getCountryCodeOptions = function () {
+            // We dont't need to get country code options more than once.
+            if (angular.isDefined(_this.countryCodeOptions)) {
+                return _this.countryCodeOptions;
+            }
+            _this.publicService.getCountries().then(function (data) {
+                _this.countryCodeOptions = data.countryCodeOptions;
+            });
+        };
+        this.getStateCodeOptions = function (countryCode) {
+            // Reset the state code.
+            _this.form.stateCode = '';
+            _this.publicService.getStates(countryCode).then(function (data) {
+                _this.stateCodeOptions = data.stateCodeOptions;
+            });
+        };
+        this.getSearchResults = function () {
+            _this.loadingResults = true;
+            var data = {
+                search: _this.form.text,
+                currentPage: _this.currentPage,
+                accountSearchType: _this.accountSearchType,
+                countryCode: _this.form.countryCode,
+                stateCode: _this.form.stateCode,
+                returnJsonObjects: ''
+            };
+            _this.argumentsObject = {
+                search: _this.form.text,
+                accountSearchType: _this.accountSearchType,
+                countryCode: _this.form.countryCode,
+                stateCode: _this.form.stateCode,
+                returnJsonObjects: ''
+            };
+            _this.publicService.marketPartnerResults = _this.publicService.doAction('?slatAction=monat:public.getmarketpartners', data).then(function (data) {
+                _this.observerService.notify('PromiseComplete');
+                _this.loadingResults = false;
+                _this.searchResults = data.pageRecords;
+                _this.recordsCount = data.recordsCount;
+            });
+        };
+    }
+    return SponsorSearchSelectorController;
+}());
+var SponsorSearchSelector = /** @class */ (function () {
+    function SponsorSearchSelector(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'E';
+        this.scope = {};
+        this.bindToController = {
+            accountSearchType: '@',
+            siteCountryCode: '@',
+            title: '@',
+        };
+        this.controller = SponsorSearchSelectorController;
+        this.controllerAs = 'sponsorSearchSelector';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/sponsor-search-selector.html';
+    }
+    SponsorSearchSelector.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return SponsorSearchSelector;
+}());
+exports.SponsorSearchSelector = SponsorSearchSelector;
+
+
+/***/ }),
+/* 633 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61277,25 +62702,21 @@ exports.MonatProductCard = MonatProductCard;
 Object.defineProperty(exports, "__esModule", { value: true });
 var swfAccountController = /** @class */ (function () {
     // @ngInject
-    function swfAccountController($rootScope, $scope, observerService) {
+    function swfAccountController(publicService, $scope, observerService) {
         var _this = this;
-        this.$rootScope = $rootScope;
+        this.publicService = publicService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.loadingOrders = false;
         this.monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         this.yearOptions = [];
         this.stateCodeOptions = [];
         this.userIsLoggedIn = false;
         this.orderItems = [];
         this.urlParams = new URLSearchParams(window.location.search);
+        this.newProductReview = {};
+        this.stars = ['', '', '', '', ''];
         this.pageTracker = 1;
-        // Determine how many years old the account is
-        this.checkAndApplyAccountAge = function () {
-            if (_this.accountData.ownerAccount.createdDateTime) {
-                var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
-                _this.accountAge = _this.currentYear - accountCreatedYear;
-            }
-        };
         this.$onInit = function () {
             _this.getAccount();
         };
@@ -61303,19 +62724,47 @@ var swfAccountController = /** @class */ (function () {
             _this.loading = true;
             _this.accountData = {};
             _this.accountPaymentMethods = [];
-            var account = _this.$rootScope.hibachiScope.getAccount();
             //Do this when then account data returns
-            //Optimize when get orders on account is called, only needed on account overview and orders overview
-            account.then(function (response) {
+            _this.publicService.getAccount(true).then(function (response) {
                 _this.accountData = response;
                 _this.checkAndApplyAccountAge();
-                _this.getOrdersOnAccount();
                 _this.userIsLoggedIn = true;
                 _this.accountPaymentMethods = _this.accountData.accountPaymentMethods;
                 if (_this.urlParams.get('orderid')) {
                     _this.getOrderItemsByOrderID();
                 }
-                ;
+                switch (window.location.pathname) {
+                    case '/my-account/':
+                        _this.getOrdersOnAccount(1);
+                        _this.getMostRecentFlexship();
+                        break;
+                    case '/my-account/order-history/':
+                        _this.getOrdersOnAccount();
+                        break;
+                    case '/my-account/my-details/':
+                        _this.getMoMoneyBalance();
+                        break;
+                }
+                _this.loading = false;
+            });
+        };
+        // Determine how many years old the account owner is
+        this.checkAndApplyAccountAge = function () {
+            if (_this.accountData && _this.accountData.ownerAccount) {
+                var accountCreatedYear = Date.parse(_this.accountData.ownerAccount.createdDateTime).getFullYear();
+                _this.accountAge = _this.currentYear - accountCreatedYear;
+            }
+        };
+        this.getMostRecentFlexship = function () {
+            _this.loading = true;
+            var accountID = _this.accountData.accountID;
+            return _this.publicService.doAction("getMostRecentOrderTemplate", { 'accountID': accountID }).then(function (result) {
+                if (result.mostRecentOrderTemplate.length) {
+                    _this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                    _this.mostRecentFlexshipDeliveryDate = Date.parse(_this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                    _this.editFlexshipUntilDate = new Date(_this.mostRecentFlexshipDeliveryDate);
+                    _this.editFlexshipUntilDate.setDate(_this.editFlexshipUntilDate.getDate() - result.daysToEditFlexship);
+                }
                 _this.loading = false;
             });
         };
@@ -61342,7 +62791,7 @@ var swfAccountController = /** @class */ (function () {
                     pageNumber = _this.pageTracker + 1;
                 }
             }
-            return _this.$rootScope.hibachiScope.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
+            return _this.publicService.doAction("getAllOrdersOnAccount", { 'accountID': accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber }).then(function (result) {
                 _this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
                 var holdingArray = [];
                 var pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
@@ -61352,6 +62801,7 @@ var swfAccountController = /** @class */ (function () {
                 _this.totalPages = holdingArray;
                 _this.pageTracker = pageNumber;
                 _this.loading = false;
+                _this.loadingOrders = false;
             });
         };
         this.getOrderItemsByOrderID = function (orderID, pageRecordsShow, currentPage) {
@@ -61360,7 +62810,7 @@ var swfAccountController = /** @class */ (function () {
             if (currentPage === void 0) { currentPage = 1; }
             _this.loading = true;
             var accountID = _this.accountData.accountID;
-            return _this.$rootScope.hibachiScope.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
+            return _this.publicService.doAction("getOrderItemsByOrderID", { orderID: orderID, accountID: accountID, currentPage: currentPage, pageRecordsShow: pageRecordsShow, }).then(function (result) {
                 result.OrderItemsByOrderID.forEach(function (orderItem) {
                     _this.orderItems.push(orderItem);
                 });
@@ -61372,7 +62822,7 @@ var swfAccountController = /** @class */ (function () {
             if (_this.countryCodeOptions) {
                 return _this.countryCodeOptions;
             }
-            return _this.$rootScope.hibachiScope.doAction("getCountries").then(function (result) {
+            return _this.publicService.doAction("getCountries").then(function (result) {
                 _this.countryCodeOptions = result.countryCodeOptions;
                 _this.loading = false;
             });
@@ -61383,7 +62833,7 @@ var swfAccountController = /** @class */ (function () {
                 return _this.stateCodeOptions;
             }
             _this.cachedCountryCode = countryCode;
-            return _this.$rootScope.hibachiScope.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
+            return _this.publicService.doAction("getStateCodeOptionsByCountryCode", { countryCode: countryCode }).then(function (result) {
                 //Resets the state code options on each click so they dont add up incorrectly
                 if (_this.stateCodeOptions.length) {
                     _this.stateCodeOptions = [];
@@ -61396,7 +62846,7 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setPrimaryPaymentMethod = function (methodID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
+            return _this.publicService.doAction("updatePrimaryPaymentMethod", { paymentMethodID: methodID }).then(function (result) {
                 _this.loading = false;
             });
         };
@@ -61416,7 +62866,7 @@ var swfAccountController = /** @class */ (function () {
         };
         this.deletePaymentMethod = function (paymentMethodID, index) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
+            return _this.publicService.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(function (result) {
                 _this.accountPaymentMethods.splice(index, 1);
                 _this.loading = false;
                 return _this.accountPaymentMethods;
@@ -61424,22 +62874,53 @@ var swfAccountController = /** @class */ (function () {
         };
         this.setEditAddress = function (newAddress, address) {
             if (newAddress === void 0) { newAddress = true; }
+            _this.editAddress = {};
             _this.editAddress = address ? address : {};
+            if (!newAddress) {
+                _this.getStateCodeOptions(address.address.countryCode);
+            }
             _this.isNewAddress = newAddress;
+            console.log(_this.editAddress);
         };
         this.setPrimaryAddress = function (addressID) {
             _this.loading = true;
-            return _this.$rootScope.hibachiScope.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
+            return _this.publicService.doAction("updatePrimaryAccountShippingAddress", { 'accountAddressID': addressID }).then(function (result) {
                 _this.loading = false;
             });
         };
+        this.setRating = function (rating) {
+            _this.newProductReview.rating = rating;
+            _this.stars = ['', '', '', '', ''];
+            for (var i = 0; i <= rating - 1; i++) {
+                _this.stars[i] = "color: #d0d00b";
+            }
+            ;
+        };
+        this.deleteAccountAddress = function (addressID, index) {
+            _this.loading = true;
+            return _this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(function (result) {
+                _this.loading = false;
+            });
+        };
+        this.closeModals = function () {
+            $('.modal').modal('hide');
+            $('.modal-backdrop').remove();
+        };
+        this.getMoMoneyBalance = function () {
+            _this.publicService.doAction('getMoMoneyBalance').then(function (res) {
+                _this.moMoneyBalance = res.moMoneyBalance;
+            });
+        };
+        this.observerService.attach(this.getAccount, "loginSuccess");
+        this.observerService.attach(this.closeModals, "addNewAccountAddressSuccess");
+        this.observerService.attach(this.closeModals, "addAccountPaymentMethodSuccess");
+        this.observerService.attach(this.closeModals, "addProductReviewSuccess");
         var currDate = new Date;
         this.currentYear = currDate.getFullYear();
         var manipulateableYear = this.currentYear;
         do {
             this.yearOptions.push(manipulateableYear++);
         } while (this.yearOptions.length <= 9);
-        this.observerService.attach(this.getAccount, "loginSuccess");
     }
     return swfAccountController;
 }());
@@ -61465,7 +62946,132 @@ exports.SWFAccount = SWFAccount;
 
 
 /***/ }),
-/* 626 */
+/* 634 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWFPaginationController = /** @class */ (function () {
+    // @ngInject
+    function SWFPaginationController(observerService, $scope, publicService) {
+        var _this = this;
+        this.observerService = observerService;
+        this.$scope = $scope;
+        this.publicService = publicService;
+        this.pageTracker = 1;
+        this.itemsPerPage = 10;
+        this.init = function () {
+            _this.totalPages = Math.ceil(_this.recordsCount / _this.itemsPerPage);
+            var holdingArray = [];
+            var holdingDisplayPagesArray = [];
+            //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
+            for (var i = 1; i <= _this.totalPages; i++) {
+                holdingArray.push(i);
+                if (i <= _this.elipsesNum) {
+                    holdingDisplayPagesArray.push(i);
+                }
+            }
+            _this.displayPages = holdingDisplayPagesArray;
+            _this.totalPageArray = holdingArray;
+        };
+        this.getNextPage = function (pageNumber, direction, newPages) {
+            if (pageNumber === void 0) { pageNumber = 1; }
+            if (direction === void 0) { direction = false; }
+            if (newPages === void 0) { newPages = false; }
+            var newPage = newPages;
+            var lastDisplayPage = _this.displayPages[_this.displayPages.length - 1];
+            //direction logic
+            if (direction === 'prev') {
+                if (_this.pageTracker === 1) {
+                    return pageNumber;
+                }
+                else if (_this.pageTracker == _this.displayPages[0]) {
+                    newPage = true;
+                    pageNumber = _this.pageTracker - 1;
+                }
+                else {
+                    pageNumber = _this.pageTracker - 1;
+                }
+            }
+            else if (direction === 'next') {
+                if (_this.pageTracker >= lastDisplayPage) {
+                    newPage = true;
+                }
+                else {
+                    pageNumber = _this.pageTracker + 1;
+                }
+            }
+            //END: direction logic
+            //Ellipsis Logic
+            if (newPage) {
+                pageNumber = (direction == 'prev') ? _this.displayPages[0] - 1 : lastDisplayPage + 1;
+                var manipulatePageNumber = pageNumber;
+                _this.displayPages = [];
+                for (var i = 0;; i++) {
+                    if (i >= _this.elipsesNum || manipulatePageNumber > _this.totalPages) {
+                        break;
+                    }
+                    if (direction == 'prev') {
+                        _this.displayPages.unshift(manipulatePageNumber--);
+                    }
+                    else {
+                        _this.displayPages.push(manipulatePageNumber++);
+                    }
+                }
+            }
+            //END: Ellipsis Logic
+            _this.argumentsObject['pageRecordsShow'] = _this.itemsPerPage;
+            _this.argumentsObject['currentPage'] = pageNumber;
+            _this.publicService.paginationIsLoading = true;
+            return _this.publicService.doAction(_this.action, _this.argumentsObject).then(function (result) {
+                _this.recordList = result.productList ? result.productList : result.pageRecords;
+                _this.pageTracker = pageNumber;
+                _this.publicService.paginationIsLoading = false;
+            });
+        };
+        this.observerService.attach(this.init, "PromiseComplete");
+        if (this.beginPaginationAt) {
+            this.elipsesNum = this.beginPaginationAt;
+        }
+        else {
+            this.elipsesNum = 10;
+        }
+    }
+    ;
+    return SWFPaginationController;
+}());
+exports.SWFPaginationController = SWFPaginationController;
+var SWFPagination = /** @class */ (function () {
+    function SWFPagination(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
+        this.restrict = 'E';
+        this.scope = true;
+        this.bindToController = {
+            recordsCount: '<?',
+            action: '@?',
+            itemsPerPage: '@?',
+            recordList: '=',
+            argumentsObject: '<?',
+            beginPaginationAt: '@?' //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
+        };
+        this.controller = SWFPaginationController;
+        this.controllerAs = 'paginationController';
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfpagination.html';
+    }
+    SWFPagination.Factory = function () {
+        var _this = this;
+        var directive = function (monatFrontendBasePath) { return new _this(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
+        return directive;
+    };
+    return SWFPagination;
+}());
+exports.SWFPagination = SWFPagination;
+
+
+/***/ }),
+/* 635 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61620,7 +63226,7 @@ exports.SWFReviewListing = SWFReviewListing;
 
 
 /***/ }),
-/* 627 */
+/* 636 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61660,8 +63266,7 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.addWishlistItem = function (skuID) {
             _this.loading = true;
-            _this.setSkuIDFromAttribute();
-            _this.orderTemplateService.addOrderTemplateItem(_this.skuID ? _this.skuID : skuID, _this.wishlistTemplateID)
+            _this.orderTemplateService.addOrderTemplateItem(_this.sku ? _this.sku : skuID, _this.wishlistTemplateID)
                 .then(function (result) {
                 _this.loading = false;
                 return result;
@@ -61670,18 +63275,13 @@ var SWFWishlistController = /** @class */ (function () {
         this.addItemAndCreateWishlist = function (orderTemplateName, quantity) {
             if (quantity === void 0) { quantity = 1; }
             _this.loading = true;
-            _this.setSkuIDFromAttribute();
             _this.setWishlistName(orderTemplateName);
-            return _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(_this.wishlistTemplateName, _this.skuID, quantity).then(function (result) {
+            return _this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(_this.wishlistTemplateName, _this.sku, quantity).then(function (result) {
                 _this.loading = false;
                 _this.getAllWishlists();
                 _this.observerService.attach(_this.successfulAlert, "createWishlistSuccess");
                 return result;
             });
-        };
-        this.setSkuIDFromAttribute = function () {
-            var newskuID = document.getElementById('wishlist-product-title').getAttribute('data-skuid');
-            _this.skuID = newskuID;
         };
         this.getAllWishlists = function (pageRecordsToShow, setNewTemplates, setNewTemplateID) {
             if (pageRecordsToShow === void 0) { pageRecordsToShow = _this.pageRecordsShow; }
@@ -61689,7 +63289,7 @@ var SWFWishlistController = /** @class */ (function () {
             if (setNewTemplateID === void 0) { setNewTemplateID = false; }
             _this.loading = true;
             _this.orderTemplateService
-                .getOrderTemplates(pageRecordsToShow, _this.currentPage, _this.wishlistTypeID)
+                .getOrderTemplates(_this.wishlistTypeID, pageRecordsToShow, _this.currentPage)
                 .then(function (result) {
                 if (setNewTemplates) {
                     _this.orderTemplates = result['orderTemplates'];
@@ -61697,7 +63297,18 @@ var SWFWishlistController = /** @class */ (function () {
                 else if (setNewTemplateID) {
                     _this.newTemplateID = result.orderTemplates[0].orderTemplateID;
                 }
+            })
+                .cache(function (e) {
+                //TODO
+                console.error(e);
+            })
+                .finally(function () {
                 _this.loading = false;
+            });
+        };
+        this.getWishlistsLight = function () {
+            _this.orderTemplateService.getOrderTemplatesLight().then(function (response) {
+                _this.orderTemplates = response['orderTemplates'];
             });
         };
         this.successfulAlert = function () {
@@ -61715,26 +63326,32 @@ var SWFWishlistController = /** @class */ (function () {
         };
         this.search = function () {
         };
+        this.closeModal = function () {
+            _this.close(null); // close, but give 100ms to animate
+        };
         if (!this.pageRecordsShow) {
             this.pageRecordsShow = 6;
         }
         if (!this.currentPage) {
             this.currentPage = 1;
         }
+        console.log(this.sku);
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
         this.observerService.attach(this.successfulAlert, "OrderTemplateAddOrderTemplateItemSuccess");
+        this.observerService.attach(this.closeModal, "createWishlistSuccess");
+        this.observerService.attach(this.closeModal, "addItemSuccess");
     }
     return SWFWishlistController;
 }());
 exports.SWFWishlistController = SWFWishlistController;
 var SWFWishlist = /** @class */ (function () {
     // @ngInject
-    function SWFWishlist() {
+    function SWFWishlist(monatFrontendBasePath) {
+        this.monatFrontendBasePath = monatFrontendBasePath;
         this.require = {
             ngModel: '?^ngModel'
         };
         this.priority = 1000;
-        this.restrict = "A";
         this.scope = true;
         /**
          * Binds all of our variables to the controller so we can access using this
@@ -61742,6 +63359,8 @@ var SWFWishlist = /** @class */ (function () {
         this.bindToController = {
             pageRecordsShow: "@?",
             currentPage: "@?",
+            sku: "<?",
+            close: '=' //injected by angularModalService;
         };
         this.controller = SWFWishlistController;
         this.controllerAs = "swfWishlist";
@@ -61750,13 +63369,15 @@ var SWFWishlist = /** @class */ (function () {
             */
         this.link = function (scope, element, attrs, formController) {
         };
+        this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
+        this.restrict = "E";
     }
     /**
-     * Handles injecting the partials path into this class
-     */
+ * Handles injecting the partials path into this class
+ */
     SWFWishlist.Factory = function () {
-        var directive = function () { return new SWFWishlist(); };
-        directive.$inject = [];
+        var directive = function (monatFrontendBasePath) { return new SWFWishlist(monatFrontendBasePath); };
+        directive.$inject = ['monatFrontendBasePath'];
         return directive;
     };
     return SWFWishlist;
@@ -61765,43 +63386,126 @@ exports.SWFWishlist = SWFWishlist;
 
 
 /***/ }),
-/* 628 */
+/* 637 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatCheckoutController = /** @class */ (function () {
+    // @ngInject
+    function MonatCheckoutController(publicService, observerService, $rootScope) {
+        var _this = this;
+        this.publicService = publicService;
+        this.observerService = observerService;
+        this.$rootScope = $rootScope;
+        this.$onInit = function () {
+            _this.observerService.attach(_this.closeNewAddressForm, 'addNewAccountAddressSuccess');
+        };
+        this.closeNewAddressForm = function () {
+            _this.publicService.addBillingAddressOpen = false;
+        };
+    }
+    return MonatCheckoutController;
+}());
+exports.MonatCheckoutController = MonatCheckoutController;
+
+
+/***/ }),
+/* 638 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatSearchController = /** @class */ (function () {
+    // @ngInject
+    function MonatSearchController(publicService, monatService, $location, observerService) {
+        var _this = this;
+        this.publicService = publicService;
+        this.monatService = monatService;
+        this.$location = $location;
+        this.observerService = observerService;
+        this.productList = [];
+        this.loading = false;
+        this.keyword = '';
+        this.getProductsByKeyword = function (keyword) {
+            _this.argumentsObject = { keyword: keyword, priceGroupCode: _this.priceGroupCode }; // defining the arguments object to be passed into pagination directive
+            _this.loading = true;
+            _this.keyword = keyword;
+            var priceGroupCode = _this.priceGroupCode;
+            _this.publicService.doAction('getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode }).then(function (data) {
+                _this.observerService.notify('PromiseComplete');
+                _this.recordsCount = data.recordsCount;
+                _this.productList = data.productList;
+                _this.loading = false;
+            });
+        };
+        this.publicService.getAccount().then(function (data) {
+            _this.priceGroupCode = "2";
+            if (_this.publicService.account.priceGroups.length) {
+                _this.priceGroupCode = _this.publicService.account.priceGroups[0].priceGroupCode;
+            }
+            if ('undefined' !== typeof _this.$location.search().keyword) {
+                _this.getProductsByKeyword(_this.$location.search().keyword);
+            }
+        });
+    }
+    return MonatSearchController;
+}());
+exports.MonatSearchController = MonatSearchController;
+
+
+/***/ }),
+/* 639 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(304);
-var frontend_module_1 = __webpack_require__(800);
+__webpack_require__(305);
+var frontend_module_1 = __webpack_require__(813);
 //directives
-var monatflexshipcard_1 = __webpack_require__(620);
-var monatflexshipdetail_1 = __webpack_require__(621);
-var monatflexship_orderitem_1 = __webpack_require__(617);
-var monatflexship_shippingandbillingcard_1 = __webpack_require__(619);
-var monatflexship_ordertotalcard_1 = __webpack_require__(618);
-var monatflexship_modal_paymentmethod_1 = __webpack_require__(615);
-var monatflexship_modal_shippingmethod_1 = __webpack_require__(616);
-var monatflexship_modal_changeorskiporder_1 = __webpack_require__(613);
-var monatflexship_modal_cancel_1 = __webpack_require__(612);
-var monatflexship_modal_name_1 = __webpack_require__(614);
-var monatflexship_cart_container_1 = __webpack_require__(610);
-var monatflexship_confirm_1 = __webpack_require__(611);
-var monatflexshiplisting_1 = __webpack_require__(622);
-var monatflexshipmenu_1 = __webpack_require__(623);
-var monatenrollment_1 = __webpack_require__(606);
-var monatenrollmentvip_1 = __webpack_require__(609);
-var monatenrollmentstep_1 = __webpack_require__(608);
-var swfreviewlisting_1 = __webpack_require__(626);
-var swfwishlist_1 = __webpack_require__(627);
-var swfmyaccount_1 = __webpack_require__(625);
-var monatproductcard_1 = __webpack_require__(624);
-var monatenrollmentmp_1 = __webpack_require__(607);
-var monat_minicart_1 = __webpack_require__(605);
+var monatflexshipcard_1 = __webpack_require__(626);
+var monatflexshipdetail_1 = __webpack_require__(627);
+var monatflexship_orderitem_1 = __webpack_require__(623);
+var monatflexship_shippingandbillingcard_1 = __webpack_require__(625);
+var monatflexship_ordertotalcard_1 = __webpack_require__(624);
+var monatflexship_modal_paymentmethod_1 = __webpack_require__(621);
+var monatflexship_modal_shippingmethod_1 = __webpack_require__(622);
+var monatflexship_modal_changeorskiporder_1 = __webpack_require__(618);
+var monatflexship_modal_cancel_1 = __webpack_require__(617);
+var monatflexship_modal_name_1 = __webpack_require__(620);
+var monatflexship_modal_add_giftcard_1 = __webpack_require__(616);
+var monatflexship_cart_container_1 = __webpack_require__(614);
+var monatflexship_confirm_1 = __webpack_require__(615);
+var monatflexshiplisting_1 = __webpack_require__(628);
+var monatflexshipmenu_1 = __webpack_require__(629);
+var monatenrollment_1 = __webpack_require__(610);
+var monatenrollmentvip_1 = __webpack_require__(613);
+var monatenrollmentstep_1 = __webpack_require__(612);
+var monat_order_items_1 = __webpack_require__(609);
+var material_textarea_1 = __webpack_require__(607);
+var observe_event_1 = __webpack_require__(631);
+var monatflexship_modal_deliveryfrequency_1 = __webpack_require__(619);
+var swfreviewlisting_1 = __webpack_require__(635);
+var swfwishlist_1 = __webpack_require__(636);
+var swfmyaccount_1 = __webpack_require__(633);
+var monatproductcard_1 = __webpack_require__(630);
+var monatenrollmentmp_1 = __webpack_require__(611);
+var sponsor_search_selector_1 = __webpack_require__(632);
+var swfpagination_1 = __webpack_require__(634);
+var monat_minicart_1 = __webpack_require__(608);
+var monat_search_1 = __webpack_require__(638);
+var monat_checkout_1 = __webpack_require__(637);
 //services
-var monatservice_1 = __webpack_require__(629);
-var ordertemplateservice_1 = __webpack_require__(630);
+var monatservice_1 = __webpack_require__(642);
+var ordertemplateservice_1 = __webpack_require__(643);
+var monatHttpInterceptor_1 = __webpack_require__(641);
+var monatAlertService_1 = __webpack_require__(640);
 var monatfrontendmodule = angular
-    .module('monatfrontend', [frontend_module_1.frontendmodule.name, 'angularModalService'])
+    .module('monatfrontend', [frontend_module_1.frontendmodule.name, 'angularModalService', 'toaster'])
     //constants
     .constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
     //directives
@@ -61816,6 +63520,7 @@ var monatfrontendmodule = angular
     .directive('monatFlexshipChangeOrSkipOrderModal', monatflexship_modal_changeorskiporder_1.MonatFlexshipChangeOrSkipOrderModal.Factory())
     .directive('monatFlexshipCancelModal', monatflexship_modal_cancel_1.MonatFlexshipCancelModal.Factory())
     .directive('monatFlexshipNameModal', monatflexship_modal_name_1.MonatFlexshipNameModal.Factory())
+    .directive('monatFlexshipAddGiftCardModal', monatflexship_modal_add_giftcard_1.MonatFlexshipAddGiftCardModal.Factory())
     .directive('monatFlexshipCartContainer', monatflexship_cart_container_1.MonatFlexshipCartContainer.Factory())
     .directive('monatFlexshipConfirm', monatflexship_confirm_1.MonatFlexshipConfirm.Factory())
     .directive('monatFlexshipMenu', monatflexshipmenu_1.MonatFlexshipMenu.Factory())
@@ -61823,25 +63528,112 @@ var monatfrontendmodule = angular
     .directive('enrollmentMp', monatenrollmentmp_1.MonatEnrollmentMP.Factory())
     .directive('monatEnrollmentStep', monatenrollmentstep_1.MonatEnrollmentStep.Factory())
     .directive('vipController', monatenrollmentvip_1.MonatEnrollmentVIP.Factory())
+    .directive('monatOrderItems', monat_order_items_1.MonatOrderItems.Factory())
+    .directive('materialTextarea', material_textarea_1.MaterialTextarea.Factory())
+    .directive('observeEvent', observe_event_1.ObserveEvent.Factory())
+    .directive('sponsorSearchSelector', sponsor_search_selector_1.SponsorSearchSelector.Factory())
+    .directive('monatFlexshipFrequencyModal', monatflexship_modal_deliveryfrequency_1.MonatFlexshipFrequencyModal.Factory())
+    .directive('paginationController', swfpagination_1.SWFPagination.Factory())
     .directive('swfReviewListing', swfreviewlisting_1.SWFReviewListing.Factory())
     .directive('swfWishlist', swfwishlist_1.SWFWishlist.Factory())
     .directive('monatProductCard', monatproductcard_1.MonatProductCard.Factory())
     .directive('swfAccount', swfmyaccount_1.SWFAccount.Factory())
     .directive('monatMiniCart', monat_minicart_1.MonatMiniCart.Factory())
+    // Controllers
+    .controller('searchController', monat_search_1.MonatSearchController)
+    .controller('checkoutController', monat_checkout_1.MonatCheckoutController)
+    // Services
     .service('monatService', monatservice_1.MonatService)
     .service('orderTemplateService', ordertemplateservice_1.OrderTemplateService)
+    .service('monatHttpInterceptor', monatHttpInterceptor_1.MonatHttpInterceptor)
+    .service('monatAlertService', monatAlertService_1.MonatAlertService)
     .config([
     'ModalServiceProvider',
-    function (ModalServiceProvider) {
+    '$locationProvider',
+    '$httpProvider',
+    function (ModalServiceProvider, $locationProvider, $httpProvider) {
         // to set a default close delay on modals
         ModalServiceProvider.configureOptions({ closeDelay: 0 });
+        $locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
+        //adding monat-http-interceptor
+        $httpProvider.interceptors.push('monatHttpInterceptor');
     },
 ]);
 exports.monatfrontendmodule = monatfrontendmodule;
 
 
 /***/ }),
-/* 629 */
+/* 640 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatAlertService = /** @class */ (function () {
+    //@ngInject
+    function MonatAlertService(toaster) {
+        var _this = this;
+        this.toaster = toaster;
+        this.success = function (message, title) {
+            if (title === void 0) { title = 'Success'; }
+            _this.toaster.pop('success', title, message);
+        };
+        this.error = function (message, title) {
+            if (title === void 0) { title = 'Error'; }
+            _this.toaster.pop('error', title, message);
+        };
+        this.showErrorsFromResponse = function (response) {
+            if (response && response.messages) {
+                for (var i = 0; i < response.messages.length; i++) {
+                    var message = response.messages[i];
+                    for (var prop in message) {
+                        _this.error(message[prop][0], "Error with " + prop);
+                    }
+                }
+            }
+        };
+        this.info = function (message, title) {
+            if (title === void 0) { title = 'Info'; }
+            _this.toaster.pop('info', title, message);
+        };
+        this.warning = function (message, title) {
+            if (title === void 0) { title = 'Warning'; }
+            _this.toaster.pop('warning', title, message);
+        };
+    }
+    return MonatAlertService;
+}());
+exports.MonatAlertService = MonatAlertService;
+
+
+/***/ }),
+/* 641 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MonatHttpInterceptor = /** @class */ (function () {
+    //@ngInject
+    function MonatHttpInterceptor($injector, $q) {
+        this.$injector = $injector;
+        this.$q = $q;
+        this.request = function (config) {
+            config.headers = config.headers || {};
+            if (hibachiConfig) {
+                config.headers['SWX-siteCode'] = hibachiConfig.siteCode;
+                config.headers['SWX-cmsSiteID'] = hibachiConfig.cmsSiteID;
+            }
+            return config;
+        };
+    }
+    return MonatHttpInterceptor;
+}());
+exports.MonatHttpInterceptor = MonatHttpInterceptor;
+
+
+/***/ }),
+/* 642 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61876,6 +63668,7 @@ var MonatService = /** @class */ (function () {
         this.publicService = publicService;
         this.$q = $q;
         this.requestService = requestService;
+        this.lastAddedSkuID = '';
         this.cachedOptions = {
             frequencyTermOptions: null,
         };
@@ -61928,6 +63721,7 @@ var MonatService = /** @class */ (function () {
             skuID: skuID,
             quantity: quantity,
         };
+        this.lastAddedSkuID = skuID;
         return this.updateCart('addOrderItem', payload);
     };
     MonatService.prototype.removeFromCart = function (orderItemID) {
@@ -61943,6 +63737,25 @@ var MonatService = /** @class */ (function () {
             'orderItem.quantity': quantity,
         };
         return this.updateCart('updateOrderItemQuantity', payload);
+    };
+    MonatService.prototype.submitSponsor = function (sponsorID) {
+        return this.publicService.doAction('submitSponsor', { sponsorID: sponsorID });
+    };
+    MonatService.prototype.addEnrollmentFee = function (sponsorID) {
+        return this.publicService.doAction('addEnrollmentFee');
+    };
+    MonatService.prototype.selectStarterPackBundle = function (skuID, quantity) {
+        if (quantity === void 0) { quantity = 1; }
+        var payload = {
+            skuID: skuID,
+            quantity: quantity,
+        };
+        if (this.previouslySelectedStarterPackBundleSkuID) {
+            payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
+        }
+        this.lastAddedSkuID = skuID;
+        this.previouslySelectedStarterPackBundleSkuID = skuID;
+        return this.updateCart('selectStarterPackBundle', payload);
     };
     /**
      * options = {optionName:refresh, ---> option2:true, o3:false}
@@ -62010,7 +63823,7 @@ exports.MonatService = MonatService;
 
 
 /***/ }),
-/* 630 */
+/* 643 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62018,27 +63831,54 @@ exports.MonatService = MonatService;
 Object.defineProperty(exports, "__esModule", { value: true });
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService(requestService, $hibachi, $rootScope) {
+    function OrderTemplateService(requestService, $hibachi, $rootScope, publicService, $q) {
         var _this = this;
         this.requestService = requestService;
         this.$hibachi = $hibachi;
         this.$rootScope = $rootScope;
+        this.publicService = publicService;
+        this.$q = $q;
+        this.orderTemplateTypeID = '';
         /**
          * This function is being used to fetch flexships and wishLists
          *
          *
         */
-        this.getOrderTemplates = function (pageRecordsShow, currentPage, orderTemplateTypeID) {
+        this.getOrderTemplates = function (orderTemplateTypeID, pageRecordsShow, currentPage, refresh) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
             if (currentPage === void 0) { currentPage = 1; }
-            var data = {
-                currentPage: currentPage,
-                pageRecordsShow: pageRecordsShow,
-            };
-            if (orderTemplateTypeID) {
-                data['orderTemplateTypeID'] = orderTemplateTypeID;
+            if (refresh === void 0) { refresh = false; }
+            var deferred = _this.$q.defer();
+            // if we're gonna use pagination, we shoudn't cache 
+            if (orderTemplateTypeID == _this.orderTemplateTypeID && _this.cachedGetOrderTemplatesResponse && !refresh) {
+                deferred.resolve(_this.cachedGetOrderTemplatesResponse);
             }
-            return _this.requestService.newPublicRequest('?slatAction=api:public.getordertemplates', data).promise;
+            else {
+                _this.orderTemplateTypeID = orderTemplateTypeID;
+                var data = {
+                    currentPage: currentPage,
+                    pageRecordsShow: pageRecordsShow,
+                    orderTemplateTypeID: orderTemplateTypeID
+                };
+                _this.publicService.doAction('?slatAction=api:public.getordertemplates', data)
+                    .then(function (result) {
+                    // TODO additional checks to make sure it's a successful response
+                    _this.cachedGetOrderTemplatesResponse = result;
+                    deferred.resolve(_this.cachedGetOrderTemplatesResponse);
+                })
+                    .catch(function (e) {
+                    deferred.reject(e);
+                });
+            }
+            return deferred.promise;
+        };
+        this.applyGiftCardToOrderTemplate = function (orderTemplateID, giftCardID, amountToApply) {
+            var data = {
+                'orderTemplateID': orderTemplateID,
+                'giftCardID': giftCardID,
+                'amountToApply': amountToApply
+            };
+            return _this.requestService.newPublicRequest('?slatAction=api:public.applyGiftCardToOrderTemplate', data).promise;
         };
         this.getOrderTemplateItems = function (orderTemplateID, pageRecordsShow, currentPage, orderTemplateTypeID) {
             if (pageRecordsShow === void 0) { pageRecordsShow = 100; }
@@ -62239,14 +64079,52 @@ var OrderTemplateService = /** @class */ (function () {
             }
             return objectToReturn;
         };
+        this.createOrderTemplate = function (orderTemplateSystemCode) {
+            return _this.$rootScope.hibachiScope.doAction("createOrderTemplate", {
+                orderTemplateSystemCode: orderTemplateSystemCode,
+                returnJSONObjects: ''
+            });
+        };
+        this.getOrderTemplatesLight = function (orderTemplateTypeID) {
+            if (orderTemplateTypeID === void 0) { orderTemplateTypeID = "2c9280846b712d47016b75464e800014"; }
+            return _this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', { ordertemplateTypeID: orderTemplateTypeID });
+        };
     }
+    OrderTemplateService.prototype.getAccountGiftCards = function (refresh) {
+        var _this = this;
+        if (refresh === void 0) { refresh = false; }
+        var deferred = this.$q.defer();
+        if (refresh || !this.cachedGetAccountGiftCardsResponse) {
+            this.publicService
+                .doAction('?slatAction=api:public.getAccountGiftCards')
+                .then(function (data) {
+                if (data && data.giftCards) {
+                    _this.cachedGetAccountGiftCardsResponse = data.giftCards;
+                    deferred.resolve(_this.cachedGetAccountGiftCardsResponse);
+                }
+                else {
+                    throw (data);
+                }
+            })
+                .catch(function (e) {
+                deferred.reject(e);
+            });
+        }
+        else {
+            deferred.resolve(this.cachedGetAccountGiftCardsResponse);
+        }
+        return deferred.promise;
+    };
+    OrderTemplateService.prototype.getOrderTemplateSettings = function () {
+        return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+    };
     return OrderTemplateService;
 }());
 exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
-/* 631 */
+/* 644 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62266,7 +64144,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-/* 632 */
+/* 645 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62290,7 +64168,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-/* 633 */
+/* 646 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62299,7 +64177,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-var alert_1 = __webpack_require__(632);
+var alert_1 = __webpack_require__(645);
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -62369,7 +64247,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-/* 634 */
+/* 647 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62656,7 +64534,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-/* 635 */
+/* 648 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62668,13 +64546,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(17);
 //services
 //components
-var swcardlayout_1 = __webpack_require__(639);
-var swcardview_1 = __webpack_require__(642);
-var swcardheader_1 = __webpack_require__(637);
-var swcardbody_1 = __webpack_require__(636);
-var swcardicon_1 = __webpack_require__(638);
-var swcardprogressbar_1 = __webpack_require__(641);
-var swcardlistitem_1 = __webpack_require__(640);
+var swcardlayout_1 = __webpack_require__(652);
+var swcardview_1 = __webpack_require__(655);
+var swcardheader_1 = __webpack_require__(650);
+var swcardbody_1 = __webpack_require__(649);
+var swcardicon_1 = __webpack_require__(651);
+var swcardprogressbar_1 = __webpack_require__(654);
+var swcardlistitem_1 = __webpack_require__(653);
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -62693,7 +64571,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-/* 636 */
+/* 649 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62740,7 +64618,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-/* 637 */
+/* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62789,7 +64667,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-/* 638 */
+/* 651 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62840,7 +64718,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-/* 639 */
+/* 652 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62891,7 +64769,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-/* 640 */
+/* 653 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62945,7 +64823,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-/* 641 */
+/* 654 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62998,7 +64876,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-/* 642 */
+/* 655 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63050,7 +64928,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-/* 643 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63095,7 +64973,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-/* 644 */
+/* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63138,7 +65016,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-/* 645 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63232,7 +65110,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-/* 646 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63468,7 +65346,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-/* 647 */
+/* 660 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64366,7 +66244,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-/* 648 */
+/* 661 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64405,7 +66283,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-/* 649 */
+/* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64501,7 +66379,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-/* 650 */
+/* 663 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64744,6 +66622,42 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "Exact N Day(s) From Now",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'exactDateFuture',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Days'
+                                }
+                            },
+                            {
+                                display: "Match Day of Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Day'
+                                }
+                            },
+                            {
+                                display: "Match Month",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Match Year",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
+                                    measureType: 'y',
+                                    measureTypeDisplay: 'Year'
+                                }
+                            },
+                            {
                                 display: "Defined",
                                 comparisonOperator: "is not",
                                 value: "null"
@@ -64894,6 +66808,30 @@ var SWCriteriaDate = /** @class */ (function () {
                                 selectedCondition.showNumberOf = true;
                             }
                         }
+                        if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                            selectedCondition.showCriteriaStart = true;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.disableCriteriaStart = false;
+                            selectedCondition.disableCriteriaEnd = true;
+                            if (!selectedCondition.dateInfo.measureType) {
+                                selectedCondition.conditionDisplay = '';
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.showNumberOf = false;
+                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' from now?';
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.showNumberOf = true;
+                            }
+                        }
+                        if (selectedCondition.dateInfo.type === 'matchPart') {
+                            selectedCondition.showCriteriaStart = false;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.showNumberOf = true;
+                            selectedCondition.conditionDisplay = 'Enter ' + selectedCondition.dateInfo.measureTypeDisplay + ':';
+                        }
                     }
                     else {
                         selectedCondition.showCriteriaStart = false;
@@ -64910,8 +66848,8 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
                     var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                    var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
-                        var measureCount = selectedFilterProperty.criteriaNumberOf;
                         switch (selectedCondition.dateInfo.measureType) {
                             case 'h':
                                 var today = Date.parse('today');
@@ -64962,6 +66900,16 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
                         selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
                         selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                    }
+                    if (selectedCondition.dateInfo.type === 'exactDateFuture') {
+                        console.log('calculate Condition exactDateFuture', selectedCondition);
+                        switch (selectedCondition.dateInfo.measureType) {
+                            case 'd':
+                                var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+                                selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                                break;
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
                         if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
@@ -65016,7 +66964,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-/* 651 */
+/* 664 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65157,7 +67105,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-/* 652 */
+/* 665 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65319,7 +67267,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-/* 653 */
+/* 666 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65547,7 +67495,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-/* 654 */
+/* 667 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65695,7 +67643,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-/* 655 */
+/* 668 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65792,7 +67740,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-/* 656 */
+/* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65970,7 +67918,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-/* 657 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66034,7 +67982,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-/* 658 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66120,7 +68068,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-/* 659 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66404,7 +68352,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-/* 660 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66674,7 +68622,8 @@ var SWEditFilterItem = /** @class */ (function () {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
                                         }
                                     }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') {
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate' ||
+                                        selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDateFuture')) {
                                         if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
                                             filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
                                             filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
@@ -66699,7 +68648,30 @@ var SWEditFilterItem = /** @class */ (function () {
                                                     filterItem.displayValue += ' Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
+                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate')
+                                                ? filterItem.displayValue += ' Ago'
+                                                : filterItem.displayValue += ' from Now';
+                                        }
+                                    }
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
+                                            switch (filterItem.measureType) {
+                                                case 'd':
+                                                    filterItem.displayValue += 'Day ';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue += 'Month ';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue += 'Year ';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += filterItem.value;
                                         }
                                     }
                                     else {
@@ -66796,7 +68768,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-/* 661 */
+/* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66869,7 +68841,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-/* 662 */
+/* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66969,7 +68941,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-/* 663 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67037,7 +69009,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-/* 664 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67098,7 +69070,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-/* 665 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67154,7 +69126,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-/* 666 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67193,7 +69165,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-/* 667 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67401,7 +69373,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-/* 668 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67440,7 +69412,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-/* 669 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67471,7 +69443,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-/* 670 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67547,7 +69519,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
         var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
@@ -67561,6 +69533,7 @@ var CollectionConfig = /** @class */ (function () {
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
+        if (listingSearchConfig === void 0) { listingSearchConfig = null; }
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -67584,6 +69557,7 @@ var CollectionConfig = /** @class */ (function () {
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
         this.enableAveragesAndSums = enableAveragesAndSums;
+        this.listingSearchConfig = listingSearchConfig;
         this.filterGroupAliasMap = {};
         this.reportFlag = false;
         this.periodInterval = "";
@@ -67664,6 +69638,9 @@ var CollectionConfig = /** @class */ (function () {
             _this.reportFlag = jsonCollection.reportFlag;
             _this.useElasticSearch = jsonCollection.useElasticSearch;
             _this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
+            if (jsonCollection.listingSearchConfig) {
+                _this.listingSearchConfig = jsonCollection.listingSearchConfig;
+            }
             _this.periodInterval = jsonCollection.periodInterval;
             _this.currentPage = jsonCollection.currentPage || 1;
             _this.pageShow = jsonCollection.pageShow || 10;
@@ -67687,7 +69664,7 @@ var CollectionConfig = /** @class */ (function () {
             if (validate) {
                 _this.validateFilter(_this.filterGroups);
             }
-            return {
+            var options = {
                 baseEntityAlias: _this.baseEntityAlias,
                 baseEntityName: _this.baseEntityName,
                 columns: _this.columns,
@@ -67705,8 +69682,12 @@ var CollectionConfig = /** @class */ (function () {
                 isDistinct: _this.isDistinct,
                 orderBy: _this.orderBy,
                 periodInterval: _this.periodInterval,
-                enableAveragesAndSums: _this.enableAveragesAndSums
+                enableAveragesAndSums: _this.enableAveragesAndSums,
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
+            return options;
         };
         this.getEntityName = function () {
             return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
@@ -67739,6 +69720,9 @@ var CollectionConfig = /** @class */ (function () {
                 enableAveragesAndSums: _this.enableAveragesAndSums,
                 customEndpoint: _this.customEndpoint
             };
+            if (_this.listingSearchConfig) {
+                options['listingSearchConfig'] = _this.listingSearchConfig;
+            }
             if (angular.isDefined(_this.id)) {
                 options['id'] = _this.id;
             }
@@ -68252,6 +70236,10 @@ var CollectionConfig = /** @class */ (function () {
             _this.enableAveragesAndSums = flag;
             return _this;
         };
+        this.setListingSearchConfig = function (config) {
+            _this.listingSearchConfig = config;
+            return _this;
+        };
         this.setDirtyRead = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.dirtyRead = flag;
@@ -68387,7 +70375,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-/* 671 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68609,7 +70597,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-/* 672 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68937,7 +70925,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-/* 673 */
+/* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68988,7 +70976,7 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-/* 674 */
+/* 687 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69039,7 +71027,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-/* 675 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69131,7 +71119,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-/* 676 */
+/* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69299,7 +71287,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-/* 677 */
+/* 690 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69362,7 +71350,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-/* 678 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69413,7 +71401,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-/* 679 */
+/* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69460,7 +71448,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-/* 680 */
+/* 693 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69614,7 +71602,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-/* 681 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69677,7 +71665,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-/* 682 */
+/* 695 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69769,7 +71757,7 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
-/* 683 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69828,7 +71816,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-/* 684 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69911,7 +71899,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-/* 685 */
+/* 698 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70046,7 +72034,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-/* 686 */
+/* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70063,6 +72051,9 @@ var SWEntityActionBarController = /** @class */ (function () {
         this.$onInit = function () {
             if (_this.edit == null) {
                 _this.edit = false;
+            }
+            if (_this.showDelete == null) {
+                _this.showDelete = true;
             }
             if (angular.isDefined(_this.pageTitleRbKey)) {
                 _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
@@ -70186,7 +72177,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-/* 687 */
+/* 700 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70225,7 +72216,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-/* 688 */
+/* 701 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70433,7 +72424,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-/* 689 */
+/* 702 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70503,7 +72494,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-/* 690 */
+/* 703 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70537,7 +72528,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-/* 691 */
+/* 704 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70581,7 +72572,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-/* 692 */
+/* 705 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70615,7 +72606,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-/* 693 */
+/* 706 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70651,7 +72642,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-/* 694 */
+/* 707 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70727,7 +72718,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-/* 695 */
+/* 708 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70868,7 +72859,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-/* 696 */
+/* 709 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70949,7 +72940,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-/* 697 */
+/* 710 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71008,7 +72999,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-/* 698 */
+/* 711 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71079,7 +73070,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-/* 699 */
+/* 712 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71231,7 +73222,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-/* 700 */
+/* 713 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71316,7 +73307,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-/* 701 */
+/* 714 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71360,7 +73351,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-/* 702 */
+/* 715 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71452,7 +73443,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-/* 703 */
+/* 716 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71549,7 +73540,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-/* 704 */
+/* 717 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71606,7 +73597,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-/* 705 */
+/* 718 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71694,7 +73685,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-/* 706 */
+/* 719 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71805,7 +73796,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-/* 707 */
+/* 720 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71888,7 +73879,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-/* 708 */
+/* 721 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72016,7 +74007,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-/* 709 */
+/* 722 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72172,7 +74163,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-/* 710 */
+/* 723 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72248,7 +74239,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-/* 711 */
+/* 724 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72356,6 +74347,20 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.updateSelections = function () {
             _this.typeaheadService.updateSelections(_this.typeaheadDataKey);
         };
+        this.updateCollectionConfigWithSearchableColumns = function () {
+            var newColumns = _this.collectionConfig.columns
+                .map(function (column) {
+                //try to find that(column with same prop identifier) in our searchable columns
+                var existingColumFromSearchableColumns = _this.searchableColumns.find(function (searchableColum) {
+                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier'];
+                });
+                if (existingColumFromSearchableColumns) {
+                    return angular.copy(existingColumFromSearchableColumns);
+                }
+                return angular.copy(column);
+            });
+            _this.collectionConfig.loadColumns(newColumns);
+        };
         this.updateSearchableProperties = function (column) {
             if (angular.isString(column) && column == 'all') {
                 angular.copy(_this.initialSearchableColumnsState, _this.searchableColumns); //need to insure that these changes are actually on the collectionconfig
@@ -72368,7 +74373,11 @@ var SWTypeaheadSearchController = /** @class */ (function () {
                 column.isSearchable = true;
                 _this.searchableColumnSelection = column.title;
             }
-            //probably need to refetch the collection
+            _this.updateCollectionConfigWithSearchableColumns();
+            _this.toggleDropdown();
+            if (_this.searchText && _this.searchText.length) {
+                _this.search(_this.searchText);
+            }
         };
         this.addOrRemoveItem = function (item) {
             var remove = item.selected || false;
@@ -72634,7 +74643,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-/* 712 */
+/* 725 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72695,7 +74704,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-/* 713 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72845,7 +74854,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-/* 714 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72871,7 +74880,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-/* 715 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72912,7 +74921,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-/* 716 */
+/* 729 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72939,7 +74948,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-/* 717 */
+/* 730 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72966,7 +74975,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-/* 718 */
+/* 731 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73031,7 +75040,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-/* 719 */
+/* 732 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73073,7 +75082,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-/* 720 */
+/* 733 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73123,7 +75132,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-/* 721 */
+/* 734 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73164,7 +75173,7 @@ exports.Account = Account;
 
 
 /***/ }),
-/* 722 */
+/* 735 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73207,7 +75216,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-/* 723 */
+/* 736 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73240,7 +75249,7 @@ exports.Address = Address;
 
 
 /***/ }),
-/* 724 */
+/* 737 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73301,7 +75310,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-/* 725 */
+/* 738 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73309,24 +75318,24 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var account_1 = __webpack_require__(721);
+var account_1 = __webpack_require__(734);
 exports.Account = account_1.Account;
-var address_1 = __webpack_require__(723);
+var address_1 = __webpack_require__(736);
 exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(724);
+var cart_1 = __webpack_require__(737);
 exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(726);
+var orderitem_1 = __webpack_require__(739);
 exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(727);
+var orderpayment_1 = __webpack_require__(740);
 exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(728);
+var sku_1 = __webpack_require__(741);
 exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(722);
+var accountaddress_1 = __webpack_require__(735);
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-/* 726 */
+/* 739 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73359,7 +75368,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-/* 727 */
+/* 740 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73376,7 +75385,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-/* 728 */
+/* 741 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73416,7 +75425,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-/* 729 */
+/* 742 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73449,7 +75458,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-/* 730 */
+/* 743 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73470,7 +75479,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseprocess_1 = __webpack_require__(729);
+var baseprocess_1 = __webpack_require__(742);
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -73484,7 +75493,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-/* 731 */
+/* 744 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73492,12 +75501,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var order_addorderpayment_1 = __webpack_require__(730);
+var order_addorderpayment_1 = __webpack_require__(743);
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-/* 732 */
+/* 745 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73549,7 +75558,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-/* 733 */
+/* 746 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73609,7 +75618,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-/* 734 */
+/* 747 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73645,7 +75654,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-/* 735 */
+/* 748 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73681,7 +75690,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-/* 736 */
+/* 749 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73767,7 +75776,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-/* 737 */
+/* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73804,7 +75813,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-/* 738 */
+/* 751 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73834,7 +75843,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-/* 739 */
+/* 752 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73872,7 +75881,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-/* 740 */
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73918,7 +75927,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-/* 741 */
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73980,7 +75989,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-/* 742 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74073,7 +76082,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-/* 743 */
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74588,7 +76597,7 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
-/* 744 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74620,6 +76629,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.authPrefix = 'Bearer ';
         this.loginResponse = null;
         this.authPromise = null;
+        this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
         this.getJWTDataFromToken = function () {
             _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
         };
@@ -74671,8 +76681,11 @@ var HibachiInterceptor = /** @class */ (function () {
         };
         this.response = function (response) {
             if (response.data.messages) {
-                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
-                _this.alertService.addAlerts(alerts);
+                //We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+                if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != _this.preProcessDisplayedFlagMessage) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
             }
             return response;
         };
@@ -74784,7 +76797,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-/* 745 */
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74821,7 +76834,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-/* 746 */
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74854,7 +76867,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-/* 747 */
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75104,6 +77117,9 @@ var HibachiService = /** @class */ (function () {
                     var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
                 }
                 params.enableAveragesAndSums = options.enableAveragesAndSums || false;
+                if (angular.isDefined(options.listingSearchConfig)) {
+                    params.listingSearchConfig = options.listingSearchConfig;
+                }
             }
             if (angular.isDefined(options.id)) {
                 urlString += '&entityId=' + options.id;
@@ -75395,7 +77411,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-/* 748 */
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76180,7 +78196,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-/* 749 */
+/* 762 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76469,7 +78485,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-/* 750 */
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76505,7 +78521,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-/* 751 */
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76563,7 +78579,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-/* 752 */
+/* 765 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76714,7 +78730,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-/* 753 */
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76884,7 +78900,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-/* 754 */
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76922,7 +78938,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-/* 755 */
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76963,7 +78979,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-/* 756 */
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77210,7 +79226,9 @@ var PublicService = /** @class */ (function () {
             }
             if (data) {
                 method = "post";
-                data.returnJsonObjects = "cart,account";
+                if (data.returnJsonObjects == undefined) {
+                    data.returnJsonObjects = "cart,account";
+                }
                 if (_this.cmsSiteID) {
                     data.cmsSiteID = _this.cmsSiteID;
                 }
@@ -77223,7 +79241,6 @@ var PublicService = /** @class */ (function () {
                 }
             }
             if (method == "post") {
-                data.returnJsonObjects = "cart,account";
                 //post
                 var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
                 request_1.promise.then(function (result) {
@@ -78319,7 +80336,7 @@ var PublicService = /** @class */ (function () {
                         if (serverData.successfulActions[action].indexOf("placeOrder") != -1) {
                             //if there are no errors then redirect.
                             this.orderPlaced = true;
-                            this.redirectExact('/order-confirmation/');
+                            this.redirectExact(this.confirmationUrl);
                         }
                     }
                 }
@@ -78363,6 +80380,14 @@ var PublicService = /** @class */ (function () {
             }
             return total;
         };
+        this.setOrderConfirmationUrl = function () {
+            if ('undefined' !== typeof hibachiConfig.orderConfirmationUrl) {
+                _this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+            }
+            else {
+                _this.confirmationUrl = "/order-confirmation";
+            }
+        };
         this.orderService = orderService;
         this.cartService = cartService;
         this.accountService = accountService;
@@ -78370,7 +80395,6 @@ var PublicService = /** @class */ (function () {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -78384,6 +80408,7 @@ var PublicService = /** @class */ (function () {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.setOrderConfirmationUrl();
     }
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
@@ -78405,7 +80430,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-/* 757 */
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78528,7 +80553,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-/* 758 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78536,8 +80561,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var adminrequest_1 = __webpack_require__(732);
-var publicrequest_1 = __webpack_require__(733);
+var adminrequest_1 = __webpack_require__(745);
+var publicrequest_1 = __webpack_require__(746);
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -78567,7 +80592,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-/* 759 */
+/* 772 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78604,7 +80629,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-/* 760 */
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78730,7 +80755,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-/* 761 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78768,7 +80793,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-/* 762 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79014,7 +81039,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-/* 763 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79487,7 +81512,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-/* 764 */
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79513,7 +81538,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-/* 765 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79557,7 +81582,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-/* 766 */
+/* 779 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79632,7 +81657,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-/* 767 */
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79663,7 +81688,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-/* 768 */
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79710,7 +81735,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-/* 769 */
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79729,7 +81754,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-/* 770 */
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79761,7 +81786,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-/* 771 */
+/* 784 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79778,12 +81803,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-var otherwisecontroller_1 = __webpack_require__(769);
-var routercontroller_1 = __webpack_require__(770);
+var otherwisecontroller_1 = __webpack_require__(782);
+var routercontroller_1 = __webpack_require__(783);
 //directives
-var swdetailtabs_1 = __webpack_require__(767);
-var swdetail_1 = __webpack_require__(766);
-var swlist_1 = __webpack_require__(768);
+var swdetailtabs_1 = __webpack_require__(780);
+var swdetail_1 = __webpack_require__(779);
+var swlist_1 = __webpack_require__(781);
 var core_module_1 = __webpack_require__(17);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -79841,7 +81866,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-/* 772 */
+/* 785 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80010,7 +82035,7 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-/* 773 */
+/* 786 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80067,7 +82092,7 @@ exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
 
 
 /***/ }),
-/* 774 */
+/* 787 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80151,7 +82176,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-/* 775 */
+/* 788 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80191,7 +82216,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-/* 776 */
+/* 789 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80293,7 +82318,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-/* 777 */
+/* 790 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80616,7 +82641,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-/* 778 */
+/* 791 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80896,7 +82921,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-/* 779 */
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80944,7 +82969,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-/* 780 */
+/* 793 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80987,7 +83012,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-/* 781 */
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81107,7 +83132,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-/* 782 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81175,7 +83200,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-/* 783 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81265,7 +83290,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-/* 784 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81327,7 +83352,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-/* 785 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81428,7 +83453,7 @@ exports.SWFSelect = SWFSelect;
 
 
 /***/ }),
-/* 786 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81616,7 +83641,7 @@ var SWInputController = /** @class */ (function () {
             if (template.length) {
                 template = template + ' />';
             }
-            var actionButtons = "\n\t\t\t<a class=\"s-remove-change\"\n\t\t\t\tdata-ng-click=\"swPropertyDisplay.clear()\"\n\t\t\t\tdata-ng-if=\"swInput.edited && swInput.edit\">\n\t\t\t\t\t<i class=\"fa fa-remove\"></i>\n\t\t\t</a>\n\n\t\t\t<!-- Revert Button -->\n\t\t\t<button class=\"btn btn-xs btn-default s-revert-btn\"\n\t\t\t\t\tdata-ng-show=\"swInput.showRevert\"\n\t\t\t\t\tdata-ng-click=\"swInput.revert()\"\n\t\t\t\t\tdata-toggle=\"popover\"\n\t\t\t\t\tdata-trigger=\"hover\"\n\t\t\t\t\tdata-content=\"{{swInput.revertText}}\"\n\t\t\t\t\tdata-original-title=\"\"\n\t\t\t\t\ttitle=\"\">\n\t\t\t\t<i class=\"fa fa-refresh\"></i>\n\t\t\t</button>\n\t\t";
+            var actionButtons = "\n\t\t\t<a class=\"s-remove-change\"\n\t\t\t\tdata-ng-click=\"swPropertyDisplay.clear()\"\n\t\t\t\tdata-ng-if=\"swInput.edited && swInput.edit\">\n\t\t\t\t\t<i class=\"fa fa-times\"></i>\n\t\t\t</a>\n\n\t\t\t<!-- Revert Button -->\n\t\t\t<button class=\"btn btn-xs btn-default s-revert-btn\"\n\t\t\t\t\tdata-ng-show=\"swInput.showRevert\"\n\t\t\t\t\tdata-ng-click=\"swInput.revert()\"\n\t\t\t\t\tdata-toggle=\"popover\"\n\t\t\t\t\tdata-trigger=\"hover\"\n\t\t\t\t\tdata-content=\"{{swInput.revertText}}\"\n\t\t\t\t\tdata-original-title=\"\"\n\t\t\t\t\ttitle=\"\">\n\t\t\t\t<i class=\"fa fa-refresh\"></i>\n\t\t\t</button>\n\t\t";
             return template + actionButtons;
         };
         this.pullBindings = function () {
@@ -81793,7 +83818,7 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-/* 787 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81849,7 +83874,7 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
-/* 788 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81936,7 +83961,7 @@ exports.SWSimplePropertyDisplay = SWSimplePropertyDisplay;
 
 
 /***/ }),
-/* 789 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82031,7 +84056,7 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
-/* 790 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82042,30 +84067,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(17);
 //services
-var fileservice_1 = __webpack_require__(791);
+var fileservice_1 = __webpack_require__(804);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(786);
-var swfformfield_1 = __webpack_require__(776);
-var swform_1 = __webpack_require__(777);
+var swinput_1 = __webpack_require__(799);
+var swfformfield_1 = __webpack_require__(789);
+var swform_1 = __webpack_require__(790);
 var swfform_1 = __webpack_require__(300);
-var swfselect_1 = __webpack_require__(785);
-var swffileinput_1 = __webpack_require__(775);
-var swformfield_1 = __webpack_require__(778);
-var swformfieldfile_1 = __webpack_require__(779);
-var swformfieldjson_1 = __webpack_require__(780);
-var swformfieldsearchselect_1 = __webpack_require__(781);
-var swformregistrar_1 = __webpack_require__(782);
-var swerrordisplay_1 = __webpack_require__(774);
-var swaddressform_1 = __webpack_require__(772);
-var swisolatechildform_1 = __webpack_require__(787);
+var swfselect_1 = __webpack_require__(798);
+var swffileinput_1 = __webpack_require__(788);
+var swformfield_1 = __webpack_require__(791);
+var swformfieldfile_1 = __webpack_require__(792);
+var swformfieldjson_1 = __webpack_require__(793);
+var swformfieldsearchselect_1 = __webpack_require__(794);
+var swformregistrar_1 = __webpack_require__(795);
+var swerrordisplay_1 = __webpack_require__(787);
+var swaddressform_1 = __webpack_require__(785);
+var swisolatechildform_1 = __webpack_require__(800);
 var swpropertydisplay_1 = __webpack_require__(301);
-var swfpropertydisplay_1 = __webpack_require__(784);
-var swsimplepropertydisplay_1 = __webpack_require__(788);
-var swformsubscriber_1 = __webpack_require__(783);
-var swverifyaddressdialog_1 = __webpack_require__(789);
-var swcollectionconfigasproperty_1 = __webpack_require__(773);
+var swfpropertydisplay_1 = __webpack_require__(797);
+var swsimplepropertydisplay_1 = __webpack_require__(801);
+var swformsubscriber_1 = __webpack_require__(796);
+var swverifyaddressdialog_1 = __webpack_require__(802);
+var swcollectionconfigasproperty_1 = __webpack_require__(786);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -82095,7 +84120,7 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
-/* 791 */
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82142,7 +84167,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-/* 792 */
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82192,8 +84217,10 @@ var SWFAddressFormController = /** @class */ (function (_super) {
         _this.slatwall = $rootScope.slatwall;
         $scope.$watch(angular.bind(_this, function () {
             return _this.form['countryCode'].$modelValue;
-        }), function (val) {
-            _this.slatwall.getStates(val);
+        }), function (newVal, oldVal) {
+            if (!isNaN(newVal)) {
+                _this.slatwall.getStates(newVal);
+            }
         });
         $scope.$watch('slatwall.states.addressOptions', function () {
             if (_this.slatwall.states && _this.slatwall.states.addressOptions) {
@@ -82227,7 +84254,7 @@ exports.SWFAddressForm = SWFAddressForm;
 
 
 /***/ }),
-/* 793 */
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82292,7 +84319,7 @@ exports.SWFAlert = SWFAlert;
 
 
 /***/ }),
-/* 794 */
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82376,7 +84403,7 @@ exports.SWFCartItems = SWFCartItems;
 
 
 /***/ }),
-/* 795 */
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82483,7 +84510,7 @@ exports.SWFDirective = SWFDirective;
 
 
 /***/ }),
-/* 796 */
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82654,7 +84681,7 @@ exports.SWFNavigation = SWFNavigation;
 
 
 /***/ }),
-/* 797 */
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82721,7 +84748,7 @@ exports.SWFPromoBox = SWFPromoBox;
 
 
 /***/ }),
-/* 798 */
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82771,7 +84798,7 @@ exports.SWFSaveNotes = SWFSaveNotes;
 
 
 /***/ }),
-/* 799 */
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82794,7 +84821,7 @@ exports.FrontendController = FrontendController;
 
 
 /***/ }),
-/* 800 */
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82803,17 +84830,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //modules
-var hibachi_module_1 = __webpack_require__(802);
+var hibachi_module_1 = __webpack_require__(815);
 //controllers
-var frontend_1 = __webpack_require__(799);
+var frontend_1 = __webpack_require__(812);
 //directives
-var swfdirective_1 = __webpack_require__(795);
-var swfcartitems_1 = __webpack_require__(794);
-var swfpromobox_1 = __webpack_require__(797);
-var swfnavigation_1 = __webpack_require__(796);
-var swfaddressform_1 = __webpack_require__(792);
-var swfsavenotes_1 = __webpack_require__(798);
-var swfalert_1 = __webpack_require__(793);
+var swfdirective_1 = __webpack_require__(808);
+var swfcartitems_1 = __webpack_require__(807);
+var swfpromobox_1 = __webpack_require__(810);
+var swfnavigation_1 = __webpack_require__(809);
+var swfaddressform_1 = __webpack_require__(805);
+var swfsavenotes_1 = __webpack_require__(811);
+var swfalert_1 = __webpack_require__(806);
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
@@ -82836,6 +84863,9 @@ var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.
         $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
         $rootScope.slatwall.getEntity = entityService.newEntity;
         $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
+        if (hibachiConfig && hibachiConfig.cmsSiteID) {
+            $rootScope.slatwall.cmsSiteID = hibachiConfig.cmsSiteID;
+        }
     }])
     .constant('coreFrontEndPartialsPath', 'frontend/components/')
     //controllers
@@ -82852,7 +84882,7 @@ exports.frontendmodule = frontendmodule;
 
 
 /***/ }),
-/* 801 */
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82962,7 +84992,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-/* 802 */
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82972,17 +85002,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(294);
-var card_module_1 = __webpack_require__(635);
+var card_module_1 = __webpack_require__(648);
 var collection_module_1 = __webpack_require__(295);
-var listing_module_1 = __webpack_require__(818);
+var listing_module_1 = __webpack_require__(831);
 var dialog_module_1 = __webpack_require__(299);
-var entity_module_1 = __webpack_require__(771);
-var pagination_module_1 = __webpack_require__(821);
-var form_module_1 = __webpack_require__(790);
-var validation_module_1 = __webpack_require__(840);
-var workflow_module_1 = __webpack_require__(855);
+var entity_module_1 = __webpack_require__(784);
+var pagination_module_1 = __webpack_require__(834);
+var form_module_1 = __webpack_require__(803);
+var validation_module_1 = __webpack_require__(853);
+var workflow_module_1 = __webpack_require__(868);
 //directives
-var swsaveandfinish_1 = __webpack_require__(801);
+var swsaveandfinish_1 = __webpack_require__(814);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -83009,7 +85039,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-/* 803 */
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83058,7 +85088,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-/* 804 */
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83117,7 +85147,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-/* 805 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83277,7 +85307,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-/* 806 */
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83459,7 +85489,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-/* 807 */
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83522,7 +85552,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-/* 808 */
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83821,19 +85851,19 @@ var SWListingDisplayController = /** @class */ (function () {
                 (_this.recordAddEvent && _this.recordAddEvent.length !== 0);
             if (_this.hasRecordDetailAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('detail');
+                // this.getAdminAttributesByType('detail');
             }
             if (_this.hasRecordEditAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('edit');
+                // this.getAdminAttributesByType('edit');
             }
             if (_this.hasRecordDeleteAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('delete');
+                // this.getAdminAttributesByType('delete');
             }
             if (_this.hasRecordAddAction) {
                 _this.administrativeCount++;
-                _this.adminattributes = _this.getAdminAttributesByType('add');
+                // this.getAdminAttributesByType('add');
             }
             if (_this.collectionConfig != null &&
                 angular.isDefined(_this.collection) &&
@@ -84019,17 +86049,23 @@ var SWListingDisplayController = /** @class */ (function () {
         this.getPageRecordKey = function (propertyIdentifier) {
             return _this.listingService.getPageRecordKey(propertyIdentifier);
         };
+        //not in use
         this.getAdminAttributesByType = function (type) {
-            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+            var recordActionName = 'record' + _this.capitalize(type) + 'Action';
             var recordActionPropertyName = recordActionName + 'Property';
-            var recordActionQueryStringName = recordActionName + 'QueryString';
-            var recordActionModalName = recordActionName + 'Modal';
+            var recordActionModalName = 'record' + _this.capitalize(type) + 'Modal';
+            var recordQueryStringName = 'record' + _this.capitalize(type) + 'QueryString';
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
             if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
                 _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
             }
-            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordQueryStringName] + '"', " ");
             _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+        };
+        this.capitalize = function (s) {
+            if (typeof s !== 'string' || s.length === 0)
+                return s;
+            return s.charAt(0).toUpperCase() + s.slice(1);
         };
         this.getExportAction = function () {
             return _this.exportAction + _this.collectionID;
@@ -84140,6 +86176,29 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return false;
     };
+    SWListingDisplayController.prototype.makeQueryStringForAction = function (action, pageRecord) {
+        var queryString = "";
+        action = this.capitalize(action);
+        var actionProppertyName = "record" + action + "ActionProperty";
+        var actionPropertyIdentifierName = "record" + action + "ActionPropertyIdentifier";
+        if (this[actionProppertyName]) {
+            queryString += '&' + this[actionProppertyName];
+            if (this[actionPropertyIdentifierName]) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            }
+            else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        }
+        else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        var actionQueryStringName = "record" + action + "QueryString";
+        if (this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        }
+        return queryString;
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -84186,23 +86245,25 @@ var SWListingDisplay = /** @class */ (function () {
             /*Admin Actions*/
             actions: "<?",
             administrativeCount: "@?",
+            recordEditModal: "<?",
             recordEditEvent: "@?",
             recordEditAction: "@?",
             recordEditActionProperty: "@?",
+            recordEditActionPropertyIdentifier: "@?",
             recordEditQueryString: "@?",
-            recordEditModal: "<?",
             recordEditDisabled: "<?",
             recordEditIcon: "@?",
+            recordDetailModal: "<?",
             recordDetailEvent: "@?",
             recordDetailAction: "@?",
             recordDetailActionProperty: "@?",
-            recordDetailActionIdProperty: "@?",
-            recordDetailActionIdKey: "@?",
+            recordDetailActionPropertyIdentifier: "@?",
             recordDetailQueryString: "@?",
-            recordDetailModal: "<?",
+            recordDeleteModal: "<?",
             recordDeleteEvent: "@?",
             recordDeleteAction: "@?",
             recordDeleteActionProperty: "@?",
+            recordDeleteActionPropertyIdentifier: "@?",
             recordDeleteQueryString: "@?",
             recordAddEvent: "@?",
             recordAddAction: "@?",
@@ -84307,7 +86368,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-/* 809 */
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84325,6 +86386,7 @@ var SWListingDisplayCellController = /** @class */ (function () {
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.observerService = observerService;
+        this.dateFormat = 'MM/dd/yyyy';
         this.expandable = false;
         this.hasAggregate = function () {
             return _this.column.aggregate && _this.column.aggregate.aggregateFunction && _this.column.aggregate.aggregateFunction.length;
@@ -84353,6 +86415,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
             else if (!listingDisplayIsExpandableAndPrimaryColumn) {
                 if (_this.column.ormtype === 'timestamp') {
+                    if (_this.column.type && _this.column.type == 'datetime') {
+                        _this.dateFormat = 'MM/dd/yyyy hh:mm a';
+                    }
                     templateUrl = basePartialPath + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
@@ -84364,7 +86429,8 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     // Then check if it was passed via the column args.
                     // Then check if it was passed into the directive.
                     // then set a default.
-                    if (_this.pageRecord['currencyCode'] != null &&
+                    if (_this.pageRecord != null &&
+                        _this.pageRecord['currencyCode'] != null &&
                         _this.pageRecord['currencyCode'].trim().length) {
                         _this.currencyCode = _this.pageRecord['currencyCode'];
                     }
@@ -84372,11 +86438,12 @@ var SWListingDisplayCellController = /** @class */ (function () {
                         _this.column.arguments.currencyCode) {
                         _this.currencyCode = _this.column.arguments.currencyCode;
                     }
-                    else {
-                        //set a default if one was not passed in to use...
-                        if (_this.currencyCode == undefined || _this.currencyCode == "") {
-                            _this.currencyCode = 'USD';
-                        }
+                    else if (_this.swListingDisplay.currencyCode != undefined &&
+                        _this.swListingDisplay.currencyCode.length) {
+                        _this.currencyCode = _this.swListingDisplay.currencyCode;
+                    }
+                    else if (_this.currencyCode == undefined || _this.currencyCode == "") {
+                        _this.currencyCode = 'USD';
                     }
                     templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
                 }
@@ -84458,7 +86525,6 @@ var SWListingDisplayCell = /** @class */ (function () {
             pageRecord: "=?",
             value: "=?",
             cellView: "@?",
-            currencyCode: "@?",
             expandableRules: "=?"
         };
         this.controller = SWListingDisplayCellController;
@@ -84476,7 +86542,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-/* 810 */
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84553,7 +86619,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-/* 811 */
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84612,7 +86678,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-/* 812 */
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84651,7 +86717,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-/* 813 */
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84708,7 +86774,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-/* 814 */
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84756,7 +86822,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-/* 815 */
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84764,7 +86830,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var chart_js_1 = __webpack_require__(305);
+var chart_js_1 = __webpack_require__(307);
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -85278,7 +87344,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-/* 816 */
+/* 829 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85342,18 +87408,30 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-/* 817 */
+/* 830 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWListingSearchController = /** @class */ (function () {
     //@ngInject
-    function SWListingSearchController($rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
+    function SWListingSearchController($scope, $rootScope, $hibachi, metadataService, listingService, collectionService, observerService, localStorageService, appConfig) {
         var _this = this;
+        this.$scope = $scope;
         this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
         this.metadataService = metadataService;
@@ -85366,12 +87444,50 @@ var SWListingSearchController = /** @class */ (function () {
         this.filtersClosed = true;
         this.hasPersonalCollections = false;
         this.collectionNameSaveIsOpen = false;
+        this.searchableFilterOptions = [
+            {
+                title: 'Last 3 Months',
+                value: 'lastThreeMonths',
+            },
+            {
+                title: 'Last 6 Months',
+                value: 'lastSixMonths',
+            },
+            {
+                title: '1 Year Ago',
+                value: 'lastOneYear',
+            },
+            {
+                title: 'All Time',
+                value: 'allRecords',
+            }
+        ];
+        this.wildCardPositionOptions = [
+            {
+                title: 'Match from Start',
+                value: 'right'
+            },
+            {
+                title: 'Match from End',
+                value: 'left'
+            },
+            {
+                title: 'Match Anywhere',
+                value: 'both'
+            }
+        ];
         this.$onInit = function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
             //snapshot searchable options in the beginning
-            _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
+            _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
+            // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
+            //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
+            // })
+            if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
+                _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
+            }
             _this.selectedSearchColumn = { title: 'All' };
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
@@ -85388,6 +87504,22 @@ var SWListingSearchController = /** @class */ (function () {
                     }
                 }, function (reason) {
                     throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
+                });
+            }
+        };
+        this.changeSearchFilter = function (filter) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value) {
+                _this.selectedSearchFilter = filter;
+                _this.updateListingSearchConfig({
+                    selectedSearchFilterCode: filter.value
+                });
+            }
+        };
+        this.changeWildCardPoition = function (position) {
+            if (_this.swListingDisplay.collectionConfig.listingSearchConfig.wildCardPosition !== position.value) {
+                _this.selectedWildCardPosition = position;
+                _this.updateListingSearchConfig({
+                    wildCardPosition: position.value
                 });
             }
         };
@@ -85513,6 +87645,12 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
+            // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
+            // if(this.selectedSearchFilter.criteria != 'all'){
+            //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
+            //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
+            //     }
+            // }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
@@ -85537,6 +87675,25 @@ var SWListingSearchController = /** @class */ (function () {
             }
         };
     }
+    SWListingSearchController.prototype.configureListingSearchConfigControls = function (searchConfig) {
+        if (!searchConfig)
+            searchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
+        if (!searchConfig)
+            return;
+        if (angular.isDefined(searchConfig.selectedSearchFilterCode)) {
+            this.selectedSearchFilter = this.searchableFilterOptions
+                .find(function (item) { return item.value === searchConfig.selectedSearchFilterCode; });
+        }
+        if (angular.isDefined(searchConfig.wildCardPosition)) {
+            this.selectedWildCardPosition = this.wildCardPositionOptions
+                .find(function (item) { return item.value === searchConfig.wildCardPosition; });
+        }
+    };
+    SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
+        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
+    };
     return SWListingSearchController;
 }());
 var SWListingSearch = /** @class */ (function () {
@@ -85549,10 +87706,10 @@ var SWListingSearch = /** @class */ (function () {
         this.scope = {};
         this.require = { swListingDisplay: "?^swListingDisplay", swListingControls: '?^swListingControls' };
         this.bindToController = {
-            collectionConfig: "<?",
+            collectionConfig: "=",
             paginator: "=?",
             listingId: "@?",
-            showToggleSearch: "=?"
+            showToggleSearch: "=?",
         };
         this.controller = SWListingSearchController;
         this.controllerAs = 'swListingSearch';
@@ -85569,7 +87726,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-/* 818 */
+/* 831 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85580,23 +87737,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(295);
 //services
-var listingservice_1 = __webpack_require__(819);
+var listingservice_1 = __webpack_require__(832);
 //directives
-var swlistingdisplay_1 = __webpack_require__(808);
-var swlistingreport_1 = __webpack_require__(815);
-var swlistingdisplaycell_1 = __webpack_require__(809);
-var swlistingcontrols_1 = __webpack_require__(806);
-var swlistingaggregate_1 = __webpack_require__(803);
-var swlistingcolorfilter_1 = __webpack_require__(804);
-var swlistingcolumn_1 = __webpack_require__(805);
-var swlistingdisablerule_1 = __webpack_require__(807);
-var swlistingexpandablerule_1 = __webpack_require__(810);
-var swlistingfilter_1 = __webpack_require__(811);
-var swlistingfiltergroup_1 = __webpack_require__(812);
-var swlistingorderby_1 = __webpack_require__(814);
-var swlistingrowsave_1 = __webpack_require__(816);
-var swlistingsearch_1 = __webpack_require__(817);
-var swlistingglobalsearch_1 = __webpack_require__(813);
+var swlistingdisplay_1 = __webpack_require__(821);
+var swlistingreport_1 = __webpack_require__(828);
+var swlistingdisplaycell_1 = __webpack_require__(822);
+var swlistingcontrols_1 = __webpack_require__(819);
+var swlistingaggregate_1 = __webpack_require__(816);
+var swlistingcolorfilter_1 = __webpack_require__(817);
+var swlistingcolumn_1 = __webpack_require__(818);
+var swlistingdisablerule_1 = __webpack_require__(820);
+var swlistingexpandablerule_1 = __webpack_require__(823);
+var swlistingfilter_1 = __webpack_require__(824);
+var swlistingfiltergroup_1 = __webpack_require__(825);
+var swlistingorderby_1 = __webpack_require__(827);
+var swlistingrowsave_1 = __webpack_require__(829);
+var swlistingsearch_1 = __webpack_require__(830);
+var swlistingglobalsearch_1 = __webpack_require__(826);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -85624,7 +87781,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-/* 819 */
+/* 832 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86596,7 +88753,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-/* 820 */
+/* 833 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86642,7 +88799,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-/* 821 */
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86651,8 +88808,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-var paginationservice_1 = __webpack_require__(822);
-var swpaginationbar_1 = __webpack_require__(820);
+var paginationservice_1 = __webpack_require__(835);
+var swpaginationbar_1 = __webpack_require__(833);
 var core_module_1 = __webpack_require__(17);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -86669,7 +88826,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-/* 822 */
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86867,7 +89024,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-/* 823 */
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87256,7 +89413,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 824 */
+/* 837 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87288,7 +89445,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 825 */
+/* 838 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87321,7 +89478,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 826 */
+/* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87385,7 +89542,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 827 */
+/* 840 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87415,7 +89572,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 828 */
+/* 841 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87445,7 +89602,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 829 */
+/* 842 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87479,7 +89636,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 830 */
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87512,7 +89669,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 831 */
+/* 844 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87546,7 +89703,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 832 */
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87579,7 +89736,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 833 */
+/* 846 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87609,7 +89766,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 834 */
+/* 847 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87639,7 +89796,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 835 */
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87670,7 +89827,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 836 */
+/* 849 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87707,7 +89864,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 837 */
+/* 850 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87740,7 +89897,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 838 */
+/* 851 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87777,7 +89934,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 839 */
+/* 852 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87934,7 +90091,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 840 */
+/* 853 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87943,24 +90100,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(823);
-var swvalidationminlength_1 = __webpack_require__(831);
-var swvalidationdatatype_1 = __webpack_require__(824);
-var swvalidationeq_1 = __webpack_require__(825);
-var swvalidationeqproperty_1 = __webpack_require__(826);
-var swvalidationgte_1 = __webpack_require__(827);
-var swvalidationlte_1 = __webpack_require__(828);
-var swvalidationmaxlength_1 = __webpack_require__(829);
-var swvalidationmaxvalue_1 = __webpack_require__(830);
-var swvalidationminvalue_1 = __webpack_require__(832);
-var swvalidationneq_1 = __webpack_require__(833);
-var swvalidationnumeric_1 = __webpack_require__(834);
-var swvalidationregex_1 = __webpack_require__(835);
-var swvalidationrequired_1 = __webpack_require__(836);
-var swvalidationunique_1 = __webpack_require__(837);
-var swvalidationuniqueornull_1 = __webpack_require__(838);
+var swvalidate_1 = __webpack_require__(836);
+var swvalidationminlength_1 = __webpack_require__(844);
+var swvalidationdatatype_1 = __webpack_require__(837);
+var swvalidationeq_1 = __webpack_require__(838);
+var swvalidationeqproperty_1 = __webpack_require__(839);
+var swvalidationgte_1 = __webpack_require__(840);
+var swvalidationlte_1 = __webpack_require__(841);
+var swvalidationmaxlength_1 = __webpack_require__(842);
+var swvalidationmaxvalue_1 = __webpack_require__(843);
+var swvalidationminvalue_1 = __webpack_require__(845);
+var swvalidationneq_1 = __webpack_require__(846);
+var swvalidationnumeric_1 = __webpack_require__(847);
+var swvalidationregex_1 = __webpack_require__(848);
+var swvalidationrequired_1 = __webpack_require__(849);
+var swvalidationunique_1 = __webpack_require__(850);
+var swvalidationuniqueornull_1 = __webpack_require__(851);
 //services
-var validationservice_1 = __webpack_require__(839);
+var validationservice_1 = __webpack_require__(852);
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -87988,7 +90145,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 841 */
+/* 854 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88022,7 +90179,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 842 */
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88060,7 +90217,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 843 */
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88094,7 +90251,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 844 */
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88215,7 +90372,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 845 */
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88246,7 +90403,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 846 */
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88296,7 +90453,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 847 */
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88343,7 +90500,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 848 */
+/* 861 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88615,7 +90772,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 849 */
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88815,7 +90972,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 850 */
+/* 863 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88917,7 +91074,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 851 */
+/* 864 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88963,7 +91120,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 852 */
+/* 865 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89252,7 +91409,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 853 */
+/* 866 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89307,7 +91464,9 @@ var ScheduleService = /** @class */ (function (_super) {
             if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
             _this.clearSchedulePreview();
             var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
-            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
+            var endTime = (scheduleObject.frequencyEndTime && scheduleObject.frequencyEndTime.trim())
+                ? new Date(Date.parse(scheduleObject.frequencyEndTime))
+                : false;
             var now = new Date();
             var startPoint = new Date();
             startPoint.setHours(startTime.getHours());
@@ -89364,7 +91523,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 854 */
+/* 867 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89422,7 +91581,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 855 */
+/* 868 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89431,21 +91590,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(854);
-var scheduleservice_1 = __webpack_require__(853);
+var workflowconditionservice_1 = __webpack_require__(867);
+var scheduleservice_1 = __webpack_require__(866);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(841);
-var swworkflowbasic_1 = __webpack_require__(843);
-var swworkflowcondition_1 = __webpack_require__(844);
-var swworkflowconditiongroupitem_1 = __webpack_require__(845);
-var swworkflowconditiongroups_1 = __webpack_require__(846);
-var swworkflowtask_1 = __webpack_require__(847);
-var swworkflowtaskactions_1 = __webpack_require__(848);
-var swworkflowtasks_1 = __webpack_require__(849);
-var swworkflowtrigger_1 = __webpack_require__(850);
-var swworkflowtriggers_1 = __webpack_require__(852);
-var swworkflowtriggerhistory_1 = __webpack_require__(851);
-var swschedulepreview_1 = __webpack_require__(842);
+var swadmincreatesuperuser_1 = __webpack_require__(854);
+var swworkflowbasic_1 = __webpack_require__(856);
+var swworkflowcondition_1 = __webpack_require__(857);
+var swworkflowconditiongroupitem_1 = __webpack_require__(858);
+var swworkflowconditiongroups_1 = __webpack_require__(859);
+var swworkflowtask_1 = __webpack_require__(860);
+var swworkflowtaskactions_1 = __webpack_require__(861);
+var swworkflowtasks_1 = __webpack_require__(862);
+var swworkflowtrigger_1 = __webpack_require__(863);
+var swworkflowtriggers_1 = __webpack_require__(865);
+var swworkflowtriggerhistory_1 = __webpack_require__(864);
+var swschedulepreview_1 = __webpack_require__(855);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -89471,7 +91630,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 856 */
+/* 869 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -89499,7 +91658,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 857 */
+/* 870 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(302);

@@ -94,7 +94,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
 	property name="stockHolds" singularname="stockHold" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="StockHold" inverse="true";
-	
+	property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true";
+    
 	// Related Object Properties (many-to-many)
 
 	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
@@ -194,7 +195,8 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
     
    
- property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="lineNumber" ormtype="string";
+ property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
@@ -1351,12 +1353,13 @@ public any function getPersonalVolume(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
     }
     
-    private numeric function getCustomPriceFieldAmount(required string priceField){
-        var account = this.getOrder().getAccount();
-        if(isNull(account)){
-            account = getService('accountService').newAccount();
-        }
-        var amount = getSku().getCustomPriceByCurrencyCode(priceField, this.getCurrencyCode(),this.getQuantity(),account.getPriceGroups());
+	private numeric function getCustomPriceFieldAmount(required string customPriceField){
+        arguments.currencyCode = this.getCurrencyCode();
+		arguments.quantity = this.getQuantity();
+		if(!isNull(this.getOrder().getAccount())){ 
+			arguments.accountID = this.getOrder().getAccount().getAccountID();  
+		}
+        var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
         }
@@ -1380,19 +1383,19 @@ public any function getPersonalVolume(){
 	}
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
-		if(!structKeyExists(variables,'extended#priceField#')){
+		if(!structKeyExists(variables,'extended#arguments.priceField#')){
 			var price = 0;
 			
 			// Check if there is a manual override (should not be used to standard sales orders, only applies to referencing order types: returns, refund, etc.)
-			var manualPrice = this.invokeMethod('getManual#priceField#');
+			var manualPrice = this.invokeMethod('getManual#arguments.priceField#');
 		    if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', getOrder().getTypeCode()) && !isNull(manualPrice) && manualPrice > 0){
-				price = this.invokeMethod('getManual#priceField#');
-			} else if(!isNull(this.invokeMethod('get#priceField#'))){
-				price = this.invokeMethod('get#priceField#');
+				price = this.invokeMethod('getManual#arguments.priceField#');
+			} else if(!isNull(this.invokeMethod('get#arguments.priceField#'))){
+				price = this.invokeMethod('get#arguments.priceField#');
 			}
-			variables['extended#priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+			variables['extended#arguments.priceField#'] = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 		}
-		return variables['extended#priceField#'];
+		return variables['extended#arguments.priceField#'];
 	}
 	
 	public numeric function getAllocatedOrderCustomPriceFieldDiscountAmount(required string priceField){

@@ -70,6 +70,46 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return orderTemplate;
     }
     
+    public any function createOrderTemplate( required struct data ) {
+
+        param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
+        param name="arguments.data.frequencyTermID" default="23c6a8c4e605d0586869d7f3a8b36ba7";
+        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
+        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        
+        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("create");
+        var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        
+        processObject.setSiteID(arguments.data.siteID);
+        
+        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
+            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+        }
+        
+        if( StructKeyExists(arguments.data, 'siteCode') ){
+            processObject.setSiteCode(arguments.data.siteCode);
+        }
+        
+        processObject.setOrderTemplateTypeID(orderTypeID);
+        processObject.setFrequencyTermID(arguments.data.frequencyTermID);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        
+        if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
+            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
+        }
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        
+        getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
+        
+        arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
+    }
+    
     public any function addItemAndCreateWishlist( required struct data ) {
         var orderTemplate = this.createWishlist(argumentCollection=arguments);
         var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
@@ -134,7 +174,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.setAllowUplineEmails(data.allowUplineEmails);
         }
         
-        getService("AccountService").saveAccount(account);
+        account = getAccountService().saveAccount(account);
         
         getHibachiScope().addActionResult( "public:order.updateProfile", account.hasErrors() );
     }
@@ -153,15 +193,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function getProducts(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
+        
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productListing'] = [];
 		
-		var scrollableSmartList = getHibachiService().getSkuSmartList(arguments.data);
+		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
-	    scrollableSmartList.addFilter('activeFlag', true);
-	    scrollableSmartList.addFilter('publishedFlag', true);
-	    scrollableSmartList.addWhereCondition("price <> 0.00");
-	    scrollableSmartList.addWhereCondition("personalVolume <> 'NULL'");
+	    scrollableSmartList.addFilter('sku.activeFlag', true);
+	    scrollableSmartList.addFilter('sku.publishedFlag', true);
+	    scrollableSmartList.addFilter('maxQuantity', 'NULL');
+	    scrollableSmartList.addFilter('minQuantity', 'NULL');
+	    scrollableSmartList.addFilter('priceGroup.priceGroupCode', '1');
+
+	    scrollableSmartList.addFilter('currencyCode', currencyCode);
+
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallsku.price != NULL");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume <> 0.00");
+	    scrollableSmartList.addWhereCondition("aslatwallskuprice.personalVolume != NULL");
 	    
         var recordsCount = scrollableSmartList.getRecordsCount();
         
@@ -177,20 +228,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    while(productList.next()){
 		        
 			    var product = productList.get(0);
-			    var adjustedPricing = product.getSkuAdjustedPricing();
-			    
+			    var sku = product.getSku();
+
 			    var productStruct={
-			      "vipPrice"                    :       adjustedPricing.vipPrice?:"",
-			      "marketPartnerPrice"          :       adjustedPricing.MPPrice?:"",
-			      "adjustedPriceForAccount"     :       adjustedPricing.adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       adjustedPricing.retailPrice?:"",
-			      "personalVolume"              :       adjustedPricing.personalVolume?:"",
-			      "accountPriceGroup"           :       adjustedPricing.accountPriceGroup?:"",
+			      "personalVolume"              :       utilityService.formatValue_currency(product.getPersonalVolume(), {currencyCode:currencyCode})?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
+  			      "marketPartnerPrice"          :       utilityService.formatValue_currency(product.getPrice(), {currencyCode:currencyCode})?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
-			      "productName"                 :       product.getProduct().getProductName()?:"",
-			      "skuID"                       :       product.getSkuID()?:"",
-  			      "skuCode"                     :       product.getSkuCode()?:""
+			      "productName"                 :       sku.getSkuName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+  			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
@@ -226,28 +273,62 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
-		var bundleCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundleCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
-		bundleCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundleCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundleCollectionList.setDisplayProperties('
+		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
+		bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+		
+		bundlePersistentCollectionList.setDisplayProperties('
+			skuBundleID,
 			bundledSku.product.productName,
-			bundledSku.product.calculatedSalePrice,
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
-			sku.product.calculatedSalePrice,
 			sku.product.defaultSku.imageFile
 		');
+
 		
-		var skuBundles = bundleCollectionList.getRecords();
+		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
+		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundleNonPersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+
+		var visibleColumnConfigWithArguments = {
+			"isVisible":true,
+			"isDeletable":false,
+			"isSearchable":false,
+			"arguments":{
+			}
+		};
 		
+		if(!isNull(getHibachiScope().getAccount())){
+			visibleColumnConfigWithArguments["arguments"]["currencyCode"] = getHibachiScope().getAccount().getSiteCurrencyCode();
+			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
+		}
+
+		//todo handle case where user is not logged in 
+	
+		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+	
+		var skuBundles = bundlePersistentCollectionList.getRecords();
+		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
+
+			
+	
 		// Build out bundles struct
 		var bundles = {};
-		for ( var skuBundle in skuBundles ) {
+		var skuBundleCount = arrayLen(skuBundles);
+		for ( var i=1; i<=skuBundleCount; i++ ){
+		
+			var skuBundle = skuBundles[i]; 
+			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
 		
 			var skuID = skuBundle.sku_product_defaultSku_skuID;
 			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
@@ -257,7 +338,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
-					'price': skuBundle.sku_product_calculatedSalePrice,
+					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'productTypes': {}
@@ -275,22 +356,142 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			// Add sub product to the struct.
 			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
 				'name': skuBundle.bundledSku_product_productName,
-				'price': skuBundle.bundledSku_product_calculatedSalePrice,
+				'price': skuBundle.bundledSku_priceByCurrencyCode,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
 			});
 		}
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
-    
-    public any function createAccount(required struct data){
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            if(!isNull(arguments.data['accountStatusName'])){
-                account.setAccountStatusName(arguments.data['accountStatusName']);
+        
+    public any function selectStarterPackBundle(required struct data){
+        var cart = getHibachiScope().cart();
+        
+        //remove previously-selected StarterPackBundle
+        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
+            for( orderItem in cart.getOrderItems() ) {
+                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
+                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                    StructDelete(arguments.data, 'orderItemID');
+                    break;
+                }
             }
         }
-        return account;
+        
+        this.addOrderItem(argumentCollection = arguments);
+    }
+
+    private any function loginEnrolledAccount(required any account){
+        getDAO('HibachiDAO').flushORMSession();
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=arguments.account.getAccountID());
+        getHibachiSessionService().loginAccount(account, accountAuthentication); 
+    }    
+    
+    private any function enrollUser(required struct data, required string accountType){
+        
+        var accountTypeInfo = {
+            'VIP':{
+                'priceGroupCode':'3',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            },
+            'customer':{
+                'priceGroupCode':'2',
+                'statusTypeCode':'astGoodStanding',
+                'activeFlag':true
+            },
+            'marketPartner':{
+                'priceGroupCode':'1',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            }
+        }
+        
+        if(getHibachiScope().getLoggedInFlag()){
+            super.logout();
+        }
+        
+        var account = super.createAccount(arguments.data);
+        
+        if(account.hasErrors()){
+            addErrors(arguments.data, account.getProcessObject("create").getErrors());
+            return account;
+        }
+        
+        account.setAccountType(arguments.accountType);
+        account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
+        
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
+        
+        if(!isNull(priceGroup)){
+            account.addPriceGroup(priceGroup);
+        }
+        
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        
+        if(!isNull(accountStatusType)){
+            account.setAccountStatusType(accountStatusType);
+        }
+        
+        if(!isNull(getHibachiScope().getCurrentRequestSite())){
+            account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
+        }
+        
+        account = getAccountService().saveAccount(account);
+
+        if(account.hasErrors()){
+            addErrors(arguments.data, account.getErrors());
+        }
+        
+        if(arguments.accountType == 'customer'){
+            account.getAccountNumber();
+        }
+            
+         return account;
+    }
+    
+    public any function createMarketPartnerEnrollment(required struct data){
+        return enrollUser(arguments.data, 'marketPartner');
+    }
+    
+    public any function createRetailEnrollment(required struct data){
+        return enrollUser(arguments.data, 'customer');
+    }
+    
+    public any function createVIPEnrollment(required struct data){
+       return enrollUser(arguments.data, 'VIP');
+    }
+    
+    private any function setupEnrollmentInfo(required any account, required string accountType){
+        var accountTypeInfo = {
+            'customer':{
+                'priceGroupCode':'2',
+                'statusTypeCode':'astGoodStanding',
+                'activeFlag':true
+            },
+            'marketPartner':{
+                'priceGroupCode':'1',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            }
+        }
+        arguments.account.setAccountType(arguments.accountType);
+        arguments.account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
+        if(!isNull(priceGroup)){
+            arguments.account.addPriceGroup(priceGroup);
+        }
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        if(!isNull(accountStatusType)){
+            arguments.account.setAccountStatusType(accountStatusType);
+        }
+        if(!isNull(getHibachiScope().getCurrentRequestSite())){
+            arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
+        }
+        arguments.account = getAccountService().saveAccount(arguments.account);
+        return arguments.account;
+
     }
     
     public any function updateAccount(required struct data){
@@ -306,7 +507,224 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 }
                 getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
             }
+            if ( 
+                !isNull( arguments.data['month'] )
+                && !isNull( arguments.data['year'] )
+                && !isNull( arguments.data['day'] )
+            ) {
+                account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                getAccountService().saveAccount( account );
+            }
         }
         return account;
     }
+    
+    public any function getDaysToEditOrderTemplateSetting(){
+		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+    }
+    
+    public void function submitSponsor(required struct data){
+        param name="arguments.data.sponsorID" default="";
+
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        
+        var account = getHibachiScope().getAccount();
+        if(account.getNewFlag()){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        if(account.hasParentAccountRelationship()){
+            for(var accountRelationship in account.getParentAccountRelationships()){
+                if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
+                    getService('accountService').deleteAccountRelationship(accountRelationship);
+                }
+            }
+        }
+        
+        if(!account.hasParentAccountRelationship()){
+            var accountRelationship = getService('accountService').newAccountRelationship();
+            accountRelationship.setParentAccount(sponsorAccount);
+            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+        }
+        
+        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        
+        if(accountRelationship.hasErrors()){
+            addErrors(arguments.data,accountRelationship.getErrors());
+        }
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
+        
+    }
+
+    public any function getAccountOrderTemplateNamesAndIDs(required struct data){
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
+
+        var accountID = getHibachiScope().getAccount().getAccountID();
+		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('orderTemplateID,orderTemplateName');
+		orderTemplateCollectionList.addFilter('account.accountID', accountID);
+		orderTemplateCollectionList.addFilter('ordertemplateType.typeID', arguments.data.ordertemplateTypeID);
+
+		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
+    }
+    
+
+    public any function getMostRecentOrderTemplate (required any data){
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
+        
+        var daysToEditFlexship = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+        
+		var orderTemplateCollectionList = getService('OrderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');
+		orderTemplateCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		orderTemplateCollectionList.setPageRecordsShow(1);
+		collectionList = orderTemplateCollectionList.getPageRecords();
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+    
+    public any function getProductsByKeyword(required any data) {
+        param name="arguments.data.keyword" default="";
+        param name="arguments.data.currentPage" default="1";
+        param name="arguments.data.pageRecordsShow" default="12";
+        
+        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var productCollectionList = returnObject.productCollectionList;
+        var priceGroupCode = returnObject.priceGroupCode;
+        var currencyCode = returnObject.currencyCode;
+       
+        if ( len( arguments.data.keyword ) ) {
+            productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
+        }
+        
+        var recordsCount = productCollectionList.getRecordsCount();
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        var pageRecords = productCollectionList.getPageRecords();
+        if ( len( pageRecords ) ) {
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
+            arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        } else {
+            arguments.data['ajaxResponse']['productList'] = [];
+        }
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+
+    }
+
+    public any function getProductsByCategoryOrContentID(required any data){
+        param name="arguments.data.currentPage" default="1";
+        param name="arguments.data.pageRecordsShow" default="12";
+        param name="arguments.data.cmsContentFilterFlag" default= false; //Filter based off cms category for uses like content modules
+        param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
+        param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
+
+        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var productCollectionList = returnObject.productCollectionList;
+        var priceGroupCode = returnObject.priceGroupCode;
+        var currencyCode = returnObject.currencyCode;
+  
+        if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
+        if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
+        if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
+        
+        var recordsCount = productCollectionList.getRecordsCount();
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode);
+		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+    }
+    
+    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
+        
+        var productService = getProductService();
+        var productList = [];
+        var skuIDsToQuery = "";
+        var index = 1;
+        var skuCurrencyCode = arguments.currencyCode; 
+        
+        if(isNull(arguments.records) || !arrayLen(arguments.records)){
+            return [];
+        } 
+        
+        if(arguments.priceGroupCode == 3 || arguments.priceGroupCode == 1){
+            var upgradedPriceGroupCode = 2;
+            var upgradedPriceGroupID = "c540802645814b36b42d012c5d113745";
+        } else{
+            var upgradedPriceGroupCode = 3;
+            var upgradedPriceGroupID = "84a7a5c187b04705a614eb1b074959d4";
+        }
+
+        //Looping over the collection list and using helper method to get non persistent properties
+        for(var record in arguments.records){
+            arrayAppend(productList,{
+                'skuID': record.defaultSku_skuID,
+                'personalVolume': record.defaultSku_skuPrices_personalVolume,
+                'price': record.defaultSku_skuPrices_price,
+                'productName': record.productName,
+                'skuImagePath': record.defaultSku_imageFile,
+                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
+                'priceGroupCode': arguments.priceGroupCode,
+                'upgradedPricing': '',
+                'upgradedPriceGroupCode': upgradedPriceGroupCode
+            });
+            //add skuID's to skuID array for query below
+            skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
+        }
+
+        //Query skuPrice table to get upgraded skuPrices for skus in above collection list
+         var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode",{
+            skuIDs = {value=skuIDsToQuery, list=true, cfsqltype="cf_sql_varchar"}, 
+            upgradedPriceGroup = {value=upgradedPriceGroupID, cfsqltype="cf_sql_varchar"},
+            currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
+        });           
+
+        //Add upgraded sku prices into the collection list 
+        for(price in upgradedSkuPrices){
+            productList[index].upgradedPricing = price;
+            index++
+        }
+        
+        return productList;
+    }
+    
+    public any function addEnrollmentFee(){
+        var account = getHibachiScope().getAccount();
+        
+        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+            if(account.getAccountType() == 'VIP'){
+                var VIPSkuID = getProductService().getProductByProductType('VIPEnrollmentFee').getDefaultSku().getSkuID(); //getVIP default sku here
+                return addOrderItem({skuID:VIPSkuID});
+            }else if(account.getAccountType() == 'marketPartner'){
+                var MPSkuID = getProductService().getProductByProductCode('MPFEE000011').getDefaultSku().getSkuID(); //getmp default sku here
+                return addOrderItem({skuID:MPSkuID});
+            }
+            
+        }
+    }
+    
+    public any function getMoMoneyBalance(){
+        var account = getHibachiScope().getAccount();
+        var paymentMethods = account.getAccountPaymentMethods();
+        var balance = 0;
+        
+        for(method in paymentMethods){
+            balance += method.getMoMoneyBalance();
+        }
+        arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
+    }
+
 }

@@ -57,13 +57,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 
 	// Data Properties
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location";
 	property name="orderItems" type="array" hb_populateArray="true";
 	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
 	property name="fulfillmentAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
+	property name="locationID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
 	property name="stockLossFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
@@ -73,6 +74,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="refundOrderItemList";
 	// Option Properties
     property name="returnReasonTypeOptions";
+    property name="locationIDOptions";
 	
 
 	variables.orderItems = [];
@@ -86,11 +88,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// ====================== START: Data Options ==========================
     
-	public array function getLocationOptions() {
-		if(!structKeyExists(variables, "locationOptions")) {
-			variables.locationOptions = getService('locationService').getLocationOptions(); 
+    public any function getLocation(){
+    	if(!structKeyExists(variables,'location') && structKeyExists(variables,'locationID')){
+    		variables.location = getService('LocationService').getLocation(variables.locationID);
+    	}
+    	if(!isNull(variables.location)){
+    		return variables.location;
+    	}
+    }
+    
+	public array function getLocationIDOptions() {
+		if(!structKeyExists(variables, "locationIDOptions")) {
+			variables.locationIDOptions = getService('locationService').getLocationOptions(); 
 		}
-		return variables.locationOptions;
+		return variables.locationIDOptions;
 	}
 	
 	public array function getRefundOrderPaymentIDOptions() {
@@ -99,16 +110,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 			var opSmartList = getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+			var orderPayments = opSmartList.getRecords();
+			opSmartList.addFilter('paymentMethod.paymentMethodType','giftCard');
+			var giftCardPayments = opSmartList.getRecords(refresh=true);
 			
-			for(var orderPayment in opSmartList.getRecords()) {
+			for(var orderPayment in giftCardPayments){
 				arrayAppend(variables.refundOrderPaymentIDOptions, 
 					{
 						"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
 						"value"=orderPayment.getOrderPaymentID(),
 						"amountToRefund"=orderPayment.getRefundableAmount(),
-						"amount"=0
+						"amount"=0,
+						"paymentMethodType"=orderPayment.getPaymentMethod().getPaymentMethodType()
 					}
 				);
+			}
+			
+			for(var orderPayment in orderPayments) {
+				if(orderPayment.getPaymentMethod().getPaymentMethodType() != 'giftCard'){
+					arrayAppend(variables.refundOrderPaymentIDOptions, 
+						{
+							"name"=orderPayment.getSimpleRepresentation(false) & ' - ' & orderPayment.getFormattedValue('refundableAmount'),
+							"value"=orderPayment.getOrderPaymentID(),
+							"amountToRefund"=orderPayment.getRefundableAmount(),
+							"amount"=0,
+							"paymentMethodType"=orderPayment.getPaymentMethod().getPaymentMethodType()
+						}
+					);
+				}
 			}
 		}
 		return variables.refundOrderPaymentIDOptions;
@@ -157,10 +186,27 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "fulfillmentAmount")) {
 			variables.fulfillmentAmount = 0;
 			if(!getPreProcessDisplayedFlag()) {
-				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
+				variables.fulfillmentAmount = getOrder().getFulfillmentChargeAfterDiscountPreTaxTotal();	
 			}
 		}
 		return variables.fulfillmentAmount;
+	}
+	
+	public numeric function getFulfillmentTaxAmount(){
+		if(!structKeyExists(variables, "fulfillmentTaxAmount")) {
+			variables.fulfillmentTaxAmount = 0;
+			if(!getPreProcessDisplayedFlag()) {
+				variables.fulfillmentTaxAmount = getOrder().getFulfillmentChargeTaxAmount();	
+			}
+		}
+		return variables.fulfillmentTaxAmount;
+	}
+	
+	public numeric function getFulfillmentTaxAmountNotRefunded(){
+		if(!isNull(getFulfillmentAmount()) && getFulfillmentAmount() != 0){
+			return getService('HibachiUtilityService').precisionCalculate(getFulfillmentTaxAmount() * getFulfillmentRefundAmount() / getFulfillmentAmount());
+		}
+		return 0;
 	}
 	
 	public boolean function getReceiveItemsFlag() {

@@ -3,13 +3,19 @@ class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
+    public urlParams = new URLSearchParams(window.location.search);
+    public context:string;
     
     //@ngInject
     constructor(
     	public orderTemplateService, 
     	public rbkeyService,
-    	public ModalService
-    ) { }
+    	public ModalService,
+    	public observerService
+    ) { 
+        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess') 
+        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess') 
+    }
     
     public $onInit = () => {
     	
@@ -35,7 +41,17 @@ class MonatFlexshipCartContainerController {
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
     }
     
+    public next(){
+        this.observerService.notify('onNext');
+    }
+    
     private fetchOrderTemplate = () => {
+		if(this.urlParams.get('orderTemplateId')){
+			this.orderTemplateId = this.urlParams.get('orderTemplateId');
+		}else if(localStorage.getItem('flexshipID') && this.context == 'enrollment'){
+		    this.orderTemplateId = localStorage.getItem('flexshipID');
+		}
+		
         this.orderTemplateService
         .getOrderTemplateDetails(this.orderTemplateId)
         .then(data => {
@@ -147,7 +163,8 @@ class MonatFlexshipCartContainer {
 	public scope = {};
 	public bindToController = {
 	    orderTemplateId:'@',
-	    orderTemplate:'<?'
+	    orderTemplate:'<?',
+	    context:'@?'
 	};
 	public controller=MonatFlexshipCartContainerController;
 	public controllerAs="monatFlexshipCartContainer";

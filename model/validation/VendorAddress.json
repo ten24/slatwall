@@ -1,8 +1,8 @@
 {
-	"properties":{
-		"vendor":		[{"contexts":"save","required":true}]
+	"properties": {
+		"vendor": [{ "contexts": "save", "required": true }]
 	},
-	"populatedPropertyValidation":{
-	    "address":[{"validate":"full"}]
+	"populatedPropertyValidation": {
+		"address": [{ "validate": "full" }]
 	}
 }
