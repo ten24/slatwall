@@ -60,7 +60,8 @@ Notes:
     entity="#getHibachiScope().getService('translationService').newTranslation()#" 
     sRedirectQS="#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#=#rc.processObject.getBaseID()#"
     sRedirectAction="#rc.processObject.getCurrentAction()#" 
-    edit="#rc.edit#">
+    edit="#rc.edit#"
+    >
     
 
 	
@@ -68,7 +69,11 @@ Notes:
     <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
     <input type="hidden" name="basePropertyName" value="#rc.processObject.getBasePropertyName()#">
 
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.translation#">
+	<hb:HibachiEntityActionBar 
+	    type="preprocess"
+	    object="#rc.translation#"
+        backAction="main.default"
+	>
 	</hb:HibachiEntityActionBar>
 	
 	<hb:HibachiPropertyRow>
