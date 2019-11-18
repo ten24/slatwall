@@ -583,7 +583,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			if (isNull(newAccount)){
         				isNewAccount = true;
         				var newUUID = rereplace(createUUID(), "-", "", "all");
-        				var newAccount = Slatwall.model.entity.Account();
+        				var newAccount = new Slatwall.model.entity.Account();
         				newAccount.setAccountID(newUUID);
         				newAccount.setRemoteID(account['AccountId']?:""); //*
         			}
@@ -709,7 +709,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                accountGovernmentID.setAccount(newAccount);//*
 		                    
 		                //insert the relationship
-		                if (accountGovernmentID.getNewFlag()){
+		                if (isNewAccountGovernmentID){
 		                	ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
 		                }else{
 		                	ormStatelessSession.update("SlatwallAccountGovernmentID", accountGovernmentID);
@@ -767,8 +767,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		var newAccountRelationship = getService("AccountService")
                     			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
                     		
+                    		var isNewAccountRelationship = false;
                     		if (isNull(newAccountRelationship)){
                     			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+                    			isNewAccountRelationship = true;
                     		}
                     		
 	                    	newAccountRelationship.setParentAccount(sponsorAccount);
@@ -778,15 +780,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	newAccountRelationship.setModifiedDateTime( now() );
 	                    	
 	                    	//insert the relationship
-	                    	if (newAccountRelationship.getNewFlag()){
+	                    	
+	                    	if (isNewAccountRelationship){
 	                    		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
 	                    	}else{
+	                    		
 	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
 	                    	}
 	                    	
 	                    	newAccount.setOwnerAccount(sponsorAccount);
-	                    	//echo("Inserts owner account");
-	                    	
                     	}
                     }
                     
@@ -806,8 +808,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         		continue;
                         	}
                         	
+                        	var isNewAccountEmailAddress = false;
                         	if (isNull(accountEmailAddress)){
                             	var accountEmailAddress = new Slatwall.model.entity.AccountEmailAddress();
+                            	isNewAccountEmailAddress = true;
                         	}
                         	
             			    accountEmailAddress.setAccount(newAccount);//*
@@ -820,7 +824,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             	if (email['EmailTypeName'] == "Shipping") { accountEmailAddress.setAccountEmailType(aetShipping); }//*
                             }
                             
-                            if (accountEmailAddress.getNewFlag()){
+                            if (isNewAccountEmailAddress){
                             	ormStatelessSession.insert("SlatwallAccountEmailAddress", accountEmailAddress);
                             }else{
                             	ormStatelessSession.update("SlatwallAccountEmailAddress", accountEmailAddress);
