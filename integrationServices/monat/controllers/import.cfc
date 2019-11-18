@@ -44,7 +44,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getAccountData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -74,7 +74,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getOrderData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -125,7 +125,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
