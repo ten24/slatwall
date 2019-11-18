@@ -212,12 +212,7 @@ class VIPController {
         const flexshipID = this.flexshipID;
         this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, this.accountPriceGroupCode).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
-        	
-        	for(let item of this.flexshipItemList){
-				item['total'] = item.price * item.quantity;
-				this.flexshipTotal += item['total'];
-			}
-        	
+			this.flexshipTotal = this.flexshipItemList.length ? this.flexshipItemList[0].orderTemplatePrice : "";
 			this.observerService.notify('onNext');
         	this.loading = false;
         });

@@ -749,14 +749,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     	
         var orderTemplateItemsQueryList = QueryExecute("
-            SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle
+            SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle, swo.calculatedTotal
             FROM swordertemplateitem oti
+            INNER JOIN swordertemplate swo ON oti.orderTemplateID = swo.orderTemplateID
             LEFT JOIN swsku s ON oti.skuID = s.skuID
             INNER JOIN swproduct pd ON pd.productID = s.productID
             INNER JOIN swskuprice p ON p.skuID = oti.skuID
             WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
             GROUP BY skuID;
-            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
+            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}}
+        );
         
         
         for(var item in orderTemplateItemsQueryList){
@@ -768,7 +770,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuImagePath' : imageService.getResizedImageByProfileName(item.skuID,'small'), //TODO: find a faster method
                 'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
                 'orderTemplateID' :	item.orderTemplateID,
-                'orderTemplateItemID' : item.orderTemplateItemID		
+                'orderTemplateItemID' : item.orderTemplateItemID,
+                'orderTemplatePrice' : item.calculatedTotal
             });
         }
             
