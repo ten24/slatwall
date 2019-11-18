@@ -725,14 +725,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     	
         var orderTemplateItemsQueryList = QueryExecute("
-        SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle
-        FROM swordertemplateitem oti
-        INNER JOIN swsku s ON oti.skuID = s.skuID
-        INNER JOIN swskuprice p ON p.skuID = oti.skuID
-        INNER JOIN swproduct pd ON pd.productID = s.productID
-        WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
-        GROUP BY skuID;
-        ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
+            SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle
+            FROM swordertemplateitem oti
+            LEFT JOIN swsku s ON oti.skuID = s.skuID
+            INNER JOIN swproduct pd ON pd.productID = s.productID
+            INNER JOIN swskuprice p ON p.skuID = oti.skuID
+            WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
+            GROUP BY skuID;
+            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}});
         
         
         for(var item in orderTemplateItemsQueryList){
