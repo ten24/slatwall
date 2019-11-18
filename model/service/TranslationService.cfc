@@ -52,7 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
                 
                 var translation = getHibachiScope().getService('TranslationService').newTranslation();
                 
-                var hasTranslationEntityArguments = !isNull(arguments.processObject.getBaseObject()) && !isNull(arguments.processObject.getBaseID()) && !isNull(arguments.processObject.getBasePropertyName()) && !isNull(translationData['locale']);
+                var hasTranslationEntityArguments = arguments.processObject.hasTranslatedPropertyObject() && !isNull(translationData['locale']);
                 if (hasTranslationEntityArguments) {
                     var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
                     var hasTranslationEntity = !isNull(translationEntity);

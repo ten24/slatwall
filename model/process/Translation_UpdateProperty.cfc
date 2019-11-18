@@ -41,8 +41,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
      */ 
     public string function getTranslationValue(string locale) {
         var translatedValue = "";
-        var hasTranslatedPropertyObject = !isNull(this.getBaseObject()) && !isNull(this.getBaseID()) && !isNull(this.getBasePropertyName());
-        if (hasTranslatedPropertyObject) {
+        if (hasTranslatedPropertyObject()) {
             var translationEntity = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([
                 this.getBaseObject(),
                 this.getBaseID(),
@@ -55,6 +54,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
             }
         }
         return translatedValue;
+    }
+    
+    public boolean function hasTranslatedPropertyObject() {
+        return !isNull(this.getBaseObject()) && !isNull(this.getBaseID()) && !isNull(this.getBasePropertyName());
     }
     
     // ==================  END: New Property Helpers =======================
