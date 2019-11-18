@@ -1,4 +1,5 @@
-<div class="modal wishlist-modal" 	role="dialog" id="swf-wishlist{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
+<div  class="modal wishlist-modal" 	role="dialog" id="swf-wishlist{{swfWishlist.skuID}}" tabindex="-1" aria-abelledby="product-title" aria-hidden="true">
+	<!--- ng-if="swfWislist.showWishlistModal" --->
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 		
@@ -14,10 +15,9 @@
 			ng-model="createWishList"
 			>
 				<ul class="wishlist-names" 
-				swf-wishlist
-				ng-init="swfWishlist.getWishlistsLight()"
+					ng-init="swfWishlist.getWishlistsLight()"
 				> 
-					<li ng-repeat="wishlist in swfWishlist.orderTemplates track by $index" ng-cloak>
+					<li ng-if="swfWishlist.orderTemplates" ng-repeat="wishlist in swfWishlist.orderTemplates track by $index" ng-cloak>
 						<div class="radio">
 							<input ng-click="swfWishlist.setWishlistID(wishlist.orderTemplateID); swfWishlist.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
 							<label for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
