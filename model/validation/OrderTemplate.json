@@ -50,7 +50,6 @@
 				"contexts": "delete", 
 				"eq": "otstDraft"
 			}
-		],
-		"typeCode": [{ "contexts": "delete", "eq": "ottWishList" }]
+		]
 	}
 }

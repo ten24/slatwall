@@ -382,11 +382,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
-    private any function loginEnrolledAccount(required any account){
-        getDAO('HibachiDAO').flushORMSession();
-        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=arguments.account.getAccountID());
-        getHibachiSessionService().loginAccount(account, accountAuthentication); 
-    }    
     
     private any function enrollUser(required struct data, required string accountType){
         
@@ -416,6 +411,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
+            getHibachiScope().addActionResult('public:account.create',false);
             return account;
         }
         
@@ -442,13 +438,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         if(account.hasErrors()){
             addErrors(arguments.data, account.getErrors());
+            getHibachiScope().addActionResult('public:account.create',false);
         }
         
         if(arguments.accountType == 'customer'){
             account.getAccountNumber();
         }
-            
-         return account;
+        
+        getDAO('HibachiDAO').flushORMSession();
+        
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
+        getHibachiSessionService().loginAccount(account, accountAuthentication); 
+        
+        if(!getHibachiScope().getLoggedInFlag()){
+             getHibachiScope().addActionResult('public:account.create',false);
+        }
+        
+        return account;
     }
     
     public any function createMarketPartnerEnrollment(required struct data){
