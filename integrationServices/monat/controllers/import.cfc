@@ -80,12 +80,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
-			},
-			"Filters": {
-				"EntryDate": {
-					"StartDate": "2019-09-01T00:00:00.000",
-					"EndDate": "2019-09-30T00:00:00.000"
-				}
 			}
 		};
 	    /*
