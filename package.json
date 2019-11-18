@@ -11,6 +11,7 @@
     "angular-chart.js": "^1.1.1",
     "angular-mocks": "^1.6.4",
     "angular-modal-service": "^0.15.3",
+    "angularjs-toaster": "^3.0.0",
     "blueimp-md5": "^1.1.0",
     "bower": "^1.8.0",
     "braintree-web": "^3.55.0",
