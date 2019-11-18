@@ -174,7 +174,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.setAllowUplineEmails(data.allowUplineEmails);
         }
         
-        getService("AccountService").saveAccount(account);
+        account = getAccountService().saveAccount(account);
         
         getHibachiScope().addActionResult( "public:order.updateProfile", account.hasErrors() );
     }
@@ -388,63 +388,79 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiSessionService().loginAccount(account, accountAuthentication); 
     }    
     
-    public any function createMarketPartnerEnrollment(required struct data){
-       
-       if(getHibachiScope().getLoggedInFlag()){
-            super.logout({});
+    private any function enrollUser(required struct data, required string accountType){
+        
+        var accountTypeInfo = {
+            'VIP':{
+                'priceGroupCode':'3',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            },
+            'customer':{
+                'priceGroupCode':'2',
+                'statusTypeCode':'astGoodStanding',
+                'activeFlag':true
+            },
+            'marketPartner':{
+                'priceGroupCode':'1',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            }
+        }
+        
+        if(getHibachiScope().getLoggedInFlag()){
+            super.logout();
         }
         
         var account = super.createAccount(arguments.data);
-
-        if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'marketPartner');
-            loginEnrolledAccount(account)
-        }
+        
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
+            return account;
         }
-        return account;
+        
+        account.setAccountType(arguments.accountType);
+        account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
+        
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
+        
+        if(!isNull(priceGroup)){
+            account.addPriceGroup(priceGroup);
+        }
+        
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        
+        if(!isNull(accountStatusType)){
+            account.setAccountStatusType(accountStatusType);
+        }
+        
+        if(!isNull(getHibachiScope().getCurrentRequestSite())){
+            account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
+        }
+        
+        account = getAccountService().saveAccount(account);
+
+        if(account.hasErrors()){
+            addErrors(arguments.data, account.getErrors());
+        }
+        
+        if(arguments.accountType == 'customer'){
+            account.getAccountNumber();
+        }
+            
+         return account;
+    }
+    
+    public any function createMarketPartnerEnrollment(required struct data){
+        return enrollUser(arguments.data, 'marketPartner');
     }
     
     public any function createRetailEnrollment(required struct data){
-        
-       if(getHibachiScope().getLoggedInFlag()){
-            super.logout({});
-        }
-        
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'customer');
-            loginEnrolledAccount(account)
-        }
-        account.getAccountNumber();
-        return account;
+        return enrollUser(arguments.data, 'customer');
     }
     
-
     public any function createVIPEnrollment(required struct data){
-       
-       if(getHibachiScope().getLoggedInFlag()){
-            super.logout({});
-        }
-        
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            account.setAccountType('VIP');
-            account.setActiveFlag(false);
-            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('3');
-
-            if(!isNull(priceGroup)){
-                account.addPriceGroup(priceGroup);
-            }
-            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
-            if(!isNull(accountStatusType)){
-                account.setAccountStatusType(accountStatusType);
-            }
-            
-            loginEnrolledAccount(account)
-        }
-        return account;
+       return enrollUser(arguments.data, 'VIP');
     }
     
     private any function setupEnrollmentInfo(required any account, required string accountType){
@@ -473,6 +489,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
+        arguments.account = getAccountService().saveAccount(arguments.account);
         return arguments.account;
 
     }
