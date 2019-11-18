@@ -38,6 +38,7 @@ import { MonatMiniCart } from './components/minicart/monat-minicart';
 
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
+import { MonatProductListingController } from './controllers/monat-product-listing';
 
 
 //services
@@ -85,11 +86,12 @@ var monatfrontendmodule = angular
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())
-	
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
-	
+	.controller('productListingController', MonatProductListingController)
+
 	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
