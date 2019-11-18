@@ -1,4 +1,5 @@
 import 'angular-modal-service';
+import 'angularjs-toaster';
 
 import { frontendmodule } from '../../../../org/Hibachi/client/src/frontend/frontend.module';
 
@@ -45,12 +46,13 @@ import { MonatProductListingController } from './controllers/monat-product-listi
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
+import { MonatAlertService } from './services/monatAlertService';
 
 //declare variables out of scope
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -96,6 +98,7 @@ var monatfrontendmodule = angular
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
+	.service('monatAlertService', MonatAlertService)
 
 	.config([
 		'ModalServiceProvider',
