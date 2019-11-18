@@ -2789,6 +2789,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
+					data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'DisableOnRegularOrders':
 					data['DisableOnRegularOrders'] = fieldValue;
@@ -2829,7 +2830,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
+
+		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -2897,6 +2900,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			pageNumber++
 		}
+
 		abort;
 	}
     
@@ -2932,7 +2936,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		try{
 			var userNameQuery = "UPDATE swaccount a 
 								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = temp.userName";
+								 SET a.userName = 
+									CASE 
+										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
+										THEN temp.username
+										ELSE temp.consultant_id
+									END
+									a.modifiedDateTime = NOW()
+									WHERE a.remoteID IS NOT NULL";
 			var accountAuthQuery = "INSERT INTO swaccountauthentication (
 										accountAuthenticationID, 
 										password, 

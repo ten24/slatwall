@@ -1,4 +1,5 @@
 import 'angular-modal-service';
+import 'angularjs-toaster';
 
 import { frontendmodule } from '../../../../org/Hibachi/client/src/frontend/frontend.module';
 
@@ -13,6 +14,7 @@ import { MonatFlexshipShippingMethodModal } from './components/monatflexship-mod
 import { MonatFlexshipChangeOrSkipOrderModal } from './components/monatflexship-modal-changeorskiporder';
 import { MonatFlexshipCancelModal } from './components/monatflexship-modal-cancel';
 import { MonatFlexshipNameModal } from './components/monatflexship-modal-name';
+import { MonatFlexshipAddGiftCardModal } from './components/monatflexship-modal-add-giftcard';
 import { MonatFlexshipCartContainer } from './components/monatflexship-cart-container';
 import { MonatFlexshipConfirm } from './components/monatflexship-confirm';
 import { MonatFlexshipListing } from './components/monatflexshiplisting';
@@ -37,18 +39,20 @@ import { MonatMiniCart } from './components/minicart/monat-minicart';
 
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
+import { MonatProductListingController } from './controllers/monat-product-listing';
 
 
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
+import { MonatAlertService } from './services/monatAlertService';
 
 //declare variables out of scope
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -63,6 +67,7 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipChangeOrSkipOrderModal', MonatFlexshipChangeOrSkipOrderModal.Factory())
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
 	.directive('monatFlexshipNameModal', MonatFlexshipNameModal.Factory())
+	.directive('monatFlexshipAddGiftCardModal', MonatFlexshipAddGiftCardModal.Factory())
 	.directive('monatFlexshipCartContainer', MonatFlexshipCartContainer.Factory())
 	.directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 	.directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
@@ -83,15 +88,17 @@ var monatfrontendmodule = angular
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())
-	
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
-	
+	.controller('productListingController', MonatProductListingController)
+
 	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
+	.service('monatAlertService', MonatAlertService)
 
 	.config([
 		'ModalServiceProvider',

@@ -144,6 +144,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useScrollableFlag" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
+	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
 
 	
@@ -350,12 +351,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arguments.authorizedProperty = convertPropertyIdentifierToAlias(arguments.authorizedProperty);
 		}
 		if(!hasAuthorizedProperty(arguments.authorizedProperty)){
-			arrayAppend(getAuthorizedProperties(),authorizedProperty);
+			arrayAppend(getAuthorizedProperties(),arguments.authorizedProperty);
 		}
 	}
 
 	public boolean function hasAuthorizedProperty(required string authorizedProperty){
-		return arrayFind(getAuthorizedProperties(),authorizedProperty);
+		return arrayFind(getAuthorizedProperties(),arguments.authorizedProperty);
 	}
 
 	public void function setFilterAggregates(required struct aggregations){
@@ -409,10 +410,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getCollectionObjectListingSearchConfig() {
 		
 		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
-			this.setCollectionObjectListingSearchConfig({
-				wildCardPosition : 'both',
-				ignoreSearchFilters : false	
-			}); 
+			this.setCollectionObjectListingSearchConfig({}); 
 		}
 		
 		return variables.collectionObjectListingSearchConfig;
@@ -442,6 +440,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		// TODO: see if we'd like to make it more configurable
 		return [
 					{
+		                title:'Last Month',
+		                code:'lastOneMonth',
+		                criteria:"m:1",
+		            },
+		            {
+		                title:'Last Two Months',
+		                code:'lastTwoMonths',
+		                criteria:"m:2",
+		            },
+					{
 		                title:'Last 3 Months',
 		                code:'lastThreeMonths',
 		                criteria:"m:3",
@@ -468,6 +476,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function updateListingSearchFilters() {
+		if(structKeyExists(variables, 'listingSearchFiltersApplied') && variables.listingSearchFiltersApplied){
+			return;
+		}
+		
 		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
 
 		if(!structKeyExists(listingSearchConfig, 'searchFilterPropertyIdentifier')){
@@ -511,6 +523,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			comparisonOperator = ">=",
 		    filterGroupAlias = "listingSearchFilters"
 		);
+		variables.listingSearchFiltersApplied = true;
 	
 	}
 
@@ -529,9 +542,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, string filterGroupLogicalOperator="AND"){
  		if(!hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
- 			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 			variables.filterGroupAliasMap[arguments.filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
  		}
- 		return variables.filterGroupAliasMap[filterGroupAlias];
+ 		return variables.filterGroupAliasMap[arguments.filterGroupAlias];
  	}
 
  	public boolean function hasFilterGroupByFilterGroupAlias(required string filterGroupAlias){
@@ -715,7 +728,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
 		}
 
-		getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][cacheKey] = arguments.value;
+		getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey] = arguments.value;
 
 	}
 
@@ -761,7 +774,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			filter['ormtype']= ormtype;
 		}
 
-		if(len(aggregate)){
+		if(len(arguments.aggregate)){
 			filter["aggregate"] = aggregate;
 			setHasAggregate(true);
 		}
@@ -848,7 +861,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(find('|', arguments.displayProperty)){
 				column['alias'] = listLast(arguments.displayProperty, '|');
-				arguments.displayProperty = listFirst(arguments.displayProperty, '|');
+				
+			arguments.displayProperty = listFirst(arguments.displayProperty, '|');
 			}
 
 			column["propertyIdentifier"]=arguments.displayProperty;
@@ -2095,11 +2109,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
     public any function getFilterAliases(filterGroup){
         var aliasList = '';
-        for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
-            if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
-                aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
+        for(var fgIndex = 1; fgIndex <= arrayLen(arguments.filterGroup); fgIndex++){
+            if(structKeyExists(arguments.filterGroup[fgIndex], 'filterGroup')){
+                aliasList = listAppend(aliasList,getFilterAliases(arguments.filterGroup[fgIndex].filterGroup));
             }else{
-                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+                aliasList = listAppend(aliasList, listFirst(arguments.filterGroup[fgIndex].propertyIdentifier, '.'));
             }
         }
         return aliasList;
@@ -2350,11 +2364,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
-			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
-			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
-				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			if (left(propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				propertyIdentifier = right(propertyIdentifier, len(propertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
+			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),replace(arguments.propertyIdentifier, '_', '.', 'all'));
+			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
 		}
 		return convertedPropertyIdentifier;
 	}
@@ -2671,15 +2685,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//build the scrollable query.
 							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+	    					scrollableSession.setDefaultReadOnly(true);
+							
 							var cacheMode = createObject("java","org.hibernate.CacheMode");
 	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
 
+							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
+							var tx = scrollableSession.beginTransaction();
+
 	    					var query = scrollableSession.createQuery(HQL)
-	    					.setCacheMode(cacheMode.IGNORE)
-	    					.setFirstResult(getPageRecordsStart()-1)
-	    					.setMaxResults(getPageRecordsShow())
-	    					.setReadOnly(true)
-							.setFetchSize(getPageRecordsShow());
+								.setCacheMode(cacheMode.IGNORE)
+								.setFirstResult(getPageRecordsStart()-1)
+								.setMaxResults(getPageRecordsShow())
+								.setFetchSize(getPageRecordsShow());
 
 							//Add all of the params.
 							for (var param in HQLParams){
@@ -2700,9 +2718,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-							}catch(var ormError){
+							}catch(any ormError){
 								throw(ormError);
 							}finally{
+								tx.commit();//not committing anything really	
 								if (scrollableSession.isOpen()){
 									scrollableSession.close();
 								}
@@ -3100,7 +3119,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public string function getPrimaryIDList(){
 		var primaryIDList = "";
-		var primaryIDRecords = getPrimaryIDs(this.getRecordsCount());
+		var primaryIDRecords = getPrimaryIDs();
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		for(var primaryIDRecord in primaryIDRecords){
 			primaryIDList = listAppend(primaryIDList,primaryIDRecord[primaryIDName]);
@@ -3189,25 +3208,29 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(getHibachiScope().getService('hibachiUtilityService').isStringTemplate(arguments.filterValue)){
 			return  getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(arguments.filterValue, arguments.object);
 		}
-		return filterValue;
+		return arguments.filterValue;
 	}
 	
-	private struct function makeDateRangeFromCriteriaAndMeasureType(required any criteria, required any measureType){
+	private struct function makeDateRangeFromCriteriaAndMeasureType(required any criteria, required any measureType, any measureCriteria){
 		var rangeStruct = StructNew();
-		
+	
+		if(arguments.measureCriteria == 'exactDate'){
+			arguments.criteria = -arguments.criteria;
+		}
+	
 		switch (arguments.measureType) {
 			case 'd':
-				var currentdatetime = DateAdd('d', -arguments.criteria, now());
+				var currentdatetime = DateAdd('d', arguments.criteria, now());
 				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
 				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
 				break;
 			case 'm':
-				var currentdatetime = DateAdd('m', -arguments.criteria, now());
+				var currentdatetime = DateAdd('m', arguments.criteria, now());
 				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
 				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
 				break;
 			case 'y':
-				var currentdatetime = DateAdd('yyyy', -arguments.criteria, now());
+				var currentdatetime = DateAdd('yyyy', arguments.criteria, now());
 				rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
 				rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
 				break;
@@ -3250,9 +3273,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var dateRangePredicate = "";
 		var range = StructNew();
 		
-		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
+		if( structKeyExists(arguments.filter, 'measureCriteria') && 
+			structKeyExists(arguments.filter, 'measureType') && 
+			(arguments.filter.measureCriteria == 'exactDate' || arguments.filter.measureCriteria == 'exactDateFuture')
+		) {
 			
-			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType);
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
 		
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
@@ -3397,15 +3423,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var predicate = '';
-		if(!structKeyExists(filter,"value")){
-			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
-				filter.value = filter.displayValue;
+		if(!structKeyExists(arguments.filter,"value")){
+			if(structKeyExists(arguments.filter,'ormtype') && arguments.filter.ormtype == 'string' && structKeyExists(arguments.filter,'displayValue')){
+				arguments.filter.value = arguments.filter.displayValue;
 			} else {
-				filter.value = "";
+				arguments.filter.value = "";
 			}
 		}
 		//Session Filters
-		filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), filter.value);
+		arguments.filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), arguments.filter.value);
 
 			//verify we are handling a range value
 		if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)) {
@@ -3414,13 +3440,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 		} else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not') {
 			
-			predicate = filter.value;
+			predicate = arguments.filter.value;
 			
 		} else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in') {
 			
-			if(len(filter.value)) {
+			if(len(arguments.filter.value)) {
 				var paramList = '';
-				var values = listToArray(filter.value,this.getInlistDelimiter());
+				var values = listToArray(arguments.filter.value,this.getInlistDelimiter());
 				for(var value in values){
 					var paramID = getParamID();
 					addHQLParam(paramID, value, arguments.filter['ormtype']);
@@ -3435,20 +3461,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var paramID = getParamID();
 
 			// Return empty string if comparison value is not set
-			if(!len(filter.value)){
+			if(!len(arguments.filter.value)){
 				return "";
 			}
 
-			if(structKeyExists(filter,'pattern')){
-				switch(filter.pattern){
+			if(structKeyExists(arguments.filter,'pattern')){
+				switch(arguments.filter.pattern){
 					case '%w%':
-						filter.value = '%#filter.value#%';
+						arguments.filter.value = '%#filter.value#%';
 						break;
 					case 'w%':
-						filter.value = '#filter.value#%';
+						arguments.filter.value = '#filter.value#%';
 						break;
 					case '%w':
-						filter.value = '%#filter.value#';
+						arguments.filter.value = '%#filter.value#';
 						break;
 				}
 			}
@@ -3510,12 +3536,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				&& !getprimaryIDFound()
 			)
 		){
+			
 			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
  		}else{
+ 			
  			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true,false,false,false,true);
 		}
+
 
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
@@ -3528,6 +3557,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& !getprimaryIDFound()
 				)
 			){
+				
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
 				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier,'aggregateColumn')#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
@@ -3861,15 +3891,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public string function getColumnAlias(required struct column){
 
-		if(structKeyExists(column,'attributeID')){
-			return listLast(column.propertyIdentifier,'.');
+		if(structKeyExists(arguments.column,'attributeID')){
+			return listLast(arguments.column.propertyIdentifier,'.');
 		}else{
 			if(
-				structKeyExists(column,'aggregate')
-				&& structKeyExists(column.aggregate,'aggregateFunction')
-				&& len(column.aggregate.aggregateFunction)
+				structKeyExists(arguments.column,'aggregate')
+				&& structKeyExists(arguments.column.aggregate,'aggregateFunction')
+				&& len(arguments.column.aggregate.aggregateFunction)
 			){
-				return column.aggregate.aggregateAlias;
+				return arguments.column.aggregate.aggregateAlias;
 			}else{
 
 
@@ -4260,14 +4290,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var currentFilter = { "comparisonOperator" = "like"}; //
 				switch(searchConfig.wildCardPosition){
 					case "left":
-							currentFilter['value']="%#keyword#";
+							currentFilter['value'] = "%#keyword#";
 						break;
 					case "right":
-							currentFilter['value']="#keyword#%";
+							currentFilter['value'] = "#keyword#%";
+						break;
+					case "exact":
+							currentFilter['value'] = keyword;
+							currentFilter['comparisonOperator'] = '=';
 						break;
 					case "both":
 					default:
-							currentFilter['value']="%#keyword#%";
+							currentFilter['value'] = "%#keyword#%";
 						break;
 				}
 				
