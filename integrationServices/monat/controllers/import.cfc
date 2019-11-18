@@ -80,6 +80,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+				"EntryDate": {
+					"StartDate": "2019-09-01T00:00:00.000",
+					"EndDate": "2019-09-30T00:00:00.000"
+				}
 			}
 		};
 	    /*
@@ -90,13 +96,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 			}
 			
-			
-			"Filters": {
-				"OrderTypeCode": {
-					"StartDate": "2017-09-30T00:00:00.000",
-					"EndDate": "2019-09-30T00:00:00.000"
-				}
-			}
 	    */
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
