@@ -19,7 +19,7 @@ class SWFWishlistController {
     public showTemplateList:boolean = false;
     public showWishlistModal:boolean;
 	public close; // injected from angularModalService
-    
+    public productName;
     
     // @ngInject
     constructor(
@@ -163,6 +163,7 @@ class SWFWishlist  {
         pageRecordsShow:"@?",
         currentPage:"@?",
         sku:"<?",
+        productName:"<?",
         showWishlistModal:"@?",
         close:'=' //injected by angularModalService;
     };

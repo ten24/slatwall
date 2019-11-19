@@ -12,7 +12,7 @@
     <!-- Product Card -->
     
         <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
- 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
+ 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID,monatProductCard.product.productName)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
