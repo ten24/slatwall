@@ -4987,13 +4987,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 
 	// ===================== START: Delete Overrides ==========================
-
-	public any function deleteOrderTemplate( required any orderTemplate ) {
-		
-		if(arguments.orderTemplate.getTypeCode() eq 'ottWishList') {
-			return delete( arguments.orderTemplate );
-		}
-	}
 	
 	public any function deleteOrder( required any order ) {
 
