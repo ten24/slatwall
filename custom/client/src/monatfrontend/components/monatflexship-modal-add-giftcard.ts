@@ -1,50 +1,67 @@
 
-class MonatFlexshipNameModalController {
+class MonatFlexshipAddGiftCardModalController {
 	public orderTemplate; 
+	public giftCards;
+	
 	public close; // injected from angularModalService
 	public loading: boolean = false;
 
-	public orderTemplateName;
+	public selectedGiftCard;
+	public amountToApply;
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
-    }
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) { }
     
     public $onInit = () => {
+    	this.fetchGiftCrds();
     	this.makeTranslations();
-    	this.orderTemplateName = this.orderTemplate.orderTemplateName;
     };
+    
+    private fetchGiftCrds() {
+    	this.orderTemplateService.getAccountGiftCards()
+    	.then( (giftCards) => {
+    		this.giftCards = giftCards;
+    	})
+    	.catch( (error) => {
+    		console.error(error);	
+    		this.monatAlertService.showErrorsFromResponse(error);
+    	});
+    }
     
     public translations = {};
     private makeTranslations = () => {
     	//TODO make translations for success/failure alert messages
-    	 this.translations['flexshipName'] = this.rbkeyService.rbKey('frontend.nameFlexshipModal.flexshipName');
+    	 this.translations['giftCards'] = this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.giftCards');
+    	 this.translations['amountToApply'] = this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.amountToApply');
     }
     
-    public saveFlexshipName() {
+    public setSelectedGiftCard( giftCard ) {
+    	this.selectedGiftCard = giftCard;
+    }
+    
+    public applyGiftCard() {
 
     	//TODO frontend validation
 		this.loading = true;
 		
     	// make api request
-        this.orderTemplateService.editOrderTemplate(
+        this.orderTemplateService.applyGiftCardToOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
-        	this.orderTemplateName, 
-	    ).then( (data) => {
+        	this.selectedGiftCard.giftCardID,
+        	this.amountToApply
+	    ).then(data => {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
-                this.monatAlertService.success("Your flexship's name has been updated successfully");
+                this.monatAlertService.success("GiftCard has been successfully added to the flexship");
                 this.closeModal();
         	} else {
         		throw(data);
         	}
-        })
-        .catch( (error) => {
+        }).catch(error => {
             console.error(error);
             this.monatAlertService.showErrorsFromResponse(error);
-        })
-        .finally( () => {
+        }).finally(() => {
         	this.loading = false;
         });
     }
@@ -54,7 +71,7 @@ class MonatFlexshipNameModalController {
     };
 }
 
-class MonatFlexshipNameModal {
+class MonatFlexshipAddGiftCardModal {
 
 	public restrict:string;
 	public templateUrl:string;
@@ -64,8 +81,8 @@ class MonatFlexshipNameModal {
 	    orderTemplate:'<',
 	    close:'=' //injected by angularModalService
 	};
-	public controller=MonatFlexshipNameModalController;
-	public controllerAs="monatFlexshipNameModal";
+	public controller=MonatFlexshipAddGiftCardModalController;
+	public controllerAs="monatFlexshipAddGiftCardModal";
 
 	public static Factory(){
         var directive:any = (
@@ -73,7 +90,7 @@ class MonatFlexshipNameModal {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipNameModal(
+        ) => new MonatFlexshipAddGiftCardModal(
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
@@ -94,7 +111,7 @@ class MonatFlexshipNameModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-name.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-add-giftcard.html";
 		this.restrict = "E";
 	}
 
@@ -105,6 +122,6 @@ class MonatFlexshipNameModal {
 }
 
 export {
-	MonatFlexshipNameModal
+	MonatFlexshipAddGiftCardModal
 };
 

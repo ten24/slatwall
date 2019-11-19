@@ -48,9 +48,6 @@ class MonatEnrollmentController {
 			}else{
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
-				this.publicService.doAction('logout').then(result=>{
-					this.observerService.notify('logout')
-				})
 			}
 		})
 	}
@@ -153,8 +150,8 @@ class MonatEnrollmentController {
 		cart.orderItems.forEach( (item, index) => {
 			let productType = item.sku.product.productType.productTypeName;
 			
-			// If the product type is Starter Kit, we don't want to add it to our new cart.
-			if ( 'Starter Kit' === productType ) {
+			// If the product type is Starter Kit or Product Pack, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				return;
 			}
 			

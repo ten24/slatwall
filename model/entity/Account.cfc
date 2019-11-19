@@ -188,6 +188,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
  property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
+	 
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -1233,6 +1234,34 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.accountNumber;
 	}
 
+	public boolean function userCanCreateFlexship() {
+	
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+		var enrollmentDate = this.getEnrollmentDate();
+		
+		if ( !isNull( enrollmentDate ) ) {
+			// Add the days after enrollment a user can create flexship to the enrollment date.
+			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			
+			// If today is a greater date than the date they can create a flexship.
+			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+		}
+		
+		// If the user doesn't have an enrollment date, return true.
+		return true;
+	}
 
 	//custom validation methods
 		
@@ -1241,5 +1270,11 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
 		}
 		return true;
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	//CUSTOM FUNCTIONS END
 }

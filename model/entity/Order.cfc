@@ -157,6 +157,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="promotionCodeList" persistent="false";
 	property name="qualifiedPromotionRewards" persistent="false";
 	property name="qualifiedRewardSkus" persistent="false";
+	property name="qualifiedRewardSkuIDs" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
@@ -261,12 +262,12 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-    
+    property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
-    
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-    
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+	
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
@@ -1500,6 +1501,19 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return variables.qualifiedRewardSkus;
 	}
+	
+	public string function getQualifiedPromotionRewardSkuIDs( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkuIDs') || arguments.refresh ){
+			variables.qualifiedRewardSkuIDs = getService('PromotionService').getQualifiedPromotionRewardSkuIDsForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkuIDs;
+	}
+	
+	public string function getQualifiedFreePromotionRewardSkuIDs( numeric pageRecordsShow=25 ){
+		
+		return getService('PromotionService').getQualifiedFreePromotionRewardSkuIDs( order=this, pageRecordsShow=arguments.pageRecordsShow )?:"";
+		
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -2044,11 +2058,10 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public struct function getListingSearchConfig() {
-	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	   	param name = "arguments.selectedSearchFilterCode" default="lastTwoMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
-	
-	
 	
 	public boolean function hasMPRenewalFee() {
 	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
