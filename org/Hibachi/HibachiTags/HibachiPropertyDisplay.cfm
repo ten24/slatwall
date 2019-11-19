@@ -210,7 +210,7 @@
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
 			</cfif>
-
+			
 			<!--- Setup Translate attributes for persistent entities with string properties --->
 			<cfif 
 				attributes.object.isPersistent() 
