@@ -53,7 +53,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 
     public any function getAccount(){
         if(!structKeyExists(variables, 'account')){
-            if(!isNull(getOrder().getAccount())){
+            if(!isNull(getOrder()) && !isNull(getOrder().getAccount())){
                 variables.account = this.getOrder().getAccount();
             }else if(!isNull(getHibachiScope().getAccount())){
                 variables.account = getHibachiScope().getAccount();
