@@ -674,7 +674,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
-        var settingService = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
         
         if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
