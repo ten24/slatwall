@@ -181,18 +181,19 @@ property name="personalVolume" ormtype="big_decimal";
 
 
 	
-    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
-    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
-    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
-    property name="calculatedExtendedRetailCommission" ormtype="big_decimal";
-    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal";
-    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal";
-    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailCommission" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="returnsReceived" ormtype="string";
     
    
  property name="lineNumber" ormtype="string";

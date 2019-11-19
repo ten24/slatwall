@@ -45,7 +45,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getAccountData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -75,14 +75,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getOrderData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+				"EntryDate": {
+					"StartDate": "2019-09-01T00:00:00.000",
+					"EndDate": "2019-09-30T00:00:00.000"
+				}
 			}
 		};
+		
 	    /*
 	    "Filters": {
 				"EntryDate": {
@@ -119,7 +126,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -2142,8 +2149,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		}
                     		
                     		// Create an orderitem for the order if its a kit parent item OR if its not part of a kit.
-    			            if ((!isNull(sku) && isKit) || !isNull(sku) && isNull(detail['KitFlagCode'])){
-    			            	
+    			            
+    			            //Use this is only importing parent items (component as sku)
+    			            //if ((!isNull(sku) && isKit) || !isNull(sku) && isNull(detail['KitFlagCode'])){
+    			            
+    			            //Use this if importing all orderItems
+    			            //if ((!isNull(sku)){
+    			            
+    			            if (!isNull(sku)){	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
     			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
     			                
@@ -2165,7 +2178,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        		orderItem.setOrderItemType(oitReturn);
         			        		orderItem.setOrderReturn(orderReturn);
         			        		orderItem.setReturnsReceived(detail['ReturnsReceived']);
-        			        		//orderItem.setReturnsRestocked();
         			        	}else { 
         			        		orderItem.setOrderItemType(oitSale);//*
         			        	}
@@ -2205,7 +2217,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
         			            }*/
         			            //returnLineID, must be imported in post processing. ***Note
-    			            } else if(!isNull(sku) && detail['KitFlagCode'] == "C") {
+    			            } //else  use this as an else if we are not importing kit components as orderItems.
+    			            
+    			            if(!isNull(sku) && structKeyExists(detail, 'KitFlagCode') && detail['KitFlagCode'] == "C") {
     			            	// Is a component, need to create a orderItemSkuBundle
     			            	var componentKitName = replace(detail['KitFlagName'], " Component", "");
     			            	if (structKeyExists(parentKits, componentKitName)){
@@ -2231,7 +2245,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                			}
     			            	}
     			            }
-                    	}
+                    	}//end detail loop
     			    }
                     
                     // Create an account email address for each email.

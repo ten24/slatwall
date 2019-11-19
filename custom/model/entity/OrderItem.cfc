@@ -52,6 +52,7 @@ component {
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="returnsReceived" ormtype="string";
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){

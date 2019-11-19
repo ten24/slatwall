@@ -102,7 +102,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
-property name="accountRemoteID" ormtype="string"; //CUSTOM PROPERTIES END
+property name="moMoneyBalance" persistent="false";
+	property name="moMoneyWallet" fieldtype="boolean" persistent="false";
+    
+   //CUSTOM PROPERTIES END
 	public string function getPaymentMethodType() {
 		if(isNull(getPaymentMethod())){
 			return "";
@@ -494,6 +497,47 @@ public array function getPaymentMethodOptions() {
 			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
 		}
 		return variables.paymentMethodOptions;
+	}
+	
+	public any function getMoMoneyWallet()
+	{
+	    if(!StructKeyExists(variables,"moMoneyWallet"))
+	    {
+	    	
+	    	if(!isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getPaymentIntegration()) && getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'hyperwallet')
+	        {
+	            variables.moMoneyWallet =  true;
+	        }
+	        else{
+	        	variables.moMoneyWallet =  false;
+	        }
+	    }
+	    
+	    return variables.moMoneyWallet;
+	}
+	
+	public any function getMoMoneyBalance()
+	{
+		//always use getMoMoneyWallet check before getting the balance
+	    if(!StructKeyExists(variables,"moMoneyBalance"))
+	    {
+	    	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+	    	requestBean.setProviderToken(getProviderToken());
+			requestBean.setTransactionType("balance");
+			
+	        var responseBean = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet').getIntegrationCFC("Payment").processExternal(requestBean);
+	        if(!responseBean.hasErrors())
+	        {
+	        	variables.moMoneyBalance = responseBean.getAmountAuthorized();
+	        }
+	        else{
+	        	//addErrors(responseBean.getErrors());
+	        	getHibachiScope().addErrors(responseBean.getErrors());
+	        	variables.moMoneyBalance = 0;
+	        }
+	    }
+	    
+	    return variables.moMoneyBalance;
 	}
 //CUSTOM FUNCTIONS END
 }

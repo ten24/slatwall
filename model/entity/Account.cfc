@@ -160,7 +160,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
@@ -1233,6 +1234,34 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.accountNumber;
 	}
 
+	public boolean function userCanCreateFlexship() {
+	
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+		var enrollmentDate = this.getEnrollmentDate();
+		
+		if ( !isNull( enrollmentDate ) ) {
+			// Add the days after enrollment a user can create flexship to the enrollment date.
+			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			
+			// If today is a greater date than the date they can create a flexship.
+			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+		}
+		
+		// If the user doesn't have an enrollment date, return true.
+		return true;
+	}
 
 	//custom validation methods
 		
