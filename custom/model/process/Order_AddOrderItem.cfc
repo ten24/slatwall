@@ -52,15 +52,16 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     // =================== START: Lazy Object Helpers ======================
 
     public any function getAccount(){
-        if(!structKeyExists(variables, "account")){
-            if(!isNull(this.getOrder()) && !isNull(this.getOrder().getAccount())){
+        if(!structKeyExists(variables, 'account')){
+            if(!isNull(getOrder()) && !isNull(getOrder().getAccount())){
                 variables.account = this.getOrder().getAccount();
-            }else{
+            }else if(!isNull(getHibachiScope().getAccount())){
                 variables.account = getHibachiScope().getAccount();
             }
         }
-        
-        return variables.account;
+        if(structKeyExists(variables,'account')){
+            return variables.account;
+        }
     }
     
     // =================== END: Lazy Object Helpers ========================
