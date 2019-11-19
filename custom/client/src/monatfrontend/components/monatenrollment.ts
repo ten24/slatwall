@@ -150,8 +150,8 @@ class MonatEnrollmentController {
 		cart.orderItems.forEach( (item, index) => {
 			let productType = item.sku.product.productType.productTypeName;
 			
-			// If the product type is Starter Kit, we don't want to add it to our new cart.
-			if ( 'Starter Kit' === productType ) {
+			// If the product type is Starter Kit or Product Pack, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				return;
 			}
 			

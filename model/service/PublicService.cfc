@@ -197,7 +197,7 @@ component  accessors="true" output="false"
      * @example POST to /api/scope/logout with request_token and deviceID in headers
      * @ProcessMethod Account_Logout
      */
-    public any function logout( required struct data ){ 
+    public any function logout( struct data  = {} ){ 
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
         getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
@@ -2019,15 +2019,23 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
         getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+        
+        var processObject = orderTemplate.getProcessObjects()['applyGiftCard'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+        
+        if( orderTemplate.hasErrors() ){
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }    
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+        if( !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("applyGiftCard");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        	setOrderTemplateAjaxResponse(argumentCollection = arguments);
         }
 	}
 	

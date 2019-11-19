@@ -10,7 +10,7 @@ class MonatFlexshipAddGiftCardModalController {
 	public amountToApply;
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService) { }
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) { }
     
     public $onInit = () => {
     	this.fetchGiftCrds();
@@ -24,6 +24,7 @@ class MonatFlexshipAddGiftCardModalController {
     	})
     	.catch( (error) => {
     		console.error(error);	
+    		this.monatAlertService.showErrorsFromResponse(error);
     	});
     }
     
@@ -52,20 +53,21 @@ class MonatFlexshipAddGiftCardModalController {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                this.monatAlertService.success("GiftCard has been successfully added to the flexship");
                 this.closeModal();
         	} else {
         		throw(data);
         	}
         }).catch(error => {
             console.error(error);
-            // TODO: show alert / handle error
+            this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;
         });
     }
     
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 }
 
