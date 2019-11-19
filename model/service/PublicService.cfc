@@ -197,7 +197,7 @@ component  accessors="true" output="false"
      * @example POST to /api/scope/logout with request_token and deviceID in headers
      * @ProcessMethod Account_Logout
      */
-    public any function logout( required struct data ){ 
+    public any function logout( struct data  = {} ){ 
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
         getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
