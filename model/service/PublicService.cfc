@@ -197,7 +197,7 @@ component  accessors="true" output="false"
      * @example POST to /api/scope/logout with request_token and deviceID in headers
      * @ProcessMethod Account_Logout
      */
-    public any function logout( required struct data ){ 
+    public any function logout( struct data  = {} ){ 
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
         getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
@@ -1749,13 +1749,14 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
 
-		public void function getWishlistItems(required any data){
+	public void function getWishlistItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default=""; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		arguments.data['ajaxResponse']['orderTotal'] = 0;
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
 		
@@ -1790,8 +1791,12 @@ component  accessors="true" output="false"
   			      "total"                       :       wishListItem.getTotal()?:""
 
 			    };
+                
+                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 
-			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
+                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
+                }
 		    }
 		}catch (e){
             throw(e)
@@ -2014,15 +2019,23 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
         getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+        
+        var processObject = orderTemplate.getProcessObjects()['applyGiftCard'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+        
+        if( orderTemplate.hasErrors() ){
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }    
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+        if( !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("applyGiftCard");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        	setOrderTemplateAjaxResponse(argumentCollection = arguments);
         }
 	}
 	
@@ -2292,8 +2305,10 @@ component  accessors="true" output="false"
     
 
     public any function getBaseProductCollectionList(required any data){
-        param name="arguments.data.currencyCode" default=""; 
-        param name="arguments.data.priceGroupCode" default="";
+        var account = getHibachiScope().getAccount();
+        var holdingPriceGroups = account.getPriceGroups();
+        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
         
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -2309,9 +2324,9 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
 
-        return productCollectionList
+        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
     }   
 }
