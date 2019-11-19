@@ -33,12 +33,12 @@
 						</div>
 					</li>
 					<div class="text-center">
-						<a ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
+						<button ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
 							Save Changes
-						</a>
-						<a ng-if="createWishList.orderTemplateID" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
+						</button>
+						<button ng-if="createWishList.orderTemplateID" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
 							Save Changes
-						</a>
+						</button>
 					</div>
 				</ul>
 			</form>

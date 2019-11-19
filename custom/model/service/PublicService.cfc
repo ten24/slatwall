@@ -58,9 +58,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("createWishlist");
         var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-    
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+
         processObject.setOrderTemplateName(arguments.data.orderTemplateName);
         processObject.setSiteID(arguments.data.siteID);
+        processObject.setCurrencyCode(currencyCode);
         processObject.setOrderTemplateTypeID(wishlistTypeID);
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
