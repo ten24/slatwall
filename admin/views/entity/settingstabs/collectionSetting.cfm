@@ -51,6 +51,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+	    <swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
 	    <swa:SlatwallSetting settingName="globalCollectionKeywordWildcardConfig" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
