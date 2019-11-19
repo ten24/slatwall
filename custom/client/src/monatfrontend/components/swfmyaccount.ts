@@ -26,7 +26,7 @@ class swfAccountController {
     public isNewAddress:boolean;
     public newProductReview:any = {};
     public stars:Array<any> = ['','','','',''];
-
+    public moMoneyBalance:number;
 
     public totalPages:Array<number>;
     public pageTracker:number = 1;
@@ -76,12 +76,20 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' ){
-                this.getOrdersOnAccount(1);
-                this.getMostRecentFlexship();
-            }else if(window.location.pathname == '/my-account/order-history/'){
-                this.getOrdersOnAccount();
-            };
+            }
+            
+            switch(window.location.pathname){
+                case '/my-account/':
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
+                    break;
+                case '/my-account/order-history/':
+                    this.getOrdersOnAccount();
+                    break;
+                case '/my-account/my-details/':
+                    this.getMoMoneyBalance();
+                    break;
+            }
             
             this.loading = false;
         });
@@ -259,6 +267,12 @@ class swfAccountController {
     public closeModals = () =>{
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
+    }
+    
+    public getMoMoneyBalance = () => {
+        this.publicService.doAction('getMoMoneyBalance').then(res => {
+            this.moMoneyBalance = res.moMoneyBalance;
+        });
     }
 }
 

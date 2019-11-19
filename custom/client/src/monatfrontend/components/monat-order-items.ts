@@ -25,8 +25,8 @@ class MonatOrderItemsController {
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
-
-			if ( 'Starter Kit' === productType ) {
+			
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				this.starterKits.push( item );
 			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;

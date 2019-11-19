@@ -264,9 +264,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	
-		// Save the session
-		getHibachiDAO().save( getHibachiScope().getSession() );
+		transaction{
+			// Save the session
+			getHibachiDAO().save( getHibachiScope().getSession() );
 		
+		}
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
@@ -299,7 +301,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#globalExtendedSessionAutoLogoutInDays#");
 			}
 			
-			getHibachiScope().flushORMSession();
+			getHibachiDAO().flushORMSession();
 			
 		}
 	}

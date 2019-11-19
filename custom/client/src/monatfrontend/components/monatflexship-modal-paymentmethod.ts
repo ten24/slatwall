@@ -19,7 +19,7 @@ class MonatFlexshipPaymentMethodModalController {
 	public newAccountPaymentMethod = {};
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService) {
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -106,43 +106,41 @@ class MonatFlexshipPaymentMethodModalController {
     	payload = this.orderTemplateService.getFlattenObject(payload);
 
     	// make api request
-        this.orderTemplateService.updateBilling(payload).then(
-            (response) => {
-               
-               if(response.orderTemplate) {
-	                this.orderTemplate = response.orderTemplate;
-	
-	                if(response.newAccountAddress) {
-	            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-	            		this.accountAddresses.push(response.newAccountAddress);
-	                }
-	                
-	                if(response.newAccountPaymentMethod) {
-	            		this.observerService.notify("newAccountPaymentMethodAdded",response.newAccountPaymentMethod);
-	            		this.accountPaymentMethods.push(response.newAccountPaymentMethod);
-	                }
-	                
-	                this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
-	                this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
-	                
-	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-	                this.closeModal();
-               } else {
-               		//TODO handle errors
-	               	console.error(response); 
-               }
-                
-                // TODO: show alerts
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        );
+        this.orderTemplateService.updateBilling(payload)
+        .then( (response) => {
+        	
+			if(response.orderTemplate) {
+			    this.orderTemplate = response.orderTemplate;
+			
+			    if(response.newAccountAddress) {
+					this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+					this.accountAddresses.push(response.newAccountAddress);
+			    }
+			    
+			    if(response.newAccountPaymentMethod) {
+					this.observerService.notify("newAccountPaymentMethodAdded",response.newAccountPaymentMethod);
+					this.accountPaymentMethods.push(response.newAccountPaymentMethod);
+			    }
+			    
+			    this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
+			    this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
+			    
+			    this.monatAlertService.success("Your flexship has been updated successfully");
+			
+			    this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+			    this.closeModal();
+			} else {
+			   	throw(response); 
+			}
+        })
+        .catch( (error) => {
+            console.error (error);
+	        this.monatAlertService.showErrorsFromResponse(error);
+        });
     }
     
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 
 }

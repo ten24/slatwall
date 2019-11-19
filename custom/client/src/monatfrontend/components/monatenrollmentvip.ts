@@ -17,11 +17,12 @@ class VIPController {
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
 	public currencyCode:any;
-	public flexshipItemList:any;
+	public flexshipOrderTemplate:any;
 	public holdingShippingAddressID:string;
 	public holdingShippingMethodID:string;
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
+	public flexshipFrequencyHasErrors: boolean = false;
 	public isNotSafariPrivate:boolean;
 	
 	// @ngInject
@@ -56,7 +57,7 @@ class VIPController {
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
-    	this.observerService.attach(this.getFlexshipItems,"lastStep");
+    	this.observerService.attach(this.getFlexshipDetails,"lastStep");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
 		this.localStorageCheck(); 
@@ -188,30 +189,38 @@ class VIPController {
         });
     }
     
-    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth, frequencyTermName) => {
-
-        let newTerm = JSON.parse(frequencyTerm);
+    public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
+		
+		if (
+			'undefined' === typeof frequencyTerm
+			|| 'undefined' === typeof dayOfMonth
+		) {
+			this.flexshipFrequencyHasErrors = true;
+			return false;
+		} else {
+			this.flexshipFrequencyHasErrors = false;
+		}
+		
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
-		this.flexshipFrequencyName = newTerm.name;
+		this.flexshipFrequencyName = frequencyTerm.name;
 		if(this.isNotSafariPrivate){
 			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-			localStorage.setItem('flexshipFrequency', newTerm.name);	
+			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
 		}
     
         const flexshipID = this.flexshipID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, newTerm.value, dayOfMonth).then(result => {
-            this.loading = false;
+        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
+            this.getFlexshipDetails();
         });
     }
     
-    public getFlexshipItems = () =>{
+    public getFlexshipDetails = () => {
     	this.loading = true;
-        const flexshipID = this.flexshipID;
-        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
-        	this.flexshipItemList = result.orderTemplateItems;
+    	this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
+        	this.flexshipOrderTemplate = result;
 			this.observerService.notify('onNext');
-            this.loading = false;
+        	this.loading = false;
         });
     }
     

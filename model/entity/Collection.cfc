@@ -144,6 +144,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useScrollableFlag" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
+	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
 
 	
@@ -439,6 +440,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		// TODO: see if we'd like to make it more configurable
 		return [
 					{
+		                title:'Last Month',
+		                code:'lastOneMonth',
+		                criteria:"m:1",
+		            },
+		            {
+		                title:'Last Two Months',
+		                code:'lastTwoMonths',
+		                criteria:"m:2",
+		            },
+					{
 		                title:'Last 3 Months',
 		                code:'lastThreeMonths',
 		                criteria:"m:3",
@@ -465,6 +476,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function updateListingSearchFilters() {
+		if(structKeyExists(variables, 'listingSearchFiltersApplied') && variables.listingSearchFiltersApplied){
+			return;
+		}
+		
 		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
 
 		if(!structKeyExists(listingSearchConfig, 'searchFilterPropertyIdentifier')){
@@ -508,6 +523,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			comparisonOperator = ">=",
 		    filterGroupAlias = "listingSearchFilters"
 		);
+		variables.listingSearchFiltersApplied = true;
 	
 	}
 
@@ -2348,11 +2364,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
-			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
-			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
-				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			if (left(propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				propertyIdentifier = right(propertyIdentifier, len(propertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
+			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),replace(arguments.propertyIdentifier, '_', '.', 'all'));
+			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
 		}
 		return convertedPropertyIdentifier;
 	}
@@ -2669,15 +2685,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//build the scrollable query.
 							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+	    					scrollableSession.setDefaultReadOnly(true);
+							
 							var cacheMode = createObject("java","org.hibernate.CacheMode");
 	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
 
+							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
+							var tx = scrollableSession.beginTransaction();
+
 	    					var query = scrollableSession.createQuery(HQL)
-	    					.setCacheMode(cacheMode.IGNORE)
-	    					.setFirstResult(getPageRecordsStart()-1)
-	    					.setMaxResults(getPageRecordsShow())
-	    					.setReadOnly(true)
-							.setFetchSize(getPageRecordsShow());
+								.setCacheMode(cacheMode.IGNORE)
+								.setFirstResult(getPageRecordsStart()-1)
+								.setMaxResults(getPageRecordsShow())
+								.setFetchSize(getPageRecordsShow());
 
 							//Add all of the params.
 							for (var param in HQLParams){
@@ -2698,9 +2718,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-							}catch(var ormError){
+							}catch(any ormError){
 								throw(ormError);
 							}finally{
+								tx.commit();//not committing anything really	
 								if (scrollableSession.isOpen()){
 									scrollableSession.close();
 								}
@@ -4269,14 +4290,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var currentFilter = { "comparisonOperator" = "like"}; //
 				switch(searchConfig.wildCardPosition){
 					case "left":
-							currentFilter['value']="%#keyword#";
+							currentFilter['value'] = "%#keyword#";
 						break;
 					case "right":
-							currentFilter['value']="#keyword#%";
+							currentFilter['value'] = "#keyword#%";
+						break;
+					case "exact":
+							currentFilter['value'] = keyword;
+							currentFilter['comparisonOperator'] = '=';
 						break;
 					case "both":
 					default:
-							currentFilter['value']="%#keyword#%";
+							currentFilter['value'] = "%#keyword#%";
 						break;
 				}
 				

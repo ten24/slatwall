@@ -56,12 +56,13 @@ component {
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-    
+
+    property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
-    
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-    
+	  property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -231,8 +232,8 @@ component {
 	}
 	
 	public struct function getListingSearchConfig() {
-	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to show only last 3 months of record by default
-	    param name = "arguments.wildCardPosition" default = "right";
+	   	param name = "arguments.selectedSearchFilterCode" default="lastTwoMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	

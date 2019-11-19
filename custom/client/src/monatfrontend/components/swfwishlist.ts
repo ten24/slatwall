@@ -17,8 +17,9 @@ class SWFWishlistController {
     public sku:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
+    public showWishlistModal:boolean;
 	public close; // injected from angularModalService
-
+    public productName;
     
     // @ngInject
     constructor(
@@ -34,7 +35,6 @@ class SWFWishlistController {
         if(!this.currentPage){
             this.currentPage = 1;
         }
-        console.log(this.sku)
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
@@ -163,6 +163,8 @@ class SWFWishlist  {
         pageRecordsShow:"@?",
         currentPage:"@?",
         sku:"<?",
+        productName:"<?",
+        showWishlistModal:"@?",
         close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;
@@ -182,7 +184,7 @@ class SWFWishlist  {
     // @ngInject
 	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-		this.restrict = "E";
+		this.restrict = "AE";
 	}
     /**
         * Sets the context of this form

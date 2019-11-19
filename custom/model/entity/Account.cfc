@@ -7,7 +7,8 @@ component {
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
@@ -92,7 +93,7 @@ component {
 	}
 	
 	public struct function getListingSearchConfig() {
-	    param name = "arguments.wildCardPosition" default = "right";
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
