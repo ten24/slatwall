@@ -3,7 +3,7 @@ class MonatProductListingController {
     public accountData:any;
     public cmsContentID:string = '';  
     public argumentsObject:any = {};
-    public productList:any;
+    public productList:Array<any> = [];
     public cmsCategoryFilterFlag:boolean;
     public contentFilterFlag:boolean;
     public cmsContentFilterFlag:boolean;
@@ -37,11 +37,11 @@ class MonatProductListingController {
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
         
         this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
-            this.productList = result.productList;
+            Object.keys(result.productList).forEach(obb => this.productList.push(result.productList[obb]));
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
             this.loading = false;
-        })
+        });
     }
 }
 /*********************
