@@ -363,11 +363,11 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			else{
 				//writeDump(fileContent); abort;
 				//responseBean.addError("Processing error", fileContent);
-				responseBean.addError("Processing error", "Not able to process this request.");
+				responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(fileContent)# ");
 			}
 		}
 		else{
-			responseBean.addError("Processing error", "Not able to process this request.");
+			responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
 		}
 		
 		return responseData;
@@ -414,66 +414,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		}
 		
 		return responseData;
-	}
-	
-	
-	
-	/**
-	 * Method to assign payment method against customer Account
-	 * @params : paymentMethod
-	 * @params : string token
-	 * @params : account
-	 * @return : void
-	 **/
-	public void function configureAccountPaymentMethod(required any token, required any account, required any paymentMethod)
-	{
-        var provideToken = arguments.token;
-        var query = new Query();
-		query.setSQL("SELECT max(accountPaymentMethodID) as storedMethod FROM swaccountpaymentmethod WHERE accountID='#arguments.account.getAccountID()#' AND paymentMethodID='#arguments.paymentMethod.getPaymentMethodID()#'");
-		var queryResult = query.execute();
-		var check = queryResult.getResult().getRow(1);
-		
-		//Check if Payment Method already exists
-        if( check.storedMethod != '')
-        {
-        	//Get Existing Method
-            var accountPaymentMethod = getService('AccountService').getAccountPaymentMethodByAccountPaymentMethodID(check.storedMethod);
-        }
-        else{
-        	//Create a New One
-            var accountPaymentMethod = getService('AccountService').newAccountPaymentMethod();
-        }
-        
-        accountPaymentMethod.setProviderToken(provideToken);
-        accountPaymentMethod.setAccount( arguments.account );
-        accountPaymentMethod.setAccountPaymentMethodName("Paypal");
-        accountPaymentMethod.setPaymentMethod(arguments.paymentMethod);
-        //Save method in account.
-        getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
-	}
-	
-	/**
-	 * Method to assign provide token
-	 * @params : paymentMethod
-	 * @params : account
-	 * @return : String
-	 **/
-	public string function getAccountPaymentToken(required any account, required any paymentMethod)
-	{
-		var query = new Query();
-		query.setSQL("SELECT max(accountPaymentMethodID) as storedMethod FROM swaccountpaymentmethod WHERE accountID='#arguments.account.getAccountID()#' AND paymentMethodID='#arguments.paymentMethod.getPaymentMethodID()#'");
-		var queryResult = query.execute();
-		var check = queryResult.getResult().getRow(1);
-		var token = "";
-		//Check if Payment Method already exists
-        if( check.storedMethod != '')
-        {
-        	var accountPaymentMethod = getService('AccountService').getAccountPaymentMethodByAccountPaymentMethodID(check.storedMethod);
-        	
-        	return accountPaymentMethod.getProviderToken();
-        }
-        
-        return "";
 	}
 	
 }
