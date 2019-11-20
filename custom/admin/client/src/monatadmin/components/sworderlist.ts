@@ -107,7 +107,7 @@ class SWOrderListController {
      * returns true if the action is selected
      */
      public isSelected = (test):boolean => {
-        if (test == "check") { return true; } else { return false };
+        return test == "check";
      }
 
     /**
