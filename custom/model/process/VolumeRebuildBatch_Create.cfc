@@ -66,7 +66,7 @@ component output="false" accessors="true" extends="Slatwall.model.process.Hibach
 		var volumeRebuildBatchOrders = [];
 		if (structKeyExists(variables, "OrderIDList") && len(variables.orderIDList)){
 			for (var orderID in variables.orderIDList){
-				var order = getService("OrderService").getOrderByOrderID(orderID);
+				var order = getService("OrderService").getOrder(orderID);
 				if (isNull(order)){
 					continue;
 				}
