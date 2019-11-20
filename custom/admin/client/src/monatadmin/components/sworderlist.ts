@@ -119,7 +119,7 @@ class SWOrderListController {
         this.orderCollection.addDisplayProperty("orderType.systemCode", "Order Type");
         this.orderCollection.addDisplayProperty("orderNumber", "Order Number");
         this.orderCollection.addDisplayProperty("account.calculatedFullName", "Full Name");
-        this.orderCollection.addDisplayProperty("orderOpenDateTime", "Date Started");;
+        this.orderCollection.addDisplayProperty("orderOpenDateTime", "Date Started");
         this.orderCollection.addDisplayProperty("orderStatusType.typeName", "Status");
         this.orderCollection.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
         this.orderCollection.addFilter("orderNumber", "", "!=");
