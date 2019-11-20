@@ -738,16 +738,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
 
         //Query skuPrice table to get upgraded skuPrices for skus in above collection list
-         var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode",{
+         var upgradedSkuPrices = QueryExecute("SELECT price, skuID FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode AND activeFlag = 1",{
             skuIDs = {value=skuIDsToQuery, list=true, cfsqltype="cf_sql_varchar"}, 
             upgradedPriceGroup = {value=upgradedPriceGroupID, cfsqltype="cf_sql_varchar"},
             currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
         });           
 
         //Add upgraded sku prices into the collection list 
-        for(price in upgradedSkuPrices){
-            productList[index].upgradedPricing = price;
-            index++
+        for(var price in upgradedSkuPrices){
+            for(var sku in productList){
+                if(sku.skuID == price.skuID){
+                    sku.upgradedPricing = price;
+                }
+            }
+            
         }
         
         return productList;
