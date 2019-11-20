@@ -46,51 +46,7 @@ Notes:
 
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
-    
-    public any function authorizePaypal(required struct data)
-    {
-        var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
-		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
-		
-		var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
-    	requestBean.setProviderToken(data.paymentToken);
- 		requestBean.setTransactionType('authorizePayment');
-		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
-		
-		if(!responseBean.hasErrors())
-		{
-		    //Create a New One
-            var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
-            accountPaymentMethod.setAccountPaymentMethodName("Paypal - Braintree");
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
-            accountPaymentMethod.setPaymentMethod( paymentMethod );
-            accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
-            accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
-            accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
-            accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
-            
-            arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
-            arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
-		}
-		else{
-		    this.addErrors(data, responseBean.getErrors());
-		}
-        
-    }
-    
-    public any function addOrderPayment(required any data, boolean giftCard = false) {
-        
-        if(StructKeyExists(arguments.data,'accountPaymentMethodID'))
-        {
-            var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
-            arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
-            arguments.data.newOrderPayment.requireBillingAddress = 0;
-        }
-        
-        super.addOrderPayment(argumentCollection = arguments);
-        
-    }
-    
+
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
