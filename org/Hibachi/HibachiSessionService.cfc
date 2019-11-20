@@ -264,11 +264,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	
-		transaction{
-			// Save the session
-			getHibachiDAO().save( getHibachiScope().getSession() );
+		// Save the session
+		getHibachiDAO().save( getHibachiScope().getSession() );
+		getHibachiDAO().flushORMSession();
 		
-		}
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
