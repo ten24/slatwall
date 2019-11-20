@@ -94,6 +94,7 @@
 				|| sponsorSearchSelector.selectedSponsor.accountID == item.accountID
 			"
 		>
+			
 			<div ng-class="sponsorSearchSelector.selectedSponsor.accountID == item.accountID ? 'signup-mp__form__item active' : 'signup-mp__form__item'">
 				<h3 class="title">{{item.firstName}} {{item.lastName}}</h3>
 				<p class="location" ng-if="item.primaryAddress_address_city.trim().length">{{item.primaryAddress_address_city}}, {{item.primaryAddress_address_stateCode}}. {{item.primaryAddress_address_countryCode}}</span>
