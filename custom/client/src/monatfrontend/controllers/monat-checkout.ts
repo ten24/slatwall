@@ -1,6 +1,4 @@
 import * as Braintree from 'braintree-web';
-//import { paypal } from 'braintree-web';
-//import {paypal} from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
@@ -58,24 +56,24 @@ class MonatCheckoutController {
 
                     onAuthorize: function (data, actions) {
                         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                        	if(payload.nonce && payload.nonce != "")
-                        	{
-								that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
-									if(response.newPaypalPaymentMethod && response.newPaypalPaymentMethod != "")
-									{
-										that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
-											"copyFromType":"accountPaymentMethod",
-											"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
-										});
-									}
-									else{
-										console.log("Error in saving account payment method.");
-									}
+                            if(!payload.nonce)
+                            {
+                                console.log("Error in tokenizing the payment method.");
+                                return;
+                            }
+                            
+							that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
+								if( !response.newPaypalPaymentMethod )
+								{
+								    console.log("Error in saving account payment method.");
+								    return;
+								}
+								
+								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
+									"copyFromType":"accountPaymentMethod",
+									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});
-                        	}
-                        	else{
-                        		console.log("Error in tokenizing the payment method.");
-                        	}
+							});
                         });
                     },
                     onCancel: function (data) {
