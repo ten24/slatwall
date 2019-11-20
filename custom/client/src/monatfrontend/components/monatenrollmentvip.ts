@@ -24,6 +24,8 @@ class VIPController {
 	public flexshipFrequencyName;
 	public flexshipFrequencyHasErrors: boolean = false;
 	public isNotSafariPrivate:boolean;
+	public flexshipItemList:any;
+	public flexshipTotal:number = 0;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -217,8 +219,10 @@ class VIPController {
     
     public getFlexshipDetails = () => {
     	this.loading = true;
-    	this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
-        	this.flexshipOrderTemplate = result;
+        const flexshipID = this.flexshipID;
+        this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, this.accountPriceGroupCode).then(result => {
+        	this.flexshipItemList = result.orderTemplateItems;
+			this.flexshipTotal = this.flexshipItemList.length ? this.flexshipItemList[0].orderTemplatePrice : "";
 			this.observerService.notify('onNext');
         	this.loading = false;
         });

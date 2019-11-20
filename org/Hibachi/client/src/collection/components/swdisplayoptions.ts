@@ -158,9 +158,10 @@ class SWDisplayOptions{
                         selectedProperty = scope.selectedAggregate;
                     }
 
-
-
-                    if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
+                    if( selectedProperty.$$group === 'simple' || 
+                        selectedProperty.$$group === 'attribute' || 
+                        selectedProperty.$$group === 'compareCollections'
+                    ){
                         $log.debug(scope.columns);
                         if(angular.isDefined(selectedProperty)){
                             var column:any = {

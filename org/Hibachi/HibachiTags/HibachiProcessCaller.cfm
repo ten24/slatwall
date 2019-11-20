@@ -18,6 +18,7 @@
 	<cfparam name="attributes.confirm" type="boolean" default="false" />
 	<cfparam name="attributes.disabled" type="boolean" default="false" />
 	<cfparam name="attributes.modal" type="boolean" default="false" />
+	<cfparam name="attributes.currentAction" type="string" default=""/>
 	
 	<cfset local.entityName = "" />
 	
@@ -50,8 +51,14 @@
 		<cfset attributes.disabledText = local.processErrors.getAllErrorsHTML() />
 	</cfif>
 	
+	<cfif len(attributes.currentAction)>
+		<cfset attributes.queryString = listAppend(attributes.queryString, "sRedirectAction=#attributes.currentAction#","&") />
+	</cfif>
+	
 	<!--- If either no entity object was passed in, or if the entity object that was passed in is in fact processable, then deligate to the action caller for the actual info --->
 	<cfif !isObject(attributes.entity) || (isObject(attributes.entity) && ( !attributes.disabled || !attributes.hideDisabled ) )>
 		<hb:HibachiActionCaller attributecollection="#attributes#" />
 	</cfif>
+	
+
 </cfif>
