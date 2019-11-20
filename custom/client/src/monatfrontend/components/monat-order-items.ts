@@ -28,7 +28,7 @@ class MonatOrderItemsController {
 			
 			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				this.starterKits.push( item );
-			} else if('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType){
+			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
 			}	else {
 				this.todaysOrder.push( item );

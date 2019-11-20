@@ -76,6 +76,7 @@
 	
 	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
 		<button 
+			type="button"
 			class="bg-primary btn" 
 			ng-click="sponsorSearchSelector.getSearchResults()"
 			ng-class="{ loading: sponsorSearchSelector.loadingResults }"
