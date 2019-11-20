@@ -780,7 +780,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
                 'orderTemplateID' :	item.orderTemplateID,
                 'orderTemplateItemID' : item.orderTemplateItemID,
-                'orderTemplatePrice' : item.calculatedTotal
+                'orderTemplatePrice' : item.calculatedTotal,
+                'total': item.calculatedTotal
             });
         }
             
