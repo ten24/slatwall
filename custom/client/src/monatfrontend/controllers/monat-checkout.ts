@@ -1,4 +1,4 @@
-import * as Monatbraintree from 'braintree-web';
+import * as Braintree from 'braintree-web';
 //import { paypal } from 'braintree-web';
 //import {paypal} from 'braintree-web';
 declare let paypal: any;
@@ -27,8 +27,9 @@ class MonatCheckoutController {
 		var CLIENT_AUTHORIZATION =clientToken;
         
         //console.log(braintree.paypalCheckout.create());
+        console.log("loading the paypal client");
         // Create a client.
-        Monatbraintree.client.create({
+        Braintree.client.create({
         	authorization: CLIENT_AUTHORIZATION
         }, function (clientErr, clientInstance){
 	        if (clientErr) {
@@ -36,7 +37,7 @@ class MonatCheckoutController {
                 return;
             }
             
-            Monatbraintree.paypalCheckout.create({
+            Braintree.paypalCheckout.create({
                 client: clientInstance
             }, function (paypalCheckoutErr, paypalCheckoutInstance) {
             	if (paypalCheckoutErr) {
@@ -66,7 +67,7 @@ class MonatCheckoutController {
 										//that.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.newPaypalPaymentMethod;
 										that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
 											"copyFromType":"accountPaymentMethod",
-											"newOrderPayment.requireBillingAddress":0
+											"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 										});
 									}
 									else{
@@ -79,11 +80,9 @@ class MonatCheckoutController {
                         	}
                         });
                     },
-
                     onCancel: function (data) {
                         console.log('checkout.js payment cancelled');//, JSON.stringify(data));
                     },
-
                     onError: function (err) {
                         console.error('checkout.js error');//, err);
                     }

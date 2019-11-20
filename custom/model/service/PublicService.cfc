@@ -49,7 +49,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function authorizePaypal(required struct data)
     {
-        
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
 		
@@ -59,9 +58,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
         accountPaymentMethod.setPaymentMethod( paymentMethod );
         accountPaymentMethod.setProviderToken(data.paymentToken);
+        accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
+        accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
         accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
         
         arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
+        arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
+        
     }
     
     public any function createWishlist( required struct data ) {

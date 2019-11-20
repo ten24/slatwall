@@ -99,6 +99,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
       **/  
     public void function testAddNewPaymentMethod()
     {
+  //  	var paymentMethod = request.slatwallScope.getService('paymentService').getPaymentMethodByPaymentIntegration(variables.integrationCFC);
+		// writeDump(var = paymentMethod.getPaymentMethodID(), top = 2); abort;
+		
     	var account = request.slatwallScope.getAccount('#variables.accountID#');
     	if(!isNull(account.getPaymentMethod()) && !isNull(account.getPaymentMethod().getPaymentIntegration()) && account.getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'braintree')
     	{
@@ -116,6 +119,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
             accountPaymentMethod.setAccount( account );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
     	}
+    	
     	
     	//Update / Save provider Token
     	accountPaymentMethod.setProviderToken(variables.token);
