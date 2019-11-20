@@ -2334,11 +2334,11 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
 
         if(isNull(accountType) || accountType == 'retail'){
-           productCollectionList.addFilter('defaultSku.retailFlag', 1);
+           productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){
-            productCollectionList.addFilter('defaultSku.mpFlag', 1);
+            productCollectionList.addFilter('skus.mpFlag', 1);
         }else{
-            productCollectionList.addFilter('defaultSku.vipFlag', 1);
+            productCollectionList.addFilter('skus.vipFlag', 1);
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
