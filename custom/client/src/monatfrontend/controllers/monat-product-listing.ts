@@ -37,7 +37,7 @@ class MonatProductListingController {
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
         
         this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
-            Object.keys(result.productList).forEach(obb => this.productList.push(result.productList[obb]));
+            this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
             this.loading = false;

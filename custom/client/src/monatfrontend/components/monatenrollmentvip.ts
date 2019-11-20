@@ -25,6 +25,7 @@ class VIPController {
 	public flexshipFrequencyHasErrors: boolean = false;
 	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
+	public recordsCount;
 	public flexshipTotal:number = 0;
 	
 	// @ngInject
@@ -176,8 +177,10 @@ class VIPController {
 	public getProductList = () => {
 		this.loading = true;
 		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
-			this.productList = result.productList;
-			this.loading = false;
+            this.productList = result.productList;
+            this.recordsCount = result.recordsCount;
+			this.observerService.notify('PromiseComplete');
+            this.loading = false;
 		});
 	};
 
