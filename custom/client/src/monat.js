@@ -60435,7 +60435,7 @@ var MonatEnrollmentStep = /** @class */ (function () {
             stepClass: '@',
             showMiniCart: '@',
             onNext: '=?',
-            showFlexshipCart: '=?',
+            showFlexshipCart: '@?',
         };
         this.require = '^monatEnrollment';
         this.link = function (scope, element, attrs, monatEnrollment) {
@@ -60512,6 +60512,7 @@ var VIPController = /** @class */ (function () {
             _this.observerService.attach(_this.getFlexshipDetails, "lastStep");
             _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingMethodUsingShippingMethodIDSuccess");
             _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingAddressUsingAccountAddressSuccess");
+            _this.observerService.attach(_this.getProductList, "createSuccess");
             _this.localStorageCheck();
             if (_this.isNotSafariPrivate) {
                 _this.observerService.attach(function (accountAddress) {
@@ -60608,8 +60609,10 @@ var VIPController = /** @class */ (function () {
         };
         this.getProductList = function () {
             _this.loading = true;
-            _this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': _this.accountPriceGroupCode, 'currencyCode': _this.currencyCode }).then(function (result) {
+            _this.publicService.doAction('getProductsByCategoryOrContentID').then(function (result) {
                 _this.productList = result.productList;
+                _this.recordsCount = result.recordsCount;
+                _this.observerService.notify('PromiseComplete');
                 _this.loading = false;
             });
         };
@@ -63491,6 +63494,7 @@ var MonatProductListingController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.cmsContentID = '';
         this.argumentsObject = {};
+        this.productList = [];
         this.pageRecordsShow = 12;
         this.$postLink = function () {
             _this.getProducts();
