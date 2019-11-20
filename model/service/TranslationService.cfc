@@ -50,7 +50,16 @@ component extends="HibachiService" accessors="true" output="false" {
                     continue;
                 }
                 
-                var translation = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
+                var translation = getHibachiScope().getService('TranslationService').newTranslation();
+                
+                var hasTranslationEntityArguments = arguments.processObject.hasTranslatedPropertyObject() && !isNull(translationData['locale']);
+                if (hasTranslationEntityArguments) {
+                    var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
+                    var hasTranslationEntity = !isNull(translationEntity);
+                    if (hasTranslationEntity) {
+                        translation = translationEntity;
+                    }
+                }
                 
                 if (translation.getNewFlag()) {
                     translation.setBaseObject(arguments.processObject.getBaseObject());

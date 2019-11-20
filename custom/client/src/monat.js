@@ -59989,7 +59989,7 @@ var MonatOrderItemsController = /** @class */ (function () {
                 if ('Starter Kit' === productType || 'Product Pack' === productType) {
                     _this.starterKits.push(item);
                 }
-                else if ('EnrollmentFee-MP' === productType || 'EnrollmentFee-VIP' === productType) {
+                else if ('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType) {
                     _this.orderFees = item.extendedUnitPriceAfterDiscount;
                 }
                 else {
@@ -60435,7 +60435,7 @@ var MonatEnrollmentStep = /** @class */ (function () {
             stepClass: '@',
             showMiniCart: '@',
             onNext: '=?',
-            showFlexshipCart: '=?',
+            showFlexshipCart: '@?',
         };
         this.require = '^monatEnrollment';
         this.link = function (scope, element, attrs, monatEnrollment) {
@@ -60487,6 +60487,7 @@ var VIPController = /** @class */ (function () {
         this.flexshipDaysOfMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
         this.accountPriceGroupCode = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
         this.flexshipFrequencyHasErrors = false;
+        this.flexshipTotal = 0;
         this.$onInit = function () {
             _this.getCountryCodeOptions();
             _this.publicService.doAction('getFrequencyTermOptions').then(function (response) {
@@ -60511,6 +60512,7 @@ var VIPController = /** @class */ (function () {
             _this.observerService.attach(_this.getFlexshipDetails, "lastStep");
             _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingMethodUsingShippingMethodIDSuccess");
             _this.observerService.attach(_this.setOrderTemplateShippingAddress, "addShippingAddressUsingAccountAddressSuccess");
+            _this.observerService.attach(_this.getProductList, "createSuccess");
             _this.localStorageCheck();
             if (_this.isNotSafariPrivate) {
                 _this.observerService.attach(function (accountAddress) {
@@ -60607,8 +60609,10 @@ var VIPController = /** @class */ (function () {
         };
         this.getProductList = function () {
             _this.loading = true;
-            _this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': _this.accountPriceGroupCode, 'currencyCode': _this.currencyCode }).then(function (result) {
+            _this.publicService.doAction('getProductsByCategoryOrContentID').then(function (result) {
                 _this.productList = result.productList;
+                _this.recordsCount = result.recordsCount;
+                _this.observerService.notify('PromiseComplete');
                 _this.loading = false;
             });
         };
@@ -60646,8 +60650,10 @@ var VIPController = /** @class */ (function () {
         };
         this.getFlexshipDetails = function () {
             _this.loading = true;
-            _this.orderTemplateService.getWishlistItems(_this.flexshipID).then(function (result) {
-                _this.flexshipOrderTemplate = result;
+            var flexshipID = _this.flexshipID;
+            _this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, _this.accountPriceGroupCode).then(function (result) {
+                _this.flexshipItemList = result.orderTemplateItems;
+                _this.flexshipTotal = _this.flexshipItemList.length ? _this.flexshipItemList[0].orderTemplatePrice : "";
                 _this.observerService.notify('onNext');
                 _this.loading = false;
             });
@@ -62540,13 +62546,15 @@ var MonatProductCardController = /** @class */ (function () {
             $('.modal').modal('hide');
             $('.modal-backdrop').remove();
         };
-        this.launchWishlistModal = function (skuID) {
+        this.launchWishlistModal = function (skuID, productName) {
             var newSkuID = skuID;
+            console.log(productName);
             _this.ModalService.showModal({
                 component: 'swfWishlist',
                 bodyClass: 'angular-modal-service-active',
                 bindings: {
-                    sku: newSkuID
+                    sku: newSkuID,
+                    productName: productName
                 },
                 preClose: function (modal) {
                     modal.element.modal('hide');
@@ -62672,7 +62680,7 @@ var SponsorSearchSelectorController = /** @class */ (function () {
             _this.form.countryCode = _this.siteCountryCode;
             _this.getCountryCodeOptions();
             _this.getStateCodeOptions(_this.form.countryCode);
-            _this.getSearchResults();
+            //this.getSearchResults();
         };
         this.getCountryCodeOptions = function () {
             // We dont't need to get country code options more than once.
@@ -63393,7 +63401,6 @@ var SWFWishlistController = /** @class */ (function () {
         if (!this.currentPage) {
             this.currentPage = 1;
         }
-        console.log(this.sku);
         this.observerService.attach(this.refreshList, "myAccountWishlistSelected");
         this.observerService.attach(this.successfulAlert, "OrderTemplateAddOrderTemplateItemSuccess");
         this.observerService.attach(this.closeModal, "createWishlistSuccess");
@@ -63418,6 +63425,8 @@ var SWFWishlist = /** @class */ (function () {
             pageRecordsShow: "@?",
             currentPage: "@?",
             sku: "<?",
+            productName: "<?",
+            showWishlistModal: "@?",
             close: '=' //injected by angularModalService;
         };
         this.controller = SWFWishlistController;
@@ -63428,7 +63437,7 @@ var SWFWishlist = /** @class */ (function () {
         this.link = function (scope, element, attrs, formController) {
         };
         this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-        this.restrict = "E";
+        this.restrict = "AE";
     }
     /**
  * Handles injecting the partials path into this class
@@ -63485,6 +63494,7 @@ var MonatProductListingController = /** @class */ (function () {
         this.$rootScope = $rootScope;
         this.cmsContentID = '';
         this.argumentsObject = {};
+        this.productList = [];
         this.pageRecordsShow = 12;
         this.$postLink = function () {
             _this.getProducts();
@@ -64188,6 +64198,9 @@ var OrderTemplateService = /** @class */ (function () {
         this.getOrderTemplatesLight = function (orderTemplateTypeID) {
             if (orderTemplateTypeID === void 0) { orderTemplateTypeID = "2c9280846b712d47016b75464e800014"; }
             return _this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', { ordertemplateTypeID: orderTemplateTypeID });
+        };
+        this.getOrderTemplatesItemsLight = function (orderTemplateID, priceGroupCode) {
+            return _this.publicService.doAction('getOrderTemplateItemsLight', { orderTemplateID: orderTemplateID, priceGroupCode: priceGroupCode });
         };
     }
     OrderTemplateService.prototype.getAccountGiftCards = function (refresh) {
@@ -68279,7 +68292,9 @@ var SWDisplayOptions = /** @class */ (function () {
                     if (angular.isDefined(scope.selectedAggregate)) {
                         selectedProperty = scope.selectedAggregate;
                     }
-                    if (selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections') {
+                    if (selectedProperty.$$group === 'simple' ||
+                        selectedProperty.$$group === 'attribute' ||
+                        selectedProperty.$$group === 'compareCollections') {
                         $log.debug(scope.columns);
                         if (angular.isDefined(selectedProperty)) {
                             var column = {

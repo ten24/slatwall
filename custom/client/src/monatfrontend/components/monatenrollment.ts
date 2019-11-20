@@ -50,6 +50,7 @@ class MonatEnrollmentController {
 				localStorage.clear()
 			}
 		})
+		
 	}
 
 	public handleCreateAccount = () => {

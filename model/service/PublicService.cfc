@@ -1330,7 +1330,12 @@ component  accessors="true" output="false"
         if(!cart.hasErrors()) {
             cart.clearProcessObject("addPromotionCode");
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("AddPromotionCode").getErrors());
+            var processObject = cart.getProcessObject("AddPromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(data, cart.getProcessObject("AddPromotionCode").getErrors());
+            }else{
+                addErrors(data,cart.getErrors());
+            }
         }
     }
     
