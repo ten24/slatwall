@@ -214,14 +214,20 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
+							
 							//Don't Instantiate every object, just passthroughn the collection records returned
 							scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
-							var triggerCollectionResult = scheduleCollection.getPageRecords();
+							
 							var processData = {
-								entity = this.invokeMethod('new#currentObjectName#'),
-								workflowTrigger = arguments.workflowTrigger,
-								collectionData = { 'collectionData' = triggerCollectionResult}
+								entity : this.invokeMethod('new#currentObjectName#'),
+								workflowTrigger : arguments.workflowTrigger,
+								collectionData : { 'collectionConfig' = scheduleCollection.getCollectionConfigStruct() }
 							};
+
+							if(arguments.workflowTrigger.getCollectionFetchRecords()){
+								processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+							}
+
 							//Call proccess method to execute Tasks
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					} else {
@@ -399,14 +405,32 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				if(structKeyExists(arguments.data, 'collectionData')){
-					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
-					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
-					actionSucess = true; 
-				} else { 
+				//we need some form of collection data for this to w`1ork	
+				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
 					actionSucess = false; 
-				}	
+					break;
+				}
+
+
+				if(!isNull(arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName())){
+					var entityCollection = arguments.entity.getEntityCollection();
+					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
+					
+					//get update stagement pass struct of property value pairs for flag	 
+					
+					//execute hql 
+
+					//call entity queue dao to insert into with a select
+
+					actionSucess = true; 
+					break; 
+				} 
+ 
+				var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
+				var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
+				getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+				
+				actionSucess = true; 
 				break;
 
 			//IMPORT

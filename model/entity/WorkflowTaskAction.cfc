@@ -41,10 +41,12 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	// Persistent Properties
 	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="actionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="uniqueFlag" ormtype="boolean" default="true";
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
+	property name="processEntityQueueFlagPropertyName" ormtype="string";
 	property name="processMethod" ormtype="string";
 	property name="webhookURL" ormtype="string";
-	property name="uniqueFlag" ormtype="boolean";
+	
 	
 	// Calculated Properties
 
