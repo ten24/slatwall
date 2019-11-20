@@ -405,32 +405,45 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				//we need some form of collection data for this to w`1ork	
+				//we need some form of collection data for this to work	
 				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
 					actionSucess = false; 
 					break;
 				}
 
+				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
+				if(!isNull(processEntityQueueFlagPropertyNam)){
 
-				if(!isNull(arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName())){
+					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName){
+						actionSucess = false; 
+						break;
+					}	
+
 					var entityCollection = arguments.entity.getEntityCollection();
 					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
 					
-					//get update stagement pass struct of property value pairs for flag	 
-					
-					//execute hql 
+					var updateData = {
+						'#processEntityQueueFlagPropertyName#': true
+					};
+
+					entityCollection.executeUpdate(updateData);		
 
 					//call entity queue dao to insert into with a select
-
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod());
+					
 					actionSucess = true; 
 					break; 
 				} 
- 
-				var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
-				var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-				getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
 				
-				actionSucess = true; 
+				//fallback solution not ideal for large data sets
+				if(structKeyExists(arguments.data, 'collectionData')){ 	
+					
+					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
+					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					
+					actionSucess = true; 
+				}
 				break;
 
 			//IMPORT
