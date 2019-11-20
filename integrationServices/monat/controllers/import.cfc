@@ -23,6 +23,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -40,6 +41,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 2, '.'));
+	}
+	
+	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+		var authKeyName = "authkey";
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		accountJson = httpService.send().getPrefix();
+		
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			writeDump("Could not import accounts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+		
+		return accountsResponse;
 	}
 	
 	private any function getAccountData(pageNumber,pageSize){
@@ -160,6 +191,145 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			datePart("d",date));
 	}
 	
+	public void function importDailyAccountUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		while (pageNumber < pageMax){
+			
+    		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+    		if (accountsResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		//writedump(accountsResponse);abort;
+    		var accounts = accountsResponse.Data.Records;
+    		
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		
+    		/**
+    		 *  {
+			      "AccountNumber": "string",
+			      "AccountStatusCode": "string",
+			      "SponsorNumber": "string",
+			      "EnrollerNumber": "string",
+			      "AccountTypeCode": "string",
+			      "EntryDate": "2019-11-20T19:16:28.725Z",
+			      "EntryPeriod": "string",
+			      "FlagAccountTypeCode": "string",
+			      "GovernmentNumber": "string",
+			      "CareerTitleCode": "string"
+			    }
+    		 **/
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var account in accounts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			var foundAccount = getAccountService().getAccountByRemoteID( account['AccountId'] );
+        			
+        			if (isNull(foundAccount)){
+        				pageNumber++;
+        				continue;
+        			}
+        			
+                    
+                    // Account Number
+                    if (structKeyExists(account, "AccountNumber")){
+                    	foundAccount.setAccountNumber(account['AccountNumber']?:"");//*
+                    }
+                    
+                    //Account Status Code
+                    if (!isNull(account['AccountStatusCode']) && len(account['AccountStatusCode'])){
+                    	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
+                    }
+                    
+                    //Entry Date
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
+                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); // * changed from nextRenewalDate to renewalDate
+                    }
+                    
+                    // SponsorNumber
+                    if (!isNull(account['SponsorNumber']) && len(account['SponsorNumber'])){
+                    	foundAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );
+                    }
+                    
+                    // EnrollerNumber (Note: What is this mapping to?)
+                    if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
+                    	foundAccount.setEnrollerNumber( account['EnrollerNumber']?:"" );
+                    }
+                    
+                    //Account Type
+                    if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
+                    	//set the accountType from this. Needs to be name or I need to map it.
+                    	foundAccount.setAccountType( account['AccountTypeCode']?:"" );
+                    }
+                    
+                    //EntryPeriod
+                    if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
+                    	//set the accountType from this. Needs to be name or I need to map it.
+                    	foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
+                    }
+                    //FlagAccountTypeCode (C,L,M,O,R)
+                    if (!isNull(account['FlagAccountTypeCode']) && len(account['FlagAccountTypeCode'])){
+                    	//set the accountType from this. Needs to be name or I need to map it.
+                    	//add getComplianceStatusFromTypeCode to map the codes to the status
+                    	foundAccount.setComplianceStatus( getComplianceStatusFromTypeCode(account['FlagAccountTypeCode'])?:"" );
+                    }
+                    
+                    // GovernmentNumber (We will also need government type code?)
+                    if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
+                    	//Find or create a government id and set the number.
+                    	if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
+	                    	//lookup or get this 
+	                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+		                    accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
+		                    accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
+		                    
+		                    //insert the relationship
+		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
+                    	}
+                    }
+                    
+                    //CareerTitleCode
+                    foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
+                    
+                    ormStatelessSession.update("SlatwallAccount", newAccount);
+
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Updated Accounts) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
+	}
+	
 	//monat:import.importAccounts&pageNumber=33857&pageSize=50&pageMax=36240
 	//monat:import.importAccounts&pageNumber=1&pageSize=100&pageMax=18000 //36240
 	public void function importAccounts(rc){ 
@@ -245,13 +415,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newAccount.setLastName(account['LastName']?:"");//*
                     newAccount.setAccountNumber(account['AccountNumber']?:"");//*
                     
-                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && account['AllowCorporateEmails'] == true){
+                    
+                    //* Note 1. Use true is the field is empty.
+                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && (account['AllowCorporateEmails'] == true || account['AllowCorporateEmails'] == " ")){
                     	newAccount.setAllowCorporateEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowCorporateEmailsFlag(false);
                     }
                     
-                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && account['AllowUplineEmails'] contains "T"){
+                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && (account['AllowUplineEmails'] == true || account['AllowUplineEmails'] == " ")){
                     	newAccount.setAllowUplineEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowUplineEmailsFlag(false);
@@ -587,13 +759,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newAccount.setLastName(account['LastName']?:"");//*
                     newAccount.setAccountNumber(account['AccountNumber']?:"");//*
                     
-                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && account['AllowCorporateEmails'] == true){
+                    
+                    // Sets a default if the strings is empty with a space due to web service issue.
+                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && (account['AllowCorporateEmails'] == true || account['AllowCorporateEmails'] == " ")){
                     	newAccount.setAllowCorporateEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowCorporateEmailsFlag(false);
                     }
                     
-                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && account['AllowUplineEmails'] contains "T"){
+                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && (account['AllowUplineEmails'] == true || account['AllowUplineEmails'] == " ")){
                     	newAccount.setAllowUplineEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowUplineEmailsFlag(false);
@@ -711,7 +885,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                }
                     }
                     
-                    //set created account id
+                    // set created account id
                     newAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );//can't change as Irta is using...
                     
             		
@@ -1280,7 +1454,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     // Snapshot the accountType on the order
-                    newOrder.setAccountType(account['AccountTypeName']?:""); //*
+                    newOrder.setAccountType(order['AccountTypeName']?:""); //* Pending upsert
                     
                     /**
                      * Sets the order created site. 
@@ -2741,6 +2915,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                            	paymentTransaction.setAmountReceived( orderPayment.amountReceived?:0 );	
 	                            }
 	                            
+	                            
+	                            
 	                            paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
 	                            paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
 	                            paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
@@ -2749,6 +2925,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
 	                            
 	                            ormStatelessSession.insert("SlatwallPaymentTransaction", paymentTransaction);
+	                            
+	                            
+	                            //Misc Charge Amount
+	                            if (!isNull(order['MiscChargeAmount']) && !isReturn){
+		                            var newPaymentTransaction = new Slatwall.model.entity.PaymentTransaction();
+		                            
+		                            if (val(order['MiscChargeAmount']) < 0){
+	                            		newPaymentTransaction.setTransactionType( "credited" );
+	                            		newPaymentTransaction.setAmountCredited( order['MiscChargeAmount']?:0 );
+	                            	}else{
+	                            		newPaymentTransaction.setTransactionType( "received" );
+	                            		newPaymentTransaction.setAmountReceived( order['MiscChargeAmount']?:0 );
+	                            	}
+		                            
+		                            
+		                            newPaymentTransaction.setReferenceNumber( "Misc Charge Amount" );//Add this.
+		                            newPaymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
+		                            
+		                            newPaymentTransaction.setOrderPayment(newOrderPayment);
+		                            newPaymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
+		                            
+		                            newPaymentTransaction.insert("SlatwallPaymentTransaction", paymentTransaction);
+	                            	
+	                            }
+	                            
                         	}else{
                         		ormStatelessSession.update("SlatwallOrderPayment", newOrderPayment);
                         		
