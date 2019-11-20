@@ -1,0 +1,6 @@
+{
+	"properties": {
+		"shippingMethod": [{ "required": true }],
+		"shippingMethod.shippingMethodID": [{"required":true,"minLength":32}]
+	}
+}

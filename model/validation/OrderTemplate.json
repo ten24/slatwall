@@ -33,6 +33,7 @@
 		"currencyCode": [{ "contexts" : "save", "required": true }],
 		"orderTemplateType": [{ "contexts": "save", "required": true }],
 		"shippingAccountAddress": [{ "contexts": "activate,createAndPlaceOrder", "required": true }],
+		"shippingMethod": [{"contexts":"updateShipping","required":true}],
 		"statusCode": [{ "contexts": "createAndPlaceOrder", "eq": "otstActive" }],
 		"frequencyTerm": [
 			{
