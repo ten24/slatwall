@@ -232,6 +232,10 @@ class VIPController {
         this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, this.accountPriceGroupCode).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = this.flexshipItemList.length ? this.flexshipItemList[0].orderTemplatePrice : "";
+			
+			for(let item of this.flexshipItemList){
+				item['total'] = item.quantity * item.price;
+			}
 			this.observerService.notify('onNext');
         	this.loading = false;
         });
