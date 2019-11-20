@@ -46,7 +46,8 @@
 	Notes:
 	
 --->
-
+    
+    <!--- NOT IN USE RIGHT NOW --->
     <div id="paypal-button"></div>
     <script type="text/javascript">
             var CLIENT_AUTHORIZATION = "<cfoutput>#clientAuthToken#</cfoutput>";

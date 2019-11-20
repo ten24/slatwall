@@ -101,7 +101,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * Process external
 	 **/
 	public any function processExternal( required any requestBean ){
-		//writeDump(var = arguments.requestBean, top = 3); abort;
 		// Execute request
 		var responseBean = getTransient('ExternalTransactionResponseBean');
 		
@@ -117,7 +116,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			case 'receive':
 			case 'authorizeAndCharge':
 			case 'chargePreAuthorization':
-				//sendRequestToAuthorizeAndCharge(arguments.requestBean, responseBean);
 				createTransaction(arguments.requestBean, responseBean);
 				break;
 			case 'authorizeAccount':
@@ -154,7 +152,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		{
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (structKeyExists(fileContent, 'errors')){
-				//writeDump(fileContent);
 				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
 			}
 			else{
@@ -203,8 +200,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		savecontent variable="returnHTML" {
 			include "views/main/externalpayment.cfm";
 		};
-		//writeDump(returnHTML);
-		//arguments.responseBean.addExternalHTML(returnHTML);
+		
 		return returnHTML;
 	}
 	
@@ -229,20 +225,13 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
-		//writeDump(response); abort;
 		if (IsJSON(response.FileContent))
 		{
 			var fileContent = DeserializeJSON(response.FileContent);
-			if (structKeyExists(fileContent, 'errors')){
-				//to be reviewed
-				// responseData['status'] = "failure";
-				// responseData['ERROR'] = fileContent;
+			if (structKeyExists(fileContent, 'errors'))
 				arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
 			}
 			else{
-				// responseData['status'] = "success";
-				// responseData['token'] = fileContent.data.vaultPaymentMethod.paymentMethod.id;
-				//writeDump(fileContent); abort;
 				arguments.responseBean.setProviderToken(fileContent.data.vaultPaymentMethod.paymentMethod.id);
 			}
 		}
@@ -267,11 +256,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
-		
-		// writeDump(var = arguments.requestBean, top = 2);
-		// writeDump(var = arguments.requestBean.getOrder(), top = 2);
-		// writeDump(var = arguments.requestBean.getAccount(), top = 2);
-		// abort;
 		
 		var responseData = {};
 		//Create Transaction
@@ -305,7 +289,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			}
 		}
 		
-		//writeDump(item_payload);
 		// define discount
 		if(arguments.requestBean.getOrder().getDiscountTotal() > 0){
 			discount += arguments.requestBean.getOrder().getOrderAndItemDiscountAmountTotal();
@@ -361,8 +344,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				//writeDump(fileContent); abort;
-				//responseBean.addError("Processing error", fileContent);
 				responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(fileContent)# ");
 			}
 		}

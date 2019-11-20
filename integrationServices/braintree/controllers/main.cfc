@@ -65,66 +65,13 @@ component accessors="true" output="false" {
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}
-
-	// public void function before() {
-	// 	//getFW().setView("braintree:main.blank");
-	// }
 	
 	public void function initiatePayment( required struct rc ) {
-		param name="rc.paymentMethodID" default="";
-		param name="rc.payment_nonce" default="";
-
-		var paymentMethod = getPaymentService().getPaymentMethod( rc.paymentMethodID );
 		
-		arguments.rc.$.slatwall.setPublicPopulateFlag( true );
-		
-		//Getting cart object from session
-		var cart = rc.$.slatwall.cart();
-		
-		if(!isNull(paymentMethod) && paymentMethod.getIntegration().getIntegrationPackage() eq "braintree") {
-			
-			var paymentCFC = paymentMethod.getIntegration().getIntegrationCFC( 'payment' );
-			
-			//Generate payment token for Customer
-			var responseData = paymentCFC.authorizePayment( paymentMethod=paymentMethod, token=rc.payment_nonce );
-			
-			if(structKeyExists(responseData, "status") && responseData.status == "success" && structKeyExists(responseData, "token")) {
-				
-				//Save / Update Payment token and Payment Method for customer
-				paymentCFC.configureAccountPaymentMethod(responseData.token, cart.getAccount(), paymentMethod);
-				
-				//Create Transaction
-				responseData = paymentCFC.createTransaction( paymentMethod=paymentMethod, order=cart );
-				if(structKeyExists(responseData, "status") && responseData.status == "success")
-				{
-					// Setup newOrderPayment
-					var paymentData = {};
-					paymentData.newOrderPayment = {};
-					paymentData.newOrderPayment.paymentMethod.paymentMethodID = paymentMethod.getPaymentMethodID();
-					paymentData.newOrderPayment.order.orderID = cart.getOrderID();
-					paymentData.newOrderPayment.orderPaymentType.typeID = paymentMethod.getPaymentMethodID();
-					
-					// Manually set the providerToken
-					var addOrderPaymentProcessObject = cart.getProcessObject('addOrderPayment');
-					addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token);
-					
-					var order = getOrderService().processOrder( cart, paymentData, 'addOrderPayment');
-					
-				}
-				else{
-					cart.addError('BraintreeErrorDetail',responseData);
-				}
-				
-				// arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", order.hasErrors() );
-				
-			} else {
-				cart.addError('BraintreeErrorDetail',responseData);
-			}
-		}
 	}
 	
 	public void function callbackPaypal( required struct rc)
 	{
-		writeDump(var = arguments.rc.$.slatwall.getAccount(), top = 2);
+		
 	}
 }

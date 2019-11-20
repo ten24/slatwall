@@ -26,7 +26,6 @@ class MonatCheckoutController {
 		var that = this;
 		var CLIENT_AUTHORIZATION =clientToken;
         
-        //console.log(braintree.paypalCheckout.create());
         console.log("loading the paypal client");
         // Create a client.
         Braintree.client.create({
@@ -41,7 +40,7 @@ class MonatCheckoutController {
                 client: clientInstance
             }, function (paypalCheckoutErr, paypalCheckoutInstance) {
             	if (paypalCheckoutErr) {
-                    console.error('Error creating PayPal Checkout.');//, paypalCheckoutErr);
+                    console.error('Error creating PayPal Checkout.');
                     return;
                 }
 	            
@@ -64,7 +63,6 @@ class MonatCheckoutController {
 								that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
 									if(response.newPaypalPaymentMethod && response.newPaypalPaymentMethod != "")
 									{
-										//that.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.newPaypalPaymentMethod;
 										that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
 											"copyFromType":"accountPaymentMethod",
 											"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
@@ -81,10 +79,10 @@ class MonatCheckoutController {
                         });
                     },
                     onCancel: function (data) {
-                        console.log('checkout.js payment cancelled');//, JSON.stringify(data));
+                        console.log('checkout.js payment cancelled');
                     },
                     onError: function (err) {
-                        console.error('checkout.js error');//, err);
+                        console.error('checkout.js error');
                     }
                 }, '#paypal-button').then(function () {
                     console.log("Braintree is ready to use.");
@@ -92,46 +90,6 @@ class MonatCheckoutController {
             });
         });
 	}
-	
-	// public newConfigPaypal(clientToken)
-	// {
-	// 	 braintree.client.create({
-	// 		    authorization: 'authorization'
-	// 		  }).then(function (clientInstance) {
-	// 		    return braintree.paypalCheckout.create({
-	// 		      client: clientInstance
-	// 		    });
-	// 		  }).then(function (paypalCheckoutInstance) {
-	// 		    return paypal.Buttons({
-	// 		      createOrder: function () {
-	// 		        return paypalCheckoutInstance.createPayment({
-	// 		          flow: 'checkout',
-	// 		          currency: 'USD',
-	// 		          amount: '10.00',
-	// 		          intent: 'capture' // this value must either be `capture` or match the intent passed into the PayPal SDK intent query parameter
-	// 		          // your other createPayment options here
-	// 		        });
-	// 		      },
-			 
-	// 		      onApprove: function (data, actions) {
-	// 		        // some logic here before tokenization happens below
-	// 		        return paypalCheckoutInstance.tokenizePayment(data).then(function (payload) {
-	// 		          // Submit payload.nonce to your server
-	// 		        });
-	// 		      },
-			 
-	// 		      onCancel: function () {
-	// 		        // handle case where user cancels
-	// 		      },
-			 
-	// 		      onError: function (err) {
-	// 		        // handle case where error occurs
-	// 		      }
-	// 		    }).render('#paypal-button');
-	// 		  }).catch(function (err) {
-	// 		   console.error('Error!', err);
-	// 		  });
-	// }
 }
 
 export { MonatCheckoutController };
