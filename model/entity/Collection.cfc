@@ -2125,15 +2125,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public string function getUpdateHQL(required struct updateSetStruct){
 
-		var alias = getBaseEntityAlias(); 
+		var alias = getBaseEntityAlias() & 'Update';//make sure it doesn't conflict
 
-		var updateHQL = 'UPDATE #getDao('hibachiDAO').getApplicationKey()##getCollectionObject()# as #alias#Update ';
+		var updateHQL = 'UPDATE #getDao('hibachiDAO').getApplicationKey()##getCollectionObject()# as #alias# ';
 
 		updateHQL &= 'SET ';
 		
 		for(var property in arguments.updateSetStruct){
 			//not paramatizing to prevent conflicts with filters:
-			updateHQL &= ' #alias#Update.#property# = #arguments.updateSetStruct[property]#';
+			updateHQL &= ' #alias#.#property# = #arguments.updateSetStruct[property]#';
 		} 	
 
 		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() ); 
