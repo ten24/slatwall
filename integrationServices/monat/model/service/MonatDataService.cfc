@@ -45,8 +45,9 @@ component extends="Slatwall.model.service.HibachiService" {
 
         var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:true});
-        accountCollection.addDisplayProperty('firstName', 'firstName', {isVisible:true, isSearchable: false});
+        accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:false});
+        accountCollection.addDisplayProperty('firstName', 'firstName', {isVisible:true, isSearchable: true});
+        accountCollection.addDisplayProperty(displayProperty='accountNumber', columnConfig={isVisible:true, isSearchable: true});
         accountCollection.addDisplayProperty('lastName', 'lastName', {isVisible:true, isSearchable: false});
         accountCollection.addDisplayProperty('accountID','accountID', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});
