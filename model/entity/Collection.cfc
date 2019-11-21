@@ -2140,11 +2140,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		this.setDisplayProperties(primaryIDPropertyName); 
 
-		updateHQL &= 'WHERE #alias#.#primaryIDPropertyName# in ('
+		updateHQL &= 'WHERE #alias#.#primaryIDPropertyName# in (';
 			
 		updateHQL &= getHQL();
 
-		updateHQL &= ')'
+		updateHQL &= ')';
 
 		return updateHQL; 
 	}
