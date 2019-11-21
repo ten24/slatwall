@@ -237,38 +237,72 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			    index++;
         		    
         			// Create a new account and then use the mapping file to map it.
-        			var foundAccount = getAccountService().getAccountByRemoteID( account['AccountId'] );
+        			var foundAccount = getAccountService().getAccountByAccountNumber( account['AccountNumber'] );
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
         				continue;
         			}
         			
-                    
-                    // Account Number
-                    if (structKeyExists(account, "AccountNumber")){
-                    	foundAccount.setAccountNumber(account['AccountNumber']?:"");//*
-                    }
-                    
                     //Account Status Code
                     if (!isNull(account['AccountStatusCode']) && len(account['AccountStatusCode'])){
+                    	//map to accountStatusName
                     	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
                     }
                     
                     //Entry Date
-                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
-                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); // * changed from nextRenewalDate to renewalDate
-                    }
+                    //This should be POST date
+                    /*if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
+                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); 
+                    }*/
                     
                     // SponsorNumber
-                    if (!isNull(account['SponsorNumber']) && len(account['SponsorNumber'])){
-                    	foundAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );
+                    if (!isNull(account['AccountNumber']) && !isNull(account['SponsorNumber']) && len(account['AccountNumber']) && len(account['SponsorNumber']) && account['AccountNumber'] != account['SponsorNumber']){
+                    	var notUnique = false;
+                    	
+                    	try{
+                    		var newSponsorAccount = getService("AccountService")
+                    			.getAccountByAccountNumber(account['SponsorNumber']);
+                    		var childAccount = newAccount;
+                    		var sponsorAccount =foundAccount.getOwnerAccount();
+                    	}catch(nonUniqueResultException){
+                    		//not unique
+                    		notUnique = true;
+                    	}
+                    	
+                    	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
+                    		var newAccountRelationship = getService("AccountService")
+                    			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
+                    		
+                    		var isNewAccountRelationship = false;
+                    		if (isNull(newAccountRelationship)){
+                    			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+                    			isNewAccountRelationship = true;
+                    		}
+                    		
+	                    	newAccountRelationship.setParentAccount(newSponsorAccount);
+	                    	newAccountRelationship.setChildAccount(childAccount);
+	                    	newAccountRelationship.setActiveFlag( true );
+	                    	newAccountRelationship.setCreatedDateTime( now() );
+	                    	newAccountRelationship.setModifiedDateTime( now() );
+	                    	
+	                    	//insert the relationship
+	                    	
+	                    	if (isNewAccountRelationship){
+	                    		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}else{
+	                    		
+	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}
+	                    	
+	                    	newAccount.setOwnerAccount(sponsorAccount);
+                    	}
                     }
                     
                     // EnrollerNumber (Note: What is this mapping to?)
-                    if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
-                    	foundAccount.setEnrollerNumber( account['EnrollerNumber']?:"" );
-                    }
+                    /*if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
+                    	foundAccount.setAccountNumber( account['EnrollerNumber']?:"" );//this shouldn't change if its account number...
+                    }*/
                     
                     //Account Type
                     if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
@@ -276,24 +310,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	foundAccount.setAccountType( account['AccountTypeCode']?:"" );
                     }
                     
-                    //EntryPeriod
+                    //EntryPeriod (What is this mapping to)
                     if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
-                    	//set the accountType from this. Needs to be name or I need to map it.
                     	foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
                     }
+                    
                     //FlagAccountTypeCode (C,L,M,O,R)
                     if (!isNull(account['FlagAccountTypeCode']) && len(account['FlagAccountTypeCode'])){
                     	//set the accountType from this. Needs to be name or I need to map it.
-                    	//add getComplianceStatusFromTypeCode to map the codes to the status
-                    	foundAccount.setComplianceStatus( getComplianceStatusFromTypeCode(account['FlagAccountTypeCode'])?:"" );
+                    	foundAccount.setComplianceStatus( account['FlagAccountTypeCode']?:"" );
                     }
                     
                     // GovernmentNumber (We will also need government type code?)
+                    // Will this be plain text? Lookup by the government number.
                     if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
+                    	
                     	//Find or create a government id and set the number.
                     	if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
-	                    	//lookup or get this 
-	                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+	                    	// lookup the id
+	                    	var isNewGovernementNumber = false;
+	                    	try{
+	                    		var accountGovernmentID = getAccountService().getAccountGovernementIdByGovernmentTypeAndGovernmentIdLastFour({1:account['GovermentTypeCode']?:"",2:account['GovermentNumber']})
+	                    	} catch(governmentLookupError){
+	                    		isNewGovernmentNumber = true;
+	                    	}
+	                    	
+	                    	//create a new one.
+	                    	if (isNewGovernementNumber){
+	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+	                    	}
+		                    
 		                    accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
 		                    accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
 		                    
