@@ -28,7 +28,7 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		this.getSearchResults();
+		//this.getSearchResults();
 	}
 	
 	private getCountryCodeOptions = () => {

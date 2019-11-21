@@ -99,7 +99,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
     
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			variables.locationIDOptions = getService('locationService').getLocationOptions(); 
+			variables.locationIDOptions = getService('locationService').getLocationOptions(nameProperty="locationName"); 
 		}
 		return variables.locationIDOptions;
 	}

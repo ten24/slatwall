@@ -124,13 +124,15 @@ class MonatProductCardController {
         $('.modal-backdrop').remove() 
     }
     
-	public launchWishlistModal = (skuID) => {
+	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
+		console.log(productName);
 		this.ModalService.showModal({
 			component: 'swfWishlist',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				sku: newSkuID
+				sku: newSkuID,
+				productName: productName
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');

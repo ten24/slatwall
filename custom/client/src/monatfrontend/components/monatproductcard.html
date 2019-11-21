@@ -1,9 +1,18 @@
-<div ng-class="{'border-0': monatProductCard.type == 'enrollment', 'mx-md-4': monatProductCard.type == 'enrollment', 'product-box': monatProductCard.type != 'productListing'}">
+<div 
+    ng-class="{
+        'border-0': monatProductCard.type === 'enrollment', 
+        'mx-md-4': monatProductCard.type === 'enrollment', 
+        'product-box': 
+            monatProductCard.type != 'productListing' 
+            && monatProductCard.type !== 'VIPenrollmentOrder' 
+            && monatProductCard.type !== 'VIPenrollment'
+    }"
+>
    <div class="pr-box">
     <!-- Product Card -->
     
         <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
- 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
+ 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID,monatProductCard.product.productName)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
@@ -25,18 +34,18 @@
             
             <!--- Link to product if not enrollment type --->
             <a ng-if="monatProductCard.type != 'enrollment'" class="d-block" ng-href="{{monatProductCard.product.skuProductURL}}">
-                <img ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
+                <img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
             </a>
             
             <!--- Launch quick shop modal if enrollment type --->
-            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
+            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
            
         </figure>
       
         <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
          
         <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
-        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' " class="price">
+        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' || monatProductCard.type === 'flexship'" class="price">
             <strong>{{monatProductCard.product.price | currency }} <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
             <span class="vip-price"><span ng-if="monatProductCard.product.upgradedPricing.price != null " ng-bind-html="monatProductCard.product.upgradedPriceGroupCode == 3 ? 'VIP' : (monatProductCard.product.upgradedPriceGroupCode == 2 ? 'RETAIL': '') "></span> {{monatProductCard.product.upgradedPricing.price | currency }}</span>
         </div>
@@ -61,6 +70,7 @@
                 && monatProductCard.type != 'productListing'
                 && monatProductCard.type != 'VIPenrollment' 
                 && monatProductCard.type != 'VIPenrollmentOrder'
+                && monatProductCard.type != 'flexship'
             " 
             class="price"
         >

@@ -3,7 +3,7 @@ class MonatProductListingController {
     public accountData:any;
     public cmsContentID:string = '';  
     public argumentsObject:any = {};
-    public productList:any;
+    public productList:Array<any> = [];
     public cmsCategoryFilterFlag:boolean;
     public contentFilterFlag:boolean;
     public cmsContentFilterFlag:boolean;
@@ -41,7 +41,7 @@ class MonatProductListingController {
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
             this.loading = false;
-        })
+        });
     }
 }
 /*********************
