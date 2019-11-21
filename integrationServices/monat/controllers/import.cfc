@@ -2856,6 +2856,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				continue;
 			}
 			switch(skuField){
+				case 'ItemID':
+					data['SKUItemID'] = Trim(fieldValue);
+					break;
 				case 'ItemCode':
 					data['SKUItemCode'] = Trim(fieldValue);
 					data['PRODUCTItemCode'] = Trim(fieldValue);

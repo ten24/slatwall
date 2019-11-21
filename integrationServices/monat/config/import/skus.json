@@ -3,13 +3,21 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode",
-          "key":true
+          "propertyIdentifier":"skuCode"
         },
         {
-          "sourceColumn":"RemoteID",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "sourceColumn":"SKUItemID",
           "propertyIdentifier":"remoteID"
+        },
+        {
+          "sourceColumn":"PRODUCTItemCode",
+          "propertyIdentifier":"remoteCode"
+        },
+        {
+          "sourceColumn":"ImportKey",
+          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "propertyIdentifier":"ImportKey",
+          "key":true
         },
         {
           "sourceColumn":"ItemName",
@@ -51,12 +59,20 @@
         {
           "sourceColumn":"PRODUCTItemCode",
           "propertyIdentifier":"product.productCode",
-          "key":true
         },
         {
-          "sourceColumn":"RemoteID",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "sourceColumn":"SKUItemID",
           "propertyIdentifier":"product.remoteID"
+        },
+        {
+          "sourceColumn":"PRODUCTItemCode",
+          "propertyIdentifier":"product.remoteCode"
+        },
+        {
+          "sourceColumn":"ProductImportKey",
+          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "propertyIdentifier":"product.importKey",
+          "key":true
         },
         {
           "sourceColumn":"ItemName",
