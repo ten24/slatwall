@@ -755,18 +755,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     	var orderTemplateItems = [];
     	var productService = getService('productService');
     	var imageService = getService('ImageService');
-
+        var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+    	var currencyCode = orderTemplate.getCurrencyCode();
     	
         var orderTemplateItemsQueryList = QueryExecute("
             SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle, swo.calculatedTotal
             FROM swordertemplateitem oti
             INNER JOIN swordertemplate swo ON oti.orderTemplateID = swo.orderTemplateID
-            LEFT JOIN swsku s ON oti.skuID = s.skuID
+            INNER JOIN swsku s ON oti.skuID = s.skuID
             INNER JOIN swproduct pd ON pd.productID = s.productID
             INNER JOIN swskuprice p ON p.skuID = oti.skuID
-            WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
+            WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID AND p.currencyCode = :aCurrencyCode
             GROUP BY skuID;
-            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}}
+            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}, aCurrencyCode = {value=currencyCode, cfsqltype='cf_sql_varchar'}}
         );
         
         
