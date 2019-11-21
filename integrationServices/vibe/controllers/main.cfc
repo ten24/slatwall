@@ -1,6 +1,6 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
     property name="publicService";
-    property name="viBeService";
+    property name="vibeService";
     property name="accountService";
     property name="hibachiEventService";
 
@@ -58,7 +58,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     //TODO remove for development-testing only
 	public void function announceTestEvent(required struct rc) {
 		var account = getAccountService().getAccount(arguments.rc.accountID);
-		
 		
     	getHibachiEventService().announceEvent( 
     		eventName = "afterInfotraxAccountCreateSuccess", 

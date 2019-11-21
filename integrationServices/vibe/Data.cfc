@@ -66,7 +66,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	private struct function postRequest(required struct requestData){
+	private struct function postRequest(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		requestURL &= 'createUser';
@@ -75,7 +75,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		httpRequest.setUrl( requestURL );
 
     	httpRequest.addParam(type='header', name='auth-token', value= setting('apikey') );
-    	httpRequest.addParam(type='header', name='Content-Type', value='application/x-www-form-urlencoded');
+    	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
     	
 		for(var key in requestData) {
 			if( !isNull(requestData[key]) ) {
@@ -97,9 +97,9 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 				throw("Not Json");	
 			} 	
 		} catch (var e) {
-			throw("Error: #e.message#, #DeserializeJson(httpRequest.getAttributes())#, Params: #DeserializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
+			throw("Error: #e.message#, #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
 		}
-		throw("Unknown Error Attr: #DeserializeJson(httpRequest.getAttributes())#, Params: #DeserializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
+		throw("Unknown Error Attr: #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
 	}
 
 	
