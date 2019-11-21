@@ -54,7 +54,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				"PageNumber": "#arguments.pageNumber#"
 			}
 		};
-
+		
+		/**
+		 * 
+		 * Filter example
+		 * "Filters": {
+		 *	"StartDate": "2019-11-20T19:16:28.693Z",
+		 *	"EndDate": "2019-11-20T19:16:28.693Z"
+		 * }
+		 *	 
+		 **/
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
@@ -246,7 +255,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			
                     //Account Status Code
                     if (!isNull(account['AccountStatusCode']) && len(account['AccountStatusCode'])){
-                    	//map to accountStatusName
                     	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
                     }
                     
