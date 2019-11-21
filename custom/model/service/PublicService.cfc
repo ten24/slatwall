@@ -287,6 +287,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
@@ -343,6 +344,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {}
 				};
 			}
