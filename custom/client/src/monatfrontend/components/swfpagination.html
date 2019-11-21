@@ -1,0 +1,30 @@
+
+<nav ng-if="paginationController.displayPages.length > 1" class="product-pagination" aria-label="Product Pagination">
+	<ul class="pagination justify-content-center">
+	    
+		<!-- Back 1 Page --->
+		<li class="page-item">
+			<a ng-show="paginationController.pageTracker != 1" ng-click="paginationController.getNextPage(1,'prev')" class="page-link" href="##" tabindex="-1" aria-disabled="true">
+				<i class="fas fa-chevron-left"></i>
+			</a>
+		</li>
+		
+		<!-- Go to specific page --->
+		<li ng-class="{active: this.number == paginationController.pageTracker}" ng-click="paginationController.getNextPage(number)" ng-repeat="number in paginationController.displayPages | limitTo: paginationController.elipsesNum" class="page-item">
+			<a class="page-link" href="##" >{{number}}</a>
+		</li>
+		
+        <!--- Ellipsis to get next group of pages if total pages is greater than 10 --->
+        <li ng-show="paginationController.displayPages.length >= paginationController.elipsesNum && paginationController.hasNextPageSet" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
+            <a class="page-link" href="##" >...</a>
+        </li>
+        
+		<!-- Forward 1 Page --->
+		<li ng-show="paginationController.pageTracker != paginationController.totalPages" ng-click="paginationController.getNextPage(1, 'next')">
+			<a class="page-link" href="##">
+				<i class="fas fa-chevron-right"></i>
+			</a>				
+		</li>
+		
+	</ul>
+</nav>

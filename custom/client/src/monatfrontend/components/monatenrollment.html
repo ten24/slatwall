@@ -24,7 +24,11 @@
 		
 		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length">
+		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
+			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</a>
+		<a href data-ng-click="monatEnrollment.goToLastStep()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</a>
@@ -35,6 +39,11 @@
 	<!--- Mini cart ---> 	
 	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
 	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
+	</div>
+	
+	<!--- Flexship cart ---> 	
+	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
+		<monat-flexship-cart-container data-context="enrollment"></monat-flexship-cart-container>	
 	</div>
 
 </footer>

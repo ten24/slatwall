@@ -1296,7 +1296,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}else{
 				//Remove all non Persistent, Relational and Excluded columns
 				for(var x = 1; x <= arraylen(properties); x++){
-					if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+					if(!ListContains(arguments.excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
 					(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
 						arrayAppend(defaultProperties, properties[x]);
 					}

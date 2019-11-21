@@ -1,4 +1,7 @@
 component output="false" accessors="true" extends="HibachiTransient" {
+	
+	property name="hibachiAuthenticationService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	property name="account" type="any";
 	property name="content" type="any";
@@ -6,7 +9,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
-	property name="profiler" type="any";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
@@ -18,7 +20,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
-	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
@@ -72,27 +73,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 		return variables.permissionGroupCacheKey;
 	}
-	
-	public any function getProfiler() {
-		if (!structKeyExists(variables, 'profiler')) {
-			// Cannot rely on beanFactory exists in order to allow profiling prior to that part of framework initialization
-			// Manually instantiate 
-			var componentPaths = ['Slatwall.custom.model.transient.HibachiProfiler', 'Slatwall.model.transient.HibachiProfiler', 'Slatwall.org.Hibachi.HibachiProfiler'];
-			var instantiationError = '';
-			for (var profilerComponentPath in componentPaths) {
-				try {
-					variables.profiler = createObject(profilerComponentPath);
-					break;
-				} catch (any e) {instantiationError = e;}
-			}
-			
-			if (!structKeyExists(variables, 'profiler')) {
-				throw("HibachiProfiler component could not be instantiated. Error message: #instantiationError.message#");
-			}
-		}
-		
-		return variables.profiler;
-	}
+
 
 	public string function getEntityURLKeyType(string entityURLKey=""){
 		if(!structKeyExists(variables,'entityURLKeyType')){
@@ -433,6 +414,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	public string function getRBKey(required string key, struct replaceStringData) {
 		return rbKey(argumentcollection=arguments);
+	}
+
+	//convenience method for validate
+	public any function validate(required any object, string context="", boolean setErrors=true) {
+		return getService('hibachiValidationService').validate(argumentCollection=arguments); 
 	}
 
 	public boolean function authenticateAction( required string action,string processContext="" ) {

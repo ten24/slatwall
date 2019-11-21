@@ -76,6 +76,7 @@
 	
 	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
 		<button 
+			type="button"
 			class="bg-primary btn" 
 			ng-click="sponsorSearchSelector.getSearchResults()"
 			ng-class="{ loading: sponsorSearchSelector.loadingResults }"
@@ -93,26 +94,23 @@
 				|| sponsorSearchSelector.selectedSponsor.accountID == item.accountID
 			"
 		>
-			<div 
-				ng-click="enrollmentMp.setOwnerAccount(item.accountID)" 
-				ng-class="sponsorSearchSelector.selectedSponsor.accountID == item.accountID ? 'signup-mp__form__item active' : 'signup-mp__form__item'">
+			
+			<div ng-class="sponsorSearchSelector.selectedSponsor.accountID == item.accountID ? 'signup-mp__form__item active' : 'signup-mp__form__item'">
 				<h3 class="title">{{item.firstName}} {{item.lastName}}</h3>
 				<p class="location" ng-if="item.primaryAddress_address_city.trim().length">{{item.primaryAddress_address_city}}, {{item.primaryAddress_address_stateCode}}. {{item.primaryAddress_address_countryCode}}</span>
 			</div>
 		</div>
 	</div>
+
+	<div ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+		<pagination-controller 
+			record-list="sponsorSearchSelector.searchResults" 
+			items-per-page="9" 
+			records-count="sponsorSearchSelector.recordsCount" 
+			action="?slatAction=monat:public.getmarketpartners"
+			arguments-object="sponsorSearchSelector.argumentsObject" 
+		>
+		</pagination-controller>	
+	</div>
 	
-	<!--- Load more results. TODO: Pagination --->
-	<button
-		role="button"
-		ng-if="
-			sponsorSearchSelector.searchResults.length
-			&& sponsorSearchSelector.selectedSponsor == undefined
-		" 
-		class="btn btn-secondary" 
-		ng-click="
-			sponsorSearchSelector.currentPage = sponsorSearchSelector.currentPage + 1;
-			sponsorSearchSelector.getSearchResults();
-		"
-	>More</button>
 </div>

@@ -1,15 +1,17 @@
 class MonatOrderItemsController {
 	public orderItems: any = []; // orderTemplateDetails
-	public productPacks: any = []; // orderTemplateDetails
+	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
+	public orderFees; 
 
 	//@ngInject
-	constructor(public monatService) {
+	constructor(public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
 		this.getOrderItems();
 	}
+	
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {
@@ -22,11 +24,13 @@ class MonatOrderItemsController {
 	
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
-			var productType = item.sku.product.baseProductType;
+			var productType = item.sku.product.productType.productTypeName;
 			
-			if ( 'ProductPack' === productType ) {
-				this.productPacks.push( item );
-			} else {
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
+				this.starterKits.push( item );
+			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
+				this.orderFees = item.extendedUnitPriceAfterDiscount;
+			}	else {
 				this.todaysOrder.push( item );
 			}
 		});

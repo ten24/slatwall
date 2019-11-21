@@ -58,9 +58,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("createWishlist");
         var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-    
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+
         processObject.setOrderTemplateName(arguments.data.orderTemplateName);
         processObject.setSiteID(arguments.data.siteID);
+        processObject.setCurrencyCode(currencyCode);
         processObject.setOrderTemplateTypeID(wishlistTypeID);
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
@@ -86,6 +88,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
         
         processObject.setSiteID(arguments.data.siteID);
+        
+        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
+            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+        }
+        
+        if( StructKeyExists(arguments.data, 'siteCode') ){
+            processObject.setSiteCode(arguments.data.siteCode);
+        }
+        
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
@@ -165,7 +176,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.setAllowUplineEmails(data.allowUplineEmails);
         }
         
-        getService("AccountService").saveAccount(account);
+        account = getAccountService().saveAccount(account);
         
         getHibachiScope().addActionResult( "public:order.updateProfile", account.hasErrors() );
     }
@@ -354,43 +365,110 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
+        
+    public any function selectStarterPackBundle(required struct data){
+        var cart = getHibachiScope().cart();
+        
+        //remove previously-selected StarterPackBundle
+        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
+            for( orderItem in cart.getOrderItems() ) {
+                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
+                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                    StructDelete(arguments.data, 'orderItemID');
+                    break;
+                }
+            }
+        }
+        
+        this.addOrderItem(argumentCollection = arguments);
+    }
+
+    
+    private any function enrollUser(required struct data, required string accountType){
+        
+        var accountTypeInfo = {
+            'VIP':{
+                'priceGroupCode':'3',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            },
+            'customer':{
+                'priceGroupCode':'2',
+                'statusTypeCode':'astGoodStanding',
+                'activeFlag':true
+            },
+            'marketPartner':{
+                'priceGroupCode':'1',
+                'statusTypeCode':'astEnrollmentPending',
+                'activeFlag':false
+            }
+        }
+        
+        if(getHibachiScope().getLoggedInFlag()){
+            super.logout();
+        }
+        
+        var account = super.createAccount(arguments.data);
+        
+        if(account.hasErrors()){
+            addErrors(arguments.data, account.getProcessObject("create").getErrors());
+            getHibachiScope().addActionResult('public:account.create',false);
+            return account;
+        }
+        
+        account.setAccountType(arguments.accountType);
+        account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
+        
+        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
+        
+        if(!isNull(priceGroup)){
+            account.addPriceGroup(priceGroup);
+        }
+        
+        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        
+        if(!isNull(accountStatusType)){
+            account.setAccountStatusType(accountStatusType);
+        }
+        
+        if(!isNull(getHibachiScope().getCurrentRequestSite())){
+            account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
+        }
+        
+        account = getAccountService().saveAccount(account);
+
+        if(account.hasErrors()){
+            addErrors(arguments.data, account.getErrors());
+            getHibachiScope().addActionResult('public:account.create',false);
+        }
+        
+        if(arguments.accountType == 'customer'){
+            account.getAccountNumber();
+        }
+        
+        getDAO('HibachiDAO').flushORMSession();
+        
+        var accountAuthentication = getDAO('AccountDAO').getActivePasswordByAccountID(accountID=account.getAccountID());
+        getHibachiSessionService().loginAccount(account, accountAuthentication); 
+        
+        if(!getHibachiScope().getLoggedInFlag()){
+             getHibachiScope().addActionResult('public:account.create',false);
+        }
+        
+        return account;
+    }
     
     public any function createMarketPartnerEnrollment(required struct data){
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'marketPartner');
-        }
-        if(account.hasErrors()){
-            addErrors(arguments.data,account.getErrors());
-        }
-        return account;
+        return enrollUser(arguments.data, 'marketPartner');
     }
     
     public any function createRetailEnrollment(required struct data){
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            account = setupEnrollmentInfo(account, 'customer');
-        }
-        account.getAccountNumber();
-        return account;
+        return enrollUser(arguments.data, 'customer');
     }
     
-
     public any function createVIPEnrollment(required struct data){
-        var account = super.createAccount(arguments.data);
-        if(!account.hasErrors()){
-            account.setAccountType('VIP');
-            account.setActiveFlag(false);
-            var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('3');
-            if(!isNull(priceGroup)){
-                account.addPriceGroup(priceGroup);
-            }
-            var accountStatusType = getService('TypeService').getTypeByTypeCode('astEnrollmentPending');
-            if(!isNull(accountStatusType)){
-                account.setAccountStatusType(accountStatusType);
-            }
-        }
-        return account;
+       return enrollUser(arguments.data, 'VIP');
     }
     
     private any function setupEnrollmentInfo(required any account, required string accountType){
@@ -419,6 +497,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
+        arguments.account = getAccountService().saveAccount(arguments.account);
         return arguments.account;
 
     }
@@ -436,8 +515,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 }
                 getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
             }
+            if ( 
+                !isNull( arguments.data['month'] )
+                && !isNull( arguments.data['year'] )
+                && !isNull( arguments.data['day'] )
+            ) {
+                account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
+                getAccountService().saveAccount( account );
+            }
         }
         return account;
+    }
+    
+    public any function getDaysToEditOrderTemplateSetting(){
+		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
     }
     
     public void function submitSponsor(required struct data){
@@ -479,10 +570,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
     }
-    
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
-        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
 
         var accountID = getHibachiScope().getAccount().getAccountID();
 		var orderTemplateCollectionList = getService('orderService').getOrderTemplateCollectionList();
@@ -492,4 +582,210 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
+    
+
+    public any function getMostRecentOrderTemplate (required any data){
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
+        
+        var daysToEditFlexship = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+        
+		var orderTemplateCollectionList = getService('OrderService').getOrderTemplateCollectionList();
+		orderTemplateCollectionList.setDisplayProperties('scheduleOrderNextPlaceDateTime');
+		orderTemplateCollectionList.setOrderBy('scheduleOrderNextPlaceDateTime|DESC');
+		orderTemplateCollectionList.setOrderBy('createdDateTime|DESC');
+		orderTemplateCollectionList.addFilter('account.accountID', arguments.data.accountID, '=');
+		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
+		orderTemplateCollectionList.setPageRecordsShow(1);
+		collectionList = orderTemplateCollectionList.getPageRecords();
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+    
+    public any function getProductsByKeyword(required any data) {
+        param name="arguments.data.keyword" default="";
+        param name="arguments.data.currentPage" default="1";
+        param name="arguments.data.pageRecordsShow" default="12";
+        
+        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var productCollectionList = returnObject.productCollectionList;
+        var priceGroupCode = returnObject.priceGroupCode;
+        var currencyCode = returnObject.currencyCode;
+       
+        if ( len( arguments.data.keyword ) ) {
+            productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
+        }
+        
+        var recordsCount = productCollectionList.getRecordsCount();
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        
+        var pageRecords = productCollectionList.getPageRecords();
+        if ( len( pageRecords ) ) {
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
+            arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        } else {
+            arguments.data['ajaxResponse']['productList'] = [];
+        }
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+
+    }
+
+    public any function getProductsByCategoryOrContentID(required any data){
+        param name="arguments.data.currentPage" default="1";
+        param name="arguments.data.pageRecordsShow" default="12";
+        param name="arguments.data.cmsContentFilterFlag" default= false; //Filter based off cms category for uses like content modules
+        param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
+        param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
+
+        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var productCollectionList = returnObject.productCollectionList;
+        var priceGroupCode = returnObject.priceGroupCode;
+        var currencyCode = returnObject.currencyCode;
+  
+        if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
+        if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
+        if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
+        
+        var recordsCount = productCollectionList.getRecordsCount();
+        productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode);
+		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
+        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+    }
+    
+    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
+        
+        var productService = getProductService();
+        var productMap = {};
+        var skuIDsToQuery = "";
+        var index = 1;
+        var skuCurrencyCode = arguments.currencyCode; 
+    	var imageService = getService('ImageService');
+
+        if(isNull(arguments.records) || !arrayLen(arguments.records)){
+            return [];
+        } 
+        
+        if(arguments.priceGroupCode == 3 || arguments.priceGroupCode == 1){
+            var upgradedPriceGroupCode = 2;
+            var upgradedPriceGroupID = "c540802645814b36b42d012c5d113745";
+        } else{
+            var upgradedPriceGroupCode = 3;
+            var upgradedPriceGroupID = "84a7a5c187b04705a614eb1b074959d4";
+        }
+        
+        //Looping over the collection list and using helper method to get non persistent properties
+        for(var record in arguments.records){
+            productMap[record.defaultSku_skuID] = {
+                'skuID': record.defaultSku_skuID,
+                'personalVolume': record.defaultSku_skuPrices_personalVolume,
+                'price': record.defaultSku_skuPrices_price,
+                'productName': record.productName,
+                'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
+                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
+                'priceGroupCode': arguments.priceGroupCode,
+                'upgradedPricing': '',
+                'upgradedPriceGroupCode': upgradedPriceGroupCode
+            };
+            //add skuID's to skuID array for query below
+            skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
+        }
+        
+        //Query skuPrice table to get upgraded skuPrices for skus in above collection list
+         var upgradedSkuPrices = QueryExecute("SELECT price, skuID FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode AND activeFlag = 1",{
+            skuIDs = {value=skuIDsToQuery, list=true, cfsqltype="cf_sql_varchar"}, 
+            upgradedPriceGroup = {value=upgradedPriceGroupID, cfsqltype="cf_sql_varchar"},
+            currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
+        });     
+
+        //Add upgraded sku prices into the collection list 
+        for(price in upgradedSkuPrices){
+            var skuID = price['skuID'];
+            var product = productMap[skuID];
+            product.upgradedPricing = price;
+        }
+        return productMap;
+    }
+    
+    public any function addEnrollmentFee(){
+        var account = getHibachiScope().getAccount();
+        
+        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+            if(account.getAccountType() == 'VIP'){
+                var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+                return addOrderItem({skuID:VIPSkuID, quantity: 1});
+            }else if(account.getAccountType() == 'marketPartner'){
+                var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
+                return addOrderItem({skuID:MPSkuID, quantity: 1});
+            }
+            
+        }
+    }
+    
+    public any function getMoMoneyBalance(){
+        var account = getHibachiScope().getAccount();
+        var paymentMethods = account.getAccountPaymentMethods();
+        var balance = 0;
+        
+        for(method in paymentMethods){
+            balance += method.getMoMoneyBalance();
+        }
+        arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
+    }
+    
+    public any function getOrderTemplateItemsLight(){
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.priceGroupCode" default="2";
+        
+        if(isNull(arguments.data.orderTemplateID)){
+            return;
+        }
+        
+        if(arguments.data.priceGroupCode == 1){
+            var priceGroupID = "045f95c3ab9d4a73bcc9df7e753a2080";
+        } else if(arguments.data.priceGroupCode == 2){
+            var priceGroupID = "c540802645814b36b42d012c5d113745";
+        }else{
+            var priceGroupID = "84a7a5c187b04705a614eb1b074959d4";
+        }
+            
+    	var orderTemplateItems = [];
+    	var productService = getService('productService');
+    	var imageService = getService('ImageService');
+
+    	
+        var orderTemplateItemsQueryList = QueryExecute("
+            SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle, swo.calculatedTotal
+            FROM swordertemplateitem oti
+            INNER JOIN swordertemplate swo ON oti.orderTemplateID = swo.orderTemplateID
+            LEFT JOIN swsku s ON oti.skuID = s.skuID
+            INNER JOIN swproduct pd ON pd.productID = s.productID
+            INNER JOIN swskuprice p ON p.skuID = oti.skuID
+            WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
+            GROUP BY skuID;
+            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}}
+        );
+        
+        
+        for(var item in orderTemplateItemsQueryList){
+    		 arrayAppend(orderTemplateItems,{
+                'skuID' : item.skuID,
+                'price' : item.price,
+                'productName' : item.productName,
+                'quantity' : item.quantity,
+                'skuImagePath' : imageService.getResizedImageByProfileName(item.skuID,'small'), //TODO: find a faster method
+                'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
+                'orderTemplateID' :	item.orderTemplateID,
+                'orderTemplateItemID' : item.orderTemplateItemID,
+                'orderTemplatePrice' : item.calculatedTotal
+            });
+        }
+            
+            
+		arguments.data['ajaxResponse']['orderTemplateItems'] = orderTemplateItems;
+    }
+
 }

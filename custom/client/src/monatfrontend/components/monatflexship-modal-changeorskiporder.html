@@ -79,7 +79,7 @@
 						id="change-flexship"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.selectedReason"
 						ng-change="monatFlexshipChangeOrSkipOrderModal.selectedReasonChanged()"
-						ng-options="reason as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions track by reason.value"
+						ng-options="reason.value as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions"
 						placeholder="{{
 							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
 						}}"
