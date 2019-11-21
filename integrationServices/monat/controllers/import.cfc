@@ -1822,7 +1822,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
                             newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");//*
                             newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );//*
-                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );//*
+                            newOrderPayment.setCreditCardLastFour( right(orderPayment['CheckCCAccount'], 4)?:"" );//*
                             
                             //If another type
                             newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");//*
@@ -2987,7 +2987,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
                             newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");//*
                             newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );//*
-                            newOrderPayment.setCreditCardLastFour( orderPayment['CheckCCAccount']?:"" );//*
+                            newOrderPayment.setCreditCardLastFour( right(orderPayment['CheckCCAccount'], 4)?:"" );//*
                             
                             //If another type
                             newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");//*
