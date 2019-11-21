@@ -52,6 +52,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": "2019-10-01T19:16:28.693Z",
+			    "EndDate": "2019-10-20T19:16:28.693Z"
 			}
 		};
 		
@@ -210,6 +214,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		/*
+		"Filters": {
+		    "StartDate": "2019-10-01T19:16:28.693Z",
+		    "EndDate": "2019-10-20T19:16:28.693Z"
+		  },
+		*/
 		
 		while (pageNumber < pageMax){
 			
@@ -219,7 +229,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    pageNumber++;
     		    continue;
     		}
-    		//writedump(accountsResponse);abort;
+    		
     		var accounts = accountsResponse.Data.Records;
     		var index=0;
     		
@@ -250,6 +260,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
+        				echo("Could not find this account to update: Account number #account['AccountNumber']#");
         				continue;
         			}
         			
@@ -265,13 +276,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }*/
                     
                     // SponsorNumber
-                    if (!isNull(account['AccountNumber']) && !isNull(account['SponsorNumber']) && len(account['AccountNumber']) && len(account['SponsorNumber']) && account['AccountNumber'] != account['SponsorNumber']){
+                    
+                    if (!isNull(account['AccountNumber']) && 
+                    	!isNull(account['SponsorNumber']) && 
+                    	len(account['AccountNumber']) && 
+                    	len(account['SponsorNumber']) && 
+                    	account['AccountNumber'] != account['SponsorNumber'] &&
+                    	foundAccount.getSponsorIDNumber() != account['SponsorNumber']){
                     	var notUnique = false;
                     	
                     	try{
                     		var newSponsorAccount = getService("AccountService")
                     			.getAccountByAccountNumber(account['SponsorNumber']);
-                    		var childAccount = newAccount;
+                    		var childAccount = foundAccount;
                     		var sponsorAccount =foundAccount.getOwnerAccount();
                     	}catch(nonUniqueResultException){
                     		//not unique
@@ -303,11 +320,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
 	                    	}
 	                    	
-	                    	newAccount.setOwnerAccount(sponsorAccount);
+	                    	foundAccount.setOwnerAccount(sponsorAccount);
                     	}
                     }
                     
-                    // EnrollerNumber (Note: What is this mapping to?)
+                    // EnrollerNumber (Note: What is this mapping to?) This is the same as sponsor number.
                     /*if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
                     	foundAccount.setAccountNumber( account['EnrollerNumber']?:"" );//this shouldn't change if its account number...
                     }*/
@@ -315,12 +332,38 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     //Account Type
                     if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
                     	//set the accountType from this. Needs to be name or I need to map it.
-                    	foundAccount.setAccountType( account['AccountTypeCode']?:"" );
+                    	/*
+                    	Monat
+                    	D - Market Partner
+						P - VIP
+						C - Retail Customer
+						E - Employee
+						
+						Slatwall versions:
+						 business       
+						 customer       
+						 Employee       
+						 individual     
+						 marketPartner  
+						 retail         
+						 Unassigned     
+						 vip  
+                    	*/
+                    	if (account['AccountTypeCode'] == "D"){ 
+                    		foundAccount.setAccountType( "marketPartner" );
+                    	}else if(account['AccountTypeCode'] == "P"){
+                    		foundAccount.setAccountType( "vip" );
+                    	}else if(account['AccountTypeCode'] == "C"){
+                    		foundAccount.setAccountType( "retail" );
+                    	}else if(account['AccountTypeCode'] == "E"){
+                    		foundAccount.setAccountType( "Employee" );
+                    	}
+                    	
                     }
                     
                     //EntryPeriod (What is this mapping to)
                     if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
-                    	foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
+                    	//foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
                     }
                     
                     //FlagAccountTypeCode (C,L,M,O,R)
@@ -331,14 +374,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     // GovernmentNumber (We will also need government type code?)
                     // Will this be plain text? Lookup by the government number.
-                    if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
+                    // We will need the encrypted number sent as well. And, some other information.
+                    // Commenting this out until we have those things.
+                    /*if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
                     	
                     	//Find or create a government id and set the number.
                     	if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
 	                    	// lookup the id
 	                    	var isNewGovernementNumber = false;
 	                    	try{
-	                    		var accountGovernmentID = getAccountService().getAccountGovernementIdByGovernmentTypeAndGovernmentIdLastFour({1:account['GovermentTypeCode']?:"",2:account['GovermentNumber']})
+	                    		var accountGovernmentID = getAccountService().getAccountGovernementIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovermentTypeCode']?:"",2:account['GovermentNumber']});
 	                    	} catch(governmentLookupError){
 	                    		isNewGovernmentNumber = true;
 	                    	}
@@ -347,19 +392,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	if (isNewGovernementNumber){
 	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
 	                    	}
-		                    
-		                    accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
+		                    accountGovernmentID.setAccount(foundAccount);
+		                    //accountGovernmentID.setGovermentType(account['GovermentTypeCode']?:"");//*
 		                    accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
 		                    
 		                    //insert the relationship
 		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
                     	}
-                    }
+                    }*/
                     
                     //CareerTitleCode
                     foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
                     
-                    ormStatelessSession.update("SlatwallAccount", newAccount);
+                    ormStatelessSession.update("SlatwallAccount", foundAccount);
 
     			}
     			
@@ -2919,6 +2964,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     // Create an account email address for each email.
                     if (structKeyExists(order, "Payments") && arrayLen(order.Payments)){
+                    	
                         for (var orderPayment in order.Payments){
                         	var calculatedRemoteID = orderPayment['orderPaymentID']&orderPayment['PaymentNumber'];
                         	var newOrderPayment = getOrderService().getOrderPaymentByRemoteID(calculatedRemoteID, false);
