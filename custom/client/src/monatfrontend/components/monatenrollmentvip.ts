@@ -60,10 +60,6 @@ class VIPController {
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
-		if(localStorage.getItem('accountID')){
-	    	this.getProductList();
-		}
-		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
@@ -228,14 +224,10 @@ class VIPController {
     
     public getFlexshipDetails = () => {
     	this.loading = true;
-        const flexshipID = this.flexshipID;
-        this.orderTemplateService.getOrderTemplatesItemsLight(flexshipID, this.accountPriceGroupCode).then(result => {
+    
+        this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = this.flexshipItemList.length ? this.flexshipItemList[0].orderTemplatePrice : "";
-			
-			for(let item of this.flexshipItemList){
-				item['total'] = item.quantity * item.price;
-			}
 			this.observerService.notify('onNext');
         	this.loading = false;
         });
