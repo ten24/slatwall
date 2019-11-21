@@ -659,11 +659,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
         
         var productService = getProductService();
-        var productList = [];
+        var productMap = {};
         var skuIDsToQuery = "";
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
-        
+    	var imageService = getService('ImageService');
+
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
         } 
@@ -675,38 +676,38 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var upgradedPriceGroupCode = 3;
             var upgradedPriceGroupID = "84a7a5c187b04705a614eb1b074959d4";
         }
-
+        
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            arrayAppend(productList,{
+            productMap[record.defaultSku_skuID] = {
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
-                'skuImagePath': record.defaultSku_imageFile,
+                'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode
-            });
+            };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
         }
-
+        
         //Query skuPrice table to get upgraded skuPrices for skus in above collection list
-         var upgradedSkuPrices = QueryExecute("SELECT price FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode",{
+         var upgradedSkuPrices = QueryExecute("SELECT price, skuID FROM swskuprice WHERE skuID IN(:skuIDs) AND priceGroupID =:upgradedPriceGroup AND currencyCode =:currencyCode AND activeFlag = 1",{
             skuIDs = {value=skuIDsToQuery, list=true, cfsqltype="cf_sql_varchar"}, 
             upgradedPriceGroup = {value=upgradedPriceGroupID, cfsqltype="cf_sql_varchar"},
             currencyCode = {value=skuCurrencyCode, cfsqltype="cf_sql_varchar"},
-        });           
+        });     
 
         //Add upgraded sku prices into the collection list 
         for(price in upgradedSkuPrices){
-            productList[index].upgradedPricing = price;
-            index++
+            var skuID = price['skuID'];
+            var product = productMap[skuID];
+            product.upgradedPricing = price;
         }
-        
-        return productList;
+        return productMap;
     }
     
     public any function addEnrollmentFee(){

@@ -25,6 +25,7 @@ class VIPController {
 	public flexshipFrequencyHasErrors: boolean = false;
 	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
+	public recordsCount;
 	public flexshipTotal:number = 0;
 	
 	// @ngInject
@@ -59,9 +60,11 @@ class VIPController {
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
-    	this.observerService.attach(this.getFlexshipDetails,"lastStep");
+    	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
+    	this.observerService.attach(this.getProductList,"createSuccess");
+
 		this.localStorageCheck(); 
 		if(this.isNotSafariPrivate){
 			this.observerService.attach((accountAddress)=>{
@@ -173,9 +176,11 @@ class VIPController {
 	
 	public getProductList = () => {
 		this.loading = true;
-		this.publicService.doAction('getProductsByCategoryOrContentID', { 'priceGroupCode': this.accountPriceGroupCode, 'currencyCode': this.currencyCode }).then((result) => {
-			this.productList = result.productList;
-			this.loading = false;
+		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
+            this.productList = result.productList;
+            this.recordsCount = result.recordsCount;
+			this.observerService.notify('PromiseComplete');
+            this.loading = false;
 		});
 	};
 

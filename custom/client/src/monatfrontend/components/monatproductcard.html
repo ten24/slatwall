@@ -34,11 +34,11 @@
             
             <!--- Link to product if not enrollment type --->
             <a ng-if="monatProductCard.type != 'enrollment'" class="d-block" ng-href="{{monatProductCard.product.skuProductURL}}">
-                <img ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
+                <img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
             </a>
             
             <!--- Launch quick shop modal if enrollment type --->
-            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath}}" width="240" height="270">
+            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
            
         </figure>
       
