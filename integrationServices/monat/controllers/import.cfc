@@ -2722,7 +2722,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        /**
 			         * Create order comments if needed. 
 			         **/
-			        /*if (!isNull(order['Comments'])){
+			        if (!isNull(order['Comments'])){
 			        	
 			        	var comment = getCommentService().getCommentByRemoteID(order["OrderID"]);
 			        	if (isNull(comment)){
@@ -2743,7 +2743,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	}else{
 			        		ormStatelessSession.update("SlatwallComment", comment); 
 			        	}
-			        }*/
+			        }
 			        
 			        // set the currency code on the order...
 			        var countryCode = "USA";
