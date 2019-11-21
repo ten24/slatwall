@@ -212,8 +212,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		}
     		//writedump(accountsResponse);abort;
     		var accounts = accountsResponse.Data.Records;
-    		
-    		var transactionClosed = false;
     		var index=0;
     		
     		
@@ -1394,7 +1392,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied);
 			        }
 			        
-			        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
+			        //newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
 			        
 			        // *** This must be a payment transaction either + or - added to the payment.
@@ -1453,9 +1451,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                         }
                     }
                     
-                    // Snapshot the accountType on the order
-                    newOrder.setAccountType(order['AccountTypeName']?:""); //* Pending upsert
-                    
                     /**
                      * Sets the order created site. 
                      **/
@@ -1478,8 +1473,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    }
                     }
                     
-                    if (structKeyExists(order,'accountType') && len(order['accountType'])){
-	                    newOrder.setAccountType(order['accountType']);
+                    if (structKeyExists(order,'AccountTypeName') && len(order['AccountTypeName'])){
+	                    newOrder.setAccountType(order['AccountTypeName']);
                     }
                     
                     /**
@@ -1803,9 +1798,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			var orderDelivery = new Slatwall.model.entity.OrderDelivery();
                 			orderDelivery.setOrder(newOrder);
                 			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
-                			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
+                			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
                 			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
                 			orderDelivery.setRemoteID( shipment.shipmentId );
+                			//orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+                			//orderDelivery.setUndeliverableDateTime(shipment['UndeliveredOrderDate']);
                 			
                 			ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery);
                 		    
@@ -1819,6 +1816,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 		    		//concatCarriorCode = listAppend(concatCarriorCode, packages.CarriorCode);
                 		    		if (!isNull(packages['ScanDate'])){
                 		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+                		    		}
+                		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
+                		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
                 		    		}
                 		    	 }
                 		    }
@@ -1841,12 +1841,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			
 	                			//Added these 3 per Sumit.
 	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']);//ADD
-                				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
+                				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']);//ADD
+                				orderFulfillment.setFulfillmentCharge( order['FreightAmount'] );
                 				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
                 				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
-                				
-                				
-                				//orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
                 				
 	                			//set the verifiedAddressFlag if verified.
 	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
@@ -2534,22 +2532,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	}
 			        }
 			        
-			        newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
+			        //newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
 			        
 			        // *** This must be a payment transaction either + or - added to the payment.
-			        
-			        
-			        
-			        
-			        //newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);on fulfillment instead
 			        
 			        //RMAOrigOrderNumber
 			        if (!isNull(order['RMAOrigOrderNumber'])){
 			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        }
-			        
-			        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        
 			        // Only for order type C return orders
 			        //newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
@@ -2590,7 +2581,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     // Snapshot the accountType on the order
-                    newOrder.setAccountType(account['AccountTypeName']?:""); //*
+                    newOrder.setAccountType(order['AccountTypeName']?:""); //*
                     
                     /**
                      * Sets the order created site. 
@@ -2677,7 +2668,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        /**
 			         * Create order comments if needed. 
 			         **/
-			        if (!isNull(order['Comments'])){
+			        /*if (!isNull(order['Comments'])){
 			        	
 			        	var comment = getCommentService().getCommentByRemoteID(order["OrderID"]);
 			        	if (isNull(comment)){
@@ -2698,7 +2689,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	}else{
 			        		ormStatelessSession.update("SlatwallComment", comment); 
 			        	}
-			        }
+			        }*/
 			        
 			        // set the currency code on the order...
 			        var countryCode = "USA";
@@ -3031,6 +3022,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			orderDelivery.setShipmentSequence(shipment.orderShipSequence);//Add this
                 			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
                 			orderDelivery.setRemoteID( shipment.shipmentId );
+                			//orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
                 			
                 			if (orderDelivery.getNewFlag()){
                 				ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery);
@@ -3048,6 +3040,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 		    		//concatCarriorCode = listAppend(concatCarriorCode, packages.CarriorCode);
                 		    		if (!isNull(packages['ScanDate'])){
                 		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+                		    		}
+                		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
+                		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
                 		    		}
                 		    	 }
                 		    }
@@ -3071,15 +3066,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			orderFulfillment.setFulfillmentMethod(shippingFulfillmentMethod);//Shipping Type
 	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
 	                			orderFulfillment.setManualHandlingFeeFlag(true);//*
+	                			orderFulfillment.setFulfillmentCharge( order['FreightAmount'] );
 	                			
 	                			//Added these 3 per Sumit.
 	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']);//ADD
+	                			orderFulfillment.setFulfillmentCharge( order['FreightAmount'] );
                 				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
                 				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
                 				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
-                				
-                				
-                				//orderFulfillment.setShipmentTypeCode(shipment['ShipTypeCode']);
                 				
 	                			//set the verifiedAddressFlag if verified.
 	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
