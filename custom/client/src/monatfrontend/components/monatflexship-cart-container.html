@@ -51,13 +51,13 @@
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
-						<a href="#">
-							<img ng-src="item.sku_imagePath" alt="" />
+						<a ng-href="{{item.skuProductURL}}">
+							<img ng-src="{{item.sku.imagePath}}" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku_product_productName"></span>
+						<a ng-href="{{item.skuProductURL}}">
+							<span class="text-dark" ng-bind="item.sku_product_productName"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">
