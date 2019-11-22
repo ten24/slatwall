@@ -284,7 +284,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		var receipts = receiptResponse.Data.Records;
     		var index=0;
     		
-    		
     		try{
     			var tx = ormStatelessSession.beginTransaction();
     			
@@ -293,17 +292,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         		    
         			// Create a new account and then use the mapping file to map it.
         			if (!isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1){
-        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'] );
+        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'], false );
         			}
         			
         			if (isNull(foundOrder)){
         				pageNumber++;
-        				echo("Could not find this order to update: Order number #order['OrderNumber']#");
+        				echo("Could not find this order to update: Order number #cashReceipt['OrderNumber']?:'null'#<br>");
         				continue;
         			}
         			
         			//Create a comment and add it to the order.
-        			if (!isNull(cashReceipt['Comment'])){
+        			if (!isNull(cashReceipt['Comment']) && !isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1 ){
 			        	
 			        	var comment = new Slatwall.model.entity.Comment();
 			        	var commentRelationship = new Slatwall.model.entity.CommentRelationship();
@@ -350,7 +349,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	var commentText = "";
 			        	commentText = "#cashReceipt.ReceiptNumber?:''# #cashReceipt.OrderNumber?:''# #cashReceipt.EntryDate?:''# #cashReceipt.UserInitials?:''# #cashReceipt.CommissionPeriod?:''# #cashReceipt.MCRReason?:''# #cashReceipt.Comment?:''# #cashReceipt.Amount?:''#";
 			        	
-			        	comment.setComment(cashReceipt);
+			        	comment.setComment(commentText);
 			        	comment.setPublicFlag(false);
 			        	comment.setCreatedDateTime(now());
 			        	
@@ -2219,7 +2218,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			                        			         * 
 			                        			         **/
 			                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
-			                        			        orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
+			                        			        //Add this
+			                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
 			                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
 			                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
 			                        			        
