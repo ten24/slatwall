@@ -193,10 +193,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
         
         if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
-            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime); 
+            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
@@ -377,6 +378,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
@@ -433,6 +435,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {}
 				};
 			}
@@ -735,8 +738,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
   
         if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
-        if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
+        if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         
+        
+        getHibachiScope().logHibachi("getProductsByCategoryOrContentID: #productCollectionList.getHQL()#", true);
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
@@ -826,6 +831,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+
+
     public any function getOrderTemplateItemsLight(){
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.priceGroupCode" default="2";
