@@ -47,6 +47,27 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    public any function configExternalHyperWallet(required struct data) {
+        var accountPaymentMethods = getHibachiScope().getAccount().getAccountPaymentMethods();
+        
+        for(var paymentMethod in accountPaymentMethods) {
+            if(paymentMethod.getMoMoneyWallet() === true) {
+                if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getPaymentMethodID();
+                }
+                else{
+                    this.addErrors(arguments.data, "Insufficient Balance");
+                }
+            }
+        }
+        
+        if(!structKeyExists(arguments.data['ajaxResponse'],'hyperWalletPaymentMethod'))
+        {
+            this.addErrors(arguments.data, "Hyperwallet is not configured for your account.");
+        }
+        
+    }
+    
     public any function configExternalPayPal(required struct data) {
         //Configure PayPal
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');

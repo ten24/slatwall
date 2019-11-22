@@ -2,7 +2,8 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
-
+    isHyperWalletAvailable:boolean = true;
+    hyperWalletMethod:string = "";
 	// @ngInject
 	constructor(
 		public publicService,
@@ -18,8 +19,20 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
-	public configExternalPayPalMethod()
-	{
+	public loadHyperWallet() {
+	    this.publicService.doAction('configExternalHyperWallet').then(response => {
+    		if(!response.hyperWalletPaymentMethod) {
+    		    //this.isHyperWalletAvailable = false;
+			    console.log("Error in configuring Hyperwallet.");
+			    return;
+			}
+			
+			//this.isHyperWalletAvailable = false;
+			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletPaymentMethod;
+    	});
+	}
+	
+	public configExternalPayPalMethod() {
 	    this.publicService.doAction('configExternalPayPal').then(response => {
     		if(!response.paypalClientConfig) {
 			    console.log("Error in configuring Paypal client.");
