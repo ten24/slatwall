@@ -23,6 +23,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
 	
 	// @hint helper function to return a Setting
@@ -42,6 +43,60 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 2, '.'));
 	}
+	
+	/**
+	 * {
+	        "AccountNumber": "1096492",
+	        "UserInitials": "ZAN",
+	        "CommissionPeriod": "201907",
+	        "MCRReason": null,
+	        "ReceiptTypeCode": "2",
+	        "ReceiptTypeName": "Cash",
+	        "MiscCashReceiptId": 1,
+	        "ReceiptNumber": 18549,
+	        "ReceiptDate": "2019-08-03T00:00:00",
+	        "EntryDate": "2018-07-07T00:00:00",
+	        "CcAccountNumber": "",
+	        "PreAuthTransit": "",
+	        "Amount": 20.95,
+	        "AuthorizationDate": null,
+	        "Comment": "Mix & Match Refund Order 5129667",
+	        "ReferenceNumber": "",
+	        "OrderNumber": null
+        }
+	 **/
+	private any function getCashReceiptsData(pageNumber,pageSize){ 
+		
+		var uri = "https://api.monatcorp.net:8443/api/Slatwall/queryMCR";
+		var authKeyName = "authkey";
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+		
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		accountJson = httpService.send().getPrefix();
+		
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			echo("Could not import cash receipts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+		
+		return accountsResponse;
+		
+	}
+	
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
@@ -197,11 +252,135 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return fsResponse;
 	}
 	
+	
+	
 	public any function getDateFromString(date) {
 		return	createDate(
 			datePart("yyyy",date), 
 			datePart("m",date),
 			datePart("d",date));
+	}
+	
+	public void function importCashReceiptsToOrders(rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		while (pageNumber < pageMax){
+			
+    		var receiptResponse = getCashReceiptsData(pageNumber, pageSize);
+    		if (receiptResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var receipts = receiptResponse.Data.Records;
+    		var index=0;
+    		
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var cashReceipt in receipts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			if (!isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1){
+        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'] );
+        			}
+        			
+        			if (isNull(foundOrder)){
+        				pageNumber++;
+        				echo("Could not find this order to update: Order number #order['OrderNumber']#");
+        				continue;
+        			}
+        			
+        			//Create a comment and add it to the order.
+        			if (!isNull(cashReceipt['Comment'])){
+			        	
+			        	var comment = new Slatwall.model.entity.Comment();
+			        	var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+			        	comment.setRemoteID(cashReceipt["OrderNumber"]);
+			        	
+			        	
+			        	//build the comment
+			        	/**
+			        	 * 
+			        	 * Comment Structure Example:  
+			        	 * Receipt Number: 34542. Order Number: 10157652. 
+			        	 * Entered: 07/15/19. 
+			        	 * Initials: KYR. 
+			        	 * Commission Period: 07/2019. 
+			        	 * MCR Reason: 2-Shipping Refund. 
+			        	 * Comments: Shipping error refund for order#10157652. 
+			        	 * Amount: $20.55. 
+			        	 * Payment Account: 1945. 
+			        	 * Authorization: SUCCESS. 
+			        	 * ReferenceNumber: 1524825-4815845636
+			        	 
+			        	   Api results
+			        	   {
+				                "AccountNumber": "1096492",
+				                "UserInitials": "ZAN",
+				                "CommissionPeriod": "201907",
+				                "MCRReason": null,
+				                "ReceiptTypeCode": "2",
+				                "ReceiptTypeName": "Cash",
+				                "MiscCashReceiptId": 1,
+				                "ReceiptNumber": 18549,
+				                "ReceiptDate": "2019-08-03T00:00:00",
+				                "EntryDate": "2018-07-07T00:00:00",
+				                "CcAccountNumber": "",
+				                "PreAuthTransit": "",
+				                "Amount": 20.95,
+				                "AuthorizationDate": null,
+				                "Comment": "Mix & Match Refund Order 5129667",
+				                "ReferenceNumber": "",
+				                "OrderNumber": null
+				            }
+			        	 
+			        	 **/
+			        	var commentText = "";
+			        	commentText = "#cashReceipt.ReceiptNumber?:''# #cashReceipt.OrderNumber?:''# #cashReceipt.EntryDate?:''# #cashReceipt.UserInitials?:''# #cashReceipt.CommissionPeriod?:''# #cashReceipt.MCRReason?:''# #cashReceipt.Comment?:''# #cashReceipt.Amount?:''#";
+			        	
+			        	comment.setComment(cashReceipt);
+			        	comment.setPublicFlag(false);
+			        	comment.setCreatedDateTime(now());
+			        	
+		        		ormStatelessSession.insert("SlatwallComment", comment); 
+		        		commentRelationship.setOrder( foundOrder );
+		        		commentRelationship.setComment( comment );
+		        		
+		        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+			        	
+			        }
+        			
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Receipt Data ) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
 	}
 	
 	public void function importDailyAccountUpdates(rc){  
