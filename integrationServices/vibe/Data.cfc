@@ -76,6 +76,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 
     	httpRequest.addParam(type='header', name='auth-token', value= setting('apikey') );
     	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
+    	httpRequest.addParam(type='body', value="#SerializeJson(requestData)#");
     	
 		for(var key in requestData) {
 			if( !isNull(requestData[key]) ) {
@@ -85,38 +86,27 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		
 		var rawRequest = httpRequest.send().getPrefix();
 		
-		try {
-			var response = DeserializeJson(rawRequest.fileContent);
-			if(!IsSimpleValue(response)) {
-				if(structKeyExists(response, 'success')) {
-					return response; //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
-				} else if( structKeyExists(response, 'message') ) {
-					throw("Message: #response.messages#");
-				}
-			} else {
-				throw("Not Json");	
-			} 	
-		} catch (var e) {
-			throw("Error: #e.message#, #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
-		}
-		throw("Unknown Error Attr: #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#,  Response: #rawRequest.fileContent#");
+		if(IsJson(rawRequest.fileContent)) {
+			return DeSerializeJson(rawRequest.fileContent); //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+		} else {
+			return {"status":"error", "message" : "Error: Not valid JSON, Request - Att: #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#, Response: #rawRequest.fileContent#"};
+		} 
 	}
 
 	
 	public void function pushData(required any entity, struct data ={}) {
+	
+		//push to remote endpoint
+		var vibeResponse = postRequest(arguments.data.payload);
 		
-		try{
-			//push to remote endpoint
-			var vibeResponse = postRequest(arguments.data.payload);
-			dump("Response : #SerializeJson(vibeResponse)#");
+		if( vibeResponse.status == 'success' && StructKeyExist(vibeResponse ,'id') && len( trim(vibeResponse.id) ) ) {
 			//update the account
 			arguments.entity.setVibeUserID(vibeResponse.id);
-			
-		} catch (var e) {
-			dump("Error : #e.message#");
-			writelog(file='vibe', text="#e.message#");
-		}	
-
+		} else {
+			writelog(file='vibe', text="#SerializeJson(vibeResponse)#");
+		}
+		//TODO reomove, dumping for testing
+		dump("Response : #SerializeJson(vibeResponse)#");
 	}
 
 }
