@@ -1506,12 +1506,27 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        }
 			        
+			        
+			        //Sets the reasons if they exist.
+			        if (!isNull(order['RMACSReasonNumber'])){
+			        	newORder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['RMACSReasonNumber']))
+			        }
+			        
+			        if (!isNull(order['RMAOpsReasonNumber'])){
+			        	newORder.setSecondaryReasonType(getTypeService().getTypeByTypeCode(order['RMAOpsReasonNumber']))
+			        }
+			        
+			        if (!isNull(order['ReplacementReasonNumber'])){
+			        	newORder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['ReplacementReasonNumber']))
+			        }
+			        
 			        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        
-			        // Only for order type C return orders
+			        // Only for order type C return orders. Turn on once they add these to the webservice mapped to the correct type.
 			        //newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
 			        //newOrder.setRmaOPSReasonDescription( order['RMAOpsReasonDescription']?:"" ); //add this field
 			        //newOrder.setReplacementReasonDescription( order['ReplacementReasonDescription']?:"" ); //add this field
+			        
 			        /**
 			         * Create the rma types
 			         **/
@@ -2019,8 +2034,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			                        			        orderDeliveryItem.setOrderItem( oi );//*
 			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
 			                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
+			                        			        
+			                        			        /**
+			                        			         * Discuss this with Sumit to figure out how we are going to support this.
+			                        			         * 
+			                        			         **/
 			                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
-			                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
+			                        			        orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
 			                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
 			                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
 			                        			        
@@ -2243,7 +2263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						
 						//add a date field for this.
 						if (!isNull(flexship['DateLastGenerated']) && len(flexship['DateLastGenerated'])){
-							orderTemplate.setLastGeneratedDate( getDateFromString(flexship['DateLastGenerated'] ));
+							orderTemplate.setLastGeneratedDateTime( getDateFromString(flexship['DateLastGenerated'] ));
 						}
 						
 						//set created and modified date times.
@@ -2500,7 +2520,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					ormStatelessSession.close();
 				}
 			}
-
+				this.logHibachi('Import (Flexship Upsert) Page #pageNumber# completed ', true);
 		    pageNumber++;
 
 		}//end pageNumber
@@ -3264,7 +3284,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			                        			        orderDeliveryItem.setRemoteID( shipmentItem.ShipmentDetailId?:"" );//*
 			                        			        orderDeliveryItem.setQuantity( shipmentItem.quantityShipped );//*
 			                        			        //orderDeliveryItem.setQuantityRemaining( shipmentItem.quantityRemaining);
-			                        			        //orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
+			                        			        orderDeliveryItem.setQuantityBackOrdered( shipmentItem.quantityBackOrdered);
 			                        			        //orderDeliveryItem.setPackageNumber( shipmentItem.PackageNumber?:"" );//create
 			                        			        //orderDeliveryItem.setPackageItemNumber( shipmentItem.PackageItemNumber?:"" );//create
 			                        			        

@@ -118,7 +118,11 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	
+	property name="lastGeneratedDateTime" ormtype="timestamp";
+	property name="deletedDateTime" ormtype="timestamp";
+	property name="canceledCode" ormtype="string";
+	property name="lastOrderNumber" ormtype="string";
+	property name="priceLevelCode" ormtype="string";
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
