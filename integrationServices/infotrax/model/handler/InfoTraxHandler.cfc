@@ -11,9 +11,25 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	public void function onEvent(required any eventName, required struct eventData={}){
 		
-		try{
+		
+		 try{
 			//Only focus on entity events
 			if(!structKeyExists(arguments,'entity')){
+				return;
+			}
+			
+			// Sync any pending order
+			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess'){
+				var orders = getService('infoTraxService').pendingPushOrders(arguments.entity.getPrimaryIDValue());
+				for(var order in orders){
+					getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+						baseID          = order['orderID'],
+						baseObject      = 'Order',
+						processMethod   = 'push',
+						entityQueueData = { 'event' = 'afterOrderSaveSuccess' },
+						integrationID   = getIntegration().getIntegrationID()
+					);
+				}
 				return;
 			}
 	
