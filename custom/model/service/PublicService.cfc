@@ -53,7 +53,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var paymentMethod in accountPaymentMethods) {
             if(paymentMethod.getMoMoneyWallet() === true) {
                 if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
-                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getAccountPaymentMethodID();
                 }
                 else{
                     this.addErrors(arguments.data, "Insufficient Balance");
