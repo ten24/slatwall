@@ -378,13 +378,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile
 		');
-
+		//	sku.skuPrices.personalVolume,
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
@@ -412,6 +411,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
+		
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 
 			
@@ -435,7 +435,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
+					'personalVolume': 0,
 					'productTypes': {}
 				};
 			}
