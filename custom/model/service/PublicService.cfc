@@ -93,7 +93,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
     }
     
-    public any function authorizePaypal(required struct data) {
+    public any function authorizePayPal(required struct data) {
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
 
@@ -108,7 +108,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		else {
 		    //Create a New One
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
-            accountPaymentMethod.setAccountPaymentMethodName("Paypal - Braintree");
+            accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
@@ -116,7 +116,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
-            arguments.data['ajaxResponse']['newPaypalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
+            arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
             arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
 		}
 
@@ -125,9 +125,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
-            var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
-            arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
-            arguments.data.newOrderPayment.requireBillingAddress = 0;
+            var accountPaymentMethod = "";
+            accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
+            if(!isNull(accountPaymentMethod))
+            {
+                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
+                arguments.data.newOrderPayment.requireBillingAddress = 0;
+            }
+            
         }
 
         super.addOrderPayment(argumentCollection = arguments);

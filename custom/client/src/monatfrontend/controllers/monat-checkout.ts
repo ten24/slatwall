@@ -2,8 +2,6 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
-    isHyperWalletAvailable:boolean = true;
-    hyperWalletMethod:string = "";
 	// @ngInject
 	constructor(
 		public publicService,
@@ -22,12 +20,10 @@ class MonatCheckoutController {
 	public loadHyperWallet() {
 	    this.publicService.doAction('configExternalHyperWallet').then(response => {
     		if(!response.hyperWalletPaymentMethod) {
-    		    //this.isHyperWalletAvailable = false;
 			    console.log("Error in configuring Hyperwallet.");
 			    return;
 			}
 			
-			//this.isHyperWalletAvailable = false;
 			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletPaymentMethod;
     	});
 	}
@@ -35,15 +31,15 @@ class MonatCheckoutController {
 	public configExternalPayPalMethod() {
 	    this.publicService.doAction('configExternalPayPal').then(response => {
     		if(!response.paypalClientConfig) {
-			    console.log("Error in configuring Paypal client.");
+			    console.log("Error in configuring PayPal client.");
 			    return;
 			}
 			
-			this.configPaypal(response.paypalClientConfig);
+			this.configPayPal(response.paypalClientConfig);
     	});
 	}
 	
-	public configPaypal( paypalConfig ) {
+	public configPayPal( paypalConfig ) {
 		var that = this;
 		var CLIENT_AUTHORIZATION = paypalConfig.clientAuthToken;
         
@@ -83,13 +79,13 @@ class MonatCheckoutController {
                                 return;
                             }
                             
-							that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
-								if( !response.newPaypalPaymentMethod ) {
+							that.publicService.doAction('authorizePayPal', {paymentToken : payload.nonce}).then(response => {
+								if( !response.newPayPalPaymentMethod ) {
 								    console.log("Error in saving account payment method.");
 								    return;
 								}
 								
-								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
+								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
 									"copyFromType":"accountPaymentMethod",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});

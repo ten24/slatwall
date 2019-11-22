@@ -115,7 +115,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
     		//Create a New One
             var accountPaymentMethod = request.slatwallScope.getService('accountService').newAccountPaymentMethod();
-            accountPaymentMethod.setAccountPaymentMethodName("Paypal - Braintree");
+            accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
             accountPaymentMethod.setAccount( account );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
     	}
