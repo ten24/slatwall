@@ -69,7 +69,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	private struct function postRequest(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
-		requestURL &= 'createUser';
+		requestURL &= '/api/v1/etl/createUser';
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
@@ -77,13 +77,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
     	httpRequest.addParam(type='header', name='auth-token', value= setting('apikey') );
     	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
     	httpRequest.addParam(type='body', value="#SerializeJson(requestData)#");
-    	
-		for(var key in requestData) {
-			if( !isNull(requestData[key]) ) {
-				httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
-			}
-		}
-		
+
 		var rawRequest = httpRequest.send().getPrefix();
 		
 		if(IsJson(rawRequest.fileContent)) {
@@ -99,11 +93,15 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		//push to remote endpoint
 		var vibeResponse = postRequest(arguments.data.payload);
 		
-		if( vibeResponse.status == 'success' && StructKeyExist(vibeResponse ,'id') && len( trim(vibeResponse.id) ) ) {
+		if( StructKeyExists(vibeResponse ,'status')
+			&& vibeResponse.status == 'success' 
+			&& StructKeyExists(vibeResponse ,'id') 
+			&& len( trim(vibeResponse.id) ) 
+		) {
 			//update the account
 			arguments.entity.setVibeUserID(vibeResponse.id);
 		} else {
-			writelog(file='vibe', text="#SerializeJson(vibeResponse)#");
+			writelog( file='vibe', text="#SerializeJson(vibeResponse)#");
 		}
 		//TODO reomove, dumping for testing
 		dump("Response : #SerializeJson(vibeResponse)#");
