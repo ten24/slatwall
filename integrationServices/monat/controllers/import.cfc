@@ -260,7 +260,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			datePart("m",date),
 			datePart("d",date));
 	}
-	
+	/*
+		Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+	*/
 	public void function importCashReceiptsToOrders(rc){
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
@@ -361,6 +363,145 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	
 			        }
         			
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Receipt Data ) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
+	}
+	
+	/*
+		Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+	*/
+	public void function upsertCashReceiptsToOrders(rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		while (pageNumber < pageMax){
+			
+    		var receiptResponse = getCashReceiptsData(pageNumber, pageSize);
+    		if (receiptResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var receipts = receiptResponse.Data.Records;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var cashReceipt in receipts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			if (!isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1){
+        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'], false );
+        			}
+        			
+        			if (isNull(foundOrder)){
+        				pageNumber++;
+        				echo("Could not find this order to update: Order number #cashReceipt['OrderNumber']?:'null'#<br>");
+        				continue;
+        			}
+        			
+        			//Create a comment and add it to the order.
+        			if (!isNull(cashReceipt['Comment']) && !isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1 ){
+			        	
+			        	try{
+			        		var comment = getCommentService().getCommentByRemoteID(cashReceipt["OrderNumber"]);
+			        	}catch(commentError){
+			        		continue;
+			        	}
+			        	var commentIsNew = false;
+			        	
+			        	if (isNull(comment)){
+			        		commentIsNew = true;
+			        		var comment = new Slatwall.model.entity.Comment();
+			        		var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+			        		comment.setRemoteID(cashReceipt["OrderNumber"]);
+			        	}
+			        	
+			        	//build the comment
+			        	/**
+			        	 * 
+			        	 * Comment Structure Example:  
+			        	 * Receipt Number: 34542. Order Number: 10157652. 
+			        	 * Entered: 07/15/19. 
+			        	 * Initials: KYR. 
+			        	 * Commission Period: 07/2019. 
+			        	 * MCR Reason: 2-Shipping Refund. 
+			        	 * Comments: Shipping error refund for order#10157652. 
+			        	 * Amount: $20.55. 
+			        	 * Payment Account: 1945. 
+			        	 * Authorization: SUCCESS. 
+			        	 * ReferenceNumber: 1524825-4815845636
+			        	 
+			        	   Api results
+			        	   {
+				                "AccountNumber": "1096492",
+				                "UserInitials": "ZAN",
+				                "CommissionPeriod": "201907",
+				                "MCRReason": null,
+				                "ReceiptTypeCode": "2",
+				                "ReceiptTypeName": "Cash",
+				                "MiscCashReceiptId": 1,
+				                "ReceiptNumber": 18549,
+				                "ReceiptDate": "2019-08-03T00:00:00",
+				                "EntryDate": "2018-07-07T00:00:00",
+				                "CcAccountNumber": "",
+				                "PreAuthTransit": "",
+				                "Amount": 20.95,
+				                "AuthorizationDate": null,
+				                "Comment": "Mix & Match Refund Order 5129667",
+				                "ReferenceNumber": "",
+				                "OrderNumber": null
+				            }
+				            
+			        	 Format example: 
+			        	 Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+
+			        	 **/
+			        	 
+			        
+			        	var commentText = "";
+			        	commentText = "Receipt Number: #cashReceipt.ReceiptNumber?:''#. Order Number:#cashReceipt.OrderNumber?:''#. Entered: #cashReceipt.EntryDate?:''#. Initials: #cashReceipt.UserInitials?:''#. Commission Period: #cashReceipt.CommissionPeriod?:''#. MCR Reason: #cashReceipt.MCRReason?:''#. Comments: #cashReceipt.Comment?:''#. Amount: #dollarFormat(cashReceipt.Amount?:'0.00')#. ReferenceNumber: #cashReceipt.ReferenceNumber?:''#.";
+			        	
+			        	comment.setComment(commentText);
+			        	
+			        	if (commentIsNew){
+			        		ormStatelessSession.insert("SlatwallComment", comment); 
+			        		comment.setPublicFlag(false);
+			        		comment.setCreatedDateTime(now());
+			        		commentRelationship.setOrder( foundOrder );
+			        		commentRelationship.setComment( comment );
+			        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+			        	}else{
+			        		ormStatelessSession.update("SlatwallComment", comment); 
+			        	}
+        			}
     			}
     			
     			tx.commit();
