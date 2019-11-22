@@ -18,13 +18,22 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
-	
-	public configPaypal(orderCurrency, totalAmount, paymentMode, clientToken )
+	public configExternalPayPalMethod()
 	{
+	    this.publicService.doAction('configExternalPayPal').then(response => {
+    		if(!response.paypalClientConfig) {
+			    console.log("Error in configuring Paypal client.");
+			    return;
+			}
+			
+			this.configPaypal(response.paypalClientConfig);
+    	});
+	}
+	
+	public configPaypal( paypalConfig ) {
 		var that = this;
-		var CLIENT_AUTHORIZATION =clientToken;
+		var CLIENT_AUTHORIZATION = paypalConfig.clientAuthToken;
         
-        console.log("loading the paypal client");
         // Create a client.
         Braintree.client.create({
         	authorization: CLIENT_AUTHORIZATION
@@ -43,28 +52,26 @@ class MonatCheckoutController {
                 }
 	            
 	            paypal.Button.render({
-                    env: paymentMode,
+                    env: paypalConfig.paymentMode,
                     payment: function () {
                         return paypalCheckoutInstance.createPayment({
                             flow: 'vault',
                             billingAgreementDescription: '',
                             enableShippingAddress: false,
-                            amount: totalAmount, // Required
-                            currency: orderCurrency, // Required
+                            amount: paypalConfig.amount, // Required
+                            currency: paypalConfig.currencyCode, // Required
                         });
                     },
 
                     onAuthorize: function (data, actions) {
                         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                            if(!payload.nonce)
-                            {
+                            if(!payload.nonce) {
                                 console.log("Error in tokenizing the payment method.");
                                 return;
                             }
                             
 							that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
-								if( !response.newPaypalPaymentMethod )
-								{
+								if( !response.newPaypalPaymentMethod ) {
 								    console.log("Error in saving account payment method.");
 								    return;
 								}
