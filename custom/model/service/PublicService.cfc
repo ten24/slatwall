@@ -407,7 +407,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		//todo handle case where user is not logged in 
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
