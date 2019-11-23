@@ -378,13 +378,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile
 		');
-
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
@@ -409,9 +407,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		//todo handle case where user is not logged in 
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
+		
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 
 			
@@ -435,7 +435,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
+					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {}
 				};
 			}
