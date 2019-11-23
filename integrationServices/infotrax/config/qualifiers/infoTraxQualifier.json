@@ -96,6 +96,7 @@
 				{
 					"propertyIdentifier": "orderNumber",
 					"comparisonOperator": "is not",
+					"logicalOperator": "AND",
 					"value": "null",
 					"ormtype": "string"
 				},
