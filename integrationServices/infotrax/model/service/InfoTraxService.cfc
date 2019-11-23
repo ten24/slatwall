@@ -357,7 +357,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public void function push(required any entity, any data ={}){
 		
 		//Check if the object still valid to be pushed
-		if( !structKeyExists(arguments.data, 'event') && !isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
+		if( !structKeyExists(arguments.data, 'event') || !isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
 			return;
 		}
 		
