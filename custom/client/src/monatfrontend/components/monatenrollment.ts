@@ -57,6 +57,7 @@ class MonatEnrollmentController {
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
+			this.monatService.addEnrollmentFee();
 			this.next();
 		}
 		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
@@ -90,9 +91,6 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
-		if(this.position + 1 == this.steps.length){
-			this.monatService.addEnrollmentFee();
-		}
 	}
 
 	public previous() {
