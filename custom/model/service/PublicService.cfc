@@ -383,7 +383,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile
 		');
-		//	sku.skuPrices.personalVolume,
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
