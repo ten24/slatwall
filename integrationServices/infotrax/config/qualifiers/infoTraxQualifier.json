@@ -207,7 +207,15 @@
 	},
 	
 	"afterOrderTemplateProcess_activateSuccess" : {
-		"filters" : "validOrderTemplate"
+		"filters" : [
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
 	},
 	"afterOrderTemplateSaveSuccess" : {
 		"filters" : "validOrderTemplate"
