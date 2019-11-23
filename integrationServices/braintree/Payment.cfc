@@ -264,7 +264,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var responseData = {};
 		//Create Transaction
 		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
-		var item_payload = {};
+		var item_payload = [];
 		var discount = 0;
 
 		//Populate line order items
