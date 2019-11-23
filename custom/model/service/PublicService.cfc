@@ -408,6 +408,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		//todo handle case where user is not logged in 
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
@@ -435,7 +436,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': 0,
+					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {}
 				};
 			}
