@@ -11,7 +11,10 @@ class MonatCheckoutController {
 
 	) {
 		this.observerService.attach((account)=>{
-	        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
+		    if (this.$scope.Account_CreateAccount){
+		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
+		    };
+	        
 		}, 'ownerAccountSelected');	
 	}
 
