@@ -2,12 +2,23 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
+    public Account_CreateAccount = {};
+    public ownerAcount:string;
+    
 	// @ngInject
 	constructor(
 		public publicService,
 		public observerService,
-		public $rootScope
-	) {}
+		public $rootScope,
+		public $scope
+
+	) {
+	    
+		this.observerService.attach((account)=>{
+	        this.ownerAcount = account.accountID;
+	        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
+		}, 'ownerAccountSelected');	
+	}
 
 	public $onInit = () => {
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess')
