@@ -533,6 +533,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
 		/*
 		"Filters": {
 		    "StartDate": "2019-10-01T19:16:28.693Z",
@@ -1149,7 +1150,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		}
     		
     		var accounts = accountsResponse.Data.Records;
-    		
+    		writeDump( accounts ); abort;
     		var transactionClosed = false;
     		index=0;
     		
