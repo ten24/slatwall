@@ -2647,9 +2647,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
 						
 						// UPDATE THE ACCOUNT
-						var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
+						var skipAccount = false;
+						try{
+							var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
+						}catch(accountError){
+							skipAccount = true;
+						}
 						
-						if(isNull(customerAccount)){
+						if(isNull(customerAccount) || skipAccount){
 							echo("can't find customer account: #flexship['AccountNumber']# flexship #flexship['FlexShipId']#<br>");
 							//clear orm here.
 							continue;
