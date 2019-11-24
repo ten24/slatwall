@@ -2,9 +2,6 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
-    public Account_CreateAccount = {};
-    public ownerAcount:string;
-    
 	// @ngInject
 	constructor(
 		public publicService,
@@ -13,9 +10,7 @@ class MonatCheckoutController {
 		public $scope
 
 	) {
-	    
 		this.observerService.attach((account)=>{
-	        this.ownerAcount = account.accountID;
 	        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
 		}, 'ownerAccountSelected');	
 	}
