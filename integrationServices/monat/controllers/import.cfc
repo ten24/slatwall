@@ -190,6 +190,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					"EndDate": "2019-09-30T00:00:00.000"
 				}
 			}
+			or,
+			"OrderNumber": "9891852"
 			
 	    */
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
@@ -699,11 +701,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     /*if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
                     	
                     	//Find or create a government id and set the number.
-                    	if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
+                    	if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode")){
 	                    	// lookup the id
 	                    	var isNewGovernementNumber = false;
 	                    	try{
-	                    		var accountGovernmentID = getAccountService().getAccountGovernementIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovermentTypeCode']?:"",2:account['GovermentNumber']});
+	                    		var accountGovernmentID = getAccountService().getAccountGovernmentIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovernmentTypeCode']?:"",2:account['GovernmentNumber']});
 	                    	} catch(governmentLookupError){
 	                    		isNewGovernmentNumber = true;
 	                    	}
@@ -713,8 +715,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
 	                    	}
 		                    accountGovernmentID.setAccount(foundAccount);
-		                    //accountGovernmentID.setGovermentType(account['GovermentTypeCode']?:"");//*
-		                    accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
+		                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']?:"");//*
+		                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
 		                    
 		                    //insert the relationship
 		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
@@ -764,6 +766,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var countryUSA = getAddressService().getCountryByCountryCode3Digit("USA");
 		var aetShipping =  getTypeService().getTypeBySystemCode("aetShipping");
 		var aetBilling = getTypeService().getTypeBySystemCode("aetBilling");
+		var aatShipping =  getTypeService().getTypeByTypeCode("Ship");
+		var aatBilling = getTypeService().getTypeByTypeCode("Bill");
 		var aptHome =  getTypeService().getTypeBySystemCode("aptHome");
 		var aptWork = getTypeService().getTypeBySystemCode("aptWork");
 		var aptMobile =  getTypeService().getTypeBySystemCode("aptMobile");
@@ -795,7 +799,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		 * Are these used anywhere before deleting?
     		 * 
     		 * AllowCorporateEmails,AllowCorporateEmails,businessAcc, dob, PayerAccountIdentification,productPack,exclude1099Flag
-    		 * pickupCenter,holdEarningsToAR,commStatusUser,GovermentTypeCode,businessAcc,isFlagged,lastRenewDate, nextRenewDate, 
+    		 * pickupCenter,holdEarningsToAR,commStatusUser,GovernmentTypeCode,businessAcc,isFlagged,lastRenewDate, nextRenewDate, 
     		 * lastStatusDate,governmentIDNumber,accountTypeCode,terminateDate, flagDescription
     		 * 
     		 * 
@@ -936,11 +940,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     
                     //create a new SwAccountGovernementID if needed
-                    if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
+                    if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account.GovernmentNumber) > 2){
                     	
                     	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
-	                    accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
-	                    accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
+	                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']);//*
+	                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
 	                    accountGovernmentID.setAccount(newAccount);//*
 	                    
 	                    //insert the relationship
@@ -1029,6 +1033,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             accountAddress.setAccount(newAccount);//*
         			        accountAddress.setRemoteID( address.addressID );//*
         			        accountAddress.setAccountAddressName( address.AddressTypeName?:"");
+                            
+                            //handle the account email type.
+                            if (!isNull(address['AddressTypeName']) && structKeyExists(address, 'AddressTypeName')){
+                            	if (address['AddressTypeName'] == "Billing")  { accountAddress.setAccountAddressType(aatBilling); } //*
+                            	if (address['AddressTypeName'] == "Shipping") { accountAddress.setAccountAddressType(aatShipping); }//*
+                            }
                             
                             var newAddress = new Slatwall.model.entity.Address();
         			        newAddress.setFirstName( account['FirstName']?:"" );//*
@@ -1128,6 +1138,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var countryUSA =	getAddressService().getCountryByCountryCode3Digit("USA");
 		var aetShipping =	getTypeService().getTypeBySystemCode("aetShipping");
 		var aetBilling =	getTypeService().getTypeBySystemCode("aetBilling");
+		var aatShipping =	getTypeService().getTypeByTypeCode("Ship");
+		var aatBilling =	getTypeService().getTypeByTypeCode("Bill");
 		var aptHome =		getTypeService().getTypeBySystemCode("aptHome");
 		var aptWork =		getTypeService().getTypeBySystemCode("aptWork");
 		var aptMobile = 	getTypeService().getTypeBySystemCode("aptMobile");
@@ -1150,7 +1162,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		}
     		
     		var accounts = accountsResponse.Data.Records;
-    		writeDump( accounts ); abort;
+    		
+    		if (structKeyExists(rc, "viewResponse")){
+    			writeDump( accounts ); abort;
+    		}
+    		
     		var transactionClosed = false;
     		index=0;
     		
@@ -1280,7 +1296,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     
                     //create a new SwAccountGovernementID if needed
-                    if (structKeyExists(account, "GovermentNumber") && structKeyExists(account, "GovermentTypeCode")){
+                    if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account['GovernmentNumber']) > 2){
                     	
                     	var accountGovernmentID = getService("AccountService")
                     		.getAccountGovernmentIDByAccountID(newAccount.getAccountID());
@@ -1289,9 +1305,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
 		                    var isNewAccountGovernmentID = true;
         				}
+        				//governmentIdentificationType
+        				//accountGovernmentID.setGovernmentIdentificationType(account['GovernmentTypeCode']);//*
+        				//This will map to 
+        				//accountGovernmentIdType once we know what the mappings are.
         				
-        				accountGovernmentID.setGovermentType(account['GovermentTypeCode']);//*
-		                accountGovernmentID.setGovernmentIDlastFour(account['GovermentNumber']);//*
+		                accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
 		                accountGovernmentID.setAccount(newAccount);//*
 		                    
 		                //insert the relationship
@@ -1440,6 +1459,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                            accountAddress.setAccount(newAccount);//*
 	        			        accountAddress.setRemoteID( address.addressID );//*
 	        			        accountAddress.setAccountAddressName( address.AddressTypeName?:"");
+	                        	
+	                        	//handle the account email type.
+	                            if (!isNull(address['AddressTypeName']) && structKeyExists(address, 'AddressTypeName')){
+	                            	if (address['AddressTypeName'] == "Billing")  { accountAddress.setAccountAddressType(aatBilling); } //*
+	                            	if (address['AddressTypeName'] == "Shipping") { accountAddress.setAccountAddressType(aatShipping); }//*
+	                            }
 	                        	
 	                            var newAddress = new Slatwall.model.entity.Address();
 	        			        newAddress.setFirstName( account['FirstName']?:"" );//*
@@ -1750,6 +1775,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		}
     		
     		var orders = orderResponse.Records;
+    		
+    		// Print the response for debugging
+    		if (structKeyExists(rc, "viewResponse")){
+    			writeDump( orders ); abort;
+    		}
+    		
     		var transactionClosed = false;
     		var index=0;
     		
@@ -1829,7 +1860,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        
 			        //Sets the reasons if they exist.
 			        if (!isNull(order['RMACSReasonNumber'])){
-			        	newORder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['RMACSReasonNumber']))
+			        	newOrder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['RMACSReasonNumber']))
 			        }
 			        
 			        if (!isNull(order['RMAOpsReasonNumber'])){
@@ -1839,13 +1870,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        if (!isNull(order['ReplacementReasonNumber'])){
 			        	newORder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['ReplacementReasonNumber']))
 			        }
-			        
-			        //newOrder.setOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
-			        
-			        // Only for order type C return orders. Turn on once they add these to the webservice mapped to the correct type.
-			        //newOrder.setRmaCSReasonDescription( order['RMACSReasonDescription']?:"" ); //add this field
-			        //newOrder.setRmaOPSReasonDescription( order['RMAOpsReasonDescription']?:"" ); //add this field
-			        //newOrder.setReplacementReasonDescription( order['ReplacementReasonDescription']?:"" ); //add this field
 			        
 			        /**
 			         * Create the rma types
@@ -2536,6 +2560,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		}
 
 			var flexships = flexshipResponse.Records;
+			
+			
+    		if (structKeyExists(rc, "viewResponse")){
+    			writeDump( flexships ); abort;
+    		}
+    		
 			//writeDump(flexships);abort;
     		var startTick = getTickCount();
     		var transactionClosed = false;
@@ -2554,6 +2584,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					var tx = ormStatelessSession.beginTransaction();
 
 					for(var flexship in flexships){
+						//Skip the deleted ones.
+						if (structKeyExists(flexship, 'FlexShipStatusName') && flexship['FlexShipStatusName'] == "Deleted"){
+							index++;
+							continue;
+						}
+						
 						//echo("Importing<br>");
 						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
 						var isNewFlexship = false;
@@ -2614,7 +2650,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
 						
 						if(isNull(customerAccount)){
-							echo("can't find customer account: #flexship['AccountID']# flexship #flexship['FlexShipId']#<br>");
+							echo("can't find customer account: #flexship['AccountNumber']# flexship #flexship['FlexShipId']#<br>");
 							//clear orm here.
 							continue;
 						}else{
@@ -2655,36 +2691,42 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		                 **/
 		                orderTemplate.setShippingAccountAddress(shippingAccountAddress); 
 						
-						
 						//CREATE a shipping address or update it.
-						var shippingAddress = getAddressService().getAddressByRemoteID(flexshipShippingAddressRemoteID, false);
+						skipAddress = false;
+						try{
+							var shippingAddress = getAddressService().getAddressByRemoteID(flexshipShippingAddressRemoteID, false);
+						}catch(addressError){
+							skipAddress = true;
+						}
 						
-						if (isNull(shippingAddress)){
+						if (isNull(shippingAddress) && !skipAddress){
 							var shippingAddress = new Slatwall.model.entity.Address();
 						}
 						
-						shippingAddress.setRemoteID(flexshipShippingAddressRemoteID);
-						shippingAddress.setStreetAddress(flexship['ShipToAddr1']);   
-						shippingAddress.setStreet2Address(flexship['ShipToAddr2']?:""); 
-						shippingAddress.setStateCode(flexship['ShipToState']?:"");   
-						shippingAddress.setCity(flexship['ShipToCity']);
-						shippingAddress.setPostalCode(flexship['ShipToZip']);
-						shippingAddress.setCountryCode(flexship['ShipToCountry']);
-						shippingAddress.setName(flexship['ShipToName']); 
-						shippingAddress.setPhoneNumber(flexship['ShipToPhone']);
-						
-						if (shippingAddress.getNewFlag()){
-		                	ormStatelessSession.insert("SlatwallAddress", shippingAddress);
-		                }else{
-		                	ormStatelessSession.update("SlatwallAddress", shippingAddress);
-		                }
-		                
-		                //Sets the address on shipping account address now that its saved.
-		                shippingAccountAddress.setAddress(shippingAddress); 
-		                ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
-		                
+						if (!skipAddress){
+							shippingAddress.setRemoteID(flexshipShippingAddressRemoteID);
+							shippingAddress.setStreetAddress(flexship['ShipToAddr1']);   
+							shippingAddress.setStreet2Address(flexship['ShipToAddr2']?:""); 
+							shippingAddress.setStateCode(flexship['ShipToState']?:"");   
+							shippingAddress.setCity(flexship['ShipToCity']);
+							shippingAddress.setPostalCode(flexship['ShipToZip']);
+							shippingAddress.setCountryCode(flexship['ShipToCountry']);
+							shippingAddress.setName(flexship['ShipToName']); 
+							shippingAddress.setPhoneNumber(flexship['ShipToPhone']);
+							
+							if (shippingAddress.getNewFlag()){
+			                	ormStatelessSession.insert("SlatwallAddress", shippingAddress);
+			                }else{
+			                	ormStatelessSession.update("SlatwallAddress", shippingAddress);
+			                }
+			                
+			                //Sets the address on shipping account address now that its saved.
+			                shippingAccountAddress.setAddress(shippingAddress); 
+							
+			                ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
+						}
 		                //ADD a FLEXSHIP PAYMENT
-						if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
+						/*if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
 							var flexshipPayment = flexship.FlexShipPayments[1];
 				
 							//FIND or CREATE the payment method
@@ -2703,7 +2745,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
 							
-							orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
 							
 							//FIND or CREATE the billing account address
@@ -2716,7 +2757,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				
 							billingAccountAddress.setRemoteID(flexshipbillingAddressRemoteID);
 							billingAccountAddress.setAccount(customerAccount);
-							
 							billingAccountAddress.setAccountAddressName("Billing");
 							billingAccountAddress.setCreatedDateTime(getDateFromString(flexship['entryDate']));
 							billingAccountAddress.setModifiedDateTime(now());
@@ -2771,25 +2811,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							// Save Account Payment Method
 							accountPaymentMethod.setBillingAddress(billingAddress);
 							accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
-							//ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							
+							if (accountPaymentMethod.getNewFlag()){
+								orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+								ormStatelessSession.insert("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							}else{
+								orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+								ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							}
+							
 							
 							// Save order template
-							orderTemplate.setAccountPaymentMethod(accountPaymentMethod); 
+							
 							orderTemplate.setBillingAccountAddress(billingAccountAddress); 
 							
 							//ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
-						}
+						}*/
 				
 						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
 							for (var flexshipItem in flexship.FlexShipDetails){
 				
 				
-								if(structKeyExists(arguments, 'statefulSession')){
-									var sku = getSkuBySkuCode(flexshipItem['ItemCode'], arguments.statefulSession);
-								} else {
-									var sku = getSkuService().getSkuBySkuCode(flexshipItem['ItemCode']);
-								}
-				
+								
+								var sku = getSkuService().getSkuBySkuCode(flexshipItem['ItemCode']);
+								
 								if(isNull(sku)){
 									this.logHibachi('Could not find sku with code #flexshipItem['ItemCode']# for flexship #flexship['FlexShipId']#', true);
 									continue; 
@@ -2799,31 +2844,32 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								
 								if(isNull(orderTemplateItem)){
 									var orderTemplateItem = new Slatwall.model.entity.OrderTemplateItem();
-									orderTemplateItem.setRemoteID(flexshipItem['FlexShipDetailId']); 
 								}
 								
+								orderTemplateItem.setRemoteID(flexshipItem['FlexShipDetailId']);
 								orderTemplateItem.setSku(sku);
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
-								orderTemplateItem.setOrderTemplate(orderTemplate);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
 								
-								/*if (shippingAddress.getNewFlag()){
+								if (orderTemplateItem.getNewFlag()){
 				                	ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
 				                	orderTemplateItem.setOrderTemplate(orderTemplate);
 				                }else{
 				                	ormStatelessSession.update("SlatwallOrderTemplateItem", orderTemplateItem);
-				                	orderTemplateItem.setOrderTemplate(orderTemplate);
-				                }*/
+				                }
 							}
 						}
-						
+						/*if (index == 7){
+							writeDump(var=orderTemplate, top=2);abort;
+						}*/
 						ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);
 						this.logHibachi( "inserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
+						index++;
 					} 				
 
 					tx.commit();
-
+					ormGetSession().clear();//clear every page records...
 			} catch (e){
 
 				/*if (!isNull(tx) && tx.isActive()){
