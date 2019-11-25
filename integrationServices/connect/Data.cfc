@@ -66,45 +66,59 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	private struct function postRequest(required struct requestData) {
+	private struct function createConnectUser(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
-		requestURL &= '/api/v1/etl/createUser';
+		requestURL &= '/remote/users/add.json';
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
 
-    	httpRequest.addParam(type='header', name='auth-token', value= setting('apikey') );
+		//Authentaction details required by Connect
+		arguments.requestData['master_username'] = setting('masterUsername');
+		arguments.requestData['master_password'] = setting('masterPassword');
+		
     	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
-    	httpRequest.addParam(type='body', value="#SerializeJson(requestData)#");
+    	httpRequest.addParam(type='body', value="#SerializeJson(arguments.requestData)#");
 
 		var rawRequest = httpRequest.send().getPrefix();
 		
-		if(IsJson(rawRequest.fileContent)) {
-			return DeSerializeJson(rawRequest.fileContent); //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
-		} else {
-			return {"status":"error", "message" : "Error: Not valid JSON, Request - Att: #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#, Response: #rawRequest.fileContent#"};
+		var response = {};
+		if( IsJson(rawRequest.fileContent) ) {
+			response = DeSerializeJson(rawRequest.fileContent); //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
 		} 
+		else {
+			response = {'error': { 'message' : "Error: response s not JSON" } };
+		}
+		
+		// Parse errors
+		// typical error: {"error":{"message":"Required fields missing: email"},"server":{"ip_address":"10.45.48.7","name":"Testing"} }
+		if( !StructKeyExists(response, 'success') ) {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
+			response['content'] = rawRequest.fileContent;
+		}
+		
+		return response;
 	}
-
 	
 	public void function pushData(required any entity, struct data ={}) {
 	
 		//push to remote endpoint
-		var connectResponse = postRequest(arguments.data.payload);
+		var response = createConnectUser(arguments.data.payload);
 		
-		if( StructKeyExists(connectResponse ,'status')
-			&& connectResponse.status == 'success' 
-			&& StructKeyExists(connectResponse ,'id') 
-			&& len( trim(connectResponse.id) ) 
+		if( StructKeyExists( response, 'success') && 
+			StructKeyExists( response, 'username') &&  len( trim( response.username ) ) 
 		) {
-			//update the account
-			arguments.entity.setConnectUserID(connectResponse.id);
-		} else {
-			writelog( file='connect', text="#SerializeJson(connectResponse)#");
+			// update the account
+			// QUESTION: what to do with Success?
+			// maybe a connectUsername returned from Connect, they'd create a new username; if the one we passes was not unique for them 
+		} 
+		else {
+			writelog( file='integration-connect', text="Error in PushData: #SerializeJson(response)#");
 		}
-		//TODO reomove, dumping for testing
-		dump("Response : #SerializeJson(connectResponse)#");
+		// TODO: reomove, dumping for testing
+		dump( "Response : #SerializeJson(response)#" );
 	}
 
 }

@@ -55,17 +55,20 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 	
 	public string function getDisplayName() {
 		
-		return 'connect';
+		return 'Connect: SSO';
 	}
 
 	public struct function getSettings() {
 		
 		var settings = {
-			apikey       = { fieldType = 'text' },
-			liveModeFlag = { fieldType = 'yesno', defaultValue = '0' },
-			liveURL      = { fieldType = 'text' },
-			testURL      = { fieldType = 'text', defaultValue = 'https://dev-monat-connect.myvoffice.com/' },
-			defaultRedirectURL = { fieldType = 'text', defaultValue = 'https://google.com/' }
+			masterUsername 		= { fieldType = 'text' },
+			masterPassword 		= { fieldType = 'password' },
+			liveModeFlag		= { fieldType = 'yesno', defaultValue = '0' },
+			sendMagicLinkFlag	= { fieldType = 'yesno', defaultValue = '0' },
+			generateRandomPasswordFlag	= { fieldType = 'yesno', defaultValue = '0' },
+			defaultUserPassword	= { fieldType = 'text', defaultValue = 'changeme@123' },
+			liveURL     		= { fieldType = 'text', defaultValue = 'https://apimonatconnect.mysecureoffice.com' },
+			testURL     		= { fieldType = 'text', defaultValue = 'https://monatconnect.com.soundcon2.com' },
 		};
 		
 		return settings;
