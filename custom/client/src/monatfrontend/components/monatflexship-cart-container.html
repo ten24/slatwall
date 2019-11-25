@@ -64,17 +64,18 @@
 		</p>
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems">
+				<li 
+					ng-class="{loading: item.loading }"
+					ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems"
+				>
 					<button
 						class="close"
 						type="button"
-						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item)"
-					>
-						<i class="fas fa-times"></i>
-					</button>
+						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item); item.loading = true"
+					><i class="fas fa-times"></i></button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="item.sku_imagePath" alt="" />
+							<img ng-src="{{ item.sku_imagePath }}" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
@@ -104,7 +105,6 @@
 							>&plus;</button>
 						</div>
 						<div class="price-block">
-							<!--TODO calc actual price => price*qty -->
 							<span class="price">{{ item.sku_priceByCurrencyCode | currency }}</span>
 						</div>
 					</div>
