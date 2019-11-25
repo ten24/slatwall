@@ -519,7 +519,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusTypeCode);
         
         if(!isNull(accountStatusType)){
             account.setAccountStatusType(accountStatusType);
@@ -583,7 +583,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(priceGroup)){
             arguments.account.addPriceGroup(priceGroup);
         }
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusTypeCode);
         if(!isNull(accountStatusType)){
             arguments.account.setAccountStatusType(accountStatusType);
         }
@@ -808,7 +808,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
