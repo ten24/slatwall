@@ -6,6 +6,7 @@
   "repository": "https://github.com/ten24/Slatwall",
   "license": "MIT",
   "dependencies": {
+    "@types/braintree-web": "^3.47.0",
     "angular": "^1.6.4",
     "angular-chart.js": "^1.1.1",
     "angular-mocks": "^1.6.4",
@@ -13,6 +14,7 @@
     "angularjs-toaster": "^3.0.0",
     "blueimp-md5": "^1.1.0",
     "bower": "^1.8.0",
+    "braintree-web": "^3.55.0",
     "chart.js": "^2.7.2",
     "compression-webpack-plugin": "^1.1.3",
     "force-case-sensitivity-webpack-plugin": "^0.1.1",
