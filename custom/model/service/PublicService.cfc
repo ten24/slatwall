@@ -46,7 +46,98 @@ Notes:
 
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
+    
+    public any function configExternalHyperWallet(required struct data) {
+        var accountPaymentMethods = getHibachiScope().getAccount().getAccountPaymentMethods();
+        
+        for(var paymentMethod in accountPaymentMethods) {
+            if(paymentMethod.getMoMoneyWallet() === true) {
+                if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getAccountPaymentMethodID();
+                }
+                else{
+                    this.addErrors(arguments.data, "Insufficient Balance");
+                }
+            }
+        }
+        
+        if(!structKeyExists(arguments.data['ajaxResponse'],'hyperWalletPaymentMethod'))
+        {
+            this.addErrors(arguments.data, "Hyperwallet is not configured for your account.");
+        }
+        
+    }
+    
+    public any function configExternalPayPal(required struct data) {
+        //Configure PayPal
+        var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
+	    requestBean.setTransactionType('authorizeAccount');
+	    var account = getHibachiScope().getAccount();
+	    requestBean.setAccount(account);
+	    
+	    var responseBean = getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('braintree').getIntegrationCFC("Payment").processExternal(requestBean);
+	    
+		if(responseBean.hasErrors()) {
+		    this.addErrors(data, responseBean.getErrors());
+		}
+		else {
+		    var requestPayload = {
+	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
+    			'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(),
+    			'clientAuthToken' : responseBean.getAuthorizationCode(),
+    			'paymentMode' : 'sandbox'
+	    	}
+	    	
+	    	arguments.data['ajaxResponse']['paypalClientConfig'] = requestPayload;
+		}
+		
+    }
+    
+    public any function authorizePayPal(required struct data) {
+        var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
+		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
 
+		var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
+    	requestBean.setProviderToken(data.paymentToken);
+ 		requestBean.setTransactionType('authorizePayment');
+		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
+
+		if(responseBean.hasErrors()) {
+		    this.addErrors(data, responseBean.getErrors());
+		}
+		else {
+		    //Create a New One
+            var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
+            accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
+            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            accountPaymentMethod.setPaymentMethod( paymentMethod );
+            accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
+            accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
+            accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
+            accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
+
+            arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
+            arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
+		}
+
+    }
+
+    public any function addOrderPayment(required any data, boolean giftCard = false) {
+
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
+            var accountPaymentMethod = "";
+            accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
+            if(!isNull(accountPaymentMethod))
+            {
+                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
+                arguments.data.newOrderPayment.requireBillingAddress = 0;
+            }
+            
+        }
+
+        super.addOrderPayment(argumentCollection = arguments);
+    }
+    
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
@@ -287,13 +378,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile
 		');
-
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
@@ -318,9 +407,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		//todo handle case where user is not logged in 
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
+		
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 
 			
@@ -344,7 +435,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
+					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {}
 				};
 			}
@@ -428,7 +519,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusTypeCode);
         
         if(!isNull(accountStatusType)){
             account.setAccountStatusType(accountStatusType);
@@ -492,7 +583,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(priceGroup)){
             arguments.account.addPriceGroup(priceGroup);
         }
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusTypeCode);
         if(!isNull(accountStatusType)){
             arguments.account.setAccountStatusType(accountStatusType);
         }
@@ -717,7 +808,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
@@ -740,58 +831,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
-
-
-    public any function getOrderTemplateItemsLight(){
-        param name="arguments.data.orderTemplateID" default="";
-        param name="arguments.data.priceGroupCode" default="2";
-        
-        if(isNull(arguments.data.orderTemplateID)){
-            return;
-        }
-        
-        if(arguments.data.priceGroupCode == 1){
-            var priceGroupID = "045f95c3ab9d4a73bcc9df7e753a2080";
-        } else if(arguments.data.priceGroupCode == 2){
-            var priceGroupID = "c540802645814b36b42d012c5d113745";
-        }else{
-            var priceGroupID = "84a7a5c187b04705a614eb1b074959d4";
-        }
-            
-    	var orderTemplateItems = [];
-    	var productService = getService('productService');
-    	var imageService = getService('ImageService');
-
-    	
-        var orderTemplateItemsQueryList = QueryExecute("
-            SELECT oti.skuID, oti.quantity, oti.orderTemplateItemID,oti.orderTemplateID, p.price, pd.productName, pd.urlTitle, swo.calculatedTotal
-            FROM swordertemplateitem oti
-            INNER JOIN swordertemplate swo ON oti.orderTemplateID = swo.orderTemplateID
-            LEFT JOIN swsku s ON oti.skuID = s.skuID
-            INNER JOIN swproduct pd ON pd.productID = s.productID
-            INNER JOIN swskuprice p ON p.skuID = oti.skuID
-            WHERE oti.orderTemplateID=:aOrderTemplateID AND p.priceGroupID = :aPriceGroupID
-            GROUP BY skuID;
-            ",{aOrderTemplateID = {value= arguments.data.orderTemplateID, cfsqltype='cf_sql_varchar'}, aPriceGroupID = {value=priceGroupID, cfsqltype='cf_sql_varchar'}}
-        );
-        
-        
-        for(var item in orderTemplateItemsQueryList){
-    		 arrayAppend(orderTemplateItems,{
-                'skuID' : item.skuID,
-                'price' : item.price,
-                'productName' : item.productName,
-                'quantity' : item.quantity,
-                'skuImagePath' : imageService.getResizedImageByProfileName(item.skuID,'small'), //TODO: find a faster method
-                'skuProductURL'	: productService.getProductUrlByUrlTitle(item.urlTitle),
-                'orderTemplateID' :	item.orderTemplateID,
-                'orderTemplateItemID' : item.orderTemplateItemID,
-                'orderTemplatePrice' : item.calculatedTotal
-            });
-        }
-            
-            
-		arguments.data['ajaxResponse']['orderTemplateItems'] = orderTemplateItems;
-    }
 
 }

@@ -34,6 +34,7 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}
@@ -62,8 +63,8 @@ class MonatEnrollmentController {
 		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
-	public getCart = (refresh = true) => {
-		this.monatService.getCart(refresh).then(data =>{
+	public getCart = () => {
+		this.monatService.getCart().then(data =>{
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
 		});
