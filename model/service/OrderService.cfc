@@ -1172,41 +1172,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	//begin order template functionality
+	/**
+	 * Note: we'd ctreate a temp-order from the orderTemplate, then we'd try to place it, and then remove it
+	 * 
+	 * Note: we're using request Scope as it's shared b/w the Request and Thread
+	 * 
+	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		if(structKeyExists(request, 'orderTemplateOrderDetails')){
-			return request.orderTemplateOrderDetails;
+		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		
+		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
+			return request[orderTemplateOrderDetailsKey];
 		} 
 		
-		request.orderTemplateOrderDetails = {}; 
+		request[orderTemplateOrderDetailsKey] = {}; 
 	
-		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
 
 		var skuCollection = getSkuService().getSkuCollectionList();
 		skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
+		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 		
-		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		request.orderTemplate = arguments.orderTemplate; 	
+		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate; 	
 		
 		thread name="#threadName#"
 			   action="run" 
-		{
+			   key = "#orderTemplateOrderDetailsKey#";
+		{	
+			// we're not passing the ordertemplate itself as CF would create a deep copy of orderTemplate and we dont want that 
+			var  threadOrderTemplateOrderDetailsKey = attributes.key; //mind the attributes scope
 
-			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+			var currentOrderTemplate = request[threadOrderTemplateOrderDetailsKey]['orderTemplate'];
+			var hasInfoForFulfillment = !isNull(currentOrderTemplate.getShippingMethod()); 
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(currentOrderTemplate, false);  
 			//only update amounts if we can
 			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
 			transientOrder.updateCalculatedProperties(); 	
 			ormFlush();
 		
 			if(hasInfoForFulfillment){	
-				request.orderTemplateOrderDetails['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+				request[threadOrderTemplateOrderDetailsKey]['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
-			request.orderTemplateOrderDetails['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request[threadOrderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			request[threadOrderTemplateOrderDetailsKey]['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -1217,12 +1229,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		//join thread so we can return synchronously
 		threadJoin(threadName);
+
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
+		
+		StructDelete(request["#orderTemplateOrderDetailsKey#"], 'orderTemplate');
 
-		return request.orderTemplateOrderDetails;
+		return request["#orderTemplateOrderDetailsKey#"];
 	} 
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
