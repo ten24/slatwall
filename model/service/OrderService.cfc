@@ -1202,10 +1202,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			   action="run" 
 			   key = "#orderTemplateOrderDetailsKey#";
 		{	
-			// we're not passing the ordertemplate itself as CF would create a deep copy of orderTemplate and we dont want that 
-			var  threadOrderTemplateOrderDetailsKey = attributes.key; //mind the attributes scope
+			// we're not passing the ordertemplate itself as CF would create a deep copy of orderTemplate and we don't want that 
+			// keeping the var name symmetry, we're in thread scope, this won't conflict with parent function's scope
+			var orderTemplateOrderDetailsKey = attributes.key; //mind the attributes scope
 
-			var currentOrderTemplate = request[threadOrderTemplateOrderDetailsKey]['orderTemplate'];
+			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull(currentOrderTemplate.getShippingMethod()); 
 
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(currentOrderTemplate, false);  
@@ -1215,10 +1216,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ormFlush();
 		
 			if(hasInfoForFulfillment){	
-				request[threadOrderTemplateOrderDetailsKey]['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
+				request[orderTemplateOrderDetailsKey]['fulfillmentCharge'] = transientOrder.getFulfillmentTotal() - transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request[threadOrderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
-			request[threadOrderTemplateOrderDetailsKey]['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
+			request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
