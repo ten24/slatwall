@@ -52,7 +52,7 @@ component extends="Slatwall.model.service.HibachiService" {
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode','primaryAddress_address_countryCode', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.stateCode','primaryAddress_address_stateCode', {isVisible:true, isSearchable:false});
         accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
-        accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
+        accountCollection.addFilter( 'accountStatusType.systemCode', 'astGoodStanding');
         
         if(arguments.data.accountSearchType == 'VIP'){
             accountCollection.addFilter(
