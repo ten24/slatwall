@@ -650,7 +650,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var cart = super.addOrderItem(arguments.data);
         if(!cart.hasErrors() 
         && !isNull(cart.getAccount().getAccountStatusType()) 
-        && cart.getAccount().getAccountStatusType().getTypeCode() == 'astEnrollmentPending'
+        && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
         && isNull(cart.getMonatOrderType())){
             if(cart.getAccount().getAccountType() == 'marketPartner' ){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
