@@ -69,7 +69,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-
+	
+	
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
 	
@@ -83,6 +84,10 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
+	
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
@@ -366,6 +371,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}
+	
+	// AttributeValues (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderTemplate( this );
+	}
+
 
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
