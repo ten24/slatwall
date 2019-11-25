@@ -2633,10 +2633,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setCanceledCode( flexship['CancelCode'] );//*
 	                    }
 	                    
-	                    if (isNewFlexship){
-		                	ormStatelessSession.insert("SlatwallOrderTemplate", orderTemplate);
-		                }
-		                
+	                    //No way to support this ***
+	                    /*if (!isNull(flexship['ShipMethodCode']) && len(flexship['ShipMethodCode'])){
+	                    	orderTemplate.setShippingMethodCode( flexship['ShipMethodCode'] );//*
+	                    }*/
+	                    
 						// UPDATE THE ACCOUNT
 						var skipAccount = false;
 						try{
