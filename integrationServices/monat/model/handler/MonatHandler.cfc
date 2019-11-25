@@ -59,7 +59,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				
 				account.setActiveFlag(true);
 				account.getAccountNumber();
-				account.setAccountStatusType(getService('typeService').getTypeBySystemCode('astGoodStanding'));
+				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate

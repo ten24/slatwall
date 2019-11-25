@@ -11,7 +11,7 @@
 	},
 	"properties": {
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],
-		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}]
+		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}]
 
 	}
