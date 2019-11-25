@@ -76892,7 +76892,9 @@ var SWDisplayOptions = /** @class */ (function () {
                     if (angular.isDefined(scope.selectedAggregate)) {
                         selectedProperty = scope.selectedAggregate;
                     }
-                    if (selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections') {
+                    if (selectedProperty.$$group === 'simple' ||
+                        selectedProperty.$$group === 'attribute' ||
+                        selectedProperty.$$group === 'compareCollections') {
                         $log.debug(scope.columns);
                         if (angular.isDefined(selectedProperty)) {
                             var column = {
