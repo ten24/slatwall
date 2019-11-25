@@ -62,6 +62,7 @@ class VIPController {
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
+    	this.observerService.attach(this.setOrderTemplateBilling,"addOrderPaymentSuccess");
     	this.observerService.attach(this.getProductList,"createSuccess");
     	
 		this.localStorageCheck(); 
