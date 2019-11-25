@@ -646,6 +646,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
 
+    public any function addOrderItem(required struct data){
+        var cart = super.addOrderItem(arguments.data);
+        if(!cart.hasErrors() 
+        && !isNull(cart.getAccount().getAccountStatusType()) 
+        && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+        && isNull(cart.getMonatOrderType())){
+            if(cart.getAccount().getAccountType() == 'marketPartner' ){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
+            }else if(cart.getAccount().getAccountType() == 'vip'){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motVipEnrollment'));
+            }
+            
+        }
+        return cart;
+    }
+
     public any function getMostRecentOrderTemplate (required any data){
         param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
         param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; //default to flexship
