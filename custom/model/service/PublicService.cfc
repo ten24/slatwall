@@ -515,17 +515,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
-                'statusTypeCode':'astEnrollmentPending',
+                'statusSystemCode':'astEnrollmentPending',
                 'activeFlag':false
             },
             'customer':{
                 'priceGroupCode':'2',
-                'statusTypeCode':'astGoodStanding',
+                'statusSystemCode':'astGoodStanding',
                 'activeFlag':true
             },
             'marketPartner':{
                 'priceGroupCode':'1',
-                'statusTypeCode':'astEnrollmentPending',
+                'statusSystemCode':'astEnrollmentPending',
                 'activeFlag':false
             }
         }
@@ -551,7 +551,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusSystemCode);
         
         if(!isNull(accountStatusType)){
             account.setAccountStatusType(accountStatusType);
@@ -594,37 +594,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createVIPEnrollment(required struct data){
        return enrollUser(arguments.data, 'VIP');
-    }
-    
-    private any function setupEnrollmentInfo(required any account, required string accountType){
-        var accountTypeInfo = {
-            'customer':{
-                'priceGroupCode':'2',
-                'statusTypeCode':'astGoodStanding',
-                'activeFlag':true
-            },
-            'marketPartner':{
-                'priceGroupCode':'1',
-                'statusTypeCode':'astEnrollmentPending',
-                'activeFlag':false
-            }
-        }
-        arguments.account.setAccountType(arguments.accountType);
-        arguments.account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
-        var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
-        if(!isNull(priceGroup)){
-            arguments.account.addPriceGroup(priceGroup);
-        }
-        var accountStatusType = getService('TypeService').getTypeByTypeCode(accountTypeInfo[arguments.accountType].statusTypeCode);
-        if(!isNull(accountStatusType)){
-            arguments.account.setAccountStatusType(accountStatusType);
-        }
-        if(!isNull(getHibachiScope().getCurrentRequestSite())){
-            arguments.account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
-        }
-        arguments.account = getAccountService().saveAccount(arguments.account);
-        return arguments.account;
-
     }
     
     public any function updateAccount(required struct data){
@@ -840,7 +809,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addEnrollmentFee(){
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
+        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'){
             if(account.getAccountType() == 'VIP'){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
