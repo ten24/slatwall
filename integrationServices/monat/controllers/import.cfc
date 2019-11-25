@@ -2606,12 +2606,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
 						
-						// Will uncomment on being added to web service
-						//orderTemplate.setWarehouseCode(shipment['WarehouseCode']);//ADD
-                		//orderTemplate.setFreightTypeCode(shipment['FreightTypeCode']); //ADD
-                		//orderTemplate.setCarrierCode(shipment['CarrierCode']);//ADD
-                		//orderTemplate.setShippingMethodCode(shipment['ShipMethodCode']);//ADD
-						
 						//lastOrderNumber
 						orderTemplate.setLastOrderNumber(flexship['LastOrderNumber']?:"");
 						
@@ -2623,29 +2617,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							orderTemplate.setLastGeneratedDateTime( getDateFromString(flexship['DateLastGenerated'] ));
 						}
 						
+						//set created
+						if (!isNull(flexship['EntryDate']) && len(flexship['EntryDate'])){
+							var entryDate = getDateFromString(flexship['EntryDate']);
+	                    	orderTemplate.setCreatedDateTime( entryDate );//*
+	                    }
+	                    
 						//set created and modified date times.
-						if (!isNull(orderTemplate['DeleteDate']) && len(orderTemplate['DeleteDate'])){
+						if (!isNull(flexship['DeleteDate']) && len(flexship['DeleteDate'])){
 							var deleteDate = getDateFromString(flexship['DeleteDate']);
 	                    	orderTemplate.setDeletedDateTime( deleteDate );//*
 	                    }
 	                    
-	                    if (!isNull(orderTemplate['CanceledCode']) && len(orderTemplate['CanceledCode'])){
-							var canceledCode = getDateFromString(flexship['CanceledCode']);
-	                    	orderTemplate.setCanceledCode( canceledCode );//*
+	                    if (!isNull(flexship['CancelCode']) && len(flexship['CancelCode'])){
+	                    	orderTemplate.setCanceledCode( flexship['CancelCode'] );//*
 	                    }
-	                    
-	                    
-	                    
-	                    //writedump(orderTemplate.getNewFlag());
-	                    //writedump(orderTemplate.getOrderTemplateID());
-	                    //writeDump(var=orderTemplate, top=2);abort;
 	                    
 	                    if (isNewFlexship){
 		                	ormStatelessSession.insert("SlatwallOrderTemplate", orderTemplate);
 		                }
 		                
-						//orderTemplate.setAccountRemoteID(flexship['AccountId']);
-						
 						// UPDATE THE ACCOUNT
 						var skipAccount = false;
 						try{
