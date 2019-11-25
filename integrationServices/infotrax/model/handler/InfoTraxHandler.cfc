@@ -1,7 +1,7 @@
 component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	private any function getIntegration(){
-		if(!structKeyExists(variables,'integration')){
+		if ( !structKeyExists(variables,'integration') ) {
 			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage('infotrax');
 		}
 		return variables.integration;
@@ -12,14 +12,16 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	public void function onEvent(required any eventName, required struct eventData={}){
 		
 		
-		 try{
+		 try {
 			//Only focus on entity events
-			if(!structKeyExists(arguments,'entity')){
+			if ( !structKeyExists(arguments,'entity') ) {
 				return;
 			}
 			
-			// Sync any pending order
-			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess'){
+			
+			// Sync any pending order after account creation
+			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess' ) {
+				ormFlush();
 				var orders = getService('infoTraxService').pendingPushOrders(arguments.entity.getPrimaryIDValue());
 				for(var order in orders){
 					getDAO('HibachiEntityQueueDAO').insertEntityQueue(
@@ -33,7 +35,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				return;
 			}
 	
-			if(!getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName)){
+			if ( !getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName) ) {
 				return;
 			}
 			
@@ -44,8 +46,8 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				entityQueueData = { 'event' = arguments.eventName },
 				integrationID   = getIntegration().getIntegrationID()
 			);
-		 }catch( any e){
-		 	if(!getIntegration().setting('liveModeFlag')){
+		 } catch( any e) {
+		 	if ( !getIntegration().setting('liveModeFlag') ) {
 		 		rethrow;
 		 	}
 		 }
