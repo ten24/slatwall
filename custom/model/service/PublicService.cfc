@@ -47,6 +47,23 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    /**
+     * Function to get all available shipping methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * return none
+     **/
+    public void function getAvailableShippingMethods(required any data) {
+        var tmpOrderTemplate = getOrderService().getShippingMethodOptions();
+		arguments.data['ajaxResponse']['availableShippingMethods'] = tmpOrderTemplate.getShippingMethodOptions();
+    }
+    
+    /**
+     * Function check and return HyperWallet method
+     * adds hyperWalletPaymentMethod in ajaxResponse
+     * @param request data
+     * return none
+     * */
     public any function configExternalHyperWallet(required struct data) {
         var accountPaymentMethods = getHibachiScope().getAccount().getAccountPaymentMethods();
         
@@ -61,13 +78,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
         
-        if(!structKeyExists(arguments.data['ajaxResponse'],'hyperWalletPaymentMethod'))
-        {
+        if(!structKeyExists(arguments.data['ajaxResponse'],'hyperWalletPaymentMethod')) {
             this.addErrors(arguments.data, "Hyperwallet is not configured for your account.");
         }
         
     }
     
+    /**
+     * Function to cnfigure client side Paypal method
+     * adds paypalClientConfig in ajaxResponse
+     * @param request data
+     * return none
+     * */
     public any function configExternalPayPal(required struct data) {
         //Configure PayPal
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
@@ -93,6 +115,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
     }
     
+    /**
+     * Function to authorize client account for paypal & Add New Payment Method
+     * authorize paypal amd add is as new payment method
+     * @param request data
+     * return none
+     * */
     public any function authorizePayPal(required struct data) {
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
@@ -106,7 +134,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    this.addErrors(data, responseBean.getErrors());
 		}
 		else {
-		    //Create a New One
+		    //Create a New accountPaymentMethod
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
@@ -122,6 +150,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     }
 
+    /**
+     * Function to override addOrderPayment 
+     * populate orderPayment paymentMthodID
+     * and make orderPayment billingAddress optional
+     * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
@@ -132,7 +165,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
-            
         }
 
         super.addOrderPayment(argumentCollection = arguments);
@@ -378,11 +410,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile
 		');
+
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
@@ -407,11 +441,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		//todo handle case where user is not logged in 
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
-		
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 
 			
@@ -435,7 +467,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
+					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {}
 				};
 			}
