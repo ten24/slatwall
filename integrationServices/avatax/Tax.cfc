@@ -302,8 +302,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			}
 		}else if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
 			responseBean.setData(responseData.Responseheader.Explanation);
+			logHibachi(serialize(responseBean.getData()));
 		}else{
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
+			logHibachi(serialize(responseBean.getData()));
 		}
 		return responseBean;
 	}

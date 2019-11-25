@@ -2,10 +2,17 @@
 	"conditions":{
 		"mpEnrollmentOrder":{
 			"monatOrderType.typeCode":"motMpEnrollment"
-		}
+		},
+		"anyReturnOrder":{
+			"orderType.systemCode":{
+				"in":"otRefundOrder,otReturnOrder"
+			}
+		}	
 	},
 	"properties": {
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}]
+		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}]
+
 	}
 }

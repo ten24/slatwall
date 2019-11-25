@@ -1090,7 +1090,6 @@ component extends="framework.one" {
 			}
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
 		}
-		getHibachiScope().getProfiler().logProfiler();
 		
 	}
 

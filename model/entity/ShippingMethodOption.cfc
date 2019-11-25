@@ -139,6 +139,10 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 	public any function getSimpleRepresentation() {
 
 		var shippingMethodName = nullReplace(getShippingMethodRate().getShippingMethod().getShippingMethodName(), "");
+		if(structKeyExists(arguments,'forAudit') && arguments.forAudit == true){
+				return shippingMethodName;
+		}
+		
 		var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
 
 		return '#shippingMethodName# - #totalChargeAfterDiscount#';

@@ -915,7 +915,7 @@ component extends="HibachiService" accessors="true" {
 			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
 		}
 		try {
-			baseTitle = baseObjectEntity.getSimpleRepresentation();
+			baseTitle = baseObjectEntity.getSimpleRepresentation(forAudit=true);
 		} catch (any e) {
 			baseTitle = rbKey('entity.audit.nosummary');
 		}

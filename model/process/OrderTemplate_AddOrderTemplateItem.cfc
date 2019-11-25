@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 
 	property name="quantity";
+	property name="temporaryFlag" default="false";
 
 	public any function getSku(){
 		return getService('SkuService').getSku(getSkuID());
