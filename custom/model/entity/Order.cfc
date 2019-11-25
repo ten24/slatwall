@@ -274,6 +274,7 @@ component {
 
 	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
 	    }
+	}
 	public boolean function hasProductPackOrderItem(){
         var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
         orderItemCollectionList.addFilter('order.orderID',getOrderID());
