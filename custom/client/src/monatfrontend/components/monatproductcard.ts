@@ -99,11 +99,12 @@ class MonatProductCardController {
 			bindings: {
 				product: this.product,
 				type: this.type,
+				orderTemplateID: this.orderTemplate,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
-				this.changeTypeForDemo(); //TODO remove
+				// this.changeTypeForDemo(); //TODO remove
 			},
 		}).then((modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it

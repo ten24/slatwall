@@ -1,20 +1,19 @@
 class MonatProductModalController {
 	public product;
 	public type: string;
-	public flexshipID: string;
+	public orderTemplateID: string;
 
 	public close; // injected from angularModalService
 
 	public quantityToAdd: number = 1;
+	
+	public loading=false;
 
 	//@ngInject
-	constructor(public monatService, public observerService, public rbkeyService) {}
+	constructor(public monatService, public observerService, public rbkeyService, private orderTemplateService, private monatAlertService) {}
 
 	public $onInit = () => {
 		this.makeTranslations();
-		if (this.type === 'flexship') {
-			this.fetchCurrentFlexshipID();
-		}
 	};
 
 	public translations = {};
@@ -28,9 +27,6 @@ class MonatProductModalController {
 		//TODO make translations for success/failure alert messages
 	};
 
-	private fetchCurrentFlexshipID = () => {
-		this.flexshipID = 'hsdgfgvwbwojfwbfiww78676';
-	};
 
 	public onAddButtonClick = () => {
 		if (this.type === 'flexship') {
@@ -41,36 +37,42 @@ class MonatProductModalController {
 	};
 
 	public addToFlexship = () => {
-		console.log('add to flexship');
-		/*
-		this.monatService
-			.addToCart(this.product.skuID, this.quantityToAdd)
-			.then((data) => {
-				this.closeModal();
-			})
-			.catch((reason) => {
-				throw reason;
-				//TODO handle errors / success
-			})
-			.finally(() => {
-				//TODO hide loader...
-			});
-		*/
+		this.loading = true;
+		this.orderTemplateService.addOrderTemplateItem(
+			this.product.skuID, 
+			this.orderTemplateID,
+			this.quantityToAdd
+		)
+		.then((data) => {
+			this.monatAlertService.success("Product added to Flexship successfully");
+			this.closeModal();
+		})
+		.catch( (error) => {
+			console.error(error);
+            this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(() => {
+			this.loading = false;
+		});
 	};
 
 	public addToCart = () => {
-		this.monatService
-			.addToCart(this.product.skuID, this.quantityToAdd)
-			.then((data) => {
-				this.closeModal();
-			})
-			.catch((reason) => {
-				throw reason;
-				//TODO handle errors / success
-			})
-			.finally(() => {
-				//TODO hide loader...
-			});
+		this.loading = true;
+		this.monatService.addToCart(
+			this.product.skuID, 
+			this.quantityToAdd
+		)
+		.then((data) => {
+			this.monatAlertService.success("Product added to cart successfully");
+			this.closeModal();
+		})
+		.catch( (error) => {
+			console.error(error);
+            this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(() => {
+			this.loading = true;
+		});
 	};
 
 	public closeModal = () => {
@@ -87,6 +89,7 @@ class MonatProductModal {
 	public bindToController = {
 		product: '<',
 		type: '<',
+		orderTemplateID: '<',
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;

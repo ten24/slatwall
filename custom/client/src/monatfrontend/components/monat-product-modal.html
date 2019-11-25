@@ -92,7 +92,12 @@
 					</div>
 				</div>
 
-				<button ng-click="monatProductModal.onAddButtonClick()" class="btn bg-primary">
+				<button 
+					class="btn bg-primary"
+					ng-click="monatProductModal.onAddButtonClick()" 
+					ng-class="{ loading: monatProductModal.loading }"
+					ng-disabled="monatProductModal.loading"
+				>
 					{{ monatProductModal.translations.addButtonText }}
 				</button>
 		

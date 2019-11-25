@@ -28,7 +28,7 @@
             
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a href="#" ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
                 </div>
             </div>
             
@@ -42,7 +42,7 @@
            
         </figure>
       
-        <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
+        <h3 class="pb-0 mb-0">{{monatProductCard.product.productName}}</h3>
          
         <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
         <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' || monatProductCard.type === 'flexship'" class="price">
