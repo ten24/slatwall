@@ -521,10 +521,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
-        if(!isNull(accountStatusType)){
-            account.setAccountStatusType(accountStatusType);
-        }
-        
+        account.setAccountStatusType(accountStatusType);
+
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
