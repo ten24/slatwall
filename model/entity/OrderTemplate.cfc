@@ -119,7 +119,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	
+	property name="canPlaceOrderDetails" persistent="false";
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
@@ -169,6 +169,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		} 
 		return variables.canPlaceOrderFlag;
 	}
+	
+
 
 	public struct function getPromotionalRewardSkuCollectionConfig(){
 		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
@@ -453,5 +455,12 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  //CUSTOM FUNCTIONS END
+	}  
+	
+	public boolean function getCanPlaceOrderDetails(){
+		if(!structKeyExists(variables, 'canPlaceOrderDetails')){
+			variables.canPlaceOrderDetails = getService('OrderService').getOrderTemplateCanBePlacedMessage(this);
+		} 
+		return variables.canPlaceOrderDetails;
+	}//CUSTOM FUNCTIONS END
 }
