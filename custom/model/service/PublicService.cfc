@@ -649,11 +649,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         if(!cart.hasErrors() 
-        && cart.getAccount().getAccountType() == 'marketPartner' 
         && !isNull(cart.getAccount().getAccountStatusType()) 
-        && cart.getAccount().getAccountStatusType().getTypeCode() == 'astEnrollmentPending'){
-                
-            cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
+        && cart.getAccount().getAccountStatusType().getTypeCode() == 'astEnrollmentPending'
+        && isNull(cart.getMonatOrderType())){
+            if(cart.getAccount().getAccountType() == 'marketPartner' ){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
+            }else if(cart.getAccount().getAccountType() == 'vip'){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motVipEnrollment'));
+            }
             
         }
         return cart;
