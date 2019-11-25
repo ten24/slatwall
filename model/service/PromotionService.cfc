@@ -155,14 +155,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function processOrderFulfillmentRewards(required any order, required any promotionPeriodQualifications, required any promotionReward){
 		// Loop over all the fulfillments
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
-
 			// Verify that this fulfillment is in the list & the methods match
 			if( arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID())
 				&&
 				( !arrayLen(arguments.promotionReward.getFulfillmentMethods()) || arguments.promotionReward.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) )
 				&&
 				( !arrayLen(arguments.promotionReward.getShippingMethods()) || (!isNull(orderFulfillment.getShippingMethod()) && arguments.promotionReward.hasShippingMethod(orderFulfillment.getShippingMethod()) ) ) ) {
-
 				var addressIsInZone = true;
 				if(arrayLen(arguments.promotionReward.getShippingAddressZones())) {
 					addressIsInZone = false;
@@ -175,14 +173,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 				}
-
 				// Address In Zone
 				if(addressIsInZone) {
-
 					var discountAmount = getDiscountAmount(arguments.promotionReward, orderFulfillment.getFulfillmentCharge(), 1);
-
 					var addNew = shouldAddNewPromotion(discountAmount,orderFulfillment,arguments.promotionReward);
-
 					// Add the new appliedPromotion
 					if(addNew) {
 						applyPromotionToOrderFulfillment(orderFulfillment,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
@@ -196,49 +190,66 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function processOrderItemRewards(required any order, required any promotionPeriodQualifications, required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts, required any promotionReward){
-
+		var promotionRewardUsageDetail = arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ];
+		var promotionPeriodQualification = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()];
+		
+		//Get all orderitems in descending order of price
+		var orderItemSmartlist = arguments.order.getOrderItemsSmartList();
+		orderItemSmartlist.addOrder('price DESC');
+		orderItemSmartlist.addOrder('skuCode ASC');
+		var orderItems = orderItemSmartlist.getRecords();
 		// Loop over all the orderItems
-		for(var orderItem in arguments.order.getOrderItems()) {
+		for(var orderItem in orderItems) {
 			// Verify that this is an item being sold
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
 				// Make sure that this order item is in the acceptable fulfillment list
-				if(arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
+				if(arrayFind(promotionPeriodQualification.qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 					// Now that we know the fulfillment is ok, lets check and cache then number of times this orderItem qualifies based on the promotionPeriod
-					if(!structKeyExists(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems, orderItem.getOrderItemID())) {
-						arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=arguments.promotionReward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
+					if(!structKeyExists(promotionPeriodQualification.orderItems, orderItem.getOrderItemID())) {
+						promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=arguments.promotionReward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
 					}
 
 					// If the qualification count for this order item is > 0 then we can try to apply the reward
-					if(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ]) {
+					if(promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ]) {
 						// Check the reward settings to see if this orderItem applies
 						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
 
-							var qualificationQuantity = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
-							if((qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification) lt arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder) {
-								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification);
+							var qualificationQuantity = promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ];
+							var maxUsages = qualificationQuantity * promotionRewardUsageDetail.maximumUsePerQualification;
+							
+							if(maxUsages lt promotionRewardUsageDetail.maximumUsePerOrder) {
+								promotionRewardUsageDetail.maximumUsePerOrder = maxUsages;
+							}else{
+								maxUsages = promotionRewardUsageDetail.maximumUsePerOrder;
 							}
 							// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
-							var discountQuantity = qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification;
+							// Subtract the number of times this promotion reward has already been used in this order
+							var discountQuantity = maxUsages - promotionRewardUsageDetail.usedInOrder;
+
 							// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
 							if(discountQuantity > orderItem.getQuantity()) {
 								discountQuantity = orderItem.getQuantity();
 							}
 							// If the discountQuantity is > than maximumUsePerItem then set it to maximumUsePerItem
-							if(discountQuantity > arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem) {
-								discountQuantity = arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem;
+							if(discountQuantity > promotionRewardUsageDetail.maximumUsePerItem) {
+								discountQuantity = promotionRewardUsageDetail.maximumUsePerItem;
 							}
-							// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
-							if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
-								// Calculate based on price, which could be a priceGroup price
-								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
-
-							} else {
-								// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
-
-								// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
-								var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
-
+							if(discountQuantity != 0){
+								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
+								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
+									// Calculate based on price, which could be a priceGroup price
+									var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
+	
+								} else {
+									// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
+									var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
+	
+									// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
+									var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
+	
+								}
+							}else{
+								var discountAmount = 0;
 							}
 							// If the discountAmount is gt 0 then we can add the details in order to the potential orderItem discounts
 							if(discountAmount > 0) {
@@ -277,16 +288,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 								// Increment the number of times this promotion reward has been used
 
-								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].usedInOrder += discountQuantity;
+								promotionRewardUsageDetail.usedInOrder += discountQuantity;
 								var discountPerUseValue = val(getService('HibachiUtilityService').precisionCalculate(discountAmount / discountQuantity));
 
 								var usageAdded = false;
 
 								// loop over any previous orderItemUsage of this reward an place it in ASC order based on discountPerUseValue
-								for(var oiu=1; oiu<=arrayLen(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage) ; oiu++) {
-									if(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage[oiu].discountPerUseValue > discountPerUseValue) {
+								for(var oiu=1; oiu<=arrayLen(promotionRewardUsageDetail.orderItemsUsage) ; oiu++) {
+									if(promotionRewardUsageDetail.orderItemsUsage[oiu].discountPerUseValue > discountPerUseValue) {
 										// Insert this value into the potential discounts array
-										arrayInsertAt(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage, oiu, {
+										arrayInsertAt(promotionRewardUsageDetail.orderItemsUsage, oiu, {
 											orderItemID = orderItem.getOrderItemID(),
 											discountQuantity = discountQuantity,
 											discountPerUseValue = discountPerUseValue
@@ -300,7 +311,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 									// Insert this value into the potential discounts array
 
-									arrayAppend(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage, {
+									arrayAppend(promotionRewardUsageDetail.orderItemsUsage, {
 										orderItemID = orderItem.getOrderItemID(),
 										discountQuantity = discountQuantity,
 										discountPerUseValue = discountPerUseValue
@@ -323,7 +334,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function processOrderRewards(required any order, required any promotionReward){
-		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts() + arguments.order.getFulfillmentChargeAfterDiscountTotal();
+		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts();
 
 		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
 
@@ -384,7 +395,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		for(var promotionCode in arguments.order.getPromotionCodes()){
  			orderItemIDList = listAppend(orderItemIDList,promotionCode.getPromotionCodeID());
  		}
- 		
+
  		var orderFulfillmentList ="";
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			if(!isNull(orderFulfillment.getShippingAddress())){
@@ -401,14 +412,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		if(!isNull(arguments.order.getAccount())){
  			accountID = arguments.order.getAccount().getAccountID();
  		}
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
  		
+ 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
+ 		var promotionCacheKey = createUUID();
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
-
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-	
 				clearPreviouslyAppliedPromotions(arguments.order);
 	
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
@@ -423,19 +433,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
 				// Loop over all Potential Discounts that require qualifications
-				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 				var orderRewards = false;
-
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
 					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
 					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
-	
 					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
 						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
 					}
-
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
 						// =============== Order Item Reward ==============
@@ -454,6 +461,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} // END Promotion Period OK IF
 	
 					// This forces the loop to repeat looking for "order" discounts
+					// Only runs on last iteration of loop before looking for orders
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
 						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
@@ -606,39 +614,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If the above two conditions are ok, then we can find out the rest of the details
 		if(qualificationDetails.qualificationsMeet) {
-
-			// Loop over each of the qualifiers
-			for(var qualifier in arguments.promotionPeriod.getPromotionQualifiers()) {
-
-				// Get the details for this qualifier
-				var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
-
-				// As long as there is a qualification count that is > 0 we can append the details
-				if(thisQualifierDetails.qualificationCount) {
-
-					// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
-					if(qualifier.getQualifierType() == "fulfillment") {
-
-						// Loop over all fulfillments that were passed back
-						for(var orderFulfillmentID in thisQualifierDetails.qualifiedFulfillmentIDs) {
-
-							// If the explicit list doesn't have this one, then we can add it
-							if(!arrayFind(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID)) {
-								arrayAppend(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID);
+			var hasQualifiedQualifier = false;
+			var qualifiers = arguments.promotionPeriod.getPromotionQualifiers();
+			
+			if(!arrayLen(qualifiers)){
+				hasQualifiedQualifier=true;
+			}else{
+				// Loop over each of the qualifiers
+				for(var qualifier in qualifiers) {
+	
+					// Get the details for this qualifier
+					var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
+	
+					// As long as there is a qualification count that is > 0 we can append the details
+					if(thisQualifierDetails.qualificationCount) {
+						hasQualifiedQualifier = true;
+						
+						// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
+						if(qualifier.getQualifierType() == "fulfillment") {
+	
+							// Loop over all fulfillments that were passed back
+							for(var orderFulfillmentID in thisQualifierDetails.qualifiedFulfillmentIDs) {
+	
+								// If the explicit list doesn't have this one, then we can add it
+								if(!arrayFind(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID)) {
+									arrayAppend(explicitlyQualifiedFulfillmentIDs, orderFulfillmentID);
+								}
 							}
 						}
+	
+						// Attach the qualification details
+						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
+	
 					}
-
-					// Attach the qualification details
-					arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
-
-				// Otherwise just set as false and return
-				} else {
-					qualificationDetails.qualificationsMeet = false;
-					qualificationDetails.qualifiedFulfillmentIDs = [];
-					qualificationDetails.qualifierDetails = [];
-					return qualificationDetails;
 				}
+			}
+			
+			if(!hasQualifiedQualifier){
+				qualificationDetails.qualificationsMeet = false;
+				qualificationDetails.qualifiedFulfillmentIDs = [];
+				qualificationDetails.qualifierDetails = [];
+				return qualificationDetails;
 			}
 		}
 
@@ -824,15 +840,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Check to make sure that this is an orderItem type of qualifier
 			if(listFindNoCase("merchandise,subscription,contentAccess", qualifier.getQualifierType())) {
 				
-				// Setup a local var for this orderItem
-				var orderItemQualifierCount = arguments.orderItem.getQuantity();
+				// Loop over the orderItems and see how many times this item has been qualified
+				var orderItemCollectionList = arguments.order.getOrderItemsCollectionList();
+				orderItemCollectionList.setDisplayProperties('quantity,price,sku.skuID,sku.product.productID,sku.product.productType.productTypeID,sku.product.brand.brandID');
+				var orderItems = orderItemCollectionList.getRecords(formatRecords=false);
+				var numRecords = arrayLen(orderItems);
+				
+				for(var i=1; i<=numRecords; i++) {
 
-				// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
-				if(!getOrderItemInQualifier(qualifier=qualifier, orderItem=arguments.orderItem)){
-					orderItemQualifierCount = 0;
+					// Setup a local var for this orderItem
+					
+					var thisOrderItem = orderItems[i];
+					var orderItemQualifierCount = thisOrderItem['quantity'];
+
+					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
+					if(
+						!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)
+						||
+						// Then check the match type of based on the current orderitem, and the orderItem we are getting a count for
+						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem['sku_skuID'] != arguments.orderItem.getSku().getSkuID() )
+						||
+						( qualifier.getRewardMatchingType() == "product" && thisOrderItem['sku_product_productID'] != arguments.orderItem.getSku().getProduct().getProductID() )
+						||
+						( qualifier.getRewardMatchingType() == "productType" && thisOrderItem['sku_product_productType_productTypeID'] != arguments.orderItem.getSku().getProduct().getProductType().getProductTypeID() )
+						||
+						( qualifier.getRewardMatchingType() == "brand" && isNull(thisOrderItem['sku_product_brand_brandID']))
+						||
+						( qualifier.getRewardMatchingType() == "brand" && isNull(arguments.orderItem.getSku().getProduct().getBrand()))
+						||
+						( qualifier.getRewardMatchingType() == "brand" && thisOrderItem['sku_product_brand_brandID'] != arguments.orderItem.getSku().getProduct().getBrand().getBrandID() )
+						) {
+
+						orderItemQualifierCount = 0;
+
+					}
+
+					qualifierCount += orderItemQualifierCount;
+
 				}
-
-				qualifierCount += orderItemQualifierCount;
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
@@ -858,11 +903,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
-		return (qualifier.hasOrderItemSku(arguments.orderItem) 
+		if(!isObject(arguments.orderItem)){
+			var qualifierHasSku = qualifier.hasSkuBySkuID(arguments.orderItem['sku_skuID']);
+			var price = orderItem['price'];
+		}else{
+			var qualifierHasSku = qualifier.hasOrderItemSku(arguments.orderItem);
+			var price = orderItem.getPrice();
+		}
+		return (
+			qualifierHasSku 
 			&&
-			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= arguments.orderItem.getPrice() )
+			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= price )
 			&&
-			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= arguments.orderItem.getPrice() )
+			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= price )
 		);
 		
 	}
@@ -932,6 +985,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.currencyCode)){
 			args.currencyCode = arguments.currencyCode;
 		}
+
 		var priceDetails = getProductSkuSalePricesByPromoRewardSkuCollection( argumentCollection=args );
 
 		priceDetails = getRoundedPriceDetails(priceDetails);
@@ -959,30 +1013,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getProductSkuSalePricesByPromoRewardSkuCollection( required string productID, string currencyCode ){
 		var product = getService('productService').getProduct( arguments.productID );
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true, site=getHibachiScope().getCart().getOrderCreatedSite() );
 
 		var skus = product.getSkus();
 		var priceDetails = {};
-
+		
 		for(var sku in skus){
-			if(!isNull(arguments.currencyCode)){
+			var currencyCode = arguments.currencyCode;
+			if(!isNull(currencyCode)){
 				var originalPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
 			}else{
 				var originalPrice = sku.getPrice();
-				arguments.currencyCode = '';
+				currencyCode = '';
 			}
 			var skuPriceDetails = getPriceDetailsForPromoRewards(
 														promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=sku,
 														originalPrice=originalPrice,
-														currencyCode=arguments.currencyCode);
+														currencyCode=currencyCode);
 			structAppend(priceDetails,{'#sku.getSkuID()#':skuPriceDetails});
 		}
 		return priceDetails;
 	}
 
 	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 
@@ -998,6 +1053,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
 	}
 
+	public struct function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
+		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate();
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
+		
+		var currencyCode = orderTemplate.getCurrencyCode();
+		var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
+
+
+		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
+														sku=arguments.orderTemplateItem.getSku(),
+														originalPrice=originalPrice,
+														currencyCode=currencyCode );
+
+		return {'#arguments.orderTemplateItem.getOrderTemplateItemID()#':priceDetails};
+	}
+	
 	public struct function getPriceDetailsForPromoRewards(required array promoRewards, 
 															required any sku,
 															required string originalPrice,
@@ -1047,7 +1118,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var promotionPeriodQualifications = {};
 
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards( rewardTypeList="fulfillment", promotionCodeList=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getPromotionCodeList() );
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards( rewardTypeList="fulfillment", promotionCodeList=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getPromotionCodeList(), site=arguments.shippingMethodOption.getOrderFulfillment().getOrder().getOrderCreatedSite() );
 
 		// Loop over the Promotion Rewards to look for the best discount
 		for(var i=1; i<=arrayLen(promotionRewards); i++) {
@@ -1096,19 +1167,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public boolean function getOrderQualifiesForCanPlaceOrderReward( required any order ){
-		var canPlaceOrder = true;
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now());
+		return getOrderQualifierDetailsForCanPlaceOrderReward( argumentCollection=arguments )['canPlaceOrder'];
+	}
+
+	public struct function getOrderQualifierDetailsForCanPlaceOrderReward( required any order ){
+		var canPlaceOrderDetails = {
+			'canPlaceOrder':true,
+			'activePromotionRewards':[]
+		};
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
+		
 		if(arraylen(promotionRewards)){
-			canPlaceOrder = false;
+			
+			canPlaceOrderDetails['canPlaceOrder'] = false;
+			
 			for(var promoReward in promotionRewards){
+				
+				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
+				
 				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
 				if(qualificationDetails.qualificationsMeet){
-					canPlaceOrder = true;
-					break;
+					qualificationDetails['canPlaceOrder'] = true;
+					return qualificationDetails; 
 				}
 			}
 		}
-		return canPlaceOrder;
+		return canPlaceOrderDetails; 
 	}
 	
 	public array function getQualifiedPromotionRewardsForOrder( required any order ){
@@ -1118,7 +1202,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
@@ -1151,6 +1235,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return rewardSkus;
 	}
 
+	public string function getQualifiedFreePromotionRewardSkuIDs( required any order ){
+		var qualifiedFreePromotionRewardSkuIDList = '';	
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			
+			var skuCollection = promotionReward.getSkuCollection();
+		
+			if(isNull(skuCollection)){
+				continue; 
+			}
+			
+			if( promotionReward.getAmountType() == 'percentageOff' && 
+			    promotionReward.getAmount() != 100
+			){
+				continue; 
+			}
+	
+			if( promotionReward.getAmountType() == 'amount' && 
+			    promotionReward.getAmount() > 0
+			){
+				continue; 
+			} 
+			
+			qualifiedFreePromotionRewardSkuIDList = listAppend(qualifiedFreePromotionRewardSkuIDList, skuCollection.getPrimaryIDList())	
+		}
+		return qualifiedFreePromotionRewardSkuIDList;  
+	}
+
 	public struct function getQualifiedPromotionRewardSkuCollectionConfigForOrder( required any order ){ 
 		var masterSkuCollection = getSkuService().getSkuCollectionList(); 
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
@@ -1163,20 +1275,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 
 			var skuCollectionConfig = promotionReward.getSkuCollection().getCollectionConfigStruct();
+	
+			filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
 			
-			if(filterGroupIndex > 1){
-				filterGroupIndex = masterSkuCollection.addFilterGroupWithAlias('promoReward' & promotionReward.getPromotionRewardID(), 'OR');
-			}
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
-				this.logHibachi('inner filter #serializeJson(innerFilterOrFilterGroup)#',true);
+				this.logHibachi('promotion reward #promotionReward.getPromotionRewardID()# innerFilterGroup #serializeJson(innerFilterOrFilterGroup)#',true);
 				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
 			} 
 		} 
 
 		return masterSkuCollection.getCollectionConfigStruct();
 	}  
+	
+	public any function getQualifiedPromotionRewardSkuIDsForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+		var rewardSkuIDs = "";
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		for(var promotionReward in qualifiedPromotionRewards){
+			var skuCollection = promotionReward.getSkuCollection();
+			if(!isNull(skuCollection)){
+				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
+				
+				if (isArray(skus)){
+					for(var sku in skus){
+						rewardSkuIDs = listAppend(rewardSkuIDs, sku['skuID']);
+					}
+				}else if (isStruct(skus)){
+					rewardSkuIDs = listAppend(rewardSkuIDs, skus['skuID']);
+				}
+				
+			}
+		}
+		
+		return rewardSkuIDs;
+	}
 
 	// ===================== START: Logical Methods ===========================
 

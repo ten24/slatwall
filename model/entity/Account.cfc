@@ -1,32 +1,25 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-
     As a special exception, the copyright holders of this program give you
     permission to combine this program with independent modules and your
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -34,22 +27,19 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,clone,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey,updatePrimaryEmailAddress" {
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
 	property name="superUserFlag" ormtype="boolean";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
@@ -65,6 +55,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
+	property name="rank" hb_populateEnabled="public" ormtype="string";
 	property name="username" hb_populateEnabled="public" ormtype="string";
 
 	//calucluated property
@@ -134,6 +125,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
+	property name="usernameNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false"; 
 	property name="address" persistent="false";
 	property name="adminIcon" persistent="false";
@@ -150,6 +142,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
 	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
+	property name="siteCurrencyCode" persistent="false"; 
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
@@ -158,52 +151,44 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
-
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
-	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
+	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
-	property name="saveablePaymentMethodsCollectionList" persistent="false"; 
+	property name="saveablePaymentMethodsCollectionList" persistent="false";
 
 
- property name="allowCorporateEmails" ormtype="boolean";
- property name="allowUplineEmails" ormtype="boolean";
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
+ property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
- property name="spouseDriverLicense" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="birthDate" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="accountStatus" ormtype="string" hb_formFieldType="select";
+ property name="complianceStatus" ormtype="string" hb_formFieldType="select";
+ property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
- property name="productPack" ormtype="string";
  property name="gender" ormtype="string" hb_formFieldType="select";
- property name="businessAcc" ormtype="boolean";
- property name="isFlagged" ormtype="boolean";
- property name="dob" ormtype="string";
- property name="lastRenewDate" ormtype="string";
- property name="nextRenewDate" ormtype="string";
- property name="lastStatusDate" ormtype="string";
- property name="pickupCenter" ormtype="string";
- property name="holdEarningsToAR" ormtype="string";
- property name="commStatusUser" ormtype="string";
  property name="accountNumber" ormtype="string";
- property name="accountTypeCode" ormtype="string";
- property name="accountStatusName" ormtype="string" hb_formFieldType="select";
- property name="businessName" ormtype="string";
- property name="flagDescription" ormtype="string" hb_formFieldType="select";
- property name="terminateDate" ormtype="string";
- property name="PayerAccountIdentification" ormtype="string";
  property name="payerName" ormtype="string";
- property name="govermentNumber" ormtype="string";
- property name="CareerTitle" ormtype="string";
- property name="GovermentTypeCode" ormtype="string";
+ property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
- property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
+ property name="referType" ormtype="string" hb_formFieldType="select";
+ property name="terminationDate" ormtype="timestamp" hb_formatType="date";
+ property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";
+ property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
+	 
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -216,6 +201,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getSiteCurrencyCode(){ 
+		if(!isNull(getAccountCreatedSite())){
+			return getAccountCreatedSite().setting('skuCurrency'); 
+		}
+	}
+
 	public string function getPreferedLocale(){
 		//TODO: Get qualified locale based on account prefered language
 		return '';
@@ -296,6 +287,18 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 			}
 		}
 		return variables.primaryEmailAddressNotInUseFlag;
+	}
+	
+	public any function getUsernameNotInUseFlag() {
+		if(!structKeyExists(variables, "usernameNotInUseFlag")) {
+			variables.usernameNotInUseFlag = true;
+			if(!isNull(getUserName()) && len(getUserName()) && getNewFlag()) {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
+			} else {
+				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
+			}
+		}
+		return variables.usernameNotInUseFlag;
 	}
 
 	public any function getSaveablePaymentMethodsSmartList() {
@@ -1030,26 +1033,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	   arguments.pickWave.removeAssignedAccount(this);
 	}
 
-	// Price Groups (many-to-many - owner)
-	public void function addPriceGroup(required any priceGroup) {
-		if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {
-			arrayAppend(variables.priceGroups, arguments.priceGroup);
-		}
-		if(isNew() or !arguments.priceGroup.hasAccount( this )) {
-			arrayAppend(arguments.priceGroup.getAccounts(), this);
-		}
-	}
-	public void function removePriceGroup(required any priceGroup) {
-		var thisIndex = arrayFind(variables.priceGroups, arguments.priceGroup);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.priceGroups, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.priceGroup.getAccounts(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.priceGroup.getAccounts(), thatIndex);
-		}
-	}
-
 	// Permission Groups (many-to-many - owner)
 	public void function addPermissionGroup(required any permissionGroup) {
 		if(arguments.permissionGroup.isNew() or !hasPermissionGroup(arguments.permissionGroup)) {
@@ -1204,10 +1187,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
-
-
-
-		//CUSTOM FUNCTIONS BEGIN
+	//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -1235,5 +1215,66 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		}
 		return variables.saveablePaymentMethodsCollectionList;
 	}
-//CUSTOM FUNCTIONS END
+	
+	public any function getAccountNumber(){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+			if(!isNull(this.getAccountID())){
+				var maxAccountNumberQuery = new query();
+				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
+				
+				maxAccountNumberQuery.setSQL(maxAccountNumberSQL);
+				maxAccountNumberQuery.addParam(name="accountID",value=this.getAccountID());
+				maxAccountNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+				var insertedID = maxAccountNumberQuery.execute().getPrefix().generatedKey;
+				
+				setAccountNumber(insertedID);	
+			}
+		}
+		if(!isNull(variables.accountNumber))
+		return variables.accountNumber;
+	}
+
+	public boolean function userCanCreateFlexship() {
+	
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+		var enrollmentDate = this.getEnrollmentDate();
+		
+		if ( !isNull( enrollmentDate ) ) {
+			// Add the days after enrollment a user can create flexship to the enrollment date.
+			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			
+			// If today is a greater date than the date they can create a flexship.
+			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+		}
+		
+		// If the user doesn't have an enrollment date, return true.
+		return true;
+	}
+
+	//custom validation methods
+		
+	public boolean function restrictRenewalDateToOneYearFromNow() {
+		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
+			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+		}
+		return true;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	//CUSTOM FUNCTIONS END
 }

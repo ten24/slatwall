@@ -289,9 +289,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
-			
-			
-			
+
+
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -323,6 +322,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="ShippingMethod"
 			},
+			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
@@ -376,6 +376,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			
+			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
@@ -410,6 +411,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
+			skuIsRefundFee = {fieldType="yesno", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
@@ -940,7 +942,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteContext = {
 				siteID = "",
 				siteCode = ""
-			}
+			},
+			fieldType = ""
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 
@@ -968,6 +971,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
 			}
+		}
+		
+		if (structKeyExists(settingMetaData, "fieldType")) {
+			settingDetails.fieldType = settingMetaData.fieldType;
 		}
 
 		// If this is a global setting there isn't much we need to do because we already know there aren't any relationships

@@ -55,16 +55,25 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+
 <hb:HibachiEntityProcessForm 
     entity="#getHibachiScope().getService('translationService').newTranslation()#" 
-    edit="#rc.edit#" sRedirectAction="admin:entity.detail#rc.processObject.getBaseObject()#" 
-    sRedirectQS="#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#=#rc.processObject.getBaseID()#">
+    sRedirectQS="#getHibachiScope().getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.processObject.getBaseObject())#=#rc.processObject.getBaseID()#"
+    sRedirectAction="#rc.processObject.getCurrentAction()#" 
+    edit="#rc.edit#"
+    >
+    
+
 	
 	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
     <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
     <input type="hidden" name="basePropertyName" value="#rc.processObject.getBasePropertyName()#">
 
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.translation#">
+	<hb:HibachiEntityActionBar 
+	    type="preprocess"
+	    object="#rc.translation#"
+        backAction="main.default"
+	>
 	</hb:HibachiEntityActionBar>
 	
 	<hb:HibachiPropertyRow>
@@ -75,21 +84,25 @@ Notes:
             
             <cfset local.fieldType = "">
             
-            <cfset local.baseSlatwallObjectName = "Slatwall#rc.processObject.getBaseObject()#">
-            <cfset local.baseObject = getHibachiScope().getService('HibachiService').getEntityObject(local.baseSlatwallObjectName)>
-            <cfset local.basePropertyMetaData = "">
-            <cfif NOT isNull(local.baseObject)>
-                <cfset local.basePropertyMetaData = local.baseObject.getPropertyMetaData(rc.processObject.getBasePropertyName())>
+            <cfif NOT isNull(rc.processObject.getBaseObject())>
+                <cfset local.baseSlatwallObjectName = "Slatwall#rc.processObject.getBaseObject()#">
+                <cfset local.baseObject = getHibachiScope().getService('HibachiService').getEntityObject(local.baseSlatwallObjectName)>
+                <cfset local.basePropertyMetaData = "">
+                <cfif NOT isNull(local.baseObject)>
+                    <cfset local.basePropertyMetaData = local.baseObject.getPropertyMetaData(rc.processObject.getBasePropertyName())>
+                </cfif>
+                <cfif NOT isNull(local.basePropertyMetaData) AND structKeyExists(local.basePropertyMetaData, 'hb_formFieldType')>
+                    <cfset local.fieldType = "#local.basePropertyMetaData.hb_formFieldType#">
+                </cfif>
             </cfif>
-            <cfif NOT isNull(local.basePropertyMetaData) AND structKeyExists(local.basePropertyMetaData, 'hb_formFieldType')>
-                <cfset local.fieldType = "#local.basePropertyMetaData.hb_formFieldType#">
-            </cfif>
-        
+            
             <cfloop from="1" to="#local.localeOptionsLength#" index="local.i">
                 <cfif local.defaultLocale neq rc.localeOptions[local.i].value>
-                    <cfset local.translation = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([rc.processObject.getBaseObject(), rc.processObject.getBaseID(), rc.processObject.getBasePropertyName(), rc.localeOptions[local.i].value], true)>
+                    
+                    <cfset local.translationValue = rc.processObject.getTranslationValue(rc.localeOptions[local.i].value)>
+                    
                     <input type="hidden" name="translationData[#local.i#].locale" value="#rc.localeOptions[local.i].value#">
-                    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="#local.translation.getValue()#" edit="#rc.edit#" title="#rc.localeOptions[local.i].name#" fieldType="#local.fieldType#">
+                    <hb:HibachiPropertyDisplay object="#rc.processObject#" property="translationData" fieldName="translationData[#i#].value" value="#local.translationValue#" edit="#rc.edit#" title="#rc.localeOptions[local.i].name#" fieldType="#local.fieldType#">
                 </cfif>
             </cfloop>
 		</hb:HibachiPropertyList>

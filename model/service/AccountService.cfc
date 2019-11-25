@@ -112,6 +112,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function getPrimaryEmailAddressNotInUseFlag( required string emailAddress, string accountID ) {
 		return getAccountDAO().getPrimaryEmailAddressNotInUseFlag(argumentcollection=arguments);
 	}
+	
+	public boolean function getUsernameNotInUseFlag( required string username, string accountID ) {
+		return getAccountDAO().getUsernameNotInUseFlag(argumentcollection=arguments);
+	}
 
 	public any function getInternalAccountAuthenticationsByEmailAddress(required string emailAddress) {
 		return getAccountDAO().getInternalAccountAuthenticationsByEmailAddress(argumentcollection=arguments);
@@ -766,9 +770,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Login the account
 		if (!arguments.processObject.hasErrors()) {
-			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
-			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+			var activeFlag = accountAuthentication.getAccount().getActiveFlag();
+			
+			//the default value for activeflag is null we're considering that as active
+			if( isNull(activeFlag) || ( isBoolean(activeFlag) && activeFlag ) ) { 
+				getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+			} else {
+				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+			}
 		// Login was invalid
 		} else {
 			var invalidLoginData = {};

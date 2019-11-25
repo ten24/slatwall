@@ -21,12 +21,15 @@
 			</a>
 		</div>
 	</div>
-
+	
 	<div id="mini-cart-slider" class="flexship-container" style="{{monatMiniCart.customStyle}}">
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatMiniCart.cart.orderItems track by item.orderItemID">
-					<button class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item)">
+				<li 
+					ng-class="{loading: item.loading }"
+					ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart"
+				>
+					<button ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
@@ -40,7 +43,7 @@
 						</a>
 					</h6>
 					<div class="product-bottom">
-						<div class="qty">
+						<div ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="qty">
 							<button
 								type="button"
 								class="minus"
@@ -65,15 +68,23 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.extendedPriceAfterDiscount | currency }} </span>
+							<span class="price">{{ item.extendedPriceAfterDiscount | currency }}</span>
 						</div>
 					</div>
 				</li>
 			</ul>
+			
+			<!---Pagination Arrows--->
+			<span ng-show="monatMiniCart.currentPage != 0" ng-click="monatMiniCart.changePage('back')" class="paginate-nav back-arrow">
+				<i class="fal fa-angle-double-left fa-5x"></i>
+			</span>
+			<span ng-show="((monatMiniCart.currentPage + 1) * monatMiniCart.pageSize) <=  monatMiniCart.cart.orderItems.length -1 && monatMiniCart.cart.orderItems.length  > monatMiniCart.pageSize" ng-click="monatMiniCart.changePage('next')" class="paginate-nav forward-arrow">
+				<i class="fal fa-angle-double-right fa-5x"></i>
+			</span>
+			<!---End: Pagination Arrows --->
 		</div>
 		<a href="/shopping-cart" class="btn bg-primary btn-block">
 			<span sw-rbkey="'frontend.miniCart.goToCart'"></span>
 		</a>
-
 	</div>
 </div>

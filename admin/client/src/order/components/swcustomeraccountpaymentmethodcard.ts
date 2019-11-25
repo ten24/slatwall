@@ -40,12 +40,13 @@ class SWCustomerAccountPaymentMethodCardController{
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
+		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateRemoveOrderTemplateItemSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
 		
 		this.title = this.rbkeyService.rbKey('define.billing');
 		
 		if(this.propertiesToDisplayList == null){
-			this.propertiesToDisplayList = 'fulfillmentTotal,subTotal,total';
+			this.propertiesToDisplayList = 'fulfillmentTotal,fulfillmentDiscount,subTotal,total';
 		} else {
 			this.orderTemplateService.setOrderTemplatePropertyIdentifierList(this.propertiesToDisplayList);
 		}

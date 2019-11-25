@@ -58,6 +58,7 @@ Notes:
 
         <cfset local.includedSkuPricesCollection = $.slatwall.getService('HibachiService').getSkuPriceCollectionList() />
         <cfset local.includedSkuPricesCollection.setDisplayProperties('sku.skuCode,currencyCode,price',{'isVisible': true, 'isSearchable': true, 'isExportable': true}) />
+        <cfset local.includedSkuPricesCollection.addDisplayProperty('priceGroup.priceGroupName','Price Group',{'isVisible': true, 'isEditable': false, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('personalVolume','Personal Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('taxableAmount','Taxable Amount',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />
         <cfset local.includedSkuPricesCollection.addDisplayProperty('commissionableVolume','Commissionable Volume',{'isVisible': true, 'isEditable': true, 'isSearchable': false, 'isExportable': true}) />

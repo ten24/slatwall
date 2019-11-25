@@ -370,10 +370,9 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		if(isNull(skuCollection)){
 			return false;
 		}
-		skuCollection.setPageRecordsShow(1);
+		skuCollection.setDisplayProperties('skuID');
 		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
-		return hasSku;
+		return skuCollection.getRecordsCount(refresh=true) > 0;
 	}
 	
 	public boolean function hasOrderItemSku(required any orderItem){
@@ -626,8 +625,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		}
 	}
 	
-	// =================  END: Deprecated Methods   ========================	
-		//CUSTOM FUNCTIONS BEGIN
+	// =================  END: Deprecated Methods   ========================		//CUSTOM FUNCTIONS BEGIN
 
 public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         arguments['customPriceField'] = 'personalVolume';

@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddressConfirm";
 	property name="createAuthenticationFlag" hb_rbKey="processObject.account_create.createAuthenticationFlag";
 	property name="organizationFlag";
+	property name="username";
 	property name="password";
 	property name="passwordConfirm";
 	
@@ -69,6 +70,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplateTypeID" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
 	property name="siteID" hb_rbKey="entity.orderTemplate.site" hb_formFieldType="select";  
 	
+	property name="cmsSiteID" hb_rbKey="entity.orderTemplate.site";  
+	property name="siteCode" hb_rbKey="entity.orderTemplate.site";  
+
+
 	property name="scheduleOrderDayOfTheMonth";
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 	
@@ -117,6 +122,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 		return siteAndCurrencyOptions;  
 	} 	
+	
+	public any function getSite() {
+		if(!StructKeyExists(variables, 'site') ) {
+			
+			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
+				
+				variables['site'] = getService('SiteService').getSite( variables.siteID );
+				
+			} else if ( StructKeyExists(variables, 'cmsSiteID') && !IsNull( variables.cmsSiteID ) && len( trim(variables.cmsSiteID) ) ) {
+				
+				variables['site'] = getService('SiteService').getSiteByCmsSiteID( variables.cmsSiteID );
+				
+			} else if ( StructKeyExists(variables, 'siteCode') && !IsNull( variables.siteCode ) && len( trim(variables.siteCode) ) ) {
+				
+				variables['site'] = getService('SiteService').getSiteBySiteCode( variables.siteCode );
+			} 
+		}
+		
+		return variables['site'];
+	}
 	
 	public boolean function getNewAccountFlag() {
 		if(!structKeyExists(variables, "newAccountFlag")) {

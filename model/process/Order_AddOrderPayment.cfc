@@ -261,6 +261,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
+			
 			for(var paymentDetail in epmDetails) {
 				arrayAppend(variables.paymentMethodIDOptions, {
 					name = paymentDetail.paymentMethod.getPaymentMethodName(),
@@ -272,7 +273,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(getHibachiScope().getAccount().getAdminAccountFlag()){
 			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
-			arrayAppend(paymentMethodIDOptions, {
+			arrayPrepend(paymentMethodIDOptions, {
 				name = 'None',
 				value = 'none',
 				paymentmethodtype = 'none',

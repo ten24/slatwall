@@ -122,6 +122,7 @@ class CollectionConfig {
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false,
         private enableAveragesAndSums:boolean = false,
+        private listingSearchConfig:any = null,
 
     ){
         this.$hibachi = $hibachi;
@@ -222,7 +223,9 @@ class CollectionConfig {
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
         this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-        
+        if(jsonCollection.listingSearchConfig){
+            this.listingSearchConfig = jsonCollection.listingSearchConfig;
+        }
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
@@ -248,7 +251,7 @@ class CollectionConfig {
         if(validate){
             this.validateFilter(this.filterGroups);
         }
-        return {
+        let options = {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
             columns: this.columns,
@@ -266,8 +269,14 @@ class CollectionConfig {
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
             periodInterval:this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums
+            enableAveragesAndSums: this.enableAveragesAndSums,
         };
+        
+        if(this.listingSearchConfig){
+            options['listingSearchConfig'] = this.listingSearchConfig;
+        }
+        
+        return options;
     };
 
 
@@ -305,6 +314,10 @@ class CollectionConfig {
             enableAveragesAndSums: this.enableAveragesAndSums,
             customEndpoint:this.customEndpoint
         };
+
+        if(this.listingSearchConfig){
+            options['listingSearchConfig'] = this.listingSearchConfig;
+        }
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
         }
@@ -967,6 +980,11 @@ class CollectionConfig {
         this.enableAveragesAndSums =  flag;
         return this;
     };
+    
+    public setListingSearchConfig = (config) => {
+        this.listingSearchConfig = config;
+        return this;
+    }
 
     public setDirtyRead = (flag:boolean=false)=>{
         this.dirtyRead = flag;

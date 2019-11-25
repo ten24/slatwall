@@ -79,7 +79,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
 	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
@@ -114,6 +114,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="requiredShippingInfoExistsFlag" persistent="false";
+	property name="fulfillmentChargeAndHandleFee" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxLiabilityAmount" persistent="false" hb_formatType="currency";
@@ -147,7 +148,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="carrierCode" ormtype="string";
+ property name="shipmentTypeCode" ormtype="string";
+ property name="shippingMethodCode" ormtype="string";
+ property name="warehouseCode" ormtype="string";
+ property name="freightTypeCode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -386,7 +393,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getChargeTaxAmount() - getDiscountAmount());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
+	}
+	
+	public numeric function getChargeAfterDiscountPreTax() {
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
@@ -731,11 +742,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.fulfillmentCharge;
 	}
 
-	public boolean function getManualfulfillmentChargeFlag() {
+	public boolean function getManualFulfillmentChargeFlag() {
 		if(!structKeyExists(variables, "manualFulfillmentChargeFlag")) {
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+	
+	public boolean function getManualHandlingFeeFlag() {
+		if(!structKeyExists(variables, "manualHandlingFeeFlag")) {
+			variables.manualHandlingFeeFlag = 0;
+		}
+		return variables.manualHandlingFeeFlag;
 	}
 
 	public struct function getContainerStruct() {

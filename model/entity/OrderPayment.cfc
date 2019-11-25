@@ -111,6 +111,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="amountUncredited" persistent="false" hb_formatType="currency";
 	property name="amountUncaptured" persistent="false" hb_formatType="currency";
 	property name="amountUnreceived" persistent="false" hb_formatType="currency";
+	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
+	property name="totalAmountReceivedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
+	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="refundableAmount" persistent="false" hb_formatType="currency";
 	property name="bankRoutingNumber" persistent="false" hb_populateEnabled="public";
 	property name="bankAccountNumber" persistent="false" hb_populateEnabled="public";
 	property name="checkNumber" persistent="false" hb_populateEnabled="public";
@@ -138,7 +142,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="paymentNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived()) && getPaymentTransactions()[i].getAmountReceived() > 0 && !isNull(getPaymentTransactions()[i].getProviderTransactionID()) && len(getPaymentTransactions()[i].getProviderTransactionID())) {
@@ -188,8 +194,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 
-		// Credit Card & Gift Card
-		if(listFindNoCase("creditCard,giftCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+		// Credit Card, External & Gift Card
+		if(listFindNoCase("creditCard,giftCard,external", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.accountPaymentMethod.getProviderToken() );
 		}
 
@@ -385,6 +391,33 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return uncredited;
 	}
 
+	public numeric function getTotalAmountCreditedIncludingReferencingPayments(){
+		return getAmountCredited() + getReferencingPaymentAmountCreditedTotal();
+	}
+	
+	public numeric function getReferencingPaymentAmountCreditedTotal(){
+		var amount = 0;
+		for(var referencingOrderPayment in getReferencingOrderPayments()){
+			amount += referencingOrderPayment.getAmountCredited();
+		}
+		return amount;
+	}
+	
+	public numeric function getTotalAmountReceivedIncludingReferencingPayments(){
+		return getAmountReceived() + getReferencingPaymentAmountReceivedTotal();
+	}
+	
+	public numeric function getReferencingPaymentAmountReceivedTotal(){
+		var amount = 0;
+		for(var referencingOrderPayment in getReferencingOrderPayments()){
+			amount += referencingOrderPayment.getAmountReceived();
+		}
+		return amount;
+	}
+	
+	public numeric function getRefundableAmount(){
+		return getTotalAmountReceivedIncludingReferencingPayments() - getTotalAmountCreditedIncludingReferencingPayments();
+	}
 
 	public array function getExpirationMonthOptions() {
 		return getService('paymentService').getCardExpirationMonthOptions();
@@ -789,16 +822,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 
-	public any function getSimpleRepresentation() {
+	public any function getSimpleRepresentation(boolean includeAmount=true) {
 		if(this.isNew()) {
 			return rbKey('define.new') & ' ' & rbKey('entity.orderPayment');
 		}
 
 		if(getPaymentMethodType() == "creditCard") {
-			return getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour() & ' - ' & getFormattedValue('amount');
+			var simpleRepresentation = getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour();
+		}else{
+			var simpleRepresentation = getPaymentMethod().getPaymentMethodName();
 		}
-
-		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
+		
+		if(arguments.includeAmount){
+			simpleRepresentation &=  ' - ' & getFormattedValue('amount');
+		}
+		return simpleRepresentation;
+		
 	}
 
 	public any function setBillingAccountAddress( any accountAddress ) {

@@ -49,8 +49,8 @@
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.orderTemplate" type="any" />
 
-<cfset defaultCountryCode = 'US' />
-<cfset stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
+<cfset local.defaultCountryCode = 'US' />
+<cfset local.stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
 
@@ -84,6 +84,7 @@
 							  data-save-event="saveOrderTemplate"
 							  data-edit-action="editOrderTemplate"
 							  data-edit-event="editOrderTemplate"
+							  data-show-delete="#!getHibachiScope().validate(rc.orderTemplate,'delete',false).hasErrors()#"
 							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
 							  data-type="detail" 
 							  data-edit="#rc.edit#">

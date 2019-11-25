@@ -215,6 +215,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Call the new method on that service to inject an object into the RC
 		if(!structKeyExists(rc, arguments.entityName)) {
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "new#arguments.entityName#" );
+			arguments.rc[ arguments.entityName ].populate(arguments.rc);
 		}
 
 		// Set the edit to true
@@ -295,10 +296,13 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 
 		// Check how the delete went
-		var deleteOK = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
+		var success = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
 
-		// SUCCESS
-		if (deleteOK) {
+		if(isNull(success)){
+			throw('You have created a delete function for entity #arguments.entityName# that does not return a boolean, this does not follow convention.');
+		}
+		
+		if (success) {
 			// Show the Generica Action Success Message
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'), "all" ), "success");
 

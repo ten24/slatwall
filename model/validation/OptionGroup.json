@@ -1,7 +1,9 @@
 {
-	"properties":{
-		"optionGroupName":			[{"contexts":"save","required":true}],
-		"optionGroupCode":			[{"contexts":"save","unique":true,"required":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"options":					[{"contexts":"delete","maxCollection":0}]
+	"properties": {
+		"optionGroupName": [{ "contexts": "save", "required": true }],
+		"optionGroupCode": [
+			{ "contexts": "save", "unique": true, "required": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }
+		],
+		"options": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }

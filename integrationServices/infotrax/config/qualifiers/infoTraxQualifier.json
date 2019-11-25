@@ -1,23 +1,84 @@
 {
 	"filters" : {
 		"validAccount" : [
+			[
+				{
+					"propertyIdentifier":"activeFlag",
+					"comparisonOperator":"=",
+					"value":"true"
+				},
+				{
+					"propertyIdentifier":"accountNumber",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},
+				{
+					"propertyIdentifier":"ownerAccount.accountID",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},{
+					"propertyIdentifier":"accountType",
+					"comparisonOperator":"IN",
+					"logicalOperator":"AND",
+					"value":"marketPartner"
+				},{
+					"propertyIdentifier":"renewalDate",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				}
+			],[
+				{
+					"propertyIdentifier":"activeFlag",
+					"comparisonOperator":"=",
+					"value":"true"
+				},
+				{
+					"propertyIdentifier":"accountNumber",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},{
+					"propertyIdentifier":"ownerAccount.accountID",
+					"comparisonOperator":"is not",
+					"logicalOperator":"AND",
+					"value":"null"
+				},
+				{
+					"propertyIdentifier":"accountType",
+					"comparisonOperator":"IN",
+					"logicalOperator":"AND",
+					"value":"vip,Customer"
+				}
+			]
+		],
+		
+		"validRelatedAccount" : [
 			{
-				"propertyIdentifier":"accountNumber",
+				"propertyIdentifier":"account.activeFlag",
+				"comparisonOperator":"=",
+				"value":"true"
+			},
+			{
+				"propertyIdentifier":"account.accountNumber",
 				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
 				"value":"null"
 			},
 			{
-				"propertyIdentifier":"ownerAccount",
-				"comparisonOperator":"is not",
-				"logicalOperator":"AND",
-				"value":"null",
-			},{
-				"propertyIdentifier":"accountType",
+				"propertyIdentifier":"account.ownerAccount",
 				"comparisonOperator":"is not",
 				"logicalOperator":"AND",
 				"value":"null"
 			},{
-				"propertyIdentifier":"renewalDate",
+				"propertyIdentifier":"account.accountType",
+				"comparisonOperator":"is not",
+				"logicalOperator":"AND",
+				"value":"null"
+			},{
+				"propertyIdentifier":"account.renewalDate",
 				"comparisonOperator":"is not",
 				"logicalOperator":"AND",
 				"value":"null"
@@ -25,19 +86,77 @@
 		],
 		
 		"validOrder" : [
-			{
-				"propertyIdentifier": "orderNumber",
-				"comparisonOperator": "is not",
-				"value": "null",
-				"ormtype": "string"
-			},
-			{
-				"propertyIdentifier": "orderStatusType.systemCode",
-				"comparisonOperator": "<>",
-				"logicalOperator": "AND",
-				"value": "ostNotPlaced",
-				"ormtype": "string"
-			}
+			[
+				{
+					"propertyIdentifier": "remoteID",
+					"comparisonOperator": "is",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderNumber",
+					"comparisonOperator": "is not",
+					"logicalOperator": "AND",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderType.systemCode",
+					"comparisonOperator": "=",
+					"logicalOperator": "AND",
+					"value": "otSalesOrder",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderStatusType.systemCode",
+					"comparisonOperator": "!=",
+					"logicalOperator": "AND",
+					"value": "ostNotPlaced",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "account.accountNumber",
+					"comparisonOperator": "IS NOT",
+					"logicalOperator": "AND",
+					"value": "NULL",
+					"ormtype": "string"
+				}
+			],
+			[
+				{
+					"propertyIdentifier": "remoteID",
+					"comparisonOperator": "is",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderNumber",
+					"comparisonOperator": "is not",
+					"value": "null",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderType.systemCode",
+					"comparisonOperator": "!=",
+					"logicalOperator": "AND",
+					"value": "otSalesOrder",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "orderStatusType.systemCode",
+					"comparisonOperator": "IN",
+					"logicalOperator": "AND",
+					"value": "ostClosed,ostCanceled",
+					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "account.accountNumber",
+					"comparisonOperator": "IS NOT",
+					"logicalOperator": "AND",
+					"value": "NULL",
+					"ormtype": "string"
+				}
+			]
 		],
 		
 		"validOrderTemplate" : [
@@ -55,6 +174,19 @@
 				"ormtype": "string"
 			}
 		]
+	},
+	
+	"afterAccountPhoneNumberSaveSuccess" : {
+		"filters": "validRelatedAccount"
+	},
+	"afterAccountAddressSaveSuccess" : {
+		"filters": "validRelatedAccount"
+	},
+	"afterAccountGovernmentIdentificationCreateSuccess" : {
+		"filters": "validRelatedAccount"
+	},
+	"afterAccountGovernmentIdentificationSaveSuccess" : {
+		"filters": "validRelatedAccount"
 	},
 	
 	"afterAccountSaveSuccess" : {
@@ -75,7 +207,15 @@
 	},
 	
 	"afterOrderTemplateProcess_activateSuccess" : {
-		"filters" : "validOrderTemplate"
+		"filters" : [
+			{
+				"propertyIdentifier": "orderTemplateType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "ottSchedule",
+				"ormtype": "string"
+			}
+		]
 	},
 	"afterOrderTemplateSaveSuccess" : {
 		"filters" : "validOrderTemplate"

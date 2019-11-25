@@ -8,7 +8,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiDAO";
 	property name="orderDAO";
 	property name="productDAO";
 	property name="promotionDAO";
@@ -60,6 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fulfillmentService";
 	property name="giftCardService";
 	property name="hibachiUtilityService";
+	property name="hibachiEntityQueueService";
 	property name="hibachiAuthenticationService";
 	property name="integrationService";
 	property name="locationService";
@@ -108,8 +110,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
 		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
-			// FIXME: Temporary disable to allow QA place order
-			//orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
+			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
 		}
 
 		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
@@ -395,7 +396,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
+					//we will update order amounts at the end of the process
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=false );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -473,7 +475,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		// If this is a return order item, then we need to setup or find the orderReturn
-		} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
+		} else if (listFindNoCase("oitReturn",arguments.processObject.getOrderItemTypeSystemCode())) {
 
 			// First see if we can use an existing order return
 			var orderReturn = processObject.getOrderReturn();
@@ -533,10 +535,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Setup the Sku / Quantity / Price details
-			newOrderItem.setSku( arguments.processObject.getSku() );
-			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
+			addNewOrderItemSetup(newOrderItem, arguments.processObject);
 
 			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 			if(
@@ -566,8 +565,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.saveOrder(order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag());
 			}
 
-			// Save the new order items
-			newOrderItem = this.saveOrderItem( newOrderItem );
+			// Save the new order items don't update order amounts we'll do it at the end of this process
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -906,7 +905,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if((!len(arguments.processObject.getCopyFromType()) || arguments.processObject.getCopyFromType()=="accountGiftCard")
+			if((!len(arguments.processObject.getCopyFromType()) || arguments.processObject.getCopyFromType()=="accountGiftCard")
             	&& !isNull(arguments.processObject.getGiftCard())
             ){
 	            var giftCard = arguments.processObject.getGiftCard();
@@ -916,8 +915,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
             	
-				if(arguments.processMethod.getAmount()){
-					newOrderPayment.setAmount(arguments.processMethod.getAmount());
+				if(!isNull(arguments.processObject.getAmount())){
+					newOrderPayment.setAmount(arguments.processObject.getAmount());
 				} else if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
@@ -1020,7 +1019,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 	
 		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.orderTemplate.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.addPromotionCode( promotionCode );
 		}
@@ -1032,31 +1031,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
 		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
 		} else if ( !pc.getCurrentFlag() || !pc.getPromotion().getCurrentFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
 		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
 		//if promo has a max account use and account related to order has used it more than the max account use, show over max account use message
 		} else if( !isNull(pc.getMaximumAccountUseCount()) && !isNull(arguments.order.getAccount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
 		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
 		//If promo site does not match order site, display incorrect site message
 		} else if( 
 			!isNull(pc.getPromotion().getSite())
 			&& !isNull(arguments.order.getOrderCreatedSite())
 			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
 		) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
-		} else if(arguments.processObject.getUpdateOrderAmountFlag()) {
+			arguments.order.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'));
+		} else {
+			
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
+				
 				arguments.order.addPromotionCode( pc );
-				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+
+				if(arguments.processObject.getUpdateOrderAmountFlag()){
+					this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
+				}
 			}
 		}
 
@@ -1175,116 +1179,88 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	//begin order template functionality
-	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
-
-		var fulfillmentCharge = 0; 
-
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		request.orderTemplate = arguments.orderTemplate; 	
-		
-		thread name="#threadName#"
-			   action="run" 
-		{	
-			var ormSession = ormGetSessionFactory().openSession();
-	    	var tx = ormSession.beginTransaction();
-			thread.fulfillmentCharge = getService('OrderService').newTransientOrderFulfillmentFromOrderTemplate(arguments.orderTemplate).getFulfillmentCharge();
-			tx.commit();
-			ormSession.close();
-			
-		}
-		
-		//join thread so we can return synchronously
-		threadJoin(threadName);
-		
-		//if we have any error we probably don't have the required data for returning the total
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			fulfillmentCharge = evaluate(threadName).fulfillmentCharge; 
-		} else {
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+		if(structKeyExists(request, 'orderTemplateOrderDetails')){
+			return request.orderTemplateOrderDetails;
 		} 
-
-		return fulfillmentCharge; 
-	}
-
-	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
 		
-		//return a sku collection that will never have records if this process fails
-		var skuCollection = getSkuService().getSkuCollectionList();
-		skuCollection.addFilter('skuID','null','is'); 
-		var promotionalRewardSkuCollectionConfig = skuCollection.getCollectionConfigStruct(); 
-		
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplateOrderDetails = {}; 
 	
-		request.orderTemplate = arguments.orderTemplate; 	
+		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
+		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
 
+		request.skuCollection = getSkuService().getSkuCollectionList();
+		request.skuCollection.addFilter('skuID','null','is'); 
+		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
+		
+		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+
+		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+		request.orderTemplate = arguments.orderTemplate; 	
+		
 		thread name="#threadName#"
 			   action="run" 
 		{
+
+			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
+
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-			transientOrder = this.saveOrder(transientOrder);
-			
-			ormFlush();
- 
-			thread.promotionalRewardSkuCollectionConfig = getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder);
+			//only update amounts if we can
+			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
+			transientOrder.updateCalculatedProperties(); 	
+			getHibachiDAO().flushORMSession();
+		
+			if(hasInfoForFulfillment){	
+				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
+			}
+	
+			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
+			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
+
+			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
+			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
-			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
-			
-		}
-		
-		threadJoin(threadName);
 	
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			promotionalRewardSkuCollectionConfig = evaluate(threadName).promotionalRewardSkuCollectionConfig; 
-		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		}
-		return promotionalRewardSkuCollectionConfig; 
+		//join thread so we can return synchronously
+		threadJoin(threadName);
+		//if we have any error we probably don't have the required data for returning the total
+		if(structKeyExists(evaluate(threadName), "ERROR")){
+			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		} 
 
+		return request.orderTemplateOrderDetails;
+	} 
+	
+	public numeric function getFulfillmentDiscountForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
+	}
+	
+	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
+	}
+	
+	public struct function getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['promotionalFreeRewardSkuCollectionConfig']; 
+	}
+
+	public struct function getPromotionalRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['promotionalRewardSkuCollectionConfig']; 
 	}
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
-		
-		var canPlaceOrder = false;
-
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-	
-		request.orderTemplate = arguments.orderTemplate; 	
-		
-		thread name="#threadName#"
-			   action="run" 
-		{	
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-
-			//merge the entity to prevent failed to lazy initiate collection errors
-			transientOrder = this.saveOrder(transientOrder);
-			
-			ormFlush();
- 
-			thread.canPlaceOrder = getPromotionService().getOrderQualifiesForCanPlaceOrderReward(transientOrder); 
-
-			//getPromotionDAO().deletePromotionAppliedToOrderItemByOrderID(transientOrder.getOrderID()); 			
-
-			var deleteOk = this.deleteOrder(transientOrder); 
-
-			this.logHibachi('can delete order #deleteOk# hasErrors #transientOrder.hasErrors()#');
-
-			ormFlush();//persist changes independently 
-		}
-
-		//join thread so we can return synchronously
-		threadJoin(threadName);
-		
-		if(!structKeyExists(evaluate(threadName), "ERROR")){
-			canPlaceOrder = evaluate(threadName).canPlaceOrder; 
-		} else {
-			this.logHibachi('encountered error when checking can place order for order template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
-		return canPlaceOrder;
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
 	}
 
 	//order transient helper methods
@@ -1306,8 +1282,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
 		}
 
-		arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
-	
+		if(!isNull(arguments.orderTemplate.getShippingMethod())){
+			arguments.transientOrderFulfillment = this.newTransientOrderFulfillmentFromOrderTemplate(argumentCollection=arguments);
+		}	
+
 		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
 		
 		return arguments.transientOrder;
@@ -1328,8 +1306,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.transientOrderFulfillment.setOrder(arguments.transientOrder); 
 		arguments.transientOrderFulfillment.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		arguments.transientOrderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());  	
-		arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
 		
+		if(!isNull(arguments.orderTemplate.getShippingAddress())){
+			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAddress());
+		
+		} else if(!isNull(arguments.orderTemplate.getShippingAccountAddress()) && 
+				  !isNull(arguments.orderTemplate.getShippingAccountAddress().getAddress()) 
+		){
+			arguments.transientOrderFulfillment.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
+		} 		
+
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 			ORMGetSession().evict(arguments.orderTemplate.getShippingMethod());
@@ -1350,11 +1336,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public array function populateOrderItemsFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, any transientOrderFulfillment){
-		
+	
 		var orderTemplateItems = orderTemplate.getOrderTemplateItems(); 
 
 		var transientOrderItems = []; 
-	
+		
+		if( structKeyExists(arguments, "transientOrder") &&
+			!arrayIsEmpty(arguments.transientOrder.getOrderItems())){
+			return transientOrderItems; 
+		}
+
 		for(var orderTemplateItem in orderTemplateItems){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
 			var sku = orderTemplateItem.getSku(); 		
@@ -1366,6 +1357,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+			transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
 			
 			if(structKeyExists(arguments, "transientOrderFulfillment")){
@@ -1391,16 +1383,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
+    
+   	public any function processOrderTemplate_batchCancel(required any orderTemplate, any processObject, required struct data={}) { 
+		
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstActive'){
+			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
+			return arguments.orderTemplate;
+		} 
 
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getTypeBySystemCode('otscrtBatch'));
+		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		
+		return this.saveOrderTemplate(arguments.orderTemplate); 
+	}
+	
 	public any function processOrderTemplate_cancel(required any orderTemplate, any processObject, required struct data={}) { 
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() != 'otstActive'){
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
 			return arguments.orderTemplate;
 		} 
-		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getType(arguments.data.orderTemplateCancellationReasonType.typeID));
-		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.data.orderTemplateCancellationReasonType.typeIDOther);  
+
+		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
+		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
+		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
 
@@ -1408,10 +1416,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else {
+		} else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
+		} else{
+			var account = getHibachiScope().getAccount();
 		}
-
+		
 		if(account.hasErrors()) {
 			arguments.orderTemplate.addError('create', account.getErrors());
 		} else {
@@ -1421,11 +1431,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			arguments.orderTemplate.setAccount(account);
-			arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
-			arguments.orderTemplate.setSite(getSiteService().getSite( processObject.getSiteID()));
+			
+			var site = arguments.processObject.getSite() 
+			arguments.orderTemplate.setSite( site  );
+			
+			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
+				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
+			} 
+
 			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(processObject.getOrderTemplateTypeID()));
+			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+			arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		}
@@ -1473,6 +1492,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate;
 	}
 
+	private any function getOrderCreateProcessObjectForOrderTemplate(required any orderTemplate, required any order){
+		var processOrderCreate = arguments.order.getProcessObject('create'); 
+		processOrderCreate.setNewAccountFlag(false); 
+		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
+		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
+		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
+		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
+		//do we need location
+
+		return processOrderCreate;
+	} 
+
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 
 		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
@@ -1481,15 +1512,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
-
-		var processOrderCreate = newOrder.getProcessObject('create'); 
-		processOrderCreate.setNewAccountFlag(false); 
-		processOrderCreate.setAccountID(arguments.orderTemplate.getAccount().getAccountID()); 
-		processOrderCreate.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-		processOrderCreate.setOrderCreatedSite(arguments.orderTemplate.getSite()); 
-		processOrderCreate.setOrderTypeID('444df2df9f923d6c6fd0942a466e84cc'); //otSalesOrder			
-		//do we need location
-		newOrder = this.processOrder_Create(newOrder, processOrderCreate); 	
+		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
@@ -1511,7 +1534,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderTemplateItem in orderTemplateItems){ 
 
 			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
-			processOrderAddOrderItem.setSku(getSkuService().getSku(orderTemplateItem['sku_skuID']));
+			var sku = getSkuService().getSku(orderTemplateItem['sku_skuID']);	
+			processOrderAddOrderItem.setSku(sku);
+			processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
 			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
 			processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 	
@@ -1526,6 +1551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = newOrder.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 			} 
 
 			if(newOrder.hasErrors()){
@@ -1540,10 +1566,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionCode in promotionCodes){
 			var processOrderAddPromotionCode = newOrder.getProcessObject('addPromotionCode');
 			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
-			porcessOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
 	
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
+
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#',true);
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
@@ -1553,24 +1581,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 
-		var giftCardPaymentMethod = getPaymentService().getPaymentMethod('50d8cd61009931554764385482347f3a');
 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
-			var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-			processOrderAddOrderPayment.setGiftCardID(orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID());
-			processOrderAddOrderPayment.setAmount(orderTemplateAppliedGiftCard.getAmountToApply());
 
-			newOrderPayment = this.newOrderPayment(); 
-			newOrderPayment.setPaymentMethod(giftCardPaymentMethod);
-			
-			processOrderAddOrderPayment.setNewOrderPayment(newOrderPayment);
-			processOrderAddOrderPayment.setUpdateOrderAmountFlag(false);  
+			var processData = {	
+				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
+				'amount' : orderTemplateAppliedGiftCard.getAmountToApply(),
+				'copyFromType' : 'accountGiftCard', 
+				'newOrderPayment':	{
+					'orderPaymentID' : '',
+					'paymentMethod' : {
+						'paymentMethodID' : '50d8cd61009931554764385482347f3a'//giftcard payment method
+					}
+				},
+				'updateOrderAmountFlag' : false  
+			}
 
-			newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
 
 		}  
-		
-		arguments.orderTemplate = this.processOrderTemplate_removeAppliedGiftCards(arguments.orderTemplate);  
+	
+
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');	
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
@@ -1588,12 +1620,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
-		
-		var processOrderAddOrderPayment = newOrder.getProcessObject('addOrderPayment');
-		processOrderAddOrderPayment.setAccountPaymentMethodID(arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID());
-		processOrderAddOrderPayment.setAccountAddressID(arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID());	
+	
+		var addOrderPaymentProcessData = {	
+			'accountPaymentMethodID':arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
+			'accountAddressID':arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID()
+		}
 
-		newOrder = this.processOrder_addOrderPayment(newOrder, processOrderAddOrderPayment); 
+		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
 	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
@@ -1624,6 +1657,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
 					newOrder.setPaymentTryCount(1);
 					newOrder.setPaymentLastRetryDateTime(now());
+
+					//fire retry payment failure event so it can be utilized in workflows
+					getHibachiEventService().announceEvent("afterOrderProcess_RetryPaymentFailure");
 				} 
 			}
 		}
@@ -1642,8 +1678,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
 
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
+	}
+
+	public any function processOrderTemplate_removeTemporaryItems(required any orderTemplate, any data={}){
+
+		var orderTemplateItems = arguments.orderTemplate.getOrderTemplateItems(); 
+		var orderTemplateItemsCount = arrayLen(orderTemplateItems);
+
+		for(var i=orderTemplateItemsCount; i >= 1; i--){
+			if(!isNull(orderTemplateItems[i].getTemporaryFlag()) && orderTemplateItems[i].getTemporaryFlag()){
+				arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItems[i]);
+			} 
+		} 
+		
+		return this.saveOrderTemplate(arguments.orderTemplate); 
 	}
 
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
@@ -1651,12 +1702,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
 			var newOrderTemplateItem = this.newOrderTemplateItem();
 
 			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
 			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setTemporaryFlag(arguments.processObject.getTemporaryFlag()); 
 			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
 			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
 		
@@ -1691,7 +1744,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}  
 
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
-			
+		
+		this.logHibachi('removing oti is null #isNull(arguments.processObject.getOrderTemplateItem())#', true);
+		
+	
 		arguments.orderTemplate.removeOrderTemplateItem(arguments.processObject.getOrderTemplateItem()); 		
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
@@ -1909,7 +1965,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
-		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID";
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
@@ -1923,6 +1979,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateCollection.addFilter('account.accountID', arguments.account.getAccountID());
+		orderTemplateCollection.addOrderBy('modifiedDateTime|DESC');
 		return orderTemplateCollection; 
 	}  
 
@@ -2087,26 +2144,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function processOrder_createReturn(required any order, required any processObject) {
+	public any function processOrder_createReturn(required any order, required any processObject, struct data) {
+		var orderTypeCode = arguments.processObject.getOrderTypeCode();
+		
 		// Create a new return order
 		var returnOrder = this.newOrder();
 		returnOrder.setAccount( arguments.order.getAccount() );
-		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
+		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(orderTypeCode));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		returnOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
 		returnOrder.setReferencedOrder( arguments.order );
 		returnOrder.setReferencedOrderType('return');
 
-		// Create OrderReturn entity (to save the fulfillment amount)
-		var orderReturn = this.newOrderReturn();
-		orderReturn.setOrder( returnOrder );
-		orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
-		orderReturn.setReturnLocation( arguments.processObject.getLocation() );
 
 		var orderItemFoundFlag = false;
 		// Look for that orderItem in the data records
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
-
+			if(!structKeyExists(orderItemStruct,'price')){
+				orderItemStruct.price = 0;
+			}
 			// Verify that there was a quantity
 			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
 
@@ -2115,23 +2171,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Create a new return orderItem
 				if(!isNull(originalOrderItem)) {
-
-					// Create a new order item
-					var orderItem = this.newOrderItem();
-
-					// Setup the details
-					orderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
-					orderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
-					orderItem.setPrice( orderItemStruct.price );
-					orderItem.setSkuPrice( originalOrderItem.getSku().getPrice() );
-					orderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
-					orderItem.setQuantity( orderItemStruct.quantity );
-					orderItem.setSku( originalOrderItem.getSku() );
-
-					// Add needed references
-					orderItem.setReferencedOrderItem( originalOrderItem );
-					orderItem.setOrderReturn( orderReturn );
-					orderItem.setOrder( returnOrder );
+					switch(orderTypeCode){
+						case 'otReturnOrder':
+							var orderItem = addReturnOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+						case 'otExchangeOrder':
+							var orderItem = addExchangeOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+						case 'otReplacementOrder':
+							var orderItem = addReplacementOrderItemSetup(returnOrder,originalOrderItem,arguments.processObject,orderItemStruct);
+							break;
+					}
 
 					if(originalOrderItem.getSku().getBaseProductType() == "event") {
 						// If necessary, initiate the registration cancellation process.
@@ -2142,9 +2192,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 
-					// Persist the new item
-					getHibachiDAO().save( orderItem );
-
+				}else if(orderTypeCode == 'otRefundOrder'){
+					var orderItem = addReturnOrderItemSetup(returnOrder,{},arguments.processObject,orderItemStruct);
 				}
 
 			}
@@ -2153,6 +2202,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Persist the new order
 		getHibachiDAO().save( returnOrder );
 
+		// Add any discount amount from order item allocated order discounts
+		if(orderTypeCode == 'otReturnOrder'){
+			this.updateReturnOrderWithAllocatedDiscounts(arguments.order, returnOrder, arguments.processObject);
+		}
+		
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 		
@@ -2167,18 +2221,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var returnOrderPayment = this.newOrderPayment();
 		var placeOrderData = {};
 
+		// Multiple refunds
+		if(!isNull(arguments.processObject.getOrderPayments()) && arrayLen(arguments.processObject.getOrderPayments())){
+			for(var orderPaymentStruct in arguments.processObject.getOrderPayments()){
+				if(structKeyExists(orderPaymentStruct,'originalOrderPaymentID') && len(orderPaymentStruct['originalOrderPaymentID'])){
+					var originalOrderPayment = this.getOrderPayment(orderPaymentStruct['originalOrderPaymentID']);
+					if(isObject(originalOrderPayment)){
+						var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder, orderPaymentStruct);
+					}
+				}
+			}
 		// Referencing original order payment
-		if (isObject(originalOrderPayment)) {
-			var returnOrderPayment = this.newOrderPayment();
-				returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
-				returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
-				returnOrderPayment.setOrder( returnOrder );
-				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
-				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
+		}else if (isObject(originalOrderPayment)) {
+			var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder);
 
 		// New return order payment, provided order payment information is not related to any previous order payments
-		} else {
+		} else if(!isNull(arguments.processObject.getAccountPaymentMethodID())){
 
 			// Manually populate for 'placeOrder' data, and set payment type as 'credit' rather than the default 'charge'
 			placeOrderData.newOrderPayment = {};
@@ -2208,10 +2266,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
+			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
-
 				if(!returnOrder.hasErrors()) {
 					//if no errors and the order has a product with deferred revenue then check if we need to record a subscriptionOrderDeliveryItem
 					for(var orderItem in returnOrder.getOrderItems()){
@@ -2235,17 +2292,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
-					
+
 					// If the process object was set to automatically receive these items, then we will do that
-					if((arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())){
+					if( (arguments.processObject.getOrderTypeCode() == 'otRefundOrder' 
+						|| (!isNull(arguments.processObject.getReceiveItemsFlag()) && arguments.processObject.getReceiveItemsFlag()))
+						&& returnOrder.hasOrderReturn()){
+						var orderReturn = returnOrder.getOrderReturns()[1];
 						var receiveData = {};
 						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
 						receiveData.orderReturnItems = [];
-						receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
 						for(var returnItem in orderReturn.getOrderReturnItems()) {
 							var thisData = {};
 							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
 							thisData.quantity = returnItem.getQuantity();
+							thisData.unreceivedQuantity = returnItem.getQuantity();
 							arrayAppend(receiveData.orderReturnItems, thisData);
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
@@ -2254,9 +2314,134 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
-
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
+	}
+	
+	public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
+		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+			var promotionApplied = getService('PromotionService').newPromotionApplied();
+			promotionApplied.setOrder(returnOrder);
+			if(arguments.order.hasAppliedPromotion()){
+				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
+			}
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setManualDiscountAmountFlag(true);
+			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
+		}
+		return returnOrder;
+	}
+	
+	public any function addExchangeOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		if(orderItemStruct.orderItemType == 'oitReturn'){
+			var returnOrderItem = addReturnOrderItemSetup(argumentCollection=arguments);
+		}else{
+			var returnOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);
+		}
+		
+		return returnOrderItem;
+	}
+	
+	public any function addReplacementOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		
+		// Create OrderReturn entity (to save the fulfillment amount)
+		if(returnOrder.hasOrderFulfillment()){
+			var orderFulfillment = returnOrder.getOrderFulfillments()[1];
+		}else{
+			var orderFulfillment = this.newOrderFulfillment();
+			orderFulfillment.setOrder( arguments.returnOrder );
+			orderFulfillment.setFulfillmentCharge( arguments.processObject.getFulfillmentAmount() );
+			orderFulfillment.setManualFulfillmentChargeFlag(true);
+			var originalOrder = returnOrder.getReferencedOrder();
+			var originalFulfillment = originalOrder.getOrderFulfillments()[1];
+			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
+			if(originalFulfillment.hasShippingAddress()){
+				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(originalFulfillment.hasPickupLocation()){
+				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
+			}
+			this.saveOrderFulfillment(orderFulfillment);
+		}
+		
+		// Create a new order item
+		var replacementOrderItem = this.newOrderItem();
+
+		// Setup the details
+		replacementOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReplacement') );
+		replacementOrderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
+		
+
+		// Add needed references
+		replacementOrderItem.setReferencedOrderItem( originalOrderItem );
+		replacementOrderItem.setOrderFulfillment( orderFulfillment );
+		replacementOrderItem.setOrder( returnOrder );
+
+		replacementOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+		replacementOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		replacementOrderItem.setSku( originalOrderItem.getSku() );
+		replacementOrderItem.setPrice( arguments.orderItemStruct.price );
+		replacementOrderItem.setQuantity( arguments.orderItemStruct.quantity );
+		
+		getHibachiDAO().save( replacementOrderItem );
+		return replacementOrderItem;
+	}
+	
+	public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
+		var originalOrderItemExists = !(isStruct(arguments.originalOrderItem) && structIsEmpty(arguments.originalOrderItem));
+
+		// Create OrderReturn entity (to save the fulfillment amount)
+		if(returnOrder.hasOrderReturn()){
+			var orderReturn = returnOrder.getOrderReturns()[1];
+		}else{
+			var orderReturn = this.newOrderReturn();
+			orderReturn.setOrder( arguments.returnOrder );
+			orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+			orderReturn.setReturnLocation( arguments.processObject.getLocation() );
+			this.saveOrderReturn(orderReturn);
+		}
+		
+		// Create a new order item
+		var returnOrderItem = this.newOrderItem();
+
+		// Setup the details
+		returnOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
+		returnOrderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
+		
+
+		// Add needed references
+		returnOrderItem.setOrderReturn( orderReturn );
+		returnOrderItem.setOrder( returnOrder );
+		if(originalOrderItemExists){
+			returnOrderItem.setReferencedOrderItem( originalOrderItem );
+			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
+			returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+			returnOrderItem.setSku( originalOrderItem.getSku() );
+		}else{
+			returnOrderItem.setSku(getService('skuService').getSku(arguments.orderItemStruct.sku.skuID));
+			returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
+		}
+		returnOrderItem.setPrice( arguments.orderItemStruct.price );
+		returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
+		
+		getHibachiDAO().save( returnOrderItem );
+		return returnOrderItem;
+	}
+	
+	public any function setupReturnOrderPayment(required any originalOrderPayment, required any returnOrder, struct orderPaymentStruct){
+		var returnOrderPayment = this.newOrderPayment();
+		returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
+		returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
+		returnOrderPayment.setOrder( returnOrder );
+		returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
+		returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
+		if(isNull(arguments.orderPaymentStruct) || !structKeyExists(arguments.orderPaymentStruct, 'amount')){
+			returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
+		}else{
+			returnOrderPayment.setAmount(arguments.orderPaymentStruct.amount);
+		}
+		return returnOrderPayment;
 	}
 
 	public any function processOrder_duplicateOrder (required any order, struct data={}) {
@@ -2485,11 +2670,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(required any order, struct data = {}){
-
 		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
 			return true;
 		}
-
+		if(arguments.order.hasOrderTemplate() && arguments.order.getOrderTemplate().setting('orderTemplateRequirePaymentFlag') == 0){
+			return true;
+		}
 		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
 			var settingValue = arguments.order.getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder");
@@ -2501,7 +2687,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_placeOrder(required any order, struct data={}) {
-		
+		//Remove extraneous payment data
+		if(structKeyExists(data,'accountPaymentMethodID') && len(data.accountPaymentMethodID)
+			&& structKeyExists(data,'newOrderPayment.paymentMethod.paymentMethodID')){
+			structDelete(data,'newOrderPayment.paymentMethod.paymentMethodID');
+		}
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
 			arguments.order.setPlaceOrderFlag(true);
@@ -2534,10 +2724,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								&& !arguments.order.hasSavedAccountPaymentMethod()
 							)
 							) {
+
 								arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 							}
 						}
-
 
 
 						//set an error
@@ -2931,7 +3121,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			){
 				this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 			}
-
 		}
 
 		// If we are supposed to update the items as well, loop over all items and pass to 'updateItemStatus'
@@ -3071,12 +3260,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// hint: Distributes the order-level discount amount total proportionally to all order items and if necessary handle any remainder due to uneven division
-	private void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
+	public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
 		
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: START");
 		logHibachi("order['orderID']: #arguments.order.getOrderID()#");
-		logHibachi("order['orderAmounts.orderSubtotalAfterItemDiscounts']: #arguments.order.getSubtotalAfterItemDiscounts()#");
-		logHibachi("order['orderAmounts.orderDiscountAmountTotal']: #arguments.order.getOrderDiscountAmountTotal()#");
 		
 		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
 		var actualAllocatedAmountTotal = 0;
@@ -3095,7 +3282,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Approximate amount to allocate (rounded to nearest penny)
 		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100;
 		    
-		    var actualAllocatedAmountTotaUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    var actualAllocatedAmountTotalUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
 		    
 		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
 		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.order.getOrderDiscountAmountTotal();
@@ -3103,7 +3290,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
 			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
 			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
-		    var currentDiscrepancyAmount =  actualAllocatedAmountTotaUnadjusted - expectedAllocatedAmountTotal;
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotalUnadjusted - expectedAllocatedAmountTotal;
 		    
 		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
 		    if (abs(currentDiscrepancyAmount) >= .005) {
@@ -3125,17 +3312,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		    orderItem.setAllocatedOrderDiscountAmount(currentOrderItemAllocationAmount);
 		    
 		    // Collect details for debugging/logging
-		    logHibachi("orderItem[#orderItemCount#]: Start");
-		    logHibachi("orderItem[#orderItemCount#]['extendedPriceAfterOrderItemDiscount']: #orderItem.getExtendedPriceAfterDiscount()#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAmountAsPercentage']: #currentOrderItemAmountAsPercentage * 100#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmount']: #round(currentOrderItemAmountAsPercentage * arguments.order.getOrderDiscountAmountTotal() * 100) / 100#");
-		    logHibachi("orderItem[#orderItemCount#]['currentOrderItemAllocationAmountAdjusted']: #currentOrderItemAllocationAmount#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.expectedAllocatedAmountTotal']: #expectedAllocatedAmountTotal#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotaUnadjusted']: #actualAllocatedAmountTotaUnadjusted#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
-		    logHibachi("orderItem[#orderItemCount#]['currentDiscrepancy.currentDiscrepancyAmount']: #currentDiscrepancyAmount#");
-		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountAsPercentage']: #actualAllocatedAmountAsPercentage  * 100#");
-		    logHibachi("orderItem[#orderItemCount#]['overallProgress.actualAllocatedAmountTotal']: #actualAllocatedAmountTotal#");
 		}
 		
 		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
@@ -3628,6 +3804,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
 				giftCard_create.setCreditGiftCardFlag(true);
 				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				giftCard_create.setOrder(orderItem.getOrder());
 				if (!isNull(term)) {
 					giftCard_create.setGiftCardExpirationTerm(term);
 				}
@@ -3653,6 +3830,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
 				giftCard_create.setCreditGiftCardFlag(true);
 				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				giftCard_create.setOrder(orderItem.getOrder());
 				if (!isNull(term)) {
 					giftCard_create.setGiftCardExpirationTerm(term);
 				}
@@ -3688,7 +3866,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipient);
 						giftCard_create.setOriginalOrderItem(orderItem);
-	
+						giftCard_create.setOrder(orderItem.getOrder());
 						// Manual gift card code
 						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
 							giftCardCodeIndex++;
@@ -4019,11 +4197,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// Process: Order Return
-	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
+	public any function processOrderReturn_receive(required any orderReturn, required any processObject, struct data) {
+		
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "order" );
 		stockReceiver.setOrder( arguments.orderReturn.getOrder() );
-		var stockAdjustments = [];
 
 		if(!isNull(processObject.getPackingSlipNumber())) {
 			stockReceiver.setPackingSlipNumber( processObject.getPackingSlipNumber() );
@@ -4031,58 +4209,59 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(processObject.getBoxCount())) {
 			stockReceiver.setBoxCount( processObject.getBoxCount() );
 		}
-
+		
 		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
 
 		for(var thisRecord in arguments.data.orderReturnItems) {
-
 			if(val(thisRecord.quantity) gt 0) {
-
 				var orderReturnItem = this.getOrderItem( thisRecord.orderReturnItem.orderItemID );
 
 				if(!isNull(orderReturnItem)) {
-					var stock = getStockService().getStockBySkuAndLocation( orderReturnItem.getSku(), location );
-
-					var stockReceiverItem = getStockService().newStockReceiverItem();
-
-					stockReceiverItem.setQuantity( thisRecord.quantity );
-					stockReceiverItem.setStock( stock );
-					stockReceiverItem.setOrderItem( orderReturnItem );
-					stockReceiverItem.setStockReceiver( stockReceiver );
-					stockreceiverItem.setCurrencyCode(orderReturnItem.getCurrencyCode());
+					if(!isNull(thisRecord.stockLoss) && thisRecord.stockLoss > 0){
+						thisRecord.quantity = thisRecord.quantity - thisRecord.stockLoss;
+						var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
+						newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
+						newOrderReturnItem.setOrderReturn(arguments.orderReturn);
+						newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
+						orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
+						newOrderReturnItem.setQuantity(thisRecord.stockLoss);
+						this.saveOrderItem(orderReturnItem);
+						this.saveOrderItem(newOrderReturnItem);
+						
+						this.createStockReceiverItemForReturnOrderItem(stockReceiver, newOrderReturnItem, location, thisRecord.stockLoss);
+						
+						if(!structKeyExists(local,'stockAdjustment')){
+							var stockAdjustment = getStockService().newStockAdjustment();
+							//stockadjustmentType:manual out
+							var stockAdjustmentType = getStockService().getType('444df2e7dba550b7a24a03acbb37e717');
+							stockAdjustment.setStockAdjustmentType(stockAdjustmentType);
+							stockAdjustment.setFromLocation(location);
+							stockAdjustment = getStockService().saveStockAdjustment(stockAdjustment);
+							
+							var comment = getCommentService().newComment();
+							comment.setPublicFlag(false);
+							comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
+							var commentRelationship = getCommentService().newCommentRelationship();
+							commentRelationship.setStockAdjustment(stockAdjustment);
+							commentRelationship.setComment(comment);
+							commentRelationship.setStockAdjustment(stockAdjustment);
+							commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+							comment = getCommentService().saveComment(comment,{});
+						}
+						
+						var addStockAdjustmentItemData = {
+							skuID=orderReturnItem.getSku().getSkuID(),
+							quantity=thisRecord.stockLoss,
+							stockAdjustment=stockAdjustment
+						};
+						stockAdjustment = getStockService().processStockAdjustment(stockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
+						
+					}
+					this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
 
 				}
-				//create a stock adjustment with a comment for items that were added back in
-				if(arguments.processObject.getStockLossFlag()){
-					var newStockAdjustment = getStockService().newStockAdjustment();
-					//stockadjustmentType:manual out
-					var stockAdjustmentType = getStockService().getType('444df2e7dba550b7a24a03acbb37e717');
-					newStockAdjustment.setStockAdjustmentType(stockAdjustmentType);
-					newStockAdjustment.setFromLocation(location);
-					var addStockAdjustmentItemData = {
-						skuID=orderReturnItem.getSku().getSkuID(),
-						quantity=thisRecord.quantity,
-						stockAdjustment=newStockAdjustment
-					};
-					newStockAdjustment = getStockService().processStockAdjustment(newStockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
-
-					var comment = getCommentService().newComment();
-					comment.setPublicFlag(false);
-					comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
-					var commentRelationship = getCommentService().newCommentRelationship();
-					commentRelationship.setStockAdjustment(newStockAdjustment);
-					commentRelationship.setComment(comment);
-					commentRelationship.setStockAdjustment(newStockAdjustment);
-					commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
-					comment = getCommentService().saveComment(comment,{});
-
-					newStockAdjustment = getStockService().saveStockAdjustment(newStockAdjustment);
-					arrayAppend(stockAdjustments,newStockAdjustment);
-				}
-
 			}
 		}
-
 
 		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
 		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
@@ -4119,16 +4298,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived');
 		}
 
-		for(var stockAdjustment in stockAdjustments) {
+		// Update the orderStatus
+		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
+		if(structKeyExists(local,'stockAdjustment')){
+			getHibachiScope().flushORMSession();
 			getStockService().processStockAdjustment(stockAdjustment,{},'processAdjustment');
 		}
 
-		// Update the orderStatus
-		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
-
-
-
 		return arguments.orderReturn;
+	}
+	
+	private any function createStockReceiverItemForReturnOrderItem(required any stockReceiver, required any returnOrderItem, required any location, required numeric quantity){
+		
+		var stock = getStockService().getStockBySkuAndLocation( returnOrderItem.getSku(), location );
+
+		var stockReceiverItem = getStockService().newStockReceiverItem();
+
+		stockReceiverItem.setQuantity( quantity );
+		stockReceiverItem.setStock( stock );
+		stockReceiverItem.setOrderItem( returnOrderItem );
+		stockReceiverItem.setStockReceiver( stockReceiver );
+		stockreceiverItem.setCurrencyCode(returnOrderItem.getCurrencyCode());
+		
+		return stockReceiverItem;
 	}
 
 	// Process: Order Payment
@@ -4263,6 +4455,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderPayment.clearHibachiErrors();
 					getHibachiScope().setORMHasErrors(false);	
  
+					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
+					arguments.order.setPaymentTryCount(currentTryCount);
+					arguments.order.setPaymentLastRetryDateTime(now());
+				} 
+			}
+		}	
+		
+		arguments.order.setPaymentProcessingInProgressFlag(false); 
+		
+		arguments.order = this.saveOrder(arguments.order);	
+
+		return arguments.order; 
+	}
+	
+	public any function processOrder_releaseCredits(required any order, any processObject, struct data){
+
+		var orderPaymentsSmartList = arguments.order.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCredit');
+		var orderPayments = orderPaymentsSmartList.getRecords();
+
+		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+		
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getStatusCode() == 'opstActive') {
+				
+				var processData = {
+					transactionType = 'credit',
+					amount = orderPayment.getAmountUncredited(), 
+					setOrderPaymentInvalidOnFailedTransactionFlag = false
+				};
+
+				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
+				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
+					if(!arguments.order.hasErrors()){
+						arguments.order.addErrors(orderPayment.getErrors());
+						arguments.orderPayment.clearHibachiErrors();
+					}
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
 					arguments.order.setPaymentLastRetryDateTime(now());
@@ -4562,7 +4792,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
- 							getService("OrderService").saveOrderItem(orderItem);
+ 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmount=arguments.updateOrderAmount);
  						}
  					}
  				}
@@ -4616,7 +4846,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
-	public any function saveOrderItem(required any orderItem, struct data={}, string context="save") {
+	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true) {
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
@@ -4631,7 +4861,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderItem.hasErrors()){
+		if(!arguments.orderItem.hasErrors() && arguments.updateOrderAmounts){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 
@@ -4758,13 +4988,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 
 	// ===================== START: Delete Overrides ==========================
-
-	public any function deleteOrderTemplate( required any orderTemplate ) {
-		
-		if(arguments.orderTemplate.getTypeCode() eq 'ottWishList') {
-			return delete( arguments.orderTemplate );
-		}
-	}
 	
 	public any function deleteOrder( required any order ) {
 
@@ -4938,6 +5161,51 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return propertyList;
 	}
+	
+	public any function getRefundSkuCollectionList(){
+		var refundSkuSettingRecords = getOrderDAO().getTrueRefundSkuSettingRecords();
+		var skuInList="";
+		var productInList="";
+		var productTypeInList="";
+		var brandInList="";
+		var skuNotInList="";
+		var productNotInList="";
+		var productTypeNotInList="";
+		var brandNotInList="";
+	
+		var settingLevels = {
+			'sku':'skuID',
+			'product':'product.productID',
+			'productType':'product.productType.productTypeID',
+			'brand':'product.brand.brandID'
+		};
+		
+		for(var record in refundSkuSettingRecords){
+			var listString = "Not";
+			if(settingValue = 1){
+				listString=""
+			}
+			for(var level in settingLevels){
+				if(!isNull(record['#level#ID']) && len(record['#level#ID'])){
+					local['#level##listString#InList'] = listAppend(local['#level##listString#InList'],record['#level#ID']);
+				}
+			}
+		}
+		
+		var refundSkuCollectionList = getSkuService().getSkuCollectionList();
+		
+		for(var level in settingLevels){
+			if(len(local['#level#InList'])){
+				refundSkuCollectionList.addFilter('#settingLevels[level]#',local["#level#InList"],"IN","OR","","inLists");
+			}
+			if(len(local['#level#NotInList'])){
+				refundSkuCollectionList.addFilter('#settingLevels[level]#',local["#level#NotInList"],"NOT IN","AND","","notInLists");
+			}
+		}
+		
+		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
+		return refundSkuCollectionList;
+	}
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {
@@ -4971,6 +5239,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
+	}
+	
+	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
+	{
+		// Setup the Sku / Quantity / Price details
+		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
+		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
+		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
+		arguments.newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.processObject.getQuantity() ) );
+		
+		return arguments.newOrderItem;
 	}
 
 	// ==================  END:  Private Helper Functions =====================

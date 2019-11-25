@@ -1,7 +1,9 @@
+declare var $;
 class MonatProductCardController {
 	public product;
 	public type: string = '';
 	public loading: boolean;
+	public lastAddedSkuID: string; 
 	public newTemplateID: string;
 	public orderTemplates: Array<any>;
 	public pageRecordsShow: number = 5;
@@ -10,16 +12,35 @@ class MonatProductCardController {
 	public allProducts: Array<any>;
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
+	public orderTemplate;
+    public urlParams = new URLSearchParams(window.location.search);
 
 	// @ngInject
 	constructor(
 		//inject modal service
 		public orderTemplateService,
-		public $rootScope,
 		public monatService,
-		public ModalService,
-	) {}
-
+        public observerService,
+        public ModalService,
+        public $scope
+	) { 
+        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
+        this.observerService.attach(this.closeModals,"addItemSuccess"); 
+        this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
+	}
+	
+	public $onInit = () => {
+		this.$scope.$evalAsync(this.init);
+	}
+	public init = () => {
+		if(this.urlParams.get('type')){
+			this.type = this.urlParams.get('type');
+		}
+		
+		if(this.urlParams.get('orderTemplateId')){
+			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		}
+	}
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
 		setNewTemplates: boolean = true,
@@ -28,7 +49,7 @@ class MonatProductCardController {
 		this.loading = true;
 
 		this.orderTemplateService
-			.getOrderTemplates(pageRecordsToShow, this.currentPage, this.wishlistTypeID)
+			.getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
 			.then((result) => {
 				if (setNewTemplates) {
 					this.orderTemplates = result['orderTemplates'];
@@ -106,8 +127,12 @@ class MonatProductCardController {
 
 	public addToCart = (skuID, skuCode) => {
 		this.loading = true;
-		if (this.type === 'flexship') {
-			//flexship logic
+		this.lastAddedSkuID = skuID;
+		let orderTemplateID = this.orderTemplate;
+		if (this.type === 'flexship' || this.type==='VIPenrollment') {
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then((result) =>{
+				this.loading = false;
+			})
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 				this.loading = false;
@@ -122,6 +147,37 @@ class MonatProductCardController {
 	public setWishlistName = (newName) => {
 		this.wishlistTemplateName = newName;
 	};
+	
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
+    }
+    
+	public launchWishlistModal = (skuID, productName) => {
+		let newSkuID = skuID
+		console.log(productName);
+		this.ModalService.showModal({
+			component: 'swfWishlist',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				sku: newSkuID,
+				productName: productName
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
+
 }
 
 class MonatProductCard {
@@ -134,6 +190,7 @@ class MonatProductCard {
 		type: '@',
 		index: '@',
 		allProducts: '<?',
+		orderTemplate: '<?',
 	};
 
 	public controller = MonatProductCardController;

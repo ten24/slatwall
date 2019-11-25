@@ -45,13 +45,13 @@
             "propertyIdentifier":"currencyCode"
         },
         {
-            "sourceColumn":"MinQuantity",
-            "sourceColumnDataGenerator":"1",
-            "propertyIdentifier":"minQuantity"
-        },
-        {
             "sourceColumn":"PriceLevel",
             "propertyIdentifier":"priceGroup.priceGroupCode"
+        },
+        {
+            "sourceColumn":"ActiveFlag",
+            "sourceColumnDataGenerator":"1",
+            "propertyIdentifier":"activeFlag"
         },
         {
             "sourceColumn":"PriceGroupRemoteID",

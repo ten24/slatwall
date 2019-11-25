@@ -1,4 +1,4 @@
-<div class="flexship-block">
+<div ng-if="monatFlexshipCartContainer.orderTemplate || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
 	<div class="flexship-bar">
 		<div class="open-flexship">
 			<a href="#">
@@ -13,16 +13,24 @@
 			</span>
 		</div>
 		<span
+			ng-if="monatFlexshipCartContainer.context != 'enrollment'"
 			class="steps"
 			ng-bind-html="monatFlexshipCartContainer.translations.currentStepOfTtotalSteps"
 		></span>
 		<div class="go-to-cart">
+			
 			<button
+				ng-if="monatFlexshipCartContainer.context != 'enrollment' "
 				class="btn bg-primary btn-block"
 				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 			>
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
+			</button>
+			
+			<button ng-disabled="!monatFlexshipCartContainer.canPlaceOrder" ng-if="monatFlexshipCartContainer.context == 'enrollment' " data-ng-click="monatFlexshipCartContainer.next()" class="btn btn-secondary forward-btn forward">
+				<span>Next</span>
+				<i class="fas fa-chevron-right"></i>
 			</button>
 		</div>
 	</div>
@@ -43,13 +51,13 @@
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
-						<a href="#">
-							<img ng-src="item.sku_imagePath" alt="" />
+						<a ng-href="{{item.skuProductURL}}">
+							<img ng-src="{{item.sku.imagePath}}" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku_product_productName"></span>
+						<a ng-href="{{item.skuProductURL}}">
+							<span class="text-dark" ng-bind="item.sku_product_productName"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">

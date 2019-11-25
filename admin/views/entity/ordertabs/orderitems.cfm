@@ -56,7 +56,7 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode, price, quantity, calculatedDiscountAmount,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
+	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
 	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
@@ -84,9 +84,14 @@ Notes:
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
-		<!--- Tabs for Adding Sale Order Items Sku and Stock --->
-		<hb:HibachiTabGroup tabLocation="top">
-    		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+	    <cfset local.activeTab = "soiaddsku" />
+	    <cfif listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder', rc.order.getTypeCode())>
+	        <cfset local.activeTab = "soiaddreturnsku" />
+	    </cfif>
+		<hb:HibachiTabGroup tabLocation="top" activeTab="#local.activeTab#">
+		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
+    		<hb:HibachiTab tabid="soiaddsku" lazyLoad="false" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+    		<hb:HibachiTab tabid="soiaddpromotionsku" lazyLoad="true" view="admin:entity/ordertabs/addpromotionsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotionsku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->
     		<!---<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />

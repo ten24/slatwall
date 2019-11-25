@@ -11,11 +11,13 @@ class MonatEnrollmentController {
 	public showMiniCart: boolean = false;
 	public currentAccountID: string;
 	public style:string = 'position:static; display:none';
-	public cartText:string = 'Show Cart'
+	public reviewContext:boolean = false;
+	public cartText:string = 'Show Cart';
+	public showFlexshipCart: boolean = false;
 
 
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -31,23 +33,40 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
-		this.observerService.attach(this.getCart,"addOrderItemSuccess"); 
-		this.observerService.attach(this.getCart,"removeOrderItemSuccess");
-		this.observerService.attach(this.getCart,"updateOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
+    	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
+    	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+	}
 
-		this.getCart();
+	public $onInit = () => {
+		this.publicService.getAccount(true).then(result=>{
+			//if account has a flexship send to checkout review
+			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
+				this.publicService.getCart().then(result=>{
+					this.goToLastStep();
+				})
+			}else{
+				//if its a new account clear data in local storage and ensure they are logged out
+				localStorage.clear()
+			}
+		})
+		
 	}
 
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		if (this.currentAccountID.length) {
+		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
+			this.monatService.addEnrollmentFee();
 			this.next();
 		}
+		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
-	public getCart = (refresh = true) => {
-		this.monatService.getCart(refresh).then(data =>{
-			this.cart = data;
+	public getCart = () => {
+		this.monatService.getCart().then(data =>{
+			let cartData = this.removeStarterKitsFromCart( data );
+			this.cart = cartData;
 		});
 	}
 
@@ -93,11 +112,55 @@ class MonatEnrollmentController {
 		this.position = index;
 		
 		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
 			step.selected = false;
 		});
 		this.steps[this.position].selected = true;
+	}
+	
+	public editFlexshipItems = () => {
+		this.reviewContext = true;
+		this.navigate(this.position - 2);
+	}
+	
+	public editFlexshipDate = () => {
+		this.reviewContext = true;
+		this.previous();
+	}
+	
+	public goToLastStep = () => {
+		this.observerService.notify('lastStep')
+		this.navigate(this.steps.length -1);
+		this.reviewContext = false;
+	}
+	
+	public removeStarterKitsFromCart = cart => {
+		if ( 'undefined' === typeof cart.orderItems ) {
+			return cart;
+		}
+		
+		// Start building a new cart, reset totals & items.
+		let formattedCart = Object.assign({}, cart);
+		formattedCart.totalItemQuantity = 0;
+		formattedCart.total = 0;
+		formattedCart.orderItems = [];
+
+		cart.orderItems.forEach( (item, index) => {
+			let productType = item.sku.product.productType.productTypeName;
+			
+			// If the product type is Starter Kit or Product Pack, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
+				return;
+			}
+			
+			formattedCart.orderItems.push( item );
+			formattedCart.totalItemQuantity += item.quantity;
+			formattedCart.total += item.extendedUnitPriceAfterDiscount * item.quantity;
+		});
+		
+		return formattedCart;
 	}
 }
 

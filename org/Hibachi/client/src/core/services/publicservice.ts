@@ -5,6 +5,8 @@ import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
 
+declare var hibachiConfig: any;
+
 class PublicService {
     public account:Account;
     public cart:any;
@@ -94,7 +96,6 @@ class PublicService {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
-        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -108,6 +109,8 @@ class PublicService {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService=hibachiAuthenticationService;
+        
+        this.setOrderConfirmationUrl();
     }
 
     // public hasErrors = ()=>{
@@ -153,7 +156,7 @@ class PublicService {
     }
     /** accessors for cart */
     public getCart=(refresh=false):any =>  {
-        
+
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
             this.cartDataPromise = this.getData(urlBase, "cart", "");
@@ -173,7 +176,7 @@ class PublicService {
 
     /** accessors for states */
     public getStates=(countryCode:string, address:any, refresh=false):any =>  {
-        
+
        if(address && address.data){
            countryCode = address.data.countrycode || address.countrycode;
        }
@@ -333,7 +336,9 @@ class PublicService {
 
         if(data){
             method = "post";
-            data.returnJsonObjects = "cart,account";
+            if(data.returnJsonObjects == undefined){
+                data.returnJsonObjects = "cart,account";
+            }
             if(this.cmsSiteID){
                 data.cmsSiteID = this.cmsSiteID;
             }
@@ -345,8 +350,6 @@ class PublicService {
             }
         }
         if (method == "post"){
-
-             data.returnJsonObjects = "cart,account";
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
 
@@ -1603,7 +1606,7 @@ class PublicService {
                     if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
                         //if there are no errors then redirect.
                         this.orderPlaced = true;
-                        this.redirectExact('/order-confirmation/');
+                        this.redirectExact( this.confirmationUrl );
                     }
                 }
             }else{
@@ -1650,6 +1653,14 @@ class PublicService {
         }
         return total;
     };
+    
+    private setOrderConfirmationUrl = () => {
+        if ( 'undefined' !== typeof hibachiConfig.orderConfirmationUrl ) {
+            this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
+        } else {
+            this.confirmationUrl = "/order-confirmation";
+        }
+    }
 
 }
 export {PublicService};
