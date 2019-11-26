@@ -64,13 +64,11 @@ Notes:
 				<!--- Order Type --->
 				<input type="hidden" name="orderTypeCode" value="#rc.processObject.getOrderTypeCode()#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeName"  edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="true" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnReasonType" edit="true" />
 				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
 				</cfif>
-
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
 			</hb:HibachiPropertyList>
 
 			<hb:HibachiPropertyList divclass="col-md-6">
@@ -152,9 +150,12 @@ Notes:
 					currency-code="#rc.order.getCurrencyCode()#" 
 					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
 					order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
-					order-total="#rc.order.getRefundableAmount()#"
+					fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 					<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 						refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
+						order-total="#rc.order.getRefundableAmount()#"
+					<cfelse>
+						order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
 					</cfif>
 				></sw-return-order-items>
 				

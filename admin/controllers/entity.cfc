@@ -105,6 +105,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'deletereport');
 	this.secureMethods=listAppend(this.secureMethods,'editWishList');
 	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
+	this.secureMethods=listAppend(this.secureMethods, 'listform');
+	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
@@ -437,13 +439,13 @@ private void function populateWithAddressVerification(required struct rc){
 
 		getFW().setView("admin:entity.detailwishlist");
 	}
-	
+
 	public void function deleteWishList(required struct rc) {
-		param name="rc.orderTemplateID" default="";
-		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
-		getOrderService().deleteOrderTemplate(rc.orderTemplate);
+		param name="arguments.rc.orderTemplateID" default="";
+		arguments.rc.orderTemplate = getOrderService().getOrderTemplate(arguments.rc.orderTemplateID);
+		getOrderService().deleteOrderTemplate(arguments.rc.orderTemplate);
 		
-		getFW().redirect(action="admin:entity.listwishlist");
+		getFW().redirect(action="admin:entity.listwishlist",preserve="messages");
 
 	}
 	

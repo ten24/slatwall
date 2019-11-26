@@ -1,12 +1,14 @@
 component {
 	property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
@@ -35,7 +37,7 @@ component {
 	}
 	
 	public any function getAccountNumber(){
-		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
 			if(!isNull(this.getAccountID())){
 				var maxAccountNumberQuery = new query();
 				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
@@ -52,4 +54,47 @@ component {
 		return variables.accountNumber;
 	}
 
+	public boolean function userCanCreateFlexship() {
+	
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+		var enrollmentDate = this.getEnrollmentDate();
+		
+		if ( !isNull( enrollmentDate ) ) {
+			// Add the days after enrollment a user can create flexship to the enrollment date.
+			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			
+			// If today is a greater date than the date they can create a flexship.
+			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+		}
+		
+		// If the user doesn't have an enrollment date, return true.
+		return true;
+	}
+
+	//custom validation methods
+		
+	public boolean function restrictRenewalDateToOneYearFromNow() {
+		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
+			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+		}
+		return true;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
 } 

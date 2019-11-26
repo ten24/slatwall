@@ -1,7 +1,7 @@
 class MonatFlexshipListingController{
-    
-    public orderTemplates: any[];
-    public accountAddresses: any[];
+	
+	public orderTemplates: any[];
+	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
 	public stateCodeOptions: any[];
 	public shippingMethodOptions: any[];
@@ -9,54 +9,86 @@ class MonatFlexshipListingController{
 	public scheduleDateChangeReasonTypeOptions: any[];
 	public expirationMonthOptions: any[];
 	public expirationYearOptions: any[];
+	public loading: boolean = false;
+	public daysToEditFlexshipSetting:any;
+	public showCreateButton;
+	public account:any;
 	
-	public initialized=false; 
-	
-    //@ngInject
-	constructor( public orderTemplateService, public $window){
 		
-	}
+	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
+	
+	public initialized = false; 
+	
+	//@ngInject
+	constructor(
+		public orderTemplateService, 
+		public $window, 
+		public publicService
+	){}
 	
 	public $onInit = () => {
-	    this.orderTemplateService.getOrderTemplates()
-	    .then( (data) => {
-	            this.accountAddresses = data.accountAddresses;
-	            this.accountPaymentMethods = data.accountPaymentMethods;
-	            this.shippingMethodOptions = data.shippingMethodOptions;
-	            this.stateCodeOptions = data.stateCodeOptions;
-	            this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
-	            this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
-	            this.expirationMonthOptions = data.expirationMonthOptions;
-	            this.expirationYearOptions = data.expirationYearOptions;
-	            
-	            //set this last so that ng repeat inits with all needed data
-	        	this.orderTemplates = data.orderTemplates; 
- 	        }, (reason) => {
-	            console.error(reason);
-	    }).finally(()=>{
-	    	this.initialized=true; 
-	    });
+		this.fetchFlexships();
+		this.orderTemplateService.getOrderTemplateSettings().then(data =>{
+			this.daysToEditFlexshipSetting = data.orderTemplateSettings;
+		});
+		
+		this.account = this.publicService.account;
+		
+		if ( null === this.showCreateButton ) {
+			this.showCreateButton = true;
+		}
+	}
+	
+	private fetchFlexships = () => {
+
+		this.orderTemplateService
+    		.getOrderTemplates(this.orderTemplateTypeID )
+			.then( (data) => {
+
+				this.accountAddresses = data.accountAddresses;
+				this.accountPaymentMethods = data.accountPaymentMethods;
+				this.shippingMethodOptions = data.shippingMethodOptions;
+				this.stateCodeOptions = data.stateCodeOptions;
+				this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
+				this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+				this.expirationMonthOptions = data.expirationMonthOptions;
+				this.expirationYearOptions = data.expirationYearOptions;
+				
+				//set this last so that ng repeat inits with all needed data
+				this.orderTemplates = data.orderTemplates; 
+			})
+			.catch( (e) => {
+				console.error(e);
+			})
+			.finally( () => {
+				this.initialized=true; 
+			});
 	}
 	
 	public createNewFlexship = () => {
-        // this.loading = true;
-        this.orderTemplateService.createOrderTemplate('ottSchedule')
-        .then((data) => {
-        	if(data.orderTemplate){
-        		this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
-        	} else{
-        		throw(data);
-        	}
-        })
-        .catch((error) => {
-            // this.loading = false;
-        });
-    }
-    
-    public setAsCurrentFlexship(orderTemplate) {
+		this.loading = true;
+		
+		this.orderTemplateService.createOrderTemplate('ottSchedule')
+			.then((data) => {
+				if(data.orderTemplate){
+					this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+				} else{
+					throw(data);
+				}
+			})
+			.catch((e) => {
+				console.error(e);
+			})
+			.finally( () => {
+				this.loading = false;
+			});
+	}
+	
+	public setAsCurrentFlexship(orderTemplateID:string) {
+
 		// make api request
 		this.orderTemplateService
-			.setAsCurrentFlexship(orderTemplate)
+			.setAsCurrentFlexship(orderTemplateID)
 			.then((data) => {
 				if (
 					data.successfulActions &&
@@ -67,9 +99,12 @@ class MonatFlexshipListingController{
 					throw data;
 				}
 			})
-			.catch((error) => {
+			.catch( (error) => {
 				console.error('setAsCurrentFlexship :', error);
 				// TODO: show alert
+			})
+			.finally( () => {
+				//TODO
 			});
 	}
 
@@ -81,30 +116,31 @@ class MonatFlexshipListing {
 	public templateUrl:string;
 	public scope = {};
 	public bindToController = {
+		showCreateButton: '=?'
 	};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
 
 	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipListing (
+		var directive:any = (
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
 			requestService
-        );
-        directive.$inject = [
+		) => new MonatFlexshipListing (
+			monatFrontendBasePath,
+			$hibachi,
+			rbkeyService,
+			requestService
+		);
+		directive.$inject = [
 			'monatFrontendBasePath',
 			'$hibachi',
 			'rbkeyService',
 			'requestService'
-        ];
-        return directive;
-    }
+		];
+		return directive;
+	}
 
 	constructor(private monatFrontendBasePath, 
 				private slatwallPathBuilder, 

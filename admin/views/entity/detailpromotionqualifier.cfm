@@ -72,11 +72,18 @@ Notes:
 	</cfif>
 	<cfset rc.edit = true>
 </cfif>
+<cfif rc.promotionQualifier.getNewFlag()>
+	<cfset local.cancelAction="admin:entity.detailpromotionperiod" />
+	<cfset local.cancelQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#" />
+<cfelse>
+	<cfset local.cancelAction="admin:entity.detailpromotionqualifier" />
+	<cfset local.cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" />
+</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
-							  cancelAction="admin:entity.detailpromotionqualifier"
-							  cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" 
+							  cancelAction="#local.cancelAction#"
+							  cancelQueryString="#local.cancelQueryString#" 
 							  backAction="admin:entity.detailpromotionperiod" 
 							  backQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabpromotionqualifiers" 
 							  deleteQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#&redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabpromotionqualifiers" />
@@ -87,9 +94,9 @@ Notes:
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
 		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
-			<cfif rc.qualifierType neq "order" >
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			</cfif>
+
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
 			<cfelseif rc.qualifierType eq "order" >

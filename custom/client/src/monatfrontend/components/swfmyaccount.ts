@@ -7,6 +7,7 @@ class swfAccountController {
     public accountData;
     public accountAge:number;
     public loading:boolean;
+    public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
     public yearOptions:Array<number> = [];
     public currentYear;
@@ -23,10 +24,15 @@ class swfAccountController {
     public accountPaymentMethods;
     public editAddress;
     public isNewAddress:boolean;
-
+    public newProductReview:any = {};
+    public stars:Array<any> = ['','','','',''];
+    public moMoneyBalance:number;
 
     public totalPages:Array<number>;
     public pageTracker:number = 1;
+    public mostRecentFlexshipDeliveryDate:any;
+    public editFlexshipUntilDate:any;
+    public mostRecentFlexship:any;
 
     
     // @ngInject
@@ -36,7 +42,10 @@ class swfAccountController {
         public observerService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
-        
+        this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
+        this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
+        this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
+
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -67,9 +76,20 @@ class swfAccountController {
             
             if(this.urlParams.get('orderid')){
                 this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' || window.location.pathname == '/my-account/order-history/'){
-                this.getOrdersOnAccount();
-            };
+            }
+            
+            switch(window.location.pathname){
+                case '/my-account/':
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
+                    break;
+                case '/my-account/order-history/':
+                    this.getOrdersOnAccount();
+                    break;
+                case '/my-account/my-details/':
+                    this.getMoMoneyBalance();
+                    break;
+            }
             
             this.loading = false;
         });
@@ -81,6 +101,21 @@ class swfAccountController {
             const accountCreatedYear = Date.parse(this.accountData.ownerAccount.createdDateTime).getFullYear();
             this.accountAge = this.currentYear - accountCreatedYear;
         }
+    }
+    
+    public getMostRecentFlexship = () => {
+        this.loading = true;
+        const accountID = this.accountData.accountID;
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+            if(result.mostRecentOrderTemplate.length){
+                this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
+                this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
+                this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
+                this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
+            }
+  
+            this.loading = false;
+        });
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
@@ -101,7 +136,7 @@ class swfAccountController {
                 pageNumber = this.pageTracker +1;
             }
         }
-
+        
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
             
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
@@ -116,6 +151,7 @@ class swfAccountController {
             this.totalPages = holdingArray;
             this.pageTracker = pageNumber;
             this.loading = false;
+            this.loadingOrders = false;
         });
     }
     
@@ -196,14 +232,46 @@ class swfAccountController {
     }
     
     public setEditAddress = (newAddress = true, address) => {
-       this.editAddress = address ? address : {};
-       this.isNewAddress = newAddress;
+        this.editAddress = {};
+        this.editAddress = address ? address : {};
+        if(!newAddress){
+            this.getStateCodeOptions(address.address.countryCode)
+        }
+        this.isNewAddress = newAddress;
+        console.log(this.editAddress);
+
     }
     
     public setPrimaryAddress = (addressID) => {
         this.loading = true;
         return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
             this.loading = false;
+        });
+    }
+    
+    public setRating = (rating) => {
+        this.newProductReview.rating = rating;
+        this.stars = ['','','','',''];
+        for(let i = 0; i <= rating - 1; i++) {
+            this.stars[i] = "color: #d0d00b";
+        };
+    }
+    
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
+    
+    public closeModals = () =>{
+        $('.modal').modal('hide')
+        $('.modal-backdrop').remove() 
+    }
+    
+    public getMoMoneyBalance = () => {
+        this.publicService.doAction('getMoMoneyBalance').then(res => {
+            this.moMoneyBalance = res.moMoneyBalance;
         });
     }
 }

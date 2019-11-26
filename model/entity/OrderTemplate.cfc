@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel,batchCancel" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -69,7 +69,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-
+	
+	
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
 	
@@ -83,6 +84,10 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
+	
 	
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
 
@@ -98,14 +103,18 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	property name="fulfillmentDiscount" persistent="false";
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
 	property name="lastOrderPlacedDateTime" persistent="false";
+	property name="orderTemplateItemDetailsHTML" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="promotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="encodedPromotionalRewardSkuCollectionConfig" persistent="false"; 
+	property name="encodedPromotionalFreeRewardSkuCollectionConfig" persistent="false"; 
 	property name="scheduledOrderDates" persistent="false";
 	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
@@ -118,15 +127,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
-	property name="personalVolumeTotal" persistent="false"; 
+	property name="personalVolumeTotal" persistent="false";
+	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	
-
 //CUSTOM PROPERTIES END
-	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total'){ 
+	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	
-	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,total', string persistentProperties=''){ 
+	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total', string persistentProperties=''){ 
 		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
 
 		var orderTemplateStruct = super.getStructRepresentation(properties);
@@ -146,22 +155,17 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 	}
 
+	public string function getTypeCode() {
+		if(!isNull(getOrderTemplateType()) ){
+			return getOrderTemplateType().getSystemCode();
+		}
+	}
+
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
 		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
 		return shippingMethodCollection.getRecords();
-	}
-
-	public string function getTypeCode() {
-		if(!isNull(getOrderTemplateType()) 
-		&& isNull(getOrderTemplateType().getTypeCode())
-		&& !len(trim(getOrderTemplateType().getTypeCode()))
-		){
-			return getOrderTemplateType().getSystemCode();
-		}else{
-			return getOrderTemplateType().getTypeCode();
-		}
 	}
 	
 	public boolean function getCanPlaceOrderFlag(){
@@ -178,6 +182,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.promotionalRewardSkuCollectionConfig; 	
 	}
 
+	public struct function getPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'promotionalRewardSkuCollectionConfig')){
+			variables.promotionalFreeRewardSkuCollectionConfig = getService('OrderService').getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(this);	
+		} 
+		return variables.promotionalFreeRewardSkuCollectionConfig; 	
+	}
+
 	public string function getEncodedPromotionalRewardSkuCollectionConfig(){
 		if(!structKeyExists(variables, 'encodedPromotionalRewardSkuCollectionConfig')){
 			variables.encodedPromotionalRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalRewardSkuCollectionConfig()));  
@@ -185,7 +196,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.encodedPromotionalRewardSkuCollectionConfig; 	
 		
 	}
-	
+
+	public string function getEncodedPromotionalFreeRewardSkuCollectionConfig(){
+		if(!structKeyExists(variables, 'encodedPromotionalFreeRewardSkuCollectionConfig')){
+			variables.encodedPromotionalFreeRewardSkuCollectionConfig = getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getPromotionalFreeRewardSkuCollectionConfig()));  
+		} 
+		return variables.encodedPromotionalFreeRewardSkuCollectionConfig; 	
+		
+	}	
+
 	public boolean function getCanPlaceFutureScheduleOrderFlag(){ 
 		if(!structKeyExists(variables, 'canPlaceFutureScheduleOrderFlag')){
 			variables.canPlaceFutureScheduleOrderFlag = true;
@@ -199,6 +218,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.canPlaceFutureScheduleOrderFlag;
 	}  
+
+	public numeric function getFulfillmentDiscount() {
+		if(!structKeyExists(variables, 'fulfillmentDiscount')){
+			variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+		}
+		return variables.fulfillmentDiscount;
+	}
 
 	public numeric function getFulfillmentTotal() {
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
@@ -342,21 +368,71 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
-	}	
+	}
+	
+	// AttributeValues (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderTemplate( this );
+	}
+
+
+	//Email Template Helpers
+	public string function getOrderTemplateItemDetailsHTML(){
+		var html = "<ul>";
+
+		var columnConfig = {
+			'arguments': {
+				'currencyCode': this.getCurrencyCode(),
+				'accountID': this.getAccount().getAccountID()
+			}
+		}
+
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
+		orderTemplateItemCollection.setDisplayProperties('sku.skuCode, sku.skuDefinition, sku.priceByCurrencyCode, quantity', columnConfig);
+		var orderTemplateItems = orderTemplateItemCollection.getRecords(formatRecords=false);
+
+		for( var orderTemplateItem in orderTemplateItems ){
+			html &= "<li>";
+			
+			html &= orderTemplateItem['sku_skuCode'] & ' - ';
+			html &= orderTemplateItem['sku_skuDefinition'];
+			
+			html &= ' ' & rbKey('define.price') & ': ';
+			html &= orderTemplateItem['sku_priceByCurrencyCode'];
+			
+			html &= ' ' & rbKey('define.quantity') & ': ';
+			html &= orderTemplateItem['quantity'];
+			
+			html &= "</li>";
+		} 
+
+		html &= "</ul>";
+
+		return getHibachiScope().hibachiHTMLEditFormat(html); 
+	}
+
+	
 	//CUSTOM FUNCTIONS BEGIN
 
 public boolean function getCustomerCanCreateFlag(){
 			
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
-			if(!isNull(getSite()) && !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner'){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
-				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+			if( !isNull(getSite()) && 
+				!isNull(getAccount()) && 
+				!isNull(getAccount().getEnrollmentDate()) && 
+				getAccount().getAccountType() == 'MarketPartner'
+			){
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
 			} 
 		}
 
 		return variables.customerCanCreateFlag; 
-	} 
+	}
 
 	public numeric function getPersonalVolumeTotal(){
 	
@@ -372,5 +448,24 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.commissionableVolumeTotal = getService('OrderService').getComissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
+	} 
+
+	public numeric function getFlexshipQualifiedOrdersForCalendarYearCount(){
+
+		if(!structKeyExists(variables, 'flexshipQualifiedOrdersForCalendarYearCount')){
+			var orderCollection = getService('OrderService').getOrderCollectionList(); 
+			orderCollection.setDisplayProperties('orderID'); 
+			orderCollection.addFilter('orderTemplate.orderTemplateID', this.getOrderTemplateID());
+			
+			var currentYear = year(now()); 
+
+			orderCollection.addFilter('orderCloseDateTime', createDateTime(currentYear, '1', '1', 0, 0, 0),'>=');
+			orderCollection.addFilter('orderCloseDateTime', createDateTime(currentYear, '12', '31', 0, 0, 0),'<=');
+
+			orderCollection.addFilter('orderStatusType.typeCode', '5'); //Shipped status can't use ostClosed because of returns
+
+			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
+		} 
+		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  //CUSTOM FUNCTIONS END
 }

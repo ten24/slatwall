@@ -76,11 +76,25 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('version')#" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/pacejs/pace-theme-flash.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
+		<script>
+		// custom options for pace-js
+			window.paceOptions = {
+			    document: true, // disabled
+			    eventLag: true,
+			    restartOnPushState: true,
+			    restartOnRequestAfter: true,
+			    ajax: {
+			        trackMethods: [ 'POST','GET']
+			    }
+			
+			};
+		</script>
 
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
@@ -210,8 +224,10 @@ Notes:
 									<cfloop array="#local.integrationSubsystems#" index="local.intsys">
 										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['subsystem']#" type="list">
 										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationPackage(local.intsys['subsystem']) />
+										
 										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
-										<cfif structKeyExists(local.integrationCFC,'getMenuItems')>
+
+										<cfif !isNull(local.integrationCFC) and structKeyExists(local.integrationCFC,'getMenuItems')>
 											<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">
 												<hb:HibachiActionCaller action="#local.menuitem['action']#" text="#local.menuitem['text']#" type="list">
 											</cfloop>
@@ -360,6 +376,8 @@ Notes:
 			</div>
 			<!--- End old navbar --->
 			</cfif>
+			
+			
 
 			<section class="content s-body-margin" id="j-main-content">
 

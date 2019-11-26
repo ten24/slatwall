@@ -291,6 +291,9 @@ class HibachiService{
 				var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 			}
 			params.enableAveragesAndSums = options.enableAveragesAndSums || false;
+			if(angular.isDefined(options.listingSearchConfig)){
+				params.listingSearchConfig = options.listingSearchConfig;
+			}
 		}
 
 		if(angular.isDefined(options.id)) {

@@ -61,5 +61,6 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="integrationmonatSiteMaximumFlexshipGiftCardAmount" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

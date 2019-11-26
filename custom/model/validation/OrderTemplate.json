@@ -1,6 +1,9 @@
 {
 	"conditions": {},
 	"properties": {
+		"orderTemplateAppliedGiftCards": [
+			{ "contexts": "save", "conditions": "scheduleOrderTemplate", "maxCollection": 1 }
+		],	
 		"customerCanCreateFlag": [
 			{ "contexts": "create,save", "conditions": "scheduleOrderTemplate", "eq": "true" }
 		]

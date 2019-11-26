@@ -46,6 +46,8 @@ import {SWTrim} from "./filters/swtrim";
 import {SWUnique} from "./filters/swunique";
 import {DateFilter} from "./filters/datefilter";
 import {DateReporting} from "./filters/datereporting";
+import {OrdinalFilter} from "./filters/ordinal";
+
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -241,6 +243,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swdate',['$filter',DateFilter.Factory])
 .filter('unique',[SWUnique.Factory])
+.filter('ordinal',OrdinalFilter.Factory)
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())

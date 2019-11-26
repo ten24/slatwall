@@ -11,10 +11,12 @@ class MonatFlexshipShippingMethodModalController {
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
-	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default
+	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default]
+	
+	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {}
     
     public $onInit = () => {
     	this.makeTranslations();
@@ -65,6 +67,8 @@ class MonatFlexshipShippingMethodModalController {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+    	
+    	this.loading = true;
   
     	if(this.selectedShippingAddress.accountAddressID !== 'new') {
     		 payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
@@ -76,31 +80,34 @@ class MonatFlexshipShippingMethodModalController {
     	payload = this.orderTemplateService.getFlattenObject(payload);
 
     	// make api request
-        this.orderTemplateService.updateShipping(payload).then(
-            (response) => {
+        this.orderTemplateService.updateShipping(payload)
+        .then( (response) => {
                
-               if(response.orderTemplate) {
-	                this.orderTemplate = response.orderTemplate;
-	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-	
-	                if(response.newAccountAddress) {
-	            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-	            		this.accountAddresses.push(response.newAccountAddress);
-	                }
-	                		
-	                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
-	                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-	                this.closeModal();
-               } else {
-	               	console.error(response); //
-               }
-                // TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        );
+           if(response.orderTemplate) {
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+
+                if(response.newAccountAddress) {
+            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+            		this.accountAddresses.push(response.newAccountAddress);
+                }
+                		
+                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
+                
+               	this.monatAlertService.success("Your flexship has been updated successfully");
+                this.closeModal();
+           } else {
+               	throw(response);
+           }
+        }) 
+        .catch( (error) => {
+            console.error(error);
+	        this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally(() => {
+        	this.loading = false;
+        });
     }
 
     public closeModal = () => {

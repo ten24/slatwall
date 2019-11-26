@@ -51,6 +51,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Persistent Properties
 	property name="promotionQualifierID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="qualifierType" ormtype="string" hb_formatType="rbKey";
+	property name="message" ormtype="string" length="2000";
 	
 	property name="minimumItemQuantity" ormtype="integer" hb_nullRBKey="define.0";
 	property name="maximumItemQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
@@ -299,7 +300,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		}
 		skuCollection.setPageRecordsShow(1);
 		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(refresh=true));
+		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasSku;
 	}
 	
@@ -310,13 +311,17 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getOrderCollection();
+
 		if(isNull(orderCollection)){
 			return false;
 		}
+    orderCollection.setDisplayProperties('orderID'); 
 		orderCollection.setPageRecordsShow(1); 
 		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(refresh=true));
+
+		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasOrder;
+
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
