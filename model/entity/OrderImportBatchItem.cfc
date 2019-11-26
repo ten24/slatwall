@@ -1,4 +1,4 @@
-component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImportBatchItem" entityname="SlatwallOrderImportBatchItem" table="SwOrderImportBatchItem" persistent="true" output="false" accessors="true" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this"{
+component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImportBatchItem" entityname="SlatwallOrderImportBatchItem" table="SwOrderImportBatchItem" persistent="true" output="false" accessors="true" cacheuse="transactional" hb_serviceName="orderImportBatchService" hb_permission="this"{
 
     property name="orderImportBatchItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     

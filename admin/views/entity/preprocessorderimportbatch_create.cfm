@@ -50,18 +50,19 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.physical" type="any" />
+<cfparam name="rc.orderImportBatch" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" enctype="multipart/form-data" sRedirectAction="admin:entity.detailphysical">
+<hb:HibachiEntityProcessForm entity="#rc.orderImportBatch#" edit="#rc.edit#" sRedirectAction="admin:entity.editorderimportbatch">
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderImportBatch#">
 	</hb:HibachiEntityActionBar>
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expenseLedgerAccountID" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="assetLedgerAccountID" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderImportBatchName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="batchFile" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

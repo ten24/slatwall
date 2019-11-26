@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,15 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="orderImportBatch";
 
-<cfparam name="rc.physical" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" enctype="multipart/form-data" sRedirectAction="admin:entity.detailphysical">
+	// Data Properties
+    property name="orderImportBatchName" type="string";
+	property name="batchFile" hb_formFieldType="file";
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
-	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expenseLedgerAccountID" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="assetLedgerAccountID" edit="#rc.edit#">
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-</hb:HibachiEntityProcessForm>
-
+}
