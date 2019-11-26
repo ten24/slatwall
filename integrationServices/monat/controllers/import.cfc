@@ -142,7 +142,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		 * }
 		 *	 
 		 **/
-	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
 		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
