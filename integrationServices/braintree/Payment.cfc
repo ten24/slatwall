@@ -315,6 +315,35 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		//Formatting total to be 2 decimal places
 		total = NumberFormat(total, "0.00");
+		
+		
+		//Populate shipping address if orderFulFillment exits
+		var orderFulfillment = arguments.requestBean.getOrder().getOrderFulfillments();
+		var shippingAddress = {};
+		
+	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
+	        
+	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
+	        if(!isNull(cartShippingAddress)) {
+	        	//Get 3Digit Country Code
+		        var countryCode = getHibachiScope().getService("addressService").getCountry(cartShippingAddress.getCountryCode());
+		        if(!isNull(countryCode)) {
+		        	countryCode = countryCode.getCountryCode3Digit();
+		        }
+		        
+		        
+		        shippingAddress = {
+		            "postalCode" : "#cartShippingAddress.getPostalCode()#",
+		            "countryCode" : "#countryCode#",
+		            "streetAddress" : "#cartShippingAddress.getStreetAddress()#",
+		            "firstName" : "#cartShippingAddress.getFirstName()#",
+		            "lastName" : "#cartShippingAddress.getLastName()#",
+		            "locality" : "#cartShippingAddress.getCity()#",
+		            "extendedAddress" : "#cartShippingAddress.getStreet2Address()#",
+		            "region" : "#cartShippingAddress.getStateCode()#"
+		        };	
+	        }
+	    }
 
 		//request payload
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
@@ -322,7 +351,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				"amount" : '#total#',
 				"orderId" : "#arguments.requestBean.getOrder().getOrderID()#",
 				'discountAmount' : '#discount#',
-				'shipping' : { 'shippingAmount': '#arguments.requestBean.getOrder().getfulfillmentChargeAfterDiscountTotal()#' },
+				'shipping' : { 
+					'shippingAmount': '#arguments.requestBean.getOrder().getfulfillmentChargeAfterDiscountTotal()#',
+					'shippingAddress' : shippingAddress
+				},
 				'tax' : { 'taxAmount': '#arguments.requestBean.getOrder().getTaxTotal()#' },
 				'lineItems' : item_payload,
 			} } }
@@ -349,8 +381,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				responseBean.addError("Processing error", "Not able to process this request.");
-				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(fileContent)# ");
+				//responseBean.addError("Processing error", "Not able to process this request.");
+				responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(response)# #SerializeJson(shippingAddress)#");
 			}
 		}
 	}
@@ -400,6 +432,26 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				responseBean.addError("Processing error", "Not able to process this request.");
 			}
 		}
+	}
+	
+	
+	public any function getCountry()
+	{
+		var countryCode = "";
+        countryCode = getHibachiScope().getService("addressService").getCountry("US");
+        if(!isNull(countryCode)) {
+        	countryCode = countryCode.getCountryCode3Digit();
+        }
+        
+        var state = "";
+        state = getHibachiScope().getService("addressService").getStateByStateCode("AA");
+        if(!isNull(state)) {
+        	state = state.getStateName();
+        }
+        
+        writeOutput("Country Code : #countryCode#");
+        writeOutput("State : #state#");
+        abort;
 	}
 
 } 
