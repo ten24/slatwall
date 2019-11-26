@@ -131,6 +131,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPerformCascadeCalculateFlag" persistent="false";
 	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="VATAmount" persistent="false" hb_formatType="currency";
+	property name="VATPrice" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 	property name="itemTotalAfterOrderDiscounts" persistent="false" hb_formatType="currency";
@@ -684,6 +686,27 @@ property name="personalVolume" ormtype="big_decimal";
 		
 
 		return variables.taxAmount;
+	}
+	
+	public numeric function getVATAmount() {
+		if(!structKeyExists(variables,'VATAmount')){
+			var VATAmount = 0;
+
+			for(var taxApplied in getAppliedTaxes()) {
+				VATAmount = getService('HibachiUtilityService').precisionCalculate(VATAmount + taxApplied.getVATAmount());
+			}
+			variables.VATAmount = VATAmount;
+		}
+		return variables.VATAmount;
+	}
+	
+	public numeric function getVATPrice() {
+		if(!structKeyExists(variables,'VATPrice')){
+			variables.VATPrice = 0;
+			var VATAmount = this.getVATAmount();
+			variables.VATPrice = getService('HibachiUtilityService').precisionCalculate(this.getPrice() - VATAmount);
+		}
+		return variables.VATPrice;
 	}
 
 	public numeric function getTaxLiabilityAmount() {

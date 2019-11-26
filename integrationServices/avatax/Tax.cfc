@@ -54,10 +54,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
     }
 	
 	public any function getTaxRates(required any requestBean) {
-
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
-		
 		responseBean.healthcheckFlag = false;
 		
 		var docType = 'SalesOrder';
@@ -249,7 +247,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
-		
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -272,7 +269,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 				for(var taxLine in fileContent.TaxLines) {
 					
 					// Make sure that there is a taxAmount for this orderItem
-					if(taxLine.Tax > 0) {
+					if(taxLine.Tax > 0 || taxLine.Exemption > 0) {
 						
 						var primaryIDName = left(taxLine.taxCode,2) == "FR" ? "orderFulfillmentId" : "orderItemId";
 						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
@@ -294,7 +291,23 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 								responseBean.addTaxRateItem(
 									argumentCollection=args
 								);
-									
+							}
+							
+							if(taxDetail.JurisCode != "US" && taxLine.Exemption > 0){
+								var args = {
+									"#primaryIDName#" = taxLine.LineNo,
+									VATAmount = taxLine.Exemption, 
+									VATPrice = getService('HibachiUtilityService').precisionCalculate(item.getPrice() - taxLine.Exemption),
+									taxJurisdictionName=taxDetail.JurisName,
+									taxJurisdictionType=taxDetail.JurisType,
+									taxImpositionName=taxDetail.TaxName,
+									referenceObjectType="#referenceObjectType#"
+								};
+								
+								// Add the details of the taxes charged
+								responseBean.addTaxRateItem(
+									argumentCollection=args
+								);
 							}
 						}
 					}

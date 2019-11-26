@@ -249,8 +249,10 @@ component {
 	    if(isNull(referencedOrder)){
 	        return true;
 	    }
-	    
-	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
 	    if(dateDiff <= 30){
 	        return true;
 	    }else if(dateDiff > 365){
