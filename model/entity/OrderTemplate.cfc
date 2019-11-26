@@ -124,7 +124,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="canPlaceOrderDetails" persistent="false";
+	property name="canPlaceOrderMessage" persistent="false";
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
@@ -471,10 +471,10 @@ public boolean function getCustomerCanCreateFlag(){
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 	
-	public boolean function getCanPlaceOrderDetails(){
-		if(!structKeyExists(variables, 'canPlaceOrderDetails')){
-			variables.canPlaceOrderDetails = getService('OrderService').getOrderTemplateCanBePlacedMessage(this);
+	public boolean function getCanPlaceOrderMessage(){
+		if(!structKeyExists(variables, 'canPlaceOrderMessage')){
+			variables.canPlaceOrderMessage = getService('OrderService').getOrderTemplateCanBePlacedMessage(this);
 		} 
-		return variables.canPlaceOrderDetails;
+		return variables.canPlaceOrderMessage;
 	}//CUSTOM FUNCTIONS END
 }

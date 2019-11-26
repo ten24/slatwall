@@ -1225,6 +1225,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
+			request.orderTemplateOrderDetails['canPlaceOrderMessage'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrderMessage']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -1261,6 +1262,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
+	}
+	
+	public boolean function getOrderTemplateCanBePlacedMessage(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrderMessage'];
 	}
 
 	//order transient helper methods
@@ -1957,14 +1962,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	}  
 
-	//begin order template api functionality
+	//getOrderQualifierDetailsForCanPlaceOrderRewardbegin order template api functionality
 	public any function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,orderTemplateCanBePlacedMessage,statusCode';
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");

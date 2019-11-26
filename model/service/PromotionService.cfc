@@ -1173,15 +1173,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public struct function getOrderQualifierDetailsForCanPlaceOrderReward( required any order ){
 		var canPlaceOrderDetails = {
 			'canPlaceOrder':true,
-			'activePromotionRewards':[]
+			'activePromotionRewards':[],
+			'canPlaceOrderMessage': ''
 		};
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
 		
 		if(arraylen(promotionRewards)){
-			
+			var messages = '';
 			canPlaceOrderDetails['canPlaceOrder'] = false;
 			
 			for(var promoReward in promotionRewards){
+				
+				var qualifiers = promoReward.getPromotionPeriod().getPromotionQualifiers();
+				
+				for(var qualifier in qualifiers) {
+					var message = !isNull(qualifier.getMessage()) ? qualifier.getMessage() : '0';
+					canPlaceOrderDetails['canPlaceOrderMessage'] = len(canPlaceOrderDetails['canPlaceOrderMessage']) ? canPlaceOrderDetails['canPlaceOrderMessage'] & ',' & message : canPlaceOrderDetails['canPlaceOrderMessage'] & message;
+				}
 				
 				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
 				
@@ -1191,6 +1199,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					return qualificationDetails; 
 				}
 			}
+			
 		}
 		return canPlaceOrderDetails; 
 	}

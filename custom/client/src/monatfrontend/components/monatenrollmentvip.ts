@@ -60,9 +60,11 @@ class VIPController {
 	    	this.flexshipID = localStorage.getItem('flexshipID');
 		}
 		
-    	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
+    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
-    	this.observerService.attach(this.setOrderTemplateBilling,"addOrderPaymentSuccess");
+		this.observerService.attach(this.setOrderTemplateBilling,"addOrderPaymentSuccess");
+		
+    	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.getProductList,"createSuccess");
     	
 		this.localStorageCheck(); 
@@ -115,7 +117,7 @@ class VIPController {
 		
 		this.orderTemplateService.updateBilling(payload).then(response => {
 			this.loading = false;
-		})
+		});
 	}
 	
 	public getCountryCodeOptions = () => {
