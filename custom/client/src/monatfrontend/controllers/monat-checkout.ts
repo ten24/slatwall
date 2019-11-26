@@ -61,6 +61,7 @@ class MonatCheckoutController {
                 return;
             }
             
+            // @ts-ignore
             Braintree.paypalCheckout.create({
                 client: clientInstance
             }, function (paypalCheckoutErr, paypalCheckoutInstance) {
