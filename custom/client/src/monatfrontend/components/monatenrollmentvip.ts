@@ -58,12 +58,12 @@ class VIPController {
 		
 		if(localStorage.getItem('flexshipID')){
 	    	this.flexshipID = localStorage.getItem('flexshipID');
+	    	this.getProductList();
 		}
 		
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
 		this.observerService.attach(this.setOrderTemplateBilling,"addOrderPaymentSuccess");
-		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.getProductList,"createSuccess");
     	
@@ -110,14 +110,21 @@ class VIPController {
 	
 	public setOrderTemplateBilling = () =>{
 		this.loading = true;
-		let payload = {};
-		payload['orderTemplateID'] = this.flexshipID;
-		payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
-		payload['accountPaymentMethod.value']= this.holdingShippingMethodID;
-		
-		this.orderTemplateService.updateBilling(payload).then(response => {
-			this.loading = false;
+		let cart = this.publicService.getCart().then(result => {
+			if(!result.orderPayments[0]) return;
+			let orderPayment = result.orderPayments[0].paymentMethod
+			
+			let payload = {};
+			payload['orderTemplateID'] = this.flexshipID;
+			payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
+			payload['accountPaymentMethod']= orderPayment;
+			payload['accountPaymentMethod.value']= orderPayment.paymentMethodID;
+			
+			this.orderTemplateService.updateBilling(payload).then(response => {
+				this.loading = false;
+			});
 		});
+		
 	}
 	
 	public getCountryCodeOptions = () => {
@@ -179,6 +186,12 @@ class VIPController {
 	
 	public getProductList = () => {
 		this.loading = true;
+		
+		if(this.productList){
+			this.loading = false;
+			return this.productList;
+		};
+		
 		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
