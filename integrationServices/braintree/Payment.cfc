@@ -433,25 +433,5 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			}
 		}
 	}
-	
-	
-	public any function getCountry()
-	{
-		var countryCode = "";
-        countryCode = getHibachiScope().getService("addressService").getCountry("US");
-        if(!isNull(countryCode)) {
-        	countryCode = countryCode.getCountryCode3Digit();
-        }
-        
-        var state = "";
-        state = getHibachiScope().getService("addressService").getStateByStateCode("AA");
-        if(!isNull(state)) {
-        	state = state.getStateName();
-        }
-        
-        writeOutput("Country Code : #countryCode#");
-        writeOutput("State : #state#");
-        abort;
-	}
 
 } 
