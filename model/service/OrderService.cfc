@@ -1193,16 +1193,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 		
 		request[orderTemplateOrderDetailsKey] = {}; 
-	
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
-
-		request[orderTemplateOrderDetailsKey]['skuCollection'] = getSkuService().getSkuCollectionList();
-		request[orderTemplateOrderDetailsKey]['skuCollection'].addFilter('skuID', 'null', 'is'); 
-		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = request[orderTemplateOrderDetailsKey]['skuCollection'].getCollectionConfigStruct(); 
-
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate; 	
+
+		// Question: can we remove these lines below, as we're creating new promotionalRewardSkuCollectionConfig in the Thread?
+		// or we need this config in case when thread fails?
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID', 'null', 'is'); 
+		
+		request[orderTemplateOrderDetailsKey]['skuCollection'] = skuCollection;
+		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 		
@@ -1244,7 +1246,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
-	
+			
+			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 		}
 		//join thread so we can return synchronously
 		threadJoin(threadName);
@@ -1254,8 +1257,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 		
-		StructDelete(request["#orderTemplateOrderDetailsKey#"], 'orderTemplate');
-
 		return request["#orderTemplateOrderDetailsKey#"];
 	} 
 	
