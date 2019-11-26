@@ -96775,7 +96775,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true); //single column mode true, format propIdentifier false
             }
         };
         //End Order By Functions

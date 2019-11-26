@@ -1981,10 +1981,10 @@ component  accessors="true" output="false"
         }
         orderTemplate.clearProcessObject("updateFrequency");
         
-        //try to activate if possible
+        //try to activate if we can
         if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
-            && orderTemplate.getCanPlaceOrderFlag()
+			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
         ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
             getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
