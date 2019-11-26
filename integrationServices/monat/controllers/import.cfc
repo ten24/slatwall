@@ -148,7 +148,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
 		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
 		
-		accountJson = httpService.send().getPrefix();
+		var accountJson = httpService.send().getPrefix();
 		
 		var accountsResponse = deserializeJson(accountJson.fileContent);
         accountsResponse.hasErrors = false;
