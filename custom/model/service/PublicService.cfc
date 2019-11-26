@@ -551,12 +551,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
-        var accountStatusType = getService('TypeService').getTypeBySystemCode(accountTypeInfo[arguments.accountType].statusSystemCode);
+        var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
-        if(!isNull(accountStatusType)){
-            account.setAccountStatusType(accountStatusType);
-        }
-        
+        account.setAccountStatusType(accountStatusType);
+
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
@@ -677,6 +675,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplates'] = orderTemplateCollectionList.getPageRecords();
     }
     
+
+    public any function addOrderItem(required struct data){
+        var cart = super.addOrderItem(arguments.data);
+        if(!cart.hasErrors() 
+        && !isNull(cart.getAccount().getAccountStatusType()) 
+        && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+        && isNull(cart.getMonatOrderType())){
+            if(cart.getAccount().getAccountType() == 'marketPartner' ){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
+            }else if(cart.getAccount().getAccountType() == 'vip'){
+                cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motVipEnrollment'));
+            }
+            
+        }
+        return cart;
+    }
 
     public any function getMostRecentOrderTemplate (required any data){
         param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
