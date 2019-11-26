@@ -5,6 +5,7 @@ class MonatFlexshipCartContainerController {
     public orderTemplateItems: any[];
     public urlParams = new URLSearchParams(window.location.search);
     public context:string;
+    public canPlaceOrder:boolean;
     public isOpened: boolean = false;
     public orderTemplateItemTotal: number = 0;
     
@@ -81,6 +82,7 @@ class MonatFlexshipCartContainerController {
     		if(data.orderTemplate){
                 this.setOrderTemplate( data.orderTemplate );;
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
+                this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
                 //TODO handle errors / success
     		} else {
     			throw(data);

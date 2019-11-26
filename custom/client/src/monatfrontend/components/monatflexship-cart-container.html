@@ -1,4 +1,4 @@
-<div ng-if="monatFlexshipCartContainer.orderTemplate" class="flexship-block">
+<div ng-if="monatFlexshipCartContainer.orderTemplate || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
 	<div class="flexship-bar">
 		
 		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
@@ -50,10 +50,10 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
 			</button>
 			
-			<a ng-if="monatFlexshipCartContainer.context == 'enrollment' " href data-ng-click="monatFlexshipCartContainer.next()" class="forward">
+			<button ng-disabled="!monatFlexshipCartContainer.canPlaceOrder" ng-if="monatFlexshipCartContainer.context == 'enrollment' " data-ng-click="monatFlexshipCartContainer.next()" class="btn btn-secondary forward-btn forward">
 				<span>Next</span>
 				<i class="fas fa-chevron-right"></i>
-			</a>
+			</button>
 		</div>
 	</div>
 
@@ -74,13 +74,13 @@
 						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item); item.loading = true"
 					><i class="fas fa-times"></i></button>
 					<div class="img">
-						<a href="#">
-							<img ng-src="{{ item.sku_imagePath }}" alt="" />
+						<a ng-href="{{item.skuProductURL}}">
+							<img ng-src="{{item.sku_imagePath}}" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku_product_productName"></span>
+						<a ng-href="{{item.skuProductURL}}">
+							<span class="text-dark" ng-bind="item.sku_product_productName"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">
