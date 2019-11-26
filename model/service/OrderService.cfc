@@ -1194,7 +1194,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
-
+		request.orderTemplateOrderDetails['canPlaceOrderMessage']='';
+		
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 		request.orderTemplate = arguments.orderTemplate; 	
 		
@@ -1264,7 +1265,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
 	}
 	
-	public boolean function getOrderTemplateCanBePlacedMessage(required any orderTemplate){
+	public any function getOrderTemplateCanBePlacedMessage(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrderMessage'];
 	}
 
@@ -1969,7 +1970,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,orderTemplateCanBePlacedMessage,statusCode';
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
@@ -2045,7 +2046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName,canPlaceOrderMessage"; //extra prop we need
 
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");

@@ -58,12 +58,14 @@ class VIPController {
 		
 		if(localStorage.getItem('flexshipID')){
 	    	this.flexshipID = localStorage.getItem('flexshipID');
+	    	//************************DO NOT INCLUDE THIS IN COMMIT BEFORE YOU REVISE IT *******************************
 	    	this.getProductList();
+	    	//************************DO NOT INCLUDE THIS IN COMMIT BEFORE YOU REVISE IT *******************************
 		}
 		
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
     	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
-		this.observerService.attach(this.setOrderTemplateBilling,"addOrderPaymentSuccess");
+		this.observerService.attach(this.setOrderTemplateBilling,"placeOrderSuccess");
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.getProductList,"createSuccess");
     	

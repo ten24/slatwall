@@ -59,7 +59,7 @@ component {
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 	
-	public boolean function getCanPlaceOrderMessage(){
+	public any function getCanPlaceOrderMessage(){
 		if(!structKeyExists(variables, 'canPlaceOrderMessage')){
 			variables.canPlaceOrderMessage = getService('OrderService').getOrderTemplateCanBePlacedMessage(this);
 		} 
