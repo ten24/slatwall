@@ -1226,7 +1226,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
-			request.orderTemplateOrderDetails['canPlaceOrderMessage'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrderMessage']; 
+			request.orderTemplateOrderDetails['canPlaceOrderMessage'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrderMessage'] ?:''; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
