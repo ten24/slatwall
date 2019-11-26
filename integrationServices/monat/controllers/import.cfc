@@ -1738,13 +1738,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
 		var updateFlag = rc.updateFlag?:false;
-		var ostCanceled = getTypeService().getTypeByTypeCode("9");
+		var ostCanceled = getTypeService().getTypeByTypeName("Canceled");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
 		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
 		var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
 		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
+		//var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");
 		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
 		var otReturnOrder = getTypeService().getTypeBySystemCode("otReturnOrder");
 		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
@@ -1857,20 +1858,32 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        }
 			        
-			        
 			        //Sets the reasons if they exist.
+			        /*
 			        if (!isNull(order['RMACSReasonNumber'])){
-			        	newOrder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['RMACSReasonNumber']))
+			        	try{
+			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMACSReasonDescription'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
 			        }
 			        
 			        if (!isNull(order['RMAOpsReasonNumber'])){
-			        	newORder.setSecondaryReasonType(getTypeService().getTypeByTypeCode(order['RMAOpsReasonNumber']))
+			        	try{
+			        		newOrder.setSecondaryReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMAOpsReasonNumber'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
 			        }
 			        
 			        if (!isNull(order['ReplacementReasonNumber'])){
-			        	newORder.setReturnReasonType(getTypeService().getTypeByTypeCode(order['ReplacementReasonNumber']))
+			        	try{
+			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['ReplacementReasonNumber'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
 			        }
-			        
+			        */
 			        /**
 			         * Create the rma types
 			         **/
@@ -2096,6 +2109,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
         			        	orderItem.setOrder(newOrder);//*
         			        	
+        			        	if (structKeyExists(detail, "KitFlagCode") && len(detail.kitFlagCode)){
+        			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
+        			        	}
+        			        	
         			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
         			        	if (isReturn){
         			        		
@@ -2176,12 +2193,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             newOrderPayment.setRemoteID(calculatedRemoteID);//* use orderPayment
                             newOrderPayment.setAmount(orderPayment['amountReceived']?:0);//*
                             newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode *
-                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']); //*
+                            newOrderPayment.setProviderToken(orderPayment['PaymentToken']?:""); //*
                             newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:""); //*
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
                             newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");//*
                             newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );//*
                             newOrderPayment.setCreditCardLastFour( right(orderPayment['CheckCCAccount'], 4)?:"" );//*
+                            
+                            var ccType = orderPayment['CcType']?:"";
+                            
+                            //CreditcardType
+                            if (ccType == "V"){
+                            	newOrderPayment.setCreditCardType( "Visa" );//*
+                            }else if(ccType == "M"){
+                            	newOrderPayment.setCreditCardType( "Mastercard" );//*
+                            }else if(ccType == "A"){
+                            	newOrderPayment.setCreditCardType( "Amex" );//*
+                            }else if(ccType == "D"){
+                            	newOrderPayment.setCreditCardType( "Discover" );//*
+                            }
                             
                             //If another type
                             newOrderPayment.setPaymentNumber(orderPayment['paymentNumber']?:"");//*
@@ -2297,12 +2327,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                			orderFulfillment.setHandlingFee(order['HandlingAmount']?:0);//*
 	                			orderFulfillment.setManualHandlingFeeFlag(true);//*
 	                			
-	                			//Added these 3 per Sumit.
-	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']);//ADD
-                				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']);//ADD
-                				orderFulfillment.setFulfillmentCharge( order['FreightAmount'] );
-                				orderFulfillment.setCarrierCode(shipment['CarrierCode']);//ADD
-                				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']);//*
+	                			// Added these 3 per Sumit. these need to be lookups (attribute options on selects)
+	                			orderFulfillment.setWarehouseCode(shipment['WarehouseCode']?:"");//ADD
+                				orderFulfillment.setFreightTypeCode(shipment['FreightTypeCode']?:"");//ADD
+                				orderFulfillment.setShippingMethodCode(shipment['ShipMethodCode']?:"");//*
+                				orderFulfillment.setFulfillmentCharge( order['FreightAmount']?:0 );
+                				orderFulfillment.setCarrierCode(shipment['CarrierCode']?:"");//ADD
+                				
                 				
 	                			//set the verifiedAddressFlag if verified.
 	                			if (!isNull(order['AddressValidationFlag']) && order['AddressValidationFlag'] == true){
@@ -2422,7 +2453,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			abort;
     		}
     		
-    		this.logHibachi('Import (Create) Page #pageNumber# completed ', true);
+    		this.logHibachi('Import (Create Order) Page #pageNumber# completed ', true);
 		    pageNumber++;
     	}
 		
@@ -2633,6 +2664,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setCanceledCode( flexship['CancelCode'] );//*
 	                    }
 	                    
+	                    if (!isNull(flexship['AddressValidationCode']) && len(flexship['AddressValidationCode'])){
+	                    	orderTemplate.setAddressValidationCode( flexship['AddressValidationCode'] );//*
+	                    }
+	                    
+	                    
 	                    //No way to support this ***
 	                    /*if (!isNull(flexship['ShipMethodCode']) && len(flexship['ShipMethodCode'])){
 	                    	orderTemplate.setShippingMethodCode( flexship['ShipMethodCode'] );//*
@@ -2824,7 +2860,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							
 							//ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
 						}*/
-				
+						
 						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
 							for (var flexshipItem in flexship.FlexShipDetails){
 				
@@ -2848,6 +2884,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
+								orderTemplateItem.setKitFlagCode(flexshipItem['KitFlagCode']);
 								
 								if (orderTemplateItem.getNewFlag()){
 				                	ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
@@ -2875,8 +2912,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
     			//writeDump(flexship); // rollback the tx
-    			writeDump(e); // rollback the tx
-				abort;
+    			//writeDump(e); // rollback the tx
+				//abort;
     		} finally{
 
 			    // close the stateless before opening the statefull again...
@@ -3270,6 +3307,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
         			        	orderItem.setOrder(newOrder);//*
         			        	
+        			        	if (structKeyExists(detail, "KitFlagCode") && len(detail.kitFlagCode)){
+        			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
+        			        	}
+        			        	
         			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
         			        	if (isReturn){
         			        		
@@ -3370,7 +3411,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             newOrderPayment.setExpirationYear(orderPayment['CcExpireYear']?:""); //*
                             newOrderPayment.setExpirationMonth(orderPayment['CcExpireMonth']?:"");//*
                             newOrderPayment.setNameOnCreditCard(orderPayment['CcName']?:"");//*
-                            newOrderPayment.setCreditCardType( orderPayment['CcType']?:"" );//*
+                            
+                            var ccType = orderPayment['CcType']?:"";
+                            
+                            //CreditcardType
+                            if (ccType == "V"){
+                            	newOrderPayment.setCreditCardType( "Visa" );//*
+                            }else if(ccType == "M"){
+                            	newOrderPayment.setCreditCardType( "Mastercard" );//*
+                            }else if(ccType == "A"){
+                            	newOrderPayment.setCreditCardType( "Amex" );//*
+                            }else if(ccType == "D"){
+                            	newOrderPayment.setCreditCardType( "Discover" );//*
+                            }
+                            
                             newOrderPayment.setCreditCardLastFour( right(orderPayment['CheckCCAccount'], 4)?:"" );//*
                             
                             //If another type
