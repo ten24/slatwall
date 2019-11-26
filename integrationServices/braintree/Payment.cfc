@@ -381,8 +381,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				//responseBean.addError("Processing error", "Not able to process this request.");
-				responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(response)# #SerializeJson(shippingAddress)#");
+				responseBean.addError("Processing error", "Not able to process this request.");
+				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(response)# #SerializeJson(shippingAddress)#");
 			}
 		}
 	}
