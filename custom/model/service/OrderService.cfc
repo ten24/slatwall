@@ -115,76 +115,95 @@ component extends="Slatwall.model.service.OrderService" {
 		return processOrderCreate;
 	}
 
+	/**
+	 * Note: we'd ctreate a temp-order from the orderTemplate, then we'd try to place it, and then remove it
+	 * 
+	 * Note: we're using request Scope as it's shared b/w the Request and Thread
+	 * 
+	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		if(structKeyExists(request, 'orderTemplateOrderDetails')){
-			return request.orderTemplateOrderDetails;
+		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+
+		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
+			return request[orderTemplateOrderDetailsKey];
 		} 
 		
-		request.orderTemplateOrderDetails = {}; 
-	
-		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
-		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
-		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
-		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
+		request[orderTemplateOrderDetailsKey] = {}; 
+		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
+		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
+		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
 
-		request.skuCollection = getSkuService().getSkuCollectionList();
-		request.skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
+		// Question: can we remove these lines below, as we're creating new promotionalRewardSkuCollectionConfig in the Thread?
+		// or we need this config in case when thread fails?
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID', 'null', 'is'); 
 		
-		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+		request[orderTemplateOrderDetailsKey]['skuCollection'] = skuCollection;
+		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		request.orderTemplate = arguments.orderTemplate; 	
 		
-		thread name="#threadName#"
-			   action="run" 
-		{
+		thread 
+			name="#threadName#" 
+			action="run" 
+			orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
+		{	
+			// we're not passing the ordertemplate itself, as CF will create a deep copy of orderTemplate and we don't want that 
+			// keeping the var name symmetry, we're in thread scope, this won't conflict with parent function's scope
+			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
+			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
-			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
-			//only update amounts if we can
-			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
-			transientOrder.updateCalculatedProperties(); 	
-			getHibachiDAO().flushORMSession();	
-	
-			if(hasInfoForFulfillment){
-				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
-				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
-			}
-			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
-			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
 			
-			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
-			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
+			//only update amounts if we can
+			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
+			transientOrder.updateCalculatedProperties(); 	
+			getHibachiDAO().flushORMSession();
+		
+			if(hasInfoForFulfillment){	
+				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
+				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
+			}
+	
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
+			
+			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
+			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
-			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
-	
-			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
-			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+			request[orderTemplateOrderDetailsKey]['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
 
-			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
-			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
+			request[orderTemplateOrderDetailsKey]['skuCollection'].setCollectionConfigStruct( getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder) );
+			request[orderTemplateOrderDetailsKey]['skuCollection'].addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = request[orderTemplateOrderDetailsKey]['skuCollection'].getCollectionConfigStruct();
+			
+			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
-
-			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
-	
+			
+			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
+			
 		}
+		
 		//join thread so we can return synchronously
 		threadJoin(threadName);
+		
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 
-		return request.orderTemplateOrderDetails;
+		return request[orderTemplateOrderDetailsKey];
 	}
 
 	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){

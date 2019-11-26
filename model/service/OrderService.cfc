@@ -1187,7 +1187,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
-		
+
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
 		} 
@@ -1210,12 +1210,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		thread name="#threadName#"
 			   action="run" 
-			   key = "#orderTemplateOrderDetailsKey#";
+			   orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#"
 		{	
 			// we're not passing the ordertemplate itself, as CF will create a deep copy of orderTemplate and we don't want that 
 			// keeping the var name symmetry, we're in thread scope, this won't conflict with parent function's scope
 			var orderTemplateOrderDetailsKey = attributes.key; //mind the attributes scope
-
+			
+			writeLog(file="debug", text=orderTemplateOrderDetailsKey);
+			
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
@@ -1238,6 +1240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['skuCollection'].setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
 			request[orderTemplateOrderDetailsKey]['skuCollection'].addFilter('skuID', freeRewardSkuIDs, 'not in');
 			request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = request[orderTemplateOrderDetailsKey]['skuCollection'].getCollectionConfigStruct();
+			
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
@@ -1248,6 +1251,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ormFlush();	
 			
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
+			
+			writeLog(file="debug", text='transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
+			writeLog(file="debug", text=SerializeJson( request[orderTemplateOrderDetailsKey] ) );
+
 		}
 		//join thread so we can return synchronously
 		threadJoin(threadName);
@@ -1257,7 +1264,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 		
-		return request["#orderTemplateOrderDetailsKey#"];
+		return request[orderTemplateOrderDetailsKey];
 	} 
 	
 	public numeric function getFulfillmentDiscountForOrderTemplate(required any orderTemplate){
