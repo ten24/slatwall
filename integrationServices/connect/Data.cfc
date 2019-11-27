@@ -38,13 +38,8 @@ Notes:
 
 
 component accessors='true' output='false' displayname='connect' extends='Slatwall.org.Hibachi.HibachiObject' {
-
-	property name='connectService' type='any' persistent='false';
-
+	
 	public any function init() {
-		
-		setConnectService( getService('connectService') );
-		
 		return this;
 	}
 	
@@ -66,6 +61,12 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
+	/**
+	 * Function to make create-user API-call
+	 * @requestData struct, required, post-request-payload
+	 * 
+	 * @returns struct, of successful-response or formated-error-response 
+	*/ 
 	private struct function createConnectUser(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
@@ -85,14 +86,16 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 		
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
-			response = DeSerializeJson(rawRequest.fileContent); //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+			response = DeSerializeJson(rawRequest.fileContent); 
 		} 
 		else {
 			response = {'error': { 'message' : "Error: response s not JSON" } };
 		}
 		
-		// Parse errors
-		// typical error: {"error":{"message":"Required fields missing: email"},"server":{"ip_address":"10.45.48.7","name":"Testing"} }
+		/** Format error:
+		 * typical error response: { "error" : { "message": "Required fields missing: email"}, "server": {"ip_address": "10.45.48.7","name": "Testing"} }
+		 * typical successful response: { "success": { "username": "xyg" }, "server": {} }
+		*/
 		if( !StructKeyExists(response, 'success') ) {
 			response['requestAttributes'] = httpRequest.getAttributes() ;
 			response['requestParams'] = httpRequest.getParams();
@@ -102,23 +105,31 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 		return response;
 	}
 	
+	/**
+	 * Function to be create user on ConnectApp, and update Slatwlll-Account on successful response
+	 * @entity, @modal/Account.cfc, user-account we're processing
+	 * @data, struct, cotaining post request payload
+	 * 
+	 * Note: 
+	 * 1. currently we're not updating slatwall-account.
+	 * 2. in current setup this function will be called from ConnectService::push(), which will be called from EntityQueue
+	 * 
+	 */ 
 	public void function pushData(required any entity, struct data ={}) {
 	
 		//push to remote endpoint
 		var response = createConnectUser(arguments.data.payload);
-		
+
 		if( StructKeyExists( response, 'success') && 
-			StructKeyExists( response, 'username') &&  len( trim( response.username ) ) 
+			StructKeyExists( response.success, 'username') &&  len( trim( response.success.username ) ) 
 		) {
-			// update the account
-			// QUESTION: what to do with Success?
-			// maybe a connectUsername returned from Connect, they'd create a new username; if the one we passes was not unique for them 
+			// we're not doing anything with success for now
 		} 
 		else {
-			writelog( file='integration-connect', text="Error in PushData: #SerializeJson(response)#");
+			var error = "Error in Connect::PushData() #SerializeJson(response)#";
+			writelog( file='integration-connect', text=error);
+			throw(error);
 		}
-		// TODO: reomove, dumping for testing
-		dump( "Response : #SerializeJson(response)#" );
 	}
 
 }

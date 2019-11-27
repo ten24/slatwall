@@ -81,8 +81,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 		var accountPropList =  "accountID,firstName,lastName,calculatedFullName,username,accountNumber,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
 		var addressPropList = getService('hibachiUtilityService').prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
-		accountPropList = accountPropList & ',' & addressPropList;
 		
+		accountPropList = accountPropList & ',' & addressPropList;
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
 
 		var connectAccount = {};
@@ -99,6 +99,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		connectAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
 		connectAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		connectAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
+		
 		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct.languagePreference) ){
 			connectAccount['default_language'] = swAccountStruct['languagePreference'];
 		}
@@ -125,13 +126,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * 
 	*/ 
 	public void function push(required any entity, any data ={}){
-		//TODO: cleanup
-		dump("in 'ConnectService::push' account: #arguments.entity.getAccountID()#");
-		dump(arguments.data);
-		writelog(file='integration-connect',text="in 'ConnectService::push' account: #arguments.entity.getAccountID()#");
-
 		arguments.data.payload = this.convertSwAccountToConnectAccount(arguments.entity);
-		
 		getDataIntegrationCFC().pushData(argumentCollection=arguments);
 	}
 
