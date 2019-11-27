@@ -132,9 +132,12 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey] = {}; 
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
+		request[orderTemplateOrderDetailsKey]['total'] = 0;
+		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
+		
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
 
 		var skuCollection = getSkuService().getSkuCollectionList();
@@ -150,8 +153,6 @@ component extends="Slatwall.model.service.OrderService" {
 			action="run" 
 			orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
 		{	
-			// we're not passing the ordertemplate itself, as CF will create a deep copy of orderTemplate and we don't want that 
-			// keeping the var name symmetry, we're in thread scope, this won't conflict with parent function's scope
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 

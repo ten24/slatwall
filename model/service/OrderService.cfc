@@ -1209,10 +1209,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		thread name="#threadName#"
 			   action="run" 
 			   orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
-		{	
-			// we're not passing the ordertemplate itself, as CF will create a deep copy of orderTemplate and we don't want that 
-			// keeping the var name symmetry, we're in thread scope, this won't conflict with parent function's scope
-					
+		{						
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
