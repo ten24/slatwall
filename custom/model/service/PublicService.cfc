@@ -48,6 +48,20 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get all available shipping methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * return none
+     **/
+    public void function getAvailableShippingMethods(required any data) {
+        var order = getHibachiScope().getCart().getOrderFulfillments();
+        if(arrayLen(order)) {
+            var shippingMethods = getOrderService().getShippingMethodOptions(order[1]);
+		    arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
+        }
+    }
+    
+    /**
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
@@ -124,21 +138,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getAllCartsAndQuotesOnAccount(required any data) {
         var accountOrders = getAccountService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
-    }
-    
-    
-    /**
-     * Function to get all available shipping methods 
-     * adds availableShippingMethods in ajaxResponse
-     * @param request data
-     * return none
-     **/
-    public void function getAvailableShippingMethods(required any data) {
-        var order = getHibachiScope().getCart().getOrderFulfillments();
-        var shippingMethods = order.getFulfillmentShippingMethodOptions();
-        writeDump(var = shippingMethods, top = 2); abort;
-        //.getShippingMethodOptions();
-		arguments.data['ajaxResponse']['availableShippingMethods'] = getOrderService().getShippingMethodOptions();
     }
     
     /**
