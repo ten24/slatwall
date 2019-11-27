@@ -48,6 +48,46 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get the parent accounts of user account
+     **/
+    public void function getParentOnAccount(required any data) {
+        var account = getHibachiScope().getAccount();
+        if(account.hasParentAccountRelationship()) {
+            var parentAccounts = account.getParentAccountRelationships();
+            var accounts = [];
+            for(parent in parentAccounts) {
+                accounts.append({"emailAddress": parent.getParentAccount().getEmailAddress(),
+                                "firstName": parent.getParentAccount().getFirstName(),
+                                "lastName": parent.getParentAccount().getLastName(),
+                                "username": parent.getParentAccount().getUsername(),
+                                "accountID" : parent.getParentAccount().getAccountID(),
+                                });
+            }
+            arguments.data['ajaxResponse']['parentAccount'] = accounts;
+        }
+    }
+    
+    /**
+     * Function to get the child accounts from user account
+     **/
+    public void function getChildrensOnAccount(required any data) {
+        var account = getHibachiScope().getAccount();
+        if(account.hasChildAccountRelationship()) {
+            var childAccounts = account.getChildAccountRelationships();
+            var accounts = [];
+            for(child in childAccounts) {
+                accounts.append({"emailAddress": child.getChildAccount().getEmailAddress(),
+                                "firstName": child.getChildAccount().getFirstName(),
+                                "lastName": child.getChildAccount().getLastName(),
+                                "username": child.getChildAccount().getUsername(),
+                                "accountID" : child.getChildAccount().getAccountID(),
+                                });
+            }
+            arguments.data['ajaxResponse']['childAccount'] = accounts;
+        }
+    }
+    
+    /**
      * Function to get list of subscription usage
      * adds subscriptionUsageOnAccount in ajaxResponse
      * @param accountID required
