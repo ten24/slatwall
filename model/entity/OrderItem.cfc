@@ -702,9 +702,12 @@ property name="personalVolume" ormtype="big_decimal";
 	
 	public numeric function getVATPrice() {
 		if(!structKeyExists(variables,'VATPrice')){
-			variables.VATPrice = 0;
-			var VATAmount = this.getVATAmount();
-			variables.VATPrice = getService('HibachiUtilityService').precisionCalculate(this.getPrice() - VATAmount);
+			var VATPrice = 0;
+
+			for(var taxApplied in getAppliedTaxes()) {
+				VATPrice = getService('HibachiUtilityService').precisionCalculate(VATPrice + taxApplied.getVATPrice());
+			}
+			variables.VATPrice = VATPrice;
 		}
 		return variables.VATPrice;
 	}

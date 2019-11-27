@@ -181,6 +181,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			// Add this address to the request data struct
 			arrayAppend(requestDataStruct.addresses, addressData );
 			
+			orderItemPriceMap = {};
+			
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
 				if (item.getReferenceObjectType() == 'OrderItem'){
@@ -195,7 +197,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					itemData.Qty = item.getQuantity();
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
-					}else {
+					}
+					else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
 					}
 					
@@ -221,6 +224,9 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					itemData.Amount = amount;
 					arrayAppend(requestDataStruct.Lines, itemData);
 
+				}
+				if(item.getReferenceObjectType() == 'OrderFulfillment'){
+					orderItemPriceMap[itemData.LineNo] = item.getOrderItem().getPrice();
 				}
 			}
 		}
@@ -267,10 +273,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
-					
 					// Make sure that there is a taxAmount for this orderItem
 					if(taxLine.Tax > 0 || taxLine.Exemption > 0) {
-						
 						var primaryIDName = left(taxLine.taxCode,2) == "FR" ? "orderFulfillmentId" : "orderItemId";
 						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
@@ -297,7 +301,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									VATAmount = taxLine.Exemption, 
-									VATPrice = getService('HibachiUtilityService').precisionCalculate(item.getPrice() - taxLine.Exemption),
+									VATPrice = orderItemPriceMap[taxLine.LineNo],
 									taxJurisdictionName=taxDetail.JurisName,
 									taxJurisdictionType=taxDetail.JurisType,
 									taxImpositionName=taxDetail.TaxName,

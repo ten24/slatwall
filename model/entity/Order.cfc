@@ -1433,8 +1433,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		for(var i=1; i<=arrayLen(orderItems); i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderItems[i].getTaxAmount());
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderItems[i].getVATAmount());
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal - orderItems[i].getTaxAmount());
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal - orderItems[i].getVATAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
