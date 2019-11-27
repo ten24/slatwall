@@ -1194,8 +1194,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
 		
 		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
-		request.orderTemplateOrderDetails['canPlaceOrderMessage']='';
-		
+
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 		request.orderTemplate = arguments.orderTemplate; 	
 		
@@ -1226,7 +1225,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
 			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
-			request.orderTemplateOrderDetails['canPlaceOrderMessage'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrderMessage'] ?:''; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -1263,10 +1261,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
-	}
-	
-	public any function getOrderTemplateCanBePlacedMessage(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrderMessage'];
 	}
 
 	//order transient helper methods
@@ -2046,7 +2040,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName,canPlaceOrderMessage"; //extra prop we need
+		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");

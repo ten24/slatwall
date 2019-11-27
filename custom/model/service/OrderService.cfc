@@ -169,7 +169,6 @@ component extends="Slatwall.model.service.OrderService" {
 
 			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
-			request.orderTemplateOrderDetails['canPlaceOrderMessage'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrderMessage'] ?:''; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
 
@@ -461,6 +460,5 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
-
 }
 

@@ -1,7 +1,7 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="canPlaceOrderMessage" persistent="false";
+	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
@@ -58,11 +58,4 @@ component {
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
-	
-	public any function getCanPlaceOrderMessage(){
-		if(!structKeyExists(variables, 'canPlaceOrderMessage')){
-			variables.canPlaceOrderMessage = getService('OrderService').getOrderTemplateCanBePlacedMessage(this);
-		} 
-		return variables.canPlaceOrderMessage;
-	}
 }
