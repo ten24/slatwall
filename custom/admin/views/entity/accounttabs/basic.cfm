@@ -20,6 +20,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCode" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="vibeUserID" edit=false>
 		</hb:HibachiPropertyList>
 
 		<!--- Overview --->

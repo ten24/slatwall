@@ -39,30 +39,48 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	// ===================== START: Logical Methods ===========================
 
+	/**
+	 * @hint helper function to return the instance of this integration
+	*/
 	private any function getIntegration(){
-		
+
 		if( !structKeyExists(variables,'integration') ){
-			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage( 'vibe' );
+			variables['integration'] = getService('integrationService').getIntegrationByIntegrationPackage( 'vibe' );
 		}
-		
+
 		return variables.integration;
 	}
-	
-	
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+
+	/**
+	 * @hint helper function to return the instance of this integration/Data.cfc
+	*/
+	private any function getDataIntegrationCFC(){
+
+		if( !structKeyExists(variables,'dataIntegrationCFC') ){
+			variables['dataIntegrationCFC'] = getService('integrationService').getDataIntegrationCFC( getIntegration() );
 		}
-		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+
+		return variables.dataIntegrationCFC;
 	}
-	
+
+	/**
+	 *  helper function to return setting value by setting-name( both integrationSetting or SlatwallSetting), 
+	*/
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		return getDataIntegrationCFC().setting(argumentCollection = arguments);
+	}
+
+	/**
+	 * helper function, to add query params to the redirect URL, after successful authentication
+	 * 
+	*/ 
 	public string function appendVibeQueryParamsToURL(required string urlString, required any user ){
 		var consultant_id = arguments.user.getVibeUserID();
-		var authentication_key = this.setting('apikey');
+		var authToken = this.setting('authToken');
 		var dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
 		
-		var string_to_hash = consultant_id & authentication_key & dateString;
-		var token = hash(string_to_hash); //default is MD5
+		var string_to_hash = consultant_id & authToken & dateString;
+		var token = hash(string_to_hash); //default hashing algo is MD5
 		
 		if( Find("?", arguments.urlString) ) {
 			arguments.urlString &= "&token=#token#&consultant_id=#consultant_id#"
@@ -73,28 +91,93 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return arguments.urlString;
 	}
 	
-
+	
+	/**
+	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
+	 * 
+	 * @account, @enty/Account.cfc 
+	 * @returns, Struct of account properties+values required by Vibe createUser API.
+	*/ 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		return arguments.account.getJsonRepresentation();
+		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
+		var addressPropList = getService('hibachiUtilityService').prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
+
+		accountPropList = accountPropList & ',' & addressPropList;
+		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
+
+		/* required fields
+			{	"user" : {
+					"customerid":12345678,
+					"screenname":"nitin.testing12",
+					"firstname": "Nitin",
+					"lastname" : "yadav",
+					"companyname":"ten 24",
+					"email" :"test.test1233@test.com",
+					"typeid" : 1,
+					"statusid" : 1,
+					"password": "Changeme@123"
+				}
+			}
+		*/
+
+		var vibeAccount = {};
+		vibeAccount['customerid'] = swAccountStruct['accountNumber'] ;
+		vibeAccount['firstname'] = swAccountStruct['firstName'];
+		vibeAccount['lastname'] = swAccountStruct['lastName'];
+		vibeAccount['screenname'] = swAccountStruct['username'];
+		
+		vibeAccount['email'] = swAccountStruct['primaryEmailAddress_emailAddress'];
+		vibeAccount['homephone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
+		
+		vibeAccount['address1'] = swAccountStruct['primaryAddress_address_streetAddress'];
+		vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
+		vibeAccount['city'] = swAccountStruct['primaryAddress_address_city'];
+		vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
+		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
+		vibeAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
+
+		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct.languagePreference) ){
+			vibeAccount['preferredlanguage'] = swAccountStruct['languagePreference'];
+		}
+		
+		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct.activeFlag) ) {
+			vibeAccount['statusid'] = 1; // we treat null as active
+		} 
+		else if( IsBoolean(swAccountStruct.activeFlag) ) {
+			vibeAccount['statusid'] = swAccountStruct.activeFlag ? 1 : 0;
+		}
+		
+		vibeAccount['type'] = 1; //default for customer(Retail) type
+		if( StructKeyExists( swAccountStruct, 'accountType' ) && 
+			!IsNull(swAccountStruct.accountType) &&
+			Len( Trim(swAccountStruct.accountType ) )
+		) {
+			
+			swAccountStruct.accountType = Lcase(swAccountStruct.accountType);
+			if( swAccountStruct.accountType == 'vip' ) {
+				vibeAccount['type'] = 2; 
+			} 
+			else if( swAccountStruct.accountType = 'marketpartner' ) {
+				vibeAccount['type'] = 3; 
+			}
+		}
+
+		vibeAccount['password'] = setting('defaultUserPassword');
+		
+		return vibeAccount;		
 	}
 	
 	
 	/**
-	 * to be called from entity queue 
+	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
 	 * 
 	*/ 
 	public void function push(required any entity, any data ={}){
-		dump("in 'VibeService::push' account: #arguments.entity.getAccountID()#");
-		dump(arguments.data);
-		writelog(file='vibe',text="in 'VibeService::push' account: #arguments.entity.getAccountID()#");
-
-		arguments.data.payload = DeserializeJson( this.convertSwAccountToVibeAccount(arguments.entity) );
-		
-		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
-	
+		arguments.data.payload = this.convertSwAccountToVibeAccount(arguments.entity);
+		getDataIntegrationCFC().pushData(argumentCollection=arguments);
 	}
-
+	
 	
 	// =====================  END: Logical Methods ============================
 

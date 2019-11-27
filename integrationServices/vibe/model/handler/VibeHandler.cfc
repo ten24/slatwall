@@ -9,9 +9,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	
 	public void function afterInfotraxAccountCreateSuccess(any slatwallScope, any entity, any eventData){
-		dump("in 'afterInfotraxAccountCreateSuccess' account: #arguments.entity.getPrimaryIDValue()#");
-		
-		writelog(file='vibe',text="in 'afterInfotraxAccountCreateSuccess' accountID: #arguments.entity.getPrimaryIDValue()#");
 
 		try{
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
@@ -21,7 +18,9 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				integrationID   = getIntegration().getIntegrationID()
 			);
 		 }catch( any e){
-		 	writelog(file="vibe",text="Error in afterInfotraxAccountCreateSuccess() :#e.message#");
+		 	
+		 	writelog(file="integration-vibe",text="Error in Vibehandler::afterInfotraxAccountCreateSuccess() :#e.message#");
+		 	
 		 	if(!getIntegration().setting('liveModeFlag')){
 		 		rethrow;
 		 	}

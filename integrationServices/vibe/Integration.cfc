@@ -55,17 +55,19 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 	
 	public string function getDisplayName() {
 		
-		return 'Vibe';
+		return 'Vibe: SSO';
 	}
 
 	public struct function getSettings() {
 		
 		var settings = {
-			apikey       = { fieldType = 'text' },
-			liveModeFlag = { fieldType = 'yesno', defaultValue = '0' },
-			liveURL      = { fieldType = 'text' },
-			testURL      = { fieldType = 'text', defaultValue = 'https://dev-monat-vibe.myvoffice.com/' },
-			defaultRedirectURL = { fieldType = 'text', defaultValue = 'https://google.com/' }
+			authToken   			= { fieldType = 'text' },
+			username   		    	= { fieldType = 'text' },
+			liveModeFlag			= { fieldType = 'yesno', defaultValue = '0' },
+			liveURL     			= { fieldType = 'text' },
+			testURL     			= { fieldType = 'text', defaultValue = 'https://monat-stage3.vibeoffice.com' },
+			defaultRedirectURL		= { fieldType = 'text', defaultValue = 'https://google.com/' },
+			defaultUserPassword	    = { fieldType = 'text', defaultValue = 'Changeme@123' },
 		};
 		
 		return settings;

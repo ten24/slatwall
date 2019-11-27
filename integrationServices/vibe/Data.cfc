@@ -66,7 +66,13 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	private struct function postRequest(required struct requestData) {
+	/**
+	 * Function to make create-user API-call
+	 * @requestData struct, required, post-request-payload
+	 * 
+	 * @returns struct, of successful-response or formated-error-response 
+	*/ 
+	private struct function createVibeUser(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		requestURL &= '/api/v1/etl/createUser';
@@ -74,37 +80,64 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
 
-    	httpRequest.addParam(type='header', name='auth-token', value= setting('apikey') );
-    	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
-    	httpRequest.addParam(type='body', value="#SerializeJson(requestData)#");
+    	httpRequest.addParam( type='header', name='Content-Type', value='application/json');
+		// Authentication headers
+    	httpRequest.addParam( type='header', name='auth-token', value= setting('authToken') );
+    	httpRequest.addParam( type='header', name='user-name', value= setting('username') );
+    	
+    	arguments.requestData = { "user" : arguments.requestData } ; // payload signature --> { "user": {...payload...}};
+    	
+    	httpRequest.addParam(type='body', value="#SerializeJson(arguments.requestData)#");
 
 		var rawRequest = httpRequest.send().getPrefix();
 		
-		if(IsJson(rawRequest.fileContent)) {
-			return DeSerializeJson(rawRequest.fileContent); //{"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
-		} else {
-			return {"status":"error", "message" : "Error: Not valid JSON, Request - Att: #SerializeJson(httpRequest.getAttributes())#, Params: #SerializeJson(httpRequest.getParams())#, Response: #rawRequest.fileContent#"};
+		var response = {};
+		if( IsJson(rawRequest.fileContent) ) {
+			response = DeSerializeJson(rawRequest.fileContent); 
 		} 
+		else {
+			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
+		} 
+		
+		/** Format error:
+		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
+		 * typical successful response: {"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+		*/
+		
+		if( response.status != 'success') {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
+			response['content'] = rawRequest.fileContent;
+		}
+		
+		return response;
 	}
 
 	
+	/**
+	 * Function to be create an user account on Vibe, and update Slatwlll-Account on successful response
+	 * @entity, @modal/Account.cfc, user-account we're processing
+	 * @data, struct, cotaining post request payload
+	 * 
+	 * Note: in current setup this function will be called from VibeService::push(), which will be called from EntityQueue
+	 * 
+	*/ 
 	public void function pushData(required any entity, struct data ={}) {
 	
 		//push to remote endpoint
-		var vibeResponse = postRequest(arguments.data.payload);
+		var response = createVibeUser(arguments.data.payload);
 		
-		if( StructKeyExists(vibeResponse ,'status')
-			&& vibeResponse.status == 'success' 
-			&& StructKeyExists(vibeResponse ,'id') 
-			&& len( trim(vibeResponse.id) ) 
+		if( response.status == 'success' && 
+			StructKeyExists(response ,'id') && len( trim(response.id) ) 
 		) {
 			//update the account
-			arguments.entity.setVibeUserID(vibeResponse.id);
+			arguments.entity.setVibeUserID(response.id);
 		} else {
-			writelog( file='vibe', text="#SerializeJson(vibeResponse)#");
+			var error = "Error in Vibe::PushData() #SerializeJson(response)#";
+			writelog( file='integration-vibe', text=error);
+			
+			throw(error); // throwing for entity-queue
 		}
-		//TODO reomove, dumping for testing
-		dump("Response : #SerializeJson(vibeResponse)#");
 	}
 
 }
