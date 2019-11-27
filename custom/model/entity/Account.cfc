@@ -7,7 +7,6 @@ component {
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-	property name="vibeUserID" ormtype="integer";
 	property name="lastActivityDateTime" ormtype="timestamp";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
