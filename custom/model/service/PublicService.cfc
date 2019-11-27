@@ -48,6 +48,21 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get list of gift cards for user
+     * adds giftCardsOnAccount in ajaxResponse
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return none
+     **/
+    public void function getAllGiftCardsOnAccount(required any data) {
+        //var giftCards = getHibachiScope().getAccount().getGiftCardSmartList();
+        //writeDump(var = account, top = 2); abort;
+        var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;//.getRecords();
+    }
+    
+    /**
      * Function to get all carts and quotes for user
      * adds cartsAndQuotesOnAccount in ajaxResponse
      * @param accountID required
