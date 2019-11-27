@@ -49,7 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 
 <cfoutput>
 	<hb:HibachiPropertyList>

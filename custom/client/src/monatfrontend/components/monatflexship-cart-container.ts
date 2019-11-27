@@ -5,6 +5,7 @@ class MonatFlexshipCartContainerController {
     public orderTemplateItems: any[];
     public urlParams = new URLSearchParams(window.location.search);
     public context:string;
+    public canPlaceOrder:boolean;
     
     //@ngInject
     constructor(
@@ -58,6 +59,7 @@ class MonatFlexshipCartContainerController {
     		if(data.orderTemplate){
                 this.orderTemplate = data.orderTemplate;
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
+                this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
                 //TODO handle errors / success
     		} else {
     			throw(data);
