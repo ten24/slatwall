@@ -2113,6 +2113,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
         			        	}
         			        	
+        			        	if (structKeyExists(detail, "ItemCategoryCode") && len(detail.ItemCategoryCode)){
+        			        		orderItem.setItemCategoryCode(detail['ItemCategoryCode']);	
+        			        	}
+        			        	
         			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
         			        	if (isReturn){
         			        		
@@ -2637,6 +2641,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
 						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
 						
+						if (structKeyExists(flexship, 'FlexShipStatusCode')){
+							orderTemplate.setFlexshipStatusCode(flexship['FlexShipStatusCode']);
+						}
+						
 						//lastOrderNumber
 						orderTemplate.setLastOrderNumber(flexship['LastOrderNumber']?:"");
 						
@@ -2654,6 +2662,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setCreatedDateTime( entryDate );//*
 	                    }
 	                    
+	                    
+	                    //Remove this delete date as we won't update those.
 						//set created and modified date times.
 						if (!isNull(flexship['DeleteDate']) && len(flexship['DeleteDate'])){
 							var deleteDate = getDateFromString(flexship['DeleteDate']);
@@ -2668,8 +2678,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setAddressValidationCode( flexship['AddressValidationCode'] );//*
 	                    }
 	                    
-	                    
-	                    //No way to support this ***
+	                    //This is not in the web service yet.
+	                    // Make sure the lookup table is updated based on 
 	                    /*if (!isNull(flexship['ShipMethodCode']) && len(flexship['ShipMethodCode'])){
 	                    	orderTemplate.setShippingMethodCode( flexship['ShipMethodCode'] );//*
 	                    }*/
@@ -2759,7 +2769,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			                ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
 						}
 		                //ADD a FLEXSHIP PAYMENT
-						/*if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
+						if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
 							var flexshipPayment = flexship.FlexShipPayments[1];
 				
 							//FIND or CREATE the payment method
@@ -2781,7 +2791,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
 							
 							//FIND or CREATE the billing account address
-							
+							/*
 							var billingAccountAddress = getAccountService().getAccountAddressByRemoteID(flexshipBillingAddressRemoteID,false);
 							
 							if(isNull(billingAccountAddress)){
@@ -2829,37 +2839,38 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								billingAddress.setPhoneNumber(flexshipPayment['BillPhone']);
 				
 							}
-							
+							*/
 							//SAVE the address
-							if (billingAddress.getNewFlag()){
+							/*if (billingAddress.getNewFlag()){
 		                		ormStatelessSession.insert("SlatwallAddress", billingAddress);
 			                }else{
 			                	ormStatelessSession.update("SlatwallAddress", billingAddress);
-			                }
+			                }*/
 		                
 							// Save Billing Account Address
-							billingAccountAddress.setAddress(billingAddress); 
-							ormStatelessSession.update("SlatwallAccountAddress", billingAccountAddress);
+							//billingAccountAddress.setAddress(billingAddress); 
+							//ormStatelessSession.update("SlatwallAccountAddress", billingAccountAddress);
 							
 							// Save Account Payment Method
-							accountPaymentMethod.setBillingAddress(billingAddress);
-							accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
+							//accountPaymentMethod.setBillingAddress(billingAddress);
+							//accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
 							
 							if (accountPaymentMethod.getNewFlag()){
-								orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+								
 								ormStatelessSession.insert("SlatwallAccountPaymentMethod", accountPaymentMethod);
-							}else{
 								orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+							}else{
 								ormStatelessSession.update("SlatwallAccountPaymentMethod", accountPaymentMethod);
+								orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 							}
 							
 							
 							// Save order template
 							
-							orderTemplate.setBillingAccountAddress(billingAccountAddress); 
+							//orderTemplate.setBillingAccountAddress(billingAccountAddress); 
 							
-							//ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
-						}*/
+							ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);//we know its inserted so can just update.
+						}
 						
 						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
 							for (var flexshipItem in flexship.FlexShipDetails){
@@ -2884,7 +2895,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
-								orderTemplateItem.setKitFlagCode(flexshipItem['KitFlagCode']);
+								orderTemplateItem.setKitFlagCode(flexshipItem['KitFlagCode']?:"");
 								
 								if (orderTemplateItem.getNewFlag()){
 				                	ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
@@ -2898,7 +2909,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							writeDump(var=orderTemplate, top=2);abort;
 						}*/
 						ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);
-						this.logHibachi( "inserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
+						this.logHibachi( "upserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
 						index++;
 					} 				
 
@@ -3309,6 +3320,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        	
         			        	if (structKeyExists(detail, "KitFlagCode") && len(detail.kitFlagCode)){
         			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
+        			        	}
+        			        	
+        			        	if (structKeyExists(detail, "ItemCategoryCode") && len(detail.ItemCategoryCode)){
+        			        		orderItem.setItemCategoryCode(detail['ItemCategoryCode']);	
         			        	}
         			        	
         			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
