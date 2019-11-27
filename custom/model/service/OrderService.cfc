@@ -1,3 +1,4 @@
+
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
@@ -136,8 +137,6 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
 
-		// Question: can we remove these lines below, as we're creating new promotionalRewardSkuCollectionConfig in the Thread?
-		// or we need this config in case when thread fails?
 		var skuCollection = getSkuService().getSkuCollectionList();
 		skuCollection.addFilter('skuID', 'null', 'is'); 
 		
@@ -157,7 +156,6 @@ component extends="Slatwall.model.service.OrderService" {
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
-			
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
 			transientOrder.updateCalculatedProperties(); 	
@@ -170,7 +168,6 @@ component extends="Slatwall.model.service.OrderService" {
 	
 			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
-			
 			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
