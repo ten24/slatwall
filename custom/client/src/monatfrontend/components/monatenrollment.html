@@ -28,7 +28,7 @@
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</button>
-		<button style="z-index: 1" data-ng-click="monatEnrollment.goToLastStep()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
+		<button style="z-index: 1" ng-disabled="!monatEnrollment.canPlaceCartOrder" data-ng-click="monatEnrollment.goToLastStep()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
 		</button>
