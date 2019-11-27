@@ -682,6 +682,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         if(!cart.hasErrors() 
+        && !isNull(cart.getAccount()) 
         && !isNull(cart.getAccount().getAccountStatusType()) 
         && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
         && isNull(cart.getMonatOrderType())){
