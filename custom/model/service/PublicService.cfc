@@ -48,6 +48,26 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get all eligible payment methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * return none
+     **/
+    public void function getAvailablePaymentMethods(required any data) {
+        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
+        if(arrayLen(paymentMethods)) {
+            var accountPaymentMethods = [];
+            // for(method in paymentMethods) {
+            //     accountPaymentMethods
+            // }
+            var eligibleAccountPaymentMethods = getHibachiScope().getAccount().getEligibleAccountPaymentMethodsSmartList().getRecords( refresh = true);
+            //writeDump(var = eligibleAccountPaymentMethodsSmartList, top = 2); abort;
+            //var shippingMethods = getOrderService().getShippingMethodOptions(order[1]);
+		    arguments.data['ajaxResponse']['availablePaymentMethods'] = eligibleAccountPaymentMethods;
+        }
+    }
+    
+    /**
      * Function to get all available shipping methods 
      * adds availableShippingMethods in ajaxResponse
      * @param request data
