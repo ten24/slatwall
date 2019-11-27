@@ -54,8 +54,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * return none
      **/
     public void function getAvailableShippingMethods(required any data) {
-        var tmpOrderTemplate = getOrderService().getShippingMethodOptions();
-		arguments.data['ajaxResponse']['availableShippingMethods'] = tmpOrderTemplate.getShippingMethodOptions();
+        var order = getHibachiScope().getCart().getOrderFulfillments();
+        var shippingMethods = order.getFulfillmentShippingMethodOptions();
+        writeDump(var = shippingMethods, top = 2); abort;
+        //.getShippingMethodOptions();
+		arguments.data['ajaxResponse']['availableShippingMethods'] = getOrderService().getShippingMethodOptions();
     }
     
     /**
