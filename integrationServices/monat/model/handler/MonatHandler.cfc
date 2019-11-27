@@ -41,8 +41,37 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
 
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
-		
+
 		var account = arguments.order.getAccount();
+		
+		
+		if(!isNull(arguments.data.orderTemplateID)){
+			var orderService = getService('orderService');
+			
+			var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
+			
+			//shipping method 
+			var shippingMethod = arguments.order.getorderFulfillments()[1].getShippingMethod();
+			//shipping address
+			var shippingAddress = arguments.order.getShippingAddress();
+			// shipping account address 
+			var shippingAccountAddress = arguments.order.getShippingAccountAddress();
+			// account payment method 
+			var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+			// billing account address 
+			var billingAccountAddress = arguments.order.getBillingAccountAddress();
+			
+			//setting the above on order template and activating
+			//NULL check on account address because this is optional in checkout 
+			if(!isNull(shippingAccountAddress)) orderTemplate.setShippingAccountAddress(shippingAccountAddress);
+			orderTemplate.setShippingAddress(shippingAddress);
+			orderTemplate.setShippingMethod(shippingMethod);
+			orderTemplate.setBillingAccountAddress(billingAccountAddress);
+			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+			orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
+			orderService.saveOrderTemplate(orderTemplate);
+		}
+		
 		
 		//snapshot the pricegroups on the order.
 		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
@@ -91,6 +120,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
 			);
 		}
+		
+		
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
 		try{
