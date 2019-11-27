@@ -1,21 +1,14 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
-    property name="publicService";
+
     property name="vibeService";
     property name="accountService";
-    property name="hibachiEventService";
 
    	property name="fw";
 
 
 	this.publicMethods = "authenticate";
 	
-	//TODO remove for development-testing only
-	this.publicMethods &= ",dumpRequest";
-	this.publicMethods &= ",announceTestEvent";
-
-
-	this.secureMethods="";
-
+	this.secureMethods = "goToVibe";
 
 	public any function init(required any fw){
 		setFW(arguments.fw);
@@ -23,7 +16,27 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
     public any function before( required struct rc ) {
-        arguments.rc['redirectURL'] = 'https://google.com?abcd=123&pqr=xy'; //setting default-redirect url
+        arguments.rc['redirectURL'] = getVibeService().setting('defaultRedirectURL'); 
+    }
+    
+    public void function goToVibe(required struct rc){
+        
+        if(getHibachiScope().getLoggedInFlag()){
+	        
+	        if(structKeyExists(arguments.rc, "sRedirectURL")) {
+				arguments.rc.redirectURL = arguments.rc.sRedirectURL;
+			}
+
+			arguments.rc.redirectURL = getVibeService().appendVibeQueryParamsToURL(arguments.rc.redirectURL, getHibachiScope().getAccount());
+		} 
+		else if( structKeyExists(arguments.rc, "fRedirectURL") ) {
+			arguments.rc.redirectURL = arguments.rc.fRedirectURL;
+		}
+		
+		getHibachiScope().endHibachiLifecycle();
+    	//NOTE: we can't use redirect exact as it would match the url exactly (inclusing query params) with a whitelist domain, and we can't know that 
+		location(arguments.rc.redirectURL); //this skips fw's lifecycle
+		
     }
 
     public void function authenticate(required struct rc){
@@ -33,48 +46,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         }	
         
 		getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
-		
 
-		if(getHibachiScope().getLoggedInFlag()) {
-			
-			if(structKeyExists(arguments.rc, "sRedirectURL")) {
-				arguments.rc.redirectURL = arguments.rc.sRedirectURL;
-			}
-			
-			arguments.rc.redirectURL = getVibeService().appendVibeQueryParamsToURL(arguments.rc.redirectURL, getHibachiScope().getAccount());
-			
-		} else if(structKeyExists(arguments.rc, "fRedirectURL")) {
-			arguments.rc.redirectURL = arguments.rc.fRedirectURL;
-		}
-	
+		this.goToVibe(argumentcollection = arguments);
     }
     
-    //TODO remove for development-testing only
-    public void function dumpRequest(required struct rc) {
-    	dump(arguments.rc);
-    	abort;
-    }
-    
-    //TODO remove for development-testing only
-	public void function announceTestEvent(required struct rc) {
-		var account = getAccountService().getAccount(arguments.rc.accountID);
-		
-    	getHibachiEventService().announceEvent( 
-    		eventName = "afterInfotraxAccountCreateSuccess", 
-    		eventData = {
-    			'entity' = account 
-	    		} 
-    		);
-    	
-    	getVibeService().push(account);
-    	
-    	dump(account.getAccountID()); abort;
-    	// arguments.rc['redirectURL'] = "http://monat:8906/Slatwall/index.cfm?slatAction=vibe:main.dumpRequest&eventAnnouncedFor=#arguments.rc.accountID#";
-	}
-    
-    
-    public void function after(required struct rc){
-			// getFW().redirectExact(arguments.rc.redirectURL); //not working if not logged-in
-		location(arguments.rc.redirectURL);  //TODO: remove for testing only
-	}
 }

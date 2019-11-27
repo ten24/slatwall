@@ -123,7 +123,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	 * 
 	*/ 
 	public void function pushData(required any entity, struct data ={}) {
-	
+
 		//push to remote endpoint
 		var response = createVibeUser(arguments.data.payload);
 		
@@ -131,7 +131,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 			StructKeyExists(response ,'id') && len( trim(response.id) ) 
 		) {
 			//update the account
-			arguments.entity.setVibeUserID(response.id);
+			// arguments.entity.setVibeUserID(response.id);
 		} else {
 			var error = "Error in Vibe::PushData() #SerializeJson(response)#";
 			writelog( file='integration-vibe', text=error);

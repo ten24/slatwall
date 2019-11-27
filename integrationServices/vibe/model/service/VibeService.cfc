@@ -75,17 +75,17 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * 
 	*/ 
 	public string function appendVibeQueryParamsToURL(required string urlString, required any user ){
-		var consultant_id = arguments.user.getVibeUserID();
+		var accountNumber = arguments.user.getAccountNumber();
 		var authToken = this.setting('authToken');
 		var dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
 		
-		var string_to_hash = consultant_id & authToken & dateString;
+		var string_to_hash = accountNumber & authToken & dateString;
 		var token = hash(string_to_hash); //default hashing algo is MD5
 		
 		if( Find("?", arguments.urlString) ) {
-			arguments.urlString &= "&token=#token#&consultant_id=#consultant_id#"
+			arguments.urlString &= "&token=#token#&customerid=#accountNumber#"
 		} else{
-			arguments.urlString &= "?token=#token#&consultant_id=#consultant_id#"
+			arguments.urlString &= "?token=#token#&customerid=#accountNumber#"
 		}
 		
 		return arguments.urlString;
