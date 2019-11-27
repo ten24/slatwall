@@ -68,7 +68,6 @@ class MonatEnrollmentController {
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
 			this.canPlaceCartOrder = this.cart.orderRequirementsList.search('canPlaceOrderReward') > 0 ? false : true;
-			console.log(this.cart);
 		});
 	}
 
