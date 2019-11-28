@@ -116,8 +116,8 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	
 	/**
 	 * Function to be create an user account on Vibe, and update Slatwlll-Account on successful response
-	 * @entity, @modal/Account.cfc, user-account we're processing
-	 * @data, struct, cotaining post request payload
+	 * @entity, @model/Account.cfc, user-account we're processing
+	 * @data, struct, containing post request payload
 	 * 
 	 * Note: in current setup this function will be called from VibeService::push(), which will be called from EntityQueue
 	 * 
@@ -133,7 +133,6 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 			//update the account
 		} else {
 			var error = "Error in Vibe::PushData() #SerializeJson(response)#";
-			writelog( file='integration-vibe', text=error);
 			
 			throw(error); // throwing for entity-queue
 		}

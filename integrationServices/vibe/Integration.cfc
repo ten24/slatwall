@@ -55,7 +55,7 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 	
 	public string function getDisplayName() {
 		
-		return 'Vibe: SSO';
+		return 'VIBE';
 	}
 
 	public struct function getSettings() {
