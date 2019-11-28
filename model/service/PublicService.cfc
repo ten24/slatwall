@@ -356,7 +356,10 @@ component  accessors="true" output="false"
                     getHibachiScope().showMessage(message,"error");
                 }
             }
+            
+            addErrors(arguments.data, account.getErrors());
         }
+
         return account;
     }
     
@@ -1164,7 +1167,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod Order_addOrderItem
      */
-    public void function addOrderItem(required any data) {
+    public any function addOrderItem(required any data) {
         // Setup the frontend defaults
         param name="data.preProcessDisplayedFlag" default="true";
         param name="data.saveShippingAccountAddressFlag" default="false";
@@ -1193,6 +1196,7 @@ component  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
+        return cart;
     }
     
     /* @http-context updateOrderNotes
@@ -1980,10 +1984,10 @@ component  accessors="true" output="false"
         }
         orderTemplate.clearProcessObject("updateFrequency");
         
-        //try to activate if possible
+        //try to activate if we can
         if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
-            && orderTemplate.getCanPlaceOrderFlag()
+			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
         ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
             getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
@@ -2311,6 +2315,7 @@ component  accessors="true" output="false"
 
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
         var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
         var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
@@ -2331,6 +2336,14 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+
+        if(isNull(accountType) || accountType == 'retail'){
+           productCollectionList.addFilter('skus.retailFlag', 1);
+        }else if(accountType == 'marketPartner'){
+            productCollectionList.addFilter('skus.mpFlag', 1);
+        }else{
+            productCollectionList.addFilter('skus.vipFlag', 1);
+        }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
     }   

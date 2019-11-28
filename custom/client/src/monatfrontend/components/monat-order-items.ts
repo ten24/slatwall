@@ -30,6 +30,7 @@ class MonatOrderItemsController {
 				this.starterKits.push( item );
 			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
+				this.todaysOrder.push( item );
 			}	else {
 				this.todaysOrder.push( item );
 			}

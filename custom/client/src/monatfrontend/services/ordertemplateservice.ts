@@ -324,10 +324,6 @@ export class OrderTemplateService {
        return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID});
    }
    
-  public getOrderTemplatesItemsLight = (orderTemplateID, priceGroupCode) =>{
-       return this.publicService.doAction('getOrderTemplateItemsLight', {orderTemplateID: orderTemplateID, priceGroupCode: priceGroupCode });
-   }
-   
    	public getOrderTemplateSettings(){
 		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
 	}

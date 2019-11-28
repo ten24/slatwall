@@ -87,7 +87,7 @@
 	<div class="row signup-mp__form__results">
 		<div 
 			ng-repeat="item in sponsorSearchSelector.searchResults"
-			ng-click="sponsorSearchSelector.selectedSponsor = item"
+			ng-click="sponsorSearchSelector.selectedSponsor = item; sponsorSearchSelector.notifySelect(item)"
 			class="column col-12 col-sm-6"
 			ng-show="
 				sponsorSearchSelector.selectedSponsor == undefined 
