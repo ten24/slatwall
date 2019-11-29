@@ -20,7 +20,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 		 }
 		 catch( any e) {
 		 	
-		 	writelog(file="integration-vibe",text="Error in Vibehandler::afterInfotraxAccountCreateSuccess() :#e.message#");
 		 	
 		 	if(!getIntegration().setting('liveModeFlag')){
 		 		rethrow;

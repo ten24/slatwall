@@ -83,9 +83,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var token = hash(string_to_hash); //default hashing algo is MD5
 		
 		if( Find("?", arguments.urlString) ) {
-			arguments.urlString &= "&token=#token#&customerid=#accountNumber#"
+			arguments.urlString &= "&token=#token#&consultant_id=#accountNumber#"
 		} else{
-			arguments.urlString &= "?token=#token#&customerid=#accountNumber#"
+			arguments.urlString &= "?token=#token#&consultant_id=#accountNumber#"
 		}
 		
 		return arguments.urlString;
