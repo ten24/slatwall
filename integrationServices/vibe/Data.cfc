@@ -127,15 +127,13 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		//push to remote endpoint
 		var response = createVibeUser(arguments.data.payload);
 		
-		if( response.status == 'success' && 
-			StructKeyExists(response ,'id') && len( trim(response.id) ) 
+		if( response.status != 'success' || 
+			!StructKeyExists(response ,'id') || 
+			!len( trim(response.id) ) 
 		) {
-			//update the account
-		} else {
-			var error = "Error in Vibe::PushData() #SerializeJson(response)#";
-			
-			throw(error); // throwing for entity-queue
-		}
+			//the call was not successful
+			throw("Error in Vibe::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
+		} 
 	}
 
 }
