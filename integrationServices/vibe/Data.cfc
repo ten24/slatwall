@@ -67,10 +67,9 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	}
 	
 	/**
-	 * Function to make create-user API-call
+	 * Function to call create-vibe-user-API
 	 * @requestData struct, required, post-request-payload
-	 * 
-	 * @returns struct, of successful-response or formated-error-response 
+	 * @return struct, of successful-response or formated-error-response 
 	*/ 
 	private struct function createVibeUser(required struct requestData) {
 		
