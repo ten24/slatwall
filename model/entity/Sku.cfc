@@ -1818,6 +1818,11 @@ property name="sapItemCode" ormtype="string";
 		return true;
 	}
 
+	public boolean function isValidPublishedEndDateTime() {
+		return isNull(this.getPublishedEndDateTime()) || 
+				this.getPublishedEndDateTime() >= this.getPublishedStartDateTime();
+	}
+
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================
