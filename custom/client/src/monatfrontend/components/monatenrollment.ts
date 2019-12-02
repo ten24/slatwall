@@ -14,7 +14,7 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-
+	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -32,6 +32,7 @@ class MonatEnrollmentController {
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
+    	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
     	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
@@ -67,6 +68,7 @@ class MonatEnrollmentController {
 		this.monatService.getCart().then(data =>{
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
+			this.canPlaceCartOrder = this.cart.orderRequirementsList.search('canPlaceOrderReward') > 0 ? false : true;
 		});
 	}
 

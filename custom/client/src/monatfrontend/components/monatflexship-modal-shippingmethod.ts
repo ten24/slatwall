@@ -66,7 +66,7 @@ class MonatFlexshipShippingMethodModalController {
     public updateShippingAddress() {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+    	payload['shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
     	
     	this.loading = true;
   
