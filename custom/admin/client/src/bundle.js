@@ -78300,7 +78300,8 @@ var CollectionConfig = /** @class */ (function () {
                 }
             }
             catch (e) {
-                throw ('collection config recieved invalid json');
+                console.log('Invalid JSON');
+                return _this;
             }
             if (angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)) {
                 jsonCollection.orderBy = jsonCollection['ORDERBY'];

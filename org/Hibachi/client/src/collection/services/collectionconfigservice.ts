@@ -165,7 +165,8 @@ class CollectionConfig {
                 jsonCollection = angular.fromJson(jsonCollection);
             }
         }catch(e){
-            throw('collection config recieved invalid json');
+            console.log('Invalid JSON');
+            return this;
         }
         
         if(angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)){
