@@ -40,6 +40,11 @@
           "propertyIdentifier":"sapItemCode"
         },
         {
+          "sourceColumn":"InventoryTrackBy",
+          "sourceColumnDataGenerator": "'Quantity'",
+          "propertyIdentifier":"inventoryTrackBy"
+        },
+        {
           "sourceColumn":"EntryDate",
           "propertyIdentifier":"createdDateTime"
         },

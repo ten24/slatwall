@@ -54,6 +54,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="newAccountAddress" fieldType="struct" hb_populateStruct="true"; 
 
 	property name="shippingAccountAddress" fieldType="struct" hb_populateStruct="true";
-	property name="shippingMethod" fieldType="struct" hb_populateStruct="true"; 
+	property name="shippingMethod";
+	
+    property name="shippingMethodID";
+    
+    public any function getShippingMethod(){
+        if(!structKeyExists(variables,'shippingMethod') && structKeyExists(variables,'shippingMethodID')){
+            variables.shippingMethod = getService('ShippingService').getShippingMethod(getShippingMethodID()); 
+        }
+        if(structKeyExists(variables,'shippingMethod')){
+            return variables.shippingMethod;
+        }
+    }
 
 }

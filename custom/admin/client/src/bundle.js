@@ -64377,9 +64377,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = {
-                shippingMethodID: _this.baseEntity.shippingMethod.value
-            };
+            formDataToPost.shippingMethodID = _this.baseEntity.shippingMethod.value;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;

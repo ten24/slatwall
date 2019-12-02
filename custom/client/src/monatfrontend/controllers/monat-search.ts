@@ -3,9 +3,9 @@ class MonatSearchController {
 	public productList: Array<any> = [];
 	public loading: boolean = false;
 	public keyword: string = '';
-	public recordsCount:any;
+	public recordsCount: any;
 	public priceGroupCode;
-	public argumentsObject:any ;
+	public argumentsObject: any;
 
 	// @ngInject
 	constructor(

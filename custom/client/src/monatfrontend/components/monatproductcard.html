@@ -28,21 +28,25 @@
             
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a href="#" ng-click="monatProductCard.launchModal()" data-toggle="modal" data-target="#product-" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
                 </div>
             </div>
             
             <!--- Link to product if not enrollment type --->
-            <a ng-if="monatProductCard.type != 'enrollment'" class="d-block" ng-href="{{monatProductCard.product.skuProductURL}}">
-                <img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
-            </a>
-            
-            <!--- Launch quick shop modal if enrollment type --->
-            <img ng-if="monatProductCard.type == 'enrollment'" ng-click="monatProductCard.launchModal()" ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270">
+            <a 
+                ng-if="monatProductCard.type != 'enrollment'" 
+                class="d-block" 
+                ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined }}"
+                ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
+            >
            
         </figure>
       
-        <h3 class="pb-0 mb-0"><a ng-href="{{monatProductCard.product.skuProductURL}}">{{monatProductCard.product.productName}}</a></h3>
+        <h3 class="pb-0 mb-0"
+            ><a ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined  }}"
+                >{{monatProductCard.product.productName}}</a
+            ></h3
+        >
          
         <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
         <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' || monatProductCard.type === 'flexship'" class="price">
