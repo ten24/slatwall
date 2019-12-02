@@ -179,6 +179,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="gender" ormtype="string" hb_formFieldType="select";
+
  property name="accountNumber" ormtype="string";
  property name="payerName" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
