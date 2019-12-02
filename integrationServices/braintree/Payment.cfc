@@ -127,6 +127,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				return getExternalPaymentHTML(arguments.requestBean, responseBean);
 				break;
 			case 'credit':
+				refundTransaction(arguments.requestBean, responseBean);
 				break;
 			default:
 				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
@@ -216,8 +217,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @params - responseBean
 	 * @return : custom Object
 	 **/
-	public any function authorizePayment( required any requestBean, required any responseBean)
-	{
+	public any function authorizePayment( required any requestBean, required any responseBean) {
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
@@ -250,8 +250,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @params - responseBean
 	 * @return : none
 	 **/
-	public any function createTransaction(required any requestBean, required any responseBean)
-	{
+	public any function createTransaction(required any requestBean, required any responseBean) {
 		if(arguments.responseBean.hasErrors()){
 			return;
 		}
@@ -320,7 +319,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
 				"amount" : '#total#',
-				"orderId" : "#arguments.requestBean.getOrder().getOrderID()#",
+				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
 				'shipping' : { 'shippingAmount': '#arguments.requestBean.getOrder().getfulfillmentChargeAfterDiscountTotal()#' },
 				'tax' : { 'taxAmount': '#arguments.requestBean.getOrder().getTaxTotal()#' },
@@ -365,14 +364,20 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		if(arguments.responseBean.hasErrors()) {
 			return;
 		}
+		
+		if (isNull(arguments.requestBean.getOriginalProviderTransactionID()) || !len(arguments.requestBean.getOriginalProviderTransactionID())) {
+			arguments.responseBean.addError("Processing error", "Not able to process this request. Missing provider transaction ID.");
+			return;
+		}
 	    
 		var responseData = {};
-
-		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
-
+		
+		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
+		var amount = arguments.requestBean.getTransactionAmount();
 		var payload = { "query" : "mutation RefundTransaction($input: RefundTransactionInput!) { refundTransaction(input: $input) { refund { id amount { value } orderId status refundedTransaction { id amount { value } orderId status } } } }",
-			"variables" : {"input" : { "transactionId" : "#arguments.requestBean.getTransactionID()#" } }, };
-
+			"variables" : {"input" : { "transactionId" : "#arguments.requestBean.getOriginalProviderTransactionID()#", "refund": { "amount" : "#amount#", "orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#"  } } }, };
+		
+		
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
 
@@ -391,13 +396,14 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				&& fileContent.data.refundTransaction.refund.status == "SETTLING"
 				) {
 					
-				var amount = fileContent.data.refundTransaction.refund.amount;
+				//var amount = fileContent.data.refundTransaction.refund.amount.value;
 				arguments.responseBean.setProviderTransactionID(fileContent.data.refundTransaction.refund.id);
-				arguments.responseBean.setAmountAuthorized(amount);
+				arguments.responseBean.setAmountCredited(amount);
 				arguments.responseBean.setAmountReceived(amount);
 			}
 			else{
 				responseBean.addError("Processing error", "Not able to process this request.");
+				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(arguments.requestBean)# ======== #SerializeJson(payload)# ======== #SerializeJson(fileContent)# ");
 			}
 		}
 	}
