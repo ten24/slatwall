@@ -398,8 +398,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 					
 				//var amount = fileContent.data.refundTransaction.refund.amount.value;
 				arguments.responseBean.setProviderTransactionID(fileContent.data.refundTransaction.refund.id);
+				arguments.responseBean.setAmountAuthorized(amount);
 				arguments.responseBean.setAmountCredited(amount);
-				arguments.responseBean.setAmountReceived(amount);
 			}
 			else{
 				responseBean.addError("Processing error", "Not able to process this request.");
