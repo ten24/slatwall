@@ -293,7 +293,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function importOrderShipments(required struct rc){ 
         getService("HibachiTagService").cfsetting(requesttimeout="60");
-
+		getFW().setView("public:main.blank");
+		
         var MERGE_ARRAYS = true;
         var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
@@ -463,7 +464,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
          * @return {Void}
          */
         var createDelivery = function(shipment){
-        	
+        	logHibachi("createDelivery: shipment.shipmentNumber");
 			var order = order(shipment.OrderNumber);
 				
             if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
@@ -505,8 +506,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 orderDelivery.setShippingMethod( shippingMethod );
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 createDeliveryItems( orderDelivery );
+                echo("Created a delivery for orderNumber: #shipment['OrderNumber']# <br>");
+                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
+            	
             }else{
-            	echo("Can't find enough information for ordernumber: #shipment['Order']# to create the delivery <br>");
+            	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
+            	
 			}
         };
 
@@ -517,9 +522,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
        
         // Do one page at a time, flushing and clearing as we go.
         while (pageNumber < pageMax){
+        	logHibachi("Importing pagenumber: #pageNumber#");
 	        // Call the api and get shipment records for the date defined as the filter.
 	        var response = getShipmentData(pageNumber, pageSize, dateFilter);
-	
+			
 	        if (isNull(response)){
 	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
 	            throw("Unable to get a usable response from Shipments API #now()#");
@@ -528,7 +534,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        var shipments = response.Records?:"null";
 			
 	        if (shipments.equals("null")){
-	        	logHibachi("Response did not contain shipments data. #now()#");
+	        	logHibachi("Response did not contain shipments.");
 	            throw("Response did not contain shipments data.");
 	        }
 	
@@ -537,20 +543,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        }
 	        
 			try{
+				
 	    		arrayMap( shipments, createDelivery );
 	    		tx.commit();
 	    		ormGetSession().clear();
 			}catch(shipmentError){
-				writedump(shipmentError);
+				
 				ormGetSession().clear();
+				logHibachi("Error: shipmentError.getMessage()");
+				writedump(shipmentError);
 				abort;	
 			}
+			logHibachi("End Importing pagenumber: #pageNumber#");
 			pageNumber++;
         }
         
 		ormStatelessSession.close();
+		writeDump("End: #pageNumber# - #pageSize#");
         // Sets the default view 
-        getFW().setView("public:main.blank");
+        
     }
 	
 	public any function getDateFromString(date) {
