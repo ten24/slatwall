@@ -2126,14 +2126,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public string function getUpdateHQL(required struct updateSetStruct){
 
 		var alias = getBaseEntityAlias() & 'Update';//make sure it doesn't conflict
+		var entityReference = getDao('hibachiDAO').getApplicationKey() & getCollectionObject(); 
 
-		var updateHQL = 'UPDATE #getDao('hibachiDAO').getApplicationKey()##getCollectionObject()# as #alias# ';
+		var updateHQL = 'UPDATE #entityReference# as #alias# ';
 
 		updateHQL &= 'SET ';
 		
 		for(var property in arguments.updateSetStruct){
 			//not paramatizing to prevent conflicts with filters:
-			updateHQL &= ' #alias#.#property# = #arguments.updateSetStruct[property]#';
+			updateHQL &= ' #alias#.#property# = #arguments.updateSetStruct[property]# ';
 		} 	
 
 		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() ); 
@@ -2141,10 +2142,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setDisplayProperties(primaryIDPropertyName); 
 
 		updateHQL &= 'WHERE #alias#.#primaryIDPropertyName# in (';
-			
-		updateHQL &= getHQL();
+		
+		updateHQL &= "SELECT #getBaseEntityAlias()#.id FROM #entityReference# as #getBaseEntityAlias()# ";
+	
+		updateHQL &= getJoinHQL();
+
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+		if(arraylen(filterGroupArray)){
+			updateHQL &= getFilterHQL(filterGroupArray);
+		}
 
 		updateHQL &= ')';
+
+		this.logHibachi('updateHQL: #updateHQL#');
 
 		return updateHQL; 
 	}
