@@ -1883,6 +1883,10 @@ select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+.form-group .form-control-feedback.adminentitypreprocesstranslation {
+  text-align: left;
+  pointer-events: auto;
+}
 .modal {
   z-index: 3003 !important;
 }
@@ -2190,6 +2194,10 @@ table .s-edit-elements a:hover {
   background-clip: padding-box;
   border-color: #dddddd;
   font-size: 12px;
+}
+.form-control.read-only {
+  background-color: #f7f7f7;
+  line-height: 1.7;
 }
 /*Custom CSS*/
 .s-pannel-group .panel {
@@ -6430,12 +6438,12 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-loading-icon-fullwidth {
   position: fixed;
   top: 40%;
-  left: calc(50% + 90px);
+  left: 140%;
   z-index: 3000;
 }
 @media (max-width: 1199px) {
   .s-loading-icon-fullwidth {
-    left: calc(50% - 35px);
+    left: 15%;
   }
 }
 .s-slide-panel .s-slide-panel-header .s-slide-panel-close::after,
@@ -6905,8 +6913,7 @@ sw-sku-thumbnail .thumbnail .caption {
   margin-left: 0;
 }
 .s-toggle-switch input:checked + div > label .s-toggle-switch-handle {
-  left: 90%;
-  left: calc(82% - 2px);
+  left: 80%;
 }
 .s-toggle-switch-on,
 .s-toggle-switch-off {
