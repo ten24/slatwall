@@ -107,7 +107,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 				successFlag = true;
 			} catch (any e){
-				rethrow; 
 				successFlag = false;
 				if (!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
@@ -301,7 +300,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 	
 			} catch(any e){
-				rethrow; 
 				if(!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
 					workflowTriggerHistory.setSuccessFlag(false);
@@ -342,8 +340,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
-	
-		this.logHibachi('workflowTaskAction: #workflowTaskAction.getActionType()#');
 
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
@@ -404,7 +400,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
 						actionSuccess = true;
 					}catch(any e){
-						rethrow; 
 						actionSuccess = false;
 					}
 				}
@@ -414,13 +409,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				//we need some form of collection data for this to work	
 				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
 					actionSuccess = false; 
-					this.logHibachi('workflowtaskaction doesnt have enough collection info to processByQUEUE');	
 					break;
 				}
 
 				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
 				if(!isNull(processEntityQueueFlagPropertyName)){
-
 					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName)){
 						actionSuccess = false; 
 						break;

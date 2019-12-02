@@ -121,7 +121,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	} 
 
 	public any function getEntityCollectionList(){
-		return getEnttiyService().invokeMethod('get#getClassName()#CollectionList'); 
+		return getEntityService().invokeMethod('get#getClassName()#CollectionList'); 
 	}
 
 	public struct function getStructRepresentation(string properties){

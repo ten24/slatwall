@@ -2120,12 +2120,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public void function executeUpdate(required struct updateSetStruct){
-		ormExecuteQuery(getUpdateHQL(argumentCollection=arguments), getHQLParams());
+		ormExecuteQuery(getUpdateMysql(argumentCollection=arguments), getHQLParams());
 	}
 
-	public string function getUpdateHQL(required struct updateSetStruct){
+	public string function getUpdateMysql(required struct updateSetStruct){
 
-		var alias = getBaseEntityAlias() & 'Update';//make sure it doesn't conflict
+		var alias = getBaseEntityAlias();//make sure it doesn't conflict
 		var entityReference = getDao('hibachiDAO').getApplicationKey() & getCollectionObject(); 
 
 		var updateHQL = 'UPDATE #entityReference# as #alias# ';
@@ -2141,20 +2141,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		this.setDisplayProperties(primaryIDPropertyName); 
 
-		updateHQL &= 'WHERE #alias#.#primaryIDPropertyName# in (';
-		
-		updateHQL &= "SELECT #getBaseEntityAlias()#.id FROM #entityReference# as #getBaseEntityAlias()# ";
-	
-		updateHQL &= getJoinHQL();
-
 		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 		if(arraylen(filterGroupArray)){
-			updateHQL &= getFilterHQL(filterGroupArray);
+			var filterGroupHQL = getFilterHQL(filterGroupArray);
+		
+			var joins = getValidJoins();
+			for(var join in joins){
+				var removeJoinAlias = alias & '.' & replaceNoCase( listRest(join.alias,'_'), '_', '.', 'ALL' );
+					
+				filterGroupHQL = replaceNoCase( filterGroupHQL, join.alias, removeJoinAlias, 'ALL' );
+			}
+				
+			updateHQL &= filterGroupHQL;	
 		}
-
-		updateHQL &= ')';
-
-		this.logHibachi('updateHQL: #updateHQL#');
 
 		return updateHQL; 
 	}
