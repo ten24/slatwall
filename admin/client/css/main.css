@@ -1586,6 +1586,12 @@ select.error {
 .items-center {
   align-items: center;
 }
+.mb-20 {
+  margin-bottom: 20px;
+}
+.p-20 {
+  padding: 20px;
+}
 .btn-group {
   float: right;
 }
