@@ -25,6 +25,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'importOrderReasons');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -1745,7 +1746,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
-		//var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");
+		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");
 		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
 		var otReturnOrder = getTypeService().getTypeBySystemCode("otReturnOrder");
 		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
@@ -2583,7 +2584,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
 		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
-
+		var termMonthly = getPaymentService().getTermByTermName('Monthly');
+		var termBiMonthly = getPaymentService().getTermByTermName('Bi-Monthly');
+		
 		while (pageNumber < pageMax){
            
     		var flexshipResponse = getFlexshipData(pageNumber, pageSize);
@@ -2662,6 +2665,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    	orderTemplate.setCreatedDateTime( entryDate );//*
 	                    }
 	                    
+	                    if (!isNull(flexship['Frequency'])){
+	                    	if (flexship['Frequency'] == 1){
+	                    		orderTemplate.setFrequencyTerm(termMonthly);	
+	                    	}else if(flexship['Frequency'] == 2){
+	                    		orderTemplate.setFrequencyTerm(termBiMonthly);
+	                    	}
+	                    }
 	                    
 	                    //Remove this delete date as we won't update those.
 						//set created and modified date times.
@@ -2787,7 +2797,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
-							
+							accountPaymentMethod.setCreditCardLastFour( right(flexshipPayment['checkCcAccount'], 4)?:"" );//*
+                            
 							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
 							
 							//FIND or CREATE the billing account address
@@ -2923,8 +2934,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
     			//writeDump(flexship); // rollback the tx
-    			//writeDump(e); // rollback the tx
-				//abort;
+    			writeDump(e); // rollback the tx
+				abort;
     		} finally{
 
 			    // close the stateless before opening the statefull again...
@@ -2937,6 +2948,124 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		}//end pageNumber
     }
+	
+	public void function importOrderReasons(rc) { 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	    
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+				        
+		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");		        
+		//here
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+    	while (pageNumber < pageMax){
+    		
+    		var orderResponse = getOrderData(pageNumber, pageSize);
+    		//writedump(orderResponse);abort;
+    		
+    		if (orderResponse.hasErrors == true){
+    			
+    		    //goto next page causing this is erroring!
+    		    echo("Skipping page #pageNumber# because of errors <br>");
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var orders = orderResponse.Records;
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var order in orders){
+    			    index++;
+    			    
+    			    //Skip orders without reasons
+    			    if (order['OrderTypeCode'] != "C" && order['OrderTypeCode'] != "R" && order['OrderTypeCode'] != "X"){
+    			    	continue;
+    			    }
+    			    
+    			    var newOrder = getOrderService().getOrderByRemoteID(order['OrderId']);
+    			    
+    			    if (isNull(newOrder)){
+    			    	continue;
+    			    }
+    			    
+			        if (!isNull(order['RMACSReasonNumber'])){
+			        	
+			        	//try{
+			        		var reason = getTypeService().getTypeByTypeCodeANDparentType({1:order['RMACSReasonDescription'], 2: reasonType}, false);
+			        		
+			        		if (!isNull(reason)){
+			        			newOrder.setReturnReasonType(reason);
+			        		}
+			        		
+			        	//}catch(typeError){
+			        		//ignore
+			        	//}
+			        }
+			        
+			        if (!isNull(order['RMAOpsReasonNumber'])){
+			        	
+			        	//try{
+			        		var opsreason = getTypeService().getTypeByTypeCodeANDparentType({1:order['RMAOpsReasonNumber'], 2: reasonType}, false);
+			        		if (!isNull(opsreason)){
+			        			newOrder.setSecondaryReturnReasonType(opsreason);
+			        		}
+			        	//}catch(typeError){
+			        		//ignore
+			        	//}
+			        }
+			        
+			        if (!isNull(order['ReplacementReasonNumber'])){
+			        	//try{
+			        		var rreason = getTypeService().getTypeByTypeCodeANDparentType({1:order['ReplacementReasonNumber'], 2: reasonType}, false);
+			        		if (!isNull(rreason)){
+			        			newOrder.setReturnReasonType(rreason);
+			        		}
+			        	//}catch(typeError){
+			        		//ignore
+			        	//}
+			        }
+			        
+			        //RMAOrigOrderNumber
+			        if (!isNull(order['RMAOrigOrderNumber'])){
+			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
+			        }
+			        
+                    /**
+                     * Sets the orderType to the Slatwall Type
+                     * otReplacementOrder, otSalesOrder,otExchangeOrder,otReturnOrder,otRefundOrder
+                     **/
+                    
+                    ormStatelessSession.update("SlatwallOrder", newOrder);
+                    
+    			}
+    			//echo("committing all order.");
+    			tx.commit();
+    			ormGetSession().clear();//clear every page records...
+    		}catch(e){
+    			if (!isNull(tx) && tx.isActive()){
+    			    tx.rollback();
+    			}
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			
+    			ormGetSession().clear();
+    			abort;
+    		} 
+		    pageNumber++;
+		    
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index# ");
+	}
+	
 	
 	//http://monat/Slatwall/?slatAction=monat:import.upsertOrders&pageNumber=1&pageMax=2&pageSize=25
 	public void function upsertOrders(rc) { 
@@ -3036,6 +3165,32 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
 			        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
 			        
+			        
+			        /*
+			        if (!isNull(order['RMACSReasonNumber'])){
+			        	try{
+			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMACSReasonDescription'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
+			        }
+			        
+			        if (!isNull(order['RMAOpsReasonNumber'])){
+			        	try{
+			        		newOrder.setSecondaryReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMAOpsReasonNumber'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
+			        }
+			        
+			        if (!isNull(order['ReplacementReasonNumber'])){
+			        	try{
+			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['ReplacementReasonNumber'], 2: reasonType}));
+			        	}catch(typeError){
+			        		//ignore
+			        	}
+			        }
+			        */
 			        /**
 			         * Handle discounts on the order. 
 			         **/
