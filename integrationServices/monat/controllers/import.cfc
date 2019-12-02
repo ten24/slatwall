@@ -12,6 +12,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="priceGroupService";
 	property name="commentService";
 	property name="skuService";
+	property name="fulfillmentService";
 	property name="paymentService";
 	property name="locationService";
 	
@@ -299,6 +300,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageMax = rc.pageMax?:1;
 		var dateFilter = rc.dateFilter?:dateFormat(now(), 'YYYY-mm-dd');
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+        var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
         
         // Begin Helper functions
 
@@ -461,8 +463,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
          * @return {Void}
          */
         var createDelivery = function(shipment){
+        	
 			var order = order(shipment.OrderNumber);
-            if (dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
+				
+            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
                 // Create the delivery.  
                 var orderDelivery = new Slatwall.model.entity.OrderDelivery();
     			orderDelivery.setOrder(order);
@@ -498,10 +502,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
     		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    orderDelivery.setModifiedDateTime( now() );
-                orderDelivery.setShippingMethod( fulfillmentMethod( "Shipping" ) );
+                orderDelivery.setShippingMethod( shippingMethod );
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 createDeliveryItems( orderDelivery );
-            }
+            }else{
+            	echo("Can't find enough information for ordernumber: #shipment['Order']# to create the delivery <br>");
+			}
         };
 
         // Map all the shipments -> deliveries.
