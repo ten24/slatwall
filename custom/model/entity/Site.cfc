@@ -8,27 +8,27 @@ component {
 			return variables.ownerAccount;
 		}
 		
-		if(!structKeyExists(variables, 'ownerAccount')) {	
-			var domain = getHibachiScope().getCurrentDomain();
-			var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
-			/*
-			Matches:
-				username.monat.local
-				username.monatglobal.com
-				username.mymonat.com
-				username.monat.ten24dev.com
-			*/
+
+		var domain = getHibachiScope().getCurrentDomain();
+		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
+		/*
+		Matches:
+			username.monat.local
+			username.monatglobal.com
+			username.mymonat.com
+			username.monat.ten24dev.com
+		*/
+		
+		if(reFindNoCase(regex, domain)){
+			var accountCode = reReplaceNoCase(domain, regex, '\1');
+			var account = getService('accountService').getAccountByAccountCode(accountCode);
 			
-			if(reFindNoCase(regex, domain)){
-				var accountCode = reReplaceNoCase(domain, regex, '\1');
-				var account = getService('accountService').getAccountByAccountCode(accountCode);
-				
-				if(!isNull(account)){
-					variables.ownerAccount = account;
-					return variables.ownerAccount;
-				}
+			if(!isNull(account)){
+				variables.ownerAccount = account;
+				return variables.ownerAccount;
 			}
 		}
+	
 	}
 	
 	public string function getSiteAvailableLocales() {
