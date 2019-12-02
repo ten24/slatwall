@@ -298,6 +298,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
 		var dateFilter = rc.dateFilter?:dateFormat(now(), 'YYYY-mm-dd');
+        var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
         
         // Begin Helper functions
 
@@ -408,11 +409,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
          * @return {OrderDeliveryItem} Returns the newly created and save item. 
          */
         var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
-            var orderDeliveryItem = getOrderService().newOrderDeliveryItem();
+            var orderDeliveryItem = Slatwall.model.entity.OrderDeliveryItem();
             orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
             orderDeliveryItem.setOrderItem(orderFulfillmentItem.getOrderItem());
             orderDeliveryItem.setOrderDelivery(orderDelivery);
-            getOrderService().saveOrderDeliveryItem(orderDeliveryItem);
+			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
             return orderDeliveryItem;
         }
 
@@ -463,7 +464,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var order = order(shipment.OrderNumber);
             if (dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
                 // Create the delivery.  
-                var orderDelivery = getOrderService().newOrderDelivery();
+                var orderDelivery = new Slatwall.model.entity.OrderDelivery();
     			orderDelivery.setOrder(order);
     			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
     			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
@@ -498,39 +499,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( fulfillmentMethod( "Shipping" ) );
-                getOrderService().saveOrderDelivery( orderDelivery );
+                ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 createDeliveryItems( orderDelivery );
             }
         };
 
-		// Begin Logic 
-
-        // Get the monat integration
-        
-
-        // Call the api and get shipment records for the date defined as the filter.
-        var response = getShipmentData(pageNumber, pageSize, dateFilter);
-        
-        
-        if (isNull(response)){
-        	logHibachi("Unable to get a usable response from Shipments API #now()#");
-            throw("Unable to get a usable response from Shipments API #now()#");
-        }
-
-        var shipments = response.Records?:"null";
-
-        if (shipments.equals("null")){
-        	logHibachi("Response did not contain shipments data. #now()#");
-            throw("Response did not contain shipments data.");
-        }
-
-        if (containsAll(rc, "viewResponse")){
-            writedump(shipments);abort;
-        }
-
         // Map all the shipments -> deliveries.
-        arrayMap( shipments, createDelivery );
-
+        // This wraps the map in a new stateless session to keep things fast
+        
+        var tx = ormStatelessSession.beginTransaction();
+       
+        // Do one page at a time, flushing and clearing as we go.
+        while (pageNumber < pageMax){
+	        // Call the api and get shipment records for the date defined as the filter.
+	        var response = getShipmentData(pageNumber, pageSize, dateFilter);
+	
+	        if (isNull(response)){
+	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
+	            throw("Unable to get a usable response from Shipments API #now()#");
+	        }
+	        
+	        var shipments = response.Records?:"null";
+			
+	        if (shipments.equals("null")){
+	        	logHibachi("Response did not contain shipments data. #now()#");
+	            throw("Response did not contain shipments data.");
+	        }
+	
+	        if (containsAll(rc, "viewResponse")){
+	            writedump(shipments);abort;
+	        }
+	        
+			try{
+	    		arrayMap( shipments, createDelivery );
+	    		tx.commit();
+	    		ormGetSession().clear();
+			}catch(shipmentError){
+				writedump(shipmentError);
+				ormGetSession().clear();
+				abort;	
+			}
+			pageNumber++;
+        }
+        
+		ormStatelessSession.close();
         // Sets the default view 
         getFW().setView("public:main.blank");
     }
