@@ -46,7 +46,6 @@ class VIPController {
 		if(localStorage.getItem('shippingMethodID')){
 			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
 		}
-		
 				
 		if(localStorage.getItem('flexshipDayOfMonth')){
     		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
@@ -58,9 +57,7 @@ class VIPController {
 		
 		if(localStorage.getItem('flexshipID')){
 	    	this.flexshipID = localStorage.getItem('flexshipID');
-	    	//************************DO NOT INCLUDE THIS IN COMMIT BEFORE YOU REVISE IT *******************************
 	    	this.getProductList();
-	    	//************************DO NOT INCLUDE THIS IN COMMIT BEFORE YOU REVISE IT *******************************
 		}
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
@@ -152,11 +149,6 @@ class VIPController {
 	
 	public getProductList = () => {
 		this.loading = true;
-		
-		if(this.productList){
-			this.loading = false;
-			return this.productList;
-		};
 		
 		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
             this.productList = result.productList;
