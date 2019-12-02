@@ -44,8 +44,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
 		var account = arguments.order.getAccount();
 		
-		
 		if(!isNull(arguments.data.orderTemplateID)){
+
 			var orderService = getService('orderService');
 			
 			var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
@@ -70,6 +70,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 			orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
 			orderService.saveOrderTemplate(orderTemplate);
+
 		}
 		
 		

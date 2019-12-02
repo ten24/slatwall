@@ -63,9 +63,6 @@ class VIPController {
 	    	//************************DO NOT INCLUDE THIS IN COMMIT BEFORE YOU REVISE IT *******************************
 		}
 		
-    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
-    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
-		this.observerService.attach(this.setOrderTemplateBilling,"placeOrderSuccess");
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.getProductList,"createSuccess");
     	
@@ -95,40 +92,7 @@ class VIPController {
 			this.isNotSafariPrivate = false;
 		}
 	}
-	public setOrderTemplateShippingAddress = () =>{
-		if(!this.holdingShippingMethodID || !this.holdingShippingAddressID){
-			return;
-		}
-		this.loading = true;
-		let payload = {};
-		payload['orderTemplateID'] = this.flexshipID;
-		payload['shippingAccountAddress.value'] = this.holdingShippingAddressID;
-		payload['shippingMethod.shippingMethodID']= this.holdingShippingMethodID;
-		
-		this.orderTemplateService.updateShipping(payload).then(response => {
-			this.loading = false;
-		})
-	}
-	
-	public setOrderTemplateBilling = () =>{
-		this.loading = true;
-		let cart = this.publicService.getCart().then(result => {
-			if(!result.orderPayments[0]) return;
-			let orderPayment = result.orderPayments[0].paymentMethod
-			
-			let payload = {};
-			payload['orderTemplateID'] = this.flexshipID;
-			payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
-			payload['accountPaymentMethod']= orderPayment;
-			payload['accountPaymentMethod.value']= orderPayment.paymentMethodID;
-			
-			this.orderTemplateService.updateBilling(payload).then(response => {
-				this.loading = false;
-			});
-		});
-		
-	}
-	
+
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
 			return this.countryCodeOptions;
