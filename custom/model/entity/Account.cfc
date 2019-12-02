@@ -37,7 +37,7 @@ component {
 	}
 	
 	public any function getAccountNumber(){
-		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
 			if(!isNull(this.getAccountID())){
 				var maxAccountNumberQuery = new query();
 				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';

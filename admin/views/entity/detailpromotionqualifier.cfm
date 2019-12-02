@@ -94,9 +94,9 @@ Notes:
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
 		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
-			<cfif rc.qualifierType neq "order" >
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			</cfif>
+
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
 			<cfelseif rc.qualifierType eq "order" >

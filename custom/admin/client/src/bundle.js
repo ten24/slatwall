@@ -64377,9 +64377,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = {
-                shippingMethodID: _this.baseEntity.shippingMethod.value
-            };
+            formDataToPost.shippingMethodID = _this.baseEntity.shippingMethod.value;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -82744,6 +82742,11 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
             if (!item) {
                 return;
             }
+            if (angular.isDefined(_this.prependPropertyName) && _this.prependPropertyName.length) {
+                for (var property in item) {
+                    item[_this.prependPropertyName + "_" + property] = item[property];
+                }
+            }
             if (_this.singleSelection) {
                 _this.typeaheadService.notifyTypeaheadClearSearchEvent(_this.typeaheadDataKey);
             }
@@ -82825,7 +82828,8 @@ var SWTypeaheadMultiselect = /** @class */ (function () {
             fallbackPropertiesToCompare: "@?",
             rightContentPropertyIdentifier: "@?",
             selectionFieldName: "@?",
-            disabled: "=?"
+            disabled: "=?",
+            prependPropertyName: "@?"
         };
         this.controller = SWTypeaheadMultiselectController;
         this.controllerAs = "swTypeaheadMultiselect";
@@ -96771,7 +96775,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true); //single column mode true, format propIdentifier false
             }
         };
         //End Order By Functions
