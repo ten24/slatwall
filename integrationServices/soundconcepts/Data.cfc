@@ -37,7 +37,7 @@ Notes:
 */
 
 
-component accessors='true' output='false' displayname='connect' extends='Slatwall.org.Hibachi.HibachiObject' {
+component accessors='true' output='false' displayname='SoundConcepts' extends='Slatwall.org.Hibachi.HibachiObject' {
 	
 	public any function init() {
 		return this;
@@ -67,7 +67,7 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 	 * 
 	 * @returns struct, of successful-response or formated-error-response 
 	*/ 
-	private struct function createConnectUser(required struct requestData) {
+	private struct function createSoundConceptsUser(required struct requestData) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		requestURL &= '/remote/users/add.json';
@@ -75,7 +75,7 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
 
-		//Authentaction details required by Connect
+		//Authentaction details required by SoundConcepts
 		arguments.requestData['master_username'] = setting('masterUsername');
 		arguments.requestData['master_password'] = setting('masterPassword');
 		
@@ -106,30 +106,25 @@ component accessors='true' output='false' displayname='connect' extends='Slatwal
 	}
 	
 	/**
-	 * Function to be create user on ConnectApp, and update Slatwlll-Account on successful response
+	 * Function to be create user on SoundConceptsApp, and update Slatwlll-Account on successful response
 	 * @entity, @modal/Account.cfc, user-account we're processing
 	 * @data, struct, cotaining post request payload
 	 * 
 	 * Note: 
 	 * 1. currently we're not updating slatwall-account.
-	 * 2. in current setup this function will be called from ConnectService::push(), which will be called from EntityQueue
+	 * 2. in current setup this function will be called from SoundConceptsService::push(), which will be called from EntityQueue
 	 * 
 	 */ 
 	public void function pushData(required any entity, struct data ={}) {
 	
 		//push to remote endpoint
-		var response = createConnectUser(arguments.data.payload);
+		var response = createSoundConceptsUser(arguments.data.payload);
 
-		if( StructKeyExists( response, 'success') && 
-			StructKeyExists( response.success, 'username') &&  len( trim( response.success.username ) ) 
+		if( !StructKeyExists( response, 'success') || 
+			!StructKeyExists( response.success, 'username') ||  !len( trim( response.success.username ) ) 
 		) {
-			// we're not doing anything with success for now
+			throw("Error in SoundConcepts::PushData() #SerializeJson(response)#");
 		} 
-		else {
-			var error = "Error in Connect::PushData() #SerializeJson(response)#";
-			writelog( file='integration-connect', text=error);
-			throw(error);
-		}
 	}
 
 }

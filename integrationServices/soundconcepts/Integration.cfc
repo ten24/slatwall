@@ -41,11 +41,13 @@
     of the program, but you are not obligated to do so.
 Notes:
 */
-component accessors='true' output='false' implements='Slatwall.integrationServices.IntegrationInterface' extends='Slatwall.integrationServices.BaseIntegration' {
+component accessors='true' output='false' 
+implements='Slatwall.integrationServices.IntegrationInterface' 
+extends='Slatwall.integrationServices.BaseIntegration' {
 	
 	public array function getEventHandlers() {
 		
-		return [ 'Slatwall.integrationServices.connect.model.handler.ConnectHandler' ];
+		return [ 'Slatwall.integrationServices.soundconcepts.model.handler.SoundConceptsHandler' ];
 	}
 	
 	public string function getIntegrationTypes() {
@@ -55,7 +57,7 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 	
 	public string function getDisplayName() {
 		
-		return 'Connect: SSO';
+		return 'Sound Concepts';
 	}
 
 	public struct function getSettings() {

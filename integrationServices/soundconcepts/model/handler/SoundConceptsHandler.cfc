@@ -2,7 +2,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	private any function getIntegration(){
 		if(!structKeyExists(variables,'integration')){
-			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage('connect');
+			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage('soundconcepts');
 		}
 		return variables.integration;
 	}
@@ -21,7 +21,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 		 }
 		 
 		 catch( any e) {
-		 	writelog( file='integration-connect', text="Error in afterInfotraxAccountCreateSuccess() :#e.message#");
 		 	if(!getIntegration().setting('liveModeFlag')){
 		 		rethrow;
 		 	}
