@@ -60,7 +60,7 @@ extends = 'Slatwall.integrationServices.BaseIntegration' {
 		var settings = {
 			ApiToken		= { fieldType = 'text' },
 			liveModeFlag	= { fieldType = 'yesno', defaultValue = '0' },
-			httpTimeOut 	= { fieldType = 'number' defaultValue = 60 };
+			httpTimeOut 	= { fieldType = 'text', defaultValue = '60' },
 			liveURL    		= { fieldType = 'text', defaultValue = 'https://rest.avatax.com/api/v2'},
 			testURL    		= { fieldType = 'text', defaultValue = 'https://sandbox-rest.avatax.com/api/v2' },
 		};
