@@ -2120,10 +2120,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public void function executeUpdate(required struct updateSetStruct){
-		ormExecuteQuery(getUpdateMysql(argumentCollection=arguments), getHQLParams());
+		ormExecuteQuery(getUpdateHQL(argumentCollection=arguments), getHQLParams());
 	}
 
-	public string function getUpdateMysql(required struct updateSetStruct){
+	public string function getUpdateHQL(required struct updateSetStruct){
 
 		var alias = getBaseEntityAlias();//make sure it doesn't conflict
 		var entityReference = getDao('hibachiDAO').getApplicationKey() & getCollectionObject(); 
