@@ -44,26 +44,18 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
 		var account = arguments.order.getAccount();
 		
+		//adding shipping and billing to flexship and activating
 		if(!isNull(arguments.data.orderTemplateID)){
-
+			
 			var orderService = getService('orderService');
-			
 			var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
+			var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 			
-			//shipping method 
-			var shippingMethod = arguments.order.getorderFulfillments()[1].getShippingMethod();
-			//shipping address
-			var shippingAddress = arguments.order.getShippingAddress();
-			// shipping account address 
-			var shippingAccountAddress = arguments.order.getShippingAccountAddress();
-			// account payment method 
+			var shippingMethod = orderFulFillment.getShippingMethod();
+			var shippingAddress = orderFulFillment.getShippingAddress();
 			var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-			// billing account address 
 			var billingAccountAddress = arguments.order.getBillingAccountAddress();
 			
-			//setting the above on order template and activating
-			//NULL check on account address because this is optional in checkout 
-			if(!isNull(shippingAccountAddress)) orderTemplate.setShippingAccountAddress(shippingAccountAddress);
 			orderTemplate.setShippingAddress(shippingAddress);
 			orderTemplate.setShippingMethod(shippingMethod);
 			orderTemplate.setBillingAccountAddress(billingAccountAddress);
