@@ -165,7 +165,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
-		this.logHibachi('runWorkflowsByScheduleTrigger');	
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -174,7 +173,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
-			this.logHibachi('workflow not yet scheduled WTI: #arguments.workflowTrigger.getWorkflowTriggerID()#',true);
 			return arguments.workflowTrigger;
 		}
 			//Change WorkflowTrigger runningFlag to TRUE
@@ -521,12 +519,8 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
 							}
-        			} else {
-						this.logHibachi('not executing #workflowTaskAction.getWorkflowTaskActionID()#',true);
-					}
+        			}
 				}
-			} else {
-				this.logHibachi('not executing #workflowTask.getWorkflowTaskID()# - #structKeyExists(arguments.data,'entity')# vs #entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())#',true);
 			} 
 		}
 		if(structKeyExists(arguments.data,'entity')){
