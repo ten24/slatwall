@@ -16,7 +16,7 @@ class MonatFlexshipShippingMethodModalController {
 	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {}
     
     public $onInit = () => {
     	this.makeTranslations();
@@ -66,7 +66,7 @@ class MonatFlexshipShippingMethodModalController {
     public updateShippingAddress() {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload['shippingMethod.shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
+    	payload['shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
     	
     	this.loading = true;
   
@@ -80,31 +80,32 @@ class MonatFlexshipShippingMethodModalController {
     	payload = this.orderTemplateService.getFlattenObject(payload);
 
     	// make api request
-        this.orderTemplateService.updateShipping(payload).then(
-            (response) => {
+        this.orderTemplateService.updateShipping(payload)
+        .then( (response) => {
                
-               if(response.orderTemplate) {
-	                this.orderTemplate = response.orderTemplate;
-	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-	
-	                if(response.newAccountAddress) {
-	            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-	            		this.accountAddresses.push(response.newAccountAddress);
-	                }
-	                		
-	                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
-	                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-	                this.closeModal();
-               } else {
-	               	console.error(response); //
-               }
-                // TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        ).finally(() => {
+           if(response.orderTemplate) {
+                this.orderTemplate = response.orderTemplate;
+                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+
+                if(response.newAccountAddress) {
+            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+            		this.accountAddresses.push(response.newAccountAddress);
+                }
+                		
+                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
+                this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
+                
+               	this.monatAlertService.success("Your flexship has been updated successfully");
+                this.closeModal();
+           } else {
+               	throw(response);
+           }
+        }) 
+        .catch( (error) => {
+            console.error(error);
+	        this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally(() => {
         	this.loading = false;
         });
     }

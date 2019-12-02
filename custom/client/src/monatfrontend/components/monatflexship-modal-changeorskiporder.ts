@@ -18,7 +18,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public selectedReason;
 	
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService) {
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -68,16 +68,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 
     	//TODO frontend validation
     	
-    	/** 
-    	 * payload => { 
-    		orderTemplateID:string'', 
-    		orderTemplateScheduleDateChangeReasonTypeID:string'', 
-    		otherScheduleDateChangeReasonNotes?:string '', 
-    		scheduleOrderNextPlaceDateTime?:string '',
-    		skipNextMonthFlag?: boolean;
-    	   }
-    	 */
-
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
@@ -95,27 +85,26 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	payload = this.orderTemplateService.getFlattenObject(payload);
 
     	// make api request
-        this.orderTemplateService.updateOrderTemplateSchedule(payload).then(
-            (data) => {
+        this.orderTemplateService.updateOrderTemplateSchedule(payload)
+        .then( (data) => {
             	if(data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+	                this.monatAlertService.success("Your flexship has been updated successfully");
 	                this.closeModal();
             	} else {
-            		console.error(data);
-            		//TODO handle errors
-            	}
-            	// TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
+            		throw(data);
+            	} 
             }
-        );
+        )
+        .catch( (error) => {
+        	console.error(error);
+        	this.monatAlertService.showErrorsFromResponse(error);
+        });
     }
 
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 }
 

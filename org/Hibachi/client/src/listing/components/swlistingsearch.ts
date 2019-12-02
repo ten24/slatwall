@@ -49,6 +49,14 @@ class SWListingSearchController {
     
     public searchableFilterOptions = [
             {
+                title:'Last 1 Month',
+                value:'lastOneMonth',
+            },
+            {
+                title:'Last 2 Months',
+                value:'lastTwoMonths',
+            },
+            {
                 title:'Last 3 Months',
                 value:'lastThreeMonths',
             },

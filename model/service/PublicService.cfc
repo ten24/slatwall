@@ -197,7 +197,7 @@ component  accessors="true" output="false"
      * @example POST to /api/scope/logout with request_token and deviceID in headers
      * @ProcessMethod Account_Logout
      */
-    public any function logout( required struct data ){ 
+    public any function logout( struct data  = {} ){ 
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
         getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
@@ -356,7 +356,10 @@ component  accessors="true" output="false"
                     getHibachiScope().showMessage(message,"error");
                 }
             }
+            
+            addErrors(arguments.data, account.getErrors());
         }
+
         return account;
     }
     
@@ -1164,7 +1167,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod Order_addOrderItem
      */
-    public void function addOrderItem(required any data) {
+    public any function addOrderItem(required any data) {
         // Setup the frontend defaults
         param name="data.preProcessDisplayedFlag" default="true";
         param name="data.saveShippingAccountAddressFlag" default="false";
@@ -1193,6 +1196,8 @@ component  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
+        getHibachiScope().flushORMSession(); //flushing for can place order check
+        return cart;
     }
     
     /* @http-context updateOrderNotes
@@ -1330,7 +1335,12 @@ component  accessors="true" output="false"
         if(!cart.hasErrors()) {
             cart.clearProcessObject("addPromotionCode");
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("AddPromotionCode").getErrors());
+            var processObject = cart.getProcessObject("AddPromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(data, cart.getProcessObject("AddPromotionCode").getErrors());
+            }else{
+                addErrors(data,cart.getErrors());
+            }
         }
     }
     
@@ -1749,13 +1759,14 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
 
-		public void function getWishlistItems(required any data){
+	public void function getWishlistItems(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default=""; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		arguments.data['ajaxResponse']['orderTotal'] = 0;
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
 		
@@ -1790,8 +1801,12 @@ component  accessors="true" output="false"
   			      "total"                       :       wishListItem.getTotal()?:""
 
 			    };
+                
+                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 
-			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
+                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
+                }
 		    }
 		}catch (e){
             throw(e)
@@ -1845,7 +1860,12 @@ component  accessors="true" output="false"
      		}
      		
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
         }
  	}   
  	
@@ -1970,10 +1990,10 @@ component  accessors="true" output="false"
         }
         orderTemplate.clearProcessObject("updateFrequency");
         
-        //try to activate if possible
+        //try to activate if we can
         if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
-            && orderTemplate.getCanPlaceOrderFlag()
+			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
         ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
             getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
@@ -2014,15 +2034,23 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
         getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+        
+        var processObject = orderTemplate.getProcessObjects()['applyGiftCard'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+        
+        if( orderTemplate.hasErrors() ){
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }    
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+        if( !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("applyGiftCard");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        	setOrderTemplateAjaxResponse(argumentCollection = arguments);
         }
 	}
 	
@@ -2292,8 +2320,11 @@ component  accessors="true" output="false"
     
 
     public any function getBaseProductCollectionList(required any data){
-        param name="arguments.data.currencyCode" default=""; 
-        param name="arguments.data.priceGroupCode" default="";
+        var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();
+        var holdingPriceGroups = account.getPriceGroups();
+        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
         
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -2309,9 +2340,17 @@ component  accessors="true" output="false"
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
 
-        return productCollectionList
+        if(isNull(accountType) || accountType == 'retail'){
+           productCollectionList.addFilter('skus.retailFlag', 1);
+        }else if(accountType == 'marketPartner'){
+            productCollectionList.addFilter('skus.mpFlag', 1);
+        }else{
+            productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+
+        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
     }   
 }

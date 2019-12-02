@@ -15,9 +15,10 @@ class MonatFlexshipCardController {
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	//@ngInject
-	constructor(public observerService, public orderTemplateService, public $window, public ModalService) {}
+	constructor(public observerService, public orderTemplateService, public $window, public ModalService, public monatAlertService) {}
 
 	public $onInit = () => {
+		
 		this.observerService.attach(
 			this.updateOrderTemplate,
 			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
@@ -53,14 +54,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 	
 	public showAddGiftCardModal = () => {
@@ -101,14 +102,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -125,14 +126,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -153,14 +154,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -179,14 +180,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	public showFlexshipEditFrequencyMethodModal = () => {
@@ -201,14 +202,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	public activateFlexship() {
@@ -217,21 +218,21 @@ class MonatFlexshipCardController {
 			.activateOrderTemplate({
 				orderTemplateID :	this.orderTemplate.orderTemplateID
 			})
-			.then((data) => {
+			.then( (data) => {
 				if (data.orderTemplate) {
 					this.orderTemplate = data.orderTemplate;
 					this.observerService.notify(
 						'orderTemplateUpdated' + data.orderTemplate.orderTemplateID,
 						data.orderTemplate,
 					);
+					this.monatAlertService.success("Your flexship has been Activated successfully");
 				} else {
-					console.error(data);
+					throw(data);
 				}
-				// TODO: show alert
 			})
-			.catch((reason) => {
-				throw reason;
-				// TODO: show alert
+			.catch( (error) => {
+				console.error(error);
+	            this.monatAlertService.showErrorsFromResponse(error);
 			});
 	}
 

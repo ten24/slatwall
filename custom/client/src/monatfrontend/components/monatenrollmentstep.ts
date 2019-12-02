@@ -8,7 +8,7 @@ class MonatEnrollmentStep {
 		stepClass : '@',
 		showMiniCart : '@',
 		onNext : '=?',
-		showFlexshipCart : '=?',
+		showFlexshipCart : '@?',
 	}
 	public require = '^monatEnrollment';
 

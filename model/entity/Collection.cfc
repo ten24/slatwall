@@ -440,6 +440,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		// TODO: see if we'd like to make it more configurable
 		return [
 					{
+		                title:'Last Month',
+		                code:'lastOneMonth',
+		                criteria:"m:1",
+		            },
+		            {
+		                title:'Last Two Months',
+		                code:'lastTwoMonths',
+		                criteria:"m:2",
+		            },
+					{
 		                title:'Last 3 Months',
 		                code:'lastThreeMonths',
 		                criteria:"m:3",
@@ -2675,15 +2685,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//build the scrollable query.
 							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+	    					scrollableSession.setDefaultReadOnly(true);
+							
 							var cacheMode = createObject("java","org.hibernate.CacheMode");
 	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
 
+							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
+							var tx = scrollableSession.beginTransaction();
+
 	    					var query = scrollableSession.createQuery(HQL)
-	    					.setCacheMode(cacheMode.IGNORE)
-	    					.setFirstResult(getPageRecordsStart()-1)
-	    					.setMaxResults(getPageRecordsShow())
-	    					.setReadOnly(true)
-							.setFetchSize(getPageRecordsShow());
+								.setCacheMode(cacheMode.IGNORE)
+								.setFirstResult(getPageRecordsStart()-1)
+								.setMaxResults(getPageRecordsShow())
+								.setFetchSize(getPageRecordsShow());
 
 							//Add all of the params.
 							for (var param in HQLParams){
@@ -2704,9 +2718,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-							}catch(var ormError){
+							}catch(any ormError){
 								throw(ormError);
 							}finally{
+								tx.commit();//not committing anything really	
 								if (scrollableSession.isOpen()){
 									scrollableSession.close();
 								}

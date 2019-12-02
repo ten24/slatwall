@@ -94,7 +94,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
 	property name="stockHolds" singularname="stockHold" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="StockHold" inverse="true";
-	
+	property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true";
+    
 	// Related Object Properties (many-to-many)
 
 	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
@@ -180,21 +181,22 @@ property name="personalVolume" ormtype="big_decimal";
 
 
 	
-    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal";
-    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal";
-    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal";
-    property name="calculatedExtendedRetailCommission" ormtype="big_decimal";
-    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal";
-    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal";
-    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal";
-    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal";
+    property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailCommission" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedProductPackVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailValueVolume" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedPersonalVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedTaxableAmountAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedCommissionableVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     
    
- property name="lineNumber" ormtype="string";//CUSTOM PROPERTIES END
+ property name="lineNumber" ormtype="string";
+ property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}

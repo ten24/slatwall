@@ -43,17 +43,23 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 		
 		var account = arguments.order.getAccount();
-
+		
+		//snapshot the pricegroups on the order.
+		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
+            var firstPriceGroup = account.getPriceGroups()[1];
+            order.setPriceGroup(firstPriceGroup);
+        }
+        
 		if( 
 			!isNull(account.getAccountStatusType()) 
-			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
+			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
 		) {
 			
-			if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+			if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending') {
 				
 				account.setActiveFlag(true);
+				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
-				account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
 				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
@@ -65,7 +71,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				}
 				
 			} else if ( 
-				account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
+				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
 				&& arguments.order.hasMPRenewalFee()
 			) {
