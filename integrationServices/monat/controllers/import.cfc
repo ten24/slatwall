@@ -25,6 +25,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderReasons');
 	
 	// @hint helper function to return a Setting
@@ -255,7 +256,284 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return fsResponse;
 	}
 	
+	private any function getShipmentData(pageNumber,pageSize,dateFilter){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
+		var authKeyName = "authkey";
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+	    var = {hasErrors: false};
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"ProcessingDate": "#arguments.dateFilter#"
+		};
+	    
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var shipmentJson = httpService.send().getPrefix();
+		var apiData = deserializeJson(shipmentJson.fileContent);
 	
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			fsResponse['Records'] = apiData.Data.Records;
+		    return fsResponse;
+		}
+		
+		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		fsResponse.hasErrors = true;
+		
+		
+		return fsResponse;
+	}
+	
+	public void function importOrderShipments(required struct rc){ 
+        getService("HibachiTagService").cfsetting(requesttimeout="60");
+
+        var MERGE_ARRAYS = true;
+        var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var dateFilter = rc.dateFilter?:dateFormat(now(), 'YYYY-mm-dd');
+        
+        // Begin Helper functions
+
+        /**
+         *  @param {Struct} body The request body to be serialized into a API filter.
+         *  @param {String} authKey The value for the Authorization header sent to Boomi.
+         *  @return {Struct | Array} The shipments to create or update in Slatwall.
+         *  @throws Exception when the api can not be accessed.
+         * 
+         *  @example Request Body {
+         *          "ProcessingDate": "2019-01-03"
+         *          }
+         *          
+         * 
+         *  @example Response {
+         *          "Status": "success",
+         *          "Data": {
+         *            "Records": [
+         *              {
+         *                "SalesDocNumber": "7944365",
+         *                "DeliveryDocNumber": "0080552438",
+         *                "DeliveryDate": "2019-01-03",
+         *                "CarrierName": "Ground",
+         *                "TrackingNumber": "472895051621"
+         *              }]
+         *          }
+         * 
+         **/ 
+        
+        /**
+         * @param {Struct} hashmap A collection of key value pairs.
+         * @param {List<String>} keys A list of keys that reference values in the map.
+         * @return {Boolean} Returns True if the hashmap contains all the key 
+         * values in the keys list and those values are not null.
+         * False otherwise.
+         */
+        var containsAll = function(hashmap, keys){
+
+            for (var key in listToArray(keys)){
+                if (!structKeyExists(hashmap, key) || isNull(hashmap[key])){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var orderExists = function(orderNumber) {
+            return !isNull(getOrderService().getOrderByOrderNumber(orderNumber));
+        }
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var order = function(orderNumber) {
+            return getOrderService().getOrderByOrderNumber(orderNumber);
+        }
+
+        /**
+         * @param {Struct} The shipment to use to create the order delivery.
+         * @return {Boolean} Returns True if the tracking, ordernumber and 
+         * order exist. False otherwise.
+         */
+        var dataExistsToCreateDelivery = function(shipment) {
+            
+            if (containsAll(shipment, "OrderNumber,Packages") && 
+                orderExists(shipment.OrderNumber)){
+                return true;    
+            }
+            
+            return false;
+        };
+
+        /**
+         * @param {String} The name of the fulfillment type to return.
+         * @return {FulfillmentMethod} Returns the fulfillment method by name.
+         */
+        var fulfillmentMethod = function(name) {
+            return getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName(name);
+        };
+
+        /**
+         * @param {String} The name of the fulfillment method type to check.
+         * @return {FulfillmentMethod} Returns the fulfillment method by type name.
+         */
+        var isShippingMethodType = function(orderFulfillment) {
+            return orderFulfillment.getFulfillmentMethodType() == "Shipping";
+        };
+
+        /**
+         * @param {OrderFulfillment} The name of the fulfillment method type to check.
+         * @return {Array} Contains fulfillment items.
+         */
+        var getFulfillmentItems = function(orderFulfillment, orderFulfillmentItems) {
+            if (isShippingMethodType(orderFulfillment)){
+                arrayAppend( orderFulfillmentItems, orderFulfillment.getOrderFulfillmentItems(), MERGE_ARRAYS );
+            }
+            return orderFulfillmentItems;
+        };
+
+        /**
+         * @param {OrderDelivery} Creates and adds all delivery items for the order.
+         * @return {OrderDeliveryItem} Returns the newly created and save item. 
+         */
+        var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
+            var orderDeliveryItem = getOrderService().newOrderDeliveryItem();
+            orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
+            orderDeliveryItem.setOrderItem(orderFulfillmentItem.getOrderItem());
+            orderDeliveryItem.setOrderDelivery(orderDelivery);
+            getOrderService().saveOrderDeliveryItem(orderDeliveryItem);
+            return orderDeliveryItem;
+        }
+
+        /**
+         * @param {OrderDelivery} Creates and adds all SHIPPING delivery items for the 
+         * order to a single delivery.
+         * @return {Void} 
+         */
+        var createDeliveryItems = function( orderDelivery ) {
+            var order = orderDelivery.getOrder();
+            var orderFulfillments = order.getOrderFulfillments();
+
+            //gets all the fulfillment items as a single array
+            var orderFulfillmentItems = [];
+
+            // Get all items.
+            for (var orderFulfillment in orderFulfillments){
+                orderFulfillmentItems = getFulfillmentItems( orderFulfillment, 
+                    orderFulfillmentItems );
+            }
+
+            // Create all the delivery items and add them to the delivery.
+            for (var orderFulfillmentItem in orderFulfillmentItems){
+                var orderDeliveryItem = createDeliveryItem( orderDelivery,  
+                    orderFulfillmentItem);
+            }
+        };
+
+        /**
+         * @param {Order} order The order to check 
+         * @return {Boolean} Returns true is the entire order is delivered.
+         * False otherwise.
+         */
+        var orderIsDelivered = function( order ){
+
+            if (order.getQuantityUndelivered() <= 0){
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @param {Struct} Shipment A shipment (with packages) is used to build a delivery.
+         * @return {Void}
+         */
+        var createDelivery = function(shipment){
+			var order = order(shipment.OrderNumber);
+            if (dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
+                // Create the delivery.  
+                var orderDelivery = getOrderService().newOrderDelivery();
+    			orderDelivery.setOrder(order);
+    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
+    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
+    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			orderDelivery.setRemoteID( shipment.shipmentId );
+    			
+    		    //get the tracking numbers.
+    		    //get tracking information...
+    		    var concatTrackingNumber = "";
+    		    var concatScanDate = "";
+    		    var packageShipDate = "";
+    		    if (structKeyExists(shipment, "Packages")){
+    		    	 for (var packages in shipment.Packages){
+    		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
+
+    		    		if (!isNull(packages['ScanDate'])){
+    		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+    		    		}
+    		    		
+    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+    		    		}
+    		    		
+    		    		if (!isNull(shipment['PackageShipDate'])){
+    		    			packageShipDate = shipment['PackageShipDate'];
+    		    		}
+    		    	 }
+    		    }
+    		    
+    		    // all tracking on one fulfillment.
+    		    orderDelivery.setTrackingNumber(concatTrackingNumber);
+    		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
+    		    orderDelivery.setModifiedDateTime( now() );
+                orderDelivery.setShippingMethod( fulfillmentMethod( "Shipping" ) );
+                getOrderService().saveOrderDelivery( orderDelivery );
+                createDeliveryItems( orderDelivery );
+            }
+        };
+
+		// Begin Logic 
+
+        // Get the monat integration
+        
+
+        // Call the api and get shipment records for the date defined as the filter.
+        var response = getShipmentData(pageNumber, pageSize, dateFilter);
+        
+        
+        if (isNull(response)){
+        	logHibachi("Unable to get a usable response from Shipments API #now()#");
+            throw("Unable to get a usable response from Shipments API #now()#");
+        }
+
+        var shipments = response.Records?:"null";
+
+        if (shipments.equals("null")){
+        	logHibachi("Response did not contain shipments data. #now()#");
+            throw("Response did not contain shipments data.");
+        }
+
+        if (containsAll(rc, "viewResponse")){
+            writedump(shipments);abort;
+        }
+
+        // Map all the shipments -> deliveries.
+        arrayMap( shipments, createDelivery );
+
+        // Sets the default view 
+        getFW().setView("public:main.blank");
+    }
 	
 	public any function getDateFromString(date) {
 		return	createDate(
