@@ -53,30 +53,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param request data
      * return none
      **/
-     //... IN PROGRESS
-    // public void function getAvailablePaymentMethods(required any data) {
-    //     var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
-    //     if(arrayLen(paymentMethods)) {
-    //         var accountPaymentMethods = [];
-    //         var paymentMethodSmartList = getHibachiScope().getAccount().getEligibleAccountPaymentMethodsSmartList();
-    //         paymentMethodSmartList.addSelect("paymentMethodID","paymentMethodID");
-    //         paymentMethodSmartList = paymentMethodSmartList.getRecords();
-            
-    //         var paymentMethodIDs = "";
-    //         // for(paymentMethod in paymentMethodSmartList) {
-    //         //     paymentMethodIDs &= "#paymentMethod.getPaymentMethodID()#,";
-    //         // }
-    //         // writeDump(var = paymentMethodIDs);
-            
-    //         // var accountPaymentMethods = getService('AccountPaymentMethod').getAccountPaymentMethodSmartList();
-    //         // accountPaymentMethods.addFilter("active",1);
-    //         // accountPaymentMethods.addInFilter("paymentMethodID", paymentMethodIDs);
-    //         // paymentMethodCollection.setDisplayProperties('paymentMethodName|name,paymentMethodID|value');
-            
-            
-		  //  arguments.data['ajaxResponse']['availablePaymentMethods'] = paymentMethodIDs;
-    //     }
-    // }
+    public void function getAvailablePaymentMethods(required any data) {
+        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
+        if(arrayLen(paymentMethods)) {
+            var accountPaymentMethods = [];
+            accountPaymentMethods = getService("accountService").getAvailablePaymentMethods();
+		    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
+        }
+    }
     
     /**
      * Function to get all available shipping methods 
