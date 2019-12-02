@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiEntityProcessForm entity="#rc.orderImportBatch#" edit="#rc.edit#" sRedirectAction="admin:entity.editorderimportbatch">
+<hb:HibachiEntityProcessForm entity="#rc.orderImportBatch#" edit="#rc.edit#" enctype="multipart/form-data">
 	
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderImportBatch#">
 	</hb:HibachiEntityActionBar>

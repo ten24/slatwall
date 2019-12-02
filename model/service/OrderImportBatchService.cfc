@@ -48,9 +48,17 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
+	property name="HibachiDataService";
+	property name="SkuService";
+	property name="AccountService";
+	property name="TypeService";
+	
 	// ===================== START: Logical Methods ===========================
 	
 	public any function processOrderImportBatch_Create(required any orderImportBatch, required any processObject){
+		arguments.orderImportBatch.setOrderImportBatchName(arguments.processObject.getOrderImportBatchName());
+		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstNew'));
+		
 	    // If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getBatchFile()) ) {
 
@@ -61,7 +69,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Upload file to temp directory
 			var documentData = fileUpload( tempDir,'batchFile','','makeUnique' );
-			writeDump(var=documentData,top=4);abort;
 			
 			//check uploaded file if its a valid text file
 			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv"  ){
@@ -75,50 +82,128 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 			} else {	
 				
-				
-				// As long as one count item was created we should save the count and just display a message
-				if(valid) {
-					
-					// Get the assets folder from the global assets folder
-					var assetsFileFolderPath = getHibachiScope().setting('globalAssetsFileFolderPath');
-					
-					// Create the folder if it does not exist 
-					if(!directoryExists("#assetsFileFolderPath#/physicalcounts/")) {
-						directoryCreate("#assetsFileFolderPath#/physicalcounts/");
+				var importQuery = getHibachiDataService().loadQueryFromCSVFileWithColumnTypeList('#tempDir#/#documentData['serverfile']#');
+				if(importQuery.recordCount){
+					var errors = [];
+					var itemCount = 0;
+					var requiredColumns = 'accountNumber,quantity,skuCode';
+					var columns = listAppend(requiredColumns,'originalOrderNumber');
+					for(var i=1; i<=importQuery.recordCount; i++){
+						var rowError = false;
+						for(var column in columns){
+							if(listFindNoCase(requiredColumns,column) && !len(importQuery[column][i])){
+								ArrayAppend(errors,{'row#i#':'Column #column# is required'});
+								rowError=true;
+							}else if(len(importQuery[column][i])){
+								/* * * * * * * * ** * * *** * ** * * * **  * * * * ** ** *  ** * * * * ** * * * * * ** * *  * * * * *
+							NOTE: This is where the skuCode, accountNumber, quantity, originalOrderNumber variables used below are declared
+								* * * * * *** * * * * * * * * * ** ** ** ** * *** *** * ** ** * * * * * * * * * *** * ** * * * ** **/
+								local[column] = importQuery[column][i]
+							}
+						}
+						if(rowError){
+							break;
+						}
+						
+						var sku = getSkuService().getSkuBySkuCode(skuCode);
+						if(isNull(sku)){
+							ArrayAppend(errors,{'row#i#':'Sku could not be found.'});
+							rowError = true;
+						}
+						
+						var account = getAccountService().getAccountByAccountNumber(accountNumber);
+						if(isNull(account)){
+							ArrayAppend(errors,{'row#i#':'Account could not be found.'});
+							rowError = true;
+						}
+						if(!isNumeric(quantity)){
+							ArrayAppend(errors,{'row#i#':'Quantity must be a number.'});
+							rowError = true;
+						}
+						if(rowError){
+							break;
+						}
+						
+						var orderImportBatchItem = this.newOrderImportBatchItem();
+						orderImportBatchItem.setOrderImportBatch(arguments.orderImportBatch);
+						orderImportBatchItem.setSkuCode(skuCode);
+						orderImportBatchItem.setSku(sku);
+						
+						orderImportBatchItem.setAccountNumber(accountNumber);
+						orderImportBatchItem.setAccount(account);
+						
+						orderImportBatchItem.setQuantity(quantity);
+						
+						if(!isNull(originalOrderNumber)){
+							var originalOrder = getOrderService().getOrderByOrderNumber(originalOrderNumber);
+							if(!isNull(originalOrder)){
+								orderImportBatchItem.setOriginalOrder(originalOrder);
+								orderImportBatchItem.setOriginalOrderNumber(originalOrderNumber);
+							}
+						}
+						
+						if(orderImportBatchItem.hasOriginalOrder()){
+							var shippingAddress = getShippingAddressFromOrder(orderImportBatchItem.getOriginalOrder());
+						}else{
+							var shippingAddress = getShippingAddressFromAccount(account);
+						}
+						if(structKeyExists(local,'shippingAddress')){
+							orderImportBatchItem.populateShippingFieldsFromShippingAddress(shippingAddress);
+						}
+						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistNew'));
+						this.saveOrderImportBatchItem(orderImportBatchItem);
+						if(!orderImportBatchItem.hasErrors()){
+							itemCount++;
+						}else{
+							arguments.orderImportBatch.addErrors(orderImportBatchItem.getErrors());
+						}
 					}
-					
-					// Move a copy of the file from the temp directory to /custom/assets/files/physicalcounts/{physicalCount.getPhysicalCountID()}.txt
-					filemove( "#tempDir##fileName#", "#assetsFileFolderPath#/physicalcounts/#physicalCount.getPhysicalCountID()#.txt" );
-					
-					// Add info for how many were matched
-					arguments.physical.addMessage('validInfo', getHibachiScope().rbKey('validate.processOrderImportBatch_Create.validInfo', {valid=valid}));
-					
-					// Add message for non-processed rows
-					if(rowError) {
-						arguments.physical.addMessage('rowErrorWarning', getHibachiScope().rbKey('validate.processOrderImportBatch_Create.rowErrorWarning', {rowError=rowError}));	
+					if(!arguments.orderImportBatch.hasErrors()){
+						arguments.orderImportBatch.setItemCount(itemCount);
+						this.saveOrderImportBatch(arguments.orderImportBatch);
+						if(arrayLen(errors)){
+							arguments.orderImportBatch.addErrors(errors,true);
+						}
 					}
-					
-					// Add message for not found sku codes
-					if(skuCodeError) {
-						arguments.physical.addMessage('skuCodeErrorWarning', getHibachiScope().rbKey('validate.processOrderImportBatch_Create.skuCodeErrorWarning', {skuCodeError=skuCodeError}));
-					}
-		
 				// If there were no rows imported then we can add the error message to the processObject
 				} else {
 					// Make sure that nothing is persisted
 					getHibachiScope().setORMHasErrors( true );
-					
-					// Add the count file error to the process object
 					arguments.processObject.addError('batchFile', getHibachiScope().rbKey('validate.processOrderImportBatch_Create.batchFile'));
 					
-				}// end check for valid count
-				
-			} // end check for valid text file
+				}
+			}
 			
-		}// end check for a valid file name		
+		}else{
+			getHibachiScope().setORMHasErrors( true );
+			arguments.processObject.addError('batchFile',getHibachiScope().rbKey('validate.processOrderImportBatch_Create.batchFile'))
+		}
 		
 		// Return the physical that came in from the arguments scope
 		return arguments.orderImportBatch;
+	}
+	
+	private any function getShippingAddressFromOrder(required any order){
+		var orderFulfillments = arguments.order.getOrderFulfillments();
+		for(var orderFulfillment in orderFulfillments){
+			if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'shipping' && !isNull(orderFulfillment.getShippingAddress())){
+				return orderFulfillment.getShippingAddress();
+			}	
+		}
+	}
+	
+	private any function getShippingAddressFromAccount(required any account){
+		if(arguments.account.hasPrimaryAddress()){
+			return arguments.account.getPrimaryAddress().getAddress();
+		}
+		
+		var orderSmartList = arguments.account.getOrdersSmartList();
+		orderSmartList.setPageRecordsShow(1);
+		orderSmartList.addOrder('orderCloseDateTime DESC');
+		var result = orderSmartList.getPageRecords();
+		if(arrayLen(result)){
+			return getShippingAddressFromOrder(result[1]);
+		}
 	}
 	
 	// =====================  END: Logical Methods ============================

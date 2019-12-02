@@ -55,5 +55,4 @@ component output="false" accessors="true" extends="HibachiProcess" {
     property name="orderImportBatchName" type="string";
 	property name="batchFile" hb_formFieldType="file";
 	
-	
 }

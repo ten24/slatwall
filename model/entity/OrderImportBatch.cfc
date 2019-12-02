@@ -3,6 +3,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
     property name="orderImportBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="orderImportBatchName" ormtype="string";
     property name="itemCount" ormtype="integer";
+    property name="placedOrdersCount" ormtype="integer";
     // Related Object Properties (one-to-many)
     property name="orderImportBatchItems" cfc="orderImportBatchItem" singularname="orderImportBatchItem" fieldtype="one-to-many" fkcolumn="orderImportBatchID" cascade="all-delete-orphan" inverse="true";
 
@@ -17,5 +18,11 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 
 	public string function getSimpleRepresentationPropertyName(){
 	    return 'orderImportBatchName';
+	}
+	
+	public void function addOrderImportBatchItem(required any orderImportBatchItem){
+	    if(arguments.orderImportBatchItem.getNewFlag() || !arrayFind(getOrderImportBatchItems(),arguments.orderImportBatchItem)){
+	        arrayAppend(getOrderImportBatchItems(),arguments.orderImportBatchItem);
+	    }
 	}
 } 

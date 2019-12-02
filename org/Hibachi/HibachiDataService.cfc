@@ -7,7 +7,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
 
-	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string columnTypeList, boolean useHeaderRow=true, string columnsList){
+	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, string columnTypeList='', boolean useHeaderRow=true, string columnsList){
 		var csvFile = FileOpen(pathToCSV);
 		var i = 1;
 		while(!FileisEOF(csvFile)){ 
@@ -22,6 +22,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
 				var numberOfColumns = listlen(line, ',', true); 
+				if(!len(arguments.columnTypeList)){
+					for(var i=1; i<=numberOfColumns; i++){
+						arguments.columnTypeList = listAppend(arguments.columnTypeList,'varchar');
+					}
+				}
 			} else {
 				var row = [];
 				if(line[1] == '"'){
