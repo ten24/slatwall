@@ -166,7 +166,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
-		
+		this.logHibachi('runWorkflowsByScheduleTrigger');	
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -175,6 +175,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+			this.logHibachi('workflow not yet scheduled WTI: #arguments.workflowTrigger.getWorkflowTriggerID()#',true);
 			return arguments.workflowTrigger;
 		}
 			//Change WorkflowTrigger runningFlag to TRUE
@@ -342,6 +343,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
 	
+		this.logHibachi('workflowTaskAction: #workflowTaskAction.getActionType()#');
+
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
@@ -411,18 +414,19 @@ component extends="HibachiService" accessors="true" output="false" {
 				//we need some form of collection data for this to work	
 				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
 					actionSuccess = false; 
+					this.logHibachi('workflowtaskaction doesnt have enough collection info to processByQUEUE');	
 					break;
 				}
 
 				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
-				if(!isNull(processEntityQueueFlagPropertyNam)){
+				if(!isNull(processEntityQueueFlagPropertyName)){
 
 					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName)){
 						actionSuccess = false; 
 						break;
 					}	
 
-					var entityCollection = arguments.entity.getEntityCollection();
+					var entityCollection = arguments.entity.getEntityCollectionList();
 					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
 					
 					var updateData = {
@@ -499,8 +503,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(
 				workflowTask.getActiveFlag() 
 				&& (
-					!structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
+					structKeyExists(arguments.data,'entity')
+					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
 				)
 			){
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
@@ -524,9 +528,13 @@ component extends="HibachiService" accessors="true" output="false" {
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
 							}
-        			}
+        			} else {
+						this.logHibachi('not executing #workflowTaskAction.getWorkflowTaskActionID()#',true);
+					}
 				}
-			}
+			} else {
+				this.logHibachi('not executing #workflowTask.getWorkflowTaskID()# - #structKeyExists(arguments.data,'entity')# vs #entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())#',true);
+			} 
 		}
 		if(structKeyExists(arguments.data,'entity')){
 			return arguments.data.entity;
