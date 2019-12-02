@@ -53,10 +53,7 @@ Notes:
 
 <cfoutput>
 
-<!---  uncomment the code remove create button becouse we don't need this  --->
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
 	<cfset eventRegistrationCollectionList = getHibachiScope().getService('eventRegistrationService').geteventRegistrationCollectionList()>
