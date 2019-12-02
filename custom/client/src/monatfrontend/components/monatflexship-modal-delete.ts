@@ -5,7 +5,8 @@ class MonatFlexshipDeleteController {
 	public close; // injected from angularModalService
 	
 	//@ngInject
-    constructor(public orderTemplateService) {
+    constructor(public orderTemplateService, public observerService) {
+    	this.observerService.attach(this.closeModal,"deleteOrderTemplateSuccess");
     }
     
     public deleteOrderTemplateItem = () => {

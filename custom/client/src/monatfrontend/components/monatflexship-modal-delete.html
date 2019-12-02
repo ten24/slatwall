@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="dialog" id="flexship-modal-delete-{{monatFlexshipDeleteModal.orderTemplateID}}">
+<div class="modal using-modal-service" tabindex="-1" role="dialog" id="flexship-modal-delete-{{monatFlexshipDeleteModal.orderTemplateID}}">
     <div class="modal-dialog" role="document">
         <div class="modal-content pt-0 px-2 pb-2">
             <div class="modal-header">
@@ -13,6 +13,7 @@
             <div class="modal-footer row align-items-center justify-content-center border-0">
                 <div class="d-block w-100">
                     <button
+                        ng-class="{loading: monatFlexshipDeleteModal.loading}"
                         type="button"
                         class="btn btn-block bg-primary"
                         ng-click="monatFlexshipDeleteModal.deleteOrderTemplateItem()"

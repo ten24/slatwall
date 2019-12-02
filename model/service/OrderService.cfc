@@ -5001,6 +5001,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Delete Overrides ==========================
 
 	public any function deleteOrderTemplate( required any orderTemplate ) {
+		var flexshipType = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
+		
+		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipType){
+			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
+			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		}
+		
 		return delete( arguments.orderTemplate );
 	}
 	
