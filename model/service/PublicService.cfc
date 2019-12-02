@@ -1196,6 +1196,7 @@ component  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
+        getHibachiScope().flushORMSession(); //flushing for can place order check
         return cart;
     }
     
@@ -1859,7 +1860,12 @@ component  accessors="true" output="false"
      		}
      		
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
         }
  	}   
  	
