@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,13 +39,15 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
+    
+    Braintree Docs : https://graphql.braintreepayments.com/
 */
 
 component accessors="true" output="false" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
-	
+
 	variables.sandboxURL = "https://payments.sandbox.braintree-api.com/graphql";
 	variables.productionURL = "https://payments.braintree-api.com/graphql";
-	
+
 	/**
 	 * Method to set payment method type
 	 * @params - none
@@ -57,7 +56,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	public string function getPaymentMethodTypes() {
 		return "external";
 	}
-	
+
 	// Override allow site settings
 	public any function setting(required any requestBean) {
 		// Allows settings to be requested in the context of the site where the order was created
@@ -66,10 +65,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
 			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
 		}
-		
+
 		return super.setting(argumentCollection=arguments);
 	}
-	
+
 	/**
 	 * Method to set API Header for HTTP call
 	 * @params - object paymentMethod
@@ -92,24 +91,24 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #server_token#");
 		httpRequest.addParam(type="header", name="Braintree-Version", value="2019-01-01");
 		httpRequest.setMethod("POST");
-		
+
 		return httpRequest;
 	}
-	
-	
+
+
 	/**
 	 * Process external
 	 **/
 	public any function processExternal( required any requestBean ){
 		// Execute request
 		var responseBean = getTransient('ExternalTransactionResponseBean');
-		
+
 		// Set default currency
-		// if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
-		// 	arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
-		// }
-		
-		switch(arguments.requestBean.getTransactionType()){
+		 if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
+		 	arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
+		 }
+
+		switch(arguments.requestBean.getTransactionType()) {
 			case 'authorize':
 				sendRequestToAuthorize(arguments.requestBean, responseBean);
 				break;
@@ -132,151 +131,156 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			default:
 				responseBean.addError("Processing error", "This Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
-		
+
 		return responseBean;
 	}
-	
-	private any function authorizeAccount(required any requestBean, required any responseBean)
-	{
-		var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);//arguments.paymentMethod.getIntegration().setting('braintreeAccountMerchantID');
-		
+    
+    /**
+	 * Method to authorize client account
+	 * @params - requestBean
+	 * @params - responseBean
+	 * @return : none
+	 **/
+	private any function authorizeAccount(required any requestBean, required any responseBean) {
+		var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);
+
 		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
 		var payload = { "query" : "mutation ClientToken($input: CreateClientTokenInput) { createClientToken(input: $input) { clientToken } }",
 			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
-		
+
 		var response = httpRequest.send().getPrefix();
-		
-		if (IsJSON(response.FileContent))
-		{
-			var fileContent = DeserializeJSON(response.FileContent);
-			if (structKeyExists(fileContent, 'errors')){
+
+		if (!IsJSON(response.FileContent)) {
+		    arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
+		}
+		else{
+		    var fileContent = DeserializeJSON(response.FileContent);
+			if (structKeyExists(fileContent, 'errors')) {
 				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
 			}
 			else{
 				arguments.responseBean.setAuthorizationCode(fileContent.data.createClientToken.clientToken);
 			}
 		}
-		else{
-			arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
-		}
 	}
-	
+
 	/**
 	 * Method to set client side external HTML
-	 * @params - object paymentMethod
-	 * @return : HTML (success)
-	 * @return : empty string (fail) - Slatwall Log
+	 * @params - requestBean
+	 * @params - responseBean
+	 * @return : HTML (on success)
 	 **/
-	private string function getExternalPaymentHTML( required any requestBean, required any responseBean ) {
+	private any function getExternalPaymentHTML( required any requestBean, required any responseBean ) {
 		authorizeAccount(arguments.requestBean, arguments.responseBean);
-		
-		if(arguments.responseBean.hasErrors()){
+
+		if(arguments.responseBean.hasErrors()) {
 			return;
 		}
-		
+
 		if (isNull(arguments.responseBean.getAuthorizationCode()) || !len(arguments.responseBean.getAuthorizationCode())) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review Authorization Code.");
 			return;
 		}
-		
-		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode()) || isNull(arguments.requestBean.getTransactionAmount()) ||!len(arguments.requestBean.getTransactionAmount())  ) {
+
+		if ( isNull(arguments.requestBean.getTransactionCurrencyCode()) 
+		    || !len(arguments.requestBean.getTransactionCurrencyCode()) 
+		        || isNull(arguments.requestBean.getTransactionAmount()) 
+		            ||!len(arguments.requestBean.getTransactionAmount()) ) {
 			arguments.responseBean.addError("Processing error", "Error in processing Transaction. please check transction request.");
 			return;
 		}
-		
+
 		var returnHTML = "";
 		var clientAuthToken = arguments.responseBean.getAuthorizationCode();
 		var currency = arguments.requestBean.getTransactionCurrencyCode();
 		var transactionAmount = LSParseNumber(arguments.requestBean.getTransactionAmount());
-		
+
 		if( setting(settingName='braintreeAccountSandboxFlag', requestBean=arguments.requestBean)) {
 			var clientPaymentMode="sandbox";
 		} else {
 			var clientPaymentMode="production";
 		}
-		
+
 		savecontent variable="returnHTML" {
 			include "views/main/externalpayment.cfm";
 		};
-		
+
 		return returnHTML;
 	}
-	
+
 	/**
 	 * Method to authenticate payment token
-	 * @params : paymentMethod
-	 * @params : string token
+	 * @params - requestBean
+	 * @params - responseBean
 	 * @return : custom Object
 	 **/
 	public any function authorizePayment( required any requestBean, required any responseBean)
 	{
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
-		
+
 		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
-		
+
 		var payload = { "query" : "mutation VaultWithTypeFragment($input: VaultPaymentMethodInput!) { vaultPaymentMethod(input: $input) {paymentMethod { id usage details {__typename}}verification {status} } }",
 			"variables" : { "input": { "paymentMethodId": "#arguments.requestBean.getProviderToken()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
-		if (IsJSON(response.FileContent))
-		{
+		if ( !IsJSON(response.FileContent) ) {
+		    arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
+		}
+		else{
 			var fileContent = DeserializeJSON(response.FileContent);
-			if (structKeyExists(fileContent, 'errors'))
+			if (structKeyExists(fileContent, 'errors')) {
 				arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
 			}
 			else{
 				arguments.responseBean.setProviderToken(fileContent.data.vaultPaymentMethod.paymentMethod.id);
 			}
 		}
-		else{
-			arguments.responseBean.addError("Processing error", "Error attempting to authorize.");
-		}
 	}
-	
+
 	/**
 	 * Method to charge Braintree Account / Create Transaction
-	 * @params : paymentMethod
-	 * @params : order object
-	 * @return : custom object
+	 * @params - requestBean
+	 * @params - responseBean
+	 * @return : none
 	 **/
 	public any function createTransaction(required any requestBean, required any responseBean)
 	{
 		if(arguments.responseBean.hasErrors()){
 			return;
 		}
-		
+
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
-		
+
 		var responseData = {};
 		//Create Transaction
 		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
-		var item_payload = {};
+		var item_payload = [];
 		var discount = 0;
-		
+
 		//Populate line order items
-		for( var i=1; i <= arrayLen(arguments.requestBean.getOrder().getOrderItems()); ++i){
+		for( var i=1; i <= arrayLen(arguments.requestBean.getOrder().getOrderItems()); ++i) {
 			var orderItem = arguments.requestBean.getOrder().getOrderItems()[i];
 			//don't run this logic for child order items.
-			if (isNull(orderItem.getParentOrderItem())){
-				
+			if (isNull(orderItem.getParentOrderItem())) {
+
 				//if this is a product bundle orderitem, send the product bundle price
-				if(!isNull(orderItem.getChildOrderItems()) && arrayLen(orderItem.getChildOrderItems())){
+				if(!isNull(orderItem.getChildOrderItems()) && arrayLen(orderItem.getChildOrderItems())) {
 					var unitAmount = orderItem.getProductBundlePrice();
 				//send the regular orderitem price.
 				} else {
 					var unitAmount = orderItem.getPrice();
 				}
-				
+
 				 item_payload.append({
 					'name' : '#orderItem.getSku().getProduct().getTitle()#',
 					'kind' : 'DEBIT',
@@ -285,33 +289,33 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 					'productCode' : '#orderItem.getSku().getSkuCode()#',
 					"totalAmount" : "#(orderItem.getQuantity() * unitAmount)#"
 				});
-				
+
 			}
 		}
-		
+
 		// define discount
-		if(arguments.requestBean.getOrder().getDiscountTotal() > 0){
+		if(arguments.requestBean.getOrder().getDiscountTotal() > 0) {
 			discount += arguments.requestBean.getOrder().getOrderAndItemDiscountAmountTotal();
 		}
 
 		var itemSubTotal = arguments.requestBean.getOrder().getSubTotalAfterItemDiscounts();
-		if(arguments.requestBean.getOrder().getOrderDiscountAmountTotal() > 0){
+		if(arguments.requestBean.getOrder().getOrderDiscountAmountTotal() > 0) {
 			itemSubTotal -= arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
 		}
 
 		var total = arguments.requestBean.getOrder().getTotal(); 
-		
-		if(arguments.requestBean.getOrder().hasGiftCardOrderPaymentAmount()){
+
+		if(arguments.requestBean.getOrder().hasGiftCardOrderPaymentAmount()) {
 			discount += arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
 			itemSubTotal -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
 			total -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount(); 
 		}	
-		
+
 		var client_token = arguments.requestBean.getProviderToken();
-		
+
 		//Formatting total to be 2 decimal places
 		total = NumberFormat(total, "0.00");
-		
+
 		//request payload
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
@@ -323,12 +327,14 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				'lineItems' : item_payload,
 			} } }
 		};
-		
+
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
-		
-		if (IsJSON(response.FileContent))
-		{
+
+		if ( !IsJSON(response.FileContent)) {
+		    responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
+		}
+		else {
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (
 				structKeyExists(fileContent, 'data') && 
@@ -336,45 +342,46 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				structKeyExists(fileContent.data.chargePaymentMethod, 'transaction') && 
 				structKeyExists(fileContent.data.chargePaymentMethod.transaction, 'status') 
 				&& fileContent.data.chargePaymentMethod.transaction.status == "SETTLING"
-				)
-			{
-				
+				) {
+
 				arguments.responseBean.setProviderTransactionID(fileContent.data.chargePaymentMethod.transaction.id);
 				arguments.responseBean.setAmountAuthorized(total);
 				arguments.responseBean.setAmountReceived(total);
 			}
 			else{
-				responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(fileContent)# ");
+				responseBean.addError("Processing error", "Not able to process this request.");
+				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(fileContent)# ");
 			}
 		}
-		else{
-			responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
-		}
-		
-		return responseData;
 	}
-	
+
 	/**
 	 * Method to refund Transaction
-	 * @params : paymentMethod
-	 * @params : order object
-	 * @return : custom object
+	 * @params - requestBean
+	 * @params - responseBean
+	 * @return : none
 	 **/
-	public any function refundTransaction(required any paymentMethod, required string transactionId )
-	{
+	public any function refundTransaction(required any requestBean, required any responseBean) {
+		if(arguments.responseBean.hasErrors()) {
+			return;
+		}
+	    
 		var responseData = {};
-		
+
 		var httpRequest = getApiHeader(paymentMethod = arguments.paymentMethod);
-		
-		
+
 		var payload = { "query" : "mutation RefundTransaction($input: RefundTransactionInput!) { refundTransaction(input: $input) { refund { id amount { value } orderId status refundedTransaction { id amount { value } orderId status } } } }",
-			"variables" : {"input" : { "transactionId" : "#arguments.transactionId#" } }, };
-		
+			"variables" : {"input" : { "transactionId" : "#arguments.requestBean.getTransactionID()#" } }, };
+
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
-		
-		if (IsJSON(response.FileContent))
-		{
+
+		if ( !IsJSON(response.FileContent) ) {
+		    
+		    responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
+		    
+		} else {
+		    
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (
 				structKeyExists(fileContent, 'data') && 
@@ -382,19 +389,17 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				structKeyExists(fileContent.data.refundTransaction, 'refund') && 
 				structKeyExists(fileContent.data.refundTransaction.refund, 'status') 
 				&& fileContent.data.refundTransaction.refund.status == "SETTLING"
-				)
-			{
-				responseData['status'] = "success";
-				responseData['transactionID'] = fileContent.data.refundTransaction.refund.id;
-				responseData['amount'] = fileContent.data.refundTransaction.refund.amount;
+				) {
+					
+				var amount = fileContent.data.refundTransaction.refund.amount;
+				arguments.responseBean.setProviderTransactionID(fileContent.data.refundTransaction.refund.id);
+				arguments.responseBean.setAmountAuthorized(amount);
+				arguments.responseBean.setAmountReceived(amount);
 			}
 			else{
-				responseData['status'] = "failure";
-				responseData['ERROR'] = fileContent;
+				responseBean.addError("Processing error", "Not able to process this request.");
 			}
 		}
-		
-		return responseData;
 	}
-	
-}
+
+} 

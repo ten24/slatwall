@@ -194,7 +194,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 
-		// Credit Card & Gift Card
+		// Credit Card, External & Gift Card
 		if(listFindNoCase("creditCard,giftCard,external", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.accountPaymentMethod.getProviderToken() );
 		}

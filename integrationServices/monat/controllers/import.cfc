@@ -23,6 +23,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -116,6 +117,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return ordersResponse;
 	}
 	
+	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+		
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": "2019-11-01T19:16:28.693Z",
+			    "EndDate": "2019-11-26T19:16:28.693Z"
+			}
+		};
+		
+		/**
+		 * 
+		 * Filter example
+		 * "Filters": {
+		 *	"StartDate": "2019-11-20T19:16:28.693Z",
+		 *	"EndDate": "2019-11-20T19:16:28.693Z"
+		 * }
+		 *	 
+		 **/
+	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var accountJson = httpService.send().getPrefix();
+		
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			writeDump("Could not import accounts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+		
+		return accountsResponse;
+	}
+	
+	
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
@@ -150,6 +195,231 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		
 		return fsResponse;
+	}
+	
+	
+	public void function importDailyAccountUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		/*
+		"Filters": {
+		    "StartDate": "2019-10-01T19:16:28.693Z",
+		    "EndDate": "2019-10-20T19:16:28.693Z"
+		  },
+		*/
+		
+		while (pageNumber < pageMax){
+			
+    		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+    		if (accountsResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var accounts = accountsResponse.Data.Records;
+    		var index=0;
+    		
+    		
+    		/**
+    		 *  {
+			      "AccountNumber": "string",
+			      "AccountStatusCode": "string",
+			      "SponsorNumber": "string",
+			      "EnrollerNumber": "string",
+			      "AccountTypeCode": "string",
+			      "EntryDate": "2019-11-20T19:16:28.725Z",
+			      "EntryPeriod": "string",
+			      "FlagAccountTypeCode": "string",
+			      "GovernmentNumber": "string",
+			      "CareerTitleCode": "string"
+			    }
+    		 **/
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var account in accounts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			var foundAccount = getAccountService().getAccountByAccountNumber( account['AccountNumber'] );
+        			
+        			if (isNull(foundAccount)){
+        				pageNumber++;
+        				echo("Could not find this account to update: Account number #account['AccountNumber']#");
+        				continue;
+        			}
+        			
+                    //Account Status Code
+                    if (!isNull(account['AccountStatusCode']) && len(account['AccountStatusCode'])){
+                    	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
+                    }
+                    
+                    //Entry Date
+                    //This should be POST date
+                    /*if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
+                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); 
+                    }*/
+                    
+                    // SponsorNumber
+                    
+                    if (!isNull(account['AccountNumber']) && 
+                    	!isNull(account['SponsorNumber']) && 
+                    	len(account['AccountNumber']) && 
+                    	len(account['SponsorNumber']) && 
+                    	account['AccountNumber'] != account['SponsorNumber'] &&
+                    	foundAccount.getSponsorIDNumber() != account['SponsorNumber']){
+                    	var notUnique = false;
+                    	
+                    	try{
+                    		var newSponsorAccount = getService("AccountService")
+                    			.getAccountByAccountNumber(account['SponsorNumber']);
+                    		var childAccount = foundAccount;
+                    		var sponsorAccount =foundAccount.getOwnerAccount();
+                    	}catch(nonUniqueResultException){
+                    		//not unique
+                    		notUnique = true;
+                    	}
+                    	
+                    	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
+                    		var newAccountRelationship = getService("AccountService")
+                    			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
+                    		
+                    		var isNewAccountRelationship = false;
+                    		if (isNull(newAccountRelationship)){
+                    			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+                    			isNewAccountRelationship = true;
+                    		}
+                    		
+	                    	newAccountRelationship.setParentAccount(newSponsorAccount);
+	                    	newAccountRelationship.setChildAccount(childAccount);
+	                    	newAccountRelationship.setActiveFlag( true );
+	                    	newAccountRelationship.setCreatedDateTime( now() );
+	                    	newAccountRelationship.setModifiedDateTime( now() );
+	                    	
+	                    	//insert the relationship
+	                    	
+	                    	if (isNewAccountRelationship){
+	                    		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}else{
+	                    		
+	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
+	                    	}
+	                    	
+	                    	foundAccount.setOwnerAccount(sponsorAccount);
+                    	}
+                    }
+                    
+                    // EnrollerNumber (Note: What is this mapping to?) This is the same as sponsor number.
+                    /*if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
+                    	foundAccount.setAccountNumber( account['EnrollerNumber']?:"" );//this shouldn't change if its account number...
+                    }*/
+                    
+                    //Account Type
+                    if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
+                    	//set the accountType from this. Needs to be name or I need to map it.
+                    	/*
+                    	Monat
+                    	D - Market Partner
+						P - VIP
+						C - Retail Customer
+						E - Employee
+						
+						Slatwall versions:
+						 business       
+						 customer       
+						 Employee       
+						 individual     
+						 marketPartner  
+						 retail         
+						 Unassigned     
+						 vip  
+                    	*/
+                    	if (account['AccountTypeCode'] == "D"){ 
+                    		foundAccount.setAccountType( "marketPartner" );
+                    	}else if(account['AccountTypeCode'] == "P"){
+                    		foundAccount.setAccountType( "vip" );
+                    	}else if(account['AccountTypeCode'] == "C"){
+                    		foundAccount.setAccountType( "retail" );
+                    	}else if(account['AccountTypeCode'] == "E"){
+                    		foundAccount.setAccountType( "Employee" );
+                    	}
+                    	
+                    }
+                    
+                    //EntryPeriod (What is this mapping to)
+                    if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
+                    	//foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
+                    }
+                    
+                    //FlagAccountTypeCode (C,L,M,O,R)
+                    if (!isNull(account['FlagAccountTypeCode']) && len(account['FlagAccountTypeCode'])){
+                    	//set the accountType from this. Needs to be name or I need to map it.
+                    	foundAccount.setComplianceStatus( account['FlagAccountTypeCode']?:"" );
+                    }
+                    
+                    // GovernmentNumber (We will also need government type code?)
+                    // Will this be plain text? Lookup by the government number.
+                    // We will need the encrypted number sent as well. And, some other information.
+                    // Commenting this out until we have those things.
+                    /*if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
+                    	
+                    	//Find or create a government id and set the number.
+                    	if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode")){
+	                    	// lookup the id
+	                    	var isNewGovernementNumber = false;
+	                    	try{
+	                    		var accountGovernmentID = getAccountService().getAccountGovernmentIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovernmentTypeCode']?:"",2:account['GovernmentNumber']});
+	                    	} catch(governmentLookupError){
+	                    		isNewGovernmentNumber = true;
+	                    	}
+	                    	
+	                    	//create a new one.
+	                    	if (isNewGovernementNumber){
+	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+	                    	}
+		                    accountGovernmentID.setAccount(foundAccount);
+		                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']?:"");//*
+		                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
+		                    
+		                    //insert the relationship
+		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
+                    	}
+                    }*/
+                    
+                    //CareerTitleCode
+                    foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
+                    
+                    ormStatelessSession.update("SlatwallAccount", foundAccount);
+
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Updated Accounts) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
 	}
 	
 	public any function getDateFromString(date) {
@@ -2702,57 +2972,140 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private array function getSkuPriceDataFlattened(required any skuPriceData, required struct skuData){ 
 		var skuPrices = [];
 		var sku = arguments.skuData;
+		var skuPriceData = arguments.skuPriceData;
 
-		ArrayEach(arguments.skuPriceData, function(item){
-			var skuPrice = {};
-			var itemData = arguments.item;
-			skuPrice["ItemCode"] = sku.ItemCode;
+		if(ArrayLen(sku['KitLines'])){
+			var currentCountryCode = "";
+			var previousCountryCode = "";
+			var index = 0;
 
-			StructEach(itemData, function(key, value){
-				
-				switch(arguments.key){
-					case 'CommissionableVolume':
-						skuPrice['CommissionableVolume'] = arguments.value;
+
+			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				switch (arguments.item['CountryCode']){	
+					case 'CAN':
+						currentCountryCode = 'CAD';
 						break;
-					case 'QualifyingVolume':
-						skuPrice['QualifyingPrice'] = arguments.value;
+					case 'GBR':
+						currentCountryCode = 'GBP';
 						break;
-					case 'RetailProfit':
-						skuPrice['RetailsCommissions'] = arguments.value;
-						break;
-					case 'RetailVolume':
-						skuPrice['RetailValueVolume'] = arguments.value;
-						break;
-					case 'SellingPrice':
-						skuPrice['SellingPrice'] = arguments.value;
-						break;
-					case 'TaxablePrice':
-						skuPrice['TaxablePrice'] = arguments.value;
-						break;
-					case 'ProductPackVolume':
-						skuPrice['ProductPackBonus'] = arguments.value;
-						break;
-					case 'PriceLevelCode':
-						skuPrice['PriceLevel'] = arguments.value;
-						break;
-					case 'CountryCode':
-						switch (arguments.value){	
-							case 'CAN':
-								skuPrice['CountryCode'] = 'CAD';
-								break;
-							case 'GBR':
-								skuPrice['CountryCode'] = 'GBP';
-								break;
-							case 'USA':
-								skuPrice['CountryCode'] = 'USD';
-								break;
-						}
+					case 'USA':
+						currentCountryCode = 'USD';
 						break;
 				}
+
+				if(currentCountryCode != previousCountryCode){
+					
+					ArrayEach(skuPriceData, function(item){
+						var skuPrice = {};
+						var itemData = arguments.item;
+						skuPrice["ItemCode"] = sku.ItemCode & currentCountryCode;
+
+						StructEach(itemData, function(key, value){
+							
+							switch(arguments.key){
+								case 'CommissionableVolume':
+									skuPrice['Commission'] = arguments.value;
+									break;
+								case 'QualifyingVolume':
+									skuPrice['QualifyingPrice'] = arguments.value;
+									break;
+								case 'RetailProfit':
+									skuPrice['RetailsCommissions'] = arguments.value;
+									break;
+								case 'RetailVolume':
+									skuPrice['RetailValueVolume'] = arguments.value;
+									break;
+								case 'SellingPrice':
+									skuPrice['SellingPrice'] = arguments.value;
+									break;
+								case 'TaxablePrice':
+									skuPrice['TaxablePrice'] = arguments.value;
+									break;
+								case 'ProductPackVolume':
+									skuPrice['ProductPackBonus'] = arguments.value;
+									break;
+								case 'PriceLevelCode':
+									skuPrice['PriceLevel'] = arguments.value;
+									break;
+								case 'CountryCode':
+									switch (arguments.value){	
+										case 'CAN':
+											skuPrice['CountryCode'] = 'CAD';
+											break;
+										case 'GBR':
+											skuPrice['CountryCode'] = 'GBP';
+											break;
+										case 'USA':
+											skuPrice['CountryCode'] = 'USD';
+											break;
+									}
+									break;
+							}
+						}, true, 10);
+						
+						ArrayAppend(skuPrices, skuPrice);
+					}, true, 10);
+				}
+
+				previousCountryCode = currentCountryCode;
+			});
+
+		} else {
+			ArrayEach(skuPriceData, function(item){
+				var skuPrice = {};
+				var itemData = arguments.item;
+				skuPrice["ItemCode"] = sku.ItemCode;
+
+				StructEach(itemData, function(key, value){
+					
+					switch(arguments.key){
+						case 'CommissionableVolume':
+							skuPrice['Commission'] = arguments.value;
+							break;
+						case 'QualifyingVolume':
+							skuPrice['QualifyingPrice'] = arguments.value;
+							break;
+						case 'RetailProfit':
+							skuPrice['RetailsCommissions'] = arguments.value;
+							break;
+						case 'RetailVolume':
+							skuPrice['RetailValueVolume'] = arguments.value;
+							break;
+						case 'SellingPrice':
+							skuPrice['SellingPrice'] = arguments.value;
+							break;
+						case 'TaxablePrice':
+							skuPrice['TaxablePrice'] = arguments.value;
+							break;
+						case 'ProductPackVolume':
+							skuPrice['ProductPackBonus'] = arguments.value;
+							break;
+						case 'PriceLevelCode':
+							skuPrice['PriceLevel'] = arguments.value;
+							break;
+						case 'CountryCode':
+							switch (arguments.value){	
+								case 'CAN':
+									skuPrice['CountryCode'] = 'CAD';
+									break;
+								case 'GBR':
+									skuPrice['CountryCode'] = 'GBP';
+									break;
+								case 'USA':
+									skuPrice['CountryCode'] = 'USD';
+									break;
+							}
+							break;
+					}
+				}, true, 10);
+				
+				ArrayAppend(skuPrices, skuPrice);
 			}, true, 10);
-			
-			ArrayAppend(skuPrices, skuPrice);
-		}, true, 10);
+		}
+
+
+		
 		
 		return skuPrices;
 	}
@@ -2764,17 +3117,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
-			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
-										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-										
-				return hasDefaultSkuPrice; 
-			},true, 10);
-
-			if(ArrayLen(defaultSkuPrice)){
-				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-			}
 		}
 
 		StructEach(arguments.skuData, function(key, value){
@@ -2786,12 +3128,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			switch(skuField){
 				case 'ItemCode':
 					data['SKUItemCode'] = Trim(fieldValue);
+					data['PRODUCTItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
 					data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
-				case 'DisableOnRegularOrders':
+				case 'ItemNote':
+					data['ItemNote'] = Trim(fieldValue);
+					break;
+				case 'SalesCategoryCode':
+					data['SalesCategoryCode'] = Trim(fieldValue);
+					break;
+				case 'DisableInDTX':
 					data['DisableOnRegularOrders'] = fieldValue;
 					break;
 				case 'DisableInFlexShip':
@@ -2803,10 +3152,84 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemCategoryName':
 					data['CategoryNameAccounting'] = Trim(fieldValue);
 					break;
+				case 'EntryDate':
+					data['EntryDate'] = fieldValue;
+					break;
+				case 'SAPItemCodes':
+					if (ArrayLen(fieldValue)) {
+						data['SAPItemCode'] = fieldValue[1]['SAPItemCode'];
+					}
+					break;
 			}
 		}, true, 10);
 
-		QueryAddRow(query, data);
+		// create skubundle data
+		if(ArrayLen(arguments.skuData['KitLines'])){
+			var currentCountryCode = "";
+			var previousCountryCode = "";
+			var index = 0;
+
+			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				switch (arguments.item['CountryCode']){	
+					case 'CAN':
+						currentCountryCode = 'CAD';
+						break;
+					case 'GBR':
+						currentCountryCode = 'GBP';
+						break;
+					case 'USA':
+						currentCountryCode = 'USD';
+						break;
+				}
+
+				if(currentCountryCode != previousCountryCode){
+					if(!arrayIsEmpty(skuPriceData)){
+						var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+							var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == currentCountryCode) &&
+													(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+													(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+													
+							return hasDefaultSkuPrice; 
+						},true, 10);
+					}
+
+					if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
+						data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+					}
+
+					if(index > 0){
+						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
+						data['SKUItemCode'] &= currentCountryCode;
+					} else {
+						data['SKUItemCode'] &= currentCountryCode;
+					}
+					
+					QueryAddRow(query, data);
+					index++;
+				}
+
+				previousCountryCode = currentCountryCode;
+			});
+
+		} else {
+
+			if(!arrayIsEmpty(skuPriceData)){
+				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
+					var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
+											(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
+											(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
+											
+					return hasDefaultSkuPrice; 
+				},true, 10);
+
+				if(!isNull(defaultSkuPrice) && ArrayLen(defaultSkuPrice)){
+					data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
+				}
+			}
+
+			QueryAddRow(query, data);
+		}
 
 		return query;
 	}
@@ -2819,7 +3242,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var priceLevels = skuData.PriceLevels;
 			skuPriceData = skuData.PriceLevels;
 		}
-
+		
 		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
 
 		ArrayEach(skuPricesFlattened, function(item){
@@ -2829,14 +3252,58 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return arguments.skuPriceQuery;
 	}
 
+	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
+		var query = arguments.skuBundleQuery;
+		var skuData = arguments.skuData;
+		var currentCountryCode = "";
+		ArrayEach(arguments.skuData.KitLines, function(item){
+			var skuBundleData = {};
+			switch (arguments.item['CountryCode']){	
+				case 'CAN':
+					currentCountryCode = 'CAD';
+					break;
+				case 'GBR':
+					currentCountryCode = 'GBP';
+					break;
+				case 'USA':
+					currentCountryCode = 'USD';
+					break;
+			}
+
+			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
+
+			StructEach(arguments.item, function(key, value){
+				switch (arguments.key){
+					case 'OnTheFlyFlag':
+						skuBundleData['ontheflykit'] = arguments.value;
+						break;
+					case 'ComponentItemCode':
+						skuBundleData['ComponentItemCode'] = arguments.value;
+						break;
+					case 'ComponentQty':
+						skuBundleData['ComponentQuantity'] = arguments.value;
+						break;
+				}
+			}, true, 10);
+			if(StructIsEmpty(skuBundleData)){
+				continue;
+			}
+			QueryAddRow(query, skuBundleData);
+		}, true, 10);
+
+		return query;
+	}
+
 	private string function getSkuColumnsList(){
-
 		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
-
 	}
 
 	private string function getSkuPriceColumnsList(){
 		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
+	}
+	
+	private string function getSkuBundleColumnsList(){
+		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 
 	public void function importMonatProducts(){
@@ -2846,12 +3313,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var totalPages = 1;
+
 		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			totalPages = initProductData['Data']['TotalPages'];
 		}
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
+		var importSkuBundles = rc.importSkuBundles?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -2863,7 +3332,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var skuPriceColumns = this.getSkuPriceColumnsList();
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-
+		
+		var skuBundleColumns = this.getSkuBundleColumnsList();
+		skuBundleColumnTypes = [];
+		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -2876,31 +3348,107 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
 
-    		try{
-				
-				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
-				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
+			if(!importSkuBundles){
 
-				for (var skuData in monatProducts){
+				try{
 					
-					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
+					var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+					var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
-					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+					for (var skuData in monatProducts){
+						
+						skuQuery = this.populateSkuQuery(skuQuery, skuData);
+
+						if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
+							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
+						}
 					}
-				}
-				
-				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
-				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-			} catch (any e){
-    			writeDump(e); // rollback the tx
+					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+
+					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+			} else {
+
+				try{
+					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+					for (var skuData in monatProducts){
+						if(arrayLen(skuData['KitLines'])){
+							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+
+							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+
+							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+						}
+					}
+				
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
 			}
 			pageNumber++
 		}
 
+		abort;
+	}
+
+	public void function importVibeAccounts(){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		var importSuccess = true;
+
+		try{
+			var userNameQuery = "UPDATE swaccount a 
+								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+								 SET a.userName = 
+									CASE 
+										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
+										THEN temp.username
+										ELSE temp.consultant_id
+									END
+									a.modifiedDateTime = NOW()";
+			var accountAuthQuery = "INSERT INTO swaccountauthentication (
+										accountAuthenticationID, 
+										password, 
+										activeFlag, 
+										createdDateTime, 
+										accountID, 
+										legacyPassword
+									) 
+									SELECT
+										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
+										'LEGACY' password,
+										1 activeFlag,
+										NOW() createdDateTime,
+										a.accountID accountID,
+										temp.encrypted_password legacyPassword
+										FROM swaccount a 
+										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
+										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
+										WHERE aa.accountID IS NULL
+									";
+
+
+			var usernameQuery = QueryExecute(userNameQuery);
+			var accountAuthQuery = QueryExecute(accountAuthQuery);
+
+		} catch(any e){
+			importSuccess = false;
+			writeDump("Something Went Wrong!!!");
+			writeDump(var=e, label="ERROR");
+		}
+
+		if(importSuccess){
+			writeDump("Import Success!!!");
+			writedump(usernameQuery);
+			writedump(accountAuthQuery);
+		}
 		abort;
 	}
     

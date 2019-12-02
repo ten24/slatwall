@@ -83,6 +83,10 @@ class SponsorSearchSelectorController {
 			this.recordsCount = data.recordsCount;
 		});
 	}
+	
+	public notifySelect = (account) =>{
+		this.observerService.notify('ownerAccountSelected', account)
+	}
 
 }
 

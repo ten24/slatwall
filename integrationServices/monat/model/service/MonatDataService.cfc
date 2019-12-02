@@ -45,15 +45,14 @@ component extends="Slatwall.model.service.HibachiService" {
 
         var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        accountCollection.setDisplayProperties('calculatedFullName',{isVisible:false, isSearchable:true});
-        accountCollection.addDisplayProperty('firstName', 'firstName', {isVisible:true, isSearchable: false});
-        accountCollection.addDisplayProperty('lastName', 'lastName', {isVisible:true, isSearchable: false});
+        var searchableDisplayProperties = 'accountNumber,firstName,lastName,username';
+        accountCollection.setDisplayProperties(searchableDisplayProperties, {isSearchable=true, comparisonOperator="exact"});
         accountCollection.addDisplayProperty('accountID','accountID', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode','primaryAddress_address_countryCode', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.stateCode','primaryAddress_address_stateCode', {isVisible:true, isSearchable:false});
         accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
-        accountCollection.addFilter( 'accountStatusType.typeCode', 'astGoodStanding');
+        accountCollection.addFilter( 'accountStatusType.systemCode', 'astGoodStanding');
         
         if(arguments.data.accountSearchType == 'VIP'){
             accountCollection.addFilter(

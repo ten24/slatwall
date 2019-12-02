@@ -3,28 +3,55 @@ declare let paypal: any;
 
 class MonatCheckoutController {
 	// @ngInject
-	slatwall: any;
 	constructor(
 		public publicService,
 		public observerService,
-		public $rootScope
-	) {}
+		public $rootScope,
+		public $scope
+
+	) {
+		this.observerService.attach((account)=>{
+		    if (this.$scope.Account_CreateAccount){
+		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
+		    };
+	        
+		}, 'ownerAccountSelected');	
+	}
 
 	public $onInit = () => {
-		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess');
+		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess')
 	}
 	
 	private closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
+	public loadHyperWallet() {
+	    this.publicService.doAction('configExternalHyperWallet').then(response => {
+    		if(!response.hyperWalletPaymentMethod) {
+			    console.log("Error in configuring Hyperwallet.");
+			    return;
+			}
+			
+			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletPaymentMethod;
+    	});
+	}
 	
-	public configPaypal(orderCurrency, totalAmount, paymentMode, clientToken )
-	{
+	public configExternalPayPalMethod() {
+	    this.publicService.doAction('configExternalPayPal').then(response => {
+    		if(!response.paypalClientConfig) {
+			    console.log("Error in configuring PayPal client.");
+			    return;
+			}
+			
+			this.configPayPal(response.paypalClientConfig);
+    	});
+	}
+	
+	public configPayPal( paypalConfig ) {
 		var that = this;
-		var CLIENT_AUTHORIZATION =clientToken;
+		var CLIENT_AUTHORIZATION = paypalConfig.clientAuthToken;
         
-        console.log("loading the paypal client");
         // Create a client.
         Braintree.client.create({
         	authorization: CLIENT_AUTHORIZATION
@@ -34,6 +61,7 @@ class MonatCheckoutController {
                 return;
             }
             
+            // @ts-ignore
             Braintree.paypalCheckout.create({
                 client: clientInstance
             }, function (paypalCheckoutErr, paypalCheckoutInstance) {
@@ -43,33 +71,31 @@ class MonatCheckoutController {
                 }
 	            
 	            paypal.Button.render({
-                    env: paymentMode,
+                    env: paypalConfig.paymentMode,
                     payment: function () {
                         return paypalCheckoutInstance.createPayment({
                             flow: 'vault',
                             billingAgreementDescription: '',
                             enableShippingAddress: false,
-                            amount: totalAmount, // Required
-                            currency: orderCurrency, // Required
+                            amount: paypalConfig.amount, // Required
+                            currency: paypalConfig.currencyCode, // Required
                         });
                     },
 
                     onAuthorize: function (data, actions) {
                         return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
-                            if(!payload.nonce)
-                            {
+                            if(!payload.nonce) {
                                 console.log("Error in tokenizing the payment method.");
                                 return;
                             }
                             
-							that.publicService.doAction('authorizePaypal', {paymentToken : payload.nonce}).then(response => {
-								if( !response.newPaypalPaymentMethod )
-								{
+							that.publicService.doAction('authorizePayPal', {paymentToken : payload.nonce}).then(response => {
+								if( !response.newPayPalPaymentMethod ) {
 								    console.log("Error in saving account payment method.");
 								    return;
 								}
 								
-								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPaypalPaymentMethod,
+								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
 									"copyFromType":"accountPaymentMethod",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});
@@ -88,6 +114,7 @@ class MonatCheckoutController {
             });
         });
 	}
+
 }
 
 export { MonatCheckoutController };

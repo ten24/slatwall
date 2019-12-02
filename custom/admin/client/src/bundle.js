@@ -78233,7 +78233,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78247,6 +78246,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -82743,6 +82743,11 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
             if (!item) {
                 return;
             }
+            if (angular.isDefined(_this.prependPropertyName) && _this.prependPropertyName.length) {
+                for (var property in item) {
+                    item[_this.prependPropertyName + "_" + property] = item[property];
+                }
+            }
             if (_this.singleSelection) {
                 _this.typeaheadService.notifyTypeaheadClearSearchEvent(_this.typeaheadDataKey);
             }
@@ -82824,7 +82829,8 @@ var SWTypeaheadMultiselect = /** @class */ (function () {
             fallbackPropertiesToCompare: "@?",
             rightContentPropertyIdentifier: "@?",
             selectionFieldName: "@?",
-            disabled: "=?"
+            disabled: "=?",
+            prependPropertyName: "@?"
         };
         this.controller = SWTypeaheadMultiselectController;
         this.controllerAs = "swTypeaheadMultiselect";
@@ -96767,7 +96773,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true); //single column mode true, format propIdentifier false
             }
         };
         //End Order By Functions
