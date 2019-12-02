@@ -13,9 +13,10 @@ class MonatFlexshipCartContainerController {
     	public rbkeyService,
     	public ModalService,
     	public observerService
-    ) { 
-        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess') 
-        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess') 
+    ) {   
+        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'editItemSuccess');
     }
     
     public $onInit = () => {

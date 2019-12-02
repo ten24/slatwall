@@ -24,16 +24,15 @@
 		
 		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<a href data-ng-click="monatEnrollment.next()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
+		<button style="z-index: 1" ng-disabled="!monatEnrollment.canPlaceCartOrder" data-ng-click="monatEnrollment.next()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
-		</a>
-		<a href data-ng-click="monatEnrollment.goToLastStep()" class="forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
+		</button>
+		<button style="z-index: 1" ng-disabled="!monatEnrollment.canPlaceCartOrder" data-ng-click="monatEnrollment.goToLastStep()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
 			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
 			<i class="fas fa-chevron-right"></i>
-		</a>
+		</button>
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
-		
 	</div>
 	
 	<!--- Mini cart ---> 	
