@@ -180,7 +180,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			return;
 		}
 
-		if (isNull(arguments.responseBean.getAuthorizationCode()) || !len(arguments.responseBean.getAuthorizationCode())) {
+		if (isNull(arguments.responseBean.getAuthorizationCode()) || !len( trim(arguments.responseBean.getAuthorizationCode())) ) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review Authorization Code.");
 			return;
 		}
@@ -218,7 +218,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	 * @return : custom Object
 	 **/
 	public any function authorizePayment( required any requestBean, required any responseBean) {
-		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+		if (isNull(arguments.requestBean.getProviderToken()) || !len( trim(arguments.requestBean.getProviderToken())) ) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
@@ -255,7 +255,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			return;
 		}
 
-		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+		if (isNull(arguments.requestBean.getProviderToken()) || !len( trim(arguments.requestBean.getProviderToken())) ) {
 			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
@@ -365,7 +365,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			return;
 		}
 		
-		if (isNull(arguments.requestBean.getOriginalProviderTransactionID()) || !len(arguments.requestBean.getOriginalProviderTransactionID())) {
+		if (isNull(arguments.requestBean.getOriginalProviderTransactionID()) || !len( trim( arguments.requestBean.getOriginalProviderTransactionID())) ) {
 			arguments.responseBean.addError("Processing error", "Not able to process this request. Missing provider transaction ID.");
 			return;
 		}
