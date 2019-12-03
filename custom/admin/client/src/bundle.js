@@ -76178,7 +76178,6 @@ var SWCriteriaNumber = /** @class */ (function () {
                     scope.filterItem.value = selectedFilterProperty.criteriaValue;
                 };
                 scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
-                    console.log('watch on selectedFilter', selectedFilterProperty);
                     if (angular.isDefined(selectedFilterProperty)) {
                         angular.forEach(scope.conditionOptions, function (conditionOption) {
                             if (conditionOption.display == scope.filterItem.conditionDisplay) {
