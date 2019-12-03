@@ -105,6 +105,7 @@ class SWReturnOrderItemsController{
         this.orderItemCollectionList.getEntity().then(result=>{
             for(let i = 0; i < result.records.length; i++){
                 result.records[i] = new ReturnOrderItem(result.records[i]);
+                this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
             }
             this.orderItems = result.records;
         })
