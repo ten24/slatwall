@@ -91610,6 +91610,9 @@ var SWFormFieldController = /** @class */ (function () {
                         'propertyIdentifier': _this.propertyIdentifier
                     };
                 }
+                if (_this.object.$$getID().length) {
+                    _this.optionsArguments.entityID = _this.object.$$getID();
+                }
                 var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
                 optionsPromise.then(function (value) {
                     _this.options = value.data;
