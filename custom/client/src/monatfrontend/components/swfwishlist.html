@@ -45,3 +45,19 @@
 		</div>
 	</div>	
 </div>
+
+<div ng-if="swfWishlist.showWishlistModal == false" class="col-12">
+	<h6 ng-show="swfWishlist.loading">Loading...</h6> <!--- TODO: Implement pretty loader --->
+	
+	<div ng-if="swfWishlist.orderTemplateItems.length > 0" class="product_list wishlist-products row no-gutters">
+		<div class="col-md-6 col-lg-4" ng-repeat="item in swfWishlist.orderTemplateItems track by $index">
+		  	<monat-product-card all-products="swfWishlist.orderTemplateItems" type="wishlist" product="item" index="{{$index}}" ></monat-product-card>
+		</div>		
+	</div>
+	
+	<a ng-if="swfWishlist.orderTemplateItems.length == 0" class="col-12" href="/shop/">
+		<div  class=" alert alert-success text-center">
+			<span sw-rbkey="'frontend.wishlist.noProducts'"></span>
+		</div>			
+	</a>	
+</div>

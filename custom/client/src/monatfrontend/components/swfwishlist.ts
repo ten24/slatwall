@@ -49,9 +49,13 @@ class SWFWishlistController {
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplateItems = result['orderTemplateItems'];
+            console.log(result)
+            console.log(result.orderTemplateItems)
+            this.orderTemplateItems = result.orderTemplateItems;
             this.loading = false;
+            console.log(this.orderTemplateItems)
         });
+        
     }
 
     public deleteItem =(index)=>{
@@ -164,7 +168,7 @@ class SWFWishlist  {
         currentPage:"@?",
         sku:"<?",
         productName:"<?",
-        showWishlistModal:"@?",
+        showWishlistModal:"<?",
         close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;

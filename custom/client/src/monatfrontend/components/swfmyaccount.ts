@@ -213,12 +213,12 @@ class swfAccountController {
         
         if(list.classList.contains('active')){
             list.classList.remove('active');
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down' );
         } else{
             list.classList.add('active');
-            icon.classList.add('fa-chevron-down');
-            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-down');
         }
     }
     

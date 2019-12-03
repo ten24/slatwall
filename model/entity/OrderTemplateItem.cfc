@@ -119,27 +119,29 @@ public any function getSkuProductURL(){
 			var pricegroups = getHibachiScope().getAccount().getPriceGroups();
 			var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
 			var currencyCode = getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
-			var vipPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(3);
-			var retailPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(2);
-			var MPPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+			var pricegroupService = getHibachiScope().getService('PriceGroupService');
+			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
+			
+			var vipPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(3);
+			var retailPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(2);
+			var MPPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(1);
 			var adjustedAccountPrice = this.getSku().getPriceByCurrencyCode(currencyCode);
 			var adjustedVipPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
 			var adjustedRetailPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
 			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
 			var mPPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
 			
-			var formattedAccountPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
-			var formattedVipPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
-			var formattedRetailPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
-			var formattedMPPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
-			var formattedPersonalVolume = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(mPPersonalVolume, {currencyCode:currencyCode});
+			var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+			var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+			var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+			var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
 			
 			var skuAdjustedPricing = {
 				adjustedPriceForAccount = formattedAccountPricing,
 				vipPrice = formattedVipPricing,
 				retailPrice = formattedRetailPricing,
 				MPPrice = formattedMPPricing,
-				personalVolume = formattedPersonalVolume,
+				personalVolume = mPPersonalVolume,
 				accountPriceGroup = priceGroupCode
 			};
 	
