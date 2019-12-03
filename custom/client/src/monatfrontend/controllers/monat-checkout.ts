@@ -76,7 +76,17 @@ class MonatCheckoutController {
                         return paypalCheckoutInstance.createPayment({
                             flow: 'vault',
                             billingAgreementDescription: '',
-                            enableShippingAddress: false,
+                            enableShippingAddress: true,
+                            shippingAddressEditable: false,
+                            shippingAddressOverride: {
+                            	line1: paypalConfig.line1,
+                            	line2: paypalConfig.line2,
+                            	city: paypalConfig.city,
+                            	state: paypalConfig.state,
+                            	postalCode: paypalConfig.postalCode,
+                            	countryCode: paypalConfig.countryCode,
+                            	recipientName: paypalConfig.name,
+                            },
                             amount: paypalConfig.amount, // Required
                             currency: paypalConfig.currencyCode, // Required
                         });

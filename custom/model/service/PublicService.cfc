@@ -48,6 +48,7 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+
      * Function to get all eligible account payment methods 
      * adds availableShippingMethods in ajaxResponse
      * @param request data
@@ -196,6 +197,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    
 	    var responseBean = getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('braintree').getIntegrationCFC("Payment").processExternal(requestBean);
 	    
+	    //Populate shipping address
+	    var orderFulfillment = getHibachiScope().getCart().getOrderFulfillments();
+	    var shippingAddress = {};
+	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
+	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
+	        if(!isNull(cartShippingAddress)) {
+	            shippingAddress = {
+    	            "postalCode" : cartShippingAddress.getPostalCode(),
+    	            "countryCode" : cartShippingAddress.getCountryCode(),
+    	            "line1" : cartShippingAddress.getStreetAddress(),
+    	            "recipientName" : cartShippingAddress.getName(),
+    	            "city" : cartShippingAddress.getCity(),
+    	            "line2" : cartShippingAddress.getStreet2Address(),
+    	            "state" : cartShippingAddress.getStateCode(),
+    	        };
+	        }
+	        
+	    }
+	    
 		if(responseBean.hasErrors()) {
 		    this.addErrors(data, responseBean.getErrors());
 		}
@@ -204,7 +224,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
     			'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(),
     			'clientAuthToken' : responseBean.getAuthorizationCode(),
-    			'paymentMode' : 'sandbox'
+    			'paymentMode' : getService('integrationService').getIntegrationByIntegrationPackage('braintree').setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
+    			'shippingAddress': shippingAddress,
 	    	}
 	    	
 	    	arguments.data['ajaxResponse']['paypalClientConfig'] = requestPayload;
