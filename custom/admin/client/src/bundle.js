@@ -72432,7 +72432,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 if (payment != orderPayment) {
                     if (payment.paymentMethodType == 'giftCard') {
-                        payment.amount = payment.amountToRefund;
+                        payment.amount = Math.min(payment.amountToRefund, _this.refundTotal);
                     }
                     return total += payment.amount;
                 }

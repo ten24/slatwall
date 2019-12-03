@@ -263,7 +263,7 @@ class SWReturnOrderItemsController{
        const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
            if(payment != orderPayment){
                if(payment.paymentMethodType == 'giftCard'){
-                   payment.amount = payment.amountToRefund
+                   payment.amount = Math.min(payment.amountToRefund,this.refundTotal);
                }
                return total += payment.amount;
            }
