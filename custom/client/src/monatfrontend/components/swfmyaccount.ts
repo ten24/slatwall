@@ -316,7 +316,7 @@ class swfAccountController {
 		.catch((error) => {
 			console.error('unable to open model :', error);
 		});
-	};
+	}
 }
 
 class SWFAccount  {
