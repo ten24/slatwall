@@ -48,11 +48,23 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
-
+     * Function to get applied promotions on order
+     * adds appliedPromotionCodes in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPromotionCodes(required any data) {
+        var promotionCodes = getHibachiScope().getCart().getAllAppliedPromotions();
+        if(arrayLen(promotionCodes)) {
+		    arguments.data['ajaxResponse']['appliedPromotionCodes'] = promotionCodes;
+        }
+    }
+    
+    /**
      * Function to get all eligible account payment methods 
      * adds availableShippingMethods in ajaxResponse
      * @param request data
-     * return none
+     * @return none
      **/
     public void function getAvailablePaymentMethods(required any data) {
         var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
@@ -67,7 +79,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function to get all available shipping methods 
      * adds availableShippingMethods in ajaxResponse
      * @param request data
-     * return none
+     * @return none
      **/
     public void function getAvailableShippingMethods(required any data) {
         var order = getHibachiScope().getCart().getOrderFulfillments();
@@ -123,7 +135,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
-     * return none
+     * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
         var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
@@ -136,7 +148,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
-     * return none
+     * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
         var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
@@ -149,7 +161,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
-     * return none
+     * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
         var accountOrders = getAccountService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
@@ -160,7 +172,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function check and return HyperWallet method
      * adds hyperWalletPaymentMethod in ajaxResponse
      * @param request data
-     * return none
+     * @return none
      * */
     public any function configExternalHyperWallet(required struct data) {
         var accountPaymentMethods = getHibachiScope().getAccount().getAccountPaymentMethods();
@@ -186,7 +198,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function to cnfigure client side Paypal method
      * adds paypalClientConfig in ajaxResponse
      * @param request data
-     * return none
+     * @return none
      * */
     public any function configExternalPayPal(required struct data) {
         //Configure PayPal
@@ -237,7 +249,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function to authorize client account for paypal & Add New Payment Method
      * authorize paypal amd add is as new payment method
      * @param request data
-     * return none
+     * @return none
      * */
     public any function authorizePayPal(required struct data) {
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
