@@ -294,6 +294,28 @@ class swfAccountController {
 		.catch((error) => {
 			console.error('unable to open model :', error);
 		});
+	}
+	
+	public showEditWishlistModal = () => {
+		this.ModalService.showModal({
+			component: 'wishlistEditModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 }
 
