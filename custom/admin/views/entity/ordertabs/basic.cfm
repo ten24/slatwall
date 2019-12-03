@@ -19,6 +19,7 @@
 						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
 					</cfloop>
 				</cfif>	
+				
 			<cfelseif !isNull(rc.order.getAccount()) && rc.order.getAccount().getOrganizationFlag()>
  				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company">	
 			<cfelseif !isNull(rc.order.getAccount())>
@@ -26,9 +27,16 @@
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
 				
-				<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
-					<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
-				</cfloop>
+				
+				<!--- The pricegroup of the account when the order was placed --->
+				<cfif !isNull(rc.order.getPriceGroup())>
+					<hb:HibachiPropertyDisplay object="#rc.order.getPriceGroup()#" property="priceGroupName" title="Order Price Group">
+				<cfelse>
+					<!--- The accounts current primary pricegroup --->
+					<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
+						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName" title="Account Price Group">
+					</cfloop>
+				</cfif>
 				
 			</cfif>
 			
