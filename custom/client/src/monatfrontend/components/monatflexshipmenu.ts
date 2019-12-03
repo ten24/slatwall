@@ -39,6 +39,10 @@ class MonatFlexshipMenuController {
 		this.monatFlexshipCard.setAsCurrentFlexship();
 	}
 	
+	public showDeleteFlexshipModal = () => {
+		this.monatFlexshipCard.showDeleteOrderTemplateModal();
+	}
+	
 }
 
 class MonatFlexshipMenu {
