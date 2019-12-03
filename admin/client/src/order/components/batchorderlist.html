@@ -1,0 +1,52 @@
+<section class="container">
+
+	<div class="row" ng-if="swBatchOrderListController.orderImportBatchItemCollection">
+		<div class="col-md-12">
+			<div class="row s-body-nav">
+			    <nav class="navbar navbar-default" role="navigation">
+			        <div class="col-md-6 s-header-info">
+			            <h1 class="actionbar-title">Select Orders
+			            </h1>
+			        </div> 
+			        <div class="col-md-6">
+			            <div class="btn-toolbar">
+							<div class="btn-group btn-group-sm">
+			                    <button class="# btn btn-success" title="Add" ng-click="swBatchOrderListController.placeOrders()" ng-disabled="swBatchOrderListController.getTotalOrdersSelected() == 0 || !swBatchOrderListController.getProcessObject().data">Place Orders <i ng-if="swBatchOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
+			                </div>
+			            </div>
+			        </div>
+			    </nav>
+			</div>
+
+		</div>
+		<div class="row s-detail-content-wrapper" ng-if="swBatchOrderListController.refreshFlag">
+			<center>
+        		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> LOADING
+			</center>
+		</div>
+		<span ng-init="multislot = true"></span>
+		<div class="row s-detail-content-wrapper">	
+			<div class="col-xs-12">
+				<div class="s-detail-body" ng-init="swBatchOrderListController.refreshFlag = false">
+					<sw-listing-display
+						data-base-entity-name="OrderImportBatchItem"
+						data-edit="true"
+						data-has-search="true"
+						data-record-detail-action="admin:entity.detailorder"
+						data-is-angular-route="false"
+						data-angular-links="false"
+						data-has-action-bar="false"
+						data-using-personal-collection="true"
+						data-persisted-collection-config="true" 
+						data-multiselect-field-name="orderImportBatchItemID"
+						data-name="orderCollectionTable"
+						data-collection-config="swBatchOrderListController.orderImportBatchItemCollectionConfig"
+
+						>
+					</sw-listing-display>
+
+				</div>
+			</div>
+		</div>
+	</div>
+<section>		

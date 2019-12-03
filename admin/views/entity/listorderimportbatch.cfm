@@ -79,6 +79,12 @@ Notes:
 		isSearchable=true,
 		isDeletable=true
 	},prepend=true)/>
+	
+	<cfset rc.orderImportBatchCollectionlist.addDisplayProperty(displayProperty='orderImportBatchID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	},prepend=true)/>
 
 
 	<!--- Searchables --->

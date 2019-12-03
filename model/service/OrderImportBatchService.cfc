@@ -183,6 +183,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderImportBatch;
 	}
 	
+	public any function processOrderImportBatch_PlaceOrders(required any orderImportBatch, required any processObject, struct data={}){
+		return arguments.orderImportBatch;
+	}
+	
 	private any function getShippingAddressFromOrder(required any order){
 		var orderFulfillments = arguments.order.getOrderFulfillments();
 		for(var orderFulfillment in orderFulfillments){

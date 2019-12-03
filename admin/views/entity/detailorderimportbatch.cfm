@@ -44,8 +44,8 @@
 	<hb:HibachiEntityDetailForm object="#rc.orderImportBatch#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderImportBatch#" edit="#rc.edit#">
 			<!--- Place Order --->
-			<cfif rc.orderImportBatch.getOrderImportBatchStatusType().getTypeCode() eq "oibstNew">
-				<hb:HibachiProcessCaller action="admin:entity.processOrderImportBatch" entity="#rc.orderImportBatch#" processContext="process" type="list" hideDisabled="true" />
+			<cfif rc.orderImportBatch.getOrderImportBatchStatusType().getSystemCode() eq "oibstNew">
+				<hb:HibachiProcessCaller action="admin:entity.preprocessorderimportbatch" entity="#rc.orderImportBatch#" processContext="placeOrders" type="list" hideDisabled="true" />
 			</cfif>
 		</hb:HibachiEntityActionBar>
 

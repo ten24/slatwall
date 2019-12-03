@@ -5,7 +5,7 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset rc.orderImportBatchItemCollectionList = rc.orderImportBatch.getOrderImportBatchItemsCollectionList() />
-<cfset rc.orderImportBatchItemCollectionList.setDisplayProperties('originalOrderNumber,accountNumber,skuCode,quantity,name,streetAddress,street2Address,city,stateCode,locality,postalCode,countryCode,phoneNumber,orderImportBatchItemStatusType.typeName',{isVisible=true,isSearchable=true}) />
+<cfset rc.orderImportBatchItemCollectionList.setDisplayProperties('orderImportBatchItemStatusType.typeName,originalOrderNumber,accountNumber,skuCode,quantity,name,streetAddress,street2Address,city,stateCode,locality,postalCode,countryCode,phoneNumber',{isVisible=true,isSearchable=true}) />
 
 <!--- ottSchedule, using ID to improve performance --->
 <cfset rc.orderImportBatchItemCollectionList.setOrderBy('accountNumber|asc')/>
