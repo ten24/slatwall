@@ -41,6 +41,7 @@ import { MonatMiniCart } from './components/minicart/monat-minicart';
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
+import { MonatSiteOwnerController } from './controllers/site-owner-controller';
 
 
 //services
@@ -95,6 +96,7 @@ var monatfrontendmodule = angular
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
+	.controller('siteOwnerController', MonatSiteOwnerController)
 
 	// Services
 	.service('monatService', MonatService)

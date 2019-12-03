@@ -858,5 +858,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+    public any function getSiteOwnerAccount(required struct data){
+        param name="arguments.data.identifierType";
+        param name="arguments.data.identifier";
+        
+        if(isNull(arguments.data.identifierType) || isNull(arguments.data.identifier)) return;
+        var method = 'getAccountBy#toString(arguments.data.identifierType)#';
+        var account = invoke(accountService, method, [arguments.data.identifier]);
+        
+        var returnAccount = {
+            firstName = account.getFirstName(),
+            lastName = account.getLastName(),
+            accountImage: getHibachiScope().getBaseImageURL() & account.getProfileImageTest(),
+            calculatedFullName: account.getCalculatedFullName()
+        }
+        
+        arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
+    }
+    
 
 }
