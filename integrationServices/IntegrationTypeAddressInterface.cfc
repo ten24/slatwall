@@ -46,50 +46,23 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "tax,address";
-	}
-	
-	public string function getDisplayName() {
-		return "Avatax";
-	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accessKey = {fieldType="password", encryptValue=true},
-			accountNo = {fieldType="text"},
-			sourceStreetAddress = {fieldType="text"},
-			sourceStreetAddress2 = {fieldType="text"},
-			sourceCity = {fieldType="text"},
-			sourceRegion = {fieldType="text"},
-			sourceCountry = {fieldType="text"},
-			sourcePostalCode = {fieldType="text"},
-			testingFlag = {fieldType="yesno", defaultValue="1"},
-			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
-			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
-			taxDocumentCommitType = {fieldType="select", valueOptions=[
-				{name="Commit Tax Documents When Order Closes",value="commitOnClose"},
-				{name="Commit Tax Documents Upon Delivery",value="commitOnDelivery"}
-			], defaultValue="commitOnClose"},
-			companyCode = {fieldType="text"},
-			customerUsageTypePropertyIdentifier = {fieldType="text"},
-			taxExemptNumberPropertyIdentifier = {fieldType="text"},
-			debugModeFlag = {fieldType="yesno", defaultValue="0"},
-			testURL = {fieldType="text", defaultValue="https://development.avalara.net/1.0/tax/get"},
-			productionURL = {fieldType="text", defaultValue="https://avatax.avalara.net/1.0/tax/get"}
-		};
-
-		return settings;
-	}
-	
-	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.avatax.model.handler.AvataxEventHandler"];
-	}
-	
+interface{
+    //TODO: make it return an AddressResponseBean
+    struct function validateAddress(required struct addresss);
+    /**
+     * TODO: add 
+     * 
+     * validateAddress
+     * validateAddressByAddressID
+     * validateAccountAddress 
+     * validateAddressByAccountAddressID
+     * validateShippingAddress
+     * validateAddressByShippingAddressID
+     * validateBillingAddress
+     * validateAddressByBillingAddressID
+     * 
+     * note: OnMissingMethod can be used to fulfil these
+     * 
+     */
+    
 }

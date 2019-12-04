@@ -46,7 +46,9 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
+component accessors="true" output="false" displayname="Avatax" 
+implements = "Slatwall.integrationServices.TaxInterface" 
+extends = "Slatwall.integrationServices.BaseTax" {
 	
 	public boolean function healthcheck() {
         var responseBean = testIntegration();
