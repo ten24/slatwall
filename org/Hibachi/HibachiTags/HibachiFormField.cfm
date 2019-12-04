@@ -236,6 +236,12 @@
 				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnlyRelatedObject">
+			<cfoutput>
+				<cfdump var="#attributes#" top="2" abort=true>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
