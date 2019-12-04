@@ -4233,15 +4233,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(orderReturnItem)) {
 					if(!isNull(thisRecord.stockLoss) && thisRecord.stockLoss > 0){
 						thisRecord.quantity = thisRecord.quantity - thisRecord.stockLoss;
-						var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
-						newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
-						newOrderReturnItem.setOrderReturn(arguments.orderReturn);
-						newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
-						orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
-						newOrderReturnItem.setQuantity(thisRecord.stockLoss);
-						this.saveOrderItem(orderReturnItem);
-						this.saveOrderItem(newOrderReturnItem);
-						
+						if(thisRecord.quantity > 0){
+							var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
+							newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
+							newOrderReturnItem.setOrderReturn(arguments.orderReturn);
+							newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
+							orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
+							newOrderReturnItem.setQuantity(thisRecord.stockLoss);
+							this.saveOrderItem(orderReturnItem);
+							this.saveOrderItem(newOrderReturnItem);
+						}else{
+							var newOrderReturnItem = orderReturnItem;
+						}
 						this.createStockReceiverItemForReturnOrderItem(stockReceiver, newOrderReturnItem, location, thisRecord.stockLoss);
 						
 						if(!structKeyExists(local,'stockAdjustment')){
@@ -4271,7 +4274,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						stockAdjustment = getStockService().processStockAdjustment(stockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
 						
 					}
-					this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
+					if(thisRecord.quantity > 0){
+						this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
+					}
 
 				}
 			}
