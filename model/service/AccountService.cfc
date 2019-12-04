@@ -752,6 +752,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
 					arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
 
 				}
 				
@@ -780,6 +781,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Invalid email, no account authentication exists
 		} else {
 			arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+			arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login the account
@@ -793,6 +795,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
 				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
 			}
 		// Login was invalid
 		} else {

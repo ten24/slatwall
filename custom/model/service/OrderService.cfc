@@ -477,5 +477,16 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
+	
+	public any function deleteOrderTemplate( required any orderTemplate ) {
+		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
+		
+		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
+			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
+			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		}
+		
+		return super.delete( arguments.orderTemplate );
+	}
 }
 
