@@ -48,6 +48,21 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get applied payments on order
+     * adds appliedPayments in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPayments(required any data) {
+        var appliedPayments = getHibachiScope().getCart().getOrderPayments();
+        if(arrayLen(appliedPayments)) {
+            var temp = getOrderService().getAppliedOrderPayments();
+            writeDump(var = temp, top = 2); abort;
+		    arguments.data['ajaxResponse']['appliedPayments'] = promotionCodes;
+        }
+    }
+    
+    /**
      * Function to get applied promotions on order
      * adds appliedPromotionCodes in ajaxResponse
      * @param request data
