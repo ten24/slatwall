@@ -19,20 +19,20 @@ component {
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var pricegroups = getHibachiScope().getAccount().getPriceGroups();
-			var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
+			var priceGroups = getHibachiScope().getAccount().getPriceGroups();
+			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var currencyCode = getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
-			var pricegroupService = getHibachiScope().getService('PriceGroupService');
+			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
 			
-			var vipPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(3);
-			var retailPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(2);
-			var MPPriceGroup = pricegroupService.getPriceGroupByPriceGroupCode(1);
+			var vipPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(3);
+			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
+			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
 			var adjustedAccountPrice = this.getSku().getPriceByCurrencyCode(currencyCode);
 			var adjustedVipPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
 			var adjustedRetailPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
 			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-			var mPPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
+			var mpPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
 			
 			var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
 			var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
@@ -44,7 +44,7 @@ component {
 				vipPrice = formattedVipPricing,
 				retailPrice = formattedRetailPricing,
 				MPPrice = formattedMPPricing,
-				personalVolume = mPPersonalVolume,
+				personalVolume = mpPersonalVolume,
 				accountPriceGroup = priceGroupCode
 			};
 	
