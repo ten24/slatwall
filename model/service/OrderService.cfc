@@ -5217,6 +5217,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
 		return refundSkuCollectionList;
 	}
+	
+	
+	public any function getAppliedOrderPayments() {
+		var temp = getHibachiScope().getCart().getOrderPaymentsCollectionList();
+		//temp.setDisplayProperties("expirationYear,purchaseOrderNumber,paymentMethod,billingAddress,nameOnCreditCard,expirationMonth,creditCardLastFour,currencyCode,orderPaymentID,amount");
+		temp.setDisplayProperties("currencyCode,orderPaymentID,amount");
+        temp.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+        temp = temp.getRecords(formatRecords=false);
+        return temp;
+	}
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {
