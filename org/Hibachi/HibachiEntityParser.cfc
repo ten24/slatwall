@@ -263,6 +263,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  				ORMType = 'string';
  				break;
  			case 'relatedObjectSelect':
+ 			case 'readOnlyRelatedObject':
  				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
  				break;
  			// case 'readOnly': TODO, discuss and enable. currently this is adding custom properties that are not in the DB which is causing exceptions 
