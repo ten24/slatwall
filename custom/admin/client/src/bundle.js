@@ -72335,6 +72335,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.orderItemCollectionList.getEntity().then(function (result) {
                 for (var i = 0; i < result.records.length; i++) {
                     result.records[i] = new ReturnOrderItem(result.records[i]);
+                    _this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
                 }
                 _this.orderItems = result.records;
             });
@@ -72431,7 +72432,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 if (payment != orderPayment) {
                     if (payment.paymentMethodType == 'giftCard') {
-                        payment.amount = payment.amountToRefund;
+                        payment.amount = Math.min(payment.amountToRefund, _this.refundTotal);
                     }
                     return total += payment.amount;
                 }
@@ -78234,6 +78235,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78247,7 +78249,6 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
