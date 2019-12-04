@@ -26,6 +26,7 @@ class SWFPaginationController {
 	};
 	
 	public init = () => {
+	    console.log(this.recordsCount, this.itemsPerPage)
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
@@ -92,7 +93,13 @@ class SWFPaginationController {
         this.publicService.paginationIsLoading = true;
         
         return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
-            this.recordList = result.productList ? result.productList : result.pageRecords;
+            this.recordList = 
+                (result.productList) 
+                ? result.productList 
+                :(result.pageRecords) 
+                ? result.pageRecords 
+                :result.ordersOnAccount.ordersOnAccount;
+            
             this.pageTracker = pageNumber;
             this.publicService.paginationIsLoading = false;
         });
