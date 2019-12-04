@@ -52,7 +52,7 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
-        if(isObject(originalOrderItem)){
+        if(isObject(arguments.originalOrderItem)){
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
 	            if(!isNull(price)){
@@ -489,4 +489,3 @@ component extends="Slatwall.model.service.OrderService" {
 		return super.delete( arguments.orderTemplate );
 	}
 }
-
