@@ -57,7 +57,7 @@ implements="Slatwall.integrationServices.IntegrationTypeAddressInterface" {
 	 * 
 	*/
 	public struct function testIntegration() {
-		return this.getAvalaraService().makeApiRequest('GET /utilities/ping');
+		return this.getAvataxService().makeApiRequest('GET /utilities/ping');
 	}
 
 	/**
@@ -65,12 +65,9 @@ implements="Slatwall.integrationServices.IntegrationTypeAddressInterface" {
 	 * @returns Struct of Success/failure response
 	*/
 	public struct function validateAddress(required struct address) {
-		return this.getAvalaraService().validateAddress(argumentsCollection = arguments);
+		return this.getAvataxService().validateAddress(argumentsCollection = arguments);
 	}
 	
-	
-
-
 }
 
 

@@ -267,7 +267,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
-private void function populateWithAddressVerification(required struct rc){
+	private void function populateWithAddressVerification(required struct rc){
 		
 		if(
 			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
