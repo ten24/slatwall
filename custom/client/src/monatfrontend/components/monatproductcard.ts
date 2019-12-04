@@ -14,6 +14,7 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
+    public showProductLink: boolean = false;
 
 	// @ngInject
 	constructor(
@@ -31,7 +32,10 @@ class MonatProductCardController {
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
+		
+		this.setShowProductLinkByType();
 	}
+	
 	public init = () => {
 		if(this.urlParams.get('type')){
 			this.type = this.urlParams.get('type');
@@ -41,6 +45,7 @@ class MonatProductCardController {
 			this.orderTemplate = this.urlParams.get('orderTemplateId');
 		}
 	}
+	
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
 		setNewTemplates: boolean = true,
@@ -178,6 +183,14 @@ class MonatProductCardController {
 				console.error('unable to open model :', error);
 			});
 	};
+	
+	private setShowProductLinkByType = (): void => {
+		this.showProductLink = (
+			this.type !== 'enrollment'
+			&& this.type !== 'VIPenrollmentOrder'
+			&& this.type !== 'VIPenrollment'
+		);
+	}
 
 }
 

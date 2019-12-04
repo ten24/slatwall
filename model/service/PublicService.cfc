@@ -1196,6 +1196,7 @@ component  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
+        getHibachiScope().flushORMSession(); //flushing for can place order check
         return cart;
     }
     
@@ -1859,7 +1860,12 @@ component  accessors="true" output="false"
      		}
      		
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
         }
  	}   
  	
@@ -2331,12 +2337,16 @@ component  accessors="true" output="false"
 
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value=now(), comparisonOperator=">", filterGroupAlias = 'publishedEndDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-
+       
         if(isNull(accountType) || accountType == 'retail'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){

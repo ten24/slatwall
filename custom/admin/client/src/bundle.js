@@ -64377,9 +64377,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = {
-                shippingMethodID: _this.baseEntity.shippingMethod.value
-            };
+            formDataToPost.shippingMethodID = _this.baseEntity.shippingMethod.value;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -91611,6 +91609,9 @@ var SWFormFieldController = /** @class */ (function () {
                     _this.optionsArguments = {
                         'propertyIdentifier': _this.propertyIdentifier
                     };
+                }
+                if (_this.object.$$getID().length) {
+                    _this.optionsArguments.entityID = _this.object.$$getID();
                 }
                 var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
                 optionsPromise.then(function (value) {
