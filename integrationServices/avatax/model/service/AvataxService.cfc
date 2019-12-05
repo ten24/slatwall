@@ -104,8 +104,42 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public struct function verifyAddress(required struct address) {
 
 		var response = this.makeApiRequest('POST /addresses/resolve', this.convertSwAddressToAvalaraAddress(arguments.address) );
-		//TODO: validate/format response
-		return response;
+		
+		var formatedResponse = {};
+		formatedResponse['success'] = false;
+					
+		if(StructKeyExist(response, 'success')) {
+			
+			if( StructKeyExist(response, 'validatedAddresses') &&
+				IsArray(response.validatedAddresses) &&
+				ArrayLen(reason.validatedAddresses)
+			){
+				var suggestion = response.validatedAddresses[1];
+				
+				var formattedSuggestion = {};
+				formattedSuggestion['streetAddress'] = suggestion["line1"];
+				formattedSuggestion['street2Address'] = suggestion["line2"];
+				formattedSuggestion['city'] = suggestion["city"];
+				formattedSuggestion['stateCode'] = suggestion["region"];
+				formattedSuggestion['postalCode'] = suggestion["postalCode"];
+				formattedSuggestion['countryCode'] = suggestion["country"];
+				
+				// Comparing most relevant points
+				formatedResponse['success'] = compareNoCase( arguments.address["streetAddress"], formattedSuggestion["streetAddress"]) == 0
+								  && compareNoCase( arguments.address["city"], formattedSuggestion["city"]) == 0
+								  && compareNoCase( arguments.address["stateCode"], formattedSuggestion["stateCode"]) == 0
+								  && compareNoCase( left(arguments.address["postalCode"],5), left(formattedSuggestion["postalCode"],5)) == 0;
+								  
+				formatedResponse['suggestedAddress'] = formattedSuggestion;
+		} 
+		else if( StructKeyExist(response, 'error') ) {
+			formatedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
+		} else {
+			formatedResponse['message'] = "Something went wrong!!";
+			debugLog(responses) ;
+		}
+		
+		return formatedResponse;
 	}
 
 	/**
@@ -130,8 +164,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		avalaraAddress['line1'] = arguments.address['streetAddress'];
 		avalaraAddress['line2'] = arguments.address['street2Address'];
 		avalaraAddress['city'] = arguments.address['city'];
-		avalaraAddress['state'] = arguments.address['stateCode'];
-		avalaraAddress['zip'] = arguments.address['postalCode'];
+		avalaraAddress['region'] = arguments.address['stateCode'];
+		avalaraAddress['postalCode'] = arguments.address['postalCode'];
 		avalaraAddress['country'] = arguments.address['countryCode'];
 
 		return avalaraAddress;		
@@ -146,18 +180,26 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	private struct function makeApiRequest(required string endpoint, struct payload={}) {
 		
-		//TODO: api url?
-		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
+		/**
+		 * Currently this function is being used for address API's
+		 * Hardcoding The URL as Tax integration is still on V1
+		 * 
+		*/
+		var requestURL = 'https://rest.avatax.com/api/v2';
+		if(setting('debugModeFlag')) {
+			requestURL = 'https://sandbox-rest.avatax.com/api/v2';
+		}
+	
 		requestURL &= ListLast(arguments.endpoint, " ");
 
 		var httpRequest = new http();
-		httpRequest.setMethod(ListFirst(arguments.endpoint, " "));
+		httpRequest.setMethod( ListFirst(arguments.endpoint, " ") );
 		httpRequest.setUrl( requestURL );
 
     	setHttpHeaders(httpRequest);
     	
     	httpRequest.addParam(type='body', value="#SerializeJson(arguments.payload)#");
-		httpRequest.setTimeout(setting(httpTimeOut));
+		httpRequest.setTimeout(60);
 
 		var rawResponse = httpRequest.send().getPrefix();
 		
@@ -169,7 +211,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 			response = { 
 						"error": { 
-								"code": "Api Error",
+								"code": "ApiError",
 								"message": "response is not valid JSON", 
 								"response": rawRequest.fileContent 
 							} 
@@ -190,16 +232,16 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return response;
 	}
 
-	private function debugLog( required any input, string type = "Information", boolean abort = false ) {
+	private function debugLog( required any input, string type = "Information") {
+		if(!IsSimpleValue(arguments.input)) {
+			arguments.input = SerializeJson(arguments.input);
+		}
 		cftrace ( 
-			text = ( isSimpleValue( arguments.input ) ? arguments.input : "Log" ), 
-			var = arguments.input, 
-			category = "Avalara", 
+			text = arguments.text, 
 			type = arguments.type,
 		);
-		if(arguments.abort){
-			writeDump(var="#arguments.input#", abort=arguments.abort);
-		}
+
+		writeLog(type=arguments.type, file="debug", text=arguments.input);
 	}
 
 	
@@ -245,17 +287,17 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	},
 	"validatedAddresses": [
 		{
-		"addressType": "StreetOrResidentialAddress",
-		"line1": "2000 MAIN ST",
-		"line2": "",
-		"line3": "",
-		"city": "IRVINE",
-		"region": "CA",
-		"country": "US",
-		"postalCode": "92614-7202",
-		"latitude": 33.684716,
-		"longitude": -117.851489
-		}
+	      "addressType": "StreetOrResidentialAddress",
+	      "line1": "2000 MAIN ST",
+	      "line2": "",
+	      "line3": "",
+	      "city": "IRVINE",
+	      "region": "CA",
+	      "country": "US",
+	      "postalCode": "92614-7202",
+	      "latitude": 33.684716,
+	      "longitude": -117.851489
+	    }
 	],
 	"coordinates": {
 		"latitude": 33.684716,
