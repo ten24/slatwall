@@ -136,9 +136,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var cacheKey = "#lcase(arguments.integrationTypeName)#IntegrationCFCs";
 		if( !structKeyExists( variables[cacheKey], arguments.integration.getIntegrationPackage()) ) {
-			var integrationTypeClassName = "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#";			
 			//TODO: ability to pass arguments in the constructor, 
-			variables[cacheKey] = new integrationTypeClassName();
+			variables[cacheKey] = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#").init();
+
 		}
 
 		return variables[cacheKey];

@@ -45,7 +45,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	private any function getIntegration(){
 
 		if( !structKeyExists(variables,'integration') ){
-			variables['integration'] = getService('integrationService').getIntegrationByIntegrationPackage( 'avalara' );
+			variables['integration'] = getService('integrationService').getIntegrationByIntegrationPackage( 'avatax' );
 		}
 
 		return variables.integration;
@@ -60,7 +60,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			variables['addressIntegrationCFC'] = getService('integrationService').getAddressIntegrationCFC( getIntegration() );
 		}
 
-		return variables.dataIntegrationCFC;
+		return variables.addressIntegrationCFC;
 	}
 
 	/**

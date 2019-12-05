@@ -48,21 +48,6 @@ Notes:
 */
 interface{
     //TODO: make it return an AddressResponseBean
-    struct function verifyAddress(required struct addresss);
-    /**
-     * TODO: we can have more functions like 
-     * 
-     * verifyAddress
-     * verifyAddressByAddressID
-     * verifyAccountAddress 
-     * verifyAddressByAccountAddressID
-     * verifyShippingAddress
-     * verifyAddressByShippingAddressID
-     * verifyBillingAddress
-     * verifyAddressByBillingAddressID
-     * 
-     * Note: OnMissingMethod can be used to fulfil these
-     * 
-     */
+    struct function verifyAddress(required struct address);
     
 }

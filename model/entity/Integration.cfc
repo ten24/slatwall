@@ -83,6 +83,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return getActiveFlag();
 	}
 	
+	public string function getDisplayName() {
+		return getIntegrationName();
+	}
+	
 	public array function getShippingMethodOptions( ) {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
 			variables.shippingMethodOptions = [];
