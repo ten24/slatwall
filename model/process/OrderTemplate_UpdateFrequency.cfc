@@ -55,7 +55,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public numeric function getScheduleOrderDayOfTheMonth() {
 	    //TODO validation for allowed-date-range
-	    if(IsNull(variables.scheduleOrderDayOfTheMonth) && !IsNumeric(variables.cheduleOrderDayOfTheMonth)) {
+	    if(IsNull(variables.scheduleOrderDayOfTheMonth) || !IsNumeric(variables.scheduleOrderDayOfTheMonth)) {
 	        variables.scheduleOrderDayOfTheMonth = variables.orderTemplate.getScheduleOrderDayOfTheMonth();
 	    }
 	    return variables.scheduleOrderDayOfTheMonth;
