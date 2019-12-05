@@ -84,7 +84,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		arguments.httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
 		arguments.httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
 		
-		if( StructKeyExist(arguments, 'requestDataStruct') ) {
+		if( StructKeyExists(arguments, 'requestDataStruct') ) {
 			arguments.httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(arguments.requestDataStruct))#");
 		}
 	}
