@@ -64377,9 +64377,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = {
-                shippingMethodID: _this.baseEntity.shippingMethod.value
-            };
+            formDataToPost.shippingMethodID = _this.baseEntity.shippingMethod.value;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -72337,6 +72335,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.orderItemCollectionList.getEntity().then(function (result) {
                 for (var i = 0; i < result.records.length; i++) {
                     result.records[i] = new ReturnOrderItem(result.records[i]);
+                    _this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
                 }
                 _this.orderItems = result.records;
             });
@@ -72433,7 +72432,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 if (payment != orderPayment) {
                     if (payment.paymentMethodType == 'giftCard') {
-                        payment.amount = payment.amountToRefund;
+                        payment.amount = Math.min(payment.amountToRefund, _this.refundTotal);
                     }
                     return total += payment.amount;
                 }
@@ -76152,8 +76151,9 @@ var SWCriteriaNumber = /** @class */ (function () {
                     scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
                 };
                 scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    if (angular.isDefined(selectedFilterProperty.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.value;
+                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.value;
                     }
                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
                         if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
@@ -78235,6 +78235,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78248,7 +78249,6 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -91611,6 +91611,9 @@ var SWFormFieldController = /** @class */ (function () {
                     _this.optionsArguments = {
                         'propertyIdentifier': _this.propertyIdentifier
                     };
+                }
+                if (_this.object.$$getID().length) {
+                    _this.optionsArguments.entityID = _this.object.$$getID();
                 }
                 var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
                 optionsPromise.then(function (value) {

@@ -28,17 +28,9 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 				variables.currentRequestSiteOwner = getService('siteService').getSiteBySiteCode(pathArray[1]);
 			}
 				
-			var domain = getCurrentDomain();
-			var domainParts = listToArray(domain, '.');
-			if(domainParts[1] == 'www'){
-				ArrayDeleteAt(domainParts, 1);
-			}
-			if(!listFindNoCase('monat,mymonat,monatglobal',domainParts[1])){
-				variables.currentRequestSiteOwner = getService('accountService').getAccountByUsername(domainParts[1]);
-			}
-  
+
 			if(isNull(variables.currentRequestSite)){
-				
+				var domain = getCurrentDomain();
 				variables.currentRequestSite = getService('siteService').getSiteByDomainName(domain);
 				setCurrentRequestSitePathType('domain');	
 			}else{

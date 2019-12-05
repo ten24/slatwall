@@ -2026,7 +2026,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
-	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-vip");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}

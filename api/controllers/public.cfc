@@ -61,16 +61,17 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         //set custom headers on rc
         if( StructKeyExists(arguments.rc.requestHeaderData, "headers")) {
             var headers = arguments.rc.requestHeaderData.headers;
-        	for (var key in headers) { 
-        	    if( key.startsWith('SWX-') ) {
-        	        var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
-        	        
-        	        //check to prevent overriding anything on rc, we can't really trust these headers
-        	        if(!StructKeyExists(arguments.rc, headerName)) {
-        	            arguments.rc[headerName] = headers[key]; 
-        	        }
-        	    }
-        	}
+            for (var key in headers) { 
+                
+                if( left(ucase(key), 4) == 'SWX-' ) {
+                    var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
+                    
+                    //check to prevent overriding anything on rc, we can't really trust these headers
+                    if(!StructKeyExists(arguments.rc, headerName)) {
+                        arguments.rc[headerName] = headers[key]; 
+                    }
+                }
+            }
         }
         
         if(structKeyExists(arguments.rc,'cmsSiteID')){
