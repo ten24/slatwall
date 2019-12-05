@@ -250,25 +250,21 @@ class swfAccountController {
     }
     
     public uploadImage = () =>{
-        
-        var tempdata = new FormData();
+        let tempdata = new FormData();
         tempdata.append("uploadFile", document.getElementById('profileImage').files[0]);
+        tempdata.append("imageFile", document.getElementById('profileImage').files[0].name);
+		let xhr = new XMLHttpRequest();
+		xhr.open('POST', 'http://monat:8906/Slatwall/index.cfm/api/scope/uploadProfileImage', true);
+		xhr.onload = function () {
+			var response = JSON.parse(xhr.response);
+			console.log(response);
+		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+		 	 	console.log("File Uploaded");
+		  	 } 
+		};
+        xhr.send(tempdata);
+    }               
 
-        setTimeout( () =>{
-           this.$http({
-                method: 'POST',
-                url:'http://monat:8906/Slatwall/index.cfm/api/scope/uploadProfileImage',
-               
-                headers: {
-                    'Content-Type': 'undefined'
-                },
-                data: {
-                   uploadFile: 'test'
-                },
-
-        }).then( res => console.log(res)) 
-        }, 1000)
-    }
 }
 
 class SWFAccount  {
