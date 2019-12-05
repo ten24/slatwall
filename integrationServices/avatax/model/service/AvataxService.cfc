@@ -71,29 +71,63 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 
 
+	
+	/**
+	 * Helper function to populate HTTP headers on the request
+	 * @request http-request, 
+	 * @requestBody, not required, if passed, it will set the Content-length Header
+	*/ 
+	public void function setHttpHeaders(required any request, struct requestDataStruct) {
+		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
+		
+		httpRequest.addParam(type="header", name="Content-type", value="application/json");
+		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+		
+		if( StructKeyExist(arguments, 'requestDataStruct') ) {
+			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(arguments.requestDataStruct))#");
+		}
+	}
+
 
 	/**
 	 * Function to validate the address with Avalara
 	 * API Endpoint: "POST /addresses/resolve"
 	 * 
-	 */
-	public struct function validateAddress(required struct address) {
+	 * { 
+	 *   "success" : boolean, 
+	 *   "message": "error message string if any", 
+	 *   "suggestedAddress": {...if any....} 
+	 * }
+	 * 
+	*/
+	public struct function verifyAddress(required struct address) {
 
-		return this.makeApiRequest('POST /addresses/resolve', this.convertSwAddressToAvalaraAddress(arguments.address) );
+		var response = this.makeApiRequest('POST /addresses/resolve', this.convertSwAddressToAvalaraAddress(arguments.address) );
+		//TODO: validate/format response
+		return response;
 	}
 
 	/**
 	 * helper function to create a struct of properties+values from @entity/Address.cfc.
 	 *
 	 * @address, Struct of @entity/Address.cfc properties+values
-	 * 
-	 * @returns, Struct of properties+values required by Avalara resolve-address API.
+	 *
 	*/ 
 	public any function convertSwAddressToAvalaraAddress(required struct address){
+		param name="arguments.address.streetAddress" default="";	
+		param name="arguments.address.street2Address" default="";
+		param name="arguments.address.city" default="";
+		param name="arguments.address.stateCode" default="";
+		param name="arguments.address.postalCode" default="";	
+		param name="arguments.address.countryCode" default="";		
+		param name="arguments.address.addressID" default="";
 		
 		var avalaraAddress = {};
 
-		avalaraAddress['line2'] = arguments.address['streetAddress'];
+
+		//TODO: Avalara has max-length cap on the address lines, consider that
+		avalaraAddress['line1'] = arguments.address['streetAddress'];
 		avalaraAddress['line2'] = arguments.address['street2Address'];
 		avalaraAddress['city'] = arguments.address['city'];
 		avalaraAddress['state'] = arguments.address['stateCode'];
@@ -112,6 +146,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	private struct function makeApiRequest(required string endpoint, struct payload={}) {
 		
+		//TODO: api url?
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		requestURL &= ListLast(arguments.endpoint, " ");
 
@@ -119,11 +154,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		httpRequest.setMethod(ListFirst(arguments.endpoint, " "));
 		httpRequest.setUrl( requestURL );
 
-    	httpRequest.addParam( type='header', name='Content-Type', value='application/json');
-    	httpRequest.addParam( type='header', name='Accept', value='application/json');
-		// Authentication headers
-    	httpRequest.addParam( type='header', name='Authorization', value= "Basic "&setting('authToken') );
-    	
+    	setHttpHeaders(httpRequest);
     	
     	httpRequest.addParam(type='body', value="#SerializeJson(arguments.payload)#");
 		httpRequest.setTimeout(setting(httpTimeOut));
@@ -195,3 +226,101 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	// ======================  END: Get Overrides =============================
 
 }
+
+
+
+/** 
+ * 
+ * 
+ * 
+ * 			
+* typical successful response: 
+{
+	"address": {
+		"textCase": "Upper",
+		"line1": "2000 Main Street",
+		"city": "Irvine",
+		"region": "CA",
+		"country": "US"
+	},
+	"validatedAddresses": [
+		{
+		"addressType": "StreetOrResidentialAddress",
+		"line1": "2000 MAIN ST",
+		"line2": "",
+		"line3": "",
+		"city": "IRVINE",
+		"region": "CA",
+		"country": "US",
+		"postalCode": "92614-7202",
+		"latitude": 33.684716,
+		"longitude": -117.851489
+		}
+	],
+	"coordinates": {
+		"latitude": 33.684716,
+		"longitude": -117.851489
+	},
+	"resolutionQuality": "Intersection",
+	"taxAuthorities": [
+		{
+		"avalaraId": "267",
+		"jurisdictionName": "ORANGE",
+		"jurisdictionType": "County",
+		"signatureCode": "AHXU"
+		},
+		{
+		"avalaraId": "5000531",
+		"jurisdictionName": "CALIFORNIA",
+		"jurisdictionType": "State",
+		"signatureCode": "AGAM"
+		},
+		{
+		"avalaraId": "2001061425",
+		"jurisdictionName": "ORANGE COUNTY DISTRICT TAX SP",
+		"jurisdictionType": "Special",
+		"signatureCode": "EMAZ"
+		},
+		{
+		"avalaraId": "2001061784",
+		"jurisdictionName": "ORANGE CO LOCAL TAX SL",
+		"jurisdictionType": "Special",
+		"signatureCode": "EMTN"
+		},
+		{
+		"avalaraId": "2001067270",
+		"jurisdictionName": "IRVINE",
+		"jurisdictionType": "City",
+		"signatureCode": "MHWX"
+		},
+		{
+		"avalaraId": "2001077261",
+		"jurisdictionName": "IRVINE HOTEL IMPROVEMENT DISTRICT",
+		"jurisdictionType": "Special",
+		"signatureCode": "NQKV"
+		}
+	]
+}
+
+***************************
+
+* typical error response: 
+{
+	"error": {
+		"code": "InvalidAddress",
+		"message": "The address value was incomplete.",
+		"target": "IncorrectData",
+		"details": [
+		{
+			"code": "InvalidAddress",
+			"number": 309,
+			"message": "The address value was incomplete.",
+			"description": "The address value NULL was incomplete. You must provide either a valid postal code, line1 + city + region, or line1 + postal code.",
+			"faultCode": "Client",
+			"helpLink": "http://developer.avalara.com/avatax/errors/InvalidAddress",
+			"severity": "Error"
+		}
+		]
+	}
+}
+*/

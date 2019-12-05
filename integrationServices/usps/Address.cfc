@@ -40,32 +40,121 @@ component accessors='true' output='false' displayname='Avalara-Address'
 extends="Slatwall.integrationServices.IntegrationTypeAddressBase"
 implements="Slatwall.integrationServices.IntegrationTypeAddressInterface" {
 
-	property name='avataxService' type='any' persistent='false';
+	property name='uspsService' type='any' persistent='false';
 
 	public any function init() {
-		setAvataxService( getService('avataxService') );
+		setUspsService( getService('uspsService') );
 		return this;
 	}
 	
-	
-	/**
-	 * Function to test if we're able to communicate with the Avalara APIs
-	 * API Endpoint: "GET /utilities/ping"
-	 * 
-	 * Example Response:
-	 * { "version": "19.11.0", "authenticated": false, "authenticationType": "None" }
-	 * 
-	*/
 	public struct function testIntegration() {
-		return this.getAvataxService().makeApiRequest('GET /utilities/ping');
+		return this.getUspsService().makeApiRequest('GET /utilities/ping');
 	}
 
 	/**
-	 * Function to validate the address with Avalara
+	 * Function to validate the address with USPS
 	 * @returns Struct of Success/failure response
 	*/
 	public struct function verifyAddress(required struct address) {
-		return this.getAvataxService().verifyAddress(argumentsCollection = arguments);
+		return this.getuspsService().verifyAddress(argumentsCollection = arguments);
 	}
 	
 }
+
+
+
+/** 
+ * 
+ * 
+ * 
+ * 			
+* typical successful response: 
+{
+	"address": {
+		"textCase": "Upper",
+		"line1": "2000 Main Street",
+		"city": "Irvine",
+		"region": "CA",
+		"country": "US"
+	},
+	"validatedAddresses": [
+		{
+		"addressType": "StreetOrResidentialAddress",
+		"line1": "2000 MAIN ST",
+		"line2": "",
+		"line3": "",
+		"city": "IRVINE",
+		"region": "CA",
+		"country": "US",
+		"postalCode": "92614-7202",
+		"latitude": 33.684716,
+		"longitude": -117.851489
+		}
+	],
+	"coordinates": {
+		"latitude": 33.684716,
+		"longitude": -117.851489
+	},
+	"resolutionQuality": "Intersection",
+	"taxAuthorities": [
+		{
+		"avalaraId": "267",
+		"jurisdictionName": "ORANGE",
+		"jurisdictionType": "County",
+		"signatureCode": "AHXU"
+		},
+		{
+		"avalaraId": "5000531",
+		"jurisdictionName": "CALIFORNIA",
+		"jurisdictionType": "State",
+		"signatureCode": "AGAM"
+		},
+		{
+		"avalaraId": "2001061425",
+		"jurisdictionName": "ORANGE COUNTY DISTRICT TAX SP",
+		"jurisdictionType": "Special",
+		"signatureCode": "EMAZ"
+		},
+		{
+		"avalaraId": "2001061784",
+		"jurisdictionName": "ORANGE CO LOCAL TAX SL",
+		"jurisdictionType": "Special",
+		"signatureCode": "EMTN"
+		},
+		{
+		"avalaraId": "2001067270",
+		"jurisdictionName": "IRVINE",
+		"jurisdictionType": "City",
+		"signatureCode": "MHWX"
+		},
+		{
+		"avalaraId": "2001077261",
+		"jurisdictionName": "IRVINE HOTEL IMPROVEMENT DISTRICT",
+		"jurisdictionType": "Special",
+		"signatureCode": "NQKV"
+		}
+	]
+}
+
+***************************
+
+* typical error response: 
+{
+	"error": {
+		"code": "InvalidAddress",
+		"message": "The address value was incomplete.",
+		"target": "IncorrectData",
+		"details": [
+		{
+			"code": "InvalidAddress",
+			"number": 309,
+			"message": "The address value was incomplete.",
+			"description": "The address value NULL was incomplete. You must provide either a valid postal code, line1 + city + region, or line1 + postal code.",
+			"faultCode": "Client",
+			"helpLink": "http://developer.avalara.com/usps/errors/InvalidAddress",
+			"severity": "Error"
+		}
+		]
+	}
+}
+*/
