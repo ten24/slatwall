@@ -470,7 +470,7 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required any data){
+   public void function verifyAddress(required struct data){
         param name="data.accountAddressID" default="";
 
         arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressByID(arguments.data.accountAddressID);

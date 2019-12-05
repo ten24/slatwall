@@ -108,9 +108,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var formatedResponse = {};
 		formatedResponse['success'] = false;
 					
-		if(StructKeyExist(response, 'success')) {
+		if(structKeyExists(response, 'success')) {
 			
-			if( StructKeyExist(response, 'validatedAddresses') &&
+			if( structKeyExists(response, 'validatedAddresses') &&
 				IsArray(response.validatedAddresses) &&
 				ArrayLen(reason.validatedAddresses)
 			){
@@ -133,7 +133,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 				formatedResponse['suggestedAddress'] = formattedSuggestion;
 			}
 		} 
-		else if( StructKeyExist(response, 'error') ) {
+		else if( structKeyExists(response, 'error') ) {
 			formatedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
 		} 
 		else {
@@ -204,8 +204,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var rawResponse = httpRequest.send().getPrefix();
 		
 		var response = {};
-		if( IsJson(rawRequest.fileContent) ) {
-			response = DeSerializeJson(rawRequest.fileContent); 
+		if( IsJson(rawResponse.fileContent) ) {
+			response = DeSerializeJson(rawResponse.fileContent); 
 		} 
 		else {
 
@@ -213,7 +213,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 						"error": { 
 								"code": "ApiError",
 								"message": "response is not valid JSON", 
-								"response": rawRequest.fileContent 
+								"response": rawResponse.fileContent 
 							} 
 					};
 		} 
@@ -222,7 +222,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		 * If there's an error, add request data: in the response
 		 * NOTE: for a typical error/success responses see at the bottom of this file
 		*/
-		if( StructKeyExist(response, 'error') ) {
+		if( structKeyExists(response, 'error') ) {
 			response['requestAttributes'] = httpRequest.getAttributes() ;
 			response['requestParams'] = httpRequest.getParams();
 		}

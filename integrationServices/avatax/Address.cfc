@@ -65,7 +65,7 @@ implements="Slatwall.integrationServices.AddressInterface" {
 	 * @returns Struct of Success/failure response
 	*/
 	public struct function verifyAddress(required struct address) {
-		return this.getAvataxService().verifyAddress(argumentsCollection = arguments);
+		return this.getAvataxService().verifyAddress(arguments.address);
 	}
 	
 }

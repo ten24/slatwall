@@ -169,7 +169,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.country;
 	}
 	
-	public any function verifyAddressStruct(required any addressStruct){
+	public any function verifyAddressStruct(required struct addressStruct){
 		 			
 		var address = this.getAddress(arguments.addressStruct['addressID']);
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
