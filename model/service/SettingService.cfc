@@ -708,7 +708,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
 		integrationCollectionList.addFilter('activeFlag', '1');
 		integrationCollectionList.addFilter('installedFlag', '1');
-		integrationCollectionList.addFilter('integrationTypeList', 'address',"in");
+		integrationCollectionList.addFilter('integrationTypeList', '%address%',"like");
 		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
 		var options = integrationCollectionList.getRecords();
 		return options;
