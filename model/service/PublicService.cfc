@@ -345,7 +345,6 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_Save
       **/
     public any function updateAccount( required struct data ) {
-        
         var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
         getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         if(account.hasErrors()){

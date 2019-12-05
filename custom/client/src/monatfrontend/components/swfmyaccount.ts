@@ -36,7 +36,8 @@ class swfAccountController {
     constructor(
         public publicService,
         public $scope,
-        public observerService
+        public observerService,
+        public $http
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
@@ -246,6 +247,27 @@ class swfAccountController {
         this.publicService.doAction('getMoMoneyBalance').then(res => {
             this.moMoneyBalance = res.moMoneyBalance;
         });
+    }
+    
+    public uploadImage = () =>{
+        
+        var tempdata = new FormData();
+        tempdata.append("uploadFile", document.getElementById('profileImage').files[0]);
+
+        setTimeout( () =>{
+           this.$http({
+                method: 'POST',
+                url:'http://monat:8906/Slatwall/index.cfm/api/scope/uploadProfileImage',
+               
+                headers: {
+                    'Content-Type': 'undefined'
+                },
+                data: {
+                   uploadFile: 'test'
+                },
+
+        }).then( res => console.log(res)) 
+        }, 1000)
     }
 }
 

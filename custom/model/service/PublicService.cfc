@@ -858,5 +858,53 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+    
+	public void function uploadProfileImage(required any data) {
+            
+            writeDump(arguments.data)
+            throw('hit');
+			
+	        account = getHibachiScope().getAccount();
+
+
+			// Get the upload directory for the current property
+			var strPath = getDirectoryFromPath( expandPath( "./" ));
+
+			if (findNoCase("Slatwall", strPath)){
+				var uploadDirectory = "#strPath#custom/assets/files/profileImage/";
+			}else{
+				var uploadDirectory = "#strPath#Slatwall/custom/assets/files/profileImage/";
+			}
+			var fileName = 'profileimage=' & ['IMAGEFILE'];
+			
+			var fullFilePath = "#uploadDirectory##fileName#";
+			
+			// If the directory where this file is going doesn't exists, then create it
+			if(!directoryExists(uploadDirectory)) {
+				directoryCreate(uploadDirectory);
+			}
+			
+			if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
+				fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
+			}else{
+				return;
+			}
+			//check if the file exists.
+			if (fileExists("#fullFilePath#")){
+				if (!isNull(account)){
+					data.imageFile = "";
+					account.setProfileImage(fileName);
+					this.saveAccount(address);
+					getHibachiScope().addActionResult( "dcm:ajax.uploadAddressImage", false );
+				}else{
+					getHibachiScope().addActionResult( "dcm:ajax.uploadAddressImage", true );
+				}
+				
+			}else{
+				getHibachiScope().addActionResult( "dcm:ajax.uploadFile", true );
+				
+			}
+		}
+	
 
 }
