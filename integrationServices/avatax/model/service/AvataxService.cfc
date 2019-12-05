@@ -77,15 +77,15 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * @request http-request, 
 	 * @requestBody, not required, if passed, it will set the Content-length Header
 	*/ 
-	public void function setHttpHeaders(required any request, struct requestDataStruct) {
+	public void function setHttpHeaders(required any httpRequest, struct requestDataStruct) {
 		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
 		
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+		arguments.httpRequest.addParam(type="header", name="Content-type", value="application/json");
+		arguments.httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+		arguments.httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
 		
 		if( StructKeyExist(arguments, 'requestDataStruct') ) {
-			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(arguments.requestDataStruct))#");
+			arguments.httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(arguments.requestDataStruct))#");
 		}
 	}
 
