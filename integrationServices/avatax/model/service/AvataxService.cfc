@@ -131,10 +131,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 								  && compareNoCase( left(arguments.address["postalCode"],5), left(formattedSuggestion["postalCode"],5)) == 0;
 								  
 				formatedResponse['suggestedAddress'] = formattedSuggestion;
+			}
 		} 
 		else if( StructKeyExist(response, 'error') ) {
 			formatedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
-		} else {
+		} 
+		else {
 			formatedResponse['message'] = "Something went wrong!!";
 			debugLog(responses) ;
 		}
@@ -144,11 +146,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	/**
 	 * helper function to create a struct of properties+values from @entity/Address.cfc.
-	 *
 	 * @address, Struct of @entity/Address.cfc properties+values
-	 *
 	*/ 
-	public any function convertSwAddressToAvalaraAddress(required struct address){
+	public struct function convertSwAddressToAvalaraAddress(required struct address){
 		param name="arguments.address.streetAddress" default="";	
 		param name="arguments.address.street2Address" default="";
 		param name="arguments.address.city" default="";
@@ -232,14 +232,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return response;
 	}
 
-	private function debugLog( required any input, string type = "Information") {
+	private void function debugLog( required any input, string type = "Information") {
 		if(!IsSimpleValue(arguments.input)) {
 			arguments.input = SerializeJson(arguments.input);
 		}
-		cftrace ( 
-			text = arguments.text, 
-			type = arguments.type,
-		);
+		cftrace ( text = arguments.input,  type = arguments.type);
 
 		writeLog(type=arguments.type, file="debug", text=arguments.input);
 	}
