@@ -178,7 +178,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * @payload request body
 	 * @return An struct of, either successful-response or formated-error-response 
 	*/ 
-	private struct function makeApiRequest(required string endpoint, struct payload={}) {
+	public struct function makeApiRequest(required string endpoint, struct payload={}) {
 		
 		/**
 		 * Currently this function is being used for address API's
