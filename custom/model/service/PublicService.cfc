@@ -872,13 +872,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}else{
 			var uploadDirectory = "#strPath#Slatwall/custom/assets/files/profileImage/";
 		}
-		var fileName = 'profileimage-' & '#arguments.data.imageFile#';
+		var fileName = '#arguments.data.imageFile#';
 		
 		var fullFilePath = "#uploadDirectory##arguments.data.imageFile#";
 			
 		// If the directory where this file is going doesn't exists, then create it
 		if(!directoryExists(uploadDirectory)) {
 			directoryCreate(uploadDirectory);
+		}
+		
+		//delete the last profile image
+		if(!isNull(account.getProfileImage()) && fileExists('/Slatwall/custom/assets/files/profileImage/#account.getProfileImage()#')){
+		    fileDelete('/Slatwall/custom/assets/files/profileImage/#account.getProfileImage()#')
 		}
 		
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
