@@ -2066,7 +2066,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         var isParentSku = function(kitCode) {
         	return (kitCode == MASTER);
         };
-
+		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");	
+			        
 			//here
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		
@@ -2095,9 +2096,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		
     		try{
     			var tx = ormStatelessSession.beginTransaction();
-    			
     			for (var order in orders){
     			    index++;
+    			    
+    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag = true){
+	    			    //This is temp to get orders in without kits. 
+	    			    
+	    			    var hasKit = false;
+	    			    
+	    			    for (var detail in order['Details']){
+	                    		var isKit = isParentSku(detail['KitFlagCode']?:false);
+	    			    		if (isKit){
+	    			    			//skip this order
+	    			    			hasKit = true;
+	    			    		}
+	    			    }
+	    			    
+	    			    if (hasKit){
+	    			    	logHibachi("Skipping #pageNumber# #index# because we found a kit items.");
+	    			    	continue; //we just skip this whole order.
+	    			    }
+	    			    
+	    			    //This is temp to get orders in without kits.
+    			    }
+    			    
 			    	isNewOrderFlag = true;
     				var newOrder = new Slatwall.model.entity.Order();
     				var newUUID = rereplace(createUUID(), "-", "", "all");
@@ -2154,44 +2176,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			        //newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
 			        
-			        // *** This must be a payment transaction either + or - added to the payment.
-			        
-			        
-			        
-			        
-			        //newOrder.setVerifiedAddressFlag(order['AddressValidationFlag']?:0);on fulfillment instead
-			        
 			        //RMAOrigOrderNumber
 			        if (!isNull(order['RMAOrigOrderNumber'])){
 			        	newOrder.setImportOriginalRMANumber( order['RMAOrigOrderNumber']?:0 );
 			        }
 			        
 			        //Sets the reasons if they exist.
-			        /*
+			        
 			        if (!isNull(order['RMACSReasonNumber'])){
+			        	
 			        	try{
-			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMACSReasonDescription'], 2: reasonType}));
+			        		var reason = getTypeService().getTypeByTypeCodeANDparentType({1:order['RMACSReasonDescription'], 2: reasonType}, false);
+			        		
+			        		if (!isNull(reason)){
+			        			newOrder.setReturnReasonType(reason);
+			        		}
+			        		
 			        	}catch(typeError){
-			        		//ignore
+			        	
 			        	}
 			        }
 			        
 			        if (!isNull(order['RMAOpsReasonNumber'])){
+			        	
 			        	try{
-			        		newOrder.setSecondaryReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['RMAOpsReasonNumber'], 2: reasonType}));
+			        		var opsreason = getTypeService().getTypeByTypeCodeANDparentType({1:order['RMAOpsReasonNumber'], 2: reasonType}, false);
+			        		if (!isNull(opsreason)){
+			        			newOrder.setSecondaryReturnReasonType(opsreason);
+			        		}
 			        	}catch(typeError){
-			        		//ignore
+			        	
 			        	}
 			        }
 			        
 			        if (!isNull(order['ReplacementReasonNumber'])){
 			        	try{
-			        		newOrder.setReturnReasonType(getTypeService().getTypeByTypeCodeANDparentType({1:order['ReplacementReasonNumber'], 2: reasonType}));
+			        		var rreason = getTypeService().getTypeByTypeCodeANDparentType({1:order['ReplacementReasonNumber'], 2: reasonType}, false);
+			        		if (!isNull(rreason)){
+			        			newOrder.setReturnReasonType(rreason);
+			        		}
 			        	}catch(typeError){
-			        		//ignore
+			        	
 			        	}
 			        }
-			        */
+			        
 			        /**
 			         * Create the rma types
 			         **/
@@ -2374,7 +2402,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         		    }
         		    
                     ///->Add order items...
+                    
+                    
+                    
+                    
                     var parentKits = {};
+                    
+                    
+                    
+                    
                     if (!isNull(order['Details'])){
                     	var detailIndex = 0;
                     	for (var detail in order['Details']){
