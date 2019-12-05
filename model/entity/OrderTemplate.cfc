@@ -469,5 +469,10 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  //CUSTOM FUNCTIONS END
+	}  
+
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}//CUSTOM FUNCTIONS END
 }
