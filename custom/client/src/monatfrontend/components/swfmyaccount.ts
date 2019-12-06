@@ -38,8 +38,7 @@ class swfAccountController {
     constructor(
         public publicService,
         public $scope,
-        public observerService,
-        public $http
+        public observerService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
@@ -57,8 +56,6 @@ class swfAccountController {
     }
     
 	public $onInit = () =>{
-	    this.getUserProfileImage();
-	    
         this.getAccount();
 	}
 
@@ -87,6 +84,9 @@ class swfAccountController {
                     break;
                 case '/my-account/order-history/':
                     this.getOrdersOnAccount();
+                    break;
+                case '/my-account/my-details/profile/':
+                    this.getUserProfileImage();
                     break;
                 case '/my-account/my-details/':
                     this.getMoMoneyBalance();
@@ -261,7 +261,6 @@ class swfAccountController {
 		xhr.open('POST', 'http://monat:8906/Slatwall/index.cfm/api/scope/uploadProfileImage', true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
-			console.log(response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
 		  	 } 
@@ -272,7 +271,6 @@ class swfAccountController {
     public getUserProfileImage = () =>{
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
-            console.log(this.accountProfileImage)
         });
     }
 

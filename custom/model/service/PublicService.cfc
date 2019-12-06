@@ -913,13 +913,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
 	public any function getAccountProfileImage(){
-        param name="arguments.data.identifierType" default= false; 
-        param name="arguments.data.identifier" default= false; 
+        param name="arguments.data.identifierType" default= ''; 
+        param name="arguments.data.identifier" default= ''; 
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
         
         //if the identifiers are not passed in get the account on scope
-        if(!arguments.data.identifier || !arguments.data.identifierType) {
+        if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
             account = getHibachiScope().getAccount();
             arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
         }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
