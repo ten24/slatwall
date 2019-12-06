@@ -270,7 +270,7 @@ class swfAccountController {
     }     
     
     public getUserProfileImage = () =>{
-        this.publicService.doAction('getAccountProfileImage', {height:50, width:50}).then(result=>{
+        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
             console.log(this.accountProfileImage)
         });
