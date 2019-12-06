@@ -107,41 +107,56 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var formatedResponse = {};
 		formatedResponse['success'] = false;
+		formatedResponse['message'] = '';
 					
-		if(structKeyExists(response, 'success')) {
+		if( structKeyExists(response, 'validatedAddresses') &&
+			IsArray(response.validatedAddresses) &&
+			ArrayLen(response.validatedAddresses)
+		){
+			var suggestion = response.validatedAddresses[1];
 			
-			if( structKeyExists(response, 'validatedAddresses') &&
-				IsArray(response.validatedAddresses) &&
-				ArrayLen(reason.validatedAddresses)
-			){
-				var suggestion = response.validatedAddresses[1];
-				
-				var formattedSuggestion = {};
-				formattedSuggestion['streetAddress'] = suggestion["line1"];
-				formattedSuggestion['street2Address'] = suggestion["line2"];
-				formattedSuggestion['city'] = suggestion["city"];
-				formattedSuggestion['stateCode'] = suggestion["region"];
-				formattedSuggestion['postalCode'] = suggestion["postalCode"];
-				formattedSuggestion['countryCode'] = suggestion["country"];
-				
-				// Comparing most relevant points
-				formatedResponse['success'] = compareNoCase( arguments.address["streetAddress"], formattedSuggestion["streetAddress"]) == 0
-								  && compareNoCase( arguments.address["city"], formattedSuggestion["city"]) == 0
-								  && compareNoCase( arguments.address["stateCode"], formattedSuggestion["stateCode"]) == 0
-								  && compareNoCase( left(arguments.address["postalCode"],5), left(formattedSuggestion["postalCode"],5)) == 0;
-								  
-				formatedResponse['suggestedAddress'] = formattedSuggestion;
+			var formattedSuggestion = {};
+			formattedSuggestion['addressID'] = arguments.address['addressID'];
+			
+			formattedSuggestion['streetAddress'] = suggestion["line1"];
+			formattedSuggestion['street2Address'] = suggestion["line2"];
+			formattedSuggestion['city'] = suggestion["city"];
+			formattedSuggestion['stateCode'] = suggestion["region"];
+			formattedSuggestion['postalCode'] = suggestion["postalCode"];
+			formattedSuggestion['countryCode'] = suggestion["country"];
+			
+			
+			formatedResponse['success'] =  compreAddressWithSuggestion(arguments.address, formattedSuggestion);
+			formatedResponse['suggestedAddress'] = formattedSuggestion;
+			
+			if(StructKeyExists(response, 'resolutionQuality')) {
+				formatedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
 			}
+		
 		} 
 		else if( structKeyExists(response, 'error') ) {
 			formatedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
 		} 
 		else {
 			formatedResponse['message'] = "Something went wrong!!";
-			debugLog(responses) ;
+		}
+		
+		if(setting('debugModeFlag')){
+			debugLog(formatedResponse);
 		}
 		
 		return formatedResponse;
+	}
+	
+	/**
+	 * helper function to compare 2 address-structs
+	*/ 
+	public boolean function compreAddressWithSuggestion(required struct address, required struct suggestion){ 
+		// Comparing most relevant points
+		return compareNoCase( arguments.address["streetAddress"], arguments.suggestion["streetAddress"] ) == 0
+			&& compareNoCase( arguments.address["city"], arguments.suggestion["city"] ) == 0
+			&& compareNoCase( arguments.address["stateCode"], arguments.suggestion["stateCode"] ) == 0
+			&& compareNoCase( left(arguments.address["postalCode"],5), left(arguments.suggestion["postalCode"],5) ) == 0;
 	}
 
 	/**
@@ -186,7 +201,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		 * 
 		*/
 		var requestURL = 'https://rest.avatax.com/api/v2';
-		if(setting('debugModeFlag')) {
+		if(setting('testingFlag')) { 
 			requestURL = 'https://sandbox-rest.avatax.com/api/v2';
 		}
 	
@@ -222,12 +237,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		 * If there's an error, add request data: in the response
 		 * NOTE: for a typical error/success responses see at the bottom of this file
 		*/
-		if( structKeyExists(response, 'error') ) {
+		if( structKeyExists(response, 'error') && setting('debugModeFlag') ) {
 			response['requestAttributes'] = httpRequest.getAttributes() ;
 			response['requestParams'] = httpRequest.getParams();
+			debugLog(response);
 		}
-		
-		debugLog(response);
 
 		return response;
 	}
