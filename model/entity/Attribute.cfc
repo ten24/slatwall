@@ -178,6 +178,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			{value="password", name=rbKey("entity.attribute.attributeInputType.password")},
 			{value="radioGroup", name=rbKey("entity.attribute.attributeInputType.radioGroup")},
 			{value="readOnly", name=rbKey("entity.attribute.attributeInputType.readOnly")},
+			{value="readOnlyRelatedObject", name=rbKey("entity.attribute.attributeInputType.readOnlyRelatedObject")},
 			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeInputType.relatedObjectSelect")},
 			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeInputType.relatedObjectMultiselect")},
 			{value="select", name=rbKey("entity.attribute.attributeInputType.select")},

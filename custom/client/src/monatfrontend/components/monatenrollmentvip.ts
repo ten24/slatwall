@@ -240,6 +240,7 @@ class VIPController {
 	public editFlexshipDate = () => {
 		this.observerService.notify('editFlexshipDate');
 	}
+	
 }
 
 class MonatEnrollmentVIP {

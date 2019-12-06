@@ -435,8 +435,15 @@ component output="false" accessors="true" extends="HibachiController" {
             argumentsCollection
         */
         var propertyDisplayOptions = [];
-        var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
-        
+
+		if(structKeyExists(arguments.rc, 'entityID') && len(arguments.rc.entityID)){
+			var entity = getService('hibachiService').invokeMethod('get#arguments.rc.entityName#',{1:arguments.rc.entityID});
+		}
+
+		if(isNull(entity)){ 
+			var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+		}        
+
         if(entity.hasAttributeCode(arguments.rc.property)){
         	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
         	
