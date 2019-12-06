@@ -863,13 +863,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.width" default= 250; 
         
         var account = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).getOwnerAccount();
+        var returnAccount = {};
+        
         if(!isNull(account)){
-            var returnAccount = {
-                firstName = account.getFirstName(),
-                lastName = account.getLastName(),
-                accountImage: getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'',
-                calculatedFullName: account.getCalculatedFullName()
-            }
+            returnAccount['firstName'] =  account.getFirstName();
+            returnAccount['lastName'] = account.getLastName();
+            returnAccount['accountImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            returnAccount['calculatedFullName'] = account.getCalculatedFullName();
+
             arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
         }else{
             arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
