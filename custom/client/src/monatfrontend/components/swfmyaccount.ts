@@ -32,6 +32,8 @@ class swfAccountController {
     public mostRecentFlexship:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
+    public accountProfileImage;
+    
     // @ngInject
     constructor(
         public publicService,
@@ -55,6 +57,8 @@ class swfAccountController {
     }
     
 	public $onInit = () =>{
+	    this.getUserProfileImage();
+	    
         this.getAccount();
 	}
 
@@ -263,7 +267,14 @@ class swfAccountController {
 		  	 } 
 		};
         xhr.send(tempdata);
-    }               
+    }     
+    
+    public getUserProfileImage = () =>{
+        this.publicService.doAction('getAccountProfileImage', {height:50, width:50}).then(result=>{
+            this.accountProfileImage = result.accountProfileImage;
+            console.log(this.accountProfileImage)
+        });
+    }
 
 }
 

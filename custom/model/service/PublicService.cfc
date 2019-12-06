@@ -873,9 +873,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var strPath = getDirectoryFromPath( expandPath( "./" ));
 
 		if (findNoCase("Slatwall", strPath)){
-			var uploadDirectory = "#strPath#custom/assets/files/profileImage/";
+			var uploadDirectory = "#strPath#custom/assets/images/profileImage/";
 		}else{
-			var uploadDirectory = "#strPath#Slatwall/custom/assets/files/profileImage/";
+			var uploadDirectory = "#strPath#Slatwall/custom/assets/images/profileImage/";
 		}
 		var fileName = '#arguments.data.imageFile#';
 		
@@ -887,8 +887,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 		
 		//delete the last profile image
-		if(!isNull(account.getProfileImage()) && fileExists('/Slatwall/custom/assets/files/profileImage/#account.getProfileImage()#')){
-		    fileDelete('/Slatwall/custom/assets/files/profileImage/#account.getProfileImage()#')
+		if(!isNull(account.getProfileImage()) && fileExists('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')){
+		    fileDelete('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')
 		}
 		
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
@@ -912,8 +912,30 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-	public any function getUserProfileImage(){
-	    
+	public any function getAccountProfileImage(){
+        param name="arguments.data.identifierType" default= false; 
+        param name="arguments.data.identifier" default= false; 
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        
+        //if the identifiers are not passed in get the account on scope
+        if(!arguments.data.identifier || !arguments.data.identifierType) {
+            account = getHibachiScope().getAccount();
+            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+        }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
+            //if identifiers are passed in, try to get the account using them
+            try{
+                var method = 'getAccountBy#toString(arguments.data.identifierType)#';
+                var account = invoke(accountService, method, [arguments.data.identifier]);   
+                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            }catch(any e){
+                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            }
+        }else{
+            // if someone passes empty strings as an argument, return an empty string
+            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+        }
+
 	}
 
 }
