@@ -870,7 +870,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             returnAccount['lastName'] = account.getLastName();
             returnAccount['accountImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
             returnAccount['calculatedFullName'] = account.getCalculatedFullName();
-
             arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
         }else{
             arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
