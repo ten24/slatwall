@@ -860,8 +860,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
 	public void function uploadProfileImage(required any data) {
-			
-		getFileInfo(arguments.data.uploadFile);
+		
+		try{
+		    getFileInfo(arguments.data.uploadFile);
+		}catch(any e){
+		    return;
+		}
+		
         account = getHibachiScope().getAccount();
 
 		// Get the upload directory for the current property
@@ -889,7 +894,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
 			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
 		}else{
-			throw('There was an issue uploading the file')
+			getHibachiScope().addActionResult( "uploadProfileImage", false );
 		}
 		//check if the file exists.
 		if (fileExists("#fullFilePath#")){
@@ -907,5 +912,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
+	public any function getUserProfileImage(){
+	    
+	}
 
 }
