@@ -14,7 +14,7 @@ class MonatSiteOwnerController {
 	
 	public getSiteOwner=()=>{
 	    let accountNumber = hibachiConfig.siteOwner;
-	    this.publicService.doAction('getSiteOwnerAccount', {identifier: accountNumber, identifierType: 'accountNumber' }).then(result => {
+	    this.publicService.doAction('getSiteOwnerAccount').then(result => {
 	        this.ownerAccount = result.ownerAccount;
 	    });
 	}

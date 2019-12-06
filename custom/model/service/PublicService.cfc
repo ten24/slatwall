@@ -862,7 +862,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
         
-        var account = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).getOwnerAccount() 
+        var account = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).getOwnerAccount();
         if(!isNull(account)){
             var returnAccount = {
                 firstName = account.getFirstName(),
