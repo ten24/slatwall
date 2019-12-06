@@ -134,6 +134,7 @@ class SWReturnOrderItemsController{
     
     constructor(
         public $hibachi,
+        public publicService,
         private collectionConfigService
     ){
         this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
@@ -218,12 +219,13 @@ class SWReturnOrderItemsController{
     }
    
     private updateRefundTotals = () =>{
-       let refundSubtotal = 0;
-       let refundPVTotal = 0;
-       let refundCVTotal = 0;
-       let allocatedOrderDiscountAmountTotal = 0;
-       let allocatedOrderPVDiscountAmountTotal = 0;
-       let allocatedOrderCVDiscountAmountTotal = 0;
+        let refundSubtotal = 0;
+        let refundPVTotal = 0;
+        let refundCVTotal = 0;
+        let allocatedOrderDiscountAmountTotal = 0;
+        let allocatedOrderPVDiscountAmountTotal = 0;
+        let allocatedOrderCVDiscountAmountTotal = 0;
+        let modifiedUnitPriceFlag = false;
         
         this.orderItems.forEach((item:any)=>{
             refundSubtotal += item.refundTotal + ( item.taxRefundAmount || 0 );
@@ -232,7 +234,14 @@ class SWReturnOrderItemsController{
             allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
             allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
             allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
+            
+            if(item.refundUnitPrice != item.calculatedExtendedUnitPriceAfterDiscount){
+                modifiedUnitPriceFlag = true;
+            }
         })
+        
+        this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
+        
         this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
         this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
         this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
