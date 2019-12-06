@@ -1450,6 +1450,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+
+	public boolean function isValidPublishedEndDateTime() {
+		return isNull(this.getPublishedEndDateTime()) || 
+				this.getPublishedEndDateTime() >= this.getPublishedStartDateTime();
+	}
+
+	// =============== END: Custom Validation Methods ======================
+
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentationPropertyName() {
