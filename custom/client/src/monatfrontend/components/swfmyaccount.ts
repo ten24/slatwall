@@ -255,8 +255,8 @@ class swfAccountController {
     
     public uploadImage = () =>{
         let tempdata = new FormData();
-        tempdata.append("uploadFile", document.getElementById('profileImage').files[0]);
-        tempdata.append("imageFile", document.getElementById('profileImage').files[0].name);
+        tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
+        tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
 		let xhr = new XMLHttpRequest();
 		let url = window.location.href
 		let urlArray = url.split("/");
