@@ -69480,9 +69480,11 @@ var SWSiteAndCurrencySelectController = /** @class */ (function () {
                     }
                 }
             }
-            _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
-            if (_this.currencyCodeOptions.length === 1) {
-                _this.currencyCode = _this.currencyCodeOptions[0];
+            if (_this.site != null) {
+                _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
+                if (_this.currencyCodeOptions.length === 1) {
+                    _this.currencyCode = _this.currencyCodeOptions[0];
+                }
             }
         };
         this.site = this.siteAndCurrencyOptions[0];
@@ -72314,9 +72316,10 @@ var ReturnOrderItem = /** @class */ (function () {
     return ReturnOrderItem;
 }());
 var SWReturnOrderItemsController = /** @class */ (function () {
-    function SWReturnOrderItemsController($hibachi, collectionConfigService) {
+    function SWReturnOrderItemsController($hibachi, publicService, collectionConfigService) {
         var _this = this;
         this.$hibachi = $hibachi;
+        this.publicService = publicService;
         this.collectionConfigService = collectionConfigService;
         this.orderPayments = [];
         this.refundSubtotal = 0;
@@ -72400,6 +72403,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var allocatedOrderDiscountAmountTotal = 0;
             var allocatedOrderPVDiscountAmountTotal = 0;
             var allocatedOrderCVDiscountAmountTotal = 0;
+            var modifiedUnitPriceFlag = false;
             _this.orderItems.forEach(function (item) {
                 refundSubtotal += item.refundTotal + (item.taxRefundAmount || 0);
                 refundPVTotal += item.refundPVTotal;
@@ -72407,7 +72411,11 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
                 allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
                 allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
+                if (item.refundUnitPrice != item.calculatedExtendedUnitPriceAfterDiscount) {
+                    modifiedUnitPriceFlag = true;
+                }
             });
+            _this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
@@ -78235,7 +78243,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78249,6 +78256,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;

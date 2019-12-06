@@ -9,14 +9,14 @@
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="true" fieldAttributes="disabled">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="true" fieldAttributes="disabled">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="true" fieldAttributes="disabled">
 		</hb:HibachiPropertyList>
 
 		<hb:HibachiPropertyList divclass="col-md-6">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="true" fieldAttributes="disabled">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriodStartDateTime" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriodEndDateTime" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="true" fieldAttributes="disabled">
 		</hb:HibachiPropertyList>
 		
 		
