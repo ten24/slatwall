@@ -93,12 +93,29 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		}
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//set the initial order flag if needed.
 		try{
+			
+			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
-			order.setCommissionPeriod(commissionDate);
-			getService("orderService").saveOrder(order);
+			arguments.order.setCommissionPeriod(commissionDate);
+			
+			//Initial Order Flag
+			//Set the Initial Order Flag as needed
+			var previousOrdersCollection = getService("OrderService").getOrderCollectionList();
+			//Filter by this orders account and initial order flag. If we find one, then this is not the first order.
+			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
+			previousOrdersCollection.addFilter("initialOrderFlag", true);
+			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
+			
+			if (!previousInitialOrderCount){
+				//this is the first order for this account
+				arguments.order.setInitialOrderFlag(true);
+			}
+			
+			getService("orderService").saveOrder(arguments.order);
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate#");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}
 }

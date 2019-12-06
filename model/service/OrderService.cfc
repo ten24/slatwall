@@ -1521,6 +1521,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
+		arguments.orderTemplate.setScheduleOrderProcessingFlag(false);
 
 		var newOrder = this.newOrder(); 
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
@@ -3265,8 +3266,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
-
+			this.logHibachi('Order added to modified entities and is being saved.', true);
+			
 		}
+		
 		return arguments.order;
 	}
 	
@@ -4230,15 +4233,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(orderReturnItem)) {
 					if(!isNull(thisRecord.stockLoss) && thisRecord.stockLoss > 0){
 						thisRecord.quantity = thisRecord.quantity - thisRecord.stockLoss;
-						var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
-						newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
-						newOrderReturnItem.setOrderReturn(arguments.orderReturn);
-						newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
-						orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
-						newOrderReturnItem.setQuantity(thisRecord.stockLoss);
-						this.saveOrderItem(orderReturnItem);
-						this.saveOrderItem(newOrderReturnItem);
-						
+						if(thisRecord.quantity > 0){
+							var newOrderReturnItem = this.copyToNewOrderItem(orderReturnItem);
+							newOrderReturnItem.setOrder(arguments.orderReturn.getOrder());
+							newOrderReturnItem.setOrderReturn(arguments.orderReturn);
+							newOrderReturnItem.setReferencedOrderItem(orderReturnItem.getReferencedOrderItem());
+							orderReturnItem.setQuantity(orderReturnItem.getQuantity() - thisRecord.stockLoss);
+							newOrderReturnItem.setQuantity(thisRecord.stockLoss);
+							this.saveOrderItem(orderReturnItem);
+							this.saveOrderItem(newOrderReturnItem);
+						}else{
+							var newOrderReturnItem = orderReturnItem;
+						}
 						this.createStockReceiverItemForReturnOrderItem(stockReceiver, newOrderReturnItem, location, thisRecord.stockLoss);
 						
 						if(!structKeyExists(local,'stockAdjustment')){
@@ -4268,7 +4274,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						stockAdjustment = getStockService().processStockAdjustment(stockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
 						
 					}
-					this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
+					if(thisRecord.quantity > 0){
+						this.createStockReceiverItemForReturnOrderItem(stockReceiver, orderReturnItem, location, thisRecord.quantity);
+					}
 
 				}
 			}
@@ -4438,8 +4446,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If no errors, attempt To Update The Order Status
 		if(!arguments.orderPayment.hasErrors()) {
 			this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');
+			getHibachiScope().addModifiedEntity(arguments.orderPayment.getOrder());
+			this.logHibachi('Order added to modified entities and status updated', true);
         }
-
+        
 		return arguments.orderPayment;
 
 	}
@@ -4999,7 +5009,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 
 	// ===================== START: Delete Overrides ==========================
-	
+
 	public any function deleteOrder( required any order ) {
 
 		// Check delete validation
@@ -5217,6 +5227,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
 		return refundSkuCollectionList;
 	}
+	
+	// Process: Order Payment
+	public any function processOrderPayment_updateAmount(required any orderPayment, required any processObject) {
+	
+		orderPayment.setAmount(processObject.getAmount());
+		
+		this.saveOrderPayment(orderPayment);
+			
+		return orderPayment;
+		
+	}
+	
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {

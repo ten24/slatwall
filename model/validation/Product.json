@@ -20,6 +20,7 @@
 		"unusedProductOptions": [{ "contexts": "addOption", "method": "hasUnusedProductOptionCombinations" }],
 		"unusedProductOptionGroups": [{ "contexts": "addOptionGroup", "minCollection": 1 }],
 		"unusedProductSubscriptionTerms": [{ "contexts": "addSubscriptionTerm", "minCollection": 1 }],
-		"urlTitle": [{ "contexts": "save", "required": true, "unique": true }]
+		"urlTitle": [{ "contexts": "save", "required": true, "unique": true }],
+		"publishedEndDateTime": [{ "contexts": "save", "method": "isValidPublishedEndDateTime" }]
 	}
 }

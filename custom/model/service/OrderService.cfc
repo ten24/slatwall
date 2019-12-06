@@ -52,13 +52,13 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
-        if(!isStruct(originalOrderItem)){
+        if(isObject(arguments.originalOrderItem)){
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
 	            if(!isNull(price)){
 	                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
-	            }
+	            } 
 	        }
         }
         return returnOrderItem;
@@ -477,5 +477,15 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
+	
+	public any function deleteOrderTemplate( required any orderTemplate ) {
+		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
+		
+		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
+			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
+			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		}
+		
+		return super.delete( arguments.orderTemplate );
+	}
 }
-
