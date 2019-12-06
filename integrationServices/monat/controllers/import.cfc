@@ -2105,7 +2105,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			for (var order in orders){
     			    index++;
     			    
-    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag = true){
+    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag == true){
 	    			    //This is temp to get orders in without kits. 
 	    			    
 	    			    var hasKit = false;
@@ -2160,26 +2160,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				    newOrder.setRemoteAmountTotal(order['TotalInvoiceAmount']?:0);//*
 			        newOrder.setCalculatedTotal(order['TotalInvoiceAmount']?:0); //*
 			        
-			        /**
-			         * Handle discounts on the order. 
-			         **/
-			        // Redeem Points - PTS-Redeem
-			        
-			        // This needs to use the detail Discount sku and price.PTS-Redeem, Discount
-			        if (!isNull(order['DiscountAmount']) && order['DiscountAmount'] > 0){
-			        	newOrder.setCalculatedDiscountTotal(order['DiscountAmount']?:0);//*
-			        	
-			        	
-			        	var promotionApplied = new Slatwall.model.entity.PromotionApplied();
-			        	
-			        	promotionApplied.setManualDiscountAmountFlag(true);
-			        	promotionApplied.setDiscountAmount(order['DiscountAmount']);
-			        	promotionApplied.setRemoteID(order["OrderID"]);
-			        	promotionApplied.setOrder(newOrder);
-			        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
-			        	
-			        	ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied);
-			        }
 			        
 			        //newOrder.setCalculatedFulfillmentTotal(order['FreightAmount']?:0);//*
 			        newOrder.setMiscChargeAmount(order['MiscChargeAmount']?:0);
@@ -2423,6 +2403,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	var detailIndex = 0;
                     	for (var detail in order['Details']){
                     		detailIndex++;
+                    		
+                    		if (!isNull(detail['ItemCode']) && (detail['ItemCode'] == "Discount" || detail['ItemCode'] == "PTS-Redeem")){
+								        	
+					        	var promotionApplied = new Slatwall.model.entity.PromotionApplied();
+					        	
+					        	promotionApplied.setManualDiscountAmountFlag(true);
+					        	if (val(detail['price']) < 0){
+					        		promotionApplied.setDiscountAmount(abs(val(detail['price'])));
+					        	}else{
+					        		promotionApplied.setDiscountAmount(val(detail['price']));	
+					        	}
+					        	
+					        	promotionApplied.setRemoteID(order["OrderID"]);
+					        	promotionApplied.setOrder(newOrder);
+					        	promotionApplied.setAppliedType("order");
+					        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
+					        	ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied);
+					        }
                     	   /**
                     		 * If the sku is a 'parent', then the lookup by skucode needs the currencyCode appended to it.
                     		 * This is found using KitFlagCode M (Master), versus C (Component).
@@ -4278,7 +4276,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
-	//http://monat/Slatwall/?slatAction=monat:import.upsertOrders&pageNumber=1&pageMax=2&pageSize=25
+	//http://monat/Slatwall/?slatAction=monat:import.upsertOrderItemsPriceAndPromotions&pageNumber=1&pageMax=2&pageSize=50&skipKitsFlag=true
 	public void function upsertOrderItemsPriceAndPromotions(rc) { 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
@@ -4322,7 +4320,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			    index++;
     			    
     			    //Skip kits
-    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag = true){
+    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag == true){
 	    			    //This is temp to get orders in without kits. 
 	    			    
 	    			    var hasKit = false;
@@ -4381,6 +4379,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					        	
 					        	promotionApplied.setRemoteID(order["OrderID"]);
 					        	promotionApplied.setOrder(newOrder);
+					        	promotionApplied.setAppliedType("order");
 					        	promotionApplied.setCurrencyCode(order['CurrencyCode']?:'USD');
 					        	ormStatelessSession.insert("SlatwallPromotionApplied", promotionApplied);
 					        }
@@ -4404,72 +4403,66 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		
     			            if (!isNull(sku)){	
     			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
-    			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
-    			                
-    			                //echo("Finding order item by remoteID");
-    			                if (isNull(orderItem)){
-    			                	var orderItem = new Slatwall.model.entity.OrderItem();
-    			                }
-    			                
-    			                //Check if the skus are always broken into multiple skus under one product.
-    			                orderItem.setSku(sku);
-        			            orderItem.setSkuPrice(val(sku.getPrice()));//*
-        			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
-        			            orderItem.setPrice( val(detail['Price'])?:0 );//*
-        			        	orderItem.setOrder(newOrder);//*
-        			        	
-        			        	if (structKeyExists(detail, "KitFlagCode") && len(detail.kitFlagCode)){
-        			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
-        			        	}
-        			        	
-        			        	if (structKeyExists(detail, "ItemCategoryCode") && len(detail.ItemCategoryCode)){
-        			        		orderItem.setItemCategoryCode(detail['ItemCategoryCode']);	
-        			        	}
-        			        	
-        			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
-        			        	if (isReturn){
-        			        		
-        			        		orderItem.setOrderItemType(oitReturn);
-        			        		orderItem.setOrderReturn(orderReturn);
-        			        		orderItem.setReturnsReceived(detail['ReturnsReceived']);
-        			        	}else { 
-        			        		orderItem.setOrderItemType(oitSale);//*
-        			        	}
-        			        	
-        			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
-        			            orderItem.setTaxableAmount(detail['TaxBase']);//*
-        			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
-        			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );//*
-        			            orderItem.setProductPackVolume( detail['ProductPackVolume']?:0  );//*
-        			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
-        			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
-        			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
-                    			orderItem.setCurrencyCode( order['CurrencyCode']?:'USD' );//*
-                    			
-                    			
-                    			if (orderItem.getNewFlag()){
-        			            	ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
-                    			}else{
-                    				ormStatelessSession.update("SlatwallOrderItem", orderItem); 
-                    			}
-        			            
-        			            if (isKit) {
-        			            	var kitName = replace(detail['KitFlagName'], " Master", "");
-    			            		parentKits[kitName] = orderItem;	 // set the parent so we can use on the children.
+    			            	try{
+	    			            	var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
+	    			                
+	    			                //echo("Finding order item by remoteID");
+	    			                if (isNull(orderItem)){
+	    			                	var orderItem = new Slatwall.model.entity.OrderItem();
+	    			                }
+	    			                
+	    			                //Check if the skus are always broken into multiple skus under one product.
+	    			                orderItem.setSku(sku);
+	        			            orderItem.setSkuPrice(val(sku.getPrice()));//*
+	        			            orderItem.setQuantity( detail['QtyOrdered']?:1 );//*
+	        			            orderItem.setPrice( val(detail['Price'])?:0 );//*
+	        			        	orderItem.setOrder(newOrder);//*
+	        			        	
+	        			        	if (structKeyExists(detail, "KitFlagCode") && len(detail.kitFlagCode)){
+	        			        		orderItem.setKitFlagCode(detail['KitFlagCode']);	
+	        			        	}
+	        			        	
+	        			        	if (structKeyExists(detail, "ItemCategoryCode") && len(detail.ItemCategoryCode)){
+	        			        		orderItem.setItemCategoryCode(detail['ItemCategoryCode']);	
+	        			        	}
+	        			        	
+	        			            orderItem.setRemoteID(detail['OrderDetailId']?:"" );
+	        			            orderItem.setTaxableAmount(detail['TaxBase']);//*
+	        			            orderItem.setCommissionableVolume( detail['CommissionableVolume']?:0 );//*
+	        			            orderItem.setPersonalVolume( detail['QualifyingVolume']?:0 );//*
+	        			            orderItem.setProductPackVolume( detail['ProductPackVolume']?:0  );//*
+	        			            orderItem.setRetailCommission(  detail['RetailProfitAmount']?:0 );//*
+	        			            orderItem.setRetailValueVolume( detail['retailVolume']?:0 );//add this //*
+	        			            orderItem.setOrderItemLineNumber(  detail['OrderLine']?:0 );//*
+	                    			orderItem.setCurrencyCode( order['CurrencyCode']?:'USD' );//*
+	                    			
+	                    			
+	                    			if (orderItem.getNewFlag()){
+	        			            	ormStatelessSession.insert("SlatwallOrderItem", orderItem); 
+	                    			}else{
+	                    				ormStatelessSession.update("SlatwallOrderItem", orderItem); 
+	                    			}
+	        			            
+	        			            if (isKit) {
+	        			            	var kitName = replace(detail['KitFlagName'], " Master", "");
+	    			            		parentKits[kitName] = orderItem;	 // set the parent so we can use on the children.
+	    			            	}
+	    			            	
+	        			            //Taxbase
+	        			            
+	        			            //adds the tax for the order to the first Line Item
+	        			            /*if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
+	        			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
+	        			            	taxApplied.setOrderItem(orderItem);//*
+	        			            	taxApplied.setManualTaxAmountFlag(true);//*
+	        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');//*
+	        			            	taxApplied.setTaxAmount(order['SalesTax']);//*
+	        			            	
+	        			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
+	        			            }*/
+    			            	}catch(oiError){
+    			            		
     			            	}
-    			            	
-        			            //Taxbase
-        			            
-        			            //adds the tax for the order to the first Line Item
-        			            /*if (orderItem.getNewFlag() && detailIndex == 1 && !isNull(order['SalesTax']) && order['SalesTax'] > 0){
-        			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
-        			            	taxApplied.setOrderItem(orderItem);//*
-        			            	taxApplied.setManualTaxAmountFlag(true);//*
-        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');//*
-        			            	taxApplied.setTaxAmount(order['SalesTax']);//*
-        			            	
-        			            	ormStatelessSession.insert("SwTaxApplied", taxApplied); 
-        			            }*/
         			            //returnLineID, must be imported in post processing. ***Note
     			            } //else  use this as an else if we are not importing kit components as orderItems.
     			            
