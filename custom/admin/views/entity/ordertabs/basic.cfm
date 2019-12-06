@@ -105,6 +105,9 @@
 				<cfif !isNull(rc.order.getOrderCloseDateTime())>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 				</cfif>
+				<cfif !isNull(rc.order.getCommissionPeriod())>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="false" displayType="table">
+				</cfif>
 				<hb:HibachiPropertyTableBreak header="Totals" />
 			</hb:HibachiPropertyTable>
 		
