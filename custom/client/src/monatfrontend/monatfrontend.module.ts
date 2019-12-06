@@ -26,11 +26,13 @@ import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
+import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
 import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
+import { MonatProductModal } from './components/monat-product-modal';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
 import { SponsorSearchSelector } from './components/sponsor-search-selector';
 import { SWFPagination } from './components/swfpagination';
@@ -81,10 +83,12 @@ var monatfrontendmodule = angular
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
 	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 	.directive('paginationController', SWFPagination.Factory())
+	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
 	.directive('monatProductCard', MonatProductCard.Factory())
+	.directive('monatProductModal', MonatProductModal.Factory())
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())

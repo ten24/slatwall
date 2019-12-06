@@ -105,7 +105,38 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 
 		queryService.execute(sql=sql);
 	} 
+
+	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean flagValue=true){
+		
+		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
+		var queryService = new query();
+		
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
+		sql &= "'#arguments.entityName#' as baseObject, ";  
+		sql &= "#primaryIDPropertyName# as baseID, ";
+		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "now() as createdDateTime, ";
+		sql &= "now() as modifiedDateTime, ";
+
+		var accountID = 'NULL';
+		if(!isNull(getHibachiScope().getAccount())){
+			accountID = getHibachiScope().getAccount().getAccountID(); 
+		}
+		
+		sql &= "'#accountID#' as createdByAccountID, ";
+		sql &= "'#accountID#' as modifiedByAccountID, ";
+		sql &= "0 as tryCount ";
+		
+		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
+		sql &= "WHERE #arguments.flagPropertyName# = :flagValue";
 	
+		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
+		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
+
+		queryService.execute(sql=sql);
+	}	
+
 	public void function insertEntityQueue(required string baseID, required string baseObject, string processMethod='', string entityQueueID = createHibachiUUID(), struct entityQueueData={}, string integrationID=''){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID', value='#arguments.entityQueueID#', CFSQLTYPE="CF_SQL_STRING");

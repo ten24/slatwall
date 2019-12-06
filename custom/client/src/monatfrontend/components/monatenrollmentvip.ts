@@ -227,7 +227,7 @@ class VIPController {
     
         this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
-			this.flexshipTotal = this.flexshipItemList.length ? this.flexshipItemList[0].orderTemplatePrice : "";
+			this.flexshipTotal = result.orderTotal;
 			this.observerService.notify('onNext');
         	this.loading = false;
         });
@@ -240,6 +240,7 @@ class VIPController {
 	public editFlexshipDate = () => {
 		this.observerService.notify('editFlexshipDate');
 	}
+	
 }
 
 class MonatEnrollmentVIP {

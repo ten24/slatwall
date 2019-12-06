@@ -13,6 +13,8 @@ class MonatHttpInterceptor {
             config.headers['SWX-cmsSiteID'] = hibachiConfig.cmsSiteID;
             config.headers['SWX-cmsCategoryID'] = hibachiConfig.cmsCategoryID;
             config.headers['SWX-contentID'] = hibachiConfig.contentID;
+            config.headers['SWX-contentID'] = hibachiConfig.contentID;
+            config.headers['SWX-siteOwner'] = hibachiConfig.siteOwner;
 
         }
         return config;

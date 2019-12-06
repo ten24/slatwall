@@ -236,6 +236,11 @@
 				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnlyRelatedObject">
+			<cfoutput>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
@@ -350,6 +355,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>
@@ -374,6 +380,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>

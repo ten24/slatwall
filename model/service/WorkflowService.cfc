@@ -165,7 +165,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
-		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -214,14 +213,20 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
+							
 							//Don't Instantiate every object, just passthroughn the collection records returned
 							scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
-							var triggerCollectionResult = scheduleCollection.getPageRecords();
+							
 							var processData = {
-								entity = this.invokeMethod('new#currentObjectName#'),
-								workflowTrigger = arguments.workflowTrigger,
-								collectionData = { 'collectionData' = triggerCollectionResult}
+								entity : this.invokeMethod('new#currentObjectName#'),
+								workflowTrigger : arguments.workflowTrigger,
+								collectionData : { 'collectionConfig' = scheduleCollection.getCollectionConfigStruct() }
 							};
+
+							if(arguments.workflowTrigger.getCollectionFetchRecordsFlag()){
+								processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+							}
+
 							//Call proccess method to execute Tasks
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					} else {
@@ -333,7 +338,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
-	
+
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
@@ -399,14 +404,44 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				if(structKeyExists(arguments.data, 'collectionData')){
+				//we need some form of collection data for this to work	
+				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
+					actionSuccess = false; 
+					break;
+				}
+
+				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
+				if(!isNull(processEntityQueueFlagPropertyName)){
+					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName)){
+						actionSuccess = false; 
+						break;
+					}	
+
+					var entityCollection = arguments.entity.getEntityCollectionList();
+					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
+					
+					var updateData = {
+						'#processEntityQueueFlagPropertyName#': true
+					};
+
+					entityCollection.executeUpdate(updateData);		
+
+					//call entity queue dao to insert into with a select
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), updateData[processEntityQueueFlagPropertyName]);
+					
+					actionSuccess = true; 
+					break; 
+				} 
+				
+				//fallback solution not ideal for large data sets
+				if(structKeyExists(arguments.data, 'collectionData')){ 	
+					
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
 					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
-					actionSucess = true; 
-				} else { 
-					actionSucess = false; 
-				}	
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					
+					actionSuccess = true; 
+				}
 				break;
 
 			//IMPORT
@@ -459,8 +494,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(
 				workflowTask.getActiveFlag() 
 				&& (
-					!structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
+					structKeyExists(arguments.data,'entity')
+					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
 				)
 			){
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
@@ -486,7 +521,7 @@ component extends="HibachiService" accessors="true" output="false" {
 							}
         			}
 				}
-			}
+			} 
 		}
 		if(structKeyExists(arguments.data,'entity')){
 			return arguments.data.entity;

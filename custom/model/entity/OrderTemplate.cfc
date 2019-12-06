@@ -16,8 +16,8 @@ component {
 				!isNull(getAccount().getEnrollmentDate()) && 
 				getAccount().getAccountType() == 'MarketPartner'
 			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
-				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
 			} 
 		}
 
@@ -58,4 +58,9 @@ component {
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
+
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
 }

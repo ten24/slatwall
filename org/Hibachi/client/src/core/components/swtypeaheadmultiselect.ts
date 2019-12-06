@@ -25,7 +25,8 @@ class SWTypeaheadMultiselectController {
     public rightContentPropertyIdentifier:string; 
     public inListingDisplay:boolean; 
     public listingId:string; 
-    public disabled:boolean; 
+    public disabled:boolean;
+    public prependPropertyName:string; // used for formatting items to be added on listingDisplay
       
     // @ngInject
 	constructor(private $scope, 
@@ -68,6 +69,13 @@ class SWTypeaheadMultiselectController {
         if(!item){
             return;
         }
+
+        if(angular.isDefined(this.prependPropertyName) && this.prependPropertyName.length){
+            for (const property in item) {
+                item[this.prependPropertyName + "_" + property] = item[property];
+            }
+        }
+
         if(this.singleSelection){
             this.typeaheadService.notifyTypeaheadClearSearchEvent(this.typeaheadDataKey);
         }
@@ -123,7 +131,8 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,fallbackPropertiesToCompare:"@?"
         ,rightContentPropertyIdentifier:"@?"
         ,selectionFieldName:"@?"
-        ,disabled:"=?"
+        ,disabled:"=?",
+        prependPropertyName:"@?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;
