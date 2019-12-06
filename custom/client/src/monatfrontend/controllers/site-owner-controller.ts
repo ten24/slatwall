@@ -18,7 +18,6 @@ class MonatSiteOwnerController {
 	        this.ownerAccount = result.ownerAccount;
 	    });
 	}
-	
 }
 
 export { MonatSiteOwnerController };

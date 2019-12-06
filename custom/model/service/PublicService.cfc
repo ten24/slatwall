@@ -859,22 +859,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function getSiteOwnerAccount(required struct data){
-        param name="arguments.data.identifierType";
-        param name="arguments.data.identifier";
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
         
-        if(isNull(arguments.data.identifierType) || isNull(arguments.data.identifier)) return;
-        var method = 'getAccountBy#toString(arguments.data.identifierType)#';
-        var account = invoke(accountService, method, [arguments.data.identifier]);
-        
-        var returnAccount = {
-            firstName = account.getFirstName(),
-            lastName = account.getLastName(),
-            accountImage: getHibachiScope().getBaseImageURL() & account.getProfileImageTest(),
-            calculatedFullName: account.getCalculatedFullName()
+        var account = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).getOwnerAccount() 
+        if(!isNull(account)){
+            var returnAccount = {
+                firstName = account.getFirstName(),
+                lastName = account.getLastName(),
+                accountImage: getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'',
+                calculatedFullName: account.getCalculatedFullName()
+            }
+            arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
+        }else{
+            arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
         }
-        
-        arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
     }
-    
 
 }
