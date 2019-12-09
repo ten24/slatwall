@@ -43,9 +43,9 @@ component {
 			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
 			
 			//Find all valid previous placed sales orders for this account with a product pack on them.
-			previouslyPurchasedProductPacks.addFilter("order.accountID", arguments.account.getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", arguments.account.getAccountID());
 			previouslyPurchasedProductPacks.addFilter("order.orderNumber", "null", "IS NOT");
-			previouslyPurchasedProductPacks.addFilter("order.orderType", "otSales");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.orderSystemCode", "otSales");
 			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
 			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
 				return false; //they can not purchase this because they already have purchased it.
