@@ -1424,42 +1424,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
-
+		
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else if(!isNull(processObject.getAccountID())){
+		} 
+		else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
-		} else{
+		} 
+		else {
 			var account = getHibachiScope().getAccount();
 		}
 		
 		if(account.hasErrors()) {
 			arguments.orderTemplate.addError('create', account.getErrors());
-		} else {
-			if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
-				arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
-				return arguments.orderTemplate; 
-			}
-
-			arguments.orderTemplate.setAccount(account);
-			
-			var site = arguments.processObject.getSite() 
-			arguments.orderTemplate.setSite( site  );
-			
-			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-			
-			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
-				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
-			} 
-
-			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-			arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+			return arguments.orderTemplate;
+		} 
+		
+		if( !account.getCanCreateFlexshipFlag()) {
+			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
+			return arguments.orderTemplate;
 		}
-
+	
+		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+			return arguments.orderTemplate; 
+		}
+		
+		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		
 		return arguments.orderTemplate;
 	}
 	

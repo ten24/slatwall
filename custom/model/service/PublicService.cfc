@@ -242,7 +242,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
-        
+        if(orderTemplate.hasErrors()) {
+            addErrors(arguments.data, orderTemplate.getErrors());
+        }
+
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
     }
     
