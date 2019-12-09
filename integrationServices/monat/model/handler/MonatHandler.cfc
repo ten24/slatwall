@@ -106,9 +106,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			
 			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
-			order.setCommissionPeriod(commissionDate);
-			getService("orderService").saveOrder(order);
-			
 			//adding shipping and billing to flexship and activating
 			if(!isNull(arguments.data.orderTemplateID)){
 				
