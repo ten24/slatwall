@@ -25,7 +25,32 @@ component {
 		if(notValidRetailItem){
 			return false;
 		}
-
+		
+		//Check if this is MP account AND created in past 30 days AND is trying to add a product pack.
+		if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) > 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+			
+			return false;	 //can't purchase one past 30 days from account creation.
+		
+		//Check if they have previously purchased a product pack
+		} else if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) <= 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+		
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+			
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.accountID", arguments.account.getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderNumber", "null", "IS NOT");
+			previouslyPurchasedProductPacks.addFilter("order.orderType", "otSales");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		}
         return true; 
 	}
 
