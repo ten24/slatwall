@@ -236,6 +236,11 @@
 				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnlyRelatedObject">
+			<cfoutput>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
@@ -281,6 +286,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>
@@ -341,6 +347,17 @@
 		<cfcase value="textarea">
 			<cfoutput>
 				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+				<cfif isStruct(attributes.translateAttributes)>
+					<cfset attributes.translateAttributes.entity = "Translation" />
+					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+					<cfset attributes.translateAttributes.processContext = "updateProperty" />
+					<cfset attributes.translateAttributes.class = "form-control-feedback" />
+					<cfset attributes.translateAttributes.icon = "globe" />
+					<cfset attributes.translateAttributes.iconOnly = "true" />
+					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+				</cfif>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="time">
@@ -363,6 +380,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>

@@ -6,7 +6,7 @@ class monatFlexshipFrequencyModalController {
     public frequencyTerms:any;
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService, public publicService) {
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public publicService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -31,20 +31,21 @@ class monatFlexshipFrequencyModalController {
         this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(data => {
         	if(data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency') ) {
                 this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
+            	this.monatAlertService.success("Your flexship has been updated successfully");
                 this.closeModal();
         	} else {
         		throw(data);
         	}
         }).catch(error => {
             console.error(error);
-            // TODO: show alert / handle error
+	        this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;
         });
     }
     
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 }
 

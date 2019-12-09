@@ -51,6 +51,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Persistent Properties
 	property name="promotionQualifierID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="qualifierType" ormtype="string" hb_formatType="rbKey";
+	property name="message" ormtype="string" length="2000";
 	
 	property name="minimumItemQuantity" ormtype="integer" hb_nullRBKey="define.0";
 	property name="maximumItemQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";

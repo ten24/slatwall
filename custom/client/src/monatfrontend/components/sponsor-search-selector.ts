@@ -28,7 +28,7 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		this.getSearchResults();
+		//this.getSearchResults();
 	}
 	
 	private getCountryCodeOptions = () => {
@@ -82,6 +82,10 @@ class SponsorSearchSelectorController {
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
 		});
+	}
+	
+	public notifySelect = (account) =>{
+		this.observerService.notify('ownerAccountSelected', account)
 	}
 
 }

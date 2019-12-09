@@ -5,6 +5,9 @@ class MonatFlexshipCartContainerController {
     public orderTemplateItems: any[];
     public urlParams = new URLSearchParams(window.location.search);
     public context:string;
+    public canPlaceOrder:boolean;
+    public isOpened: boolean = false;
+    public orderTemplateItemTotal: number = 0;
     
     //@ngInject
     constructor(
@@ -12,9 +15,10 @@ class MonatFlexshipCartContainerController {
     	public rbkeyService,
     	public ModalService,
     	public observerService
-    ) { 
-        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess') 
-        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess') 
+    ) {   
+        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'editItemSuccess');
     }
     
     public $onInit = () => {
@@ -30,6 +34,27 @@ class MonatFlexshipCartContainerController {
     private makeTranslations = () => {
     	//TODO make translations for success/failure alert messages
     	this.makeCurrentStepTranslation();
+    }
+    
+    public toggleOpened = () => {
+        this.isOpened = !this.isOpened;
+    }
+    
+    public previousEnrollmentStep = () => {
+        this.observerService.notify('onPrevious');
+    }
+    
+    private setOrderTemplate = ( orderTemplate ) => {
+        this.orderTemplate = orderTemplate;
+        
+        // Update the order quantity based on data returned. 
+        // If we have order items, we will grab the length, if not, grab the calculated total.
+        this.orderTemplateItemTotal = 0;
+        if ( 'undefined' !== typeof orderTemplate.orderTemplateItems ) {
+            this.orderTemplateItemTotal = orderTemplate.orderTemplateItems.length;
+        } else if ( 'undefined' !== typeof orderTemplate.calculatedOrderTemplateItemsCount ) {
+            this.orderTemplateItemTotal = +orderTemplate.calculatedOrderTemplateItemsCount;
+        }
     }
 
     private makeCurrentStepTranslation = ( currentStep:number=1, totalSteps:number=2 ) => {
@@ -56,8 +81,9 @@ class MonatFlexshipCartContainerController {
         .getOrderTemplateDetails(this.orderTemplateId)
         .then(data => {
     		if(data.orderTemplate){
-                this.orderTemplate = data.orderTemplate;
+                this.setOrderTemplate( data.orderTemplate );;
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
+                this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
                 //TODO handle errors / success
     		} else {
     			throw(data);
@@ -81,8 +107,8 @@ class MonatFlexshipCartContainerController {
             	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems.splice(index, 1);
-    				if(data.ordertemplate){
-    					this.orderTemplate = data.orderTemplate;
+    				if(data.orderTemplate){
+    					this.setOrderTemplate( data.orderTemplate );;
     				}
         		} else {
                 	console.log('removeOrderTemplateItem res: ', data); 
@@ -103,8 +129,8 @@ class MonatFlexshipCartContainerController {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems[index] = data.orderTemplateItem;
     				
-    				if(data.ordertemplate){
-    					this.orderTemplate = data.orderTemplate;
+    				if(data.orderTemplate){
+    					this.setOrderTemplate( data.orderTemplate );;
     				}
         		} else {
         			console.error('increaseOrderTemplateItemQuantity res: ', data); 
@@ -124,8 +150,8 @@ class MonatFlexshipCartContainerController {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems[index] = data.orderTemplateItem;
     				
-    				if(data.ordertemplate){
-    					this.orderTemplate = data.orderTemplate;
+    				if(data.orderTemplate){
+    					this.setOrderTemplate( data.orderTemplate );;
     				}
     				
         		} else {

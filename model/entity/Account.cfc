@@ -152,7 +152,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
-	property name="accountType" ormtype="string" hb_formFieldType="select";
+property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
@@ -160,32 +160,39 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-	property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
-	property name="allowUplineEmailsFlag" ormtype="boolean";
-	property name="memberCode" ormtype="string";
-	property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
-	property name="subscriptionType" ormtype="string" hb_formFieldType="select";
-	property name="renewalDate" ormtype="timestamp" hb_formatType="date";
-	property name="spouseName" ormtype="string";
-	property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
-	property name="birthDate" ormtype="timestamp" hb_formatType="date";
-	property name="accountType" ormtype="string" hb_formFieldType="select";
-	property name="accountStatus" ormtype="string" hb_formFieldType="select";
-	property name="complianceStatus" ormtype="string" hb_formFieldType="select";
-	property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
-	property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
-	property name="gender" ormtype="string" hb_formFieldType="select";
-	property name="accountNumber" ormtype="string";
-	property name="payerName" ormtype="string";
-	property name="careerTitle" ormtype="string" hb_formFieldType="select";
-	property name="uplineMarketPartnerNumber" ormtype="string";
-	property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
-	property name="referType" ormtype="string" hb_formFieldType="select";
-	property name="terminationDate" ormtype="timestamp" hb_formatType="date";
-	property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
-	property name="languagePreference" ormtype="string" hb_formFieldType="select";
-	property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
+
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
+ property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="allowUplineEmailsFlag" ormtype="boolean";
+ property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
+ property name="subscriptionType" ormtype="string" hb_formFieldType="select";
+ property name="renewalDate" ormtype="timestamp" hb_formatType="date";
+ property name="spouseName" ormtype="string";
+ property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="sponsorIDNumber" ormtype="string";
+ property name="birthDate" ormtype="timestamp" hb_formatType="date";
+ property name="status" ormtype="string";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="accountStatus" ormtype="string" hb_formFieldType="select";
+ property name="complianceStatus" ormtype="string" hb_formFieldType="select";
+ property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="gender" ormtype="string" hb_formFieldType="select";
+ property name="accountNumber" ormtype="string";
+ property name="payerName" ormtype="string";
+ property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="rank" ormtype="string";
+ property name="uplineMarketPartnerNumber" ormtype="string";
+ property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
+ property name="referType" ormtype="string" hb_formFieldType="select";
+ property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="terminationDate" ormtype="timestamp" hb_formatType="date";
+ property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";
+ property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
 	 
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
@@ -1215,7 +1222,7 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	}
 	
 	public any function getAccountNumber(){
-		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
 			if(!isNull(this.getAccountID())){
 				var maxAccountNumberQuery = new query();
 				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
@@ -1232,6 +1239,34 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.accountNumber;
 	}
 
+	public boolean function userCanCreateFlexship() {
+	
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+		var enrollmentDate = this.getEnrollmentDate();
+		
+		if ( !isNull( enrollmentDate ) ) {
+			// Add the days after enrollment a user can create flexship to the enrollment date.
+			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			
+			// If today is a greater date than the date they can create a flexship.
+			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+		}
+		
+		// If the user doesn't have an enrollment date, return true.
+		return true;
+	}
 
 	//custom validation methods
 		
@@ -1240,5 +1275,11 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
 		}
 		return true;
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	//CUSTOM FUNCTIONS END
 }

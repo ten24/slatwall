@@ -14,7 +14,7 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-
+	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -32,8 +32,10 @@ class MonatEnrollmentController {
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
+    	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}
@@ -48,25 +50,25 @@ class MonatEnrollmentController {
 			}else{
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
-				this.publicService.doAction('logout').then(result=>{
-					this.observerService.notify('logout')
-				})
 			}
 		})
+		
 	}
 
 	public handleCreateAccount = () => {
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
+			this.monatService.addEnrollmentFee();
 			this.next();
 		}
 		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
-	public getCart = (refresh = true) => {
-		this.monatService.getCart(refresh).then(data =>{
+	public getCart = () => {
+		this.monatService.getCart().then(data =>{
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
+			this.canPlaceCartOrder = this.cart.orderRequirementsList.search('canPlaceOrderReward') > 0 ? false : true;
 		});
 	}
 
@@ -91,9 +93,6 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
-		if(this.position + 1 == this.steps.length){
-			this.monatService.addEnrollmentFee();
-		}
 	}
 
 	public previous() {
@@ -153,8 +152,8 @@ class MonatEnrollmentController {
 		cart.orderItems.forEach( (item, index) => {
 			let productType = item.sku.product.productType.productTypeName;
 			
-			// If the product type is Starter Kit, we don't want to add it to our new cart.
-			if ( 'Starter Kit' === productType ) {
+			// If the product type is Starter Kit or Product Pack, we don't want to add it to our new cart.
+			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				return;
 			}
 			

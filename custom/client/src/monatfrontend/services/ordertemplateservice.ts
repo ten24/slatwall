@@ -321,11 +321,15 @@ export class OrderTemplateService {
     }   
     
    public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{
-       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID})
+       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID});
    }
    
    	public getOrderTemplateSettings(){
 		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+	}
+	
+   	public deleteOrderTemplate(orderTemplateID){
+		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
 	}
 
 }

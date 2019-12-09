@@ -56,12 +56,13 @@ component {
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-    
+
+    property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
-    
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-    
+	  property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -196,7 +197,7 @@ component {
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
-	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-vip");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
@@ -231,8 +232,8 @@ component {
 	}
 	
 	public struct function getListingSearchConfig() {
-	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to show only last 3 months of record by default
-	    param name = "arguments.wildCardPosition" default = "right";
+	   	param name = "arguments.selectedSearchFilterCode" default="lastTwoMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
@@ -243,36 +244,53 @@ component {
 		return variables.orderHasMPRenewalFee;
 	}
 	
+	public boolean function hasStarterKit() {
+	    if(!structKeyExists(variables,'orderHasStarterKit')){
+            variables.orderHasStarterKit = getService('orderService').orderHasStarterKit(this.getOrderID());
+		}
+		return variables.orderHasStarterKit;
+	}
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
 	        return true;
 	    }
 	    
-	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
-	    if(dateDiff <= 30){
-	        return true;
-	    }else if(dateDiff > 365){
-	        return false;
-	    }else{
-	        var originalSubtotal = referencedOrder.getSubTotal();
-	        
-	        var returnSubtotal = 0;
-	        
-	        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
-	        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
-	        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
-	        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
-	        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
-	        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
-	        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
-	        
-	        for(var order in originalOrderReturns){
-	            returnSubtotal += order['calculatedSubTotal'];
-	        }
-
-	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
+	    if (!isNull(referencedOrder.getOrderCloseDateTime())){
+		    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+		    if(dateDiff <= 30){
+		        return true;
+		    }else if(dateDiff > 365){
+		        return false;
+		    }else{
+		        var originalSubtotal = referencedOrder.getSubTotal();
+		        
+		        var returnSubtotal = 0;
+		        
+		        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
+		        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
+		        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
+		        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
+		        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
+		        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
+		        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
+		        
+		        for(var order in originalOrderReturns){
+		            returnSubtotal += order['calculatedSubTotal'];
+		        }
+	
+		        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
+		    }
 	    }
+        return true;
+	}
+	
+	public boolean function hasProductPackOrderItem(){
+        var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
+        orderItemCollectionList.addFilter('order.orderID',getOrderID());
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack');
+        return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
 }

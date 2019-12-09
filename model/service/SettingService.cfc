@@ -942,7 +942,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteContext = {
 				siteID = "",
 				siteCode = ""
-			}
+			},
+			fieldType = ""
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 
@@ -970,6 +971,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
 			}
+		}
+		
+		if (structKeyExists(settingMetaData, "fieldType")) {
+			settingDetails.fieldType = settingMetaData.fieldType;
 		}
 
 		// If this is a global setting there isn't much we need to do because we already know there aren't any relationships

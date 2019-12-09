@@ -43,17 +43,29 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 		
 		var account = arguments.order.getAccount();
-
+		
+		//snapshot the pricegroups on the order.
+		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
+            var firstPriceGroup = account.getPriceGroups()[1];
+            arguments.order.setPriceGroup(firstPriceGroup);
+        }
+        
+        if( ( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 ) &&  
+        	arguments.order.hasStarterKit()
+        ) {
+			account.setStarterKitPurchasedFlag(true);
+        }
+      
 		if( 
 			!isNull(account.getAccountStatusType()) 
-			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
+			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
 		) {
 			
-			if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+			if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending') {
 				
 				account.setActiveFlag(true);
+				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
-				account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
 				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
@@ -65,7 +77,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				}
 				
 			} else if ( 
-				account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
+				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
 				&& arguments.order.hasMPRenewalFee()
 			) {
@@ -87,12 +99,29 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		}
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//set the initial order flag if needed.
 		try{
+			
+			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
-			order.setCommissionPeriod(commissionDate);
-			getService("orderService").saveOrder(order);
+			arguments.order.setCommissionPeriod(commissionDate);
+			
+			//Initial Order Flag
+			//Set the Initial Order Flag as needed
+			var previousOrdersCollection = getService("OrderService").getOrderCollectionList();
+			//Filter by this orders account and initial order flag. If we find one, then this is not the first order.
+			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
+			previousOrdersCollection.addFilter("initialOrderFlag", true);
+			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
+			
+			if (!previousInitialOrderCount){
+				//this is the first order for this account
+				arguments.order.setInitialOrderFlag(true);
+			}
+			
+			getService("orderService").saveOrder(arguments.order);
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate#");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}
 }
