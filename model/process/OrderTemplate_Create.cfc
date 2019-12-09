@@ -88,13 +88,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public array function getFrequencyTermIDOptions() {
 		return getOrderTemplate().getFrequencyTermOptions();
 	}
-
-	public array function getOrderTemplateType() {
-		
-		if(!StructKeyExists(variables, "orderTemplateTypeID")){
-			return	getService('TYpeService').getType(variables.orderTemplateTypeID);
-		}
-	}
 	
 	public array function getOrderTemplateTypeIDOptions() {
 		var typeCollection = getService('TypeService').getTypeCollectionList();
