@@ -7,6 +7,6 @@
 		<column name="maxExecutionCount" dataType="integer" />
 	</Columns>
 	<Records>
-		<Record updateScriptID="01ff5cd31a9f11ea9fa612bff9d404c8" scriptPath="database/locations.cfm" loadOrder="101" maxExecutionCount="1" />
+		<Record updateScriptID="edce6cc01abd11ea9fa612bff9d404c8" scriptPath="database/volumerebuildbatches.cfm" loadOrder="103" maxExecutionCount="1" />
 	</Records> 
 </Table>
