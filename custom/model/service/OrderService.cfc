@@ -478,6 +478,18 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 	
+	public boolean function orderHasStarterKit(required orderID) {
+
+		var starterKitProductType = getService('productService').getProductTypeBySystemCode('StarterKit');
+		
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.setDisplayProperties('orderItemID');
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#starterKitProductType.getProductTypeIDPath()#%','Like');
+		
+		return orderItemCollectionList.getRecordsCount(true) > 0;
+	}
+	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
 		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
