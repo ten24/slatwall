@@ -33,6 +33,8 @@ class swfAccountController {
     public editFlexshipUntilDate:any;
     public mostRecentFlexship:any;
     public holdingWishlist:any;
+    public totalOrders:any;
+    public ordersArgumentObject = {};
     
     // @ngInject
     constructor(
@@ -119,38 +121,14 @@ class swfAccountController {
         });
     }
     
-    public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
-      
+    public getOrdersOnAccount = ( pageRecordsShow = 12, pageNumber = 1, direction:any = false) => {
         this.loading = true;
         const accountID = this.accountData.accountID;
-        if(direction === 'prev'){
-            if(this.pageTracker === 1){
-                return pageNumber;
-            }else{
-                pageNumber = this.pageTracker -1;
-            }
-        }else if(direction === 'next'){
-            if(this.pageTracker >= this.totalPages.length){
-                pageNumber = this.totalPages.length;
-                return pageNumber;
-            }else{
-                pageNumber = this.pageTracker +1;
-            }
-        }
-        
+        this.ordersArgumentObject['accountID'] = accountID;
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
-            
+            this.observerService.notify("PromiseComplete")
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
-            const holdingArray = [];
-            const pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
- 
-
-            for(var i = 0; i <= pages -1; i++){
-                holdingArray.push(i);
-            }
-            
-            this.totalPages = holdingArray;
-            this.pageTracker = pageNumber;
+            this.totalOrders = result.ordersOnAccount.records;
             this.loading = false;
             this.loadingOrders = false;
         });

@@ -8,6 +8,7 @@ component {
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
