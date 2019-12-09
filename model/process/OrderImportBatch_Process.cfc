@@ -45,32 +45,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entities
 	property name="orderImportBatch" hb_rbKey="entity.orderImportBatch" cfc="orderImportBatch";
-
-	property name="orderImportBatchItems" cfc="orderImportBatchItem" type="array";
-
-	// Data Properties
-	
-	property name="orderImportBatchItemIDList" hb_populateEnabled="public" cfc="OrderItem";
-
-	/**
-	 * Turns a list of orderImportBatchItemIDs into orderImportBatchItems and returns those items.
-	 * @returns an array of orderImportBatchItems
-	 */
-	public array function getOrderImportBatchItems(){
-	    if (!structKeyExists(variables, "orderImportBatchItems")){
-    		//If we have a id list.
-    		var orderImportBatchItems = [];
-    		if (structKeyExists(variables, "orderImportBatchItemIDList") && len(variables.orderImportBatchItemIDList)){
-    			for (var orderImportBatchItemID in variables.orderImportBatchItemIDList){
-    				var orderImportBatchItem = getService("OrderImportBatchService").getOrderImportBatchItem(orderImportBatchItemID);
-    				if (isNull(orderImportBatchItem)){
-    					continue;
-    				}
-    				arrayAppend(orderImportBatchItems, orderImportBatchItem);
-    			}
-    		}
-    		variables.orderImportBatchItems = orderImportBatchItems;
-	    }
-		return variables.orderImportBatchItems;
-	}
+    
+    
+    property name="shippingMethod";
+    
+    property name="shippingMethodID";
+    
+    public any function getShippingMethod(){
+        if(!structKeyExists(variables,'shippingMethod') && structKeyExists(variables,'shippingMethodID')){
+            variables.shippingMethod = getService('fulfillmentService').getShippingMethod(getShippingMethodID());
+        }
+        if(structKeyExists(variables,'shippingMethod')){
+            return variables.shippingMethod;
+        }
+    }
 }

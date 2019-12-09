@@ -43,7 +43,7 @@ class SWBatchOrderListController {
         this.createOrderImportBatchItemCollection();
         this.orderImportBatchItemCollectionConfig = this.orderImportBatchItemCollection;
         //Setup the processObject
-        this.setProcessObject(this.$hibachi.newOrderImportBatch_PlaceOrders());
+        this.setProcessObject(this.$hibachi.newOrderImportBatch_Process());
 
         this.orderImportBatchItemCollection = this.refreshCollectionTotal(this.orderImportBatchItemCollection);
 
@@ -153,11 +153,16 @@ class SWBatchOrderListController {
     /**
      * Saved the batch using the data stored in the processObject. This delegates to the service method.
      */
-    public placeOrders = ():void => {
+    public process = ():void => {
         this.addingBatch = true;
         if (this.getProcessObject()) {
+            this.processObject.data.entityID=this.orderImportBatchId;
             this.orderService.placeOrderImportBatchOrders(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
+    }
+    
+    public deleteOrders = ():void => {
+        
     }
     /**
      * Handles a successful post of the processObject
@@ -200,7 +205,7 @@ class SWBatchOrderListController {
 
 
     /**
-     * Returns the number of selected fulfillments
+     * Returns the number of selected items
      */
     public getTotalOrdersSelected = ():number => {
 

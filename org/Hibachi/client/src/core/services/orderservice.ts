@@ -21,8 +21,7 @@ class OrderService extends BaseEntityService{
     public placeOrderImportBatchOrders = (processObject) => {
         if (processObject) {
             processObject.data.entityName = "OrderImportBatch";
-
-            return this.$hibachi.saveEntity("orderImportBatch",'',processObject.data, "create");
+            return this.$hibachi.saveEntity("orderImportBatch",processObject.data.entityID,processObject.data, "process");
         }
     }
 }

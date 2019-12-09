@@ -23,6 +23,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
     property name="account" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
     property name="orderItem" hb_populateEnabled="false" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
     property name="originalOrder" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="originalOrderID";
+    property name="shippingAddress" hb_populateEnabled="false" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
     property name="sku"  hb_populateEnabled="false" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
     property name="orderImportBatch" cfc="OrderImportBatch" fieldtype="many-to-one" fkcolumn="orderImportBatchID";
     property name="orderImportBatchItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderImportBatchItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderImportBatchItemStatusType";

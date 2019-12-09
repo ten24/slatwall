@@ -11,7 +11,7 @@
 			        <div class="col-md-6">
 			            <div class="btn-toolbar">
 							<div class="btn-group btn-group-sm">
-			                    <button class="# btn btn-success" title="Add" ng-click="swBatchOrderListController.placeOrders()" ng-disabled="swBatchOrderListController.getTotalOrdersSelected() == 0 || !swBatchOrderListController.getProcessObject().data">Place Orders <i ng-if="swBatchOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
+			                    <button class="# btn btn-success" title="Add" ng-click="swBatchOrderListController.process()">Process <i ng-if="swBatchOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
 			                </div>
 			            </div>
 			        </div>
@@ -39,9 +39,8 @@
 						data-using-personal-collection="true"
 						data-persisted-collection-config="true" 
 						data-multiselect-field-name="orderImportBatchItemID"
-						data-name="orderCollectionTable"
+						data-name="orderImportBatchItemCollectionTable"
 						data-collection-config="swBatchOrderListController.orderImportBatchItemCollectionConfig"
-
 						>
 					</sw-listing-display>
 

@@ -52,6 +52,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="SkuService";
 	property name="AccountService";
 	property name="TypeService";
+	property name="OrderService";
+	property name="HibachiDAO";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -149,6 +151,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						if(structKeyExists(local,'shippingAddress')){
 							orderImportBatchItem.populateShippingFieldsFromShippingAddress(shippingAddress);
+							orderImportBatchItem.setShippingAddress(shippingAddress);
 						}
 						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistNew'));
 						this.saveOrderImportBatchItem(orderImportBatchItem);
@@ -183,8 +186,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderImportBatch;
 	}
 	
-	public any function processOrderImportBatch_PlaceOrders(required any orderImportBatch, required any processObject, struct data={}){
+	public any function processOrderImportBatch_Process(required any orderImportBatch, required any processObject, struct data={}){
+		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
+			//Create Order
+			var order = getOrderService().newOrder();
+			var account = orderImportBatchItem.getAccount();
+			order.setAccount(account);
+			// var site = account.getAccountCreatedSite();
+			// if(!isNull(site)){
+			// 	order.setOrderCreatedSite(account.getAccountCreatedSite());
+			// 	var currencyCode = site.setting('siteEligibleCurrencyCodes')[1];
+			// }
+			
+			/* TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+				Get location from site, get currency code from location - need locations first
+			 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO */
+			 
+			if(!structKeyExists(local,'currencyCode')){
+				var currencyCode = 'USD';
+			}
+			order.setCurrencyCode(currencyCode);
+			
+			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
+			//Save Order
+			getOrderService().saveOrder(order);
+			orderImportBatchItem.setOrder(order);
+			
+			//Create Order Fulfillment
+			var orderFulfillment = getOrderService().newOrderFulfillment();
+			orderFulfillment.setOrder(order);
+			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodType('shipping'));
+			
+			if(!isNull(arguments.processObject.getShippingMethod())){
+				orderFulfillment.setShippingMethod(arguments.processObject.getShippingMethod());
+			}
+			orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
+			orderFulfillment.setFulfillmentCharge(0);
+			orderFulfillment.setManualFulfillmentChargeFlag(true);
+			//Save Order Fulfillment
+			getOrderService().saveOrderFulfillment(orderFulfillment);
+			
+			//Create Order Item
+			var orderItem = getOrderService().newOrderItem();
+			orderItem.setOrder(order);
+			orderItem.setCurrencyCode(currencyCode);
+			orderItem.setOrderFulfillment(orderFulfillment);
+			orderItem.setSku(orderImportBatchItem.getSku());
+			orderItem.setQuantity(orderImportBatchItem.getQuantity());
+			orderItem.setPrice(0);
+			getOrderService().saveOrderItem(orderItem);
+			
+			if(orderItem.hasErrors()){
+				writeDump(orderItem.getErrors());abort;
+			}
+			orderImportBatchItem.setOrderItem(orderItem);
+			
+			
+			getHibachiDAO().flushORMSession();
+			getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+		}
+		
 		return arguments.orderImportBatch;
+	}
+	
+	public any function getShippingAddressFromOrderImportBatchItem(required any orderImportBatchItem){
+		var address = getAddressService.newAddress()
 	}
 	
 	private any function getShippingAddressFromOrder(required any order){

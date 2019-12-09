@@ -64909,11 +64909,14 @@ var SWBatchOrderListController = /** @class */ (function () {
         /**
          * Saved the batch using the data stored in the processObject. This delegates to the service method.
          */
-        this.placeOrders = function () {
+        this.process = function () {
             _this.addingBatch = true;
             if (_this.getProcessObject()) {
+                _this.processObject.data.entityID = _this.orderImportBatchId;
                 _this.orderService.placeOrderImportBatchOrders(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
             }
+        };
+        this.deleteOrders = function () {
         };
         /**
          * Handles a successful post of the processObject
@@ -64949,7 +64952,7 @@ var SWBatchOrderListController = /** @class */ (function () {
             _this.processObject = processObject;
         };
         /**
-         * Returns the number of selected fulfillments
+         * Returns the number of selected items
          */
         this.getTotalOrdersSelected = function () {
             var total = 0;
@@ -64973,7 +64976,7 @@ var SWBatchOrderListController = /** @class */ (function () {
         this.createOrderImportBatchItemCollection();
         this.orderImportBatchItemCollectionConfig = this.orderImportBatchItemCollection;
         //Setup the processObject
-        this.setProcessObject(this.$hibachi.newOrderImportBatch_PlaceOrders());
+        this.setProcessObject(this.$hibachi.newOrderImportBatch_Process());
         this.orderImportBatchItemCollection = this.refreshCollectionTotal(this.orderImportBatchItemCollection);
         //Attach our listeners for selections on listing display.
         this.observerService.attach(this.swSelectionToggleSelectionorderImportBatchItemCollectionTableListener, "swSelectionToggleSelectionorderImportBatchItemCollectionTable", "swSelectionToggleSelectionorderImportBatchItemCollectionTableListener");
@@ -87951,7 +87954,7 @@ var OrderService = /** @class */ (function (_super) {
         _this.placeOrderImportBatchOrders = function (processObject) {
             if (processObject) {
                 processObject.data.entityName = "OrderImportBatch";
-                return _this.$hibachi.saveEntity("orderImportBatch", '', processObject.data, "create");
+                return _this.$hibachi.saveEntity("orderImportBatch", processObject.data.entityID, processObject.data, "process");
             }
         };
         return _this;
