@@ -56,12 +56,17 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,extendedPersonalVolume,extendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
+	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode, price, quantity, calculatedDiscountAmount,extendedPrice,extendedPersonalVolume,extendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
 	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
+	
+	<!--- Adds a type name fields if this is an exchange order --->
+	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
+		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Type Name',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
+	</cfif>
 	
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='orderItemID', columnConfig={
 		isVisible=false,
