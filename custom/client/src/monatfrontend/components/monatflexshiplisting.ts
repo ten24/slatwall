@@ -23,8 +23,11 @@ class MonatFlexshipListingController{
 	constructor(
 		public orderTemplateService, 
 		public $window, 
-		public publicService
-	){}
+		public publicService,
+		public observerService
+	){
+		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess")
+	}
 	
 	public $onInit = () => {
 		this.fetchFlexships();
@@ -42,7 +45,7 @@ class MonatFlexshipListingController{
 	private fetchFlexships = () => {
 
 		this.orderTemplateService
-    		.getOrderTemplates(this.orderTemplateTypeID )
+    		.getOrderTemplates(this.orderTemplateTypeID, 100, 1, true )
 			.then( (data) => {
 
 				this.accountAddresses = data.accountAddresses;

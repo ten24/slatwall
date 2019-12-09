@@ -47,6 +47,12 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    /**
+     * Function check and return HyperWallet method
+     * adds hyperWalletPaymentMethod in ajaxResponse
+     * @param request data
+     * return none
+     * */
     public any function configExternalHyperWallet(required struct data) {
         var accountPaymentMethods = getHibachiScope().getAccount().getAccountPaymentMethods();
         
@@ -68,6 +74,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     }
     
+    /**
+     * Function to cnfigure client side Paypal method
+     * adds paypalClientConfig in ajaxResponse
+     * @param request data
+     * return none
+     * */
     public any function configExternalPayPal(required struct data) {
         //Configure PayPal
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
@@ -77,6 +89,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    
 	    var responseBean = getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('braintree').getIntegrationCFC("Payment").processExternal(requestBean);
 	    
+	    //Populate shipping address
+	    var orderFulfillment = getHibachiScope().getCart().getOrderFulfillments();
+	    var shippingAddress = {};
+	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
+	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
+	        if(!isNull(cartShippingAddress)) {
+	            shippingAddress = {
+    	            "postalCode" : cartShippingAddress.getPostalCode(),
+    	            "countryCode" : cartShippingAddress.getCountryCode(),
+    	            "line1" : cartShippingAddress.getStreetAddress(),
+    	            "recipientName" : cartShippingAddress.getName(),
+    	            "city" : cartShippingAddress.getCity(),
+    	            "line2" : cartShippingAddress.getStreet2Address(),
+    	            "state" : cartShippingAddress.getStateCode(),
+    	        };
+	        }
+	        
+	    }
+	    
 		if(responseBean.hasErrors()) {
 		    this.addErrors(data, responseBean.getErrors());
 		}
@@ -85,7 +116,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
     			'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(),
     			'clientAuthToken' : responseBean.getAuthorizationCode(),
-    			'paymentMode' : 'sandbox'
+    			'paymentMode' : getService('integrationService').getIntegrationByIntegrationPackage('braintree').setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
+    			'shippingAddress': shippingAddress,
 	    	}
 	    	
 	    	arguments.data['ajaxResponse']['paypalClientConfig'] = requestPayload;
@@ -93,6 +125,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
     }
     
+    /**
+     * Function to authorize client account for paypal & Add New Payment Method
+     * authorize paypal amd add is as new payment method
+     * @param request data
+     * return none
+     * */
     public any function authorizePayPal(required struct data) {
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
@@ -106,7 +144,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    this.addErrors(data, responseBean.getErrors());
 		}
 		else {
-		    //Create a New One
+		    //Create a New accountPaymentMethod
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
@@ -121,7 +159,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 
     }
-
+    
+     /**
+     * Function to override addOrderPayment 
+     * populate orderPayment paymentMthodID
+     * and make orderPayment billingAddress optional
+     * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
@@ -290,7 +333,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
         var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
-		arguments.data['ajaxResponse']['productListing'] = [];
+		arguments.data['ajaxResponse']['productList'] = [];
 		
 		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
@@ -333,7 +376,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
   			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
-			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
+			    arrayAppend(arguments.data['ajaxResponse']['productList'], productStruct);
 		    }
 		    
 		    arguments.data['ajaxResponse']['recordsCount'] = recordsCount;

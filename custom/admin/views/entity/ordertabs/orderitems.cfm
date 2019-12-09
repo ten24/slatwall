@@ -63,6 +63,11 @@ Notes:
 		isDeletable=true
 	})/>
 	
+	<!--- Adds a type name fields if this is an exchange order --->
+	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
+		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Type Name',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
+	</cfif>
+	
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='orderItemID', columnConfig={
 		isVisible=false,
 		isSearchable=false,
