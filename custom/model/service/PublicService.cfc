@@ -861,8 +861,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getSiteOwnerAccount(required struct data){
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
-        
-        var account = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).getOwnerAccount();
+        param name="arguments.data.siteOwner" default= ''; 
+
+        var account = getAccountService().getAccountByAccountNumber(arguments.data.siteOwner);
         var returnAccount = {};
         
         if(!isNull(account)){
