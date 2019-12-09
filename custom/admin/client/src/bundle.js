@@ -64377,9 +64377,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
             else {
                 formDataToPost.shippingAccountAddress = _this.baseEntity.shippingAccountAddress;
             }
-            formDataToPost.shippingMethod = {
-                shippingMethodID: _this.baseEntity.shippingMethod.value
-            };
+            formDataToPost.shippingMethodID = _this.baseEntity.shippingMethod.value;
             var processUrl = _this.$hibachi.buildUrl('api:main.post');
             var adminRequest = _this.requestService.newAdminRequest(processUrl, formDataToPost);
             return adminRequest.promise;
@@ -69482,9 +69480,11 @@ var SWSiteAndCurrencySelectController = /** @class */ (function () {
                     }
                 }
             }
-            _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
-            if (_this.currencyCodeOptions.length === 1) {
-                _this.currencyCode = _this.currencyCodeOptions[0];
+            if (_this.site != null) {
+                _this.currencyCodeOptions = _this.site.eligibleCurrencyCodes.split(',');
+                if (_this.currencyCodeOptions.length === 1) {
+                    _this.currencyCode = _this.currencyCodeOptions[0];
+                }
             }
         };
         this.site = this.siteAndCurrencyOptions[0];
@@ -72316,9 +72316,10 @@ var ReturnOrderItem = /** @class */ (function () {
     return ReturnOrderItem;
 }());
 var SWReturnOrderItemsController = /** @class */ (function () {
-    function SWReturnOrderItemsController($hibachi, collectionConfigService) {
+    function SWReturnOrderItemsController($hibachi, publicService, collectionConfigService) {
         var _this = this;
         this.$hibachi = $hibachi;
+        this.publicService = publicService;
         this.collectionConfigService = collectionConfigService;
         this.orderPayments = [];
         this.refundSubtotal = 0;
@@ -72337,6 +72338,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.orderItemCollectionList.getEntity().then(function (result) {
                 for (var i = 0; i < result.records.length; i++) {
                     result.records[i] = new ReturnOrderItem(result.records[i]);
+                    _this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
                 }
                 _this.orderItems = result.records;
             });
@@ -72401,6 +72403,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var allocatedOrderDiscountAmountTotal = 0;
             var allocatedOrderPVDiscountAmountTotal = 0;
             var allocatedOrderCVDiscountAmountTotal = 0;
+            var modifiedUnitPriceFlag = false;
             _this.orderItems.forEach(function (item) {
                 refundSubtotal += item.refundTotal + (item.taxRefundAmount || 0);
                 refundPVTotal += item.refundPVTotal;
@@ -72408,7 +72411,11 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
                 allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
                 allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
+                if (item.refundUnitPrice != item.calculatedExtendedUnitPriceAfterDiscount) {
+                    modifiedUnitPriceFlag = true;
+                }
             });
+            _this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
@@ -72433,7 +72440,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 if (payment != orderPayment) {
                     if (payment.paymentMethodType == 'giftCard') {
-                        payment.amount = payment.amountToRefund;
+                        payment.amount = Math.min(payment.amountToRefund, _this.refundTotal);
                     }
                     return total += payment.amount;
                 }
@@ -76152,8 +76159,9 @@ var SWCriteriaNumber = /** @class */ (function () {
                     scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
                 };
                 scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    if (angular.isDefined(selectedFilterProperty.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.value;
+                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.value;
                     }
                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
                         if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
@@ -91611,6 +91619,9 @@ var SWFormFieldController = /** @class */ (function () {
                     _this.optionsArguments = {
                         'propertyIdentifier': _this.propertyIdentifier
                     };
+                }
+                if (_this.object.$$getID().length) {
+                    _this.optionsArguments.entityID = _this.object.$$getID();
                 }
                 var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
                 optionsPromise.then(function (value) {
