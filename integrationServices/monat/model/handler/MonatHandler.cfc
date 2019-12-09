@@ -44,28 +44,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
 		var account = arguments.order.getAccount();
 		
-		//adding shipping and billing to flexship and activating
-		if(!isNull(arguments.data.orderTemplateID)){
-			
-			var orderService = getService('orderService');
-			var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
-			var orderFulFillment = arguments.order.getOrderFulfillments()[1];
-			
-			var shippingMethod = orderFulFillment.getShippingMethod();
-			var shippingAddress = orderFulFillment.getShippingAddress();
-			var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-			var billingAccountAddress = arguments.order.getBillingAccountAddress();
-			
-			orderTemplate.setShippingAddress(shippingAddress);
-			orderTemplate.setShippingMethod(shippingMethod);
-			orderTemplate.setBillingAccountAddress(billingAccountAddress);
-			orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-			orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
-			orderService.saveOrderTemplate(orderTemplate);
-
-		}
-		
-		
 		//snapshot the pricegroups on the order.
 		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
             var firstPriceGroup = account.getPriceGroups()[1];
@@ -121,6 +99,26 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
 			order.setCommissionPeriod(commissionDate);
 			getService("orderService").saveOrder(order);
+			
+			//adding shipping and billing to flexship and activating
+			if(!isNull(arguments.data.orderTemplateID)){
+				
+				var orderService = getService('orderService');
+				var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
+				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
+				
+				var shippingMethod = orderFulFillment.getShippingMethod();
+				var shippingAddress = orderFulFillment.getShippingAddress();
+				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+				var billingAccountAddress = arguments.order.getBillingAccountAddress();
+				
+				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setShippingMethod(shippingMethod);
+				orderTemplate.setBillingAccountAddress(billingAccountAddress);
+				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+				orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
+				orderService.saveOrderTemplate(orderTemplate);
+			}
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate#");	
 		}
