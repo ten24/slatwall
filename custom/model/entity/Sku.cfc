@@ -26,7 +26,7 @@ component {
 			return false;
 		}
 		
-		//Check if this is MP account AND created in past 30 days AND is trying to add a product pack.
+		//Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack. They can't.
 		if (arguments.account.getAccountType() == "marketPartner" 
 				&& !isNull(arguments.account.getCreatedDateTime()) 
 				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) > 30
@@ -34,7 +34,7 @@ component {
 			
 			return false;	 //can't purchase one past 30 days from account creation.
 		
-		//Check if they have previously purchased a product pack
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
 		} else if (arguments.account.getAccountType() == "marketPartner" 
 				&& !isNull(arguments.account.getCreatedDateTime()) 
 				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) <= 30
