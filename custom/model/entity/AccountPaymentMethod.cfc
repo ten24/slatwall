@@ -71,7 +71,6 @@ component {
 	{
 	    if(!StructKeyExists(variables,"moMoneyWallet"))
 	    {
-	    	
 	    	if(!isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getPaymentIntegration()) && getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'hyperwallet')
 	        {
 	            variables.moMoneyWallet =  true;

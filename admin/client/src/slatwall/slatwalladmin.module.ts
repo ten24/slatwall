@@ -26,6 +26,10 @@ import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 
 //filters
 
+//pace-js
+var pace = require('pace-js-amd-fix');
+pace.start();
+
 //declare variables out of scope
 declare var $:any;
 
@@ -65,8 +69,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
-
-
 
 
      // route provider configuration

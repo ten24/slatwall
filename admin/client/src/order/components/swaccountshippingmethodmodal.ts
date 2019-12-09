@@ -105,9 +105,7 @@ class SWAccountShippingMethodModalController{
 			formDataToPost.shippingAccountAddress = this.baseEntity.shippingAccountAddress;
 		}
 		
-		formDataToPost.shippingMethod = {
-			shippingMethodID:this.baseEntity.shippingMethod.value
-		};
+		formDataToPost.shippingMethodID = this.baseEntity.shippingMethod.value;
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		

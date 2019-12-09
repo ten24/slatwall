@@ -195,12 +195,12 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			if(relatedToAccount){
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
-					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",arguments.entity.getAccount());
+					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",{ entity : arguments.entity.getAccount() });
 				}
 				arguments.entity.getAccount().setLastSyncedDateTime(now());
 			}else{
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
-					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", arguments.entity);
+					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", { entity : arguments.entity });
 				}
 				arguments.entity.setLastSyncedDateTime(now());
 			}
@@ -249,5 +249,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	public struct function deleteAutoship(required struct DTSArguments){
 		return postRequest('ICEAutoship.delete', arguments.DTSArguments, getSessionToken());
 	}
+	
 
 }

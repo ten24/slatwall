@@ -148,7 +148,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="carrierCode" ormtype="string";
+ property name="shipmentTypeCode" ormtype="string";
+ property name="shippingMethodCode" ormtype="string";
+ property name="warehouseCode" ormtype="string";
+ property name="freightTypeCode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -159,7 +165,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public string function getSuggestedShippingAddressName(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 				return getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
 			}
@@ -168,7 +174,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public any function getSuggestedShippingAddressStruct(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 				return verificationStruct.suggestedAddress;
 			}

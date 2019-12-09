@@ -1,6 +1,7 @@
+declare var $;
 class MonatProductCardController {
 	public product;
-	public type: string;
+	public type: string = '';
 	public loading: boolean;
 	public lastAddedSkuID: string; 
 	public newTemplateID: string;
@@ -13,6 +14,7 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
+    public showProductLink: boolean = false;
 
 	// @ngInject
 	constructor(
@@ -30,7 +32,10 @@ class MonatProductCardController {
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
+		
+		this.setShowProductLinkByType();
 	}
+	
 	public init = () => {
 		if(this.urlParams.get('type')){
 			this.type = this.urlParams.get('type');
@@ -40,6 +45,7 @@ class MonatProductCardController {
 			this.orderTemplate = this.urlParams.get('orderTemplateId');
 		}
 	}
+	
 	public getAllWishlists = (
 		pageRecordsToShow: number = this.pageRecordsShow,
 		setNewTemplates: boolean = true,
@@ -88,12 +94,41 @@ class MonatProductCardController {
 		});
 	};
 
-	public launchModal = (type) => {
-		if (type === 'flexship') {
-			//launch flexship modal
-		} else {
-			//launch normal modal
-		}
+	
+	public launchQuickShopModal = () => {
+
+		
+		this.ModalService.showModal({
+			component: 'monatProductModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				product: this.product,
+				type: this.type,
+				orderTemplateID: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+				// this.changeTypeForDemo(); //TODO remove
+			},
+		}).then((modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	
+	};
+	
+	//TODO remove
+	private changeTypeForDemo = () => {
+		let types = ['','flexship','wishlist','enrollment'];
+		let index = types.indexOf(this.type);
+		index++;
+		this.type = types[index % types.length];
+		
+		console.log('changed type for demo :', this.type);
 	};
 
 	public addToCart = (skuID, skuCode) => {
@@ -124,13 +159,15 @@ class MonatProductCardController {
         $('.modal-backdrop').remove() 
     }
     
-	public launchWishlistModal = (skuID) => {
+	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
+		console.log(productName);
 		this.ModalService.showModal({
 			component: 'swfWishlist',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				sku: newSkuID
+				sku: newSkuID,
+				productName: productName
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -146,6 +183,14 @@ class MonatProductCardController {
 				console.error('unable to open model :', error);
 			});
 	};
+	
+	private setShowProductLinkByType = (): void => {
+		this.showProductLink = (
+			this.type !== 'enrollment'
+			&& this.type !== 'VIPenrollmentOrder'
+			&& this.type !== 'VIPenrollment'
+		);
+	}
 
 }
 

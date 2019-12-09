@@ -112,6 +112,31 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return entityCollectionList.getRecordsCount() > 0;
 	}
 	
+	public any function pendingPushOrders(required string accountID){
+		var qualifiers = this.getQualifiers();
+		var filters = qualifiers['filters']['validOrder'];
+
+		var orderCollection = this.getOrderCollectionList();
+		orderCollection.setDisplayProperties('orderID');
+
+		var primaryFilterApplied = false;
+		for(var i = 1; i <= arrayLen(filters); i++){
+			
+			orderCollection.addFilter(
+				propertyIdentifier='account.accountID', 
+				value=arguments.accountID, 
+				filterGroupAlias='FilterGroup#i#',
+				filterGroupLogicalOperator = 'OR'
+			);
+			for(var ii = 1; ii <= arrayLen(filters[i]); ii++){
+				var filterArguments = filters[i][ii];
+				filterArguments['filterGroupAlias'] = 'FilterGroup#i#';
+				orderCollection.addFilter(argumentCollection=filterArguments);
+			}
+		}
+		return orderCollection.getRecords(formatRecords=false);
+	}
+	
 	
 	private string function formatDistibutorName(required any account){
 		var distributorName = '';
@@ -136,7 +161,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'Customer'      = 'C'
 		};
 		
-		return structKeyExists(mapping, accountType) ? mapping[accountType] : 'C';
+		return structKeyExists(mapping, arguments.accountType) ? mapping[arguments.accountType] : 'C';
 	}
 	
 	private string function formatOrderType(required any order){
@@ -183,16 +208,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	public string function getCityStateZipcode(required any address) {
-		var cityStateZipcode = "";
-		cityStateZipcode = listAppend(cityStateZipcode,address.getCity());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getStateCode());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getPostalCode());
-		return cityStateZipcode;
+		return arguments.address.getCity() & ', ' & arguments.address.getStateCode() & ' ' & arguments.address.getPostalCode();
 	}
 	
 	public any function getAmount(required any order, required string fieldName){
 		var amount = order.invokeMethod('get#arguments.fieldName#');
-		
 		
 		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && amount > 0){
 			amount = amount * -1;
@@ -336,7 +356,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	public void function push(required any entity, any data ={}){
 		
-		if( !structKeyExists(arguments.data, 'event') ){
+		//Check if the object still valid to be pushed
+		if( !structKeyExists(arguments.data, 'event') || !isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
 			return;
 		}
 		

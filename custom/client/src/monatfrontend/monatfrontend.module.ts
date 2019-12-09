@@ -1,4 +1,5 @@
 import 'angular-modal-service';
+import 'angularjs-toaster';
 
 import { frontendmodule } from '../../../../org/Hibachi/client/src/frontend/frontend.module';
 
@@ -25,11 +26,13 @@ import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
+import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
 import { SWFAccount } from './components/swfmyaccount';
 import { MonatProductCard } from './components/monatproductcard';
+import { MonatProductModal } from './components/monat-product-modal';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
 import { SponsorSearchSelector } from './components/sponsor-search-selector';
 import { SWFPagination } from './components/swfpagination';
@@ -38,18 +41,20 @@ import { MonatMiniCart } from './components/minicart/monat-minicart';
 
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
+import { MonatProductListingController } from './controllers/monat-product-listing';
 
 
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
+import { MonatAlertService } from './services/monatAlertService';
 
 //declare variables out of scope
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -78,22 +83,26 @@ var monatfrontendmodule = angular
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
 	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 	.directive('paginationController', SWFPagination.Factory())
+	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
 	.directive('monatProductCard', MonatProductCard.Factory())
+	.directive('monatProductModal', MonatProductModal.Factory())
 	.directive('swfAccount', SWFAccount.Factory())
 
 	.directive('monatMiniCart', MonatMiniCart.Factory())
-	
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
-	
+	.controller('productListingController', MonatProductListingController)
+
 	// Services
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
+	.service('monatAlertService', MonatAlertService)
 
 	.config([
 		'ModalServiceProvider',

@@ -74,7 +74,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderTemplateCollectionlist#"
 		usingPersonalCollection="true"
-		recordEditAction="admin:entity.editordertemplate"
+		recordEditAction="admin:entity.editwishlist"
 		recordDetailAction="admin:entity.detailwishlist"
 	>
 	</hb:HibachiListingDisplay>
