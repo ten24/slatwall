@@ -165,7 +165,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public string function getSuggestedShippingAddressName(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 				return getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
 			}
@@ -174,7 +174,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public any function getSuggestedShippingAddressStruct(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
+			var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 				return verificationStruct.suggestedAddress;
 			}

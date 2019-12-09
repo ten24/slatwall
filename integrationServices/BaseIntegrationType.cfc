@@ -46,50 +46,37 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	public any function init() {
 		return this;
 	}
 	
-	public string function getIntegrationTypes() {
-		return "tax,address";
+	/**
+	 * Helper function to return the value for a Setting by 'settingName'.
+	 * 
+	 * @settingName name of the setting
+ 	 */
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
 	
-	public string function getDisplayName() {
-		return "Avatax";
+	/**
+	 * Helper function to return the associated Integration-entity, for this integration.
+	 * 
+	 */
+	public any function getIntegration() {
+		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
 	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accessKey = {fieldType="password", encryptValue=true},
-			accountNo = {fieldType="text"},
-			sourceStreetAddress = {fieldType="text"},
-			sourceStreetAddress2 = {fieldType="text"},
-			sourceCity = {fieldType="text"},
-			sourceRegion = {fieldType="text"},
-			sourceCountry = {fieldType="text"},
-			sourcePostalCode = {fieldType="text"},
-			testingFlag = {fieldType="yesno", defaultValue="1"},
-			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
-			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
-			taxDocumentCommitType = {fieldType="select", valueOptions=[
-				{name="Commit Tax Documents When Order Closes",value="commitOnClose"},
-				{name="Commit Tax Documents Upon Delivery",value="commitOnDelivery"}
-			], defaultValue="commitOnClose"},
-			companyCode = {fieldType="text"},
-			customerUsageTypePropertyIdentifier = {fieldType="text"},
-			taxExemptNumberPropertyIdentifier = {fieldType="text"},
-			debugModeFlag = {fieldType="yesno", defaultValue="0"},
-			testURL = {fieldType="text", defaultValue="https://development.avalara.net/1.0/tax/get"},
-			productionURL = {fieldType="text", defaultValue="https://avatax.avalara.net/1.0/tax/get"}
-		};
 
-		return settings;
+	/**
+	 * Helper function to return the The Package-name, for this integration.
+	 */
+	public string function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
-	
-	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.avatax.model.handler.AvataxEventHandler"];
-	}
-	
+
 }
