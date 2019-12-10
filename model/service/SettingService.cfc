@@ -276,7 +276,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
-			globalIntegrationForAddressVerification = {fieldtype="select"},
+			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -596,8 +596,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
-			case "globalIntegrationForAddressVerification":
-				var options = getAddressIntegrationOptions();
+			case "globalShippingIntegrationForAddressVerification":
+				var options = getShippingIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
 			case "globalLocale":
@@ -704,11 +704,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 
-	public array function getAddressIntegrationOptions() {
+	public array function getShippingIntegrationOptions() {
 		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
 		integrationCollectionList.addFilter('activeFlag', '1');
 		integrationCollectionList.addFilter('installedFlag', '1');
-		integrationCollectionList.addFilter('integrationTypeList', '%address%',"like");
+		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
 		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
 		var options = integrationCollectionList.getRecords();
 		return options;

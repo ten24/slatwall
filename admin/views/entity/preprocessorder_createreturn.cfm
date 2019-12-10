@@ -56,50 +56,8 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
 		
-		<div class="row s-body-nav">
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="col-md-6 s-header-info">
-					<h1 class="actionbar-title">Create Return Order</h1>
-				</div>
-				<div class="col-md-6">
-					<div class="btn-toolbar">
-						<div class="btn-group btn-group-sm">
-							<a title="Orders" class="adminentitylistorder btn btn-default" target="_self" href="/Slatwall/?slatAction=entity.listorder">
-								<i class="glyphicon glyphicon-arrow-left"></i> Orders
-							</a>
-						</div>
-						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">Create Return Order</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="Create Return Order" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
-								Create Return Order
-							</a>
-						</div>
-						<div class="modal" id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
-							<div class="modal-dialog">
-							   <div class="modal-content">
-							      <div class="modal-header">
-							         <a class="close" data-dismiss="modal">&times;</a>
-							         <h3>Create Return Order</h3>
-							      </div>
-							      <div class="modal-body">
-							         <p>The unit prices entered do not match the original order prices; please make sure all prices entered are correct before continuing.
-							      </div>
-							      <div class="modal-footer">
-							         <a class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-							         <button class="btn btn-success" 
-							            title="Create Return Order"
-							            type="submit"
-							            >
-							        	<i class="glyphicon glyphicon-ok icon-white"></i> Create Return Order
-							         </button>
-							      </div>
-							   </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</nav>
-		</div>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList divclass="col-md-6">

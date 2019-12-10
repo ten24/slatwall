@@ -299,7 +299,7 @@ component  accessors="true" output="false"
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
-    public any function resetPassword( required struct data ) {
+    public void function resetPassword( required struct data ) {
         param name="data.accountID" default="";
         var account = getAccountService().getAccount( data.accountID );
         if(!isNull(account)) {
@@ -312,14 +312,9 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.resetPassword", true );
         }
-        
-        if ( account.getProcessObject( "resetPassword" ).hasErrors() ) {
-            this.addErrors( data, account.getProcessObject( "resetPassword" ).getErrors() );
-        }
-        
         // Populate the current account with this processObject so that any errors are there.
         getHibachiScope().account().setProcessObject( account.getProcessObject( "resetPassword" ) );
-        return account.getProcessObject( "resetPassword" );
+        return account.getProcessObject( "resetPassword" ) ;
     }
     
     /**
@@ -475,10 +470,10 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required struct data){
+   public void function verifyAddress(required any data){
         param name="data.accountAddressID" default="";
 
-        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressByID(arguments.data.accountAddressID);
+        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
         getHibachiScope().addActionResult("verifyAddress",false);
     }
     

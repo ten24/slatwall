@@ -72316,10 +72316,9 @@ var ReturnOrderItem = /** @class */ (function () {
     return ReturnOrderItem;
 }());
 var SWReturnOrderItemsController = /** @class */ (function () {
-    function SWReturnOrderItemsController($hibachi, publicService, collectionConfigService) {
+    function SWReturnOrderItemsController($hibachi, collectionConfigService) {
         var _this = this;
         this.$hibachi = $hibachi;
-        this.publicService = publicService;
         this.collectionConfigService = collectionConfigService;
         this.orderPayments = [];
         this.refundSubtotal = 0;
@@ -72403,7 +72402,6 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var allocatedOrderDiscountAmountTotal = 0;
             var allocatedOrderPVDiscountAmountTotal = 0;
             var allocatedOrderCVDiscountAmountTotal = 0;
-            var modifiedUnitPriceFlag = false;
             _this.orderItems.forEach(function (item) {
                 refundSubtotal += item.refundTotal + (item.taxRefundAmount || 0);
                 refundPVTotal += item.refundPVTotal;
@@ -72411,11 +72409,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
                 allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
                 allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
-                if (item.refundUnitPrice != item.calculatedExtendedUnitPriceAfterDiscount) {
-                    modifiedUnitPriceFlag = true;
-                }
             });
-            _this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;

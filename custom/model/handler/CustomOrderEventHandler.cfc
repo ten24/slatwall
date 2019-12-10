@@ -7,10 +7,6 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             return;
         }
         
-        if(arguments.order.getTypeCode() != "otSalesOrder"){
-            return;
-        }
-        
         if(
             !isNull(arguments.order.getAccount()) && 
             !isNull(arguments.order.getAccount().getOwnerAccount()) && 

@@ -53,7 +53,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 	
 	public string function getIntegrationTypes() {
-		return "tax,address";
+		return "tax";
 	}
 	
 	public string function getDisplayName() {

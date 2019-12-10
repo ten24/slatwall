@@ -244,13 +244,6 @@ component {
 		return variables.orderHasMPRenewalFee;
 	}
 	
-	public boolean function hasStarterKit() {
-	    if(!structKeyExists(variables,'orderHasStarterKit')){
-            variables.orderHasStarterKit = getService('orderService').orderHasStarterKit(this.getOrderID());
-		}
-		return variables.orderHasStarterKit;
-	}
-	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){

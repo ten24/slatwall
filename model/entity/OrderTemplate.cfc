@@ -50,7 +50,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderTemplateName" ormtype="string" hb_populateEnabled="public";
+	property name="orderTemplateName" ormtype="string";
 	
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";

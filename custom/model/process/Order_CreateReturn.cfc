@@ -105,7 +105,6 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
         return variables.secondaryReturnReasonTypeOptions;
     }
     
-    
     // ======================  END: Data Options ===========================
     
     // ================== START: New Property Helpers ======================
@@ -117,13 +116,6 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     // =====================  END: Helper Methods ==========================
     
     // =============== START: Custom Validation Methods ====================
-    
-    public boolean function hasAtLeastOneReturnReasonType(){
-        if(isNull(getReturnReasonType()) && isNull(getSecondaryReturnReasonType())){
-            return false;
-        }
-        return true;
-    }
     
     // ===============  END: Custom Validation Methods =====================
     

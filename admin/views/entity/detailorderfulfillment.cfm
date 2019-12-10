@@ -58,7 +58,7 @@ Notes:
 	<cfif 
 		rc.edit AND structKeyExists(rc,"addressVerificationStruct") 
 		AND rc.orderFulfillment.getQuantityUndelivered() 
-		AND NOT isNull($.slatwall.setting("globalIntegrationForAddressVerification"))
+		AND NOT isNull(setting("globalShippingIntegrationForAddressVerification"))
 	>
 		<hb:HibachiAddressVerificationModal />
 	</cfif>

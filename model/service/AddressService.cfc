@@ -169,37 +169,40 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.country;
 	}
 	
-	public any function verifyAddressStruct(required struct addressStruct){
+	public any function verifyAddressStruct(required any addressStruct){
 		 			
 		var address = this.getAddress(arguments.addressStruct['addressID']);
+		 			
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
 		
 		var addressVerificationStruct = {};
 		
-		if( isNull(address.getVerificationCacheKey()) || 
+		if( 
+			isNull(address.getVerificationCacheKey()) || 
 			!len(address.getVerificationCacheKey()) || 
 			compare(address.getVerificationCacheKey(),cacheKey) != 0
-		) {
+		){
 		
-			var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
+			var shippingIntegrationID = getHibachiScope().setting('globalShippingIntegrationForAddressVerification');
 			
-			if(!isNull(integrationID) && len(integrationID) && integrationID != 'internal' ){
-	
-				addressVerificationStruct = getService("IntegrationService")
-												.getIntegrationByIntegrationPackage(integrationID)
-													.getIntegrationCFC("Address")
-														.verifyAddress(arguments.addressStruct);
+			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID) && shippingIntegrationID != 'internal' ){
+				
+				var shippingIntegration = getService("IntegrationService").getIntegrationByIntegrationPackage(shippingIntegrationID).getIntegrationCFC("Shipping");
+				
+				addressVerificationStruct = shippingIntegration.verifyAddress(arguments.addressStruct);
 				
 				address.setVerificationJson(serializeJSON(addressVerificationStruct));
+				
 				address.setVerificationCacheKey(cacheKey);
 			}
 			
-		} 
-		else {
+		} else {
+			
 			addressVerificationStruct = deserializeJson(address.getVerificationJson());
+			
 		}
 		
-		if (structKeyExists(addressVerificationStruct, 'success')) {
+		if (structKeyExists(addressVerificationStruct, 'success')){
 			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
 			if(!addressVerificationStruct['success']){
@@ -209,38 +212,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		this.saveAddress(address);
 		
-		//TODO: remove
 		logHibachi(serializeJSON(addressVerificationStruct),true);
 
 		return addressVerificationStruct;
 		
 	}
 	
-	/**
-	 * @Depricated this function is depricated in favor of *verifyAccountAddressByID()*.
-	 * left here for compatibility with other projects, should be removed
-	 * 
-	*/ 
 	public any function verifyAccountAddressWithShippingIntegration(required string accountAddressID){
-		return verifyAccountAddressByID(arguments.accountAddressID);
+		
+		
+			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
+			
+			if(len(data)){
+				return this.verifyAddressStruct(data[1]);
+			} 
 	}
 	
-	/**
-	 * @Depricated this function is depricated in favor of *verifyAddressByID()*.
-	 * left here for compatibility with other projects, should be removed
-	 * 
-	*/ 
 	public any function verifyAddressWithShippingIntegration(required string addressID){
-		return verifyAddressByID(arguments.addressID);
-	}
-	
-	/**
-	 * Function to verify Address by an addressID using an AddressIntegration 
-	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
-	 *  
-	 * @addressID id, of the Address to verify
-	*/ 
-	public any function verifyAddressByID(required string addressID){
 		
 			var data = getDAO("AddressDAO").getAddressStruct(addressID);
 		
@@ -248,22 +236,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				return this.verifyAddressStruct(data[1]);
 			}
 	}
-	
-	/**
-	 * Function to verify AccountAddress by an accountAddressID using an AddressIntegration 
-	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
-	 *  
-	 * @accountAddressID id, of the AccountAddress to verify
-	 */ 
-	public any function verifyAccountAddressByID(required string accountAddressID){
-
-			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
-			
-			if(len(data)){
-				return this.verifyAddressStruct(data[1]);
-			} 
-	}
-
 	
 	public any function getAddressName(required any addressStruct){
 			var name = "";
