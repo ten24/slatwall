@@ -500,7 +500,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return super.delete( arguments.orderTemplate );
 	}
-}
+
 	public any function processVolumeRebuildBatch_create(required any volumeRebuildBatch, required any processObject){
 		var volumeRebuildBatchOrders = arguments.processObject.getVolumeRebuildBatchOrders();
 		
