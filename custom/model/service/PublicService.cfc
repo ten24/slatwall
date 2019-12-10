@@ -523,6 +523,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     private any function enrollUser(required struct data, required string accountType){
         
+        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
+    	    getHibachiScope().addActionResult( "public:account.create", true );
+            addErrors(arguments.data, 'Owner Account Is Required');
+            arguments.data['ajaxResponse']['createAccount'] = 'Owner Account Is Required';
+            return;
+        }
+        
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
