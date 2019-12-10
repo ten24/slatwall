@@ -13,7 +13,6 @@ class SponsorSearchSelectorController {
 	public argumentsObject:any;
 	public recordsCount:number;
 	public hasBeenSearched:boolean = false;
-	public selectedSponsor:any;
 	
 	// Form fields for the sponsor search.
 	public form: any = {
