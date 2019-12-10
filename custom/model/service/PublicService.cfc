@@ -744,6 +744,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('defaultSku.imageFile');
+        
+        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
+        }
 
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
