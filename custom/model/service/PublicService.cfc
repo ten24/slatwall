@@ -523,6 +523,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     private any function enrollUser(required struct data, required string accountType){
         
+        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
+    	    getHibachiScope().addActionResult( "public:account.create", true );
+            addErrors(arguments.data, getHibachiScope().rbKey('frontend.validate.ownerRequired')); 
+            arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
+            return;
+        }
+        
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
@@ -858,5 +865,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+    public any function getSiteOwnerAccount(required struct data){
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        param name="arguments.data.siteOwner" default= ''; 
+
+        var account = getAccountService().getAccountByAccountNumber(arguments.data.siteOwner);
+        var returnAccount = {};
+        
+        if(!isNull(account)){
+            returnAccount['firstName'] =  account.getFirstName();
+            returnAccount['lastName'] = account.getLastName();
+            returnAccount['accountImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            returnAccount['calculatedFullName'] = account.getCalculatedFullName();
+            arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
+        }else{
+            arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
+        }
+    }
 
 }

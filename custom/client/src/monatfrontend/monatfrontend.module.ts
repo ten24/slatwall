@@ -27,6 +27,8 @@ import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
+import { WishlistDeleteModal } from './components/wishlist-delete-modal';
+import { WishlistEditModal } from './components/wishlist-edit-modal';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
@@ -42,6 +44,7 @@ import { MonatMiniCart } from './components/minicart/monat-minicart';
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
+import { MonatSiteOwnerController } from './controllers/site-owner-controller';
 
 
 //services
@@ -84,6 +87,8 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 	.directive('paginationController', SWFPagination.Factory())
 	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
+	.directive('wishlistDeleteModal', WishlistDeleteModal.Factory())
+	.directive('wishlistEditModal', WishlistEditModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
@@ -97,6 +102,7 @@ var monatfrontendmodule = angular
 	.controller('searchController', MonatSearchController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
+	.controller('siteOwnerController', MonatSiteOwnerController)
 
 	// Services
 	.service('monatService', MonatService)
