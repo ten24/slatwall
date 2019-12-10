@@ -50,7 +50,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderTemplateName" ormtype="string";
+	property name="orderTemplateName" ormtype="string" hb_populateEnabled="public";
 	
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
@@ -469,5 +469,10 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  //CUSTOM FUNCTIONS END
+	}  
+
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}//CUSTOM FUNCTIONS END
 }

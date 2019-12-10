@@ -47,9 +47,15 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		//snapshot the pricegroups on the order.
 		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
             var firstPriceGroup = account.getPriceGroups()[1];
-            order.setPriceGroup(firstPriceGroup);
+            arguments.order.setPriceGroup(firstPriceGroup);
         }
         
+        if( ( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 ) &&  
+        	arguments.order.hasStarterKit()
+        ) {
+			account.setStarterKitPurchasedFlag(true);
+        }
+      
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 

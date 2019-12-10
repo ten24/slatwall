@@ -467,7 +467,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
         var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
-		arguments.data['ajaxResponse']['productListing'] = [];
+		arguments.data['ajaxResponse']['productList'] = [];
 		
 		var scrollableSmartList = getHibachiService().getSkuPriceSmartList();
         
@@ -510,7 +510,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
   			      "skuCode"                     :       sku.getSkuCode()?:""
 			    };
 
-			    arrayAppend(arguments.data['ajaxResponse']['productListing'], productStruct);
+			    arrayAppend(arguments.data['ajaxResponse']['productList'], productStruct);
 		    }
 		    
 		    arguments.data['ajaxResponse']['recordsCount'] = recordsCount;

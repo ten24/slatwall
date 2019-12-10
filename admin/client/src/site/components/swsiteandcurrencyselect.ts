@@ -37,10 +37,11 @@ class SWSiteAndCurrencySelectController{
                 }
             }
         }
-        
-        this.currencyCodeOptions = this.site.eligibleCurrencyCodes.split(',');
-        if(this.currencyCodeOptions.length === 1){
-            this.currencyCode = this.currencyCodeOptions[0];
+        if(this.site != null){
+            this.currencyCodeOptions = this.site.eligibleCurrencyCodes.split(',');
+            if(this.currencyCodeOptions.length === 1){
+                this.currencyCode = this.currencyCodeOptions[0];
+            }
         }
     }
 }

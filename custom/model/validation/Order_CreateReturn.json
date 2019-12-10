@@ -1,0 +1,6 @@
+{
+    "properties":{
+        "returnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}],
+        "secondaryReturnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}]
+    }
+}
