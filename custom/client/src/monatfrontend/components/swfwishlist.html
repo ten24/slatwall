@@ -15,28 +15,31 @@
 			ng-model="createWishList"
 			>
 				<ul class="wishlist-names" 
-					ng-init="swfWishlist.getWishlistsLight()"
+					ng-init="swfWishlist.getWishlistsLight(); createWishList = {}"
 				> 
 					<li ng-if="swfWishlist.orderTemplates" ng-repeat="wishlist in swfWishlist.orderTemplates track by $index" ng-cloak>
 						<div class="radio">
-							<input ng-click="swfWishlist.setWishlistID(wishlist.orderTemplateID); swfWishlist.setWishlistName(wishlist.orderTemplateName);" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
-							<label for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
+							<input ng-checked="wishlist.orderTemplateID == swfWishlist.wishlistTemplateID && !swfWishlist.newWishlist" ng-value="wishlist.orderTemplateID" type="radio" name="wishlist" id="wishlist-{{$index}}" ng-model="createWishList.orderTemplateID">
+							<label ng-click="swfWishlist.newWishlist = false; swfWishlist.setWishlistID(wishlist.orderTemplateID); swfWishlist.setWishlistName(wishlist.orderTemplateName);createWishList.orderTemplateName = NULL " for="wishlist-{{$index}}">{{wishlist.orderTemplateName}}</label>
 						</div>
 					</li>
+					<!-- New wishlist input --->
 					<li>
-						<div ng-click="newWishlist = true" class="radio">
-							<input type="radio" name="wishlist" id="create-new" ng-value="''" ng-model="createWishList.orderTemplateID" >
+						<div ng-click="swfWishlist.newWishlist = true" class="radio">
+							<input ng-checked ="swfWishlist.newWishlist" type="radio" name="wishlist" id="create-new" ng-value="''" ng-model="createWishList.orderTemplateID" >
 							<label for="create-new">Create a new wishlist</label>
 						</div>
 						<div class="new-wishlist-name">
-							<input ng-disabled="!newWishlist" placeholder="Name your wishlist" id="orderTemplateName" type="text" name="orderTemplateName" class="form-control success" value="newWishlist" ng-model="createWishList.orderTemplateName" swvalidationrequired="true">
+							<input ng-disabled="!swfWishlist.newWishlist" placeholder="Name your wishlist" id="orderTemplateName" type="text" name="orderTemplateName" class="form-control success" value="newWishlist" ng-model="createWishList.orderTemplateName" swvalidationrequired="true">
 						</div>
 					</li>
+				
+
 					<div class="text-center">
-						<button ng-if="!createWishList.orderTemplateID && createWishList.orderTemplateName" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
+						<button ng-if="swfWishlist.newWishlist && createWishList.orderTemplateName" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
 							Save Changes
 						</button>
-						<button ng-if="createWishList.orderTemplateID" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
+						<button ng-if="swfWishlist.wishlistTemplateID && !swfWishlist.newWishlist" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
 							Save Changes
 						</button>
 					</div>
@@ -44,4 +47,21 @@
 			</form>
 		</div>
 	</div>	
+</div>
+
+<!---Product listing area for my account view --->
+<div ng-if="swfWishlist.showWishlistModal == false" class="col-12">
+	<h6 ng-show="swfWishlist.loading">Loading...</h6> <!--- TODO: Implement pretty loader --->
+	
+	<div ng-if="swfWishlist.orderTemplateItems.length > 0" class="product_list wishlist-products row no-gutters">
+		<div class="col-md-6 col-lg-4" ng-repeat="item in swfWishlist.orderTemplateItems track by $index">
+		  	<monat-product-card all-products="swfWishlist.orderTemplateItems" type="wishlist" product="item" index="{{$index}}" ></monat-product-card>
+		</div>		
+	</div>
+	
+	<a ng-if="swfWishlist.orderTemplateItems.length == 0" class="col-12" href="/shop/">
+		<div  class=" alert alert-success text-center">
+			<span sw-rbkey="'frontend.wishlist.noProducts'"></span>
+		</div>			
+	</a>	
 </div>
