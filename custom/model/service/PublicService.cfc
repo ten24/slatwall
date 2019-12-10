@@ -48,6 +48,78 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get Product Reviews
+     * It adds relatedProducts as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getProductReviews(required struct data){
+        param name="arguments.data.productID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            var productReviews = product.getAllProductReviews();
+            arguments.data.ajaxResponse['productReviews'] = productReviews;
+        }
+    }
+    
+    /**
+     * Function to get Related Products
+     * It adds relatedProducts as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getRelatedProducts(required struct data){
+        param name="arguments.data.productID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            var relatedProducts = product.getAllRelatedProducts();
+            arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
+        }
+    }
+    
+    /**
+     * Function get Images assigned to product
+     * It adds Images array as key in ajaxResponse
+     * @param productID
+     * @param defaultSkuOnlyFlag
+     * @param resizeSizes ('s,m,l') optional
+     * @return none
+    */
+    public void function getProductImageGallery(required struct data){
+        param name="arguments.data.productID";
+        param name="arguments.data.defaultSkuOnlyFlag" default="false";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(structKeyExists(arguments.data,'resizeSizes')){
+            var sizeArray = [];
+            for(var size in arguments.data.resizeSizes){
+                arrayAppend(sizeArray,{"size"=size});
+            }
+            arguments.data.resizeSizes = sizeArray;
+        }
+        arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
+    }
+    
+     /**
+     * Function get Product Options By Option Group
+     * It adds productOptions as key in ajaxResponse
+     * @param productID
+     * @param optionGroupID
+     * @return none
+    */
+    public void function getProductOptionsByOptionGroup(required struct data){
+        param name="arguments.data.productID";
+        param name="arguments.data.optionGroupID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            arguments.data.ajaxResponse['productOptions'] = product.getOptionsByOptionGroup(arguments.data.optionGroupID);
+        }
+    }
+    
+    /**
      * Function to get applied payments on order
      * adds appliedPayments in ajaxResponse
      * @param request data
