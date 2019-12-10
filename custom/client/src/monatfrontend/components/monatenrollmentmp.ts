@@ -6,7 +6,7 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean = false;
 	public contentId: string;
-	public bundleHasErrors: boolean = false;
+	public bundleErrors: Array<any> = [];
 	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
@@ -98,14 +98,24 @@ class EnrollmentMPController {
 	};
 
 	public submitStarterPack = () => {
+		
+		this.bundleErrors = [];
+		
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
-        		this.loading = false;
-            	this.observerService.notify('onNext');
-        	})
+			this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
+				this.loading = false;
+        		
+				if ( data.hasErrors ) {
+					for ( let error in data.errors ) {
+						this.bundleErrors = this.bundleErrors.concat( data.errors[ error ] );
+					}
+				} else {
+					this.observerService.notify('onNext');
+				}
+    		});
         } else {
-            this.bundleHasErrors = true;
+            this.bundleErrors.push('Please select a starter pack');
         }
     }
 
@@ -135,7 +145,7 @@ class EnrollmentMPController {
 
 	public selectBundle = (bundleID) => {
 		this.selectedBundleID = bundleID;
-		this.bundleHasErrors = false;
+		this.bundleErrors = [];
 		this.openedBundle = null;
 	};
 
