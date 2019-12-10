@@ -817,7 +817,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
-                'upgradedPriceGroupCode': upgradedPriceGroupCode
+                'upgradedPriceGroupCode': upgradedPriceGroupCode,
+                'qats': record.calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);

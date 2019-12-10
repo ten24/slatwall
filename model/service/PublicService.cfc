@@ -2323,43 +2323,4 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-
-    public any function getBaseProductCollectionList(required any data){
-        var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType();
-        var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
-        
-        //TODO: Consider starting from skuPrice table for less joins
-        var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productName');
-        productCollectionList.addDisplayProperty('defaultSku.skuID');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
-        productCollectionList.addDisplayProperty('urlTitle');
-        productCollectionList.addDisplayProperty('defaultSku.imageFile');
-
-        productCollectionList.addFilter('activeFlag',1);
-        productCollectionList.addFilter('publishedFlag',1);
-        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedStartDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value=now(), comparisonOperator=">", filterGroupAlias = 'publishedEndDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
-        productCollectionList.addFilter('skus.activeFlag',1);
-        productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-       
-        if(isNull(accountType) || accountType == 'retail'){
-           productCollectionList.addFilter('skus.retailFlag', 1);
-        }else if(accountType == 'marketPartner'){
-            productCollectionList.addFilter('skus.mpFlag', 1);
-        }else{
-            productCollectionList.addFilter('skus.vipFlag', 1);
-        }
-
-        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
-    }   
 }
