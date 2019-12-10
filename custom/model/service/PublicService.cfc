@@ -865,5 +865,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+    public any function getSiteOwnerAccount(required struct data){
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        param name="arguments.data.siteOwner" default= ''; 
+
+        var account = getAccountService().getAccountByAccountNumber(arguments.data.siteOwner);
+        var returnAccount = {};
+        
+        if(!isNull(account)){
+            returnAccount['firstName'] =  account.getFirstName();
+            returnAccount['lastName'] = account.getLastName();
+            returnAccount['accountImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            returnAccount['calculatedFullName'] = account.getCalculatedFullName();
+            arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
+        }else{
+            arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
+        }
+    }
 
 }

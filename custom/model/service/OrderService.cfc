@@ -31,8 +31,8 @@ component extends="Slatwall.model.service.OrderService" {
         
         return super.processOrderTemplate_create(argumentCollection = arguments);
     }
-
- 
+    
+    
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
 	     for(var priceField in variables.customPriceFields){
@@ -307,7 +307,7 @@ component extends="Slatwall.model.service.OrderService" {
 
 		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
 		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,sku.product.productID,sku.skuID');
+		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName');
 		
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
@@ -499,5 +499,49 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		
 		return super.delete( arguments.orderTemplate );
+	}
+}
+	public any function processVolumeRebuildBatch_create(required any volumeRebuildBatch, required any processObject){
+		var volumeRebuildBatchOrders = arguments.processObject.getVolumeRebuildBatchOrders();
+		
+		for(var volumeRebuildBatchOrder in volumeRebuildBatchOrders){
+			var order = volumeRebuildBatchOrder.getOrder();
+			var orderItems = order.getOrderItems();
+			for(var orderItem in orderItems){
+				var volumeRebuildBatchOrderItem = this.newVolumeRebuildBatchOrderItem();
+				volumeRebuildBatchOrderItem.setOrderItem(orderItem);
+				volumeRebuildBatchOrderItem.setSkuCode(orderItem.getSku().getSkuCode());
+				volumeRebuildBatchOrderItem.setVolumeRebuildBatchOrder(volumeRebuildBatchOrder);
+				volumeRebuildBatchOrderItem.setVolumeRebuildBatch(volumeRebuildBatch);
+				for(var customPriceField in variables.customPriceFields){
+					volumeRebuildBatchOrderItem.invokeMethod('setOld#customPriceField#',{1=orderItem.invokeMethod('get#customPriceField#')});
+				}
+				this.saveVolumeRebuildBatchOrderItem(volumeRebuildBatchOrderItem);
+			}
+			this.saveVolumeRebuildBatchOrder(volumeRebuildBatchOrder);
+		}
+		arguments.volumeRebuildBatch.setVolumeRebuildBatchStatusType(getService('TypeService').getTypeByTypeCode('vrbstNew'));
+		if(!isNull(arguments.processObject.getVolumeRebuildBatchName())){
+			arguments.volumeRebuildBatch.setVolumeRebuildBatchName(arguments.processObject.getVolumeRebuildBatchName());
+		}
+		this.saveVolumeRebuildBatch(arguments.volumeRebuildBatch);
+		return arguments.volumeRebuildBatch;
+	}
+	
+	public any function processVolumeRebuildBatch_process(required any volumeRebuildBatch){
+		var volumeRebuildBatchOrders = arguments.volumeRebuildBatch.getVolumeRebuildBatchOrders();
+		
+		for(var volumeRebuildBatchOrder in volumeRebuildBatchOrders){
+			var volumeRebuildBatchOrderItems = volumeRebuildBatchOrder.getVolumeRebuildBatchOrderItems();
+			for(var volumeRebuildBatchOrderItem in volumeRebuildBatchOrderItems){
+				var orderItem = volumeRebuildBatchOrderItem.getOrderItem();
+				for(var customPriceField in variables.customPriceFields){
+					orderItem.invokeMethod('remove#customPriceField#');
+					volumeRebuildBatchOrderItem.invokeMethod('setNew#customPriceField#',{1=orderItem.invokeMethod('get#customPriceField#')});
+				}
+			}
+		}
+		arguments.volumeRebuildBatch.setVolumeRebuildBatchStatusType(getService('TypeService').getTypeByTypeCode('vrbstProcessed'));
+		return arguments.volumeRebuildBatch;
 	}
 }

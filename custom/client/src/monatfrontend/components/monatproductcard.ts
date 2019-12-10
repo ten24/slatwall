@@ -161,7 +161,6 @@ class MonatProductCardController {
     
 	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
-		console.log(productName);
 		this.ModalService.showModal({
 			component: 'swfWishlist',
 			bodyClass: 'angular-modal-service-active',
