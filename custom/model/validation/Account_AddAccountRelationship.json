@@ -1,0 +1,5 @@
+{
+    "properties":{
+        "account":[{"method":"accountHasNoParent"}]
+    }
+}

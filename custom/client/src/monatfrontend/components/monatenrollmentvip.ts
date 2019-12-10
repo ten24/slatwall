@@ -46,7 +46,6 @@ class VIPController {
 		if(localStorage.getItem('shippingMethodID')){
 			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
 		}
-		
 				
 		if(localStorage.getItem('flexshipDayOfMonth')){
     		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
@@ -58,14 +57,14 @@ class VIPController {
 		
 		if(localStorage.getItem('flexshipID')){
 	    	this.flexshipID = localStorage.getItem('flexshipID');
+	    	this.getProductList();
 		}
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
-    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingMethodUsingShippingMethodIDSuccess");
-    	this.observerService.attach(this.setOrderTemplateShippingAddress,"addShippingAddressUsingAccountAddressSuccess");
     	this.observerService.attach(this.getProductList,"createSuccess");
-
+    	
 		this.localStorageCheck(); 
+		
 		if(this.isNotSafariPrivate){
 			this.observerService.attach((accountAddress)=>{
 				localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
@@ -90,33 +89,7 @@ class VIPController {
 			this.isNotSafariPrivate = false;
 		}
 	}
-	public setOrderTemplateShippingAddress = () =>{
-		if(!this.holdingShippingMethodID || !this.holdingShippingAddressID){
-			return;
-		}
-		this.loading = true;
-		let payload = {};
-		payload['orderTemplateID'] = this.flexshipID;
-		payload['shippingAccountAddress.value'] = this.holdingShippingAddressID;
-		payload['shippingMethod.shippingMethodID']= this.holdingShippingMethodID;
-		
-		this.orderTemplateService.updateShipping(payload).then(response => {
-			this.loading = false;
-		})
-	}
-	
-	public setOrderTemplateBilling = () =>{
-		this.loading = true;
-		let payload = {};
-		payload['orderTemplateID'] = this.flexshipID;
-		payload['billingAccountAddress.value'] = this.holdingShippingAddressID;
-		payload['accountPaymentMethod.value']= this.holdingShippingMethodID;
-		
-		this.orderTemplateService.updateBilling(payload).then(response => {
-			this.loading = false;
-		})
-	}
-	
+
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
 			return this.countryCodeOptions;
@@ -176,6 +149,7 @@ class VIPController {
 	
 	public getProductList = () => {
 		this.loading = true;
+		
 		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
