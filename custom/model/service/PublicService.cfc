@@ -48,6 +48,25 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to get Sku Stock
+     * It adds stock as key in ajaxResponse
+     * @param skuID required
+     * @param locationID required
+     * @return none
+    */
+    public void function getSkuStock(required struct data){
+        param name="arguments.data.skuID";
+        param name="arguments.data.locationID";
+        
+        var sku = getService('skuService').getSku(arguments.data.skuID);
+        var location = getService('locationService').getLocation(arguments.data.locationID);
+        if(!isNull(sku) && !isNull(location)) {
+            var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+            arguments.data.ajaxResponse['stock'] = stock;
+        }
+    }
+    
+    /**
      * Function to get Product Reviews
      * It adds relatedProducts as key in ajaxResponse
      * @param productID
