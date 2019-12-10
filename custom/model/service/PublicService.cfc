@@ -56,9 +56,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getAppliedPayments(required any data) {
         var appliedPayments = getHibachiScope().getCart().getOrderPayments();
         if(arrayLen(appliedPayments)) {
-            var temp = getOrderService().getAppliedOrderPayments();
-            writeDump(var = temp, top = 2); abort;
-		    arguments.data['ajaxResponse']['appliedPayments'] = promotionCodes;
+            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
+            arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
         }
     }
     
