@@ -125,9 +125,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getAccount() {
 	
-		if( !StructKeyExists(variables, 'account') ) { //if the account is nit already loaded
+		if( !StructKeyExists(variables, 'account') ) { 
 
-			//only if we have an accountID
 			if( StructKeyExists(variables, 'accountID') && Len(Trim(variables.accountID)) ) {
 				variables['account'] = getService('accountService').getAccount( getAccountID() ); 
 				return variables['account'];
