@@ -217,7 +217,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public string function getPreferedLocale(){
 		var localMapping = {
 			'en' : 'en_us',		// English (United States)
-			'gb' : 'gb_en',		// English (United States)  // English (United Kingdom)
+			'gb' : 'gb_en',		// English (United Kingdom)
 			'fr' : 'fr_ca',		// French (Canada)
 			'pl' : 'pl_pl', 	// Polish
 			'ga' : 'ga_ie', 	// Irish (Ireland)
