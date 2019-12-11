@@ -1427,22 +1427,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+			
+			if(account.hasErrors()) {
+				arguments.orderTemplate.addError('create', account.getErrors());
+				return arguments.orderTemplate;
+			} 
 		} 
 		else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
 		} 
 		else {
 			var account = getHibachiScope().getAccount();
-		}
-		
-		if(account.hasErrors()) {
-			arguments.orderTemplate.addError('create', account.getErrors());
-			return arguments.orderTemplate;
-		} 
-		
-		if( !account.getCanCreateFlexshipFlag()) {
-			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
-			return arguments.orderTemplate;
 		}
 	
 		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){

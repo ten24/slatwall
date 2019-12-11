@@ -123,27 +123,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return siteAndCurrencyOptions;  
 	}
 	
-	public any function getAccount() {
-	
-		if( !StructKeyExists(variables, 'account') ) { 
-
-			if( StructKeyExists(variables, 'accountID') && Len(Trim(variables.accountID)) ) {
-				variables['account'] = getService('accountService').getAccount( getAccountID() ); 
-				return variables['account'];
-			}
-		} 
-		else {
-			return variables['account'];
-		}
-	}
 	
 	public any function getSite() {
 		if(!StructKeyExists(variables, 'site') ) {
 			
-			if( !IsNull(getAccount()) && !IsNull(getAccount().getAccountCreatedSite())){
-				variables['site'] = getAccount().getAccountCreatedSite();
-			}
-			else if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
+			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
 				variables['site'] = getService('SiteService').getSite( variables.siteID );
 			} 
 			else if ( StructKeyExists(variables, 'cmsSiteID') && !IsNull( variables.cmsSiteID ) && len( trim(variables.cmsSiteID) ) ) {
