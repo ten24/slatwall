@@ -76,30 +76,32 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!isNull(arguments.address.getCountryCode())){
 			cacheKey &= arguments.address.getCountryCode();
 		}
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var isAddressInZone = ORMExecuteQuery("
-				Select COUNT(azl) FROM SlatwallAddressZone az 
-				LEFT JOIN az.addressZoneLocations azl
-				where az.addressZoneID = :addressZoneID
-				and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
-				and (azl.city = :city OR azl.city is NULL)
-				and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
-				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
-				",
-				{
-					addressZoneID=arguments.addressZone.getAddressZoneID(),
-					postalCode=arguments.address.getPostalCode(),
-					city=arguments.address.getCity(),
-					stateCode=arguments.address.getStateCode(),
-					countryCode=arguments.address.getCountryCode()
-				},
-				true
-			);
-			//cache Address verification for 5 min
-			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			return getService('HibachiCacheService').getCachedValue(cacheKey);
 		}
 		
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		var isAddressInZone = ORMExecuteQuery("
+			Select COUNT(azl) FROM SlatwallAddressZone az 
+			LEFT JOIN az.addressZoneLocations azl
+			where az.addressZoneID = :addressZoneID
+			and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
+			and (azl.city = :city OR azl.city is NULL)
+			and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
+			and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
+			",
+			{
+				addressZoneID=arguments.addressZone.getAddressZoneID(),
+				postalCode=arguments.address.getPostalCode(),
+				city=arguments.address.getCity(),
+				stateCode=arguments.address.getStateCode(),
+				countryCode=arguments.address.getCountryCode()
+			},
+			true
+		);
+			//cache Address verification for 5 min
+		getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+	
+		return isAddressInZone;
 	}
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {

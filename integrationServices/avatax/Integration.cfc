@@ -70,6 +70,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sourceRegion = {fieldType="text"},
 			sourceCountry = {fieldType="text"},
 			sourcePostalCode = {fieldType="text"},
+			vatCountries = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
@@ -90,6 +91,14 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public array function getEventHandlers() {
 		return ["Slatwall.integrationServices.avatax.model.handler.AvataxEventHandler"];
+	}
+	
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return true;
+	}
+
+	public string function getAllowedSiteSettingNames() {
+		return "companyCode";
 	}
 	
 }

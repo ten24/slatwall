@@ -727,7 +727,7 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	public void function setQuantity(required numeric quantity){
-		if (structKeyExists(variables, "quantity") && arguments.quantity != variables.quantity){
+		if (structKeyExists(variables, "quantity") && structKeyExists(arguments,"quantity") && arguments.quantity != variables.quantity){
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;

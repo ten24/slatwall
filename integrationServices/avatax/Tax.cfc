@@ -52,6 +52,22 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         var responseBean = testIntegration();
         return responseBean.healthcheckFlag;
     }
+    
+	// Override allow site settings
+	public any function setting(required string settingName, any requestBean) {
+		
+		if(!structKeyExists(arguments,"requestBean")){
+			return super.setting(argumentCollection=arguments);
+		}
+		
+		// Allows settings to be requested in the context of the site where the order was created
+		if (structKeyExists(arguments.requestBean,"getOrder") && !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+		return super.setting(argumentCollection=arguments);
+	}
 	
 	public any function getTaxRates(required any requestBean) {
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
@@ -118,7 +134,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		// Setup the request data structure
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
-			companyCode = setting('companyCode'),
+			companyCode = setting('companyCode',arguments.requestBean),
 			DocCode = docCode,
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
@@ -181,8 +197,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			// Add this address to the request data struct
 			arrayAppend(requestDataStruct.addresses, addressData );
 			
-			orderItemPriceMap = {};
-			
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
 				if (item.getReferenceObjectType() == 'OrderItem'){
@@ -197,8 +211,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					itemData.Qty = item.getQuantity();
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
-					}
-					else {
+					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
 					}
 					
@@ -225,9 +238,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					arrayAppend(requestDataStruct.Lines, itemData);
 
 				}
-				if(item.getReferenceObjectType() == 'OrderFulfillment'){
-					orderItemPriceMap[itemData.LineNo] = item.getOrderItem().getPrice();
-				}
 			}
 		}
 		
@@ -253,6 +263,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
+
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -269,18 +280,19 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
 				responseBean.addMessage("Response", serializeJSON(responseData));
 			}
-			
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
+					
 					// Make sure that there is a taxAmount for this orderItem
-					if(taxLine.Tax > 0 || taxLine.Exemption > 0) {
+					if(taxLine.Tax > 0) {
+						
 						var primaryIDName = left(taxLine.taxCode,2) == "FR" ? "orderFulfillmentId" : "orderItemId";
 						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0) {
+							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
@@ -296,12 +308,12 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 									argumentCollection=args
 								);
 							}
-							
-							if(taxDetail.JurisCode != "US" && taxLine.Exemption > 0){
+							if(listContains(setting("VATCountries"),taxDetail.Country)){
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
-									VATAmount = taxLine.Exemption, 
-									VATPrice = orderItemPriceMap[taxLine.LineNo],
+									VATAmount = taxDetail.Tax, 
+									VATPrice = taxDetail.Taxable,
+									taxRate = taxDetail.Rate * 100,
 									taxJurisdictionName=taxDetail.JurisName,
 									taxJurisdictionType=taxDetail.JurisType,
 									taxImpositionName=taxDetail.TaxName,
