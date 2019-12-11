@@ -56,7 +56,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="canceledDateTime" ormtype="timestamp";
-	property name="lastOrderCreatedDateTime" ormtype="timestamp";
+	property name="lastOrderPlacedDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
@@ -101,7 +101,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
-	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateItemDetailsHTML" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
@@ -277,23 +276,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
-
-	public string function getLastOrderPlacedDateTime(){
-		if(!structKeyExists(variables, 'lastOrderPlacedDateTime') || !len(variables.lastOrderPlacedDateTime)){
-			var orderCollectionList = getService('OrderService').getOrderCollectionList();
-			orderCollectionList.addDisplayProperty('createdDateTime');  
-			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
-			orderCollectionList.addOrderBy('createdDateTime|DESC');
-			var records = orderCollectionList.getPageRecords();
-	
-			if(!arrayIsEmpty(records)){
-				variables.lastOrderPlacedDateTime = records[1]['createdDateTime'];
-			} else { 
-				variables.lastOrderPlacedDateTime = '';
-			}
-		} 
-		return variables.lastOrderPlacedDateTime;
-	}
 
 	public string function getScheduledOrderDates(numeric iterations = 5){
 		
