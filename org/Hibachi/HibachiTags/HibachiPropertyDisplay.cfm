@@ -81,7 +81,7 @@
 	<!--- First Make sure that we have the ability to actually display this property --->
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
 		
-		
+		<cfsilent>
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
 
@@ -248,7 +248,8 @@
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
 				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
 			</cfif>
-	
+		
+		</cfsilent>
 		
 		<hb:HibachiFieldDisplay attributecollection="#attributes#" />
 	</cfif>
