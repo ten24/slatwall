@@ -64098,12 +64098,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountPaymentMethodModalController = /** @class */ (function () {
-    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.defaultCountryCode = 'US';
@@ -64181,7 +64182,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -64355,12 +64356,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountShippingMethodModalController = /** @class */ (function () {
-    function SWAccountShippingMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+    function SWAccountShippingMethodModalController($timeout, $hibachi, entityService, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.processContext = 'updateShipping';
@@ -64408,7 +64410,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions,' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -78559,7 +78561,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78573,6 +78574,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
