@@ -1,0 +1,45 @@
+	<!---Wishlist Delete Modal ---> 
+	<div class="modal using-modal-service" id="wishlistDeleteModal-{{wishlistDeleteModal.wishlist.value}}" tabindex="-1" role="dialog" aria-labelledby="delete-wishlist" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content p-0">
+				<form 
+					ng-submit="swfForm.submitForm()" 
+					swf-form data-method="deleteOrderTemplate" 
+					data-after-submit-event-name="myAccountWishlistDeleted" 
+					data-close-modal="true"
+					data-modal-id="delete-wishlist"
+					ng-model="deleteWishlist"
+				>
+					<div class="modal-header nameModal pb-3 bg-primary">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<i class="fas text-white fa-times"></i>
+						</button>
+						<p class="text-white h6 mb-0">{{wishlistDeleteModal.translations.deleteWishlist}}</p>
+					</div>
+					<div class="modal-body">
+						<div class="row mt-2 mb-4">
+							<div class="col-12">
+								<p class="text-center h6">
+									{{wishlistDeleteModal.translations.areYouSure}}
+								</p>
+							</div>
+						</div>
+						<div class="row short-width">
+							<div class="col-md-6">
+								<button data-dismiss="modal" aria-label="Close" class="btn bg-primary w-100 mb-3">
+									{{wishlistDeleteModal.translations.cancel}}
+								</button>
+							</div>
+							<div class="col-md-6">
+								<input id="orderTemplateID" type="hidden" name="orderTemplateID"  class="form-control success" ng-model="wishlistDeleteModal.wishlist.value">
+								<button ng-class="{loading: swfForm.loading}" class="btn bg-primary w-100" type="submit">
+									{{wishlistDeleteModal.translations.continue}}
+								</button>
+							</div>						
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!---END: Wishlist Delete Modal ---> 
