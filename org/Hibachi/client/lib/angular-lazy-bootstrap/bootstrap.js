@@ -39,6 +39,7 @@
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
         	}catch(e){
+        	    console.error(e);
         		angular.bootstrap(document, ['ui.bootstrap']);
         	}
         });
@@ -62,7 +63,6 @@
             },
 
             bootstrap: function () {
-
                 loadingCallback();
 
                 return $q.all(promises)
