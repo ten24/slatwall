@@ -82,29 +82,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
-	public any function addUserToMailchimp( required any account ) {
-		
-		var mailChimpData = {
-			'email_address': arguments.account.getPrimaryEmailAddress().getEmailAddress(),
-			'status': 'subscribed',
-			'merge_fields': {
-				FNAME: arguments.account.getFirstName(),
-				LNAME: arguments.account.getLastName(),
-				PHONE: arguments.account.getPhoneNumber(),
-				ATYPE: arguments.account.getAccountType(),
-			},
-		};
-
-		var mailchimpService = getService('MailchimpAPIService');
-		var response = mailchimpService.sendRequestToMailChimp( 
-			apiRoute = 'members', 
-			method = 'POST', 
-			jsonData = serializeJson( mailChimpData ) 
-		);
-		
-		return response;
-	}
-	
 	//custom validation methods
 	
 	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
