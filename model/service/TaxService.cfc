@@ -107,8 +107,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
  		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
-		if ( (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())
-		){
+		
+		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
+			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())		
+		)
+		{
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
 			//Remove existing taxes from OrderItems and OrderFulfillments
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
@@ -889,7 +892,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 
 	public boolean function getTaxCategoryRateIncludesTaxAddress(required any taxCategoryRate, any taxAddress) {
-		return true;
+
 		if(	isNull(arguments.taxCategoryRate.getAddressZone())
 			  ||
 			(
