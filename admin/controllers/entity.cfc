@@ -107,6 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
 	this.secureMethods=listAppend(this.secureMethods, 'listform');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
+	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
