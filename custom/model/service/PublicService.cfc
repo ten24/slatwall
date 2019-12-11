@@ -578,6 +578,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(arguments.accountType == 'customer'){
             account.getAccountNumber();
+            
+            // Email opt-in
+            if ( structKeyExists( arguments.data, 'emailPref' ) && 'true' == arguments.data.emailPref ) {
+                var response = getService('AccountService').addUserToMailchimp( account );
+            }
         }
         
         getDAO('HibachiDAO').flushORMSession();
