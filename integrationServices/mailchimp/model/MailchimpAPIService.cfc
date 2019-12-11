@@ -171,24 +171,28 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
     public any function sendRequestToMailchimp( required string apiPath, required method, string jsonData = '' ) {
 
         var httpRequest = new http();
-        httpRequest.setMethod(arguments.method);
-		httpRequest.setUrl(apiPath);
-		httpRequest.addParam( type="header", name="Content-type", value="application/json" );
+        httpRequest.setMethod( arguments.method );
+		httpRequest.setUrl( arguments.apiPath );
 		httpRequest.addParam( 
-			type="header", 
-			name="Authorization", 
-			value="apikey #getHibachiScope().setting('integrationmailchimpmailChimpAPIKey')#"
+			type = 'header', 
+			name = 'Content-type', 
+			value = 'application/json' 
+		);
+		httpRequest.addParam( 
+			type = 'header', 
+			name = 'Authorization', 
+			value = 'apikey #getHibachiScope().setting('integrationmailchimpmailChimpAPIKey')#''
 		);
 		
 		if ( len( arguments.jsonData ) ) {
-			httpRequest.addParam(type="body", value=jsonData);
+			httpRequest.addParam( type = 'body', value = arguments.jsonData );
 		}
 		
-		var chimpResponseData = httpRequest.send().getPrefix();
+		var response = httpRequest.send().getPrefix();
 			
-		chimpResponseData = deserializeJson(chimpResponseData.FileContent);
+		response = deserializeJson( response.FileContent );
 		
-		return chimpResponseData;
+		return response;
     }
     
 }
