@@ -80,6 +80,10 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	public any function getContentByResponse(required string response){
 		return deserializeJson(arguments.response.fileContent);
 	}
+	
+	public any function pullData(){
+		getService("MonatDataService").importDailyAccountUpdates(50, 1, 100);
+	}
 
 }
 
