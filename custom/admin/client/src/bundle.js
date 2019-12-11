@@ -72619,7 +72619,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-            orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
+            orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity) * 100) / 100;
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
                     return (item == orderItem) ? total : total += item.refundTotal;
