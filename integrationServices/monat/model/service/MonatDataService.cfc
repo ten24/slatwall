@@ -234,6 +234,11 @@ component extends="Slatwall.model.service.HibachiService" {
                     //Account Status Code
                     if (!isNull(account['AccountStatusCode']) && len(account['AccountStatusCode'])){
                     	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
+                    	
+                    	//If the account is suspended, deactivate it.
+                    	if (account['AccountStatusName'] == "Suspended"){
+                    	    foundAccount.setActiveFlag(false);
+                    	}
                     }
                     
                     //Entry Date
