@@ -82,13 +82,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
 	}
 	
-	//custom validation methods
-	
-	public boolean function restrictRenewalDateToOneYearFromNow( required any account ) {
-		var oneYearFromNow = DateAdd('yyyy', 1, Now());
-		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
-	}
-	
 	public any function addUserToMailchimp( required any account ) {
 		
 		var mailChimpData = {
@@ -109,10 +102,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			jsonData = serializeJson( mailChimpData ) 
 		);
 		
-		writeDump( mailChimpData );
-		writeDump( response );
-		abort;
-		
 		return response;
+	}
+	
+	//custom validation methods
+	
+	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
+		var oneYearFromNow = DateAdd('yyyy', 1, Now());
+		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
 	}
 }
