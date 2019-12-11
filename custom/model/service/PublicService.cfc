@@ -1102,6 +1102,87 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+
+    
+	public void function uploadProfileImage(required any data) {
+		
+		try{
+		    getFileInfo(arguments.data.uploadFile);
+		}catch(any e){
+		    return;
+		}
+		
+        account = getHibachiScope().getAccount();
+
+		// Get the upload directory for the current property
+		var strPath = getDirectoryFromPath( expandPath( "./" ));
+
+		if (findNoCase("Slatwall", strPath)){
+			var uploadDirectory = "#strPath#custom/assets/images/profileImage/";
+		}else{
+			var uploadDirectory = "#strPath#Slatwall/custom/assets/images/profileImage/";
+		}
+		var fileName = '#arguments.data.imageFile#';
+		
+		var fullFilePath = "#uploadDirectory##arguments.data.imageFile#";
+			
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(uploadDirectory)) {
+			directoryCreate(uploadDirectory);
+		}
+		
+		//delete the last profile image
+		if(!isNull(account.getProfileImage()) && fileExists('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')){
+		    fileDelete('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')
+		}
+		
+		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
+			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
+		}else{
+			getHibachiScope().addActionResult( "uploadProfileImage", false );
+		}
+		//check if the file exists.
+		if (fileExists("#fullFilePath#")){
+			if (!isNull(account)){
+				data.imageFile = "";
+				account.setProfileImage(fileName);
+				this.getAccountService().saveAccount(account);
+				getHibachiScope().addActionResult( "uploadProfileImage", false );
+			}else{
+				getHibachiScope().addActionResult( "uploadProfileImage", true );
+			}
+			
+		}else{
+			getHibachiScope().addActionResult( "uploadProfileImage", true );
+		}
+	}
+	
+	public any function getAccountProfileImage(){
+        param name="arguments.data.identifierType" default= ''; 
+        param name="arguments.data.identifier" default= ''; 
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        
+        //if the identifiers are not passed in get the account on scope
+        if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
+            account = getHibachiScope().getAccount();
+            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+        }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
+            //if identifiers are passed in, try to get the account using them
+            try{
+                var method = 'getAccountBy#toString(arguments.data.identifierType)#';
+                var account = invoke(accountService, method, [arguments.data.identifier]);   
+                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            }catch(any e){
+                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            }
+        }else{
+            // if someone passes empty strings as an argument, return an empty string
+            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+        }
+
+	}
+
     public any function getSiteOwnerAccount(required struct data){
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
@@ -1120,5 +1201,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
         }
     }
+
 
 }

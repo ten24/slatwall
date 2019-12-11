@@ -35,6 +35,8 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
+
+    public accountProfileImage;
     
     // @ngInject
     constructor(
@@ -88,6 +90,9 @@ class swfAccountController {
                     break;
                 case '/my-account/order-history/':
                     this.getOrdersOnAccount();
+                    break;
+                case '/my-account/my-details/profile/':
+                    this.getUserProfileImage();
                     break;
                 case '/my-account/my-details/':
                     this.getMoMoneyBalance();
@@ -252,6 +257,33 @@ class swfAccountController {
         });
     }
     
+
+    public uploadImage = () =>{
+        let tempdata = new FormData();
+        tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
+        tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
+		let xhr = new XMLHttpRequest();
+		let url = window.location.href
+		let urlArray = url.split("/");
+		let baseURL = urlArray[0] + "//" + urlArray[2];
+		
+		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
+		xhr.onload = function () {
+			var response = JSON.parse(xhr.response);
+		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+		 	 	console.log("File Uploaded");
+		  	 } 
+		};
+        xhr.send(tempdata);
+    }     
+    
+    public getUserProfileImage = () =>{
+        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
+            this.accountProfileImage = result.accountProfileImage;
+        });
+    }
+
+
 	public showDeleteWishlistModal = () => {
 		this.ModalService.showModal({
 			component: 'wishlistDeleteModal',
