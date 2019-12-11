@@ -7,6 +7,7 @@ component {
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
+	property name="canCreateFlexshipFlag" persistent="false";
 	property name="lastActivityDateTime" ormtype="timestamp";
 	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
@@ -55,7 +56,7 @@ component {
 		return variables.accountNumber;
 	}
 
-	public boolean function userCanCreateFlexship() {
+	public boolean function getCanCreateFlexshipFlag() {
 	
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();

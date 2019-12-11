@@ -1,3 +1,5 @@
+declare var hibachiConfig;
+
 class SponsorSearchSelectorController {
 	private title: string;
 	private siteCountryCode: string;
@@ -9,7 +11,9 @@ class SponsorSearchSelectorController {
 	public currentPage: number = 1;
 	public argumentsObject:any;
 	public recordsCount:number;
-
+	public hasBeenSearched:boolean = false;
+	public selectedSponsor:any;
+	
 	// Form fields for the sponsor search.
 	public form: any = {
 		text: '',
@@ -28,7 +32,10 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		//this.getSearchResults();
+		if(hibachiConfig.siteOwner.length){
+			this.getSearchResults(true);
+		}
+		
 	}
 	
 	private getCountryCodeOptions = () => {
@@ -53,8 +60,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = () => {
-		
+	public getSearchResults = (useHibachConfig = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -73,11 +79,21 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
+		
+		if(useHibachConfig && !this.hasBeenSearched){
+			this.argumentsObject['search'] = hibachiConfig.siteOwner
+			data['search'] = hibachiConfig.siteOwner;
+			this.hasBeenSearched = true;
+		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(
 			'?slatAction=monat:public.getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
+			if(useHibachConfig){
+				this.selectedSponsor = data.pageRecords[0];
+				this.notifySelect(this.selectedSponsor);
+			}
 			this.loadingResults = false;
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
