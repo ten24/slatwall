@@ -71447,6 +71447,7 @@ var SkuPriceService = /** @class */ (function () {
         };
         this.getSkuCollectionConfig = function (productID) {
             var config = _this.collectionConfigService.newCollectionConfig("Sku");
+            config.setDisplayProperties("skuID,skuName,skuCode,imagePath");
             config.addFilter("product.productID", productID, "=");
             return config;
         };
@@ -78559,7 +78560,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78573,6 +78573,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
