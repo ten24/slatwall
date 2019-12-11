@@ -734,12 +734,57 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
+    public any function getBaseProductCollectionList(required any data){
+        var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();
+        var holdingPriceGroups = account.getPriceGroups();
+        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+
+        //TODO: Consider starting from skuPrice table for less joins
+        var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.addDisplayProperty('defaultSku.skuID');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
+        productCollectionList.addDisplayProperty('urlTitle');
+        productCollectionList.addDisplayProperty('defaultSku.imageFile');
+        
+        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
+        }
+
+        productCollectionList.addFilter('activeFlag',1);
+        productCollectionList.addFilter('publishedFlag',1);
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value=now(), comparisonOperator=">", filterGroupAlias = 'publishedEndDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
+        productCollectionList.addFilter('skus.activeFlag',1);
+        productCollectionList.addFilter('skus.publishedFlag',1);
+        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+
+        if(isNull(accountType) || accountType == 'retail'){
+           productCollectionList.addFilter('skus.retailFlag', 1);
+        }else if(accountType == 'marketPartner'){
+            productCollectionList.addFilter('skus.mpFlag', 1);
+        }else{
+            productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+
+        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
+    }
+    
     public any function getProductsByKeyword(required any data) {
         param name="arguments.data.keyword" default="";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
         
-        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
@@ -770,7 +815,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
         param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
 
-        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
@@ -822,7 +867,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
-                'upgradedPriceGroupCode': upgradedPriceGroupCode
+                'upgradedPriceGroupCode': upgradedPriceGroupCode,
+                'qats': record.calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);

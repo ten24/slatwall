@@ -31,8 +31,25 @@ component extends="Slatwall.model.service.OrderService" {
         
         return super.processOrderTemplate_create(argumentCollection = arguments);
     }
-    
-    
+
+	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
+	
+		arguments.order = super.processOrder_create(argumentCollection=arguments);
+		
+		if(!isNull(arguments.order.getAccount()) && isNull(arguments.order.getDefaultStockLocation())){
+			var site = arguments.order.getAccount().getAccountCreatedSite();
+			if(isNull(site)){
+				site = arguments.order.getOrderCreatedSite();
+			}
+			if(!isNull(site) && site.hasLocation()){
+				arguments.order.setDefaultStockLocation(site.getLocations()[1]);
+			}
+		}
+		
+		return arguments.order;
+		
+	}
+ 
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
 	     for(var priceField in variables.customPriceFields){
@@ -220,7 +237,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		var displayProperties = 'total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
