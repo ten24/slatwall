@@ -53,6 +53,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="allocatedOrderDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
 
 	
 	// Calculated Properties
@@ -1438,5 +1439,36 @@ public any function getPersonalVolume(){
     	}
     	
     	return mainPromotionOnOrder;
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public void function removePersonalVolume(){
+	    if(structKeyExists(variables,'personalVolume')){
+	        structDelete(variables,'personalVolume');
+	    }
+	}
+    public void function removeTaxableAmount(){
+        if(structKeyExists(variables,'taxableAmount')){
+            structDelete(variables,'taxableAmount');
+        }
+    }
+    public void function removeCommissionableVolume(){
+        if(structKeyExists(variables,'commissionableVolume')){
+            structDelete(variables,'commissionableVolume');
+        }
+    }
+    public void function removeRetailCommission(){
+        if(structKeyExists(variables,'retailCommission')){
+            structDelete(variables,'retailCommission');
+        }
+    }
+    public void function removeProductPackVolume(){
+        if(structKeyExists(variables,'productPackVolume')){
+            structDelete(variables,'productPackVolume');
+        }
+    }
+    public void function removeRetailValueVolume(){
+        if(structKeyExists(variables,'retailValueVolume')){
+            structDelete(variables,'retailValueVolume');
+        }
+    }//CUSTOM FUNCTIONS END
 }

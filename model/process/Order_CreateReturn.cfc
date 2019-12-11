@@ -89,11 +89,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ====================== START: Data Options ==========================
     
     public any function getLocation(){
-    	if(!structKeyExists(variables,'location') && structKeyExists(variables,'locationID')){
+    	if(!structKeyExists(variables,'location') && !isNull(getLocationID())){
     		variables.location = getService('LocationService').getLocation(variables.locationID);
     	}
     	if(!isNull(variables.location)){
     		return variables.location;
+    	}
+    }
+    
+    public string function getLocationID(){
+    	if(!structKeyExists(variables,'locationID')){
+    		if(!isNull(getOrder().getDefaultStockLocation())){
+    			variables.locationID = getOrder().getDefaultStockLocation().getLocationID();
+    		}
+    	}
+    	if(structKeyExists(variables,'locationID')){
+    		return variables.locationID;
     	}
     }
     

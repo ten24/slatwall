@@ -4245,6 +4245,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}else{
 							var newOrderReturnItem = orderReturnItem;
 						}
+						newOrderReturnItem.setStockLossReason(thisRecord.stockLossReason);
 						this.createStockReceiverItemForReturnOrderItem(stockReceiver, newOrderReturnItem, location, thisRecord.stockLoss);
 						
 						if(!structKeyExists(local,'stockAdjustment')){
