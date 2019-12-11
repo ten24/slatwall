@@ -53,6 +53,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="allocatedOrderDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="stockLoss" ormtype="boolean"; //Stock Loss flag for order return items;
 	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
 
 	

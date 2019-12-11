@@ -3,7 +3,8 @@
 <cftry>
     <cfquery name="local.stockLossReason">
         ALTER TABLE sworderitem
-        ADD COLUMN stockLossReason varchar(255)
+        ADD COLUMN stockLossReason varchar(255),
+        ADD COLUMN stockLoss boolean
 	</cfquery>
     <cfcatch>
         <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Add stock loss reason property">
