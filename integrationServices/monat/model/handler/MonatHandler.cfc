@@ -76,6 +76,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 					account.setRenewalDate(renewalDate);
 				}
 				
+				// Email opt-in when finishing enrollment
+				if ( 'true' == account.getAllowCorporateEmailsFlag() ) {
+					var response = getService('AccountService').addUserToMailchimp( account );
+				}
+				
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
