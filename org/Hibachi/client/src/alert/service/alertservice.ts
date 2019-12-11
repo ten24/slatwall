@@ -65,8 +65,6 @@ class AlertService implements IAlertService{
     };
 
     formatMessagesToAlerts = (messages):Alert[] =>{
-        console.log("Setting alerts");
-       
         var alerts = [];
         if(messages && messages.length){
             for(var message in messages){
