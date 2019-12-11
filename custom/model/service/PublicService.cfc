@@ -49,9 +49,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     /**
      * Function to get Types by Type Code
-     * It adds stock as key in ajaxResponse
-     * @param skuID required
-     * @param locationID required
+     * It adds typeList as key in ajaxResponse
+     * @param typeCode required
      * @return none
     */
     public void function getSystemTypesByTypeCode(required struct data){
