@@ -289,7 +289,7 @@ component {
 	public boolean function hasProductPackOrderItem(){
         var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
         orderItemCollectionList.addFilter('order.orderID',getOrderID());
-        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack');
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
         return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	

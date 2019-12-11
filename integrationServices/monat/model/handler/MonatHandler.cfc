@@ -41,7 +41,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
 
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
-		
+
 		var account = arguments.order.getAccount();
 		
 		//snapshot the pricegroups on the order.
@@ -97,6 +97,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
 			);
 		}
+		
+		
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
 		//set the initial order flag if needed.
@@ -104,6 +106,25 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			
 			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
+			//adding shipping and billing to flexship and activating
+			if(!isNull(arguments.data.orderTemplateID)){
+				
+				var orderService = getService('orderService');
+				var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
+				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
+				
+				var shippingMethod = orderFulFillment.getShippingMethod();
+				var shippingAddress = orderFulFillment.getShippingAddress();
+				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+				var billingAccountAddress = arguments.order.getBillingAccountAddress();
+				
+				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setShippingMethod(shippingMethod);
+				orderTemplate.setBillingAccountAddress(billingAccountAddress);
+				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+				orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
+				orderService.saveOrderTemplate(orderTemplate);
+			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
 			//Initial Order Flag
