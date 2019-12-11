@@ -1404,7 +1404,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getTypeBySystemCode('otscrtBatch'));
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
-		
+		arguments.orderTemplate.setCanceledDateTime(now());
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	}
 	
@@ -1417,8 +1417,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
 		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
-		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		arguments.orderTemplate.setCanceledDateTime(now());
 		
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
@@ -1689,7 +1689,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-
+		arguments.orderTemplate.setLastOrderCreatedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
