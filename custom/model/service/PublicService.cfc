@@ -522,7 +522,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     
     private any function enrollUser(required struct data, required string accountType){
-        
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
@@ -598,6 +597,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function createRetailEnrollment(required struct data){
+                
+        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
+    	    getHibachiScope().addActionResult( "public:account.create", true );
+            addErrors(arguments.data, getHibachiScope().rbKey('frontend.validate.ownerRequired')); 
+            arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
+            return;
+        }
+        
         return enrollUser(arguments.data, 'customer');
     }
     
@@ -722,12 +729,57 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
+    public any function getBaseProductCollectionList(required any data){
+        var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();
+        var holdingPriceGroups = account.getPriceGroups();
+        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+
+        //TODO: Consider starting from skuPrice table for less joins
+        var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.addDisplayProperty('defaultSku.skuID');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
+        productCollectionList.addDisplayProperty('urlTitle');
+        productCollectionList.addDisplayProperty('defaultSku.imageFile');
+        
+        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
+        }
+
+        productCollectionList.addFilter('activeFlag',1);
+        productCollectionList.addFilter('publishedFlag',1);
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedStartDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value=now(), comparisonOperator=">", filterGroupAlias = 'publishedEndDateTimeFilter');
+        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
+        productCollectionList.addFilter('skus.activeFlag',1);
+        productCollectionList.addFilter('skus.publishedFlag',1);
+        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
+        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+
+        if(isNull(accountType) || accountType == 'retail'){
+           productCollectionList.addFilter('skus.retailFlag', 1);
+        }else if(accountType == 'marketPartner'){
+            productCollectionList.addFilter('skus.mpFlag', 1);
+        }else{
+            productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+
+        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
+    }
+    
     public any function getProductsByKeyword(required any data) {
         param name="arguments.data.keyword" default="";
         param name="arguments.data.currentPage" default="1";
         param name="arguments.data.pageRecordsShow" default="12";
         
-        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
@@ -758,7 +810,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
         param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
 
-        var returnObject = super.getBaseProductCollectionList(arguments.data);
+        var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
@@ -810,7 +862,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
-                'upgradedPriceGroupCode': upgradedPriceGroupCode
+                'upgradedPriceGroupCode': upgradedPriceGroupCode,
+                'qats': record.calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
@@ -858,5 +911,105 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
     
+
+    
+	public void function uploadProfileImage(required any data) {
+		
+		try{
+		    getFileInfo(arguments.data.uploadFile);
+		}catch(any e){
+		    return;
+		}
+		
+        account = getHibachiScope().getAccount();
+
+		// Get the upload directory for the current property
+		var strPath = getDirectoryFromPath( expandPath( "./" ));
+
+		if (findNoCase("Slatwall", strPath)){
+			var uploadDirectory = "#strPath#custom/assets/images/profileImage/";
+		}else{
+			var uploadDirectory = "#strPath#Slatwall/custom/assets/images/profileImage/";
+		}
+		var fileName = '#arguments.data.imageFile#';
+		
+		var fullFilePath = "#uploadDirectory##arguments.data.imageFile#";
+			
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(uploadDirectory)) {
+			directoryCreate(uploadDirectory);
+		}
+		
+		//delete the last profile image
+		if(!isNull(account.getProfileImage()) && fileExists('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')){
+		    fileDelete('/#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#')
+		}
+		
+		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
+			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
+		}else{
+			getHibachiScope().addActionResult( "uploadProfileImage", false );
+		}
+		//check if the file exists.
+		if (fileExists("#fullFilePath#")){
+			if (!isNull(account)){
+				data.imageFile = "";
+				account.setProfileImage(fileName);
+				this.getAccountService().saveAccount(account);
+				getHibachiScope().addActionResult( "uploadProfileImage", false );
+			}else{
+				getHibachiScope().addActionResult( "uploadProfileImage", true );
+			}
+			
+		}else{
+			getHibachiScope().addActionResult( "uploadProfileImage", true );
+		}
+	}
+	
+	public any function getAccountProfileImage(){
+        param name="arguments.data.identifierType" default= ''; 
+        param name="arguments.data.identifier" default= ''; 
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        
+        //if the identifiers are not passed in get the account on scope
+        if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
+            account = getHibachiScope().getAccount();
+            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+        }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
+            //if identifiers are passed in, try to get the account using them
+            try{
+                var method = 'getAccountBy#toString(arguments.data.identifierType)#';
+                var account = invoke(accountService, method, [arguments.data.identifier]);   
+                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            }catch(any e){
+                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            }
+        }else{
+            // if someone passes empty strings as an argument, return an empty string
+            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+        }
+
+	}
+
+    public any function getSiteOwnerAccount(required struct data){
+        param name="arguments.data.height" default= 250; 
+        param name="arguments.data.width" default= 250; 
+        param name="arguments.data.siteOwner" default= ''; 
+
+        var account = getAccountService().getAccountByAccountNumber(arguments.data.siteOwner);
+        var returnAccount = {};
+        
+        if(!isNull(account)){
+            returnAccount['firstName'] =  account.getFirstName();
+            returnAccount['lastName'] = account.getLastName();
+            returnAccount['accountImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+            returnAccount['calculatedFullName'] = account.getCalculatedFullName();
+            arguments.data['ajaxResponse']['ownerAccount'] = returnAccount;
+        }else{
+            arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
+        }
+    }
+
 
 }

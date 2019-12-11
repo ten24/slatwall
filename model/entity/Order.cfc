@@ -2078,34 +2078,36 @@ public numeric function getPersonalVolumeSubtotal(){
 	    if(isNull(referencedOrder)){
 	        return true;
 	    }
-	    var dateDiff = 0;
-	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
-    	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    
+	    if (!isNull(referencedOrder.getOrderCloseDateTime())){
+		    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+		    if(dateDiff <= 30){
+		        return true;
+		    }else if(dateDiff > 365){
+		        return false;
+		    }else{
+		        var originalSubtotal = referencedOrder.getSubTotal();
+		        
+		        var returnSubtotal = 0;
+		        
+		        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
+		        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
+		        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
+		        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
+		        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
+		        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
+		        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
+		        
+		        for(var order in originalOrderReturns){
+		            returnSubtotal += order['calculatedSubTotal'];
+		        }
+	
+		        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
+		    }
 	    }
-	    if(dateDiff <= 30){
-	        return true;
-	    }else if(dateDiff > 365){
-	        return false;
-	    }else{
-	        var originalSubtotal = referencedOrder.getSubTotal();
-	        
-	        var returnSubtotal = 0;
-	        
-	        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
-	        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
-	        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
-	        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
-	        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
-	        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
-	        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
-	        
-	        for(var order in originalOrderReturns){
-	            returnSubtotal += order['calculatedSubTotal'];
-	        }
-
-	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
-	    }
+        return true;
 	}
+	
 	public boolean function hasProductPackOrderItem(){
         var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
         orderItemCollectionList.addFilter('order.orderID',getOrderID());

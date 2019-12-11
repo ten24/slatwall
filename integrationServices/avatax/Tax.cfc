@@ -46,8 +46,18 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
+component accessors="true" output="false" displayname="Avatax" 
+implements = "Slatwall.integrationServices.TaxInterface" 
+extends = "Slatwall.integrationServices.BaseTax" {
 	
+	property name='avataxService' type='any' persistent='false';
+
+	public any function init() {
+		setAvataxService( getService('avataxService') );
+		return super.init();
+	}
+	
+
 	public boolean function healthcheck() {
         var responseBean = testIntegration();
         return responseBean.healthcheckFlag;
@@ -241,8 +251,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			}
 		}
 		
-		// Setup the auth string
-		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
 		// Setup Request to push to Avatax
         var httpRequest = new http();
         httpRequest.setMethod("POST");
@@ -256,10 +264,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         } else {
         	httpRequest.setUrl(setting('productionURL'));
         }
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+        
+        // Set the auth and other http headers
+        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
+        
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
@@ -355,9 +363,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			DocType = 'SalesInvoice'
 		};
 		
-		// Setup the auth string
-		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
-		
 		// Setup Request to push to Avatax
         var httpRequest = new http();
         httpRequest.setMethod("POST");
@@ -371,11 +376,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         } else {
         	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/cancel");
         }
-
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+        
+        // Set the auth and other http headers
+        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
+	
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 		
 		var responseData = httpRequest.send().getPrefix();

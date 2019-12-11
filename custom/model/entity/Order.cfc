@@ -244,6 +244,13 @@ component {
 		return variables.orderHasMPRenewalFee;
 	}
 	
+	public boolean function hasStarterKit() {
+	    if(!structKeyExists(variables,'orderHasStarterKit')){
+            variables.orderHasStarterKit = getService('orderService').orderHasStarterKit(this.getOrderID());
+		}
+		return variables.orderHasStarterKit;
+	}
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
@@ -282,7 +289,7 @@ component {
 	public boolean function hasProductPackOrderItem(){
         var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
         orderItemCollectionList.addFilter('order.orderID',getOrderID());
-        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack');
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
         return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	

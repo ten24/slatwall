@@ -20,7 +20,7 @@ class SWFWishlistController {
     public showWishlistModal:boolean;
 	public close; // injected from angularModalService
     public productName;
-    
+    public newWishlist:boolean = false;
     // @ngInject
     constructor(
         public $scope,
@@ -49,9 +49,10 @@ class SWFWishlistController {
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplateItems = result['orderTemplateItems'];
+            this.orderTemplateItems = result.orderTemplateItems;
             this.loading = false;
         });
+        
     }
 
     public deleteItem =(index)=>{
@@ -124,7 +125,6 @@ class SWFWishlistController {
     
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
-        
     }
     
     public setWishlistName = (newName) => {
@@ -140,6 +140,7 @@ class SWFWishlistController {
     
     
     public closeModal = () => {
+        if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };
     
@@ -164,7 +165,7 @@ class SWFWishlist  {
         currentPage:"@?",
         sku:"<?",
         productName:"<?",
-        showWishlistModal:"@?",
+        showWishlistModal:"<?",
         close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;
