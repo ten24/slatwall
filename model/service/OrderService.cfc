@@ -2088,7 +2088,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
-		var response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		var response = {};
+		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
+			response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		}
+		
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}
