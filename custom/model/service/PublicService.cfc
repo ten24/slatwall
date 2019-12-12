@@ -752,42 +752,40 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
-		try{
-    		for ( var i=1; i<=skuBundleCount; i++ ){
-    			var skuBundle = skuBundles[i]; 
-    			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
-    		
-    			var skuID = skuBundle.sku_product_defaultSku_skuID;
-    			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
-    		
-    			// If this is the first time the parent product is looped over, setup the product.
-    			if ( ! structKeyExists( bundles, skuID ) ) {
-    				bundles[ skuID ] = {
-    					'ID': skuID,
-    					'name': skuBundle.sku_product_productName,
-    					'price': skuBundle.sku_priceByCurrencyCode,
-    					'description': skuBundle.sku_product_productDescription,
-    					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-    					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
-    					'productTypes': {}
-    				};
-    			}
-    			
-    			// If this is the first product type of it's kind, setup the product type.
-    			if ( ! structKeyExists( bundles[ skuID ].productTypes, subProductTypeID ) ) {
-    				bundles[ skuID ].productTypes[ subProductTypeID ] = {
-    					'name': skuBundle.bundledSku_product_productType_productTypeName,
-    					'products': []
-    				};
-    			}
-    		
-    			// Add sub product to the struct.
-    			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
-    				'name': skuBundle.bundledSku_product_productName,
-    				'price': skuBundle.bundledSku_priceByCurrencyCode,
-    				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-    			});
-    		}
+		for ( var i=1; i<=skuBundleCount; i++ ){
+			var skuBundle = skuBundles[i]; 
+			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
+		
+			var skuID = skuBundle.sku_product_defaultSku_skuID;
+			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
+		
+			// If this is the first time the parent product is looped over, setup the product.
+			if ( ! structKeyExists( bundles, skuID ) ) {
+				bundles[ skuID ] = {
+					'ID': skuID,
+					'name': skuBundle.sku_product_productName,
+					'price': skuBundle.sku_priceByCurrencyCode,
+					'description': skuBundle.sku_product_productDescription,
+					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
+					'productTypes': {}
+				};
+			}
+			
+			// If this is the first product type of it's kind, setup the product type.
+			if ( ! structKeyExists( bundles[ skuID ].productTypes, subProductTypeID ) ) {
+				bundles[ skuID ].productTypes[ subProductTypeID ] = {
+					'name': skuBundle.bundledSku_product_productType_productTypeName,
+					'products': []
+				};
+			}
+		
+			// Add sub product to the struct.
+			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
+				'name': skuBundle.bundledSku_product_productName,
+				'price': skuBundle.bundledSku_priceByCurrencyCode,
+				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
+			});
 		}
 
 		arguments.data['ajaxResponse']['bundles'] = bundles;
