@@ -3,6 +3,10 @@ declare let paypal: any;
 
 class MonatCheckoutController {
 	public 	togglePaymentAction: boolean = false;
+	public loading: any = {
+		selectShippingMethod: false
+	};
+	public screen: string = '';
 	
 	// @ngInject
 	constructor(
@@ -10,22 +14,56 @@ class MonatCheckoutController {
 		public observerService,
 		public $rootScope,
 		public $scope
+	) {}
 
-	) {
+	public $onInit = () => {
+		
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
 		    };
 	        
 		}, 'ownerAccountSelected');	
+		
+		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess');
+		this.getCurrentCheckoutScreen();
 	}
-
-	public $onInit = () => {
-		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess')
+	
+	private getCurrentCheckoutScreen = () => {
+		let screen = 'shipping';
+		let ps = this.publicService;
+		
+		if ( ps.hasShippingAddressAndMethod() && !ps.hasSuccessfulAction('addOrderPayment') ) {
+			screen = 'payment'
+		} 
+		
+		if ( ps.hasSuccessfulAction('addOrderPayment') && ps.hasShippingAddressAndMethod() ) {
+			screen = 'review'
+		} 
+		
+		this.screen = screen;
 	}
 	
 	private closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
+	}
+	
+	public selectShippingMethod = ( option, orderFulfillment: any ) => {
+		
+		if ( typeof orderFulfillment == 'string' ) {
+			orderFulfillment = this.publicService.cart.orderFulfillments[orderFulfillment];
+		}
+		
+		let data = {
+			'shippingMethodID': option.value,
+			'fulfillmentID':orderFulfillment.orderFulfillmentID
+		};
+		
+		this.loading.selectShippingMethod = true;
+		this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data ).then( result => {
+			// We don't really need the result, just want to ensure after it's completed that we set the loading to false.
+			this.loading.selectShippingMethod = false;
+		});
 	}
 	
 	public loadHyperWallet() {
