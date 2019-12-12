@@ -5,6 +5,50 @@ component extends="Slatwall.model.service.OrderService" {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
     }
     
+    /**
+     * Function to get all order fulfillments for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderFulfillemntsOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderFulfillmentCollectionList();
+		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "records": ordersList.getRecordsCount()}
+	}
+	
+	/**
+     * Function to get all order deliveries for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderDeliveryOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderDeliveryCollectionList();
+		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderDeliveryStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "records": ordersList.getRecordsCount()}
+	}
+    
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
         super.addNewOrderItemSetup(argumentCollection=arguments);
         

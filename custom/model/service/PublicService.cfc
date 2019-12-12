@@ -48,6 +48,23 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+     * Function to delete Account
+     * @return none
+    */
+    public void function deleteJmeterAccount() {
+        param name="data.accountID" default="";
+        
+        var account = getAccountService().getAccount( data.accountID );
+        
+        if(!isNull(account) && account.getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOk = getAccountService().deleteAccount( account );
+            getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
+        } else {
+            getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
+        }
+    }
+    
+    /**
      * Function to get Types by Type Code
      * It adds typeList as key in ajaxResponse
      * @param typeCode required
@@ -284,6 +301,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getAllCartsAndQuotesOnAccount(required any data) {
         var accountOrders = getAccountService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
+    }
+    
+    /**
+     * Function to get all order fulfilments for user
+     * adds cartsAndQuotesOnAccount in ajaxResponse
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllOrderFulfillemntsOnAccount(required any data) {
+        var accountOrders = getOrderService().getAllOrderFulfillemntsOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
+    }
+    
+    /**
+     * Function to get all order deliveries for user
+     * adds cartsAndQuotesOnAccount in ajaxResponse
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllOrderDeliveryOnAccount(required any data) {
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
     
     /**
