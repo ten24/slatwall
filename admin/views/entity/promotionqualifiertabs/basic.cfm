@@ -17,7 +17,6 @@
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
 			</cfif>
-			<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="message" edit="#rc.edit#" />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

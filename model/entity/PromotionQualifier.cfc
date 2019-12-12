@@ -51,7 +51,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Persistent Properties
 	property name="promotionQualifierID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="qualifierType" ormtype="string" hb_formatType="rbKey";
-	property name="message" ormtype="string" length="2000";
 	
 	property name="minimumItemQuantity" ormtype="integer" hb_nullRBKey="define.0";
 	property name="maximumItemQuantity" ormtype="integer" hb_nullRBKey="define.unlimited";
@@ -68,6 +67,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	
 	// Related Entities (one-to-many)
+	property name="promotionQualifierMessages" singularname="promotionQualifierMessage" cfc="PromotionQualifierMessage" fieldtype="one-to-many" fkcolumn="promotionQualifierID" inverse=true;
 	
 	// Related Entities (many-to-many - owner)
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="promotionQualifierID" inversejoincolumn="fulfillmentMethodID";
