@@ -1,8 +1,15 @@
     
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
+    public void function afterOrderProcess_releaseCreditsSuccess(required any slatwallScope, required any order, required any data ={}) {
+        
+        if(arguments.order.getTypeCode() == "otReturnOrder"){
+            this.clawbackReferAFriendBenefits(argumentCollection=arguments);
+        }
+        
+    }
+
     public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order, required any data ={}) {
-       
         if(arguments.order.getStatusCode() != "ostClosed"){
             return;
         }
@@ -53,10 +60,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     		}
         }
     }
-    public void function afterOrderProcess_createReturnSuccess(required any slatwallScope, required any order, required any data ={}) {
+    
+    private void function clawbackReferAFriendBenefits(required any slatwallScope, required any order, required any data ={}) {
         if(!arguments.order.getVIPEnrollmentOrderFlag()){
             return;
         }
+
         var referee = arguments.order.getAccount();
         var referer = referee.getOwnerAccount();
         
@@ -67,9 +76,10 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         var transactionList = arguments.slatwallScope.getService("LoyaltyService").getAccountLoyaltyTransactionCollectionList();
         
         transactionList.setDisplayProperties("accountLoyaltyTransactionID");
-        transactionList.addFilter("order.orderID",arguments.order.getOrderID());
+        transactionList.addFilter("order.orderID",arguments.order.getReferencedOrder().getOrderID());
         transactionList.addFilter("accountLoyalty.account.accountID",accountIDList,"IN");
         transactions = transactionList.getRecords();
+
         for(var transaction in transactions){
             
             transaction = getService("LoyaltyService").getAccountLoyaltyTransaction(transaction['accountLoyaltyTransactionID']);

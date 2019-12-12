@@ -1433,9 +1433,9 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		var orderItems = this.getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
-				vatTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderItems[i].getVATAmount());
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderItems[i].getVATAmount());
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
-				vatTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal - orderItems[i].getVATAmount());
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - orderItems[i].getVATAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
@@ -2105,7 +2105,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	    }
 	    var dateDiff = 0;
 	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
-    	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
 	    }
 	    if(dateDiff <= 30){
 	        return true;

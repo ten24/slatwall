@@ -131,9 +131,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			//Initial Order Flag
 			//Set the Initial Order Flag as needed
 			var previousOrdersCollection = getService("OrderService").getOrderCollectionList();
-			//Filter by this orders account and initial order flag. If we find one, then this is not the first order.
+			//Find if they have any previous Sales Orders that are not this one that just purchased.
 			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
-			previousOrdersCollection.addFilter("initialOrderFlag", true);
+			previousOrdersCollection.addFilter("orderType.systemCode", "otSalesOrder");
+			previousOrdersCollection.addFilter("orderID", arguments.order.getOrderID(), "!=");
+			
 			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
 			
 			if (!previousInitialOrderCount){
