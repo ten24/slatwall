@@ -85244,7 +85244,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.$injector = $injector;
         this.utilityService = utilityService;
         this.getJWTDataFromToken = function (str) {
-            console.log('WTFFFF');
             if (str !== "invalidToken") {
                 // Going backwards: from bytestream, to percent-encoding, to original string.
                 str = str.split('.')[1];
@@ -85291,11 +85290,9 @@ var HibachiAuthenticationService = /** @class */ (function () {
         };
         this.authenticateActionByAccount = function (action, processContext) {
             var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
-            console.log('WFT', authDetails);
             return authDetails.authorizedFlag;
         };
         this.getActionAuthenticationDetailsByAccount = function (action, processContext) {
-            console.log('YO');
             var authDetails = {
                 authorizedFlag: false,
                 superUserAccessFlag: false,
