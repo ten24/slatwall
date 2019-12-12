@@ -387,9 +387,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Add the duplicate error to the payment, if this was
 				if(isDuplicateTransaction) {
-					writeDump('dupe');
-					writeDump(arguments.data.amount);
-					writeDump(var=arguments.paymentTransaction,top=4);abort;
 					arguments.paymentTransaction.addError('runTransaction', "This transaction is duplicate of an already processed transaction.", true);
 
 				// Otherwise continue with processing
