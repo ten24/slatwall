@@ -444,8 +444,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
-            accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
-            accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
             arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
@@ -462,15 +460,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
-            var accountPaymentMethod = "";
-            accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
-            if(!isNull(accountPaymentMethod))
-            {
-                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
+            
+            var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
+            accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
+            accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
+            accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
+            
+            if( arrayLen(accountPaymentMethodCollectionList) ) {
+               arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
         }
-
+        
         super.addOrderPayment(argumentCollection = arguments);
     }
     
