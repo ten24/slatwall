@@ -51,26 +51,28 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
       * Updates an Account address.
       */
     public void function updateAccountAddress(required data){
-     	param name="data.countryCode" default="US";
-     	param name="data.accountAddressID" default="";
-     	param name="data.phoneNumber" default="";
+     	param name="arguments.data.countryCode" default="US";
+     	param name="arguments.data.accountAddressID" default="";
+     	param name="arguments.data.phoneNumber" default="";
+     	param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
 
      	var addressID = "";
-     	var accountAddress = getHibachiScope().getService("AccountService").getAccountAddress(data.accountAddressID);
-        if (!isNull(accountAddress)){
+     	var accountAddress = getHibachiScope().getService("AccountService").getAccountAddress( arguments.data.accountAddressID );
+        
+        if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
             addressID = accountAddress.getAddressID();
         }
 
      	var newAddress = getService("AddressService").getAddress(addressID, true);
      	if (!isNull(newAddress) && !newAddress.hasErrors()){
-     	    newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
+     	    newAddress = getService("AddressService").saveAddress(newAddress, arguments.data, "full");
       		//save the order.
           if(!newAddress.hasErrors()){
   	     	   getService("OrderService").saveOrder(getHibachiScope().getCart());
            }else{
             this.addErrors(data, newAddress.getErrors());
            }
-  	     	getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
+  	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
     	}else{
             getHibachiScope().addActionResult( "public:cart.updateAddress", true );
         }
@@ -78,6 +80,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      
     /**
      * Function to delete Account
+     * This is a test method to be used in jMeter for now,
+     * It is not part of core APIs, should be removed.
      * @return none
     */
     public void function deleteJmeterAccount() {
@@ -204,8 +208,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        var appliedPayments = getHibachiScope().getCart().getOrderPayments();
-        if(arrayLen(appliedPayments)) {
+        if( getHibachiScope().getCart().hasOrderPayments() ) {
             var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
             arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
         }
@@ -246,9 +249,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAvailableShippingMethods(required any data) {
-        var order = getHibachiScope().getCart().getOrderFulfillments();
-        if(arrayLen(order)) {
-            var shippingMethods = getOrderService().getShippingMethodOptions(order[1]);
+        var orderFulfillments = getHibachiScope().getCart().getOrderFulfillments();
+        if(arrayLen(orderFulfillments)) {
+            var shippingMethods = getOrderService().getShippingMethodOptions(orderFulfillments[1]);
 		    arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
         }
     }
@@ -280,65 +283,60 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     /**
      * Function to get list of subscription usage
      * adds subscriptionUsageOnAccount in ajaxResponse
-     * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
      * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
-        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( {accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage } );
         arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
     }
     
     /**
      * Function to get list of gift cards for user
      * adds giftCardsOnAccount in ajaxResponse
-     * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
-        var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
     
     /**
      * Function to get all carts and quotes for user
      * adds cartsAndQuotesOnAccount in ajaxResponse
-     * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
     
     /**
      * Function to get all order fulfilments for user
      * adds cartsAndQuotesOnAccount in ajaxResponse
-     * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
      * @return none
      **/
     public void function getAllOrderFulfillemntsOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderFulfillemntsOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllOrderFulfillemntsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
     
     /**
      * Function to get all order deliveries for user
      * adds cartsAndQuotesOnAccount in ajaxResponse
-     * @param accountID required
      * @param pageRecordsShow optional
      * @param currentPage optional
      * @return none
      **/
     public void function getAllOrderDeliveryOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
     
