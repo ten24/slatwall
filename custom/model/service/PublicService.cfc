@@ -299,7 +299,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
-        var accountOrders = getAccountService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
     

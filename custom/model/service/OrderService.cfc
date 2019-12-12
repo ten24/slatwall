@@ -6,6 +6,36 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     /**
+     * Function to get all carts and quotes for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+    
+    /**
      * Function to get all order fulfillments for user
      * @param accountID required
      * @param pageRecordsShow optional
@@ -24,7 +54,7 @@ component extends="Slatwall.model.service.OrderService" {
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "records": ordersList.getRecordsCount()}
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
 	/**
@@ -46,7 +76,7 @@ component extends="Slatwall.model.service.OrderService" {
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "records": ordersList.getRecordsCount()}
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
