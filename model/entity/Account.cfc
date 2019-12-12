@@ -160,7 +160,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
+	property name="canCreateFlexshipFlag" persistent="false";
 	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -213,8 +215,20 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getPreferedLocale(){
-		//TODO: Get qualified locale based on account prefered language
-		return '';
+		var localMapping = {
+			'en' : 'en_us',		// English (United States)
+			'gb' : 'gb_en',		// English (United Kingdom)
+			'fr' : 'fr_ca',		// French (Canada)
+			'pl' : 'pl_pl', 	// Polish
+			'ga' : 'ga_ie', 	// Irish (Ireland)
+			'es' : 'es_mx'	 	// Spanish (Mexico)
+		};
+		
+		if(structKeyExists(variables, 'languagePreference') && structKeyExists(localMapping, variables.languagePreference)){
+			return localMapping[variables.languagePreference];
+		}else{
+			return '';
+		}
 	}
 
 	public array function getOrderCurrencies(){
@@ -1239,7 +1253,7 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.accountNumber;
 	}
 
-	public boolean function userCanCreateFlexship() {
+	public boolean function getCanCreateFlexshipFlag() {
 	
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
