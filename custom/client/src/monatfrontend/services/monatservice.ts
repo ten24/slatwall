@@ -170,7 +170,6 @@ export class MonatService {
 	public adjustInputFocuses = () => {
 		$('input, select').focus(function() {
 			var ele = $(this);
-			console.log(ele.isInEnrollmentViewport())
 			if ( !ele.isInEnrollmentViewport() ) {
 				$('html, body').animate({
 					scrollTop: ele.offset().top - 80 
