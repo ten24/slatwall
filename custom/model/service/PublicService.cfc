@@ -692,9 +692,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -707,7 +707,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
@@ -717,10 +716,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
 		}
@@ -744,6 +742,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
@@ -754,7 +753,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
 		for ( var i=1; i<=skuBundleCount; i++ ){
-		
 			var skuBundle = skuBundles[i]; 
 			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
 		
@@ -769,7 +767,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'price': skuBundle.sku_priceByCurrencyCode,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
+					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {}
 				};
 			}
@@ -789,7 +787,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
 			});
 		}
-		
+
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
         

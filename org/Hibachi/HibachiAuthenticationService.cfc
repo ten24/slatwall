@@ -49,9 +49,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			timeout = false
 		};
 		
-		if(!(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify())){
+		
+		if(!isNull(arguments.account.getJwtToken()) && !arguments.account.getJwtToken().verify()){
 			authDetails.invalidToken = true;
-		}
+		}	
 		
 		// Check if the user is a super admin 
 		if(getHibachiScope().getLoggedInFlag() && arguments.account.getSuperUserFlag() ) {
