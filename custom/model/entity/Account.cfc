@@ -99,4 +99,9 @@ component {
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
+	public boolean function onlyOnePriceGroup(){
+		return this.getPriceGroupsCount() >= 1;
+	}
+	
+	
 } 
