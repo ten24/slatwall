@@ -25,10 +25,10 @@ class EnrollmentMPController {
 	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
-		this.getStarterPacks();
 		this.getDateOptions();
 		//this.getProductList()
 		
+		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 	};
