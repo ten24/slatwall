@@ -996,6 +996,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(newAccountPaymentMethod.hasErrors()){
 				newOrderPayment.addErrors(newAccountPaymentMethod.getErrors());
 			}
+			
+			if(arguments.processObject.getSetPrimaryPaymentMethodFlag()){
+				var account = getHibachiScope().getAccount();
+				account.setPrimaryPaymentMethod(newAccountPaymentMethod);
+			}
 		}
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
