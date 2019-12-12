@@ -48,6 +48,7 @@ class SWAccountPaymentMethodModalController{
 	             public $hibachi,
 	             public entityService,
 	             public observerService,
+	             public orderTemplateService,
 				 public rbkeyService,
 				 public requestService
 	){
@@ -130,7 +131,7 @@ class SWAccountPaymentMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
+			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'  + this.orderTemplateService.orderTemplatePropertyIdentifierList
 		};
 		
 		if(this.showCreateBillingAddress){

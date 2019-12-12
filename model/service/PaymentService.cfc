@@ -387,7 +387,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Add the duplicate error to the payment, if this was
 				if(isDuplicateTransaction) {
-
 					arguments.paymentTransaction.addError('runTransaction', "This transaction is duplicate of an already processed transaction.", true);
 
 				// Otherwise continue with processing
@@ -423,6 +422,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						requestBean.setTransactionID( arguments.paymentTransaction.getPaymentTransactionID() );
 						requestBean.setTransactionType( arguments.data.transactionType );
 						requestBean.setTransactionAmount( arguments.data.amount );
+						
+						if(structKeyExists(arguments.data,'originalPaymentTransaction')){
+							requestBean.setOriginalPaymentTransaction(arguments.data.originalPaymentTransaction);
+						}
+						
 						if(structKeyExists(arguments.data, "preAuthorizationCode")) {
 							requestBean.setPreAuthorizationCode( arguments.data.preAuthorizationCode );
 						}

@@ -5548,6 +5548,7 @@ var coremodule = angular.module('hibachi.core', [
     .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig) {
         hibachiPathBuilder.setBaseURL(appConfig.baseURL);
         hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
+        console.log("starting core-module config ");
         if (!appConfig.debugFlag) {
             appConfig.debugFlag = false;
         }
@@ -5618,8 +5619,10 @@ var coremodule = angular.module('hibachi.core', [
         $httpProvider.interceptors.push('hibachiInterceptor');
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
+        console.log("end core-module config ");
     }])
     .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', function ($rootScope, $hibachi, $route, $location, rbkeyService) {
+        console.log("starting core-module run ");
         $rootScope.buildUrl = $hibachi.buildUrl;
         $rootScope.rbKey = rbkeyService.rbKey;
         var original = $location.path;
@@ -5633,6 +5636,7 @@ var coremodule = angular.module('hibachi.core', [
             }
             return original.apply($location, [path]);
         };
+        console.log("end core-module config ");
     }])
     .constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
     .constant('corePartialsPath', 'core/components/')
@@ -32131,22 +32135,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BATCH:
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32156,7 +32160,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32169,49 +32173,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 default:
                     return _this.state;
             }
@@ -64098,12 +64102,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountPaymentMethodModalController = /** @class */ (function () {
-    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+    function SWAccountPaymentMethodModalController($timeout, $hibachi, entityService, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.defaultCountryCode = 'US';
@@ -64181,7 +64186,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -64355,12 +64360,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountShippingMethodModalController = /** @class */ (function () {
-    function SWAccountShippingMethodModalController($timeout, $hibachi, entityService, observerService, rbkeyService, requestService) {
+    function SWAccountShippingMethodModalController($timeout, $hibachi, entityService, observerService, orderTemplateService, rbkeyService, requestService) {
         var _this = this;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.entityService = entityService;
         this.observerService = observerService;
+        this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.processContext = 'updateShipping';
@@ -64408,7 +64414,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions,' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -71447,6 +71453,7 @@ var SkuPriceService = /** @class */ (function () {
         };
         this.getSkuCollectionConfig = function (productID) {
             var config = _this.collectionConfigService.newCollectionConfig("Sku");
+            config.setDisplayProperties("skuID,skuName,skuCode,imagePath");
             config.addFilter("product.productID", productID, "=");
             return config;
         };
@@ -72619,7 +72626,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
             orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
             orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
-            orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
+            orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity) * 100) / 100;
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
                     return (item == orderItem) ? total : total += item.refundTotal;
@@ -73298,14 +73305,41 @@ var BaseBootStrapper = /** @class */ (function () {
     function BaseBootStrapper(myApplication) {
         var _this = this;
         this._resourceBundle = {};
+        this.getBaseUrl = function () {
+            var urlString = "";
+            if (!hibachiConfig) {
+                hibachiConfig = {};
+            }
+            if (!hibachiConfig.baseURL) {
+                hibachiConfig.baseURL = '';
+            }
+            urlString += hibachiConfig.baseURL;
+            if (hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length - 1) != '/') {
+                urlString += '/';
+            }
+            return urlString;
+        };
         this.isPrivateMode = function () {
             return new Promise(function (resolve) {
-                var on = function () { return resolve(true); }; // is in private mode
-                var off = function () { return resolve(false); }; // not private mode
+                var on = function () {
+                    _this.isPrivate = true; // is in private mode
+                    resolvePromise();
+                };
+                var off = function () {
+                    _this.isPrivate = false; // not private mode 
+                    resolvePromise();
+                };
+                var resolvePromise = function () {
+                    resolve(_this.isPrivate);
+                };
+                if (_this.isPrivate !== null) { //if already determined, (in some earlier call)
+                    return resolvePromise();
+                }
                 var testLocalStorage = function () {
                     try {
-                        if (localStorage.length)
+                        if (localStorage.length) {
                             off();
+                        }
                         else {
                             localStorage.setItem('x', '1');
                             localStorage.removeItem('x');
@@ -73345,49 +73379,58 @@ var BaseBootStrapper = /** @class */ (function () {
         };
         this.getInstantiationKey = function (baseURL) {
             return _this.$q(function (resolve, reject) {
-                if (hibachiConfig.instantiationKey) {
+                if (_this.instantiationKey) {
+                    resolve(_this.instantiationKey);
+                }
+                else if (hibachiConfig.instantiationKey) {
                     resolve(hibachiConfig.instantiationKey);
                 }
                 else {
-                    _this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey').then(function (resp) { return resolve(resp.data.data.instantiationKey); });
+                    _this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                        .then(function (resp) {
+                        _this.instantiationKey = resp.data.data.instantiationKey;
+                        resolve(_this.instantiationKey);
+                    });
                 }
             });
         };
         this.getData = function (invalidCache) {
             var promises = {};
-            for (var i in invalidCache) {
+            for (var i in invalidCache) { // attributeCacheKey, instantiationKey
                 var invalidCacheName = invalidCache[i];
                 var functionName = invalidCacheName.charAt(0).toUpperCase() + invalidCacheName.slice(1);
-                promises[invalidCacheName] = _this['get' + functionName + 'Data']();
+                promises[invalidCacheName] = _this['get' + functionName + 'Data'](); // mind the syntax 8)
             }
             return _this.$q.all(promises);
         };
         this.getAttributeCacheKeyData = function () {
-            var urlString = "";
-            if (!hibachiConfig) {
-                hibachiConfig = {};
-            }
-            if (!hibachiConfig.baseURL) {
-                hibachiConfig.baseURL = '';
-            }
-            urlString += hibachiConfig.baseURL;
-            if (urlString.length && urlString.slice(-1) !== '/') {
-                urlString += '/';
-            }
-            return _this.$http.get(urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
-                .then(function (resp) {
-                core_module_1.coremodule.constant('attributeMetaData', resp.data.data);
-                //for safari private mode which has no localStorage
-                try {
-                    localStorage.setItem('attributeMetaData', JSON.stringify(resp.data.data));
-                    localStorage.setItem('attributeChecksum', md5(JSON.stringify(resp.data.data)));
-                    // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
-                    // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
-                    _this.appConfig.attributeCacheKey = localStorage.getItem('attributeChecksum').toUpperCase();
-                    localStorage.setItem('appConfig', JSON.stringify(_this.appConfig));
-                }
-                catch (e) { }
-                _this.attributeMetaData = resp.data.data;
+            var urlString = _this.getBaseUrl();
+            return _this.$http
+                .get(urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
+                .then(function (resp) { return resp.data.data; })
+                .then(function (data) {
+                core_module_1.coremodule.constant('attributeMetaData', data);
+                _this.attributeMetaData = data;
+                return data;
+            })
+                .then(function (data) {
+                return new Promise(function (resolve, reject) {
+                    _this.isPrivateMode().then(function (privateMode) {
+                        if (!privateMode) {
+                            var metadataSreing = JSON.stringify(data);
+                            localStorage.setItem('attributeMetaData', metadataSreing);
+                            localStorage.setItem('attributeChecksum', md5(metadataSreing));
+                            // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
+                            // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
+                            _this.appConfig['attributeCacheKey'] = localStorage.getItem('attributeChecksum').toUpperCase();
+                            localStorage.setItem('appConfig', JSON.stringify(_this.appConfig));
+                        }
+                        resolve(data);
+                    });
+                });
+            })
+                .catch(function (e) {
+                console.error(e);
             });
         };
         this.getInstantiationKeyData = function () {
@@ -73396,34 +73439,31 @@ var BaseBootStrapper = /** @class */ (function () {
                 var n = d.getTime();
                 _this.instantiationKey = n.toString();
             }
-            var urlString = "";
-            if (!hibachiConfig) {
-                hibachiConfig = {};
-            }
-            if (!hibachiConfig.baseURL) {
-                hibachiConfig.baseURL = '';
-            }
-            urlString += hibachiConfig.baseURL;
-            if (hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length - 1) != '/') {
-                urlString += '/';
-            }
-            return _this.$http.get(urlString + '/custom/system/config.json?instantiationKey=' + _this.instantiationKey)
-                .then(function (resp) {
-                var appConfig = resp.data.data;
+            var urlString = _this.getBaseUrl();
+            return _this.$http
+                .get(urlString + '/custom/system/config.json?instantiationKey=' + _this.instantiationKey)
+                .then(function (resp) { return resp.data.data; })
+                .then(function (data) {
+                return new Promise(function (resolve, reject) {
+                    _this.isPrivateMode().then(function (privateMode) {
+                        if (!privateMode) {
+                            localStorage.setItem('appConfig', JSON.stringify(data));
+                        }
+                        resolve(data);
+                    });
+                });
+            })
+                .then(function (appConfig) {
                 if (hibachiConfig.baseURL.length) {
                     appConfig.baseURL = urlString;
                 }
                 core_module_1.coremodule.constant('appConfig', appConfig);
-                try {
-                    if (!_this.isPrivate) {
-                        localStorage.setItem('appConfig', JSON.stringify(resp.data.data));
-                    }
-                }
-                catch (e) { }
                 _this.appConfig = appConfig;
-                return _this.getAuthInfo().finally(function () {
-                    return _this.getResourceBundles();
-                });
+            })
+                .then(function () { return _this.getResourceBundles(); })
+                .then(function () { return _this.getAuthInfo(); })
+                .catch(function (e) {
+                console.error(e);
             });
         };
         this.getResourceBundle = function (locale) {
@@ -73433,13 +73473,12 @@ var BaseBootStrapper = /** @class */ (function () {
                 return _this._resourceBundle[locale];
             }
             var urlString = _this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + _this.appConfig.instantiationKey;
-            _this.$http({
-                url: urlString,
-                method: "GET"
-            }).success(function (response, status, headersGetter) {
+            _this.$http({ url: urlString, method: "GET" })
+                .success(function (response, status, headersGetter) {
                 _this._resourceBundle[locale] = response;
                 deferred.resolve(response);
-            }).error(function (response, status) {
+            })
+                .error(function (response, status) {
                 if (status === 404) {
                     _this._resourceBundle[locale] = {};
                     deferred.resolve(response);
@@ -73449,18 +73488,6 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
             });
             return deferred.promise;
-        };
-        this.getAuthInfo = function () {
-            return _this.$http.get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
-                if (loginResponse.status === 200) {
-                    core_module_1.coremodule.value('token', loginResponse.data.token);
-                }
-                else {
-                    core_module_1.coremodule.value('token', 'invalidToken');
-                }
-            }, function (reason) {
-                core_module_1.coremodule.value('token', 'invalidToken');
-            });
         };
         this.getResourceBundles = function () {
             var rbLocale = _this.appConfig.rbLocale;
@@ -73478,88 +73505,104 @@ var BaseBootStrapper = /** @class */ (function () {
             if (localeListArray[0] !== 'en') {
                 _this.getResourceBundle('en');
             }
-            return _this.$q.all(rbPromises).then(function (data) {
+            return _this.$q.all(rbPromises)
+                .then(function (data) {
                 core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
-            }, function (error) {
+            })
+                .catch(function (e) {
                 //can enter here due to 404
                 core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                console.error(e);
+            });
+        };
+        this.getAuthInfo = function () {
+            return _this.$http
+                .get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login')
+                .then(function (loginResponse) {
+                if (loginResponse.status === 200) {
+                    core_module_1.coremodule.value('token', loginResponse.data.token);
+                }
+                else {
+                    throw loginResponse;
+                }
+            })
+                .catch(function (e) {
+                core_module_1.coremodule.value('token', 'invalidToken');
+                console.error(e);
             });
         };
         this.myApplication = myApplication;
-        return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
+        this.appConfig = {
+            instantiationKey: undefined
+        };
+        // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
+        return angular.lazy(this.myApplication)
+            .resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;
-                var baseURL = hibachiConfig.baseURL;
-                if (!baseURL) {
-                    baseURL = '';
-                }
-                if (baseURL.length && baseURL.slice(-1) !== '/') {
-                    baseURL += '/';
-                }
-                return _this.getInstantiationKey(baseURL).then(function (instantiationKey) {
-                    _this.instantiationKey = instantiationKey;
+                var baseURL = _this.getBaseUrl();
+                return _this.getInstantiationKey(baseURL)
+                    .then(function (instantiationKey) {
                     var invalidCache = [];
-                    return _this.isPrivateMode().then(function (isPrivate) {
-                        if (!isPrivate) {
-                            _this.isPrivate = true;
+                    // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
+                    return _this.isPrivateMode()
+                        .then(function (privateMode) {
+                        if (privateMode) {
+                            throw ("Private mode");
                         }
+                        else {
+                            return invalidCache;
+                        }
+                    })
+                        .then(function () {
                         // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
-                        try {
-                            var hashedData = localStorage.getItem('attributeChecksum');
+                        var hashedData = localStorage.getItem('attributeChecksum');
+                        if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
                             // attributeMetaData is valid and can be restored from local storage cache
-                            if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
-                                core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
-                                // attributeMetaData is invalid and needs to be refreshed
-                            }
-                            else {
-                                invalidCache.push('attributeCacheKey');
-                            }
-                            // attributeMetaData is invalid and needs to be refreshed
+                            core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
                         }
-                        catch (e) {
+                        else {
                             invalidCache.push('attributeCacheKey');
                         }
-                        // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-                        try {
-                            if (!isPrivate) {
-                                _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                            }
-                            else {
-                                _this.appConfig = {
-                                    instantiationKey: undefined
-                                };
-                            }
-                            // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                            if (hibachiConfig.instantiationKey
-                                && _this.appConfig.instantiationKey
-                                && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
-                                // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-                                core_module_1.coremodule.constant('appConfig', _this.appConfig);
-                                // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
-                                if (invalidCache.length) {
-                                    var deferred_1 = $q.defer();
-                                    _this.getData(invalidCache).then(function (resp) {
-                                        _this.getResourceBundles().then(function (resp) {
-                                            deferred_1.resolve(resp);
-                                        });
-                                    });
-                                    // Ends bootstrapping the process
-                                    return deferred_1.promise;
-                                }
-                                // All appConfig and attribute model valid, nothing to refresh prior, ends the bootstrapping process
-                                return _this.getResourceBundles();
-                                // Entire app config needs to be refreshed
-                            }
-                            else {
-                                invalidCache.push('instantiationKey');
-                            }
-                            // Entire app config needs to be refreshed
+                    })
+                        .then(function () {
+                        if (localStorage.getItem('appConfig') != null) {
+                            _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
                         }
-                        catch (e) {
+                        if (hibachiConfig.instantiationKey
+                            && _this.appConfig.instantiationKey
+                            && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
+                            // appConfig instantiation key is valid (but attribute model may need to be refreshed)
+                            core_module_1.coremodule.constant('appConfig', _this.appConfig);
+                        }
+                        else {
                             invalidCache.push('instantiationKey');
                         }
-                        // NOTE: If invalidCache array does not contain 'instantiationKey' this will not work because getResourceBundles will not be in the promise chain when the bootstrapping process ends
-                        return _this.getData(invalidCache);
+                    })
+                        .catch(function () {
+                        invalidCache.push('attributeCacheKey');
+                        invalidCache.push('instantiationKey');
+                    })
+                        .then(function () {
+                        // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
+                        if (invalidCache.length) {
+                            var deferred_1 = $q.defer();
+                            _this.getData(invalidCache).then(function (resp) { deferred_1.resolve(resp); });
+                            return deferred_1.promise;
+                        }
+                    })
+                        .then(function () {
+                        var deferred = $q.defer();
+                        _this.getResourceBundles().then(function (resp) { return deferred.resolve(resp); });
+                        return deferred.promise;
+                    })
+                        .then(function () {
+                        var deferred = $q.defer();
+                        _this.getAuthInfo().then(function (resp) { return deferred.resolve(resp); });
+                        return deferred.promise;
+                    })
+                        .catch(function (e) {
+                        console.error(e);
                     });
                 });
             }]);
@@ -78559,7 +78602,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78573,6 +78615,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -88013,6 +88056,13 @@ exports.OrderPaymentService = OrderPaymentService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -89136,7 +89186,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -89854,10 +89904,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -96134,7 +96184,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -96269,11 +96319,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }

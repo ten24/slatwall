@@ -876,15 +876,17 @@ component extends="framework.one" {
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
 
 					//only run the update if it wasn't initiated by serverside cache being expired
-					if( hasReloadKey() ) {
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
-					} else if( arguments.reloadByServerInstance ) {
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
-						serverInstance.setServerInstanceExpired(false);
-						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-						getHibachiScope().flushORMSession();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - server instance cache reset completed for instance: #server[variables.framework.applicationKey].serverInstanceKey#");
-					}						
+					if(variables.framework.hibachi.useServerInstanceCacheControl && getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'){
+						if( hasReloadKey() ) {
+							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
+						} else if( arguments.reloadByServerInstance ) {
+							var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
+							serverInstance.setServerInstanceExpired(false);
+							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+							getHibachiScope().flushORMSession();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - server instance cache reset completed for instance: #server[variables.framework.applicationKey].serverInstanceKey#");
+						}				
+					}
 
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
 

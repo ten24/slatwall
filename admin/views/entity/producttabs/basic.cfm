@@ -9,8 +9,13 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedEndDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
+														ng-model=""publishedStartDateTime""
+														autocomplete=""off""">
+			
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedEndDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
+														ng-model=""publishedEndDateTime""
+														autocomplete=""off""">
 			
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
