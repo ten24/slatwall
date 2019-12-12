@@ -181,7 +181,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		httpRequest.addParam( 
 			type = 'header', 
 			name = 'Authorization', 
-			value = 'apikey #getHibachiScope().setting('integrationmailchimpmailChimpAPIKey')#''
+			value = 'apikey #getHibachiScope().setting('integrationmailchimpmailChimpAPIKey')#'
 		);
 		
 		if ( len( arguments.jsonData ) ) {
