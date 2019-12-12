@@ -692,9 +692,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -707,7 +707,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
-			sku.skuPrices.personalVolume,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
@@ -717,10 +716,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		
+		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
 		}
@@ -744,6 +742,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
+		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
 	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
@@ -753,43 +752,44 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
-		for ( var i=1; i<=skuBundleCount; i++ ){
-		
-			var skuBundle = skuBundles[i]; 
-			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
-		
-			var skuID = skuBundle.sku_product_defaultSku_skuID;
-			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
-		
-			// If this is the first time the parent product is looped over, setup the product.
-			if ( ! structKeyExists( bundles, skuID ) ) {
-				bundles[ skuID ] = {
-					'ID': skuID,
-					'name': skuBundle.sku_product_productName,
-					'price': skuBundle.sku_priceByCurrencyCode,
-					'description': skuBundle.sku_product_productDescription,
-					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
-					'productTypes': {}
-				};
-			}
-			
-			// If this is the first product type of it's kind, setup the product type.
-			if ( ! structKeyExists( bundles[ skuID ].productTypes, subProductTypeID ) ) {
-				bundles[ skuID ].productTypes[ subProductTypeID ] = {
-					'name': skuBundle.bundledSku_product_productType_productTypeName,
-					'products': []
-				};
-			}
-		
-			// Add sub product to the struct.
-			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
-				'name': skuBundle.bundledSku_product_productName,
-				'price': skuBundle.bundledSku_priceByCurrencyCode,
-				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-			});
+		try{
+    		for ( var i=1; i<=skuBundleCount; i++ ){
+    			var skuBundle = skuBundles[i]; 
+    			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
+    		
+    			var skuID = skuBundle.sku_product_defaultSku_skuID;
+    			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
+    		
+    			// If this is the first time the parent product is looped over, setup the product.
+    			if ( ! structKeyExists( bundles, skuID ) ) {
+    				bundles[ skuID ] = {
+    					'ID': skuID,
+    					'name': skuBundle.sku_product_productName,
+    					'price': skuBundle.sku_priceByCurrencyCode,
+    					'description': skuBundle.sku_product_productDescription,
+    					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
+    					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
+    					'productTypes': {}
+    				};
+    			}
+    			
+    			// If this is the first product type of it's kind, setup the product type.
+    			if ( ! structKeyExists( bundles[ skuID ].productTypes, subProductTypeID ) ) {
+    				bundles[ skuID ].productTypes[ subProductTypeID ] = {
+    					'name': skuBundle.bundledSku_product_productType_productTypeName,
+    					'products': []
+    				};
+    			}
+    		
+    			// Add sub product to the struct.
+    			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
+    				'name': skuBundle.bundledSku_product_productName,
+    				'price': skuBundle.bundledSku_priceByCurrencyCode,
+    				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
+    			});
+    		}
 		}
-		
+
 		arguments.data['ajaxResponse']['bundles'] = bundles;
     }
         
