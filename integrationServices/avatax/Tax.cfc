@@ -62,12 +62,26 @@ extends = "Slatwall.integrationServices.BaseTax" {
         var responseBean = testIntegration();
         return responseBean.healthcheckFlag;
     }
+    
+	// Override allow site settings
+	public any function setting(required string settingName, any requestBean) {
+		
+		if(!structKeyExists(arguments,"requestBean")){
+			return super.setting(argumentCollection=arguments);
+		}
+		
+		// Allows settings to be requested in the context of the site where the order was created
+		if (structKeyExists(arguments.requestBean,"getOrder") && !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+		return super.setting(argumentCollection=arguments);
+	}
 	
 	public any function getTaxRates(required any requestBean) {
-
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
-		
 		responseBean.healthcheckFlag = false;
 		
 		var docType = 'SalesOrder';
@@ -130,7 +144,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		// Setup the request data structure
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
-			companyCode = setting('companyCode'),
+			companyCode = setting('companyCode',arguments.requestBean),
 			DocCode = docCode,
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
@@ -257,7 +271,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
-		
+
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -274,7 +288,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
 				responseBean.addMessage("Response", serializeJSON(responseData));
 			}
-			
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
@@ -287,7 +300,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0) {
+							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
@@ -302,7 +315,23 @@ extends = "Slatwall.integrationServices.BaseTax" {
 								responseBean.addTaxRateItem(
 									argumentCollection=args
 								);
-									
+							}
+							if(listContains(setting("VATCountries"),taxDetail.Country)){
+								var args = {
+									"#primaryIDName#" = taxLine.LineNo,
+									VATAmount = taxDetail.Tax, 
+									VATPrice = taxDetail.Taxable,
+									taxRate = taxDetail.Rate * 100,
+									taxJurisdictionName=taxDetail.JurisName,
+									taxJurisdictionType=taxDetail.JurisType,
+									taxImpositionName=taxDetail.TaxName,
+									referenceObjectType="#referenceObjectType#"
+								};
+								
+								// Add the details of the taxes charged
+								responseBean.addTaxRateItem(
+									argumentCollection=args
+								);
 							}
 						}
 					}
