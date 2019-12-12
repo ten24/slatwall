@@ -69,7 +69,7 @@ class MonatFlexshipListingController{
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
 				if(data.orderTemplate){
-					this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`; 
 				} else{
 					throw(data);
 				}
@@ -82,6 +82,7 @@ class MonatFlexshipListingController{
 			});
 	}
 	
+
 	public setAsCurrentFlexship(orderTemplateID:string) {
 
 		// make api request

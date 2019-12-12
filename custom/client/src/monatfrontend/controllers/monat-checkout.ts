@@ -6,7 +6,7 @@ class MonatCheckoutController {
 	public loading: any = {
 		selectShippingMethod: false
 	};
-	public screen: string = '';
+	public screen: string = 'shipping';
 	
 	// @ngInject
 	constructor(
@@ -25,23 +25,35 @@ class MonatCheckoutController {
 	        
 		}, 'ownerAccountSelected');	
 		
-		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess');
+		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
+		this.observerService.attach( this.getCurrentCheckoutScreen, 'addOrderPaymentSuccess' );
+		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' );
+		
 		this.getCurrentCheckoutScreen();
 	}
 	
 	private getCurrentCheckoutScreen = () => {
-		let screen = 'shipping';
-		let ps = this.publicService;
 		
-		if ( ps.hasShippingAddressAndMethod() && !ps.hasSuccessfulAction('addOrderPayment') ) {
-			screen = 'payment'
-		} 
+		this.publicService.getCart().then(data => {
+			let screen = 'shipping';
+			
+			if ( this.publicService.hasShippingAddressAndMethod() ) {
+				screen = 'payment'
+			} 
+			
+			if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
+				screen = 'review';
+			} 
+			
+			if ( this.screen !== screen ) {
+				window.scrollTo( 0, 0 );
+			}
+			
+			this.screen = screen;
+			
+			return screen;
+		});
 		
-		if ( ps.hasSuccessfulAction('addOrderPayment') && ps.hasShippingAddressAndMethod() ) {
-			screen = 'review'
-		} 
-		
-		this.screen = screen;
 	}
 	
 	private closeNewAddressForm = () => {
@@ -61,8 +73,11 @@ class MonatCheckoutController {
 		
 		this.loading.selectShippingMethod = true;
 		this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data ).then( result => {
-			// We don't really need the result, just want to ensure after it's completed that we set the loading to false.
 			this.loading.selectShippingMethod = false;
+			
+			if ( result.successfulActions.length ) {
+				this.getCurrentCheckoutScreen();
+			}
 		});
 	}
 	
