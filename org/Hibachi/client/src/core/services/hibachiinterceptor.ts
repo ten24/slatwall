@@ -46,7 +46,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig:string,
-			token:string,
+			// token:string,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -62,7 +62,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig,
-			token,
+			// token,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -79,7 +79,7 @@ class HibachiInterceptor implements IInterceptor{
 			'localStorageService',
 			'alertService',
 			'appConfig',
-			'token',
+			// 'token',
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder',
@@ -108,7 +108,7 @@ class HibachiInterceptor implements IInterceptor{
 		public localStorageService,
 		public alertService,
 		public appConfig:any,
-		public token:string,
+		// public token:string,
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder,
@@ -125,7 +125,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
-		this.token = token;
+		// this.token = token;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -133,9 +133,9 @@ class HibachiInterceptor implements IInterceptor{
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     
-    public getJWTDataFromToken = ():void =>{
-	    this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
-	}
+ //   public getJWTDataFromToken = ():void =>{
+	//     this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
+	// }
     
 	public request = (config): ng.IPromise<any> => {
         this.$log.debug('request');
@@ -152,10 +152,10 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
-        if(this.token){
-        	config.headers['Auth-Token'] = 'Bearer ' + this.token;
-            this.getJWTDataFromToken();
-        }
+        // if(this.token){
+        // 	config.headers['Auth-Token'] = 'Bearer ' + this.token;
+        //     this.getJWTDataFromToken();
+        // }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
             this.$log.debug(config);
@@ -230,9 +230,9 @@ class HibachiInterceptor implements IInterceptor{
 	                        if(loginResponse.status === 200){
 	                            this.hibachiAuthenticationService.token = loginResponse.data.token;
 	                            rejection.config.headers = rejection.config.headers || {};
-	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-	                            this.token = loginResponse.data.token;
-	                            this.getJWTDataFromToken();
+	                            // rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+	                            // this.token = loginResponse.data.token;
+	                            // this.getJWTDataFromToken();
 	                            return $http(rejection.config).then(function(response) {
 	                               return response;
 	                            });
@@ -248,10 +248,10 @@ class HibachiInterceptor implements IInterceptor{
                         if(this.loginResponse.status === 200){
                         	
                             rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
+                            // rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
                             
-                            this.token=this.loginResponse.data.token;
-                            this.getJWTDataFromToken();
+                            // this.token=this.loginResponse.data.token;
+                            // this.getJWTDataFromToken();
                             
                             return $http(rejection.config).then(function(response) {
                                return response;
