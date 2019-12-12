@@ -117,11 +117,11 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
+	
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
