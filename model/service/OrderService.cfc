@@ -5261,6 +5261,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return refundSkuCollectionList;
 	}
 	
+	//Function get all available order paymentss
+	public any function getAppliedOrderPayments() {
+		var appliedPaymentMethods = [];
+	    for(orderPayment in getHibachiScope().getCart().getOrderPayments()) {
+	        
+	        if(orderPayment.getOrderPaymentStatusType().getSystemCode() != "opstActive") {
+	            continue;
+	        }
+	        
+	        var orderPayments = {};
+	        orderPayments['expirationYear'] = orderPayment.getExpirationYear();
+	        orderPayments['purchaseOrderNumber'] = orderPayment.getPurchaseOrderNumber();
+	        orderPayments['nameOnCreditCard'] = orderPayment.getNameOnCreditCard();
+	        orderPayments['expirationMonth'] = orderPayment.getExpirationMonth();
+	        orderPayments['creditCardLastFour'] = orderPayment.getCreditCardLastFour();
+	        orderPayments['currencyCode'] = orderPayment.getCurrencyCode();
+	        orderPayments['orderPaymentID'] = orderPayment.getOrderPaymentID();
+	        orderPayments['amount'] = orderPayment.getAmount();
+	        orderPayments['creditCardType'] = orderPayment.getCreditCardType();
+	        
+	        arrayAppend(appliedPaymentMethods, orderPayments);
+	    }
+	    return appliedPaymentMethods;
+	}
+	
 	// Process: Order Payment
 	public any function processOrderPayment_updateAmount(required any orderPayment, required any processObject) {
 	
