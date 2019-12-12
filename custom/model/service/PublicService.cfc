@@ -168,13 +168,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
             
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
-            accountPaymentMethodCollectionList.setDisplayProperties('accountPaymentMethodID');
+            accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
             accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
             accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
             accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
             
             if( arrayLen(accountPaymentMethodCollectionList) ) {
-               arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].accountPaymentMethodID;
+               arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
         }
