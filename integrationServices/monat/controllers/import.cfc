@@ -202,7 +202,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	
 		//Use a service instead.
-		getService("MonatUtilityService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		getService("MonatDataService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
 		
 	}
 	

@@ -50,11 +50,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Injected Entity
 	property name="orderPayment";
-	
+	property name="originalPaymentTransaction";
 	// Data Properties
 	property name="amount";
 	property name="transactionType" hb_formFieldType="select";
-
+	property name="originalPaymentTransactionID";
+	
 	property name="setOrderPaymentInvalidOnFailedTransactionFlag" default="true"; 
 	
 	// Option Properties
@@ -118,6 +119,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.amount;
+	}
+	
+	public any function getOriginalPaymentTransaction(){
+		if(!structKeyExists(variables,'originalPaymentTransaction') && structKeyExists(variables,'originalPaymentTransactionID')){
+			variables.originalPaymentTransaction = getService('PaymentService').getPaymentTransaction(getOriginalPaymentTransactionID());
+		}
+		if(structKeyExists(variables,'originalPaymentTransaction')){
+			return variables.originalPaymentTransaction;
+		}
 	}
 	
 }

@@ -68,6 +68,11 @@ Notes:
 		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Type Name',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
 	</cfif>
 	
+	<cfif NOT isNull(rc.order.getOrderType()) && rc.order.getOrderType().getSystemCode() NEQ "otSalesOrder" >
+		<cfset orderItemCollectionList.addDisplayProperty('stockLoss','Stock Loss',{'isVisible':true}) />
+		<cfset orderItemCollectionList.addDisplayProperty('stockLossReason','Stock Loss Reason',{'isVisible':true}) />
+	</cfif>
+	
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='orderItemID', columnConfig={
 		isVisible=false,
 		isSearchable=false,

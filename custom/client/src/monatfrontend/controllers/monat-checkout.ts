@@ -2,6 +2,8 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 class MonatCheckoutController {
+	public 	togglePaymentAction: boolean = false;
+	
 	// @ngInject
 	constructor(
 		public publicService,
@@ -123,6 +125,19 @@ class MonatCheckoutController {
                 });
             });
         });
+	}
+	
+	public updatePaymentAction(){
+		
+		if(this.togglePaymentAction === false){
+			this.togglePaymentAction = true;
+			this.$scope.slatwall.OrderPayment_addOrderPayment.saveFlag = 1;
+			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 1;
+		}else{
+			this.togglePaymentAction = false;
+			this.$scope.slatwall.OrderPayment_addOrderPayment.saveFlag = 0;
+			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 0;
+		}
 	}
 
 }
