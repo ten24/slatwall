@@ -14,6 +14,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="skuService";
 	property name="paymentService";
 	property name="locationService";
+	property name="fulfillmentService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -98,17 +99,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	private any function getShipmentData(pageNumber,pageSize,dateFilter){
+	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 	    var = {hasErrors: false};
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
 			},
-			"ProcessingDate": "#arguments.dateFilter#"
+			"Filters": {
+			    "StartDate": arguments.dateFilterStart,
+			    "EndDate": arguments.dateFilterEnd
+			}
 		};
 
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
@@ -294,7 +298,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         var pageNumber = rc.pageNumber?:1;
 		var pageSize = rc.pageSize?:25;
 		var pageMax = rc.pageMax?:1;
-		var dateFilter = rc.dateFilter?:dateFormat(now(), 'YYYY-mm-dd');
+		var dateFilterStart = rc.dateFilterStart?:dateFormat(now(), 'YYYY-mm-dd');
+		var dateFilterEnd = rc.dateFilterEnd?:dateFormat(now(), 'YYYY-mm-dd');
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
         var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
 
@@ -519,7 +524,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         while (pageNumber < pageMax){
         	logHibachi("Importing pagenumber: #pageNumber#");
 	        // Call the api and get shipment records for the date defined as the filter.
-	        var response = getShipmentData(pageNumber, pageSize, dateFilter);
+	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
 
 	        if (isNull(response)){
 	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
