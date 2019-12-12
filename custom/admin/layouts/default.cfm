@@ -94,6 +94,20 @@ Notes:
 			    }
 			
 			};
+			
+			function failSafeGlobalFunction(name, ...args) {
+				return new Promise( function retry(resolve) {
+			    	if (window[name] != null) {
+			    		return resolve( window[name](...args) ); 
+			    	}
+			    	console.info('retrying ->', name);
+			    	setTimeout(() => retry(resolve), 1000);
+				});
+			}
+			
+			function failSafeGetTabHTMLForTabGroup( element, tab) {
+				return failSafeGlobalFunction('getTabHTMLForTabGroup', element, tab);
+			}
 		</script>
 
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
@@ -458,5 +472,6 @@ Notes:
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
+
 </html>
 </cfoutput>
