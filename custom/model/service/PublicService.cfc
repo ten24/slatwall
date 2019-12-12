@@ -54,7 +54,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      	param name="arguments.data.countryCode" default="US";
      	param name="arguments.data.accountAddressID" default="";
      	param name="arguments.data.phoneNumber" default="";
-     	param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
 
      	var addressID = "";
      	var accountAddress = getHibachiScope().getService("AccountService").getAccountAddress( arguments.data.accountAddressID );
