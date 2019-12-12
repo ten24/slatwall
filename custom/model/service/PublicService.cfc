@@ -891,7 +891,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 
         if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
     	    getHibachiScope().addActionResult( "public:account.create", true );
-            addErrors(arguments.data, getHibachiScope().rbKey('frontend.validate.ownerRequired')); 
+            addErrors(
+                arguments.data, 
+                { 
+                    'sponsorID': [ 
+                        getHibachiScope().rbKey('frontend.validate.selectSponsor') 
+                    ] 
+                }
+            ); 
             arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
             return;
         }
