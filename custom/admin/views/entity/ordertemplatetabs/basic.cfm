@@ -36,7 +36,7 @@
 					
 					<div class="col-md-2">
 						<label class="control-label">#getHibachiScope().rbKey('entity.orderTemplate.lastOrderPlacedDateTime')#</label>
-						<!---<p class="form-control-static">#dateTimeFormat(rc.orderTemplate.getLastOrderPlacedDateTime(),'mm/dd/yyyy - hh:nn tt')#</p>--->
+						<p class="form-control-static">#dateTimeFormat(rc.orderTemplate.getLastOrderPlacedDateTime(),'mm/dd/yyyy - hh:nn tt')#</p>
 					</div> 
 					
 					<div class="col-md-2">
