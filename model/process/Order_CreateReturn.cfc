@@ -173,6 +173,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
 		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
             typeCollection.addOrderBy('sortOrder|ASC');
+            
+            // Return
+            if (getOrderTypeCode() == 'otReturnOrder') {
+		        typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderReturnReasonTypeOptions'), 'IN');
+		        
+		    // Exchange
+            } else if (getOrderTypeCode() == 'otExchangeOrder') {
+                typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderExchangeReasonTypeOptions'), 'IN');
+                
+            // Replacement
+            } else if (getOrderTypeCode() == 'otReplacementOrder') {
+                typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderReplacementReasonTypeOptions'), 'IN');
+                
+            // Refund?
+            }
 
             variables.returnReasonTypeOptions = typeCollection.getRecords();
             arrayPrepend(variables.returnReasonTypeOptions, {name=rbKey('define.select'), value=""});

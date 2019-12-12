@@ -4,11 +4,7 @@ component extends="Slatwall.model.service.SettingService" {
 		settingMetaData["orderTemplateDaysAllowedToEditNextOrderTemplate"] = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}};
 		settingMetaData["orderSecondaryReturnReasonTypeOptions"] = {
 			fieldType="listingMultiselect",
-			listingMultiselectEntityName="Type",
-			listingMultiselectFilters=[{
-				propertyIdentifier="parentType.systemCode",
-				value="orderReturnReasonType"
-			}]
+			listingMultiselectEntityName="Type"
 		}
 		return settingMetaData;
 	}
