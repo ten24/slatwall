@@ -66,7 +66,7 @@ class MonatProductCardController {
 				this.loading = false;
 			})
 			.catch((error)=>{
-			    this.monatAlertService.showErrorFromResponse(error)
+			    this.monatAlertService.showErrorsFromResponse(error)
 			})
 			.finally(()=>{
 			    this.loading=false;
@@ -83,7 +83,8 @@ class MonatProductCardController {
 		})
 		.catch((error)=>{
 		    this.monatAlertService.error(this.rbkeyService.rbKey('define.flagship.error'));
-		}).finally(()=>{
+		})
+		.finally(()=>{
 		    this.loading =false;
 		});
 	};
@@ -99,6 +100,9 @@ class MonatProductCardController {
 			})
 			.catch((error)=>{
 			 this.monatAlertService.showErrorsFromResponse(error);   
+			})
+			.finally(()=>{
+			  this.loading = false;  
 			});
 	};
 
@@ -107,6 +111,12 @@ class MonatProductCardController {
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
 			this.loading = false;
 			return result;
+		})
+		.catch((error)=>{
+		    this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(()=>{
+		    this.loading = false;
 		});
 	};
 
@@ -165,8 +175,12 @@ class MonatProductCardController {
 				this.monatAlertService.success(this.rbkeyService.rbKey('define.flagship.sucessfully'));
 				this.loading = false;
 				
-			}).catch((error)=>{
+			})
+			.catch((error)=>{
 			    this.monatAlertService.showErrorFromeResponse(error);
+			})
+			.finally(()=>{
+			 this.loading=false;
 			});
 		}
 	};
