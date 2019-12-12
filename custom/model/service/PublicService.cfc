@@ -681,16 +681,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 		}
 	} 
-
-    public void function setOwnerAccountOnAccount(required struct data){
-        param name="arguments.data.ownerAccountID" default="";
-        /** TODO: Once miguel's account type work goes add if statement to only run this if account type enrollment **/
-        var account = getHibachiScope().getAccount();
-        var ownerAccount = getAccountService().getAccount(arguments.data.ownerAccountID);
-        account.setOwnerAccount(ownerAccount);
-        account = getAccountService().saveAccount(account);
-        getHibachiScope().addActionResult( "public:account.setOwnerAccountOnAccount", account.hasErrors());
-    }
     
     public void function getStarterPackBundleStruct( required any data ) {
         param name="arguments.data.contentID" default="";
