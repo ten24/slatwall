@@ -3,6 +3,10 @@ declare let paypal: any;
 
 class MonatCheckoutController {
 	public 	togglePaymentAction: boolean = false;
+	public loading: any = {
+		selectShippingMethod: false
+	};
+	public screen: string = 'shipping';
 	
 	// @ngInject
 	constructor(
@@ -10,22 +14,71 @@ class MonatCheckoutController {
 		public observerService,
 		public $rootScope,
 		public $scope
+	) {}
 
-	) {
+	public $onInit = () => {
+		
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
 		    };
 	        
 		}, 'ownerAccountSelected');	
+		
+		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
+		this.observerService.attach( this.getCurrentCheckoutScreen, 'addOrderPaymentSuccess' );
+		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' );
+		
+		this.getCurrentCheckoutScreen();
 	}
-
-	public $onInit = () => {
-		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess')
+	
+	private getCurrentCheckoutScreen = () => {
+		
+		this.publicService.getCart().then(data => {
+			let screen = 'shipping';
+			
+			if ( this.publicService.hasShippingAddressAndMethod() ) {
+				screen = 'payment'
+			} 
+			
+			if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
+				screen = 'review';
+			} 
+			
+			if ( this.screen !== screen ) {
+				window.scrollTo( 0, 0 );
+			}
+			
+			this.screen = screen;
+			
+			return screen;
+		});
+		
 	}
 	
 	private closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
+	}
+	
+	public selectShippingMethod = ( option, orderFulfillment: any ) => {
+		
+		if ( typeof orderFulfillment == 'string' ) {
+			orderFulfillment = this.publicService.cart.orderFulfillments[orderFulfillment];
+		}
+		
+		let data = {
+			'shippingMethodID': option.value,
+			'fulfillmentID':orderFulfillment.orderFulfillmentID
+		};
+		
+		this.loading.selectShippingMethod = true;
+		this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data ).then( result => {
+			this.loading.selectShippingMethod = false;
+			
+			if ( result.successfulActions.length ) {
+				this.getCurrentCheckoutScreen();
+			}
+		});
 	}
 	
 	public loadHyperWallet() {
