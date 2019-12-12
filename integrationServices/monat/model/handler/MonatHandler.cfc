@@ -67,11 +67,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
 				
+				if(IsNull(account.getEnrollmentDate())) {
+					account.setEnrollmentDate(now());
+				}
+				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					if(IsNull(account.getEnrollmentDate())) {
-						account.setEnrollmentDate(now());
-					}
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(renewalDate);
 				}

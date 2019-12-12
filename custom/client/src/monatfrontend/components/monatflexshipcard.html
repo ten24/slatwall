@@ -62,7 +62,8 @@
 							&& monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress.length
 						"
 					>
-						<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_name"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress"></span> <br>
+						<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressName"></span><br />
+						<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress"></span> <br>
 						<span ng-if="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address">
 							<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_street2Address"></span> <br>
 						</span>

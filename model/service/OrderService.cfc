@@ -996,6 +996,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(newAccountPaymentMethod.hasErrors()){
 				newOrderPayment.addErrors(newAccountPaymentMethod.getErrors());
 			}
+			
+			if(arguments.processObject.getSetPrimaryPaymentMethodFlag()){
+				var account = getHibachiScope().getAccount();
+				account.setPrimaryPaymentMethod(newAccountPaymentMethod);
+			}
 		}
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
@@ -1079,17 +1084,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 
            if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = getService('HibachiUtilityService').precisionCalculate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
-				if(totalReceived gt 0) {
-					var transactionData = {
-						amount = totalReceived,
-						transactionType = 'credit'
-					};
-					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
-					
-					if (orderPayment.hasErrors() && !isNull(orderPayment.getError('createTransaction'))){
-						order.addError("cancelOrder", orderPayment.getErrors());
-						return orderPayment; //stop processing this cancel on error.
+				var amountToRefund = getService('HibachiUtilityService').precisionCalculate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
+				if(amountToRefund > 0) {
+					var paymentTransactions = orderPayment.getPaymentTransactions();
+					for(var paymentTransaction in paymentTransactions){
+						var transactionAmountToRefund = paymentTransaction.getAmountReceived() - paymentTransaction.getAmountCredited();
+						//Use the lesser of the transaction amount to refund or the total amount to refund
+						if(transactionAmountToRefund > amountToRefund){
+							transactionAmountToRefund = amountToRefund;
+						}
+						//Lower the amount to refund by any amount previously refunded
+						transactionAmountToRefund = transactionAmountToRefund - paymentTransaction.getAmountRefunded();
+						
+						if(transactionAmountToRefund <= 0){
+							continue;
+						}
+						var transactionData = {
+							amount = transactionAmountToRefund,
+							transactionType = 'credit',
+							originalPaymentTransactionID = paymentTransaction.getPaymentTransactionID()
+						};
+						
+						this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+						
+						if (orderPayment.hasErrors() && !isNull(orderPayment.getError('createTransaction'))){
+							order.addError("cancelOrder", orderPayment.getErrors());
+							return orderPayment; //stop processing this cancel on error.
+						}else{
+							paymentTransaction.setAmountRefunded(paymentTransaction.getAmountRefunded() + transactionAmountToRefund);
+							amountToRefund -= transactionAmountToRefund;
+							orderPayment.clearProcessObject( 'createTransaction' );
+						}
 					}
 				}
 			}
@@ -1404,7 +1429,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( getTypeService().getTypeBySystemCode('otscrtBatch'));
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
-		
+		arguments.orderTemplate.setCanceledDateTime(now());
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	}
 	
@@ -1417,8 +1442,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
 		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
-		
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstCancelled'));
+		arguments.orderTemplate.setCanceledDateTime(now());
 		
 		return this.saveOrderTemplate(arguments.orderTemplate); 
 	} 
@@ -1689,7 +1714,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
@@ -4374,6 +4399,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					preAuthorizationProviderTransactionID = uncapturedAuthorizations[a].providerTransactionID
 				};
 
+				if(!isNull(arguments.processObject.getOriginalPaymentTransaction())){
+					transactionData['originalPaymentTransaction'] = arguments.processObject.getOriginalPaymentTransaction();
+				}
 				// Run the transaction
 				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
@@ -4398,6 +4426,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				transactionType = arguments.processObject.getTransactionType(),
 				amount = arguments.processObject.getAmount()
 			};
+			
+			if(!isNull(arguments.processObject.getOriginalPaymentTransaction())){
+				transactionData['originalPaymentTransaction'] = arguments.processObject.getOriginalPaymentTransaction();
+			}
 
 			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
 				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;

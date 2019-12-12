@@ -136,7 +136,7 @@
 			
 			<!--- Set Up The Value --->
 			<cfif attributes.value eq "">
-	
+
 				<cfset attributes.value = attributes.object.getValueByPropertyIdentifier( attributes.property ) />
 				
 				<cfif isNull(attributes.value) || (isSimpleValue(attributes.value) && attributes.value eq "")>
@@ -181,7 +181,9 @@
 					</cfloop>
 					<cfset attributes.value = trim(thisValueList) />
 				<cfelse>
+					
 					<cfif not attributes.edit or (attributes.edit and listFindNoCase("datetime,time,date", attributes.object.getPropertyFormatType( attributes.property )) and not isNull(attributes.object.invokeMethod( "get#attributes.property#" )))>
+						
 						<cfif isNumeric(attributes.value) and attributes.value lt 0>
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
@@ -246,6 +248,7 @@
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
 				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
 			</cfif>
+		
 		</cfsilent>
 		
 		<hb:HibachiFieldDisplay attributecollection="#attributes#" />
