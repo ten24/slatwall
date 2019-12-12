@@ -2540,7 +2540,6 @@ __webpack_require__(43)(__webpack_require__(312))
     }
 
     function bootstrapApplication(angularApp) {
-        console.log("Start bootstrapApplication:");
         angular.element(document).ready(function () {
         	try{
 	        	if(angular.isArray(angularApp)){
@@ -2550,7 +2549,6 @@ __webpack_require__(43)(__webpack_require__(312))
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
         	}catch(e){
-        	    console.log("Error in bootstrapApplication:");
         	    console.error(e);
         		angular.bootstrap(document, ['ui.bootstrap']);
         	}
@@ -2569,16 +2567,12 @@ __webpack_require__(43)(__webpack_require__(312))
         return {
 
             resolve: function (promise) {
-                                console.log("Lazy resolve callback:");
-
                 promise = $q.when(injector.instantiate(promise));
                 promises.push(promise);
                 return this;
             },
 
             bootstrap: function () {
-                console.log("Lazy bootstrap callback:");
-
                 loadingCallback();
 
                 return $q.all(promises)
@@ -2589,19 +2583,16 @@ __webpack_require__(43)(__webpack_require__(312))
             },
 
             loading: function(callback){
-                console.log("Lazy loading callback:");
                 loadingCallback = callback;
                 return this;
             },
 
             done: function(callback){
-                console.log("Lazy done callback:");
                 doneCallback = callback;
                 return this;
             },
 
             error: function(callback){
-                console.log("Lazy error callback:");
                 errorCallback = callback;
                 return this;
             }

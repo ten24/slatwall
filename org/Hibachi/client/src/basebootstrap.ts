@@ -29,8 +29,7 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
             
-            var baseURL = this.getBaseUrl();
-            return this.getInstantiationKey(baseURL)
+            return this.getInstantiationKey()
             .then( (instantiationKey: string) => {
                 
                 var invalidCache = [];
@@ -187,14 +186,14 @@ export class BaseBootStrapper{
       });
     }
 
-    getInstantiationKey = (baseURL:string): ng.IPromise<any> => {
+    getInstantiationKey = (): ng.IPromise<any> => {
         return this.$q( (resolve, reject) => {
             if(this.instantiationKey) {
                 resolve(this.instantiationKey);
             } else if(hibachiConfig.instantiationKey) {
                 resolve(hibachiConfig.instantiationKey);
             } else {
-                this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                this.$http.get(this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
                 .then( (resp:any) => { 
                     this.instantiationKey = resp.data.data.instantiationKey;
                     resolve(this.instantiationKey); 
@@ -250,16 +249,12 @@ export class BaseBootStrapper{
 
     getInstantiationKeyData = () => {
         
-        if( !this.instantiationKey ){
-            var d = new Date();
-            var n = d.getTime();
-            this.instantiationKey = n.toString();
-        }
-        
         var urlString = this.getBaseUrl();
         
-        return this.$http
-        .get( urlString + '/custom/system/config.json?instantiationKey=' + this.instantiationKey )
+        return this.getInstantiationKey()
+        .then( (instantiationKey) => {
+            return this.$http.get( urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey ) 
+        })
         .then( (resp: any) => resp.data.data )
         .then( (data) => {
             return new Promise( (resolve, reject ) => {

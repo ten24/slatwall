@@ -5548,7 +5548,6 @@ var coremodule = angular.module('hibachi.core', [
     .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig) {
         hibachiPathBuilder.setBaseURL(appConfig.baseURL);
         hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
-        console.log("starting core-module config ");
         if (!appConfig.debugFlag) {
             appConfig.debugFlag = false;
         }
@@ -5619,10 +5618,8 @@ var coremodule = angular.module('hibachi.core', [
         $httpProvider.interceptors.push('hibachiInterceptor');
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
-        console.log("end core-module config ");
     }])
     .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', function ($rootScope, $hibachi, $route, $location, rbkeyService) {
-        console.log("starting core-module run ");
         $rootScope.buildUrl = $hibachi.buildUrl;
         $rootScope.rbKey = rbkeyService.rbKey;
         var original = $location.path;
@@ -5636,7 +5633,6 @@ var coremodule = angular.module('hibachi.core', [
             }
             return original.apply($location, [path]);
         };
-        console.log("end core-module config ");
     }])
     .constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
     .constant('corePartialsPath', 'core/components/')
@@ -73377,7 +73373,7 @@ var BaseBootStrapper = /** @class */ (function () {
                 return off();
             });
         };
-        this.getInstantiationKey = function (baseURL) {
+        this.getInstantiationKey = function () {
             return _this.$q(function (resolve, reject) {
                 if (_this.instantiationKey) {
                     resolve(_this.instantiationKey);
@@ -73386,7 +73382,7 @@ var BaseBootStrapper = /** @class */ (function () {
                     resolve(hibachiConfig.instantiationKey);
                 }
                 else {
-                    _this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                    _this.$http.get(_this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
                         .then(function (resp) {
                         _this.instantiationKey = resp.data.data.instantiationKey;
                         resolve(_this.instantiationKey);
@@ -73434,14 +73430,11 @@ var BaseBootStrapper = /** @class */ (function () {
             });
         };
         this.getInstantiationKeyData = function () {
-            if (!_this.instantiationKey) {
-                var d = new Date();
-                var n = d.getTime();
-                _this.instantiationKey = n.toString();
-            }
             var urlString = _this.getBaseUrl();
-            return _this.$http
-                .get(urlString + '/custom/system/config.json?instantiationKey=' + _this.instantiationKey)
+            return _this.getInstantiationKey()
+                .then(function (instantiationKey) {
+                return _this.$http.get(urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey);
+            })
                 .then(function (resp) { return resp.data.data; })
                 .then(function (data) {
                 return new Promise(function (resolve, reject) {
@@ -73540,8 +73533,7 @@ var BaseBootStrapper = /** @class */ (function () {
             .resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;
-                var baseURL = _this.getBaseUrl();
-                return _this.getInstantiationKey(baseURL)
+                return _this.getInstantiationKey()
                     .then(function (instantiationKey) {
                     var invalidCache = [];
                     // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
@@ -78602,6 +78594,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78615,7 +78608,6 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
