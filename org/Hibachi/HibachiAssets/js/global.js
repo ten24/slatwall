@@ -1909,7 +1909,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			   console.warn("Will retry in 1 sec: error->", err);
                setTimeout(function(){
                     AngularHelper.Compile( $targetDom, htmlToCompile);
-               }, 1000);
+               }, 500);
 			   return; 
             }
 	        
