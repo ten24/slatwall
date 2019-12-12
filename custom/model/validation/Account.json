@@ -1,6 +1,6 @@
 {
 	"properties": {
 		"renewalDate": [{ "contexts": "update,save", "method": "restrictRenewalDateToOneYearFromNow", "dataType": "date" }],
-		"priceGroups": [{ "contexts": "save", "method": "onlyOnePriceGroup" }],
+		"priceGroups": [{ "contexts": "save", "method": "onlyOnePriceGroup" }]
 	}
 }
