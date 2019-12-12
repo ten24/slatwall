@@ -250,7 +250,7 @@
 			</cfif>
 		
 		</cfsilent>
-		
+		<cfdump var="HELLO?">
 		<hb:HibachiFieldDisplay attributecollection="#attributes#" />
 	</cfif>
 

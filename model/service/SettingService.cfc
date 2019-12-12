@@ -310,7 +310,15 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
-
+			orderReturnReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type",
+				listingMultiselectFilters=[{
+					propertyIdentifier="systemCode",
+					value="orderReturnReasonType"
+				}]
+			},
+				
 			//Order Template
 			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},
