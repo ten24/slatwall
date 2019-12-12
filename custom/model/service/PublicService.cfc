@@ -406,7 +406,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if ( ! len( arguments.data.contentID ) ) {
             return;
         }
-        
+
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
@@ -414,6 +414,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+		
+		if(!isNull(getHibachiScope().getCurrentRequestSite())){
+		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
+		}
 		
 		bundlePersistentCollectionList.setDisplayProperties('
 			skuBundleID,
@@ -432,6 +436,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
+		
+		if(!isNull(getHibachiScope().getCurrentRequestSite())){
+		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
+		}
+		
 		bundleNonPersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 
 		var visibleColumnConfigWithArguments = {
