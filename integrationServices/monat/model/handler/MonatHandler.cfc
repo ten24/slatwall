@@ -134,7 +134,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			//Find if they have any previous Sales Orders that are not this one that just purchased.
 			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
 			previousOrdersCollection.addFilter("orderType.systemCode", "otSalesOrder");
-			previousOrdersCollection.addFilter("orderID", "#arguments.order.getOrderID()#", "!=");
+			previousOrdersCollection.addFilter("orderID", arguments.order.getOrderID(), "!=");
 			
 			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
 			
