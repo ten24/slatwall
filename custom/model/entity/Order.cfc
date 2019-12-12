@@ -258,7 +258,7 @@ component {
 	    }
 	    var dateDiff = 0;
 	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
-    	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
 	    }
 	    if(dateDiff <= 30){
 	        return true;
