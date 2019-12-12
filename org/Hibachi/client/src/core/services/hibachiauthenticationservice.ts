@@ -17,7 +17,6 @@ class HibachiAuthenticationService{
     
      public getJWTDataFromToken =(str)=>{
      	
-     	console.log('WTFFFF');
     	if(str !== "invalidToken"){
 	    	// Going backwards: from bytestream, to percent-encoding, to original string.
 		    str = str.split('.')[1];
@@ -68,14 +67,12 @@ class HibachiAuthenticationService{
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
         var authDetails:any = this.getActionAuthenticationDetailsByAccount(action,processContext);
-        console.log('WFT', authDetails);
         return authDetails.authorizedFlag;
     }
     
     
     
     public getActionAuthenticationDetailsByAccount=(action:string, processContext:string)=>{
-    	console.log('YO')
         var authDetails = {
 			authorizedFlag : false,
 			superUserAccessFlag : false,
