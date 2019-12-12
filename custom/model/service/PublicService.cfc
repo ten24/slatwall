@@ -580,7 +580,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.getAccountNumber();
             
             // Email opt-in
-            if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && 'true' == arguments.data.allowCorporateEmailsFlag ) {
+            if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && arguments.data.allowCorporateEmailsFlag ) {
                 var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
             }
         }
