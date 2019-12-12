@@ -41,14 +41,14 @@
     of the program, but you are not obligated to do so.
  Notes:
  --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="orderShowUnpublishedSkusFlag" />
 		<swa:SlatwallSetting settingName="orderReturnReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="orderExchangeReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="orderReplacementReasonTypeOptions" />
+		<swa:SlatwallSetting settingName="orderSecondaryReturnReasonTypeOptions" />
 	</swa:SlatwallSettingTable>
-	
 </cfoutput>
