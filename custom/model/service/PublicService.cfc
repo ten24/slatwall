@@ -150,8 +150,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
-            accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
-            accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
+            //accountPaymentMethod.setBillingAccountAddress(getHibachiScope().getCart().getBillingAccountAddress());
+            //accountPaymentMethod.setBillingAddress(getHibachiScope().getCart().getBillingAddress());
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
             arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
@@ -170,8 +170,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
             var accountPaymentMethod = "";
             accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.data.accountPaymentMethodID );
-            if(!isNull(accountPaymentMethod))
-            {
+            if(!isNull(accountPaymentMethod) 
+                && !isNull(accountPaymentMethod.getPaymentMethod()) 
+                    && !isNull(accountPaymentMethod.getPaymentMethod().getPaymentIntegration()) 
+                        && accountPaymentMethod.getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'braintree') {
+                            
                 arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethod.getPaymentMethodID();
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
