@@ -1,5 +1,6 @@
 declare var hibachiConfig: any;
 declare var angular: any;
+declare var $: any;
 
 class MonatEnrollmentController {
 	public cart: any;

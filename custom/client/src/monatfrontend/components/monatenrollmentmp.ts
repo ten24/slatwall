@@ -31,7 +31,13 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
+		
+		
 	};
+	
+	public adjustInputFocuses = () => {
+		this.monatService.adjustInputFocuses();
+	}
 	
 	public getDateOptions = () => {
 		this.currentDate = new Date();
