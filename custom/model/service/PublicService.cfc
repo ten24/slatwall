@@ -48,6 +48,35 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     /**
+      * Updates an Account address.
+      */
+    public void function updateAccountAddress(required data){
+     	param name="data.countryCode" default="US";
+     	param name="data.accountAddressID" default="";
+     	param name="data.phoneNumber" default="";
+
+     	var addressID = "";
+     	var accountAddress = getHibachiScope().getService("AccountService").getAccountAddress(data.accountAddressID);
+        if (!isNull(accountAddress)){
+            addressID = accountAddress.getAddressID();
+        }
+
+     	var newAddress = getService("AddressService").getAddress(addressID, true);
+     	if (!isNull(newAddress) && !newAddress.hasErrors()){
+     	    newAddress = getService("AddressService").saveAddress(newAddress, data, "full");
+      		//save the order.
+          if(!newAddress.hasErrors()){
+  	     	   getService("OrderService").saveOrder(getHibachiScope().getCart());
+           }else{
+            this.addErrors(data, newAddress.getErrors());
+           }
+  	     	getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
+    	}else{
+            getHibachiScope().addActionResult( "public:cart.updateAddress", true );
+        }
+     }
+     
+    /**
      * Function to delete Account
      * @return none
     */
