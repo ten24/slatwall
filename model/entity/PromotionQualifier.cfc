@@ -194,15 +194,24 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(variables.includedOrdersCollection)){
 			var collectionConfig = getIncludedOrdersCollectionConfig();
 			if(!isNull(collectionConfig)){
+				
 				variables.includedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
 				variables.includedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.includedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+				variables.includedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
-					'isSearchable':true,
+					'isSearchable':false,
 					'isExportable':true
 				});
+				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
+					variables.includedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+						'isDeletable':true,
+						'isVisible':true,
+						'isSearchable':false,
+						'isExportable':true
+					});
+				}
 				variables.includedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,
@@ -221,12 +230,20 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				variables.excludedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
 				variables.excludedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.excludedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+				variables.excludedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
-					'isSearchable':true,
+					'isSearchable':false,
 					'isExportable':true
 				});
+				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
+					variables.excludedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+						'isDeletable':true,
+						'isVisible':true,
+						'isSearchable':false,
+						'isExportable':true
+					});
+				}
 				variables.excludedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,
