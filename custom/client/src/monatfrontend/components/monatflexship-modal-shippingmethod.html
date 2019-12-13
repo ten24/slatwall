@@ -80,13 +80,13 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
-							    required
+							    ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
 							/>
 							<span ng-show="updateShippingAddressForm.accountAddressName.$touched && supdateShippingAddressForm.accountAddressName.$error.required" 
-							ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_name"></span>
+							> Required fleid </span>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_nickName"></label>
 						</div>
 					</div>
@@ -94,7 +94,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input 
-							    required
+							      ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.name"
@@ -108,7 +108,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
-							    required
+							     ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
@@ -133,7 +133,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
-							    required
+							      ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
@@ -163,6 +163,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							  ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.city"
@@ -174,6 +175,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							  ng-required="'new' === monatFlexshipShippingMethodModal.selectedShippingAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.postalCode"

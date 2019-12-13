@@ -10,6 +10,7 @@ class MonatFlexshipConfirmController {
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
+    public loading :boolean = false;
     //@ngInject
     constructor(
     	public monatService, 
@@ -44,7 +45,7 @@ class MonatFlexshipConfirmController {
     }
 
     public confirm = () => {
-    	
+            this.loading =true;    	
     	//TODO frontend validation, success/failure alert    
     	this.orderTemplateService
     	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
@@ -56,10 +57,13 @@ class MonatFlexshipConfirmController {
 	            throw(data);
         	}
     	}).catch(error => {
+    	    this.loading = false;
     		console.error("setAsCurrentFlexship :",error);	
             // TODO: handle errors
-    	}).finally(() => { 
-    	});
+    	})
+    	.finally(() => { 
+    	    this.loading =false;
+    	 });
     	
     }
 }

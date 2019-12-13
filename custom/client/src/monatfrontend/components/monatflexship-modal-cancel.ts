@@ -23,7 +23,7 @@ class MonatFlexshipCancelModalController {
     }
     
     public cancelFlexship() {
-
+            console.log("cancle falgship runc");
     	//TODO frontend validation
 
     	// make api request
