@@ -26,11 +26,12 @@ class UpgradeMPController {
 	
 	public $onInit = () => {
 		this.getDateOptions();
-		//this.getProductList()
-		
-		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
-		this.observerService.attach(this.getProductList, 'createSuccess'); 
+		this.getProductList()
+		this.getStarterPacks();
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
+		this.publicService.doAction('setUpgradeOrderType', {upgradeType: 'MarketPartner'}).then(response => {
+			console.log(response);
+		});
 	};
 	
 	public getDateOptions = () => {
@@ -173,8 +174,8 @@ class MonatUpgradeMP {
 	};
 
 	public controller = UpgradeMPController;
-	public controllerAs = 'enrollmentMp';
-	// @ngInject
+	public controllerAs = 'upgradeMp';
+	// @ngInjects
 	constructor() {}
 
 	public static Factory() {

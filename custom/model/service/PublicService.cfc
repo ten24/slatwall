@@ -466,8 +466,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var skuBundles = bundlePersistentCollectionList.getRecords();
 		
 		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
-
-			
 	
 		// Build out bundles struct
 		var bundles = {};
@@ -1022,6 +1020,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function setUpgradeOrderType(required struct data){
         param name="arguments.data.upgradeType" default="";
+                
+        if(!getHibachiScope().getLoggedInFlag()){
+            arguments.data['ajaxResponse']['upgradeResponse'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
+            return;
+        }
         
         var accountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
@@ -1031,6 +1034,4 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
-
-
 }

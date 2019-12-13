@@ -65,7 +65,7 @@ class VIPUpgradeController {
 		}
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
-    	this.observerService.attach(this.getProductList,"createSuccess");
+    	this.observerService.attach(this.getProductList,"submitSponsorSuccess");
     	
 		this.localStorageCheck(); 
 		
