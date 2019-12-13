@@ -867,6 +867,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(arguments.accountType == 'customer'){
             account.getAccountNumber();
+            
+            // Email opt-in
+            if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && arguments.data.allowCorporateEmailsFlag ) {
+                var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
+            }
         }
         
         getDAO('HibachiDAO').flushORMSession();
@@ -928,6 +933,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             ) {
                 account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
                 getAccountService().saveAccount( account );
+            }
+            
+            // Update subscription in Mailchimp.
+            if ( structKeyExists( arguments.data, 'subscribedToMailchimp' ) ) {
+                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
             }
         }
         return account;
