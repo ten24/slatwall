@@ -77,7 +77,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				}
 				
 				// Email opt-in when finishing enrollment
-				if ( 'true' == account.getAllowCorporateEmailsFlag() ) {
+				if ( account.getAllowCorporateEmailsFlag() ) {
 					var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
 				}
 				
