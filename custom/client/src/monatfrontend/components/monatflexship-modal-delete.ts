@@ -13,7 +13,10 @@ class MonatFlexshipDeleteController {
         this.loading = true;
         this.orderTemplateService.deleteOrderTemplate(this.orderTemplate.orderTemplateID).then( () => {
             this.loading = false;
-        })
+        }).catch((error)=>{
+            console.error(error);
+            this.loading = false;
+        });
     }
 
     public closeModal = () => {
