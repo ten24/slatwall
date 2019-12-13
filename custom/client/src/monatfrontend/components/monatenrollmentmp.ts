@@ -22,7 +22,7 @@ class EnrollmentMPController {
 	public productRecordsCount:any;
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService) {}
+	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
 	
 	public $onInit = () => {
 		this.getStarterPacks();
@@ -115,7 +115,7 @@ class EnrollmentMPController {
 				}
     		});
         } else {
-            this.bundleErrors.push('Please select a starter pack');
+            this.bundleErrors.push( this.rbkeyService.rbKey('frontend.enrollment.selectPack'));
         }
     }
 
