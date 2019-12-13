@@ -34,6 +34,7 @@
 						type="number"
 						class="form-control"
 						ng-model="monatFlexshipAddGiftCardModal.amountToApply"
+						ng-disabled ="monatFlexshipAddGiftCardModal.isGiftCard"
 					/>
 					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
 				</div>
@@ -46,6 +47,7 @@
 					ng-click="monatFlexshipAddGiftCardModal.applyGiftCard()"
 					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
+					ng-disabled ="monatFlexshipAddGiftCardModal.isGiftCard"
 				></button>
 				<button
 					type="button"

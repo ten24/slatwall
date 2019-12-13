@@ -4,6 +4,7 @@
 	id="flexship-modal-shipping-method{{ monatFlexshipShippingMethodModal.orderTemplate.orderTemplateID }}"
 >
 	<div class="modal-dialog modal-lg">
+        <form name="updateShippingAddressForm" ng-submit="monatFlexshipShippingMethodModal.updateShippingAddress()">
 		<div class="modal-content">
 			<!--- Modal Close --->
 			<button
@@ -79,21 +80,27 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							    required
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
 							/>
+							<span ng-show="updateShippingAddressForm.accountAddressName.$touched && supdateShippingAddressForm.accountAddressName.$error.required" 
+							ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_name"></span>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_nickName"></label>
 						</div>
 					</div>
 					
 					<div class="col-12 col-md-6">
 						<div class="material-field">
-							<input
+							<input 
+							    required
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.name"
 							/>
+							<span ng-show="updateShippingAddressForm.name.$touched && supdateShippingAddressForm.name.$error.required" 
+							ng-bind="monatFlexshipShippingMethodModal.translations.name"></span>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_name"></label>
 						</div>
 					</div>
@@ -101,10 +108,13 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							    required
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
 							/>
+							<span ng-show="updateShippingAddressForm.streetAddress.$touched && supdateShippingAddressForm.streetAddress.$error.required" 
+							ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_address"></span>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_address"></label>
 						</div>
 					</div>
@@ -123,11 +133,14 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							    required
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
 								readonly
 							/>
+							<span ng-show="updateShippingAddressForm.streetAddress.$touched && supdateShippingAddressForm.streetAddress.$error.required" 
+							ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_address"></span>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_country"></label>
 						</div>
 					</div>
@@ -173,9 +186,8 @@
 
 			<div class="footer">
 				<button
-					type="button"
+					type="submit"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipShippingMethodModal.updateShippingAddress()"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
 					ng-class="{loading: monatFlexshipShippingMethodModal.loading}"
 				></button>
@@ -186,6 +198,7 @@
 					sw-rbkey="'frontend.modal.closeButton'"
 				></button>
 			</div>
-		</div>
+        </div>
+        </form>
 	</div>
 </div>

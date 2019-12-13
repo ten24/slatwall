@@ -2,7 +2,7 @@
 class MonatFlexshipAddGiftCardModalController {
 	public orderTemplate; 
 	public giftCards;
-	
+	public isGiftCard = true;
 	public close; // injected from angularModalService
 	public loading: boolean = false;
 
@@ -20,7 +20,14 @@ class MonatFlexshipAddGiftCardModalController {
     private fetchGiftCrds() {
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
-    		this.giftCards = giftCards;
+    	    if(giftCards.giftCards) {
+    	        this.isGiftCard=false;
+    		    this.giftCards = giftCards;
+    	    } else {
+    	        
+    	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'))
+    	        throw(giftCards);
+    	    }
     	})
     	.catch( (error) => {
     		console.error(error);	
