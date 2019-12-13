@@ -72,12 +72,13 @@ class SWActionCallerController{
     public $onInit = ():void =>{
         
         if(angular.isDefined(this.action)){
-			var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
-				if(newValue){
-					this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
-					unBind();
-				}
-			});
+            this.actionAuthenticated= true;
+// 			var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
+// 				if(newValue){
+// 					this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+// 					unBind();
+// 				}
+// 			});
         }
 
 
