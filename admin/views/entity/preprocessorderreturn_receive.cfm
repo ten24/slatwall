@@ -81,6 +81,7 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityUnreceived')#</th>
 				<th>#$.slatwall.rbKey('define.qty')#</th>
 				<th>#$.slatwall.rbKey('define.stockloss')#</th>
+				<th>#$.slatwall.rbKey('define.stocklossreason')#</th>
 			</tr>
 			
 			<cfset orderReturnItemIndex = 0 />
@@ -99,6 +100,7 @@ Notes:
 					<td>#orderReturnItem.getQuantityUnreceived()#</td>
 					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].quantity" value="" class="span1" /></td>
 					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].stockLoss" value="" class="span1" /></td>
+					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].stockLossReason" value="" class="span1" /></td>
 				</tr>
 			</cfloop>
 		</table>

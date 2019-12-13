@@ -54,6 +54,8 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Persistent Properties
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="VATPrice" ormtype="big_decimal" hb_formatType="currency"; //price before tax for VAT countries
+	property name="VATAmount" ormtype="big_decimal" hb_formatType="currency"; // actual tax amount for VAT countries
 	property name="taxLiabilityAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="taxRate" ormtype="big_decimal" scale="5" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";

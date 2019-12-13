@@ -45,6 +45,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	
 	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+			accountEmailAddresses.accountEmailAddressID, accountEmailAddresses.emailAddress,
+			accountPhoneNumbers.accountPhoneNumberID, accountPhoneNumbers.phoneNumber,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
 			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName

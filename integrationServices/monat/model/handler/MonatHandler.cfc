@@ -67,13 +67,19 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
 				
+				if(IsNull(account.getEnrollmentDate())) {
+					account.setEnrollmentDate(now());
+				}
+				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					if(IsNull(account.getEnrollmentDate())) {
-						account.setEnrollmentDate(now());
-					}
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(renewalDate);
+				}
+				
+				// Email opt-in when finishing enrollment
+				if ( account.getAllowCorporateEmailsFlag() ) {
+					var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
 				}
 				
 			} else if ( 
@@ -130,9 +136,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			//Initial Order Flag
 			//Set the Initial Order Flag as needed
 			var previousOrdersCollection = getService("OrderService").getOrderCollectionList();
-			//Filter by this orders account and initial order flag. If we find one, then this is not the first order.
+			//Find if they have any previous Sales Orders that are not this one that just purchased.
 			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
-			previousOrdersCollection.addFilter("initialOrderFlag", true);
+			previousOrdersCollection.addFilter("orderType.systemCode", "otSalesOrder");
+			previousOrdersCollection.addFilter("orderID", arguments.order.getOrderID(), "!=");
+			
 			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
 			
 			if (!previousInitialOrderCount){

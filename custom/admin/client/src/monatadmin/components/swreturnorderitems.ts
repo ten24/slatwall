@@ -168,7 +168,7 @@ class SWReturnOrderItemsController{
        orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
        orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
        
-       orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
+       orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity)*100)/100;
        
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{

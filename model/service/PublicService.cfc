@@ -269,7 +269,7 @@ component  accessors="true" output="false"
         
         //If this is a request from the api, setup the response header and populate it with data.
         //any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
-        handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
+        //handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
     }
     
     
@@ -350,7 +350,6 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_Save
       **/
     public any function updateAccount( required struct data ) {
-        
         var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
         getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         if(account.hasErrors()){
@@ -411,7 +410,7 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
         }
         
-        return accountEmailAddress;
+        //return accountEmailAddress;
     }
     
     /** 
@@ -433,7 +432,7 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
-        handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
+        //handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
     
     /** 
@@ -850,20 +849,20 @@ component  accessors="true" output="false"
          	data['paymentMethod'] = {};
          	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && !structKeyExists(data, 'billingAddress')){
-         	data['newOrderPayment'] = data;
-         	data['newOrderPayment']['billingAddress'] = data;
-        }	
+        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
+         	data['accountPaymentMethod'] = data;
+         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
-           }else{
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
-           }
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
+            }else{
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
+                accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
@@ -2323,43 +2322,4 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-
-    public any function getBaseProductCollectionList(required any data){
-        var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType();
-        var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
-        
-        //TODO: Consider starting from skuPrice table for less joins
-        var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productName');
-        productCollectionList.addDisplayProperty('defaultSku.skuID');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
-        productCollectionList.addDisplayProperty('urlTitle');
-        productCollectionList.addDisplayProperty('defaultSku.imageFile');
-
-        productCollectionList.addFilter('activeFlag',1);
-        productCollectionList.addFilter('publishedFlag',1);
-        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedStartDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value=now(), comparisonOperator=">", filterGroupAlias = 'publishedEndDateTimeFilter');
-        productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
-        productCollectionList.addFilter('skus.activeFlag',1);
-        productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-       
-        if(isNull(accountType) || accountType == 'retail'){
-           productCollectionList.addFilter('skus.retailFlag', 1);
-        }else if(accountType == 'marketPartner'){
-            productCollectionList.addFilter('skus.mpFlag', 1);
-        }else{
-            productCollectionList.addFilter('skus.vipFlag', 1);
-        }
-
-        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
-    }   
 }
