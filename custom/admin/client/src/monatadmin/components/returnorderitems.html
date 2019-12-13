@@ -46,11 +46,11 @@
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="refundTotal">{{swReturnOrderItems.currencySymbol}}
 			<span ng-bind="orderItem.taxRefundAmount.toFixed(2)"></span>
 		</td>
-		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="refundTotal">{{swReturnOrderItems.currencySymbol}}
-			<span ng-bind="orderItem.refundPVTotal.toFixed(2)"></span>
+		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="">
+			<span ng-bind="orderItem.refundPVTotal"></span>
 		</td>
-		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="refundTotal">{{swReturnOrderItems.currencySymbol}}
-			<span ng-bind="orderItem.refundCVTotal.toFixed(2)"></span>
+		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" class="refundTotal">
+			<span ng-bind="orderItem.refundCVTotal"></span>
 		</td>
 	</tr>
 	
