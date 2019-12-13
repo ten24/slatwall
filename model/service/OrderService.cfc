@@ -2088,7 +2088,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
-		var response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		var response = {};
+		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
+			response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
+		}
+		
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}
@@ -3285,9 +3289,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-		    	if(arguments.order.getPaymentAmountDue() != 0){
+	    	if(arguments.order.getPaymentAmountDue() != 0){
 				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-		    	}
+	    	}
 
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
@@ -5259,6 +5263,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
 		return refundSkuCollectionList;
+	}
+	
+	//Function get all available order paymentss
+	public any function getAppliedOrderPayments() {
+		var appliedPaymentMethods = [];
+	    for(orderPayment in getHibachiScope().getCart().getOrderPayments()) {
+	        
+	        if(orderPayment.getOrderPaymentStatusType().getSystemCode() != "opstActive") {
+	            continue;
+	        }
+	        
+	        var orderPayments = {};
+	        orderPayments['expirationYear'] = orderPayment.getExpirationYear();
+	        orderPayments['purchaseOrderNumber'] = orderPayment.getPurchaseOrderNumber();
+	        orderPayments['nameOnCreditCard'] = orderPayment.getNameOnCreditCard();
+	        orderPayments['expirationMonth'] = orderPayment.getExpirationMonth();
+	        orderPayments['creditCardLastFour'] = orderPayment.getCreditCardLastFour();
+	        orderPayments['currencyCode'] = orderPayment.getCurrencyCode();
+	        orderPayments['orderPaymentID'] = orderPayment.getOrderPaymentID();
+	        orderPayments['amount'] = orderPayment.getAmount();
+	        orderPayments['creditCardType'] = orderPayment.getCreditCardType();
+	        
+	        arrayAppend(appliedPaymentMethods, orderPayments);
+	    }
+	    return appliedPaymentMethods;
 	}
 	
 	// Process: Order Payment

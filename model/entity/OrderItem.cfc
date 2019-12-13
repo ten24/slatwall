@@ -133,6 +133,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPerformCascadeCalculateFlag" persistent="false";
 	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="VATAmount" persistent="false" hb_formatType="currency";
+	property name="VATPrice" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 	property name="itemTotalAfterOrderDiscounts" persistent="false" hb_formatType="currency";
@@ -687,6 +689,30 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return variables.taxAmount;
 	}
+	
+	public numeric function getVATAmount() {
+		if(!structKeyExists(variables,'VATAmount')){
+			var VATAmount = 0;
+
+			for(var taxApplied in getAppliedTaxes()) {
+				VATAmount = getService('HibachiUtilityService').precisionCalculate(VATAmount + taxApplied.getVATAmount());
+			}
+			variables.VATAmount = VATAmount;
+		}
+		return variables.VATAmount;
+	}
+	
+	public numeric function getVATPrice() {
+		if(!structKeyExists(variables,'VATPrice')){
+			var VATPrice = 0;
+
+			for(var taxApplied in getAppliedTaxes()) {
+				VATPrice = getService('HibachiUtilityService').precisionCalculate(VATPrice + taxApplied.getVATPrice());
+			}
+			variables.VATPrice = VATPrice;
+		}
+		return variables.VATPrice;
+	}
 
 	public numeric function getTaxLiabilityAmount() {
 		if(!structKeyExists(variables,'taxLiabilityAmount')){
@@ -703,7 +729,7 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	public void function setQuantity(required numeric quantity){
-		if (structKeyExists(variables, "quantity") && arguments.quantity != variables.quantity){
+		if (structKeyExists(variables, "quantity") && structKeyExists(arguments,"quantity") && arguments.quantity != variables.quantity){
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;
