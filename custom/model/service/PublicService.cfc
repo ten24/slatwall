@@ -895,14 +895,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return productMap;
     }
     
-    public any function addEnrollmentFee(){
+    public any function addEnrollmentFee( boolean vipUpgrade = false, boolean mpUpgrade = false){
+        
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'){
-            if(account.getAccountType() == 'VIP'){
+        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending' || arguments.vipUpgrade || arguments.mpUpgrade){
+            if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }else if(account.getAccountType() == 'marketPartner'){
+            }else if(account.getAccountType() == 'marketPartner' || arguments.mpUpgrade){
                 var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
@@ -920,8 +921,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
-    
-
     
 	public void function uploadProfileImage(required any data) {
 		
@@ -1019,6 +1018,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
         }
+    }
+    
+    public any function setUpgradeOrderType(required struct data){
+        param name="arguments.data.upgradeType" default="";
+        
+        var accountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
+        var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var order = getHibachiScope().getCart();
+        order.setUpgradeFlag(true);
+        order.setAccountType(accountType);
+        order.setPriceGroup(priceGroup);       
+        this.addEnrollmentFee(true);
     }
 
 
