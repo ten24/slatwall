@@ -37,6 +37,10 @@ class EnrollmentMPController {
 		$('.site-tooltip').tooltip();
 	};
 	
+	public adjustInputFocuses = () => {
+		this.monatService.adjustInputFocuses();
+	}
+	
 	public getDateOptions = () => {
 		this.currentDate = new Date();
 		
