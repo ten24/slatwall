@@ -2,7 +2,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode';
     }
     
     /**
@@ -42,7 +42,7 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderFulfillemntsOnAccount(struct data={}) {
+	public any function getAllOrderFulfillmentsOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();

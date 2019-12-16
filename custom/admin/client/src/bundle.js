@@ -72659,10 +72659,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var orderMaxRefund;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-            orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
-            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
-            orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
-            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            if (orderItem.returnQuantity != 0) {
+                orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
+                orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundCVTotal = orderItem.refundUnitCV * orderItem.returnQuantity;
+            }
+            else {
+                orderItem.refundUnitPV = 0;
+                orderItem.refundPVTotal = 0;
+                orderItem.refundUnitCV = 0;
+                orderItem.refundCVTotal = 0;
+            }
             orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity) * 100) / 100;
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
@@ -85244,7 +85252,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.$injector = $injector;
         this.utilityService = utilityService;
         this.getJWTDataFromToken = function (str) {
-            console.log('WTFFFF');
             if (str !== "invalidToken") {
                 // Going backwards: from bytestream, to percent-encoding, to original string.
                 str = str.split('.')[1];
@@ -85291,11 +85298,9 @@ var HibachiAuthenticationService = /** @class */ (function () {
         };
         this.authenticateActionByAccount = function (action, processContext) {
             var authDetails = _this.getActionAuthenticationDetailsByAccount(action, processContext);
-            console.log('WFT', authDetails);
             return authDetails.authorizedFlag;
         };
         this.getActionAuthenticationDetailsByAccount = function (action, processContext) {
-            console.log('YO');
             var authDetails = {
                 authorizedFlag: false,
                 superUserAccessFlag: false,

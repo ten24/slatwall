@@ -235,7 +235,7 @@ class swfAccountController {
         this.newProductReview.rating = rating;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
-            this.stars[i] = "color: #d0d00b";
+            this.stars[i] = "fas";
         };
     }
     

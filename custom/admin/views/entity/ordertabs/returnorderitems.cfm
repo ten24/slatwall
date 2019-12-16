@@ -2,7 +2,7 @@
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-	<hb:HibachiPropertyRow>
+	<hb:HibachiPropertyRow divAttributes="style='overflow-x:auto'">
 		<hb:HibachiPropertyList>
 			<!--- Items Selector --->
 			<sw-return-order-items 
