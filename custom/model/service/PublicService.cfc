@@ -1039,7 +1039,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var priceGroupCode =  (!isNull(arguments.data.priceGroupCode)) ? arguments.data.priceGroupCode : (arrayLen(holdingPriceGroups)) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
         var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
 
         //TODO: Consider starting from skuPrice table for less joins
@@ -1115,6 +1115,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.cmsContentFilterFlag" default= false; //Filter based off cms category for uses like content modules
         param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
         param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
+        param name="arguments.data.priceGroup" default="1";
 
         var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;

@@ -39,6 +39,7 @@ class VIPUpgradeController {
 		});
 		
 		this.publicService.doAction('setUpgradeOrderType', {upgradeType: 'VIP'}).then(response => {
+			if(response.upgradeResponseFailure) alert(response.upgradeResponseFailure); // add fe validation here
 			console.log(response);
 		});
 		
@@ -154,7 +155,7 @@ class VIPUpgradeController {
 	public getProductList = () => {
 		this.loading = true;
 		
-		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
