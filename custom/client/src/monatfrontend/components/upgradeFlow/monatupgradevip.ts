@@ -130,7 +130,6 @@ class VIPUpgradeController {
 	
 	public submitSponsor = () => {
 		this.loading = true;
-		
 		var selectedSponsor = document.getElementById('selected-sponsor-id');
 		
 		if ( null !== selectedSponsor ) {

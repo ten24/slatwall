@@ -42,6 +42,8 @@ class MonatUpgradeController {
 
 	public $onInit = () => {
 		this.publicService.getAccount(true).then(result=>{
+			this.$rootScope.currentAccount = result;
+			this.observerService.notify('accountRetrieved')
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
