@@ -207,9 +207,9 @@ class MonatFlexshipCardController {
 			modal.element.modal();
 			modal.close.then((result) => {});
 		})
-		.catch((error) => {
-			console.error('unable to open model :', error);
-		});
+// 		.catch((error) => {
+// 			console.error('unable to open model :', error);
+// 		});
 	};
 
 	public activateFlexship() {

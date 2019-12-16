@@ -2,7 +2,7 @@
 class MonatFlexshipAddGiftCardModalController {
 	public orderTemplate; 
 	public giftCards;
-	public isGiftCard = true;
+	public hasGiftCard = true;
 	public close; // injected from angularModalService
 	public loading: boolean = false;
 
@@ -21,7 +21,7 @@ class MonatFlexshipAddGiftCardModalController {
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
     	    if(giftCards.giftCards) {
-    	        this.isGiftCard=false;
+    	        this.hasGiftCard=false;
     		    this.giftCards = giftCards;
     	    } else {
     	        

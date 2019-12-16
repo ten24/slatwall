@@ -1,4 +1,4 @@
-<div class="modal" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
+<div class="modal using-modal-service" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -17,10 +17,14 @@
 				</h6>
 
 				<div class="material-field">
-              		<select ng-model="frequencyTerm" class="form-control">
-						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
-						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" value="term.value">{{term.name}}</option>
+              		<select 
+              		ng-model="frequencyTerm" 
+              		class="form-control" 
+              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTerms"
+              		>
+              		<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
 					</select>
+					
 				</div>
 			</div>
 
@@ -31,6 +35,7 @@
 					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency(frequencyTerm)"
 					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
+					ng-disabled = "!frequencyTerm"
 				></button>
 				<button
 					type="button"

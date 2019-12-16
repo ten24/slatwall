@@ -10,9 +10,12 @@ class monatFlexshipFrequencyModalController {
     }
     
     public $onInit = () => {
+        console.log("Hello . shashi");
     	this.makeTranslations();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
+		}).catch((error)=>{
+		    console.error(error);
 		})
     };
     
@@ -28,11 +31,16 @@ class monatFlexshipFrequencyModalController {
 		this.loading = true;
 		
     	// make api request
-        this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(data => {
+        this.orderTemplateService.updateOrderTemplateFrequency(
+            this.orderTemplate.orderTemplateID, 
+            frequencyTermID, 
+            this.orderTemplate.scheduleOrderDayOfTheMonth
+            ).then(data => {
         	if(data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency') ) {
                 this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
             	this.monatAlertService.success("Your flexship has been updated successfully");
                 this.closeModal();
+                this.loading =false
         	} else {
         		throw(data);
         	}

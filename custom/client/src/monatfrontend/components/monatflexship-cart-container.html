@@ -65,13 +65,13 @@
 		<div class="product-container">
 			<ul class="item-slider">
 				<li 
-					ng-class="{loading: item.loading }"
 					ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems"
+					ng-class="{loading: item.loading }"
 				>
 					<button
 						class="close"
 						type="button"
-						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item); item.loading = true"
+						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item);"
 					><i class="fas fa-times"></i></button>
 					<div class="img">
 						<a ng-href="{{item.skuProductURL}}">

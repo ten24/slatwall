@@ -53,6 +53,7 @@
 						ng-disabled="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip !== 'delay'"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						autocomplete="off"
+						readonly
 					/>
 				</div>
 
@@ -111,6 +112,9 @@
 					type="button"
 					class="btn btn-block bg-primary"
 					ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
+					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
+					ng-disabled = "!monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip  
+					&& monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime!==''"
 				>
 					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
