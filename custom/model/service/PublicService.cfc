@@ -622,7 +622,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         
-        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode() ?: 'USD';
         var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productList'] = [];
@@ -1318,21 +1318,30 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function setUpgradeOrderType(required struct data){
         param name="arguments.data.upgradeType" default="";
-                
+        
+        var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();    
+
+        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
         if(!getHibachiScope().getLoggedInFlag()){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
             return;
+        }else if(accountType == arguments.data.upgradeType){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.sameAccountType'); 
+            return;
+        }else if( (accountType == 'MarketPartner') && (arguments.data.upgradeType == 'VIP') ){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.canNotDowngrade'); 
+            return;         
         }
         
-        var account = getHibachiScope().getAccount();
-        var accountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
+        var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
         
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
-        order.setAccountType(accountType);
+        order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
