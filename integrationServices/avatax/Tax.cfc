@@ -217,7 +217,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			 * to the items automatically.
 			 * 
 			 **/
-			var orderDiscount = item.getOrder().getOrderDiscountAmountTotal();
+			var orderDiscount = arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
 			var allItemsHaveDiscount = false;
 			if (orderDiscount > 0){
 				//distribute the order discount to all of the orderItems.
