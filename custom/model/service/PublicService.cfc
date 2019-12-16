@@ -1213,7 +1213,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var balance = 0;
         
         for(method in paymentMethods){
-            balance += method.getMoMoneyBalance();
+            if(method.getMoMoneyWallet()){
+                balance += method.getMoMoneyBalance();
+            }
         }
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
