@@ -56,7 +56,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			account.setStarterKitPurchasedFlag(true);
         }
     	
-    	if(arguments.order.getUpgradeFlag()){
+    	if(arguments.order.getUpgradeFlag() == true){
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
