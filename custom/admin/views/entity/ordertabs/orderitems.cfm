@@ -56,8 +56,7 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode, price, quantity, calculatedDiscountAmount,extendedPrice,extendedPersonalVolume,extendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
-	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
+	<cfset orderItemCollectionList.setDisplayProperties("sku.product.calculatedTitle,sku.skuCode", {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
@@ -65,8 +64,18 @@ Notes:
 	
 	<!--- Adds a type name fields if this is an exchange order --->
 	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
-		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Type Name',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
+		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Item Type',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
 	</cfif>
+	
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='price',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='quantity',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='calculatedDiscountAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPrice',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPersonalVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedCommissionableVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='taxAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPriceAfterDiscount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	
 	
 	<cfif NOT isNull(rc.order.getOrderType()) && rc.order.getOrderType().getSystemCode() NEQ "otSalesOrder" >
 		<cfset orderItemCollectionList.addDisplayProperty('stockLoss','Stock Loss',{'isVisible':true}) />

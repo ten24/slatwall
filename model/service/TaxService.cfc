@@ -298,12 +298,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 							newAppliedTax.setAppliedType("orderItem");
 							newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
-							newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
-							newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
+							newAppliedTax.setVATPrice( originalAppliedTax.getVATPrice() );
+							newAppliedTax.setVATAmount( originalAppliedTax.getVATAmount() );
 							newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 							newAppliedTax.setOrderItem( orderItem );
 							newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-							var taxAmount = (originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity();
+							var taxAmount = round((originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity() * 100) / 100;
 							newAppliedTax.setTaxLiabilityAmount( taxamount );
 	
 							newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
