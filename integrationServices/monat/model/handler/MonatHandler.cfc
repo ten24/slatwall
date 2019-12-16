@@ -55,7 +55,17 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         ) {
 			account.setStarterKitPurchasedFlag(true);
         }
-      
+    	
+    	if(arguments.order.getUpgradeFlag()){
+    		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
+    			account.setAccountType('VIP');
+    			accont.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
+    		}else if(arguments.order.getMonatOrderType().getTypeCode == 'motMpEnrollment'){
+    			account.setAccountType('marketPartner');	
+    			accont.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(1));
+    		}
+    	}
+    	
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 

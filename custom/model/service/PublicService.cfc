@@ -717,10 +717,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-<<<<<<< HEAD
 	//	bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
-=======
->>>>>>> 722eacedf577bf153fe97ab2b47a78272ebe0c49
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
@@ -1328,12 +1325,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         var account = getHibachiScope().getAccount();
-        account.setAccountStatusType('astEnrollmentPending')
         var accountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
-        order.setUpgradeType(true);
-        order.setMonatOrderType(accountType);
+        
+        order.setUpgradeFlag(true);
+        order.setMonatOrderType(monatOrderType);
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
