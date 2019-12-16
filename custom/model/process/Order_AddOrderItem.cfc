@@ -67,6 +67,46 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
+    public boolean function orderMinimumDaysToRenewMPFailed(){
+        // If order already has RENEWALFEE and cannot add another a Market Partner renewal
+        var cartCollectionList = getHibachiScope().getService('orderService').getorderItemCollectionList();
+        cartCollectionList.setDisplayProperties('order.orderID');
+        cartCollectionList.addFilter('order.orderID', order.getOrderID());
+        cartCollectionList.addFilter('sku.skuCode', 'RENEWALFEE');
+        var cartCollection = cartCollectionList.getRecords();
+        
+        if(arrayLen(cartCollection)){
+            return false;
+        }
+        
+        // If account qualifies for a Market Partner renewal
+        var currentDate = Now();
+        var orderMinimumDaysToRenewMPSetting = 0;
+        var accountRenewalDate = 0;
+        
+        if(!isNull(orderMinimumDaysToRenewMPSetting)){
+            orderMinimumDaysToRenewMPSetting = getOrder().setting('orderMinimumDaysToRenewMP');
+        }
+        if(!isNull(getAccount().getRenewalDate())){
+            accountRenewalDate = getAccount().getRenewalDate();
+        }
+        
+        var renewalDateCheck=currentDate-accountRenewalDate;
+        
+        if( this.getSku().getSkuCode() == "RENEWALFEE" &&
+            renewalDateCheck >= orderMinimumDaysToRenewMPSetting
+        ){
+            var renewOrderCollectionList = getService('orderService').getOrderCollectionList();
+            renewOrderCollectionList.setDisplayProperties('account.accountID,account.accountType,orderID');
+            renewOrderCollectionList.addFilter('account.accountID', account.getAccountID());
+            renewOrderCollectionList.addFilter('account.accountType','marketPartner');
+            renewOrderCollectionList.addFilter('orderID', order.getOrderID());
+
+            return renewOrderCollectionList.getRecordsCount() > 0;
+        }
+        
+        return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     
