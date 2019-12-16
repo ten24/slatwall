@@ -32268,12 +32268,12 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 _this.observerService.attach(_this.onChange, _this.swInputOnChangeEvent);
             }
             if (_this.object && _this.propertyIdentifier) {
-                if (_this.object.$$isPersisted()) {
-                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
-                }
-                else {
-                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Create', _this.object.className, _this.propertyIdentifier);
-                }
+                _this.updateAuthInfo = true;
+                // if(this.object.$$isPersisted()){
+                //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
+                // }else{
+                //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Create',this.object.className,this.propertyIdentifier);
+                // }
             }
         };
         this.onChange = function (result) {
@@ -59062,14 +59062,41 @@ var BaseBootStrapper = /** @class */ (function () {
     function BaseBootStrapper(myApplication) {
         var _this = this;
         this._resourceBundle = {};
+        this.getBaseUrl = function () {
+            var urlString = "";
+            if (!hibachiConfig) {
+                hibachiConfig = {};
+            }
+            if (!hibachiConfig.baseURL) {
+                hibachiConfig.baseURL = '';
+            }
+            urlString += hibachiConfig.baseURL;
+            if (hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length - 1) != '/') {
+                urlString += '/';
+            }
+            return urlString;
+        };
         this.isPrivateMode = function () {
-            return new Promise(function (resolve) {
-                var on = function () { return resolve(true); }; // is in private mode
-                var off = function () { return resolve(false); }; // not private mode
+            return _this.$q(function (resolve, reject) {
+                var on = function () {
+                    _this.isPrivate = true; // is in private mode
+                    resolvePromise();
+                };
+                var off = function () {
+                    _this.isPrivate = false; // not private mode 
+                    resolvePromise();
+                };
+                var resolvePromise = function () {
+                    resolve(_this.isPrivate);
+                };
+                if (_this.isPrivate !== null) { //if already determined, (in some earlier call)
+                    return resolvePromise();
+                }
                 var testLocalStorage = function () {
                     try {
-                        if (localStorage.length)
+                        if (localStorage.length) {
                             off();
+                        }
                         else {
                             localStorage.setItem('x', '1');
                             localStorage.removeItem('x');
@@ -59107,87 +59134,89 @@ var BaseBootStrapper = /** @class */ (function () {
                 return off();
             });
         };
-        this.getInstantiationKey = function (baseURL) {
+        this.getInstantiationKey = function () {
             return _this.$q(function (resolve, reject) {
-                if (hibachiConfig.instantiationKey) {
+                if (_this.instantiationKey) {
+                    resolve(_this.instantiationKey);
+                }
+                else if (hibachiConfig.instantiationKey) {
                     resolve(hibachiConfig.instantiationKey);
                 }
                 else {
-                    _this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey').then(function (resp) { return resolve(resp.data.data.instantiationKey); });
+                    _this.$http.get(_this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                        .then(function (resp) {
+                        _this.instantiationKey = resp.data.data.instantiationKey;
+                        resolve(_this.instantiationKey);
+                    });
                 }
             });
         };
         this.getData = function (invalidCache) {
             var promises = {};
-            for (var i in invalidCache) {
+            for (var i in invalidCache) { // attributeCacheKey, instantiationKey
                 var invalidCacheName = invalidCache[i];
                 var functionName = invalidCacheName.charAt(0).toUpperCase() + invalidCacheName.slice(1);
-                promises[invalidCacheName] = _this['get' + functionName + 'Data']();
+                promises[invalidCacheName] = _this['get' + functionName + 'Data'](); // mind the syntax 8)
             }
             return _this.$q.all(promises);
         };
         this.getAttributeCacheKeyData = function () {
-            var urlString = "";
-            if (!hibachiConfig) {
-                hibachiConfig = {};
-            }
-            if (!hibachiConfig.baseURL) {
-                hibachiConfig.baseURL = '';
-            }
-            urlString += hibachiConfig.baseURL;
-            if (urlString.length && urlString.slice(-1) !== '/') {
-                urlString += '/';
-            }
-            return _this.$http.get(urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
-                .then(function (resp) {
-                core_module_1.coremodule.constant('attributeMetaData', resp.data.data);
-                //for safari private mode which has no localStorage
-                try {
-                    localStorage.setItem('attributeMetaData', JSON.stringify(resp.data.data));
-                    localStorage.setItem('attributeChecksum', md5(JSON.stringify(resp.data.data)));
-                    // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
-                    // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
-                    _this.appConfig.attributeCacheKey = localStorage.getItem('attributeChecksum').toUpperCase();
-                    localStorage.setItem('appConfig', JSON.stringify(_this.appConfig));
-                }
-                catch (e) { }
-                _this.attributeMetaData = resp.data.data;
+            var urlString = _this.getBaseUrl();
+            return _this.$http
+                .get(urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel')
+                .then(function (resp) { return resp.data.data; })
+                .then(function (data) {
+                core_module_1.coremodule.constant('attributeMetaData', data);
+                _this.attributeMetaData = data;
+                return data;
+            })
+                .then(function (data) {
+                return _this.$q(function (resolve, reject) {
+                    _this.isPrivateMode().then(function (privateMode) {
+                        if (!privateMode) {
+                            var metadataSreing = JSON.stringify(data);
+                            localStorage.setItem('attributeMetaData', metadataSreing);
+                            localStorage.setItem('attributeChecksum', md5(metadataSreing));
+                            // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
+                            // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
+                            _this.appConfig['attributeCacheKey'] = localStorage.getItem('attributeChecksum').toUpperCase();
+                            localStorage.setItem('appConfig', JSON.stringify(_this.appConfig));
+                        }
+                        resolve(data);
+                    });
+                });
+            })
+                .catch(function (e) {
+                console.error(e);
             });
         };
         this.getInstantiationKeyData = function () {
-            if (!_this.instantiationKey) {
-                var d = new Date();
-                var n = d.getTime();
-                _this.instantiationKey = n.toString();
-            }
-            var urlString = "";
-            if (!hibachiConfig) {
-                hibachiConfig = {};
-            }
-            if (!hibachiConfig.baseURL) {
-                hibachiConfig.baseURL = '';
-            }
-            urlString += hibachiConfig.baseURL;
-            if (hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length - 1) != '/') {
-                urlString += '/';
-            }
-            return _this.$http.get(urlString + '/custom/system/config.json?instantiationKey=' + _this.instantiationKey)
-                .then(function (resp) {
-                var appConfig = resp.data.data;
+            var urlString = _this.getBaseUrl();
+            return _this.getInstantiationKey()
+                .then(function (instantiationKey) {
+                return _this.$http.get(urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey);
+            })
+                .then(function (resp) { return resp.data.data; })
+                .then(function (data) {
+                return _this.$q(function (resolve, reject) {
+                    _this.isPrivateMode().then(function (privateMode) {
+                        if (!privateMode) {
+                            localStorage.setItem('appConfig', JSON.stringify(data));
+                        }
+                        resolve(data);
+                    });
+                });
+            })
+                .then(function (appConfig) {
                 if (hibachiConfig.baseURL.length) {
                     appConfig.baseURL = urlString;
                 }
                 core_module_1.coremodule.constant('appConfig', appConfig);
-                try {
-                    if (!_this.isPrivate) {
-                        localStorage.setItem('appConfig', JSON.stringify(resp.data.data));
-                    }
-                }
-                catch (e) { }
                 _this.appConfig = appConfig;
-                return _this.getAuthInfo().finally(function () {
-                    return _this.getResourceBundles();
-                });
+            })
+                .then(function () { return _this.getResourceBundles(); })
+                .catch(function (e) {
+                console.error(e);
             });
         };
         this.getResourceBundle = function (locale) {
@@ -59197,13 +59226,12 @@ var BaseBootStrapper = /** @class */ (function () {
                 return _this._resourceBundle[locale];
             }
             var urlString = _this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + _this.appConfig.instantiationKey;
-            _this.$http({
-                url: urlString,
-                method: "GET"
-            }).success(function (response, status, headersGetter) {
+            _this.$http({ url: urlString, method: "GET" })
+                .success(function (response, status, headersGetter) {
                 _this._resourceBundle[locale] = response;
                 deferred.resolve(response);
-            }).error(function (response, status) {
+            })
+                .error(function (response, status) {
                 if (status === 404) {
                     _this._resourceBundle[locale] = {};
                     deferred.resolve(response);
@@ -59213,18 +59241,6 @@ var BaseBootStrapper = /** @class */ (function () {
                 }
             });
             return deferred.promise;
-        };
-        this.getAuthInfo = function () {
-            return _this.$http.get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login').then(function (loginResponse) {
-                if (loginResponse.status === 200) {
-                    core_module_1.coremodule.value('token', loginResponse.data.token);
-                }
-                else {
-                    core_module_1.coremodule.value('token', 'invalidToken');
-                }
-            }, function (reason) {
-                core_module_1.coremodule.value('token', 'invalidToken');
-            });
         };
         this.getResourceBundles = function () {
             var rbLocale = _this.appConfig.rbLocale;
@@ -59242,88 +59258,98 @@ var BaseBootStrapper = /** @class */ (function () {
             if (localeListArray[0] !== 'en') {
                 _this.getResourceBundle('en');
             }
-            return _this.$q.all(rbPromises).then(function (data) {
+            return _this.$q.all(rbPromises)
+                .then(function (data) {
                 core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
-            }, function (error) {
+            })
+                .catch(function (e) {
                 //can enter here due to 404
                 core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
+                console.error(e);
+            });
+        };
+        this.getAuthInfo = function () {
+            return _this.$http
+                .get(_this.appConfig.baseURL + '?' + _this.appConfig.action + '=api:main.login')
+                .then(function (loginResponse) {
+                if (loginResponse.status === 200) {
+                    core_module_1.coremodule.value('token', loginResponse.data.token);
+                }
+                else {
+                    throw loginResponse;
+                }
+            })
+                .catch(function (e) {
+                core_module_1.coremodule.value('token', 'invalidToken');
+                console.error(e);
             });
         };
         this.myApplication = myApplication;
-        return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
+        this.appConfig = {
+            instantiationKey: undefined
+        };
+        // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
+        return angular.lazy(this.myApplication)
+            .resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;
-                var baseURL = hibachiConfig.baseURL;
-                if (!baseURL) {
-                    baseURL = '';
-                }
-                if (baseURL.length && baseURL.slice(-1) !== '/') {
-                    baseURL += '/';
-                }
-                return _this.getInstantiationKey(baseURL).then(function (instantiationKey) {
-                    _this.instantiationKey = instantiationKey;
+                return _this.getInstantiationKey()
+                    .then(function (instantiationKey) {
                     var invalidCache = [];
-                    return _this.isPrivateMode().then(function (isPrivate) {
-                        if (!isPrivate) {
-                            _this.isPrivate = true;
+                    // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
+                    return _this.isPrivateMode()
+                        .then(function (privateMode) {
+                        if (privateMode) {
+                            throw ("Private mode");
                         }
+                        else {
+                            return invalidCache;
+                        }
+                    })
+                        .then(function () {
                         // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
-                        try {
-                            var hashedData = localStorage.getItem('attributeChecksum');
+                        var hashedData = localStorage.getItem('attributeChecksum');
+                        if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
                             // attributeMetaData is valid and can be restored from local storage cache
-                            if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
-                                core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
-                                // attributeMetaData is invalid and needs to be refreshed
-                            }
-                            else {
-                                invalidCache.push('attributeCacheKey');
-                            }
-                            // attributeMetaData is invalid and needs to be refreshed
+                            core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
                         }
-                        catch (e) {
+                        else {
                             invalidCache.push('attributeCacheKey');
                         }
-                        // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-                        try {
-                            if (!isPrivate) {
-                                _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                            }
-                            else {
-                                _this.appConfig = {
-                                    instantiationKey: undefined
-                                };
-                            }
-                            // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                            if (hibachiConfig.instantiationKey
-                                && _this.appConfig.instantiationKey
-                                && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
-                                // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-                                core_module_1.coremodule.constant('appConfig', _this.appConfig);
-                                // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
-                                if (invalidCache.length) {
-                                    var deferred_1 = $q.defer();
-                                    _this.getData(invalidCache).then(function (resp) {
-                                        _this.getResourceBundles().then(function (resp) {
-                                            deferred_1.resolve(resp);
-                                        });
-                                    });
-                                    // Ends bootstrapping the process
-                                    return deferred_1.promise;
-                                }
-                                // All appConfig and attribute model valid, nothing to refresh prior, ends the bootstrapping process
-                                return _this.getResourceBundles();
-                                // Entire app config needs to be refreshed
-                            }
-                            else {
-                                invalidCache.push('instantiationKey');
-                            }
-                            // Entire app config needs to be refreshed
+                    })
+                        .then(function () {
+                        if (localStorage.getItem('appConfig') != null) {
+                            _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
                         }
-                        catch (e) {
+                        if (hibachiConfig.instantiationKey
+                            && _this.appConfig.instantiationKey
+                            && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
+                            // appConfig instantiation key is valid (but attribute model may need to be refreshed)
+                            core_module_1.coremodule.constant('appConfig', _this.appConfig);
+                        }
+                        else {
                             invalidCache.push('instantiationKey');
                         }
-                        // NOTE: If invalidCache array does not contain 'instantiationKey' this will not work because getResourceBundles will not be in the promise chain when the bootstrapping process ends
-                        return _this.getData(invalidCache);
+                    })
+                        .catch(function () {
+                        invalidCache.push('attributeCacheKey');
+                        invalidCache.push('instantiationKey');
+                    })
+                        .then(function () {
+                        // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
+                        if (invalidCache.length) {
+                            var deferred_1 = $q.defer();
+                            _this.getData(invalidCache).then(function (resp) { deferred_1.resolve(resp); });
+                            return deferred_1.promise;
+                        }
+                    })
+                        .then(function () {
+                        var deferred = $q.defer();
+                        _this.getResourceBundles().then(function (resp) { return deferred.resolve(resp); });
+                        return deferred.promise;
+                    })
+                        .catch(function (e) {
+                        console.error(e);
                     });
                 });
             }]);
@@ -62239,8 +62265,9 @@ var SWCriteriaNumber = /** @class */ (function () {
                     scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
                 };
                 scope.calculateCriteriaFilterPropertyValue = function (selectedFilterProperty) {
-                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+                    if (angular.isDefined(selectedFilterProperty.value)) {
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.value;
+                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.value;
                     }
                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
                         if (!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
@@ -65425,12 +65452,13 @@ var SWActionCallerController = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$onInit = function () {
             if (angular.isDefined(_this.action)) {
-                var unBind = _this.$rootScope.$watch('slatwall.role', function (newValue, oldValue) {
-                    if (newValue) {
-                        _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
-                        unBind();
-                    }
-                });
+                _this.actionAuthenticated = true;
+                // 			var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
+                // 				if(newValue){
+                // 					this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+                // 					unBind();
+                // 				}
+                // 			});
             }
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
@@ -68832,6 +68860,11 @@ var SWTypeaheadMultiselectController = /** @class */ (function () {
             if (!item) {
                 return;
             }
+            if (angular.isDefined(_this.prependPropertyName) && _this.prependPropertyName.length) {
+                for (var property in item) {
+                    item[_this.prependPropertyName + "_" + property] = item[property];
+                }
+            }
             if (_this.singleSelection) {
                 _this.typeaheadService.notifyTypeaheadClearSearchEvent(_this.typeaheadDataKey);
             }
@@ -68913,7 +68946,8 @@ var SWTypeaheadMultiselect = /** @class */ (function () {
             fallbackPropertiesToCompare: "@?",
             rightContentPropertyIdentifier: "@?",
             selectionFieldName: "@?",
-            disabled: "=?"
+            disabled: "=?",
+            prependPropertyName: "@?"
         };
         this.controller = SWTypeaheadMultiselectController;
         this.controllerAs = "swTypeaheadMultiselect";
@@ -70917,7 +70951,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService, token) {
+    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
@@ -70925,7 +70959,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.appConfig = appConfig;
         this.$injector = $injector;
         this.utilityService = utilityService;
-        this.token = token;
         this.getJWTDataFromToken = function (str) {
             if (str !== "invalidToken") {
                 // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -70967,7 +71000,7 @@ var HibachiAuthenticationService = /** @class */ (function () {
         };
         this.isSuperUser = function () {
             if (!_this.$rootScope.slatwall.authInfo) {
-                _this.getJWTDataFromToken(_this.token);
+                //this.getJWTDataFromToken(this.token);
             }
             return _this.$rootScope.slatwall.role == 'superUser';
         };
@@ -71432,7 +71465,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+    // public token:string,
+    dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -71443,7 +71478,6 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
-        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -71455,9 +71489,9 @@ var HibachiInterceptor = /** @class */ (function () {
         this.loginResponse = null;
         this.authPromise = null;
         this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
-        this.getJWTDataFromToken = function () {
-            _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
-        };
+        //   public getJWTDataFromToken = ():void =>{
+        //     this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
+        // }
         this.request = function (config) {
             _this.$log.debug('request');
             //bypass interceptor rules when checking template cache
@@ -71471,10 +71505,10 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.token) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.token;
-                _this.getJWTDataFromToken();
-            }
+            // if(this.token){
+            // 	config.headers['Auth-Token'] = 'Bearer ' + this.token;
+            //     this.getJWTDataFromToken();
+            // }
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
                 _this.$log.debug(config);
@@ -71548,9 +71582,9 @@ var HibachiInterceptor = /** @class */ (function () {
                                 if (loginResponse.status === 200) {
                                     _this.hibachiAuthenticationService.token = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
-                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                    _this.token = loginResponse.data.token;
-                                    _this.getJWTDataFromToken();
+                                    // rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+                                    // this.token = loginResponse.data.token;
+                                    // this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -71563,9 +71597,9 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise.then(function () {
                                 if (_this.loginResponse.status === 200) {
                                     rejection.config.headers = rejection.config.headers || {};
-                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
-                                    _this.token = _this.loginResponse.data.token;
-                                    _this.getJWTDataFromToken();
+                                    // rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
+                                    // this.token=this.loginResponse.data.token;
+                                    // this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -71588,7 +71622,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
-        this.token = token;
+        // this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -71596,7 +71630,11 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+        // token:string,
+        dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+        // token,
+        dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -71607,7 +71645,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'localStorageService',
             'alertService',
             'appConfig',
-            'token',
+            // 'token',
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',
@@ -77780,6 +77818,9 @@ var SWFormFieldController = /** @class */ (function () {
                         'propertyIdentifier': _this.propertyIdentifier
                     };
                 }
+                if (_this.object.$$getID().length) {
+                    _this.optionsArguments.entityID = _this.object.$$getID();
+                }
                 var optionsPromise = _this.$hibachi.getPropertyDisplayOptions(_this.object.metaData.className, _this.optionsArguments);
                 optionsPromise.then(function (value) {
                     _this.options = value.data;
@@ -82943,7 +82984,7 @@ var ListingService = /** @class */ (function () {
                 if (column.aggregate && column.aggregate.aggregateFunction) {
                     orderByPropertyIdentifier = column.aggregate.aggregateFunction + '(' + column.propertyIdentifier + ')';
                 }
-                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+                _this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true); //single column mode true, format propIdentifier false
             }
         };
         //End Order By Functions
