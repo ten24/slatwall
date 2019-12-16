@@ -43,13 +43,20 @@ class swfAccountController {
         public publicService,
         public $scope,
         public observerService,
-        public ModalService
+        public ModalService, 
+        public rbkeyService,
+        public monatAlertService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
+        
+        this.observerService.attach(()=>{
+    		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
+        },"deleteAccountPaymentMethodFailure");
+        
         
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
