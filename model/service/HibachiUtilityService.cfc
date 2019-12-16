@@ -73,7 +73,7 @@ Notes:
 					return variables[cacheKey];
 				}
 			}else{
-				variables[cacheKey];
+				return variables[cacheKey];
 			}
 		}
 
