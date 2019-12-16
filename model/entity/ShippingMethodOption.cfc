@@ -77,6 +77,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	// Non-Persistent Properties
 	property name="discountAmountDetails" persistent="false";
 	property name="totalChargeAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="currencyCode" persistent="false";
 
 	public struct function getDiscountAmountDetails() {
 		if(!structKeyExists(variables, "discountAmountDetails")) {
@@ -94,6 +95,12 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+
+	public string function getCurrencyCode(){
+		if(!isNull(this.getOrderFulfillment()) && !isNull(this.getOrderFulfillment().getOrder())){
+			return this.getOrderFulfillment().getOrder().getCurrencyCode();
+		}
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
