@@ -6,17 +6,17 @@
 			
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderNumber" edit="false" valuelink="#getHibachiScope().buildURL(action=rc.entityActionDetails.detailAction, queryString='orderID=#rc.order.getOrderID()#')#" title="#$.slatwall.rbKey('entity.order')#">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="false">
 		</hb:HibachiPropertyList>
 
 		<hb:HibachiPropertyList divclass="col-md-6">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="true" fieldAttributes="disabled">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="true" fieldAttributes="disabled">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false">
 		</hb:HibachiPropertyList>
 		
 		
