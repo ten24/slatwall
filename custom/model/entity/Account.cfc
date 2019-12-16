@@ -10,6 +10,7 @@ component {
 	property name="canCreateFlexshipFlag" persistent="false";
 	property name="lastActivityDateTime" ormtype="timestamp";
 	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
+	property name="subscribedToMailchimp" ormtype="boolean";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -101,6 +102,18 @@ component {
 	
 	public boolean function onlyOnePriceGroup(){
 		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public boolean function getSubscribedToMailchimp(){
+		if(!structKeyExists(variables, 'subscribedToMailchimp')){
+			variables.subscribedToMailchimp = false;
+			
+			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
+				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+			}
+		}
+		
+		return variables.subscribedToMailchimp;
 	}
 	
 	
