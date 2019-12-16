@@ -71,7 +71,7 @@
 					<button
 						class="close"
 						type="button"
-						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item);"
+						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item); item.loading = true"
 					><i class="fas fa-times"></i></button>
 					<div class="img">
 						<a ng-href="{{item.skuProductURL}}">
