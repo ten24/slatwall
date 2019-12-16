@@ -100,7 +100,7 @@ component {
 	}
 	
 	public boolean function onlyOnePriceGroup(){
-		return this.getPriceGroupsCount() >= 1;
+		return arrayLen(this.getPriceGroups()) <= 1;
 	}
 	
 	
