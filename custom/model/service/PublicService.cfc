@@ -1345,4 +1345,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
+    
+    public void function getMarketPartners(required struct data){
+        var marketPartners = getService('MonatDataService').getMarketPartners(data);
+        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
+        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+    }
 }

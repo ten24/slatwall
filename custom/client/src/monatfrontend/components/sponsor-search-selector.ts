@@ -87,7 +87,7 @@ class SponsorSearchSelectorController {
 		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'?slatAction=monat:public.getmarketpartners',data
+			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
 			if(useHibachConfig){

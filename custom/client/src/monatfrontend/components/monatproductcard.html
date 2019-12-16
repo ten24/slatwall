@@ -34,7 +34,6 @@
             
             <!--- Link to product if not enrollment type --->
             <a 
-                ng-if="monatProductCard.type != 'enrollment'" 
                 class="d-block" 
                 ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined }}"
                 ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
