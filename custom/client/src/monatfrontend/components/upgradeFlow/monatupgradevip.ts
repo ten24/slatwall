@@ -9,7 +9,7 @@ class VIPUpgradeController {
 	public currentStateCode: string = '';
 	public mpSearchText: string = '';
 	public currentMpPage: number = 1;
-	public isVIPEnrollment: boolean = false;
+	public isVIPUpgrade: boolean = false;
 	public productList;
 	public sponsorErrors: any = {};
 	public flexshipID:any;
