@@ -207,6 +207,24 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			// Add this address to the request data struct
 			arrayAppend(requestDataStruct.addresses, addressData );
 			
+			/**
+			 * 
+			 * Discounts at the item level are handled by sending the extended
+			 * price after discount. Discounts at the order level need to be
+			 * handled by settings the total discount amount for the order
+			 * (key: Discount), and then setting discounted to TRUE on all the
+			 * orderItems. This tells Avatax to distribute the order discount
+			 * to the items automatically.
+			 * 
+			 **/
+			var orderDiscount = item.getOrder().getOrderDiscountAmountTotal();
+			var allItemsHaveDiscount = false;
+			if (orderDiscount > 0){
+				//distribute the order discount to all of the orderItems.
+				allItemsHaveDiscount = true;
+				requestDataStruct.Discount = orderDiscount;
+			}
+			
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
 				if (item.getReferenceObjectType() == 'OrderItem'){
@@ -223,6 +241,10 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
+					}
+					
+					if (allItemsHaveDiscount){
+						itemData.Discounted = true;
 					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
