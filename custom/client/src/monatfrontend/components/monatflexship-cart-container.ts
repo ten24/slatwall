@@ -88,7 +88,6 @@ class MonatFlexshipCartContainerController {
                 this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
                 this.loading = false; 
     		} else {
-    		    this.loading = false;
     			throw(data);
     		}
         }).catch((error)=>{
@@ -96,7 +95,6 @@ class MonatFlexshipCartContainerController {
             this.loading = false;
         }).finally(()=>{
             this.loading = false;
-        //TODO deal with the loader ui
         });
     }
     
