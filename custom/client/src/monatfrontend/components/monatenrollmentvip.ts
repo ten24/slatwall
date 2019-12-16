@@ -78,6 +78,10 @@ class VIPController {
 		}
 	
 	}
+
+	public adjustInputFocuses = () => {
+		this.monatService.adjustInputFocuses();
+	}
 	
 	//check to see if we can use local storage
 	public localStorageCheck = () => {

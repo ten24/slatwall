@@ -1295,5 +1295,11 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
+	
+	public boolean function onlyOnePriceGroup(){
+
+		return this.getPriceGroupsCount() >= 1;
+	}
+	
 	//CUSTOM FUNCTIONS END
 }

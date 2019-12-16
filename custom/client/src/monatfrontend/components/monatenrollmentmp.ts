@@ -1,3 +1,5 @@
+declare var $;
+
 class EnrollmentMPController {
 	public Account_CreateAccount;
 	public isMPEnrollment: boolean = false;
@@ -31,7 +33,13 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
+		
+		$('.site-tooltip').tooltip();
 	};
+	
+	public adjustInputFocuses = () => {
+		this.monatService.adjustInputFocuses();
+	}
 	
 	public getDateOptions = () => {
 		this.currentDate = new Date();

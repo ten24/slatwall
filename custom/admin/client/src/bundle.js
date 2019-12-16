@@ -33965,12 +33965,12 @@ var SWPropertyDisplayController = /** @class */ (function () {
                 _this.observerService.attach(_this.onChange, _this.swInputOnChangeEvent);
             }
             if (_this.object && _this.propertyIdentifier) {
-                if (_this.object.$$isPersisted()) {
-                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Update', _this.object.className, _this.propertyIdentifier);
-                }
-                else {
-                    _this.updateAuthInfo = _this.publicService.authenticateEntityProperty('Create', _this.object.className, _this.propertyIdentifier);
-                }
+                _this.updateAuthInfo = true;
+                // if(this.object.$$isPersisted()){
+                //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
+                // }else{
+                //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Create',this.object.className,this.propertyIdentifier);
+                // }
             }
         };
         this.onChange = function (result) {
@@ -72618,10 +72618,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var orderMaxRefund;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-            orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
-            orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
-            orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
-            orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+            if (orderItem.returnQuantity != 0) {
+                orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
+                orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundCVTotal = orderItem.refundUnitCV * orderItem.returnQuantity;
+            }
+            else {
+                orderItem.refundUnitPV = 0;
+                orderItem.refundPVTotal = 0;
+                orderItem.refundUnitCV = 0;
+                orderItem.refundCVTotal = 0;
+            }
             orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity) * 100) / 100;
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
@@ -73316,7 +73324,7 @@ var BaseBootStrapper = /** @class */ (function () {
             return urlString;
         };
         this.isPrivateMode = function () {
-            return new Promise(function (resolve) {
+            return _this.$q(function (resolve, reject) {
                 var on = function () {
                     _this.isPrivate = true; // is in private mode
                     resolvePromise();
@@ -73410,7 +73418,7 @@ var BaseBootStrapper = /** @class */ (function () {
                 return data;
             })
                 .then(function (data) {
-                return new Promise(function (resolve, reject) {
+                return _this.$q(function (resolve, reject) {
                     _this.isPrivateMode().then(function (privateMode) {
                         if (!privateMode) {
                             var metadataSreing = JSON.stringify(data);
@@ -73437,7 +73445,7 @@ var BaseBootStrapper = /** @class */ (function () {
             })
                 .then(function (resp) { return resp.data.data; })
                 .then(function (data) {
-                return new Promise(function (resolve, reject) {
+                return _this.$q(function (resolve, reject) {
                     _this.isPrivateMode().then(function (privateMode) {
                         if (!privateMode) {
                             localStorage.setItem('appConfig', JSON.stringify(data));
@@ -73454,7 +73462,6 @@ var BaseBootStrapper = /** @class */ (function () {
                 _this.appConfig = appConfig;
             })
                 .then(function () { return _this.getResourceBundles(); })
-                .then(function () { return _this.getAuthInfo(); })
                 .catch(function (e) {
                 console.error(e);
             });
@@ -73586,11 +73593,6 @@ var BaseBootStrapper = /** @class */ (function () {
                         .then(function () {
                         var deferred = $q.defer();
                         _this.getResourceBundles().then(function (resp) { return deferred.resolve(resp); });
-                        return deferred.promise;
-                    })
-                        .then(function () {
-                        var deferred = $q.defer();
-                        _this.getAuthInfo().then(function (resp) { return deferred.resolve(resp); });
                         return deferred.promise;
                     })
                         .catch(function (e) {
@@ -79697,12 +79699,13 @@ var SWActionCallerController = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.$onInit = function () {
             if (angular.isDefined(_this.action)) {
-                var unBind = _this.$rootScope.$watch('slatwall.role', function (newValue, oldValue) {
-                    if (newValue) {
-                        _this.actionAuthenticated = _this.hibachiAuthenticationService.authenticateActionByAccount(_this.action);
-                        unBind();
-                    }
-                });
+                _this.actionAuthenticated = true;
+                // 			var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
+                // 				if(newValue){
+                // 					this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+                // 					unBind();
+                // 				}
+                // 			});
             }
             //Check if is NOT a ngRouter
             if (angular.isUndefined(_this.isAngularRoute)) {
@@ -85195,7 +85198,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiAuthenticationService = /** @class */ (function () {
     //@ngInject
-    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService, token) {
+    function HibachiAuthenticationService($rootScope, $q, $window, appConfig, $injector, utilityService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$q = $q;
@@ -85203,7 +85206,6 @@ var HibachiAuthenticationService = /** @class */ (function () {
         this.appConfig = appConfig;
         this.$injector = $injector;
         this.utilityService = utilityService;
-        this.token = token;
         this.getJWTDataFromToken = function (str) {
             if (str !== "invalidToken") {
                 // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -85245,7 +85247,7 @@ var HibachiAuthenticationService = /** @class */ (function () {
         };
         this.isSuperUser = function () {
             if (!_this.$rootScope.slatwall.authInfo) {
-                _this.getJWTDataFromToken(_this.token);
+                //this.getJWTDataFromToken(this.token);
             }
             return _this.$rootScope.slatwall.role == 'superUser';
         };
@@ -85710,7 +85712,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var HibachiInterceptor = /** @class */ (function () {
     //@ngInject
-    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
+    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+    // public token:string,
+    dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) {
         var _this = this;
         this.$location = $location;
         this.$q = $q;
@@ -85721,7 +85725,6 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
-        this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -85733,9 +85736,9 @@ var HibachiInterceptor = /** @class */ (function () {
         this.loginResponse = null;
         this.authPromise = null;
         this.preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
-        this.getJWTDataFromToken = function () {
-            _this.hibachiAuthenticationService.getJWTDataFromToken(_this.token);
-        };
+        //   public getJWTDataFromToken = ():void =>{
+        //     this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
+        // }
         this.request = function (config) {
             _this.$log.debug('request');
             //bypass interceptor rules when checking template cache
@@ -85749,10 +85752,10 @@ var HibachiInterceptor = /** @class */ (function () {
             }
             config.cache = true;
             config.headers = config.headers || {};
-            if (_this.token) {
-                config.headers['Auth-Token'] = 'Bearer ' + _this.token;
-                _this.getJWTDataFromToken();
-            }
+            // if(this.token){
+            // 	config.headers['Auth-Token'] = 'Bearer ' + this.token;
+            //     this.getJWTDataFromToken();
+            // }
             var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
             if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
                 _this.$log.debug(config);
@@ -85826,9 +85829,9 @@ var HibachiInterceptor = /** @class */ (function () {
                                 if (loginResponse.status === 200) {
                                     _this.hibachiAuthenticationService.token = loginResponse.data.token;
                                     rejection.config.headers = rejection.config.headers || {};
-                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-                                    _this.token = loginResponse.data.token;
-                                    _this.getJWTDataFromToken();
+                                    // rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+                                    // this.token = loginResponse.data.token;
+                                    // this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -85841,9 +85844,9 @@ var HibachiInterceptor = /** @class */ (function () {
                             return _this.authPromise.then(function () {
                                 if (_this.loginResponse.status === 200) {
                                     rejection.config.headers = rejection.config.headers || {};
-                                    rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.loginResponse.data.token;
-                                    _this.token = _this.loginResponse.data.token;
-                                    _this.getJWTDataFromToken();
+                                    // rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
+                                    // this.token=this.loginResponse.data.token;
+                                    // this.getJWTDataFromToken();
                                     return $http(rejection.config).then(function (response) {
                                         return response;
                                     });
@@ -85866,7 +85869,7 @@ var HibachiInterceptor = /** @class */ (function () {
         this.localStorageService = localStorageService;
         this.alertService = alertService;
         this.appConfig = appConfig;
-        this.token = token;
+        // this.token = token;
         this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -85874,7 +85877,11 @@ var HibachiInterceptor = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     HibachiInterceptor.Factory = function () {
-        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, token, dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
+        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+        // token:string,
+        dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, 
+        // token,
+        dialogService, utilityService, hibachiPathBuilder, observerService, hibachiAuthenticationService); };
         eventHandler.$inject = [
             '$location',
             '$q',
@@ -85885,7 +85892,7 @@ var HibachiInterceptor = /** @class */ (function () {
             'localStorageService',
             'alertService',
             'appConfig',
-            'token',
+            // 'token',
             'dialogService',
             'utilityService',
             'hibachiPathBuilder',

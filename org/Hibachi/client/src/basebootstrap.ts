@@ -22,7 +22,6 @@ export class BaseBootStrapper{
         this.appConfig = {
             instantiationKey : undefined
         }
-        
         // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
         return angular.lazy(this.myApplication)
         .resolve( ['$http','$q', ($http, $q) => {
@@ -31,7 +30,6 @@ export class BaseBootStrapper{
             
             return this.getInstantiationKey()
             .then( (instantiationKey: string) => {
-                
                 var invalidCache = [];
                 // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
                 return this.isPrivateMode()
@@ -84,11 +82,6 @@ export class BaseBootStrapper{
                     this.getResourceBundles().then( (resp) => deferred.resolve(resp) )
                     return deferred.promise;
                 })
-                .then( () => {
-                    let deferred = $q.defer();
-                    this.getAuthInfo().then( (resp) => deferred.resolve(resp) )
-                    return deferred.promise;
-                })
                 .catch( (e) => { 
                     console.error(e);
                 });
@@ -118,7 +111,7 @@ export class BaseBootStrapper{
     
     isPrivateMode = () => {
         
-      return new Promise( (resolve) => {
+      return this.$q( (resolve, reject) => {
         
         const on = () => {
             this.isPrivate = true;// is in private mode
@@ -225,7 +218,7 @@ export class BaseBootStrapper{
             return data;
         })
         .then( (data) => {
-            return new Promise( (resolve, reject ) => {
+            return this.$q( (resolve, reject) => {
                 this.isPrivateMode().then( (privateMode) => {
                     if(!privateMode) {
                         var metadataSreing = JSON.stringify(data);
@@ -257,7 +250,7 @@ export class BaseBootStrapper{
         })
         .then( (resp: any) => resp.data.data )
         .then( (data) => {
-            return new Promise( (resolve, reject ) => {
+            return this.$q( (resolve, reject) => {
                 this.isPrivateMode().then( (privateMode) => {
                     if(!privateMode) {
                         localStorage.setItem('appConfig', JSON.stringify(data) );
@@ -274,7 +267,6 @@ export class BaseBootStrapper{
             this.appConfig = appConfig;
         })
         .then( () => this.getResourceBundles() )
-        .then( () => this.getAuthInfo() )
         .catch( (e) => {
             console.error(e); 
         });
