@@ -1297,8 +1297,7 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	}
 	
 	public boolean function onlyOnePriceGroup(){
-
-		return this.getPriceGroupsCount() >= 1;
+		return arrayLen(this.getPriceGroups()) <= 1;
 	}
 	
 	//CUSTOM FUNCTIONS END
