@@ -404,14 +404,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getStarterPackBundleStruct( required any data ) {
         param name="arguments.data.contentID" default="";
         
-        if ( ! len( arguments.data.contentID ) ) {
-            return;
-        }
+        // if ( ! len( arguments.data.contentID ) ) {
+        //     return;
+        // }
 
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+	//	bundlePersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
@@ -434,7 +434,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
+	//	bundleNonPersistentCollectionList.addFilter( 'sku.product.listingPages.content.contentID', arguments.data.contentID );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
 		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
 		
@@ -1022,14 +1022,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.upgradeType" default="";
                 
         if(!getHibachiScope().getLoggedInFlag()){
-            arguments.data['ajaxResponse']['upgradeResponse'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
             return;
         }
         
+        var account = getHibachiScope().getAccount();
+        account.setAccountStatusType('astEnrollmentPending')
         var accountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var order = getHibachiScope().getCart();
-        order.setUpgradeFlag(true);
+        order.setUpgradeType(true);
+        order.setMonatOrderType(accountType);
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
