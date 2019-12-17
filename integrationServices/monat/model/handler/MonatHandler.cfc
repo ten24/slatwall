@@ -129,17 +129,26 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethod = orderFulFillment.getShippingMethod();
-				var shippingAddress = orderFulFillment.getShippingAddress();
-				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
+				var shippingMethodID = orderFulFillment.getShippingMethod().getShippingMethodID();
+				var shippingAddressID = orderFulFillment.getShippingAddress().getAddressID();
+				var accountPaymentMethodID = arguments.order.getOrderPayments()[1].getAccountPaymentMethod().getAccountPaymentMethodID();
+				var billingAccountAddressID = arguments.order.getOrderPayments()[1].getBillingAccountAddress().getAccountAddressID();
+				var orderTemplateID = orderTemplate.getOrderTemplateID();
+				var orderTemplateStatusTypeID = getService('typeService').getTypeBySystemCode('otstActive').getTypeID() ?:'2c948084697d51bd01697d9be217000a';
 				
-				orderTemplate.setShippingAddress(shippingAddress);
-				orderTemplate.setShippingMethod(shippingMethod);
-				orderTemplate.setBillingAccountAddress(billingAccountAddress);
-				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-				orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
-				orderService.saveOrderTemplate(orderTemplate);
+				QueryExecute("
+					UPDATE swordertemplate 
+					SET shippingMethodID =:shippingMethodID, shippingAddressID=:shippingAddressID, billingAccountAddressId=:billingAccountAddressID,accountPaymentMethodID=:accountPaymentMethodID, orderTemplateStatusTypeID=:orderTemplateStatusTypeID 
+					WHERE orderTemplateID =:orderTemplateID",
+					{
+			            shippingMethodID = {value=shippingMethodID, cfsqltype="cf_sql_varchar"}, 
+			            shippingAddressID = {value=shippingAddressID, cfsqltype="cf_sql_varchar"},
+			            accountPaymentMethodID = {value=accountPaymentMethodID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateID = {value=orderTemplateID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateStatusTypeID = {value=orderTemplateStatusTypeID, cfsqltype="cf_sql_varchar"},
+			            billingAccountAddressID = {value=billingAccountAddressID, cfsqltype="cf_sql_varchar"}
+		        	}
+		        );
 			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
@@ -160,7 +169,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			
 			getService("orderService").saveOrder(arguments.order);
 		}catch(any error){
-			logHibachi("#serializeJson(error)#");	
+			logHibachi("Place order Error: #serializeJson(error)#");	
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}
