@@ -10,12 +10,13 @@ class HibachiAuthenticationService{
        public appConfig,
        public $injector,
        public utilityService,
-       public token
+       //public token
     ){
         
     }
     
      public getJWTDataFromToken =(str)=>{
+     	
     	if(str !== "invalidToken"){
 	    	// Going backwards: from bytestream, to percent-encoding, to original string.
 		    str = str.split('.')[1];
@@ -59,7 +60,7 @@ class HibachiAuthenticationService{
     
     public isSuperUser=()=>{
     	if(!this.$rootScope.slatwall.authInfo){
-    		this.getJWTDataFromToken(this.token);
+    		//this.getJWTDataFromToken(this.token);
     	}
         return this.$rootScope.slatwall.role == 'superUser';
     }

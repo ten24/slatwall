@@ -107,11 +107,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
  		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
+		
 		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
-			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())
-		){
+			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())		
+		)
+		{
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
-	
 			//Remove existing taxes from OrderItems and OrderFulfillments
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 	
@@ -121,7 +122,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(integration.getActiveFlag()) {
 
 					var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
-	
 					// Make sure that the ratesRequestBean actually has OrderItems/OrderFulfillments on it
 					if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
 	
@@ -205,6 +205,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												var newAppliedTax = this.newTaxApplied();
 												newAppliedTax.setAppliedType("orderItem");
 												newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+												newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
+												newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 												newAppliedTax.setOrderItem( orderItem );
 												newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -253,6 +255,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderItem");
 									newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
+									newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
+									newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderItem( orderItem );
 									newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -294,10 +298,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 							newAppliedTax.setAppliedType("orderItem");
 							newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
+							newAppliedTax.setVATPrice( originalAppliedTax.getVATPrice() );
+							newAppliedTax.setVATAmount( originalAppliedTax.getVATAmount() );
 							newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 							newAppliedTax.setOrderItem( orderItem );
 							newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-							var taxAmount = (originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity();
+							var taxAmount = round((originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity() * 100) / 100;
 							newAppliedTax.setTaxLiabilityAmount( taxamount );
 	
 							newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
@@ -366,6 +372,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 													var newAppliedTax = this.newTaxApplied();
 													newAppliedTax.setAppliedType("orderItem");
 													newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+													newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
+													newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
 													newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 													newAppliedTax.setOrderItem( orderItem );
 													newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -413,6 +421,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										var newAppliedTax = this.newTaxApplied();
 										newAppliedTax.setAppliedType("orderItem");
 										newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
+										newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
+										newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
 										newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 										newAppliedTax.setOrderItem( orderItem );
 										newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -882,6 +892,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 
 	public boolean function getTaxCategoryRateIncludesTaxAddress(required any taxCategoryRate, any taxAddress) {
+
 		if(	isNull(arguments.taxCategoryRate.getAddressZone())
 			  ||
 			(
@@ -934,7 +945,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-			
 			if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 
 				// Setup the orderItem level taxShippingAddress
@@ -956,12 +966,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Loop over the rates of that category, looking for a unique integration
 				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-
 					// If a unique integration is found, then we add it to the integrations to call
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-
 						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderItem, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
 						}

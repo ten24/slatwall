@@ -1,7 +1,9 @@
 {
 	"conditions":{
 		"mpEnrollmentOrder":{
-			"monatOrderType.typeCode":"motMpEnrollment"
+			"monatOrderType.typeCode":{
+				"eq":"motMpEnrollment"
+			}
 		},
 		"anyReturnOrder":{
 			"orderType.systemCode":{
@@ -10,8 +12,9 @@
 		}	
 	},
 	"properties": {
+		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"}],
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],
+		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}]
-
 	}
 }

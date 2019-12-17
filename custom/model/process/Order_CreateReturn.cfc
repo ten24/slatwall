@@ -96,7 +96,7 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
             typeCollection.addOrderBy('sortOrder|ASC');
             
             // This could be moved into a setting
-		    typeCollection.addFilter('systemCode', 'orrtOrderRefused,orrtNoRMA,orrtWarehouse,orrtFraudulent,orrtChargeback', 'IN');
+		    typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderSecondaryReturnReasonTypeOptions'), 'IN');
 
             variables.secondaryReturnReasonTypeOptions = typeCollection.getRecords();
             arrayPrepend(variables.secondaryReturnReasonTypeOptions, {name=rbKey('define.select'), value=""});

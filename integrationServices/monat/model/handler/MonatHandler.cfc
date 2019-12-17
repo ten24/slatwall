@@ -41,7 +41,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
 
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
-		
+
 		var account = arguments.order.getAccount();
 		
 		//snapshot the pricegroups on the order.
@@ -67,13 +67,19 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
 				
+				if(IsNull(account.getEnrollmentDate())) {
+					account.setEnrollmentDate(now());
+				}
+				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					if(IsNull(account.getEnrollmentDate())) {
-						account.setEnrollmentDate(now());
-					}
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(renewalDate);
+				}
+				
+				// Email opt-in when finishing enrollment
+				if ( account.getAllowCorporateEmailsFlag() ) {
+					var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
 				}
 				
 			} else if ( 
@@ -97,6 +103,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
 			);
 		}
+		
+		
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
 		//set the initial order flag if needed.
@@ -104,14 +112,35 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			
 			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
+			//adding shipping and billing to flexship and activating
+			if(!isNull(arguments.data.orderTemplateID)){
+				
+				var orderService = getService('orderService');
+				var orderTemplate = orderService.getOrderTemplate(arguments.data.orderTemplateID);
+				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
+				
+				var shippingMethod = orderFulFillment.getShippingMethod();
+				var shippingAddress = orderFulFillment.getShippingAddress();
+				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+				var billingAccountAddress = arguments.order.getBillingAccountAddress();
+				
+				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setShippingMethod(shippingMethod);
+				orderTemplate.setBillingAccountAddress(billingAccountAddress);
+				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+				orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
+				orderService.saveOrderTemplate(orderTemplate);
+			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
 			//Initial Order Flag
 			//Set the Initial Order Flag as needed
 			var previousOrdersCollection = getService("OrderService").getOrderCollectionList();
-			//Filter by this orders account and initial order flag. If we find one, then this is not the first order.
+			//Find if they have any previous Sales Orders that are not this one that just purchased.
 			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
-			previousOrdersCollection.addFilter("initialOrderFlag", true);
+			previousOrdersCollection.addFilter("orderType.systemCode", "otSalesOrder");
+			previousOrdersCollection.addFilter("orderID", arguments.order.getOrderID(), "!=");
+			
 			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
 			
 			if (!previousInitialOrderCount){

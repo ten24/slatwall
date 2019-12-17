@@ -27,22 +27,30 @@ class swfAccountController {
     public newProductReview:any = {};
     public stars:Array<any> = ['','','','',''];
     public moMoneyBalance:number;
+    public totalPages:Array<number>;
+    public pageTracker:number = 1;
     public mostRecentFlexshipDeliveryDate:any;
     public editFlexshipUntilDate:any;
     public mostRecentFlexship:any;
+    public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
+
+    public accountProfileImage;
+    
     // @ngInject
     constructor(
         public publicService,
         public $scope,
-        public observerService
+        public observerService,
+        public ModalService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
-
+        this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
+        
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -82,6 +90,9 @@ class swfAccountController {
                     break;
                 case '/my-account/order-history/':
                     this.getOrdersOnAccount();
+                    break;
+                case '/my-account/my-details/profile/':
+                    this.getUserProfileImage();
                     break;
                 case '/my-account/my-details/':
                     this.getMoMoneyBalance();
@@ -186,12 +197,12 @@ class swfAccountController {
         
         if(list.classList.contains('active')){
             list.classList.remove('active');
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down' );
         } else{
             list.classList.add('active');
-            icon.classList.add('fa-chevron-down');
-            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-down');
         }
     }
     
@@ -211,8 +222,6 @@ class swfAccountController {
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
-        console.log(this.editAddress);
-
     }
     
     public setPrimaryAddress = (addressID) => {
@@ -226,7 +235,7 @@ class swfAccountController {
         this.newProductReview.rating = rating;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
-            this.stars[i] = "color: #d0d00b";
+            this.stars[i] = "fas";
         };
     }
     
@@ -247,6 +256,77 @@ class swfAccountController {
             this.moMoneyBalance = res.moMoneyBalance;
         });
     }
+    
+
+    public uploadImage = () =>{
+        let tempdata = new FormData();
+        tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
+        tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
+		let xhr = new XMLHttpRequest();
+		let url = window.location.href
+		let urlArray = url.split("/");
+		let baseURL = urlArray[0] + "//" + urlArray[2];
+		
+		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
+		xhr.onload = function () {
+			var response = JSON.parse(xhr.response);
+		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+		 	 	console.log("File Uploaded");
+		  	 } 
+		};
+        xhr.send(tempdata);
+    }     
+    
+    public getUserProfileImage = () =>{
+        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
+            this.accountProfileImage = result.accountProfileImage;
+        });
+    }
+
+
+	public showDeleteWishlistModal = () => {
+		this.ModalService.showModal({
+			component: 'wishlistDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showEditWishlistModal = () => {
+		this.ModalService.showModal({
+			component: 'wishlistEditModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
 }
 
 class SWFAccount  {

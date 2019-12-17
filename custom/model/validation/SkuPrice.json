@@ -1,0 +1,47 @@
+{
+    "conditions": {},
+    "properties": {
+        "personalVolume": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ],
+        "taxableAmount": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ],
+        "commissionableVolume": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ],
+        "retailCommission": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ],
+        "productPackVolume": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ],
+        "retailValueVolume": [
+            {
+                "contexts": "save",
+                "dataType": "numeric",
+                "minValue": 0
+            }
+        ]
+    }
+}

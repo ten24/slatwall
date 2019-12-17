@@ -13,8 +13,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	        mailChimpAPIKey = {fieldType="password", encryptValue=true},
 	        mailChimpListID = {fieldType="text", encryptValue=false},
 	        mailChimpDataCenter = {fieldType="text", encryptValue=false},
-			prosperworksAPIKey = {fieldType="password", encryptValue=true},
-			prosperworksAPIEmail = {fieldType="text"}
 		};
 		// productAvailabilityNotification={fieldType="select"}
 	}

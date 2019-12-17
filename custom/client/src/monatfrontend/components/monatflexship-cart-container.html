@@ -1,4 +1,4 @@
-<div ng-if="monatFlexshipCartContainer.orderTemplate || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
+<div ng-if="monatFlexshipCartContainer.orderTemplateID || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
 	<div class="flexship-bar">
 		
 		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
@@ -105,7 +105,7 @@
 							>&plus;</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.sku_priceByCurrencyCode | currency }}</span>
+							<span class="price">{{ item.total | swcurrency }}</span>
 						</div>
 					</div>
 				</li>

@@ -96,7 +96,6 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
 
 			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
 			<cfelseif rc.qualifierType eq "order" >
@@ -106,6 +105,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingmethods" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingaddresszones" />
 			</cfif>
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/messages" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
