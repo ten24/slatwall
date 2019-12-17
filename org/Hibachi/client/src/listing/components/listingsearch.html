@@ -62,7 +62,7 @@
     <!-- REPORT COLLECTIONS -->
     <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
         ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
             <span sw-tooltip class="tool-tip-item" data-text="Reporting" data-position="bottom">
@@ -90,7 +90,7 @@
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
             <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
@@ -121,7 +121,7 @@
     </span>
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 
         >
