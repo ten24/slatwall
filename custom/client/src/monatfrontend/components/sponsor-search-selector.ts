@@ -38,6 +38,7 @@ class SponsorSearchSelectorController {
 		}
 		
 		this.observerService.attach(() =>{
+			console.log(this.originalAccountOwner)
 			this.form.text = this.originalAccountOwner;
 			this.getSearchResults(false, true);
 		}, 'accountRetrieved');

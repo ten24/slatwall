@@ -132,7 +132,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				var shippingMethod = orderFulFillment.getShippingMethod();
 				var shippingAddress = orderFulFillment.getShippingAddress();
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-				var billingAccountAddress = arguments.order.getBillingAccountAddress();
+				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
 				
 				orderTemplate.setShippingAddress(shippingAddress);
 				orderTemplate.setShippingMethod(shippingMethod);
@@ -159,7 +159,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			}
 			
 			getService("orderService").saveOrder(arguments.order);
-		}catch(any dateError){
+		}catch(any error){
+			logHibachi("#serializeJson(error)#");	
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}

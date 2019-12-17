@@ -17,12 +17,15 @@ class MonatUpgradeController {
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
-
+		
 		if (angular.isUndefined(this.onFinish)) {
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.saveFlag = 1;
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 1;
 			this.onFinish = () => console.log('Done!');
 		}
 
@@ -47,7 +50,7 @@ class MonatUpgradeController {
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
 					this.goToLastStep();
-				})
+				});
 			}else{
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
