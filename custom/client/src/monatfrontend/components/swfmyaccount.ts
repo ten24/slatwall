@@ -222,6 +222,7 @@ class swfAccountController {
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
+        this.editAddress.address.countryCode = 
     }
     
     public setPrimaryAddress = (addressID) => {
