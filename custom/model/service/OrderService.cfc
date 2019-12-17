@@ -395,6 +395,15 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         
+        var order = this.getOrder(arguments.data.orderID);
+        
+        //order refund data
+		if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',order.getOrderType().getSystemCode())){
+			var orderRefundTotal = order.getFulfillmentRefundTotal();
+		}else{
+			var orderRefundTotal = ''
+		}
+		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
 		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
@@ -424,6 +433,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemData['orderPayments'] = orderPayments;
 		orderItemData['orderItems'] = orderItems;
 		orderItemData['orderPromtions'] = orderPromtions;
+		orderItemData['orderRefundTotal'] = orderRefundTotal;
 		
 		return orderItemData
     }
