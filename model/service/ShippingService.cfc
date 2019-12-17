@@ -360,6 +360,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					);
 				}
 				
+				var containerStruct = arguments.orderFulfillment.getContainerStruct();
+				if(!structKeyExists(containerStruct,'packageCount')){
+					containerStruct['packageCount'] = 0;
+				}
+				
+				chargeAmount = getChargeAmountByNumberOfContainersAndRatePerContainer(
+					nullReplace(shippingMethodRate.getDefaultAmount(),0),
+					containerStruct.packageCount,
+					nullReplace(shippingMethodRate.getRatePerContainer(),0)
+				);
+				
+				//Handling must be calculated after the charge amount for container
+				//or gets overwritten.
 				//if handling fee setting is on,let's add it to the charge
 				if(shippingMethodRate.setting('shippingMethodRateHandlingFeeFlag')){
 					switch(shippingMethodRate.setting('shippingMethodRateHandlingFeeType')){
@@ -371,17 +384,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						break;
 					}
 				}
-				
-				var containerStruct = arguments.orderFulfillment.getContainerStruct();
-				if(!structKeyExists(containerStruct,'packageCount')){
-					containerStruct['packageCount'] = 0;
-				}
-				
-				chargeAmount = getChargeAmountByNumberOfContainersAndRatePerContainer(
-					nullReplace(shippingMethodRate.getDefaultAmount(),0),
-					containerStruct.packageCount,
-					nullReplace(shippingMethodRate.getRatePerContainer(),0)
-				);
 				
 				//make sure the manual rate is usable
 				var priceGroups = [];
