@@ -389,6 +389,7 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
 	
+	//Return data: order fulfillments, order payments, order items, order 
 	public any function getOrderItemsByOrderID(struct data={}) {
         param name="arguments.data.orderID" default="";
         param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
@@ -399,9 +400,9 @@ component extends="Slatwall.model.service.OrderService" {
         
         //order refund data
 		if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',order.getOrderType().getSystemCode())){
-			var orderRefundTotal = order.getFulfillmentRefundTotal();
+			var orderRefundTotal = precisionEvaluate(order.getPaymentAmountCreditedTotal() - order.getPaymentAmountReceivedTotal());
 		}else{
-			var orderRefundTotal = ''
+			var orderRefundTotal = '#order.getPaymentAmountCreditedTotal()# #order.getPaymentAmountReceivedTotal()#'
 		}
 		
 		///Order Item Data

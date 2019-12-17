@@ -159,6 +159,8 @@ class swfAccountController {
                     this.orderItemTotal += item.quantity;
                 }
             }
+            
+            this.loading = false;
         });
     }
     
