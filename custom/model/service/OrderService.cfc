@@ -390,7 +390,7 @@ component extends="Slatwall.model.service.OrderService" {
     }
 	
 	//Return data: order fulfillments, order payments, order items, order 
-	public any function getOrderItemsByOrderID(struct data={}) {
+	public any function getOrderItemsHeavy(struct data={}) {
         param name="arguments.data.orderID" default="";
         param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.currentPage" default=1;
