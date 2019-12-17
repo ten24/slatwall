@@ -2139,5 +2139,17 @@ public numeric function getPersonalVolumeSubtotal(){
         orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
         return orderItemCollectionList.getRecordsCount() > 0;
 	}
-	//CUSTOM FUNCTIONS END
+	
+	/**
+	 * This validates that the orders site matches the accounts created site
+	 * if the order has an account already.
+	 **/
+	public boolean function orderCreatedSiteMatchesAccountCreatedSite(){
+        if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountCreatedSite())){
+            if (this.getOrderCreatedSite().getSiteID() != this.getAccount().getAccountCreatedSite().getSiteID()){
+                return false;
+            }
+        }
+        return true;
+	}//CUSTOM FUNCTIONS END
 }
