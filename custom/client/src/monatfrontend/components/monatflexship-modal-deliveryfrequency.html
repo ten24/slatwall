@@ -18,9 +18,9 @@
 
 				<div class="material-field">
               		<select 
-              		ng-model="frequencyTerm" 
+              		ng-model="monatFlexshipFrequencyModal.selectedFrequencyTermID" 
               		class="form-control" 
-              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.flexshipSelectFrequencyTerm"
+              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTermOptions"
               		>
               		<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
 					</select>
@@ -31,10 +31,10 @@
 				<button
 					type="button"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency(frequencyTerm)"
+					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency()"
 					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
-					ng-disabled = "!frequencyTerm"
+					ng-disabled = "!monatFlexshipFrequencyModal.selectedFrequencyTermID"
 				></button>
 				<button
 					type="button"

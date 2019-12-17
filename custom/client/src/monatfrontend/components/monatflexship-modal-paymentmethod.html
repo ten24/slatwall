@@ -4,6 +4,7 @@
 	id="flexship-modal-payment-method{{ monatFlexshipPaymentMethodModal.orderTemplate.orderTemplateID }}"
 >
 	<div class="modal-dialog modal-lg">
+        <form name="updateBillingForm" ng-submit="monatFlexshipPaymentMethodModal.updateBilling()">
 		<div class="modal-content">
 			<!-- Modal Close -->
 			<button
@@ -59,10 +60,10 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							 ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
-								swvalidationrequired="true"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_nickName"></label>
 						</div>
@@ -71,10 +72,10 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
-								swvalidationrequired="true"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_name"></label>
 						</div>
@@ -83,10 +84,10 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							    ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
-								swvalidationrequired="true"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address"></label>
 						</div>
@@ -95,6 +96,7 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							   ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.street2Address"
@@ -109,6 +111,7 @@
 							<input
 								type="text"
 								class="form-control"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.countryCode"
 								readonly
 							/>
@@ -120,6 +123,7 @@
 						<div class="material-field">
 							<select
 								type="text"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
 								ng-options="state.value as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions"
@@ -134,10 +138,10 @@
 					<div class="col-12 col-md-6">
 						<div class="material-field">
 							<input
+							  ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.city"
-								swvalidationrequired="true"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_city"></label>
 						</div>
@@ -149,7 +153,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.postalCode"
-								swvalidationrequired="true"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_zipCode"></label>
 						</div>
@@ -209,6 +213,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nickName"></label>
 						</div>
@@ -220,6 +225,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.creditCardNumber"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_creditCardNumber"></label>
 						</div>
@@ -231,6 +237,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nameOnCard"></label>
 						</div>
@@ -243,6 +250,7 @@
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
 								ng-options="month for month in monatFlexshipPaymentMethodModal.expirationMonthOptions"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							>
 								<option disabled></option>
 							</select>
@@ -256,6 +264,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 								ng-options="year.VALUE as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions"
 							>
 								<option disabled></option>
@@ -270,6 +279,7 @@
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
+								ng-required="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
 						</div>
@@ -279,9 +289,8 @@
 
 			<div class="footer">
 				<button
-					type="button"
+					type="submit"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipPaymentMethodModal.updateBilling()"
 				>
 					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
@@ -293,6 +302,7 @@
 					<span sw-rbkey="'frontend.modal.closeButton'"></span>
 				</button>
 			</div>
-		</div>
+        </div>
+        </form>
 	</div>
 </div>
