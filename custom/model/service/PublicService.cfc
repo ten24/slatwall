@@ -1318,5 +1318,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
 
-
+    public void function getCountries(){
+        var currentCountryCode = getService('siteService').getCountryCodeByCurrentSite();
+        var cacheKey = "getCountries#currentCountryCode#";
+        if(!structKeyExists(variables,cacheKey)){
+            var smartList = getService('addressService').getCountrySmartList();
+    		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+    		smartList.addFilter('countryCode',currentCountryCode);
+    		smartList.addSelect(propertyIdentifier="countryName", alias="name");
+    		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+    		variables[cacheKey] = smartList.getRecords();
+        }
+        arguments.data.ajaxResponse['countryCodeOptions'] =  variables[cacheKey];
+    }
 }
