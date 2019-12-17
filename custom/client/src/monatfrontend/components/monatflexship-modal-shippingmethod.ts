@@ -11,9 +11,7 @@ class MonatFlexshipShippingMethodModalController {
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
-	public newAddress = {'countryCode':'US',
-	        accountAddressName:''
-	}; //TODO: hard-coded default]
+	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default]
 	
 	public loading: boolean = false;
 
@@ -44,7 +42,6 @@ class MonatFlexshipShippingMethodModalController {
     	this.translations['shippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingAddress');
     	this.translations['addNewShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.addNewShippingAddress');
     	this.translations['newShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.newShippingAddress');
-
     	this.translations['newAddress_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
     	this.translations['newAddress_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
     	this.translations['newAddress_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');

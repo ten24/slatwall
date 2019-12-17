@@ -45,8 +45,7 @@ class MonatFlexshipConfirmController {
     }
 
     public confirm = () => {
-            this.loading =true;    	
-    	//TODO frontend validation, success/failure alert    
+        this.loading =true;
     	this.orderTemplateService
     	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
     	.then( data => { 
@@ -57,9 +56,7 @@ class MonatFlexshipConfirmController {
 	            throw(data);
         	}
     	}).catch(error => {
-    	    this.loading = false;
     		console.error("setAsCurrentFlexship :",error);	
-            // TODO: handle errors
     	})
     	.finally(() => { 
     	    this.loading =false;

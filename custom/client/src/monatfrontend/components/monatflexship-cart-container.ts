@@ -86,7 +86,6 @@ class MonatFlexshipCartContainerController {
                 this.setOrderTemplate( data.orderTemplate );;
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
                 this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
-                this.loading = false; 
     		} else {
     			throw(data);
     		}
@@ -111,7 +110,6 @@ class MonatFlexshipCartContainerController {
     				if(data.orderTemplate){
     					this.setOrderTemplate( data.orderTemplate );;
     				}
-    				this.loading = false;
         		} else {
         		    throw (data);
             	}})
@@ -151,7 +149,6 @@ class MonatFlexshipCartContainerController {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(
             (data) => {
             	if(data.orderTemplateItem) {
-            	    this.loading = false;
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems[index] = data.orderTemplateItem;
     				
@@ -162,8 +159,12 @@ class MonatFlexshipCartContainerController {
         		} else {
         		    throw(data);
             	}
-            }).catch((error)=>{
-                this.loading =false;
+            })
+            .catch((error)=>{
+            this.monatAlertService.error(error);
+            })
+            .finally(()=>{
+                this.loading = false;
             });
     }
     

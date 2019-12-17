@@ -20,7 +20,7 @@ class MonatFlexshipAddGiftCardModalController {
         this.loading = true;
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
-    	    if(giftCards.giftCards) {
+    	    if(giftCards) {
     	        this.hasGiftCards = true;
     		    this.giftCards = giftCards;
     	    } else {

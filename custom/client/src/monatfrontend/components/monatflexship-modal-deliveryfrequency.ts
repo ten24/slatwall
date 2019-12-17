@@ -10,7 +10,6 @@ class monatFlexshipFrequencyModalController {
     }
     
     public $onInit = () => {
-        console.log("Hello . shashi");
     	this.makeTranslations();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
