@@ -92,7 +92,6 @@ class MonatFlexshipCartContainerController {
     		}
         }).catch((error)=>{
             this.monatAlertService.showErrorsFromResponse(error);
-            this.loading = false;
         }).finally(()=>{
             this.loading = false;
         });
@@ -115,13 +114,9 @@ class MonatFlexshipCartContainerController {
     				this.loading = false;
         		} else {
         		    throw (data);
-                	console.log('removeOrderTemplateItem res: ', data); 
-            	}
-            	//TODO handle errors / success
-            	
-            })
+            	}})
                 .catch((error)=>{
-                this.loading = false;
+                    this.monatAlertService.showErrorsFromResponse(error);
                 })
                 .finally(()=>{
                     this.loading = false;
@@ -133,7 +128,6 @@ class MonatFlexshipCartContainerController {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(
             (data) => {
             	if(data.orderTemplateItem) {
-            	    this.loading = false;
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems[index] = data.orderTemplateItem;
     				
@@ -142,14 +136,10 @@ class MonatFlexshipCartContainerController {
     				}
         		} else {
         		    throw(data);
-        		    this.loading =false;
-        			console.error('increaseOrderTemplateItemQuantity res: ', data); 
             	}
-            	//TODO handle errors / success
             	
             }) 
             .catch((error)=>{
-                this.loading = false;
                 this.monatAlertService.showErrorsFromResponse(error);
             }).finally(()=>{
                 this.loading = false;
@@ -171,10 +161,7 @@ class MonatFlexshipCartContainerController {
     				
         		} else {
         		    throw(data);
-        		    this.loading = false;
-        			console.error('decreaseOrderTemplateItemQuantity res: ', data); 
             	}
-            	//TODO handle errors / success
             }).catch((error)=>{
                 this.loading =false;
             });
