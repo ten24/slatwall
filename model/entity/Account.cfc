@@ -163,6 +163,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="canCreateFlexshipFlag" persistent="false";
 	property name="lastActivityDateTime" ormtype="timestamp";
 	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
+	property name="subscribedToMailchimp" ormtype="boolean";
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -1298,6 +1299,18 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	
 	public boolean function onlyOnePriceGroup(){
 		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public boolean function getSubscribedToMailchimp(){
+		if(!structKeyExists(variables, 'subscribedToMailchimp')){
+			variables.subscribedToMailchimp = false;
+			
+			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
+				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+			}
+		}
+		
+		return variables.subscribedToMailchimp;
 	}
 	
 	//CUSTOM FUNCTIONS END
