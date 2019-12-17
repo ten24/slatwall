@@ -20,14 +20,13 @@
               		<select 
               		ng-model="frequencyTerm" 
               		class="form-control" 
-              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTerms"
+              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.flexshipSelectFrequencyTerm"
               		>
               		<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
 					</select>
 					
 				</div>
 			</div>
-
 			<div class="footer">
 				<button
 					type="button"

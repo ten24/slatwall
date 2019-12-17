@@ -17,7 +17,8 @@ class MonatFlexshipConfirmController {
     	public orderTemplateService, 
     	public rbkeyService,
     	public $scope, 
-    	public $window
+    	public $window,
+    	public monatAlertService
     ) { 
         
     }
@@ -56,7 +57,7 @@ class MonatFlexshipConfirmController {
 	            throw(data);
         	}
     	}).catch(error => {
-    		console.error("setAsCurrentFlexship :",error);	
+    		this.monatAlertService.showErrorsFromResponse(error);
     	})
     	.finally(() => { 
     	    this.loading =false;

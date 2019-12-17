@@ -3,7 +3,7 @@ class monatFlexshipFrequencyModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
 	public loading: boolean = false;
-    public frequencyTerms:any;
+    public flexshipSelectFrequencyTerm:any;
 
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService, public publicService, public monatAlertService) {
@@ -12,7 +12,7 @@ class monatFlexshipFrequencyModalController {
     public $onInit = () => {
     	this.makeTranslations();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
-			this.frequencyTerms = response.frequencyTermOptions;
+			this.flexshipSelectFrequencyTerm = response.frequencyTermOptions;
 		}).catch((error)=>{
 		    console.error(error);
 		})

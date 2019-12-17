@@ -161,7 +161,7 @@ class MonatFlexshipCartContainerController {
             	}
             })
             .catch((error)=>{
-            this.monatAlertService.error(error);
+            this.monatAlertService.showErrorsFromResponse(error);
             })
             .finally(()=>{
                 this.loading = false;

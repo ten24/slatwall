@@ -6,7 +6,6 @@ class MonatFlexshipAddGiftCardModalController {
 	public loading: boolean = false;
 	public selectedGiftCard;
 	public amountToApply;
-	public hasGiftCards = false;
 
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) { }
@@ -21,11 +20,9 @@ class MonatFlexshipAddGiftCardModalController {
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
     	    if(giftCards) {
-    	        this.hasGiftCards = true;
     		    this.giftCards = giftCards;
     	    } else {
-    	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'))
-    	        throw(giftCards);
+    	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'));
     	    }
     	})
     	.catch( (error) => {
@@ -47,10 +44,7 @@ class MonatFlexshipAddGiftCardModalController {
     }
     
     public applyGiftCard() {
-
-    	//TODO frontend validation
 		this.loading = true;
-		
     	// make api request
         this.orderTemplateService.applyGiftCardToOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
