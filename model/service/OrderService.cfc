@@ -1596,6 +1596,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 
+			var giftCardBalanceAmount = orderTemplateAppliedGiftCard.getGiftCard().getBalanceAmount();  
+
+			if( giftCardBalanceAmount < orderTemplateAppliedGiftCard.getAmountToApply() ){
+
+				orderTemplateAppliedGiftCard.setAmountToApply(giftCardBalanceAmount);	
+				orderTemplateAppliedGiftCard = this.saveOrderTemplateAppliedGiftCard(orderTemplateAppliedGiftCard);
+			} 
+
 			var processData = {	
 				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
 				'amount' : orderTemplateAppliedGiftCard.getAmountToApply(),
