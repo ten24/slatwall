@@ -38,7 +38,7 @@ class swfAccountController {
     public accountProfileImage;
     public orderPromotions:any;
     public orderItemTotal:number = 0;
-    public orderRefundTotal:number;
+    public orderRefundTotal:any;
     // @ngInject
     constructor(
         public publicService,
@@ -153,8 +153,8 @@ class swfAccountController {
                 this.orderItems = result.OrderItemsByOrderID.orderItems;
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
-                this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal;
-                
+                this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+              
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
                 }

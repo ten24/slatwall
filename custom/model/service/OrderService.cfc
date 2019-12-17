@@ -402,7 +402,7 @@ component extends="Slatwall.model.service.OrderService" {
 		if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',order.getOrderType().getSystemCode())){
 			var orderRefundTotal = precisionEvaluate(order.getPaymentAmountCreditedTotal() - order.getPaymentAmountReceivedTotal());
 		}else{
-			var orderRefundTotal = '#order.getPaymentAmountCreditedTotal()# #order.getPaymentAmountReceivedTotal()#'
+			var orderRefundTotal = ''
 		}
 		
 		///Order Item Data
