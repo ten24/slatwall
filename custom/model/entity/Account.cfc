@@ -5,12 +5,13 @@ component {
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
+	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
+	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="canCreateFlexshipFlag" persistent="false";
-	property name="lastActivityDateTime" ormtype="timestamp";
-	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
-	property name="subscribedToMailchimp" ormtype="boolean";
+	property name="subscribedToMailchimp" persistent="false";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
