@@ -17,7 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public orderItemsLength:number;
     public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
@@ -35,9 +34,9 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
-
+    public orderPayments:any;
     public accountProfileImage;
-    
+    public orderPromotions:any;
     // @ngInject
     constructor(
         public publicService,
@@ -70,6 +69,9 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
+        if(this.urlParams.get('orderid')){
+            this.getOrderItemsByOrderID();
+        }
 	}
 
     public getAccount = () => {
@@ -85,10 +87,6 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
-            
-            if(this.urlParams.get('orderid')){
-                this.getOrderItemsByOrderID();
-            }
             
             switch(window.location.pathname){
                 case '/my-account/':
@@ -148,13 +146,15 @@ class swfAccountController {
     
     public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        
-        const accountID = this.accountData.accountID
-        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
-            result.OrderItemsByOrderID.forEach(orderItem =>{
-                this.orderItems.push(orderItem);
-            });
-            this.orderItemsLength = result.OrderItemsByOrderID.length;
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
+            if(result.OrderItemsByOrderID){
+                this.orderItems = result.OrderItemsByOrderID.orderItems;
+                this.orderPayments = result.OrderItemsByOrderID.orderPayments;
+                this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
+                console.log(this.orderItems);
+                console.log(this.orderPayments);
+                console.log(this.orderPromotions);
+            }
         });
     }
     

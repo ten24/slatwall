@@ -395,18 +395,37 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         
-
-		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
-		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.personalVolumeTotal');
-		
+		///Order Item Data
+		var ordersItemsList = this.getOrderItemCollectionList();
+		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return ordersItemsList.getPageRecords();
-
+		//Order payment data
+		var orderPaymentList = this.getOrderPaymentCollectionList();
+		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderPaymentList.setCurrentPageDeclaration(arguments.data.currentPage); 	
+		
+		//Order promotion data
+		var orderPromotionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
+		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		
+		var orderPayments = orderPaymentList.getPageRecords();
+		var orderItems = ordersItemsList.getPageRecords();
+		var orderPromtions = orderPromotionList.getPageRecords();
+		var orderItemData = {};
+		
+		orderItemData['orderPayments'] = orderPayments;
+		orderItemData['orderItems'] = orderItems;
+		orderItemData['orderPromtions'] = orderPromtions;
+		
+		return orderItemData
     }
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
