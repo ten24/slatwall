@@ -322,8 +322,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param currentPage optional
      * @return none
      **/
-    public void function getAllOrderFulfillemntsOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderFulfillemntsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+    public void function getAllOrderFulfillmentsOnAccount(required any data) {
+        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
     
@@ -659,13 +659,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			    var sku = product.getSku();
 
 			    var productStruct={
-			      "personalVolume"              :       utilityService.formatValue_currency(product.getPersonalVolume(), {currencyCode:currencyCode})?:"",
+			      "personalVolume"              :       product.getPersonalVolume()?:"",
 			      "skuImagePath"                :       product.getSkuImagePath()?:"",
   			      "marketPartnerPrice"          :       utilityService.formatValue_currency(product.getPrice(), {currencyCode:currencyCode})?:"",
 			      "skuProductURL"               :       product.getSkuProductURL()?:"",
 			      "productName"                 :       sku.getSkuName()?:"",
 			      "skuID"                       :       sku.getSkuID()?:"",
-  			      "skuCode"                     :       sku.getSkuCode()?:""
+  			      "skuCode"                     :       sku.getSkuCode()?:"",
+  			      "currencyCode"                :       currencyCode
 			    };
 
 			    arrayAppend(arguments.data['ajaxResponse']['productList'], productStruct);
@@ -680,6 +681,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				scrollableSession.close();
 			}
 		}
+
 	} 
     
     public void function getStarterPackBundleStruct( required any data ) {
@@ -768,7 +770,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
-					'productTypes': {}
+					'productTypes': {},
+					'currencyCode':getHibachiScope().getAccount().getSiteCurrencyCode()
 				};
 			}
 			
@@ -1214,7 +1217,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var balance = 0;
         
         for(method in paymentMethods){
-            balance += method.getMoMoneyBalance();
+            if(method.getMoMoneyWallet()){
+                balance += method.getMoMoneyBalance();
+            }
         }
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }

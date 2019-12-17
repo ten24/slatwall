@@ -86,7 +86,7 @@
 					<cfset iteration++ />
 					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
 					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
-						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
+						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='failSafeGetTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>

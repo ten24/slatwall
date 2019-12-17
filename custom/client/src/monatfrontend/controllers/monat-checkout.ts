@@ -92,6 +92,15 @@ class MonatCheckoutController {
     	});
 	}
 	
+	public getMoMoneyBalance(){
+		this.publicService.moMoneyBalance = 0;
+		this.publicService.doAction('getMoMoneyBalance').then(response => {
+			if(response.moMoneyBalance){
+				this.publicService.moMoneyBalance = response.moMoneyBalance;
+			}
+		})
+	}
+	
 	public configExternalPayPalMethod() {
 	    this.publicService.doAction('configExternalPayPal').then(response => {
     		if(!response.paypalClientConfig) {
