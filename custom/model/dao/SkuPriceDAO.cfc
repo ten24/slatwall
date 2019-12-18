@@ -5,7 +5,6 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDs')){
-			
 			priceGroupString = "OR _priceGroup.priceGroupID IN (:priceGroupIDs)";
 		}
 		
@@ -54,7 +53,6 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}
-
 		return ormExecuteQuery( hql, params );
 	}
     
