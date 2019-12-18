@@ -1226,7 +1226,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		try{
 		    getFileInfo(arguments.data.uploadFile);
 		}catch(any e){
-		    throw('lost')
 		    return;
 		}
 		
