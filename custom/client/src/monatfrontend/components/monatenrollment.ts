@@ -16,7 +16,8 @@ class MonatEnrollmentController {
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
-
+	public showCanPlaceOrderAlert:boolean = false;
+	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {

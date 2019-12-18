@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,34 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="Slatwall.model.process.OrderTemplate_Create" {
 
+	public any function getAccount() {
+	
+		if( !StructKeyExists(variables, 'account') ) { 
 
-<cfparam name="rc.productReview" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
-		<cfif isNull(rc.productReview.getProduct()) && structKeyExists(rc,'productID')>
-			<input type="hidden" name="product.productID" value="#rc.productID#" />
-		</cfif>
-		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<cfif !structKeyExists(rc,'productID')>
-					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
-						edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
-					/>
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
-				<cfif rc.productReview.isNew() neq true >
-					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="productReviewStatusType" edit="#rc.edit#" fieldType="select" productLabelText="#$.slatwall.rbkey('entity.product_plural')#">
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
-		<hb:HibachiEntityDetailGroup object="#rc.productReview#">
-				
-		<!--- Custom Attributes --->
-		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
-		</cfloop>
+			if( StructKeyExists(variables, 'accountID') && Len(Trim(variables.accountID)) ) {
+				variables['account'] = getService('accountService').getAccount( getAccountID() ); 
+				return variables['account'];
+			}
+		} 
+		else {
+			return variables['account'];
+		}
+	}
+	
+	public any function getSite() {
+		if(!StructKeyExists(variables, 'site') ) {
+			
+			if( !IsNull(getAccount()) && !IsNull(getAccount().getAccountCreatedSite())){
+				variables['site'] = getAccount().getAccountCreatedSite();
+			} else {
+				variables['site'] = super.getSite();
+			}
+		}
 		
-		</hb:HibachiEntityDetailGroup>
+		return variables['site'];
+	}
 
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+}

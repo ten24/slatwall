@@ -8,6 +8,7 @@ class MonatFlexshipCartContainerController {
     public canPlaceOrder:boolean;
     public isOpened: boolean = false;
     public orderTemplateItemTotal: number = 0;
+    public showCanPlaceOrderAlert:false;
     
     //@ngInject
     constructor(

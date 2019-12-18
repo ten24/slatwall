@@ -14,6 +14,13 @@
         		    <div class="control-label col-sm-5 value" style="margin-bottom: 8px;"><input type="text" name="swSimplePropertyDisplay.property" ng-model="swSimplePropertyDisplay.value"></div>
         	    </div>
         	</div>
-	
+        	
+        	<div class="form-group" ng-if="swSimplePropertyDisplay.edit == 'false' && swSimplePropertyDisplay.displayType == 'form-group'">
+				<label class="control-label col-sm-4 title" ng-bind="swSimplePropertyDisplay.title"></label>
+				<div class="col-sm-8">
+					<p class="form-control-static value" ng-if="swSimplePropertyDisplay.currencyFlag == 'true' && swSimplePropertyDisplay.formattedFlag == false && swSimplePropertyDisplay.currencyCode" ng-bind-html="swSimplePropertyDisplay.value | swcurrency:swSimplePropertyDisplay.currencyCode"></p>
+					<p class="form-control-static value" ng-if="swSimplePropertyDisplay.currencyFlag != 'true' || swSimplePropertyDisplay.formattedFlag == true" ng-bind="swSimplePropertyDisplay.value"></p>
+				</div>
+			</div>
 	
 				
