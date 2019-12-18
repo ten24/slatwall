@@ -36,11 +36,23 @@
 				
 
 					<div class="text-center">
-						<button ng-if="swfWishlist.newWishlist && createWishList.orderTemplateName" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName); "  class="btn text-white bg-primary">
-							Save Changes
+						<button 
+							ng-if="swfWishlist.newWishlist && createWishList.orderTemplateName" 
+							ng-class="{loading: swfWishlist.loading}" 
+							ng-disabled="swfWishlist.loading"
+							ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName);"
+							class="btn text-white bg-primary"
+						>
+							Create new wishlist
 						</button>
-						<button ng-if="swfWishlist.wishlistTemplateID && !swfWishlist.newWishlist" ng-class="{loading: swfWishlist.loading}" ng-click="swfWishlist.addWishlistItem()" class="btn text-white bg-primary">
-							Save Changes
+						<button 
+							ng-if="swfWishlist.wishlistTemplateID && !swfWishlist.newWishlist" 
+							ng-class="{loading: swfWishlist.loading}" 
+							ng-disabled="swfWishlist.loading"
+							ng-click="swfWishlist.addWishlistItem()" 
+							class="btn text-white bg-primary"
+						>
+							Add to wishlist
 						</button>
 					</div>
 				</ul>

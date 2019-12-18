@@ -207,7 +207,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        if( getHibachiScope().getCart().hasOrderPayments() ) {
+        if( getHibachiScope().getCart().hasOrderPayment() ) {
             var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
             arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
         }
@@ -457,7 +457,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
-            
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
             accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
@@ -1267,7 +1266,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				data.imageFile = "";
 				account.setProfileImage(fileName);
 				this.getAccountService().saveAccount(account);
-				getHibachiScope().addActionResult( "uploadProfileImage", false );
+		        if(!account.hasErrors()){
+		            getHibachiScope().addActionResult( "uploadProfileImage", false ); 
+		        }else{
+    		        this.addErrors(arguments.data, account.getErrors());
+        			getHibachiScope().addActionResult( "uploadProfileImage", true );
+		        }
+                
 			}else{
 				getHibachiScope().addActionResult( "uploadProfileImage", true );
 			}
@@ -1356,5 +1361,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+    }
+    
+    public void function getCountries(){
+        var currentCountryCode = getService('siteService').getCountryCodeByCurrentSite();
+        var cacheKey = "getCountries#currentCountryCode#";
+        if(!structKeyExists(variables,cacheKey)){
+            var smartList = getService('addressService').getCountrySmartList();
+    		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+    		smartList.addFilter('countryCode',currentCountryCode);
+    		smartList.addSelect(propertyIdentifier="countryName", alias="name");
+    		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+    		variables[cacheKey] = smartList.getRecords();
+        }
+        arguments.data.ajaxResponse['countryCodeOptions'] =  variables[cacheKey];
     }
 }
