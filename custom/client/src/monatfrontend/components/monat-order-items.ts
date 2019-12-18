@@ -3,13 +3,15 @@ class MonatOrderItemsController {
 	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
 	public orderFees; 
-
+	public orderSavings:number;
 	//@ngInject
-	constructor(public monatService, public orderTemplateService) {
+	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
 	}
 
 	public $onInit = () => {
 		this.getOrderItems();
+		this.getUpgradedOrderSavings();
+		this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess');
 	}
 	
 
@@ -19,6 +21,13 @@ class MonatOrderItemsController {
 				this.orderItems = data.orderItems;
 				this.aggregateOrderItems( data.orderItems );
 			}
+		});
+	}
+	
+		
+	public getUpgradedOrderSavings = () => {
+		this.publicService.doAction('getUpgradedOrderSavingsAmount').then(result =>{
+			this.orderSavings = result.upgradedSavings;
 		});
 	}
 	

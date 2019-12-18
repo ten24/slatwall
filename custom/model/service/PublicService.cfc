@@ -1318,6 +1318,48 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['ownerAccount'] = 'There is no owner account for this site';
         }
     }
+    
+    public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
+		
+        var order = getHibachiScope().getCart();
+		var account =  getHibachiScope().getAccount();
+		var currentOrderItemList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
+		currentOrderItemList.setDisplayProperties('sku.skuID,price,currencyCode,quantity');
+		currentOrderItemList.addFilter('order.orderID',order.getOrderID());
+		var currentOrderItems = currentOrderItemList.getRecords();
+		var upgradedSkuList = '';
+		var upgradedPrice = 0;
+		var currentPrice = 0;
+		var skuPriceMap = {};
+		
+		if(!arrayLen(currentOrderItems)) return;
+		
+		for(var item in currentOrderItems){
+			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
+			currentPrice += (item.price * item.quantity);
+			skuPriceMap[item.sku_skuID] = item.quantity;
+		}
+
+		var currencyCode = currentOrderItems[1].currencyCode;
+		
+		var upgradedCollectionList = getHibachiScope().getService('skuPriceService').getSkuPriceCollectionList();
+		upgradedCollectionList.setDisplayProperties('price,sku.skuID');
+		upgradedCollectionList.addFilter('activeFlag',1);
+		upgradedCollectionList.addFilter('currencyCode',currencyCode);
+		upgradedCollectionList.addFilter('sku.product.publishedFlag',1);
+		upgradedCollectionList.addFilter('sku.product.activeFlag',1);
+		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
+		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
+		var upgradedOrder = upgradedCollectionList.getRecords();
+		if(!arrayLen(upgradedOrder)) return;
+		
+		for(var item in upgradedOrder){
+			precisionEvaluate(upgradedPrice += (item.price * skuPriceMap[item.sku_skuID]));
+		}
+		
+		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
+		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
+    }
 
 
 }
