@@ -322,11 +322,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect", 
 				listingMultiselectEntityName="Type"
 			},
-			orderMinimumDaysToRenewMP = {
-				fieldType="text", 
-				defaultValue=0,  
-				validate={dataType="numeric"}
-			},
 			//Order Template
 			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},

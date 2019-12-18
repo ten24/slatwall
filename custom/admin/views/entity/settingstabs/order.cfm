@@ -50,6 +50,6 @@
 		<swa:SlatwallSetting settingName="orderExchangeReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="orderReplacementReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="orderSecondaryReturnReasonTypeOptions" />
-		<swa:SlatwallSetting settingName="orderMinimumDaysToRenewMP" />
+		<swa:SlatwallSetting settingName="integrationmonatOrderMinimumDaysToRenewMP" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
