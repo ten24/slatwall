@@ -10,8 +10,15 @@ class MonatOrderItemsController {
 
 	public $onInit = () => {
 		this.getOrderItems();
-		this.getUpgradedOrderSavings();
-		this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess');
+		
+		// cached account
+		this.publicService.getAccount().then(result =>{
+			if(!result.priceGroups.length || result.priceGroups[0].priceGroupCode == 2){
+				this.getUpgradedOrderSavings();
+				this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess');
+			}
+		}); 
+		
 	}
 	
 
