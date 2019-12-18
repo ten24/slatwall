@@ -6,7 +6,7 @@
 	<div class="modal-dialog modal-lg">
         <form 
         name="updateBillingForm" 
-         ng-submit=" updateBillingForm.$vailid && monatFlexshipPaymentMethodModal.updateBilling()"
+         ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
          sw-form>
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -353,7 +353,7 @@
 				<button
 					type="submit"
 					class="btn btn-block bg-primary"
-					ng-disabled = "!updateBillingForm.$vailid"
+					ng-disabled = "!updateBillingForm.$valid"
 				>
 					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
