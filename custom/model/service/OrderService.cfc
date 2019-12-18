@@ -883,11 +883,9 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			/******* CUSTOM CODE FOR MONAT *******/
-			
 			if(!isNull(arguments.order.getUpgradeFlag()) && arguments.order.getUpgradeFlag() && !isNull(arguments.order.getPriceGroup())){
-    			newOrderItem.setAppliedPriceGroup(arguments.order.getPriceGroup());
-    		}
-			
+				newOrderItem.setAppliedPriceGroup(arguments.order.getPriceGroup());
+			}
 			/******* END CUSTOM CODE FOR MONAT *******/
 			
 			// Set Header Info
@@ -927,6 +925,7 @@ component extends="Slatwall.model.service.OrderService" {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
 				
+				/******* CUSTOM CODE FOR MONAT *******/
 				var priceByCurrencyCodeArgs = {
 					'currencyCode' : arguments.order.getCurrencyCode(),
 					'quantity' : arguments.processObject.getQuantity()
@@ -936,6 +935,7 @@ component extends="Slatwall.model.service.OrderService" {
 					arrayAppend(priceByCurrencyCodeArgs['priceGroups'], newOrderItem.getAppliedPriceGroup());
 				}
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
+				/******* END CUSTOM CODE FOR MONAT *******/
 			}
 
 			// If a stock was passed in assign it to this new item
