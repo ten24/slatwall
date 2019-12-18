@@ -1329,14 +1329,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var currentOrderItems = currentOrderItemList.getRecords();
 		var upgradedSkuList = '';
 		var upgradedPrice = 0;
-		var currentPrice = 0;
+		var currentPrice = order.getSubtotal();
 		var skuPriceMap = {};
 		
 		if(!arrayLen(currentOrderItems)) return;
 		
 		for(var item in currentOrderItems){
 			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
-			currentPrice += (item.price * item.quantity);
 			skuPriceMap[item.sku_skuID] = item.quantity;
 		}
 
