@@ -37,8 +37,6 @@ component {
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
-
-
 	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
@@ -52,6 +50,15 @@ component {
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    
+    public void function refreshAmounts(){
+        variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
+        variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
+        variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
+        variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
+        variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
+        variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
+    }
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
@@ -197,6 +204,11 @@ component {
 		if(!isNull(this.getOrder().getAccount())){ 
 			arguments.accountID = this.getOrder().getAccount().getAccountID();  
 		}
+		if(!isNull(this.getAppliedPriceGroup())){ 
+			arguments.priceGroups = [];
+			arrayAppend(arguments.priceGroups, this.getAppliedPriceGroup());
+		}
+		
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
