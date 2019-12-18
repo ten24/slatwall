@@ -97,7 +97,7 @@
    </div>
    
    <!-- Add To Cart -->
-   <div class="product-actions">
+   <div ng-if="monatProductCard.product.qats > 0" class="product-actions">
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
             class="btn btn-border-primary add-to-cart" 
@@ -110,6 +110,17 @@
              <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
          </button>
    </div>
+   
+    <div ng-if="monatProductCard.product.qats <= 0" class="product-actions">
+        <button 
+            class="btn btn-border-primary add-to-cart" 
+            ng-class="{
+                'bg-primary': monatProductCard.type == 'enrollment',
+            }"
+        >
+            <span sw-rbKey="'frontend.cart.soldOut'"></span>
+        </button>
+    </div>
 </div>
 
 
