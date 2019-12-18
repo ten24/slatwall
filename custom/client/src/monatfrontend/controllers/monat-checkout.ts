@@ -37,13 +37,18 @@ class MonatCheckoutController {
 		this.publicService.getCart().then(data => {
 			let screen = 'shipping';
 			
-			if ( this.publicService.hasShippingAddressAndMethod() ) {
-				screen = 'payment'
-			} 
-			
-			if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
-				screen = 'review';
-			} 
+			if(this.publicService.cart &&
+				this.publicService.cart.account &&
+				this.publicService.cart.account.accountID &&
+				this.publicService.cart.account.accountID.length){
+				if (this.publicService.hasShippingAddressAndMethod() ) {
+					screen = 'payment'
+				} 
+				
+				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
+					screen = 'review';
+				}
+			}
 			
 			if ( this.screen !== screen ) {
 				window.scrollTo( 0, 0 );
