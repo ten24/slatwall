@@ -46,6 +46,7 @@ class MonatUpgradeController {
 	public $onInit = () => {
 		this.publicService.getAccount(true).then(result=>{
 			this.$rootScope.currentAccount = result;
+			console.log(result)
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
@@ -55,7 +56,7 @@ class MonatUpgradeController {
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
 			}
-			this.observerService.notify('accountRetrieved');
+			this.observerService.notify('accountRetrieved', result.ownerAccount.accountNumber);
 		})
 		
 	}
