@@ -67,10 +67,8 @@ Notes:
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.parentAccountCollection#"
-	  recordDetailAction="admin:entity.detailaccount"
-	  recordEditAction="admin:entity.editaccount"
-	  recordEditActionProperty="parentaccountID"
-	  recordDetailActionProperty="parentaccountID"
+	  recordEditAction="admin:entity.editaccountrelationship"
+	  recordDetailAction="admin:entity.detailaccountrelationship"
 	  recordDeleteAction="admin:entity.deleteaccountrelationship"
 	  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 	  usingPersonalCollection="false">
