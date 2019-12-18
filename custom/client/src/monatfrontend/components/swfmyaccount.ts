@@ -35,7 +35,7 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
-
+    public uploadImageError:boolean;
     public accountProfileImage;
     
     // @ngInject
@@ -43,13 +43,20 @@ class swfAccountController {
         public publicService,
         public $scope,
         public observerService,
-        public ModalService
+        public ModalService, 
+        public rbkeyService,
+        public monatAlertService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
+        
+        this.observerService.attach(()=>{
+    		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
+        },"deleteAccountPaymentMethodFailure");
+        
         
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -266,13 +273,18 @@ class swfAccountController {
 		let url = window.location.href
 		let urlArray = url.split("/");
 		let baseURL = urlArray[0] + "//" + urlArray[2];
+		let that = this; 
 		
 		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
-		  	 } 
+		 	 	that.getUserProfileImage();
+		  	 }else{
+    		    that.uploadImageError = true;
+    		    that.$scope.$digest();
+		  	 }
 		};
         xhr.send(tempdata);
     }     
