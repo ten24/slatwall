@@ -50,13 +50,13 @@ class MonatProductModalController {
 		let remainder = +rating[1];
 		
 		if ( remainder > 2 && remainder < 8 ) {
-            this.reviewStars.full = new Array( full );
-            this.reviewStars.half = true;
-            this.reviewStars.empty = new Array( 5 - full - 1 )
-        } else {
-            this.reviewStars.full = new Array( this.productRating.toFixed(0) );
-            this.reviewStars.empty = 5 - this.reviewStars.full.length;
-        }
+			this.reviewStars.full = new Array( full );
+			this.reviewStars.half = true;
+			this.reviewStars.empty = new Array( 5 - full - 1 )
+		} else {
+			this.reviewStars.full = new Array( this.productRating.toFixed(0) );
+			this.reviewStars.empty = 5 - this.reviewStars.full.length;
+		}
 	
 	}
 
