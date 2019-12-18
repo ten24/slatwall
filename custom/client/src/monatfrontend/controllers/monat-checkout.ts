@@ -17,7 +17,6 @@ class MonatCheckoutController {
 	) {}
 
 	public $onInit = () => {
-		
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
@@ -206,7 +205,6 @@ class MonatCheckoutController {
 			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 0;
 		}
 	}
-
 }
 
 export { MonatCheckoutController };
