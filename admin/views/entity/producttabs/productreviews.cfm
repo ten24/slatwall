@@ -66,4 +66,5 @@ Notes:
     <hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" title="Status"/>
 </hb:HibachiListingDisplay>
+
 <hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />
