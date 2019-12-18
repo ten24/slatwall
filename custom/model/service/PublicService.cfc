@@ -1226,6 +1226,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		try{
 		    getFileInfo(arguments.data.uploadFile);
 		}catch(any e){
+		    throw('lost')
 		    return;
 		}
 		
@@ -1264,7 +1265,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				data.imageFile = "";
 				account.setProfileImage(fileName);
 				this.getAccountService().saveAccount(account);
-				getHibachiScope().addActionResult( "uploadProfileImage", false );
+		        if(!account.hasErrors()){
+		            getHibachiScope().addActionResult( "uploadProfileImage", false ); 
+		        }else{
+    		        this.addErrors(arguments.data, account.getErrors());
+        			getHibachiScope().addActionResult( "uploadProfileImage", true );
+		        }
+                
 			}else{
 				getHibachiScope().addActionResult( "uploadProfileImage", true );
 			}
