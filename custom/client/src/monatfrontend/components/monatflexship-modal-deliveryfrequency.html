@@ -1,4 +1,4 @@
-<div class="modal" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
+<div class="modal using-modal-service" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -19,7 +19,7 @@
 				<div class="material-field">
               		<select ng-model="frequencyTerm" class="form-control">
 						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
-						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" value="term.value">{{term.name}}</option>
+						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" ng-value="term.value">{{term.name}}</option>
 					</select>
 				</div>
 			</div>

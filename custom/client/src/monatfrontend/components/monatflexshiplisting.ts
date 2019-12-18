@@ -25,7 +25,9 @@ class MonatFlexshipListingController{
 		public publicService,
 		public observerService
 	){
-		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess")
+		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
+		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
 	}
 	
 	public $onInit = () => {
