@@ -1,4 +1,4 @@
-<div ng-if="monatFlexshipCartContainer.orderTemplateID || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
+<div ng-if="monatFlexshipCartContainer.orderTemplateId || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
 	<div class="flexship-bar">
 		
 		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
@@ -44,7 +44,6 @@
 			<button
 				ng-if="monatFlexshipCartContainer.context != 'enrollment' "
 				class="btn bg-primary btn-block"
-				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 			>
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
