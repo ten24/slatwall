@@ -329,7 +329,7 @@
 			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			
 			<cfoutput>
-				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+				<div ng-cloak class="#attributes.fieldClass#" #attributes.fieldAttributes#>
 					<hb:HibachiTypeahead 
 						edit="#attributes.edit#" 
 						collectionList="#entityCollectionList#"
