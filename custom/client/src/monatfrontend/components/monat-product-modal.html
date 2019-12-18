@@ -8,7 +8,7 @@
 
 			<!--product image-->
 			<div class="product-img">
-				<img ng-src="monatProductModal.product.skuImagePath#" alt="{{monatProductModal.product.productName}}" />
+				<img ng-src="{{monatProductModal.product.skuImagePath[0]}}" ng-attr-alt="{{monatProductModal.product.productName}}" />
 			</div>
 			<!-- end product image-->
 
@@ -20,56 +20,58 @@
 					</a>
 				</h2>
 
-				<!-- star-rating	
-	  				<cfif ! isNull( local.averageRating ) AND local.reviewCount>
-	  					<sw:ReviewStars
-							rating="#local.averageRating#"
-							reviewCount="#local.reviewCount#"
-							reviewText="#attributes.slatwallScope.rbKey('frontend.product.reviews')#"
-							isProductPage="false"
-						>
-	  				</cfif>
-	  			-->
-
-				<!-- In this system
-  				
-	  				<cfif len( local.productBundledSkus )>
-	                    <p class="system">In this system</p>
-	                    <p class="features">
-	                        <cfloop array="#local.productBundledSkus#" item="item">
-	                            <span class="feature">
-	                                <cfset item.productUrl = attributes.slatwallScope.getService('ProductService').getProductUrlByUrlTitle( item.bundledSku_product_urlTitle ) />
-	                                <a href="#item.productUrl#">#item.bundledSku_product_productName#</a>
-	                            </span>
-	                        </cfloop>
-	                    </p>
-	                </cfif>
-  			
-  				-->
+				<!--- Star rating --->
+				<div class="rating" ng-if="monatProductModal.reviewsCount > 0">
+					
+					<div class="rating-stars">
+						<i class="fas fa-star" ng-repeat="i in monatProductModal.reviewStars.full track by $index"></i>
+						<i class="fas fa-star-half-alt" ng-if="monatProductModal.reviewStars.half"></i>
+						<i class="far fa-star" ng-repeat="i in monatProductModal.reviewStars.empty track by $index"></i>
+					</div>
+					
+					<div class="rating-count">
+						{{ monatProductModal.productRating.toFixed(1) }} /
+						{{ monatProductModal.reviewsCount }} <span sw-rbkey="'frontend.product.reviews'"></span>
+					</div>
+					
+				</div>
+	  			
+				<!--- In this system --->
+				<div class="in-this-system" ng-if="monatProductModal.skuBundles.length">
+					<p class="system" sw-rbkey="'frontend.product.includedInThisSystem'"></p>
+					<p class="features">
+						<span class="feature" ng-repeat="bundle in monatProductModal.skuBundles">
+							<a 
+								ng-href="{{ monatProductModal.isEnrollment ? undefined : bundle.productUrl"
+								ng-bind="bundle.bundledSku_product_productName"
+								></a
+							>
+						</span>
+					</p>
+				</div>
 
 				<!--price group block-->
   				<div class="price-block">
   					
+  					<div ng-if="monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
+			            <strong ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.product.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
+			            <span class="vip-price">
+			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 3">
+			                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode"></span>
+			                </span> 
+			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 2">
+			                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode"></span>
+			                </span> 
+			            </span>
+			            <span ng-if="monatProductModal.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}} </strong></span>
+			        </div>
+			        
 			        <!-- Market Partner Pricing -->
-			        <div ng-if="monatProductModal.product.accountPriceGroup == 1" class="price">
-			            <strong>{{monatProductModal.product.marketPartnerPrice}} /</strong> <span class="vip-price">Retail {{monatProductModal.product.retailPrice}}</span>
-			            <br><strong>PV {{monatProductModal.product.personalVolume}}</strong>
+			        <div ng-if="monatProductModal.product.accountPriceGroup == 1 && monatProductModal.type !='enrollment' && monatProductModal.type !='productListing'" class="price">
+			            <strong ng-bind-html="monatProductModal.product.marketPartnerPrice">/</strong> <span class="vip-price"><span sw-rbKey="'frontend.global.retail'"></span> {{monatProductModal.product.retailPrice}}
+			            <br><strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}}</strong> 
 			        </div>
-			        
-			        <!-- VIP Pricing -->
-			        <div ng-if="monatProductModal.product.accountPriceGroup == 3" class="price">
-			            <strong>{{monatProductModal.product.vipPrice}} /</strong> <span class="vip-price">Retail {{monatProductModal.product.retailPrice}}</span>
-			        </div>
-			        
-			        <!-- Retail Pricing -->
-			        <div ng-if="monatProductModal.product.accountPriceGroup != 3 && monatProductModal.product.accountPriceGroup != 1" class="price">
-			            <strong>{{monatProductModal.product.retailPrice}} /</strong> <span class="vip-price">VIP {{monatProductModal.product.vipPrice}}</span>
-			        </div>
-	                
-	  				<!--<cfset local.productTooltipBean = attributes.muraScope.getBean('contentBean').loadBy(urltitle = 'Product Details: Tooltip')>-->
-					<button class="info tooltip-onclick" data-toggle="tooltip" data-placement="left" title="{{monatProductModal.product.productName}}">
-						<i class="far fa-question-circle"></i>
-					</button>
+  					
 	  			</div> 
 	  			<!--- end price group block-->
 
