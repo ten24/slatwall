@@ -4,6 +4,7 @@ class SponsorSearchSelectorController {
 	private title: string;
 	private siteCountryCode: string;
 	private accountSearchType: string;
+	public selectedSponsor: any = null;
 	public countryCodeOptions: any;
 	public stateCodeOptions: any;
 	public searchResults: any;
@@ -12,7 +13,6 @@ class SponsorSearchSelectorController {
 	public argumentsObject:any;
 	public recordsCount:number;
 	public hasBeenSearched:boolean = false;
-	public selectedSponsor:any;
 	
 	// Form fields for the sponsor search.
 	public form: any = {
@@ -102,6 +102,15 @@ class SponsorSearchSelectorController {
 	
 	public notifySelect = (account) =>{
 		this.observerService.notify('ownerAccountSelected', account)
+	}
+	
+	public setSelectedSponsor = ( sponsor: any, notify: boolean = false ) => {
+		this.selectedSponsor = sponsor;
+		this.publicService.selectedSponsor = sponsor;
+
+		if ( notify ) {
+			this.notifySelect( sponsor );
+		}
 	}
 
 }
