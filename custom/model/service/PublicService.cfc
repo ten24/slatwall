@@ -1136,6 +1136,46 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
     }
     
+    public void function getQuickShopModalBySkuID(required any data) {
+        param name="arguments.data.skuID" default="";
+        
+        arguments.data['ajaxResponse']['skuBundles'] = [];
+        arguments.data['ajaxResponse']['productRating'] = '';
+            
+        var productService = getService('ProductService');
+         
+        if ( len( arguments.data.skuID ) ) {
+            
+            var productReviewCollectionList = productService.getProductReviewCollectionList();
+            productReviewCollectionList.setDisplayProperties('product.calculatedProductRating');
+            productReviewCollectionList.addFilter( 'product.skus.skuID', arguments.data.skuID );
+            
+            arguments.data['ajaxResponse']['reviewsCount'] = productReviewCollectionList.getRecordsCount();
+            
+            // If there is at least 1 review, get the calculated product rating
+            if ( arguments.data['ajaxResponse']['reviewsCount'] > 0 ) {
+                productReviewCollectionList.setPageRecordsShow(1);
+                var records = productReviewCollectionList.getPageRecords();
+                
+                arguments.data['ajaxResponse']['productRating'] = records[1];
+            }
+        
+            var bundledSkusCollection = getService('HibachiService').getSkuBundleCollectionList();
+            bundledSkusCollection.setDisplayProperties('skuBundleID,bundledSku.product.productName,bundledSku.product.urlTitle'); 	
+            bundledSkusCollection.addFilter( 'bundledSku.product.activeFlag', true );
+            bundledSkusCollection.addFilter( 'bundledSku.product.publishedFlag', true );
+            bundledSkusCollection.addFilter( 'sku.skuID', arguments.data.skuID );
+            
+            var records = bundledSkusCollection.getRecords();
+            for ( i = 1; i <= len( records ); i++ ) {
+                var urlTitle = records[ i ].bundledSku_product_urlTitle
+                records[ i ].productUrl = productService.getProductUrlByUrlTitle( urlTitle );
+            }
+
+            arguments.data['ajaxResponse']['skuBundles'] = records;
+        }
+    }
+    
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
         
         var productService = getProductService();
