@@ -64,6 +64,13 @@ Notes:
 	}
 )/>
 
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='accountRelationshipID',columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+	})
+/>
+
 <hb:HibachiListingDisplay
 	  collectionList="#rc.childAccountCollection#"
 	  recordEditAction="admin:entity.editaccountrelationship"

@@ -63,7 +63,12 @@ Notes:
 		isDeletable=true
 	}
 )/>
-
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='accountRelationshipID',columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+	})
+/>
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.parentAccountCollection#"
