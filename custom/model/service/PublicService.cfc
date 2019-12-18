@@ -207,7 +207,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        if( getHibachiScope().getCart().hasOrderPayments() ) {
+        if( getHibachiScope().getCart().hasOrderPayment() ) {
             var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
             arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
         }
@@ -457,7 +457,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
-            
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
             accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
