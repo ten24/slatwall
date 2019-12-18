@@ -28,7 +28,7 @@
 			},
 			{
 				"contexts": "save",
-				"regex": "^[a-zA-Z0-9]*$",
+				"regex": "^[a-zA-Z0-9_-]+$",
 				"maxLength": 35,
 				"minLength": 5
 			}
