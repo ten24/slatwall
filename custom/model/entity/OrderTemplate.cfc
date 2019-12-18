@@ -5,7 +5,7 @@ component {
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
-	property name="qualifiesForOfyProducts" persistent="false";
+	property name="qualifiesForOFYProducts" persistent="false";
 	
 	
 	
@@ -61,15 +61,15 @@ component {
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 	
-	public boolean function getQualifiesForOfyProducts(){
-		if(!structKeyExists(variables, 'qualifiesForOfyProducts')){
+	public boolean function getQualifiesForOFYProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
 			
 			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
 			promotionalFreeRewardSkuCollection.setCollectionConfig(this.getPromotionalFreeRewardSkuCollectionConfig());
 			
-			variables.qualifiesForOfyProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
 		}	
-		return variables.qualifiesForOfyProducts;
+		return variables.qualifiesForOFYProducts;
 	}
 
 	public struct function getListingSearchConfig() {
