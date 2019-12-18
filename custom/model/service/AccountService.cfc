@@ -70,7 +70,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
 		
 		if(arguments.data.orderID != false){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
