@@ -105,7 +105,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	public any function getTrackingUrl() {
 		if (!isNull(getTrackingNumber()) 
 			&& !isNull(getShippingMethod())
-			&& !isNull(getShippingMethod().setting("shippingMethodRateTrackingURL"))){
+			&& !isNull(getShippingMethod().setting("shippingMethodTrackingURL"))){
 				var url = getShippingMethod().setting("shippingMethodTrackingURL") 
 				url.replace("${trackingNumber}", getTrackingNumber());
 				return url;
