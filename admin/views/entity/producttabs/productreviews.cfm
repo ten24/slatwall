@@ -51,9 +51,7 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
-<hb:HibachiListingDisplay 	smartList="#rc.product.getProductReviewsSmartList()#"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
+<hb:HibachiListingDisplay 	collectionList="#rc.product.getProductReviewsCollectionList()#"
 							recorddetailaction="admin:entity.detailproductreview"
 							recorddetailmodal="true"
 							recordeditaction="admin:entity.editproductreview"
@@ -69,4 +67,4 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" title="Status"/>
 </hb:HibachiListingDisplay>
 
-<hb:HibachiActionCaller action="admin:entity.createProductReview" entity="productReview" class="btn btn-primary" icon="plus" querystring="sRedirectAction=admin:entity.createProductReview&productID=#rc.product.getProductID()#" modal=true />
+<hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />
