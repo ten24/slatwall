@@ -1,6 +1,6 @@
 <cfimport prefix="swa" taglib="../../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
-
+<cfset local.OrderJSON = rc.order.getEncodedJsonRepresentation()>
 <cfoutput>
 	<hb:HibachiPropertyRow>
 			
@@ -12,11 +12,11 @@
 		</hb:HibachiPropertyList>
 
 		<hb:HibachiPropertyList divclass="col-md-6">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false">
+			<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="form-group" ></sw-simple-property-display>
+			<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" title="Delivery Charges" currency-flag="true" edit="false" display-type="form-group" ></sw-simple-property-display>
+			<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" title="Discount" currency-flag="true" edit="false" display-type="form-group" ></sw-simple-property-display>
+			<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true" edit="false" display-type="form-group" ></sw-simple-property-display>
+			<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" title="Total" currency-flag="true" edit="false" display-type="form-group" ></sw-simple-property-display>
 		</hb:HibachiPropertyList>
 		
 		
