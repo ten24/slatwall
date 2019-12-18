@@ -1591,9 +1591,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate = this.processOrderTemplate_removePromotionCode(arguments.orderTemplate, processOrderTemplateRemovePromotionCode);  
 		}
 
+		
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}
+		
+		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+		ormFlush();//flush so that the order exists
+
+		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
+		newOrder = this.processOrder_placeOrder(newOrder);
+
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}	
+
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
-
-
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 
 			var giftCardBalanceAmount = orderTemplateAppliedGiftCard.getGiftCard().getBalanceAmount();  
@@ -1603,13 +1620,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderTemplateAppliedGiftCard.setAmountToApply(giftCardBalanceAmount);	
 				orderTemplateAppliedGiftCard = this.saveOrderTemplateAppliedGiftCard(orderTemplateAppliedGiftCard);
 			} 
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# applying GC #giftCardBalanceAmount# < #orderTemplateAppliedGiftCard.getAmountToApply()# when placing order', true);
 
 			var processData = {	
 				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
 				'amount' : orderTemplateAppliedGiftCard.getAmountToApply(),
 				'copyFromType' : 'accountGiftCard', 
 				'newOrderPayment':	{
+					'order' : {
+						'orderID' : newOrder.getOrderID()
+					},
 					'orderPaymentID' : '',
+					'orderPaymentType' : {
+						'typeID' : '444df2f0fed139ff94191de8fcd1f61b'
+					},
 					'paymentMethod' : {
 						'paymentMethodID' : '50d8cd61009931554764385482347f3a'//giftcard payment method
 					}
@@ -1619,31 +1643,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
 
+			if(newOrder.hasErrors()){
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
+				arguments.orderTemplate.clearHibachiErrors();
+				newOrder.clearHibachiErrors(); 	
+				//keep going potentially the gift card is applied to another order
+				continue;
+			}
 		}  
-	
 
-		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');	
-		
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
-		}
-		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
-		ormFlush();//flush so that the order exists
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');		
 
-		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
-		newOrder = this.processOrder_placeOrder(newOrder);
-
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
-		}	
-	
 		var addOrderPaymentProcessData = {	
-			'accountPaymentMethodID':arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
-			'accountAddressID':arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID()
+			'accountPaymentMethodID': arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
+			'accountAddressID': arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID(),
+			'copyFromType':'accountPaymentMethod',
+			'newOrderPayment': {
+				'orderPaymentType': {
+					'typeID': '444df2f0fed139ff94191de8fcd1f61b'
+				}
+			}
 		}
 
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
@@ -1652,8 +1671,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			//set Payment Declined status?
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment', true);
-			arguments.orderTemplate.clearHibachiErrors();
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
+			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			//arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
