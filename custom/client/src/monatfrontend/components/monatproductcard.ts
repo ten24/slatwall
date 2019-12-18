@@ -63,7 +63,6 @@ class MonatProductCardController {
 				} else if (setNewTemplateID) {
 					this.newTemplateID = result.orderTemplates[0].orderTemplateID;
 				}
-				this.loading = false;
 			})
 			.catch((error)=>{
 			    this.monatAlertService.showErrorsFromResponse(error)
@@ -78,7 +77,6 @@ class MonatProductCardController {
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
 			this.allProducts.splice(index, 1);
-			this.loading = false;
 			return result;
 		})
 		.catch((error)=>{
@@ -94,7 +92,6 @@ class MonatProductCardController {
 		this.orderTemplateService
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
-				this.loading = false;
 				this.getAllWishlists();
 				return result;
 			})
@@ -109,7 +106,6 @@ class MonatProductCardController {
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
-			this.loading = false;
 			return result;
 		})
 		.catch((error)=>{
@@ -165,15 +161,16 @@ class MonatProductCardController {
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
 			.then( (result) =>{
 				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
-				this.loading = false;
 			} )
 			.catch((error)=>{
 			  this.monatAlertService.showErrorsFromResponse(error);  
 			})
+			.finally(()=>{
+			     this.loading=false;
+			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
-				this.loading = false;
 				
 			})
 			.catch((error)=>{

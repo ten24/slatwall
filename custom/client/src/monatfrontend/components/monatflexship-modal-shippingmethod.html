@@ -218,7 +218,7 @@
 					class="btn btn-block bg-primary"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
 					ng-class="{loading: monatFlexshipShippingMethodModal.loading}"
-					ng-disabled = "!updateShippingAddressForm.$valid"
+					ng-disabled = "!updateShippingAddressForm.$valid || monatFlexshipShippingMethodModal.loading"
 				></button>
 				<button
 					type="button"
