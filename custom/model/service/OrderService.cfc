@@ -934,6 +934,10 @@ component extends="Slatwall.model.service.OrderService" {
 					priceByCurrencyCodeArgs['priceGroups'] = [];
 					arrayAppend(priceByCurrencyCodeArgs['priceGroups'], newOrderItem.getAppliedPriceGroup());
 				}
+				
+				if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
+					priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+				}
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
 				/******* END CUSTOM CODE FOR MONAT *******/
 			}
