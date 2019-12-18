@@ -35,7 +35,7 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
-
+    public uploadImageError:boolean;
     public accountProfileImage;
     
     // @ngInject
@@ -282,7 +282,8 @@ class swfAccountController {
 		 	 	console.log("File Uploaded");
 		 	 	that.getUserProfileImage();
 		  	 }else{
-    		    that.monatAlertService.error(that.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
+    		    that.uploadImageError = true;
+    		    that.$scope.$digest();
 		  	 }
 		};
         xhr.send(tempdata);
