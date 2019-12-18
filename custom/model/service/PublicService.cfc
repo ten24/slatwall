@@ -1040,7 +1040,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
         var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var currencyCode = site.setting('skuCurrency');
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -1068,6 +1069,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+        productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
+        productCollectionList.addFilter('productType.urlTitle','productPack','!=');
+        productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
+        productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
         if(isNull(accountType) || accountType == 'retail'){
            productCollectionList.addFilter('skus.retailFlag', 1);
