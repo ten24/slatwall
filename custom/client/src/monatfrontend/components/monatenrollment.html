@@ -15,14 +15,17 @@
 				href 
 				data-ng-click="monatEnrollment.previous()" 
 				class="back d-inline-block" 
-				ng-class="{ invisible: monatEnrollment.position == 0 }"
+				ng-class="{ 
+					invisible: monatEnrollment.position == 0, 
+					disabled: monatEnrollment.position == 1 
+				"
 			>
 				<span class="last" sw-rbkey="'frontend.global.back'"></span>
 				<i class="fas fa-chevron-left"></i> 
 			</a>
 
 			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
-				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatEnrollment.cart.total | currency }} 
+				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL <span ng-bind-html="monatEnrollment.cart.total | swcurrency:monatEnrollment.cart.currencyCode"></span> 
 				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{monatEnrollment.cartText}}</small>
 			</span>
 		</div>

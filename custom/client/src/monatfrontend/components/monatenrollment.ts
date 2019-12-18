@@ -105,7 +105,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if (index < 0 || index == this.position) {
+		if (index < 1 || index == this.position) {
 			return;
 		}
 		

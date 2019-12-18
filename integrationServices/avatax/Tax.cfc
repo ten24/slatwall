@@ -181,7 +181,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		}
 		
 		if(!isNull(arguments.requestBean.getAccount())) {
-			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
+			requestDataStruct.CustomerCode = arguments.requestBean.getAccountShortReferenceID( true );
 		}
 		
 		// Loop over each unique tax address

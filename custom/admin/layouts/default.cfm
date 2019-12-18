@@ -82,6 +82,8 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/RetryProxy/lib/RetryProxyES5.js" charset="utf-8"></hb:HibachiScript>
+
 		<script>
 		// custom options for pace-js
 			window.paceOptions = {
@@ -94,6 +96,22 @@ Notes:
 			    }
 			
 			};
+			
+			function failSafeGlobalFunction(name) { //extra-args
+				var args = [];
+				for (var i = 1; i < arguments.length; ++i) {
+		            args[i-1] = arguments[i];
+		        }
+		        
+				//it will retry every 500ms, until succeed, or tried 2000 times 
+				new RetryProxyES5(window, name, 500, 2000,true)
+                .setArgs(args).run()
+
+			}
+			
+			function failSafeGetTabHTMLForTabGroup( element, tab) {
+				failSafeGlobalFunction('getTabHTMLForTabGroup', element, tab);
+			}
 		</script>
 
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
@@ -458,5 +476,6 @@ Notes:
  		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
+
 </html>
 </cfoutput>

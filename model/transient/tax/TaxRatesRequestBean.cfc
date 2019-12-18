@@ -63,7 +63,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="taxRateItemRequestBeansByAddressID" type="struct";
 	
 	// Pertinent Reference Information
-	property name="accountID" type="string"; 
+	property name="accountID" type="string";
+	property name="accountShortReferenceID" type="string"; 
 	property name="orderID" type="string";
 	
 	// Reference Objects
@@ -80,6 +81,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		variables.taxRateItemRequestBeansByAddressID = {};
 		
 		return super.init();
+	}
+	//doing this so it can be overriden in custom
+	public string function getAccountShortReferenceID(createNewFlag=false){
+		return this.getAccount().getShortReferenceID(arguments.createNewFlag);
 	}
 
 	public void function populateBillToWithAddress(required any address) {
