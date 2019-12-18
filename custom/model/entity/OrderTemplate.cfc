@@ -5,6 +5,8 @@ component {
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
+	property name="qualifiesForOfyProducts" persistent="false";
+	
 	
 	
 	public boolean function getCustomerCanCreateFlag(){
@@ -58,6 +60,17 @@ component {
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
+	
+	public boolean function getQualifiesForOfyProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOfyProducts')){
+			
+			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+			promotionalFreeRewardSkuCollection.setCollectionConfig(this.getPromotionalFreeRewardSkuCollectionConfig());
+			
+			variables.qualifiesForOfyProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+		}	
+		return variables.qualifiesForOfyProducts;
+	}
 
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
