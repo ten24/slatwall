@@ -57,10 +57,10 @@
 			            <strong ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.product.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
 			            <span class="vip-price">
 			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 3">
-			                    <span sw-rbKey="'frontend.global.vip'"></span> {{monatProductModal.product.upgradedPricing.price | currency }}
+			                    <span sw-rbKey="'frontend.global.vip'"></span> {{monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode }}
 			                </span> 
 			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 2">
-			                    <span sw-rbKey="'frontend.global.retail'"></span> {{monatProductModal.product.upgradedPricing.price | currency }}
+			                    <span sw-rbKey="'frontend.global.retail'"></span> {{monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode }}
 			                </span> 
 			            </span>
 			            <span ng-if="monatProductModal.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}} </strong></span>
