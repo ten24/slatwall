@@ -30,7 +30,7 @@
 				"contexts": "save",
 				"regex": "^[a-zA-Z0-9_-]+$",
 				"maxLength": 35,
-				"minLength": 5
+				"minLength": 3
 			}
 		],
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
