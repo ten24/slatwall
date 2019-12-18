@@ -8,10 +8,17 @@
 
 <ng-transclude></ng-transclude>
 
+<div ng-show="!monatEnrollment.canPlaceCartOrder && monatEnrollment.showCanPlaceOrderAlert" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
+    <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+    
 <footer class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<div class="d-flex align-items-center">
-			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
+			<a href data-ng-click="monatEnrollment.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position <= 1 } ">
 				<span class="last" sw-rbkey="'frontend.global.back'"></span>
 				<i class="fas fa-chevron-left"></i> 
 			</a>
@@ -24,14 +31,24 @@
 		
 		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
 		
-		<button style="z-index: 1" ng-disabled="!monatEnrollment.canPlaceCartOrder" data-ng-click="monatEnrollment.next()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
-			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
-			<i class="fas fa-chevron-right"></i>
-		</button>
-		<button style="z-index: 1" ng-disabled="!monatEnrollment.canPlaceCartOrder" data-ng-click="monatEnrollment.goToLastStep()" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
-			<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
-			<i class="fas fa-chevron-right"></i>
-		</button>
+		<div ng-if="monatEnrollment.canPlaceCartOrder">
+			<button style="z-index: 1" data-ng-click="monatEnrollment.next(); monatEnrollment.showCanPlaceOrderAlert = false" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
+				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<i class="fas fa-chevron-right"></i>
+			</button>
+			<button style="z-index: 1" data-ng-click="monatEnrollment.goToLastStep(); monatEnrollment.showCanPlaceOrderAlert = false" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext">
+				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<i class="fas fa-chevron-right"></i>
+			</button>			
+		</div>
+		
+		<div ng-if="!monatEnrollment.canPlaceCartOrder">
+			<button style="z-index: 1" data-ng-click="monatEnrollment.showCanPlaceOrderAlert = true" class="btn btn-secondary forward-btn forward" ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false">
+				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<i class="fas fa-chevron-right"></i>
+			</button>
+		</div>
+
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
 	</div>
 	
