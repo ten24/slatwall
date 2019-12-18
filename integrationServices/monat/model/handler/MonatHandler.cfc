@@ -165,15 +165,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				//this is the first order for this account
 				arguments.order.setInitialOrderFlag(true);
 			}
-			
-<<<<<<< HEAD
-			getService("orderService").saveOrder(arguments.order);
-		}catch(any error){
-			logHibachi("Place order Error: #serializeJson(error)#");	
-=======
-			getOrderService().saveOrder(arguments.order);
 		}catch(any dateError){
->>>>>>> db72a60f8c3adc6228dbaef61a0674e23e9037c9
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}
