@@ -1647,7 +1647,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
 				arguments.orderTemplate.clearHibachiErrors();
 				newOrder.clearHibachiErrors(); 	
-				//keep going potentially the gift card is applied to another order
+				//keep going potentially the gift card is already applied to another order 
 				continue;
 			}
 		}  
