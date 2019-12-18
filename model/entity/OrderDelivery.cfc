@@ -60,6 +60,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="paymentTransaction" cfc="PaymentTransaction" fieldtype="many-to-one" fkcolumn="paymentTransactionID";
@@ -80,7 +81,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
+	
+	// Calculated Properties
+	property name="calculatedTrackingUrl" hb_populateEnabled="false" ormtype="string";
+	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
 	//CUSTOM PROPERTIES BEGIN
@@ -96,7 +100,18 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		}
 		return totalDelivered;
 	}
-
+	
+	// Generates a tracking url if the tracking number exists, and we have the shipping method that was used.
+	public any function getTrackingUrl() {
+		if (!isNull(getTrackingNumber()) 
+			&& !isNull(getShippingMethod())
+			&& !isNull(getShippingMethod().setting("shippingMethodRateTrackingURL"))){
+				var url = getShippingMethod().setting("shippingMethodTrackingURL") 
+				url.replace("${trackingNumber}", getTrackingNumber());
+				return url;
+			}
+	}
+	
 	public any function getOrderDeliveryGiftCardSmartList() {
 		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
 		giftcardSmartList.joinRelatedProperty("SlatwallGiftCard", "originalOrderItem");
