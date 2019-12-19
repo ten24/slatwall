@@ -13,9 +13,6 @@ component {
 
 	public boolean function canBePurchased(required any account){
 		
-		writeDump( arguments.account.getAccountType() );
-		abort;
-		
 		if ( !isNull( arguments.account.getAccountType() ) ) {
 			
 			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
