@@ -185,11 +185,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	 	
 	 	var orderItems = arguments.order.getOrderItems();
 	 	
-	 	//If there are no items on it, then return.
-	 	if (isNull(orderItems) || !arrayLen(orderItems)){
-	 		return arguments.order; //no items.
-	 	}
-	 	
 	 	for (var orderitem in orderItems){
 	 		
 	 		var bundledSkus = orderItem.getSku().getBundledSkus();
@@ -201,27 +196,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	 		
 	 		//create
  			for (var skuBundle in bundledSkus){
- 				//If this doesn't already exist, then create it.
- 				var foundBundledItem = getService("OrderService").getOrderItemSkuBundleCollectionList();
- 				foundBundledItem.addFilter("orderItem.orderItemID", orderItem.getOrderItemID());
- 				foundBundledItem.addFilter("sku.skuID", skuBundle.getBundledSku().getSkuID());
- 				foundBundledItem.addFilter("quantity", skuBundle.getBundledQuantity() * orderItem.getQuantity());
- 				var foundItem = foundBundledItem.getRecords();
  				
- 				if (!arrayLen(foundItem)){
-	 				var bundledOrderItem = getService("OrderService").newOrderItemSkuBundle();
-	 				bundledOrderItem.setPrice(orderItem.getCalculatedExtendedPrice()?:0);
-	 				bundledOrderItem.setSku(skuBundle.getBundledSku());
-	 				bundledOrderItem.setQuantity(skuBundle.getBundledQuantity() * orderItem.getQuantity());
-	 				bundledOrderItem.setOrderItem(orderItem);
-	 				
-	 				getService("OrderService").saveOrderItemSkuBundle(bundledOrderItem);
-	 				
- 				}
+ 				var bundledOrderItem = getService("OrderService").newOrderItemSkuBundle();
+ 				bundledOrderItem.setPrice(orderItem.getSkuPrice()?:0);
+ 				bundledOrderItem.setSku(skuBundle.getBundledSku());
+ 				bundledOrderItem.setQuantity(orderItem.getQuantity());
+ 				bundledOrderItem.setOrderItem(orderItem);
+ 				
+ 				getService("OrderService").saveOrderItemSkuBundle(bundledOrderItem);
+
  			}
 	 	}
-			
-	 	getService("OrderService").saveOrder(arguments.order);
-	 	
 	}
 }
