@@ -1,6 +1,15 @@
-<div ng-if="monatFlexshipCartContainer.orderTemplateId || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
+
+<div ng-if="monatFlexshipCartContainer.orderTemplateID || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
+	
+	<div ng-show="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag && monatFlexshipCartContainer.showCanPlaceOrderAlert" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
+		<span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	
+
 	<div class="flexship-bar">
-		
 		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
 			<a href="#">
 				<i class="fas fa-chevron-up"></i>
@@ -49,10 +58,15 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
 			</button>
 			
-			<button ng-disabled="!monatFlexshipCartContainer.canPlaceOrder" ng-if="monatFlexshipCartContainer.context == 'enrollment' " data-ng-click="monatFlexshipCartContainer.next()" class="btn btn-secondary forward-btn forward">
+			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && monatFlexshipCartContainer.canPlaceOrder" data-ng-click="monatFlexshipCartContainer.next(); monatFlexshipCartContainer.showCanPlaceOrderAlert = false" class="btn btn-secondary forward-btn forward">
 				<span>Next</span>
 				<i class="fas fa-chevron-right"></i>
 			</button>
+			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && !monatFlexshipCartContainer.canPlaceOrder" data-ng-click="monatFlexshipCartContainer.showCanPlaceOrderAlert = true" class="btn btn-secondary forward-btn forward">
+				<span>Next</span>
+				<i class="fas fa-chevron-right"></i>
+			</button>
+			
 		</div>
 	</div>
 
