@@ -79,7 +79,7 @@ Notes:
 			
 			<div class="btn btn-primary" ng-click="showFullAddress=!showFullAddress"><i class="fa fa-plus" aria-hidden="true"></i> {{ !showFullAddress ? 'Show' : 'Hide'  }} </div>
 			
-			<span ng-show="showFullAddress">
+			<span ng-if="showFullAddress">
 				<cfif attributes.showName>
 					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#name" property="name" edit="#attributes.edit#" fieldClass="slatwall-address-name" />
 				</cfif>
