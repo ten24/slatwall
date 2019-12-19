@@ -2045,8 +2045,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
-			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
-
+			if(arguments.account.getAdminAccountFlag()){
+				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
+			}
+			
 		}
 
 		return delete( arguments.account );

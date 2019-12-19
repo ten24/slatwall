@@ -41,11 +41,17 @@ import { SWFPagination } from './components/swfpagination';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
+import { MonatUpgrade } from './components/upgradeFlow/monatupgrade';
+import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
+import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
+import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
+
+// controllers
+import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
 import { MonatSiteOwnerController } from './controllers/site-owner-controller';
-
 
 //services
 import { MonatService } from './services/monatservice';
@@ -95,11 +101,16 @@ var monatfrontendmodule = angular
 	.directive('monatProductCard', MonatProductCard.Factory())
 	.directive('monatProductModal', MonatProductModal.Factory())
 	.directive('swfAccount', SWFAccount.Factory())
-
 	.directive('monatMiniCart', MonatMiniCart.Factory())
 
+	.directive('monatUpgrade', MonatUpgrade.Factory())
+	.directive('upgradeMp', MonatUpgradeMP.Factory())
+	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
+	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
+		
 	// Controllers
 	.controller('searchController', MonatSearchController)
+	.controller('forgotPasswordController', MonatForgotPasswordController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
 	.controller('siteOwnerController', MonatSiteOwnerController)
