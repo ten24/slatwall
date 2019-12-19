@@ -21,6 +21,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCode" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountcode" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 
 		<!--- Overview --->
