@@ -592,13 +592,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             primaryPhone.setPhoneNumber( data.phoneNumber );
         }
         
-        if (structKeyExists(data, "typeID") && len(data.typeID)){
-            param name="arguments.data.typeID" default="";
+        // if (structKeyExists(data, "typeID") && len(data.typeID)){
+        //     param name="arguments.data.typeID" default="";
         
-            var phoneType = getTypeService().getTypeByTypeID(arguments.data.typeID);
-            var primaryPhone = account.getPrimaryPhoneNumber()
-            primaryPhone.setAccountPhoneType(phoneType);
-        }
+        //     var phoneType = getTypeService().getType(arguments.data.typeID);
+        //     var primaryPhone = account.getPrimaryPhoneNumber()
+        //     primaryPhone.setAccountPhoneType(phoneType);
+        // }
         
         if (structKeyExists(data, "emailAddress") && len(data.emailAddress)){
             var primaryEmail = account.getPrimaryEmailAddress();
@@ -946,6 +946,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             // Update subscription in Mailchimp.
             if ( structKeyExists( arguments.data, 'subscribedToMailchimp' ) ) {
                 getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
+            }
+            
+            if (structKeyExists(data, "typeID") && len(data.typeID)){
+                param name="arguments.data.typeID" default="";
+            
+                var phoneType = getTypeService().getType(arguments.data.typeID);
+                var primaryPhone = account.getPrimaryPhoneNumber()
+                primaryPhone.setAccountPhoneType(phoneType);
             }
         }
         return account;
