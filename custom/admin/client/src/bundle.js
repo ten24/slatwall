@@ -64475,13 +64475,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAddOrderItemsBySkuController = /** @class */ (function () {
-    function SWAddOrderItemsBySkuController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService) {
+    function SWAddOrderItemsBySkuController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService, alertService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.collectionConfigService = collectionConfigService;
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.alertService = alertService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
@@ -64575,7 +64576,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.observerService.notify("addOrderItemStartLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
-                if (data.preProcessView) {
+                //Item can't be purchased
+                if (data.processObjectErrors && data.processObjectErrors.isPurchasableItemFlag) {
+                    _this.observerService.notify("addOrderItemStopLoading", {});
+                    //Display the modal	
+                }
+                else if (data.preProcessView) {
                     //populate a modal with the template data...
                     var parsedHtml = $.parseHTML(data.preProcessView);
                     $('#adminModal').modal();
@@ -64617,11 +64623,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
     return SWAddOrderItemsBySkuController;
 }());
 var SWAddOrderItemsBySku = /** @class */ (function () {
-    function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+    function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) {
         this.orderPartialsPath = orderPartialsPath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
+        this.alertService = alertService;
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
@@ -64643,12 +64650,13 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/addorderitemsbysku.html";
     }
     SWAddOrderItemsBySku.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) { return new SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService); };
         directive.$inject = [
             'orderPartialsPath',
             'slatwallPathBuilder',
             '$hibachi',
-            'rbkeyService'
+            'rbkeyService',
+            'alertService'
         ];
         return directive;
     };
@@ -73261,15 +73269,20 @@ var AlertService = /** @class */ (function () {
             return _this.alerts;
         };
         this.formatMessagesToAlerts = function (messages) {
+            console.log("Setting alerts");
             var alerts = [];
             if (messages && messages.length) {
                 for (var message in messages) {
+                    if (messages[message].messageType == "error" && messages[message].message == "Pre Process Displayed Flag must be equal to 1") {
+                        //skip this type of message as its just used to display the modal.
+                        continue;
+                    }
                     var alert = new alert_1.Alert(messages[message].message, messages[message].messageType);
                     alerts.push(alert);
                     if (alert.type === 'success' || alert.type === 'error') {
                         _this.$timeout(function () {
                             alert.fade = true;
-                        }, 3500);
+                        }, 4500);
                         alert.dismissable = false;
                     }
                     else {
