@@ -35,6 +35,7 @@ class swfAccountController {
     public totalOrders:any;
     public ordersArgumentObject = {};
     public orderPayments:any;
+    public uploadImageError:boolean;
     public accountProfileImage;
     public orderPromotions:any;
     public orderItemTotal:number = 0;
@@ -279,13 +280,18 @@ class swfAccountController {
 		let url = window.location.href
 		let urlArray = url.split("/");
 		let baseURL = urlArray[0] + "//" + urlArray[2];
+		let that = this; 
 		
 		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
-		  	 } 
+		 	 	that.getUserProfileImage();
+		  	 }else{
+    		    that.uploadImageError = true;
+    		    that.$scope.$digest();
+		  	 }
 		};
         xhr.send(tempdata);
     }     

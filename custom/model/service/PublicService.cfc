@@ -457,7 +457,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderPayment(required any data, boolean giftCard = false) {
 
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
-            
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
             accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
@@ -534,7 +533,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
-        
+        if(orderTemplate.hasErrors()) {
+            addErrors(arguments.data, orderTemplate.getErrors());
+        }
+
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
     }
     
@@ -1041,7 +1043,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
         var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
+        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var currencyCode = site.setting('skuCurrency');
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -1069,6 +1072,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
         productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+        productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
+        productCollectionList.addFilter('productType.urlTitle','productPack','!=');
+        productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
+        productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
         if(isNull(accountType) || accountType == 'retail'){
            productCollectionList.addFilter('skus.retailFlag', 1);
@@ -1135,6 +1142,46 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+    }
+    
+    public void function getQuickShopModalBySkuID(required any data) {
+        param name="arguments.data.skuID" default="";
+        
+        arguments.data['ajaxResponse']['skuBundles'] = [];
+        arguments.data['ajaxResponse']['productRating'] = '';
+            
+        var productService = getService('ProductService');
+         
+        if ( len( arguments.data.skuID ) ) {
+            
+            var productReviewCollectionList = productService.getProductReviewCollectionList();
+            productReviewCollectionList.setDisplayProperties('product.calculatedProductRating');
+            productReviewCollectionList.addFilter( 'product.skus.skuID', arguments.data.skuID );
+            
+            arguments.data['ajaxResponse']['reviewsCount'] = productReviewCollectionList.getRecordsCount();
+            
+            // If there is at least 1 review, get the calculated product rating
+            if ( arguments.data['ajaxResponse']['reviewsCount'] > 0 ) {
+                productReviewCollectionList.setPageRecordsShow(1);
+                var records = productReviewCollectionList.getPageRecords();
+                
+                arguments.data['ajaxResponse']['productRating'] = records[1];
+            }
+        
+            var bundledSkusCollection = getService('HibachiService').getSkuBundleCollectionList();
+            bundledSkusCollection.setDisplayProperties('skuBundleID,bundledSku.product.productName,bundledSku.product.urlTitle'); 	
+            bundledSkusCollection.addFilter( 'bundledSku.product.activeFlag', true );
+            bundledSkusCollection.addFilter( 'bundledSku.product.publishedFlag', true );
+            bundledSkusCollection.addFilter( 'sku.skuID', arguments.data.skuID );
+            
+            var records = bundledSkusCollection.getRecords();
+            for ( i = 1; i <= len( records ); i++ ) {
+                var urlTitle = records[ i ].bundledSku_product_urlTitle
+                records[ i ].productUrl = productService.getProductUrlByUrlTitle( urlTitle );
+            }
+
+            arguments.data['ajaxResponse']['skuBundles'] = records;
+        }
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
@@ -1265,7 +1312,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				data.imageFile = "";
 				account.setProfileImage(fileName);
 				this.getAccountService().saveAccount(account);
-				getHibachiScope().addActionResult( "uploadProfileImage", false );
+		        if(!account.hasErrors()){
+		            getHibachiScope().addActionResult( "uploadProfileImage", false ); 
+		        }else{
+    		        this.addErrors(arguments.data, account.getErrors());
+        			getHibachiScope().addActionResult( "uploadProfileImage", true );
+		        }
+                
 			}else{
 				getHibachiScope().addActionResult( "uploadProfileImage", true );
 			}
@@ -1320,6 +1373,47 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
+		
+        var order = getHibachiScope().getCart();
+		var account =  getHibachiScope().getAccount();
+		var currentOrderItemList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
+		currentOrderItemList.setDisplayProperties('sku.skuID,price,currencyCode,quantity');
+		currentOrderItemList.addFilter('order.orderID',order.getOrderID());
+		var currentOrderItems = currentOrderItemList.getRecords();
+		var upgradedSkuList = '';
+		var upgradedPrice = 0;
+		var currentPrice = order.getSubtotal();
+		var skuPriceMap = {};
+		
+		if(!arrayLen(currentOrderItems)) return;
+		
+		for(var item in currentOrderItems){
+			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
+			skuPriceMap[item.sku_skuID] = item.quantity;
+		}
+
+		var currencyCode = currentOrderItems[1].currencyCode;
+		
+		var upgradedCollectionList = getHibachiScope().getService('skuPriceService').getSkuPriceCollectionList();
+		upgradedCollectionList.setDisplayProperties('price,sku.skuID');
+		upgradedCollectionList.addFilter('activeFlag',1);
+		upgradedCollectionList.addFilter('currencyCode',currencyCode);
+		upgradedCollectionList.addFilter('sku.product.publishedFlag',1);
+		upgradedCollectionList.addFilter('sku.product.activeFlag',1);
+		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
+		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
+		var upgradedOrder = upgradedCollectionList.getRecords();
+		if(!arrayLen(upgradedOrder)) return;
+		
+		for(var item in upgradedOrder){
+			precisionEvaluate(upgradedPrice += (item.price * skuPriceMap[item.sku_skuID]));
+		}
+		
+		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
+		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
+    }
+    
     public void function getAllOrdersOnAccount(required any data){
         var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
@@ -1330,4 +1424,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
 
+    public void function getCountries(){
+        var currentCountryCode = getService('siteService').getCountryCodeByCurrentSite();
+        var cacheKey = "getCountries#currentCountryCode#";
+        if(!structKeyExists(variables,cacheKey)){
+            var smartList = getService('addressService').getCountrySmartList();
+    		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+    		smartList.addFilter('countryCode',currentCountryCode);
+    		smartList.addSelect(propertyIdentifier="countryName", alias="name");
+    		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+    		variables[cacheKey] = smartList.getRecords();
+        }
+        arguments.data.ajaxResponse['countryCodeOptions'] =  variables[cacheKey];
+    }
 }

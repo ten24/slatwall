@@ -1,7 +1,7 @@
 declare var $;
 class MonatProductCardController {
 	public product;
-	public type: string = '';
+	public type: string;
 	public loading: boolean;
 	public lastAddedSkuID: string; 
 	public newTemplateID: string;
@@ -14,7 +14,7 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
-    public showProductLink: boolean = false;
+    public isEnrollment: boolean = false;
 
 	// @ngInject
 	constructor(
@@ -33,7 +33,7 @@ class MonatProductCardController {
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
 		
-		this.setShowProductLinkByType();
+		this.setIsEnrollment();
 	}
 	
 	public init = () => {
@@ -104,6 +104,7 @@ class MonatProductCardController {
 			bindings: {
 				product: this.product,
 				type: this.type,
+				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
 			},
 			preClose: (modal) => {
@@ -183,8 +184,8 @@ class MonatProductCardController {
 			});
 	};
 	
-	private setShowProductLinkByType = (): void => {
-		this.showProductLink = (
+	private setIsEnrollment = (): void => {
+		this.isEnrollment = (
 			this.type !== 'enrollment'
 			&& this.type !== 'VIPenrollmentOrder'
 			&& this.type !== 'VIPenrollment'
