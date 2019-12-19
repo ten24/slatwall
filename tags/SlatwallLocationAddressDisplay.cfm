@@ -77,7 +77,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-countryCode" />
 			</cfif>
 			
-			<div class="btn btn-primary" ng-click="showFullAddress=!showFullAddress"><i class="fa fa-plus" aria-hidden="true"></i> {{ showFullAddress ? 'Show' : 'Hide'  }} </div>
+			<div class="btn btn-primary" ng-click="showFullAddress=!showFullAddress"><i class="fa fa-plus" aria-hidden="true"></i> {{ !showFullAddress ? 'Show' : 'Hide'  }} </div>
 			
 			<span ng-show="showFullAddress">
 				<cfif attributes.showName>
