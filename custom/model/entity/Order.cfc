@@ -203,22 +203,28 @@ component {
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
-	public boolean function getMarketPartnerEnrollmentOrderDateTime(){
+	public any function getMarketPartnerEnrollmentOrderDateTime(){
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
 	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
-	    orderItemCollectionList.setDisplayProperties("orderOpenDateTime");// Date placed 
-	    return orderItemCollectionList.getRecords();
+	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
+	    var records = orderItemCollectionList.getRecords();
+	    if (arrayLen(records)){
+	        return records[1]['order_orderOpenDateTime'];
+	    }
 	}
 	
-	public boolean function getMarketPartnerEnrollmentOrderID(){
+	public any function getMarketPartnerEnrollmentOrderID(){
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
 	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
-	    orderItemCollectionList.setDisplayProperties("orderID");// Date placed 
-	    return orderItemCollectionList.getRecords();
+	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
+	    var records = orderItemCollectionList.getRecords();
+	    if (arrayLen(records)){
+	        return records[1]['order_orderID'];
+	    }
 	}
 	
 	
@@ -341,6 +347,7 @@ component {
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			
 			//If this order is more than 200 pounds, fails.  
@@ -358,7 +365,7 @@ component {
 	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
 	    // If they've never enrolled, they can enroll.
 	    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
-	    if (!hasEnrollmentOrder){
+	    if (!isNull(hasEnrollmentOrder)){
 	        return true;
 	    }
 	    
@@ -367,6 +374,8 @@ component {
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
+			&& !isNull(getMarketPartnerEnrollmentOrderID())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
 		
 			//This order is 1, so if they have any previous that is not the enrollment order,
@@ -392,7 +401,7 @@ component {
 	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("orderMaxDaysAfterAccountCreate");
 	    
 	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
-		if (getAccount.getAccountType() == "marketPartner" 
+		if (!isNull(maxDaysAfterAccountCreate) && getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getAccount().getCreatedDateTime()) 
 			&& dateDiff("d", getAccount().getCreatedDateTime(), now()) > maxDaysAfterAccountCreate
 			&& this.hasProductPackOrderItem()){
