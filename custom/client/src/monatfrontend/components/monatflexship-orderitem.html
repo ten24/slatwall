@@ -1,24 +1,21 @@
-<tr>
-	<td class="item-image">
-		<a href="#">
-		<!--<a> {{monatFlexshipOrderItem.orderItem.img-path}}</a>-->
+<td class="item-image">
+	<a ng-href="{{monatFlexshipOrderItem.orderItem.skuProductURL}}">
+		<img ng-src="{{monatFlexshipOrderItem.orderItem.sku_imagePath}}" alt="{{monatFlexshipOrderItem.orderItem.sku_skuDefinition}}">
+	</a>
+</td>
+<td class="item-name">
+	<h6 class="title-sm">
+		<a ng-href="{{monatFlexshipOrderItem.orderItem.skuProductURL}}">{{monatFlexshipOrderItem.orderItem.sku_skuDefinition}}</a>
+	</h6>
+</td>
+<td class="item-quantity">
+	<div class="qty">
+		<span sw-rbkey="'define.quantity'"></span> {{monatFlexshipOrderItem.orderItem.quantity}}
+	</div>
+</td>
+<td class="item-price">
+	<span class="price">{{monatFlexshipOrderItem.orderItem.sku_priceByCurrencyCode | currency}}</span>
+</td>
 
-		<img src="http://clientuat.xyz/html/monat/common/images/product-3.png" alt="">
-		</a>
-	</td>
-	<td class="item-name">
-		<h6 class="title-sm">
-			<a href="#">{{monatFlexshipOrderItem.orderItem.sku_skuDefinition}}</a>
-		</h6>
-	</td>
-	<td class="item-quantity">
-		<div class="qty">
-			<span sw-rbkey="'define.quantity'"> {{monatFlexshipOrderItem.orderItem.quantity}}
-		</div>
-	</td>
-	<td class="item-price">
-		<span class="price">{{monatFlexshipOrderItem.orderItem.sku_priceByCurrencyCode | currency}}</span>
-	</td>
-</tr>
 				
 
