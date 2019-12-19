@@ -69,8 +69,18 @@ Notes:
 	</cfif>
 	
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
-	<cfset local.accountID = "#!isNull(rc.order.getAccount()) ? rc.order.getAccount().getAccountID() : ''#">
-	<cfset local.siteID = "#!isNull(rc.order.getAccount().getAccountCreatedSite()) ? rc.order.getAccount().getAccountCreatedSite().getSiteID() : ''#">
+	<cfset local.accountID = "">
+	<cfset local.siteID = "">
+	<cfif NOT IsNull(rc.order.getAccount()) >
+	    <cfset local.accountID = rc.order.getAccount().getAccountID()>
+	    
+	    <cfif NOT IsNull(rc.order.getAccount().getAccountCreatedSite()) 
+	        AND NOT IsNull(rc.order.getAccount().getAccountCreatedSite().getSiteID())
+	    >
+	        <cfset local.siteID = rc.order.getAccount().getAccountCreatedSite().getSiteID()>
+	    </cfif>
+	    
+	</cfif>
 
 	<sw-add-order-items-by-sku 
     	data-order="'#rc.order.getOrderId()#'" 
