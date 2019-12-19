@@ -48,7 +48,6 @@ class monatFlexshipFrequencyModalController {
                 this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
             	this.monatAlertService.success("Your flexship has been updated successfully");
                 this.closeModal();
-                this.loading =false
         	} else {
         		throw(data);
         	}
@@ -118,4 +117,3 @@ class MonatFlexshipFrequencyModal {
 export {
 	MonatFlexshipFrequencyModal
 };
-
