@@ -1438,6 +1438,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
 		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
     }
+    
+    public void function getAllOrdersOnAccount(required any data){
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+    
+    public void function getOrderItemsByOrderID(required any data){
+        var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
+    }
 
 
     
