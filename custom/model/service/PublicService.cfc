@@ -860,6 +860,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
+        if (structKeyExists(data, "typeID") && len(data.typeID)){
+            param name="arguments.data.typeID" default="";
+        
+            var phoneType = getTypeService().getType(arguments.data.typeID);
+            var primaryPhone = account.getPrimaryPhoneNumber()
+            primaryPhone.setAccountPhoneType(phoneType);
+        }
+        
         account.setAccountStatusType(accountStatusType);
 
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
