@@ -200,7 +200,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
  				var bundledOrderItem = getService("OrderService").newOrderItemSkuBundle();
  				bundledOrderItem.setPrice(orderItem.getSkuPrice()?:0);
  				bundledOrderItem.setSku(skuBundle.getBundledSku());
- 				bundledOrderItem.setQuantity(orderItem.getQuantity());
+ 				bundledOrderItem.setQuantity(skuBundle.getBundledQuantity());
  				bundledOrderItem.setOrderItem(orderItem);
  				
  				getService("OrderService").saveOrderItemSkuBundle(bundledOrderItem);
