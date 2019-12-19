@@ -7,11 +7,8 @@ class MonatFlexshipCartContainerController {
     public canPlaceOrder:boolean;
     public isOpened: boolean = false;
     public orderTemplateItemTotal: number = 0;
-<<<<<<< HEAD
-    public loading: boolean = false;
-=======
     public showCanPlaceOrderAlert:false;
->>>>>>> 3f72922fd303183cff435fd34c63b863513eb562
+    public loading: boolean = false;
     
     //@ngInject
     constructor(
