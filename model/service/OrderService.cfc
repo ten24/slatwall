@@ -3606,10 +3606,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if (!isNull(arguments.orderDelivery.getTrackingNumber()) && 
 						!isNull(arguments.orderDelivery.getShippingMethod())){
 					
-					var url = arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
-					if (!isNull(url)){
-						url = url.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
-						arguments.orderDelivery.setTrackingURL(url);
+					var trackingUrl = arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
+					if (!isNull(trackingUrl)){
+						trackingUrl = trackingUrl.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
+						arguments.orderDelivery.setTrackingURL(trackingUrl);
 					}
 				}
 			}
