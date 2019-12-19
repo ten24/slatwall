@@ -47,9 +47,8 @@
             ></h3
         >
          
-        <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
-        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' || monatProductCard.type === 'flexship'" class="price">
-            <strong ng-bind-html="monatProductCard.product.price | swcurrency:MonatProductCard.product.currencyCode"><span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
+        <div class="price">
+            <strong>{{monatProductCard.product.price | currency }} <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
             <span class="vip-price">
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 3">
                     <span sw-rbKey="'frontend.global.vip'"></span> {{monatProductCard.product.upgradedPricing.price | currency }}
@@ -60,38 +59,7 @@
             </span>
             <span ng-if="monatProductCard.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong></span>
         </div>
-        
-        <!-- Market Partner Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
-            <strong ng-bind-html="monatProductCard.product.marketPartnerPrice">/</strong> <span class="vip-price"><span sw-rbKey="'frontend.global.retail'"></span> {{monatProductCard.product.retailPrice}}
-            <br><strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}}</strong> 
-        </div>
-        
-        <!-- VIP Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
-            <strong ng-bind-html="monatProductCard.product.vipPrice"> /</strong> <span class="vip-price">Retail <span ng-bind-html="monatProductCard.product.retailPrice"></span>
-        </div>
-        
-        <!-- Retail Pricing -->
-        <div 
-            ng-if="
-                monatProductCard.product.accountPriceGroup != 3 
-                && monatProductCard.product.accountPriceGroup != 1 
-                && monatProductCard.type != 'enrollment' 
-                && monatProductCard.type != 'productListing'
-                && monatProductCard.type != 'VIPenrollment' 
-                && monatProductCard.type != 'VIPenrollmentOrder'
-                && monatProductCard.type != 'flexship'
-            " 
-            class="price"
-        >
-            <strong ng-bind-html="monatProductCard.product.retailPrice"> /</strong> <span class="vip-price">VIP <span ng-bind-html="monatProductCard.product.vipPrice"></span>
-        </div>
-        
-        <!-- Enrollment Pricing -->
-        <div ng-if="monatProductCard.type ==='enrollment'" class="price">
-            <strong ng-bind-html="monatProductCard.product.marketPartnerPrice"> /</strong> <span class="vip-price">PV {{monatProductCard.product.personalVolume}}</span>
-        </div>
+
 
    </div>
    

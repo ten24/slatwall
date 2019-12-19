@@ -624,7 +624,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         
-        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode();
+        var currencyCode = getHibachiScope().getAccount().getSiteCurrencyCode() ?: 'USD';
         var utilityService = getHibachiScope().getService('hibachiUtilityService');
 
 		arguments.data['ajaxResponse']['productList'] = [];
@@ -687,11 +687,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	} 
     
     public void function getStarterPackBundleStruct( required any data ) {
-        param name="arguments.data.contentID" default="";
-        
-        if ( ! len( arguments.data.contentID ) ) {
-            return;
-        }
 
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
@@ -1042,9 +1037,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        var priceGroupCode =  (!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)) ? arguments.data.priceGroupCode : (arrayLen(holdingPriceGroups)) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
+
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
@@ -1123,6 +1119,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.cmsContentFilterFlag" default= false; //Filter based off cms category for uses like content modules
         param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
         param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
+        param name="arguments.data.priceGroup" default="";
 
         var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
@@ -1239,14 +1236,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return productMap;
     }
     
-    public any function addEnrollmentFee(){
+    public any function addEnrollmentFee( boolean vipUpgrade = false, boolean mpUpgrade = false){
+        
         var account = getHibachiScope().getAccount();
         
-        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'){
-            if(account.getAccountType() == 'VIP'){
+        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending' || arguments.vipUpgrade || arguments.mpUpgrade){
+            if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }else if(account.getAccountType() == 'marketPartner'){
+            }else if(account.getAccountType() == 'marketPartner' || arguments.mpUpgrade){
                 var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
@@ -1266,8 +1264,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         arguments.data['ajaxResponse']['moMoneyBalance'] = balance;
     }
-    
-
     
 	public void function uploadProfileImage(required any data) {
 		
@@ -1373,6 +1369,35 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+
+    public any function setUpgradeOrderType(required struct data){
+        param name="arguments.data.upgradeType" default="";
+        
+        var account = getHibachiScope().getAccount();
+        var accountType = account.getAccountType();    
+                //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
+        if(!getHibachiScope().getLoggedInFlag()){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
+            return;
+        }else if(accountType == arguments.data.upgradeType){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.sameAccountType'); 
+            return;
+        }else if( (accountType == 'MarketPartner') && (arguments.data.upgradeType == 'VIP') ){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.canNotDowngrade'); 
+            return;         
+        }
+        
+        var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
+        var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
+        var order = getHibachiScope().getCart();
+        
+        order.setUpgradeFlag(true);
+        order.setMonatOrderType(monatOrderType);
+        order.setAccountType(upgradeAccountType);
+        order.setPriceGroup(priceGroup);       
+        this.addEnrollmentFee(true);
+    }
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
         var order = getHibachiScope().getCart();
@@ -1413,18 +1438,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
 		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
     }
+    
+    public void function getAllOrdersOnAccount(required any data){
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+    
+    public void function getOrderItemsByOrderID(required any data){
+        var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
+    }
 
-    public void function getCountries(){
-        var currentCountryCode = getService('siteService').getCountryCodeByCurrentSite();
-        var cacheKey = "getCountries#currentCountryCode#";
-        if(!structKeyExists(variables,cacheKey)){
-            var smartList = getService('addressService').getCountrySmartList();
-    		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
-    		smartList.addFilter('countryCode',currentCountryCode);
-    		smartList.addSelect(propertyIdentifier="countryName", alias="name");
-    		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
-    		variables[cacheKey] = smartList.getRecords();
-        }
-        arguments.data.ajaxResponse['countryCodeOptions'] =  variables[cacheKey];
+
+    
+    public void function getMarketPartners(required struct data){
+        var marketPartners = getService('MonatDataService').getMarketPartners(data);
+        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
+        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
     }
 }

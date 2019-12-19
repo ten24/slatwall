@@ -1067,17 +1067,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		return modalLink;
 	}
 	function renderModal( html ) {
-		var elem = document.getElementById('ngApp');
-		if (typeof(elem) != 'undefined' && elem != null){
-			elem = angular.element(elem);
-			var injector = elem.injector();
-		    var $compile = injector.get('$compile');
-		    var $rootScope = injector.get('$rootScope');
-		    jQuery('#adminModal').html($compile(html)($rootScope));
-		}else{
-			jQuery('#adminModal').html(html);
-		}
-
+		AngularHelper.Compile($('#adminModal'),html);
+		
 		initUIElements('#adminModal');
 
 		jQuery('#adminModal').css({

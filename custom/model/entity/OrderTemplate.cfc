@@ -6,8 +6,7 @@ component {
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
-	
-	
+
 	
 	public boolean function getCustomerCanCreateFlag(){
 			
@@ -60,12 +59,12 @@ component {
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
-	
+
 	public boolean function getQualifiesForOFYProducts(){
 		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
 			
 			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
-			promotionalFreeRewardSkuCollection.setCollectionConfig(this.getPromotionalFreeRewardSkuCollectionConfig());
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
 			
 			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
 		}	
