@@ -86459,6 +86459,11 @@ var HibachiService = /** @class */ (function () {
             var request = _this.requestService.newAdminRequest(urlString, params);
             return request.promise;
         };
+        this.savePersonalCollection = function (params) {
+            var urlString = _this.getUrlWithActionPrefix() + 'api:main.savePersonalCollection';
+            var request = _this.requestService.newAdminRequest(urlString, params);
+            return request.promise;
+        };
         this.getExistingCollectionsByBaseEntity = function (entityName) {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
             var request = _this.requestService.newAdminRequest(urlString);
@@ -94673,7 +94678,7 @@ var SWListingDisplayController = /** @class */ (function () {
             persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
             persistedReportsCollectionList.addFilter('reportFlag', 1);
             persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', '${account.accountID}', '=', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.setAllRecords(true);
             persistedReportsCollectionList.getEntity().then(function (data) {
@@ -95402,10 +95407,11 @@ var SWListingReportController = /** @class */ (function () {
                 if (collectionName) {
                     serializedJSONData['collectionName'] = collectionName;
                 }
-                _this.$hibachi.saveEntity('Collection', _this.collectionId || "", {
+                _this.$hibachi.savePersonalCollection({
+                    'entityID': _this.collectionId,
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (_this.collectionId) {
                         window.location.reload();
                     }
@@ -96117,10 +96123,10 @@ var SWListingSearchController = /** @class */ (function () {
                         _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription'] == _this.personalCollectionIdentifier))) {
                 var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
                 if (selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey]) {
-                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID, {
-                        'accountOwner.accountID': _this.$rootScope.slatwall.account.accountID,
+                    _this.$hibachi.savePersonalCollection({
+                        'entityID': selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString
-                    }, 'save').then(function (data) {
+                    }).then(function (data) {
                     });
                     return;
                 }
@@ -96130,15 +96136,12 @@ var SWListingSearchController = /** @class */ (function () {
                     'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString,
                     'collectionName': collectionName,
                     'collectionDescription': _this.personalCollectionIdentifier,
-                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName,
-                    'accountOwner': {
-                        'accountID': _this.$rootScope.slatwall.account.accountID
-                    }
+                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName
                 };
-                _this.$hibachi.saveEntity('Collection', "", {
+                _this.$hibachi.savePersonalCollection({
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionDescription'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (!_this.localStorageService.hasItem('selectedPersonalCollection')) {
                         _this.localStorageService.setItem('selectedPersonalCollection', '{}');
                     }
@@ -96162,7 +96165,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (!_this.hasPersonalCollections) {
                 var personalCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
                 personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
-                personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
+                personalCollectionList.addFilter('accountOwner.accountID', '${account.accountID}');
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
                 personalCollectionList.addFilter('reportFlag', 0);
                 personalCollectionList.addFilter('softDeleteFlag', true, "!=");
