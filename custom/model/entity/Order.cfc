@@ -335,8 +335,8 @@ component {
 	 * 
 	 **/
 	 public boolean function MarketPartnerValidationMaxOrderAmount(){
-	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("initialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("maxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("orderInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("orderMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (getAccount.getAccountType() == "marketPartner" 
@@ -348,6 +348,7 @@ component {
 			    return false; // they already have too much.
 			}
 	    }
+	    return true;
 	 }
 	 
 	 /**
@@ -361,7 +362,7 @@ component {
 	        return true;
 	    }
 	    
-        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("initialEnrollmentPeriodForMarketPartner");
+        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("orderInitialEnrollmentPeriodForMarketPartner");
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (getAccount.getAccountType() == "marketPartner" 
@@ -381,13 +382,14 @@ component {
 				return false; //they can not purchase this because they already have purchased it.
 			}
 		} 
+		return true;
 	 }
 	 
 	 /**
 	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
 	  **/
 	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
-	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("maxDaysAfterAccountCreate");
+	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("orderMaxDaysAfterAccountCreate");
 	    
 	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
 		if (getAccount.getAccountType() == "marketPartner" 
@@ -414,5 +416,6 @@ component {
 				return false; //they can not purchase this because they already have purchased it.
 			}
 		}
+		return true;
 	 }
 }
