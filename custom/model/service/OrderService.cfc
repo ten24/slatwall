@@ -460,15 +460,24 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
+		//Tracking info
+		var orderList = getHibachiScope().getService('OrderService').getOrderCollectionList();
+		orderList.setDisplayProperties('orderDeliveries.trackingUrl')
+		orderList.addFilter( 'orderID', arguments.data.orderID, '=');
+		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
 		var orderPromtions = orderPromotionList.getPageRecords();
+		var order = orderList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
 		orderItemData['orderItems'] = orderItems;
 		orderItemData['orderPromtions'] = orderPromtions;
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
+		if ( len( order ) ) {
+			orderItemData['order'] = order[1];
+		}
 		
 		return orderItemData
     }
