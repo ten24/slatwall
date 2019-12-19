@@ -1038,12 +1038,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.displayProperties" default="orderTemplateItems.sku.product.productID|productID";
         
         var wishlistList = getService('OrderService').getOrderTemplateCollectionList();
-		wishlistList.setDisplayProperties( arguments.data.displayProperties );
-		wishlistList.addFilter( 'account.accountID', arguments.data.accountID );
-		wishlistList.addFilter( 'orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
-		var accountWishlistItems = wishlistList.getRecords();
-		
-		arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
+        wishlistList.setDisplayProperties( arguments.data.displayProperties );
+        wishlistList.addFilter( 'account.accountID', arguments.data.accountID );
+        wishlistList.addFilter( 'orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
+        var accountWishlistItems = wishlistList.getRecords();
+        
+        arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
     }
     
     public any function getBaseProductCollectionList(required any data){
