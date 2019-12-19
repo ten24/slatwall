@@ -1,0 +1,5 @@
+{
+	"properties": {
+		"childAccount": [{ "contexts": "delete", "method": "childAccountHasMultipleParents" }]
+	}
+}

@@ -88,7 +88,7 @@
 		</cfcase>
 		<cfcase value="date">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datepicker form-control" #attributes.fieldAttributes#  autocomplete="off"/>
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control"  #attributes.fieldAttributes#  autocomplete="off"/>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="dateTime">
@@ -236,6 +236,11 @@
 				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnlyRelatedObject">
+			<cfoutput>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
@@ -324,7 +329,7 @@
 			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			
 			<cfoutput>
-				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+				<div ng-cloak class="#attributes.fieldClass#" #attributes.fieldAttributes#>
 					<hb:HibachiTypeahead 
 						edit="#attributes.edit#" 
 						collectionList="#entityCollectionList#"
@@ -350,6 +355,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>
@@ -374,6 +380,7 @@
 					<cfset attributes.translateAttributes.icon = "globe" />
 					<cfset attributes.translateAttributes.iconOnly = "true" />
 					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
 					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
 				</cfif>
 			</cfoutput>

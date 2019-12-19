@@ -1,5 +1,6 @@
 declare var hibachiConfig: any;
 declare var angular: any;
+declare var $: any;
 
 class MonatEnrollmentController {
 	public cart: any;
@@ -14,8 +15,9 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-
-
+	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
+	public showCanPlaceOrderAlert:boolean = false;
+	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
@@ -23,6 +25,9 @@ class MonatEnrollmentController {
 		}
 
 		if (angular.isUndefined(this.onFinish)) {
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.saveFlag = 1;
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 1;
 			this.onFinish = () => console.log('Done!');
 		}
 
@@ -32,8 +37,10 @@ class MonatEnrollmentController {
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
+    	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}
@@ -54,17 +61,23 @@ class MonatEnrollmentController {
 	}
 
 	public handleCreateAccount = () => {
+		
 		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
+			if(!this.cart) {
+				// Applying fee populates cart, if cart is already populated, do not add another fee
+				this.monatService.addEnrollmentFee();
+			}
 			this.next();
 		}
 		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
-	public getCart = (refresh = true) => {
-		this.monatService.getCart(refresh).then(data =>{
+	public getCart = () => {
+		this.monatService.getCart().then(data =>{
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
+			this.canPlaceCartOrder = this.cart.orderRequirementsList.search('canPlaceOrderReward') > 0 ? false : true;
 		});
 	}
 
@@ -89,9 +102,6 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
-		if(this.position + 1 == this.steps.length){
-			this.monatService.addEnrollmentFee();
-		}
 	}
 
 	public previous() {
@@ -99,7 +109,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if (index < 0 || index == this.position) {
+		if (index < 1 || index == this.position) {
 			return;
 		}
 		

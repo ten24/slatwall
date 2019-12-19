@@ -1067,17 +1067,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		return modalLink;
 	}
 	function renderModal( html ) {
-		var elem = document.getElementById('ngApp');
-		if (typeof(elem) != 'undefined' && elem != null){
-			elem = angular.element(elem);
-			var injector = elem.injector();
-		    var $compile = injector.get('$compile');
-		    var $rootScope = injector.get('$rootScope');
-		    jQuery('#adminModal').html($compile(html)($rootScope));
-		}else{
-			jQuery('#adminModal').html(html);
-		}
-
+		AngularHelper.Compile($('#adminModal'),html);
+		
 		initUIElements('#adminModal');
 
 		jQuery('#adminModal').css({
@@ -1869,7 +1860,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if($('#'+tabID).html().trim().length === 0){
 			//add loading spinner prior to loading
 			$('#'+tabID).html(''+
-				'<i  class="fa fa-refresh fa-spin"></i>'+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
 			'');
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
@@ -1898,10 +1889,23 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	         * @htmlToCompile : The html to compile using angular
 	         */
 	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
-	        var $injector = angular.element(document).injector();
-
+	        
+	        try {
+	        	var $injector = angular.element(document).injector();
+	        	if($injector == null) {
+	        		throw("Unable to get Injector for", $targetDom.selector);
+	        	}
+            }
+            catch(err){
+			   console.warn("Will retry in 1 sec: error->", err);
+               setTimeout(function(){
+                    AngularHelper.Compile( $targetDom, htmlToCompile);
+               }, 500);
+			   return; 
+            }
+	        
 	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
-	                        //Get the scope of the target, use the rootScope if it does not exists
+	            //Get the scope of the target, use the rootScope if it does not exists
 	            var $scope = $targetDom.html(htmlToCompile).scope();
 	            $compile($targetDom)($scope || $rootScope);
 	            $rootScope.$digest();

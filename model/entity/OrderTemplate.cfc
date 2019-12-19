@@ -50,42 +50,41 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderTemplateName" ormtype="string";
-	
+	property name="orderTemplateName" ormtype="string" hb_populateEnabled="public";
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
-
+	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
-
+	property name="canceledDateTime" ormtype="timestamp";
+	property name="lastOrderPlacedDateTime" ormtype="timestamp";
+	
+	// Related Object Properties (many-to-one)
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateStatusTypeID";
 	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
-
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
-
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
-
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
-	
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-
+	
+	// Related Object Properties (one-to-many)
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
-
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
-
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
 	
+	// Related Object Properties (many-to-many)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
-
+	
+	// Calculated Properties
 	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 
@@ -102,7 +101,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
-	property name="lastOrderPlacedDateTime" persistent="false";
 	property name="orderTemplateItemDetailsHTML" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
@@ -119,11 +117,12 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
+	property name="qualifiesForOFYProducts" persistent="false";
+
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -279,23 +278,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
 
-	public string function getLastOrderPlacedDateTime(){
-		if(!structKeyExists(variables, 'lastOrderPlacedDateTime') || !len(variables.lastOrderPlacedDateTime)){
-			var orderCollectionList = getService('OrderService').getOrderCollectionList();
-			orderCollectionList.addDisplayProperty('createdDateTime');  
-			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
-			orderCollectionList.addOrderBy('createdDateTime|DESC');
-			var records = orderCollectionList.getPageRecords();
-	
-			if(!arrayIsEmpty(records)){
-				variables.lastOrderPlacedDateTime = records[1]['createdDateTime'];
-			} else { 
-				variables.lastOrderPlacedDateTime = '';
-			}
-		} 
-		return variables.lastOrderPlacedDateTime;
-	}
-
 	public string function getScheduledOrderDates(numeric iterations = 5){
 		
 		var scheduledOrderDates = DateFormat(this.getScheduleOrderNextPlaceDateTime(), 'mm/dd/yyyy'); 
@@ -364,6 +346,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}
+	
+	// AttributeValues (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderTemplate( this );
+	}
+
 
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
@@ -412,8 +403,8 @@ public boolean function getCustomerCanCreateFlag(){
 				!isNull(getAccount().getEnrollmentDate()) && 
 				getAccount().getAccountType() == 'MarketPartner'
 			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
-				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
 			} 
 		}
 
@@ -453,5 +444,21 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  //CUSTOM FUNCTIONS END
+	}  
+
+	public boolean function getQualifiesForOFYProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
+			
+			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+			
+			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}//CUSTOM FUNCTIONS END
 }

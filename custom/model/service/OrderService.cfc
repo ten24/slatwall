@@ -1,8 +1,83 @@
+
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal';
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL';
     }
+    
+    /**
+     * Function to get all carts and quotes for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+    
+    /**
+     * Function to get all order fulfillments for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderFulfillmentsOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderFulfillmentCollectionList();
+		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+	
+	/**
+     * Function to get all order deliveries for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderDeliveryOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        
+		var ordersList = this.getOrderDeliveryCollectionList();
+		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderDeliveryStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
     
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
         super.addNewOrderItemSetup(argumentCollection=arguments);
@@ -24,13 +99,64 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
         
+		if(arguments.processObject.getNewAccountFlag()) {
+			
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+			
+			if(account.hasErrors()) {
+				arguments.orderTemplate.addError('create', account.getErrors());
+				return arguments.orderTemplate;
+			} 
+		} else if(!isNull(processObject.getAccount())){
+			var account = processObject.getAccount();
+		} else {
+			var account = getHibachiScope().getAccount();
+		}
+		
+		if( !account.getCanCreateFlexshipFlag()) {
+			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
+			return arguments.orderTemplate;
+		}
+		
+		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+			return arguments.orderTemplate; 
+		}
+		
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
 		}
-        
-        return super.processOrderTemplate_create(argumentCollection = arguments);
+		
+		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		return arguments.orderTemplate;
     }
 
+	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
+	
+		arguments.order = super.processOrder_create(argumentCollection=arguments);
+		
+		if(!isNull(arguments.order.getAccount()) && isNull(arguments.order.getDefaultStockLocation())){
+			var site = arguments.order.getAccount().getAccountCreatedSite();
+			if(isNull(site)){
+				site = arguments.order.getOrderCreatedSite();
+			}
+			if(!isNull(site) && site.hasLocation()){
+				arguments.order.setDefaultStockLocation(site.getLocations()[1]);
+			}
+		}
+		
+		return arguments.order;
+		
+	}
  
     public any function copyToNewOrderItem(required any orderItem){
 	    var newOrderItem = super.copyToNewOrderItem(orderItem);
@@ -51,13 +177,13 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
-        if(!isStruct(originalOrderItem)){
+        if(isObject(arguments.originalOrderItem)){
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
 	            if(!isNull(price)){
 	                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
-	            }
+	            } 
 	        }
         }
         return returnOrderItem;
@@ -115,76 +241,92 @@ component extends="Slatwall.model.service.OrderService" {
 		return processOrderCreate;
 	}
 
+	/**
+	 * Note: we'd ctreate a temp-order from the orderTemplate, then we'd try to place it, and then remove it
+	 * 
+	 * Note: we're using request Scope as it's shared b/w the Request and Thread
+	 * 
+	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		if(structKeyExists(request, 'orderTemplateOrderDetails')){
-			return request.orderTemplateOrderDetails;
+		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+
+		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
+			return request[orderTemplateOrderDetailsKey];
 		} 
 		
-		request.orderTemplateOrderDetails = {}; 
-	
-		request.orderTemplateOrderDetails['fulfillmentTotal'] = 0;
-		request.orderTemplateOrderDetails['fulfillmentDiscount'] = 0;
-		request.orderTemplateOrderDetails['personalVolumeTotal'] = 0;
-		request.orderTemplateOrderDetails['commissionableVolumeTotal'] = 0; 
-
-		request.skuCollection = getSkuService().getSkuCollectionList();
-		request.skuCollection.addFilter('skuID','null','is'); 
-		request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct(); 
+		request[orderTemplateOrderDetailsKey] = {}; 
+		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
+		request[orderTemplateOrderDetailsKey]['total'] = 0;
+		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		
-		request.orderTemplateOrderDetails['canPlaceOrder'] = false;
+		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
+
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.addFilter('skuID', 'null', 'is'); 
+		
+		request[orderTemplateOrderDetailsKey]['skuCollection'] = skuCollection;
+		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		request.orderTemplate = arguments.orderTemplate; 	
 		
-		thread name="#threadName#"
-			   action="run" 
-		{
+		thread 
+			name="#threadName#" 
+			action="run" 
+			orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
+		{	
+			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
+			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
-			var hasInfoForFulfillment = !isNull(request.orderTemplate.getShippingMethod()); 
-
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate(request.orderTemplate, false);  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
 			//only update amounts if we can
-			transientOrder = this.saveOrder(order=transientOrder,updateOrderAmounts=hasInfoForFulfillment);
+			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
 			transientOrder.updateCalculatedProperties(); 	
-			getHibachiDAO().flushORMSession();	
-	
-			if(hasInfoForFulfillment){
-				request.orderTemplateOrderDetails['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
-				request.orderTemplateOrderDetails['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal();
+			getHibachiDAO().flushORMSession();
+		
+			if(hasInfoForFulfillment){	
+				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
+				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request.orderTemplateOrderDetails['subtotal'] = transientOrder.getCalculatedSubtotal();
-			request.orderTemplateOrderDetails['total'] = transientOrder.getCalculatedTotal();
-			
-			request.orderTemplateOrderDetails['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
-			request.orderTemplateOrderDetails['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
+	
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
+			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
+			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
-			request.orderTemplateOrderDetails['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
-	
-			request.skuCollection.setCollectionConfigStruct(getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder));
-			request.skuCollection.addFilter('skuID', freeRewardSkuIDs, 'not in');
-			request.orderTemplateOrderDetails['promotionalRewardSkuCollectionConfig'] = request.skuCollection.getCollectionConfigStruct();
+			request[orderTemplateOrderDetailsKey]['promotionalFreeRewardSkuCollectionConfig'] = freeRewardSkuCollection.getCollectionConfigStruct(); 	
 
-			request.orderTemplateOrderDetails['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
-			request.orderTemplateOrderDetails['canPlaceOrder'] = request.orderTemplateOrderDetails['canPlaceOrderDetails']['canPlaceOrder']; 
+			request[orderTemplateOrderDetailsKey]['skuCollection'].setCollectionConfigStruct( getPromotionService().getQualifiedPromotionRewardSkuCollectionConfigForOrder(transientOrder) );
+			request[orderTemplateOrderDetailsKey]['skuCollection'].addFilter('skuID', freeRewardSkuIDs, 'not in');
+			request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = request[orderTemplateOrderDetailsKey]['skuCollection'].getCollectionConfigStruct();
+			
+			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
+			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
-
-			this.logHibachi('orderTemplate #request.orderTemplate.getOrderTemplateID()# getOrderDetails #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
-	
+			
+			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
+			
 		}
+		
 		//join thread so we can return synchronously
 		threadJoin(threadName);
+		
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		} 
 
-		return request.orderTemplateOrderDetails;
+		return request[orderTemplateOrderDetailsKey];
 	}
 
 	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
@@ -203,7 +345,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
+		var displayProperties = 'total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
@@ -281,24 +423,54 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
 	
-	public any function getOrderItemsByOrderID(struct data={}) {
+	//Return data: order fulfillments, order payments, order items, order 
+	public any function getOrderItemsHeavy(struct data={}) {
         param name="arguments.data.orderID" default="";
         param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         
-
-		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
+        var order = this.getOrder(arguments.data.orderID);
+        
+        //order refund data
+		if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',order.getOrderType().getSystemCode())){
+			var orderRefundTotal = precisionEvaluate(order.getPaymentAmountCreditedTotal() - order.getPaymentAmountReceivedTotal());
+		}else{
+			var orderRefundTotal = ''
+		}
 		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,sku.product.productID,sku.skuID');
-		
+		///Order Item Data
+		var ordersItemsList = this.getOrderItemCollectionList();
+		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return ordersItemsList.getPageRecords();
-
+		//Order payment data
+		var orderPaymentList = this.getOrderPaymentCollectionList();
+		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderPaymentList.setCurrentPageDeclaration(arguments.data.currentPage); 	
+		
+		//Order promotion data
+		var orderPromotionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
+		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		
+		var orderPayments = orderPaymentList.getPageRecords();
+		var orderItems = ordersItemsList.getPageRecords();
+		var orderPromtions = orderPromotionList.getPageRecords();
+		var orderItemData = {};
+		
+		orderItemData['orderPayments'] = orderPayments;
+		orderItemData['orderItems'] = orderItems;
+		orderItemData['orderPromtions'] = orderPromtions;
+		orderItemData['orderRefundTotal'] = orderRefundTotal;
+		
+		return orderItemData
     }
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
@@ -460,5 +632,71 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
-}
+	
+	public boolean function orderHasStarterKit(required orderID) {
 
+		var starterKitProductType = getService('productService').getProductTypeBySystemCode('StarterKit');
+		
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.setDisplayProperties('orderItemID');
+		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#starterKitProductType.getProductTypeIDPath()#%','Like');
+		
+		return orderItemCollectionList.getRecordsCount(true) > 0;
+	}
+	
+	public any function deleteOrderTemplate( required any orderTemplate ) {
+		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
+		
+		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
+			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
+			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		}
+		
+		return super.delete( arguments.orderTemplate );
+	}
+
+	public any function processVolumeRebuildBatch_create(required any volumeRebuildBatch, required any processObject){
+		var volumeRebuildBatchOrders = arguments.processObject.getVolumeRebuildBatchOrders();
+		
+		for(var volumeRebuildBatchOrder in volumeRebuildBatchOrders){
+			var order = volumeRebuildBatchOrder.getOrder();
+			var orderItems = order.getOrderItems();
+			for(var orderItem in orderItems){
+				var volumeRebuildBatchOrderItem = this.newVolumeRebuildBatchOrderItem();
+				volumeRebuildBatchOrderItem.setOrderItem(orderItem);
+				volumeRebuildBatchOrderItem.setSkuCode(orderItem.getSku().getSkuCode());
+				volumeRebuildBatchOrderItem.setVolumeRebuildBatchOrder(volumeRebuildBatchOrder);
+				volumeRebuildBatchOrderItem.setVolumeRebuildBatch(volumeRebuildBatch);
+				for(var customPriceField in variables.customPriceFields){
+					volumeRebuildBatchOrderItem.invokeMethod('setOld#customPriceField#',{1=orderItem.invokeMethod('get#customPriceField#')});
+				}
+				this.saveVolumeRebuildBatchOrderItem(volumeRebuildBatchOrderItem);
+			}
+			this.saveVolumeRebuildBatchOrder(volumeRebuildBatchOrder);
+		}
+		arguments.volumeRebuildBatch.setVolumeRebuildBatchStatusType(getService('TypeService').getTypeByTypeCode('vrbstNew'));
+		if(!isNull(arguments.processObject.getVolumeRebuildBatchName())){
+			arguments.volumeRebuildBatch.setVolumeRebuildBatchName(arguments.processObject.getVolumeRebuildBatchName());
+		}
+		this.saveVolumeRebuildBatch(arguments.volumeRebuildBatch);
+		return arguments.volumeRebuildBatch;
+	}
+	
+	public any function processVolumeRebuildBatch_process(required any volumeRebuildBatch){
+		var volumeRebuildBatchOrders = arguments.volumeRebuildBatch.getVolumeRebuildBatchOrders();
+		
+		for(var volumeRebuildBatchOrder in volumeRebuildBatchOrders){
+			var volumeRebuildBatchOrderItems = volumeRebuildBatchOrder.getVolumeRebuildBatchOrderItems();
+			for(var volumeRebuildBatchOrderItem in volumeRebuildBatchOrderItems){
+				var orderItem = volumeRebuildBatchOrderItem.getOrderItem();
+				for(var customPriceField in variables.customPriceFields){
+					orderItem.invokeMethod('remove#customPriceField#');
+					volumeRebuildBatchOrderItem.invokeMethod('setNew#customPriceField#',{1=orderItem.invokeMethod('get#customPriceField#')});
+				}
+			}
+		}
+		arguments.volumeRebuildBatch.setVolumeRebuildBatchStatusType(getService('TypeService').getTypeByTypeCode('vrbstProcessed'));
+		return arguments.volumeRebuildBatch;
+	}
+}

@@ -269,7 +269,7 @@ component  accessors="true" output="false"
         
         //If this is a request from the api, setup the response header and populate it with data.
         //any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
-        handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
+        //handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
     }
     
     
@@ -299,7 +299,7 @@ component  accessors="true" output="false"
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
-    public void function resetPassword( required struct data ) {
+    public any function resetPassword( required struct data ) {
         param name="data.accountID" default="";
         var account = getAccountService().getAccount( data.accountID );
         if(!isNull(account)) {
@@ -312,9 +312,14 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.resetPassword", true );
         }
+        
+        if ( account.getProcessObject( "resetPassword" ).hasErrors() ) {
+            this.addErrors( data, account.getProcessObject( "resetPassword" ).getErrors() );
+        }
+        
         // Populate the current account with this processObject so that any errors are there.
         getHibachiScope().account().setProcessObject( account.getProcessObject( "resetPassword" ) );
-        return account.getProcessObject( "resetPassword" ) ;
+        return account.getProcessObject( "resetPassword" );
     }
     
     /**
@@ -345,7 +350,6 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_Save
       **/
     public any function updateAccount( required struct data ) {
-        
         var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
         getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         if(account.hasErrors()){
@@ -356,7 +360,10 @@ component  accessors="true" output="false"
                     getHibachiScope().showMessage(message,"error");
                 }
             }
+            
+            addErrors(arguments.data, account.getErrors());
         }
+
         return account;
     }
     
@@ -403,7 +410,7 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
         }
         
-        return accountEmailAddress;
+        //return accountEmailAddress;
     }
     
     /** 
@@ -425,7 +432,7 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
-        handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
+        //handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
     
     /** 
@@ -467,10 +474,10 @@ component  accessors="true" output="false"
         }
     }
     
-   public void function verifyAddress(required any data){
+   public void function verifyAddress(required struct data){
         param name="data.accountAddressID" default="";
 
-        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
+        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressByID(arguments.data.accountAddressID);
         getHibachiScope().addActionResult("verifyAddress",false);
     }
     
@@ -842,20 +849,20 @@ component  accessors="true" output="false"
          	data['paymentMethod'] = {};
          	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && !structKeyExists(data, 'billingAddress')){
-         	data['newOrderPayment'] = data;
-         	data['newOrderPayment']['billingAddress'] = data;
-        }	
+        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
+         	data['accountPaymentMethod'] = data;
+         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
-           }else{
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
-           }
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
+            }else{
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
+                accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
@@ -1164,7 +1171,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod Order_addOrderItem
      */
-    public void function addOrderItem(required any data) {
+    public any function addOrderItem(required any data) {
         // Setup the frontend defaults
         param name="data.preProcessDisplayedFlag" default="true";
         param name="data.saveShippingAccountAddressFlag" default="false";
@@ -1193,6 +1200,8 @@ component  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
+        getHibachiScope().flushORMSession(); //flushing for can place order check
+        return cart;
     }
     
     /* @http-context updateOrderNotes
@@ -1391,7 +1400,7 @@ component  accessors="true" output="false"
         }
         
         if (len(data.orderID)) {
-            var order = getOrderService().getOrder(orderID);
+            var order = getOrderService().getOrder(data.orderID);
         }
         else {
             var order = getHibachiScope().getCart();
@@ -1424,9 +1433,12 @@ component  accessors="true" output="false"
             }
         }
 
-
+        
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
+            // Only create a new billing address here if its not being created later using the account payment method.
+            if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
+                && (!structKeyExists(data, "accountPaymentMethodID") 
+                && len(data.accountPaymentMethodID))) {
 
                 var orderPayment = getPaymentService().newOrderPayment();
                 orderPayment.populate(data.newOrderPayment);
@@ -1444,8 +1456,11 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
                 return;
             }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            
+            if ((!structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID))){
+                //use this billing information
+                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
@@ -1453,7 +1468,7 @@ component  accessors="true" output="false"
             return;
         }
 
-        
+       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1826,8 +1841,8 @@ component  accessors="true" output="false"
 	    
 		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 	    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
-	    
- 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+	    var orderTemplates = orderTemplateCollection.getPageRecords(); 
+ 		arguments.data['ajaxResponse']['orderTemplate'] = arrayLen(orderTemplates) ? orderTemplates[1] : []; // there should be only one record;  
 	}
 
 
@@ -1855,7 +1870,12 @@ component  accessors="true" output="false"
      		}
      		
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
         }
  	}   
  	
@@ -1980,10 +2000,10 @@ component  accessors="true" output="false"
         }
         orderTemplate.clearProcessObject("updateFrequency");
         
-        //try to activate if possible
+        //try to activate if we can
         if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
-            && orderTemplate.getCanPlaceOrderFlag()
+			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
+            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
         ) {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
             getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
@@ -2249,16 +2269,6 @@ component  accessors="true" output="false"
         
     }
     
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-    }
-    
-    public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
-    }
-    
     
     ///    ############### .  getXXXOptions();  .  ###############   
     
@@ -2308,30 +2318,4 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-
-    public any function getBaseProductCollectionList(required any data){
-        var account = getHibachiScope().getAccount();
-        var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode = arrayLen(holdingPriceGroups) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
-        
-        //TODO: Consider starting from skuPrice table for less joins
-        var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productName');
-        productCollectionList.addDisplayProperty('defaultSku.skuID');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
-        productCollectionList.addDisplayProperty('urlTitle');
-        productCollectionList.addDisplayProperty('defaultSku.imageFile');
-
-        productCollectionList.addFilter('activeFlag',1);
-        productCollectionList.addFilter('publishedFlag',1);
-        productCollectionList.addFilter('skus.activeFlag',1);
-        productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-
-        return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
-    }   
 }

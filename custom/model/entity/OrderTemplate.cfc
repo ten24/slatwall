@@ -1,11 +1,12 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
+	property name="qualifiesForOFYProducts" persistent="false";
+
 	
 	public boolean function getCustomerCanCreateFlag(){
 			
@@ -16,8 +17,8 @@ component {
 				!isNull(getAccount().getEnrollmentDate()) && 
 				getAccount().getAccountType() == 'MarketPartner'
 			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
-				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
+				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
 			} 
 		}
 
@@ -58,4 +59,20 @@ component {
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
+
+	public boolean function getQualifiesForOFYProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
+			
+			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+			
+			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
 }

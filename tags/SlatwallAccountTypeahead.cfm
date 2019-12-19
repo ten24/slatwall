@@ -51,6 +51,8 @@ Notes:
 <cfparam name="attributes.placeholderText" type="string" default="Search Accounts" />
 <cfparam name="attributes.required" type="boolean" default="false"/>
 <cfparam name="attributes.typeaheadID" type="string" default=""/>
+<cfparam name="attributes.propertiesToSearch" type="string" default="firstName,lastName,company,accountNumber"/>
+<cfparam name="attributes.propertiesToLoad" type="string" default="accountID,calculatedFullName,accountNumber,firstName,lastName,company,calculatedAdminIcon,accountCreatedSite.siteID"/>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
@@ -60,8 +62,8 @@ Notes:
 				data-field-name="#attributes.fieldName#"
 				data-property-to-save="accountID"
 				data-property-to-show="calculatedFullName"
-				data-properties-to-search="firstName,lastName,company,accountNumber"
-				data-properties-to-load="accountID,calculatedFullName,accountNumber,firstName,lastName,company,calculatedAdminIcon"
+				data-properties-to-search="#attributes.propertiesToSearch#"
+				data-properties-to-load="#attributes.propertiesToLoad#"
 				data-show-add-button="false"
 				data-show-view-button="false"
 				data-placeholder-text="#attributes.placeholderText#"

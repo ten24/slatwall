@@ -184,6 +184,7 @@ export class SkuPriceService {
     
     public getSkuCollectionConfig = (productID) =>{
         let config = this.collectionConfigService.newCollectionConfig("Sku");
+        config.setDisplayProperties("skuID,skuName,skuCode,imagePath");
         config.addFilter("product.productID", productID, "=");
 
         return config;

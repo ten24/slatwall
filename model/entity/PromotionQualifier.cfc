@@ -67,6 +67,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	
 	// Related Entities (one-to-many)
+	property name="promotionQualifierMessages" singularname="promotionQualifierMessage" cfc="PromotionQualifierMessage" fieldtype="one-to-many" fkcolumn="promotionQualifierID" inverse=true;
 	
 	// Related Entities (many-to-many - owner)
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="promotionQualifierID" inversejoincolumn="fulfillmentMethodID";
@@ -193,15 +194,24 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(variables.includedOrdersCollection)){
 			var collectionConfig = getIncludedOrdersCollectionConfig();
 			if(!isNull(collectionConfig)){
+				
 				variables.includedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
 				variables.includedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.includedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+				variables.includedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
-					'isSearchable':true,
+					'isSearchable':false,
 					'isExportable':true
 				});
+				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
+					variables.includedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+						'isDeletable':true,
+						'isVisible':true,
+						'isSearchable':false,
+						'isExportable':true
+					});
+				}
 				variables.includedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,
@@ -220,12 +230,20 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 				variables.excludedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
 				variables.excludedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.excludedOrdersCollection.setDisplayProperties('orderNumber,currencyCode,createdDateTime,calculatedSubTotal,calculatedTotalQuantity',{
+				variables.excludedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
-					'isSearchable':true,
+					'isSearchable':false,
 					'isExportable':true
 				});
+				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
+					variables.excludedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+						'isDeletable':true,
+						'isVisible':true,
+						'isSearchable':false,
+						'isExportable':true
+					});
+				}
 				variables.excludedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,

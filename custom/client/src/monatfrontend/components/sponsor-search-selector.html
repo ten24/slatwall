@@ -3,7 +3,7 @@
 	<p class="partner">
 		<span ng-bind="sponsorSearchSelector.title"></span>
 		<i class="fas fa-question-circle modal-after-load" data-toggle="modal" data-target="#sponsor-selector-tooltip"></i>
-		<span ng-if="sponsorSearchSelector.selectedSponsor" ng-click="sponsorSearchSelector.selectedSponsor = undefined">(change)</span>
+		<span ng-if="sponsorSearchSelector.selectedSponsor" ng-click="sponsorSearchSelector.setSelectedSponsor( null )">(change)</span>
 	</p>
 	
 	<input 
@@ -14,7 +14,7 @@
 		ng-value="sponsorSearchSelector.selectedSponsor.accountID" 
 	/>
 
-	<div class="row" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+	<div class="row" ng-show="sponsorSearchSelector.selectedSponsor === null">
 		
 		<!--- Name / Member ID ( text ) --->
 		<div class="sub col-12 col-lg-6">
@@ -74,7 +74,7 @@
 		
 	</div>
 	
-	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor == undefined">
+	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor === null">
 		<button 
 			type="button"
 			class="bg-primary btn" 
@@ -85,12 +85,13 @@
 	
 	<!--- Results --->
 	<div class="row signup-mp__form__results">
+
 		<div 
 			ng-repeat="item in sponsorSearchSelector.searchResults"
-			ng-click="sponsorSearchSelector.selectedSponsor = item"
+			ng-click="sponsorSearchSelector.setSelectedSponsor( item, true )"
 			class="column col-12 col-sm-6"
 			ng-show="
-				sponsorSearchSelector.selectedSponsor == undefined 
+				sponsorSearchSelector.selectedSponsor === null 
 				|| sponsorSearchSelector.selectedSponsor.accountID == item.accountID
 			"
 		>

@@ -46,6 +46,7 @@ class SWAccountShippingMethodModalController{
 	             public $hibachi,
 	             public entityService,
 	             public observerService,
+	             public orderTemplateService,
 				 public rbkeyService,
 				 public requestService
 	){
@@ -94,7 +95,7 @@ class SWAccountShippingMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions'
+			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions,' + this.orderTemplateService.orderTemplatePropertyIdentifierList
 		};
 		
 		if(this.showCreateShippingAddress){
@@ -105,9 +106,7 @@ class SWAccountShippingMethodModalController{
 			formDataToPost.shippingAccountAddress = this.baseEntity.shippingAccountAddress;
 		}
 		
-		formDataToPost.shippingMethod = {
-			shippingMethodID:this.baseEntity.shippingMethod.value
-		};
+		formDataToPost.shippingMethodID = this.baseEntity.shippingMethod.value;
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		

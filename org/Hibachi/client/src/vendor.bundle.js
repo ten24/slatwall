@@ -2549,6 +2549,7 @@ __webpack_require__(43)(__webpack_require__(312))
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
         	}catch(e){
+        	    console.error(e);
         		angular.bootstrap(document, ['ui.bootstrap']);
         	}
         });
@@ -2572,7 +2573,6 @@ __webpack_require__(43)(__webpack_require__(312))
             },
 
             bootstrap: function () {
-
                 loadingCallback();
 
                 return $q.all(promises)

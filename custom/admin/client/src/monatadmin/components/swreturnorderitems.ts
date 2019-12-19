@@ -105,6 +105,7 @@ class SWReturnOrderItemsController{
         this.orderItemCollectionList.getEntity().then(result=>{
             for(let i = 0; i < result.records.length; i++){
                 result.records[i] = new ReturnOrderItem(result.records[i]);
+                this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
             }
             this.orderItems = result.records;
         })
@@ -133,6 +134,7 @@ class SWReturnOrderItemsController{
     
     constructor(
         public $hibachi,
+        public publicService,
         private collectionConfigService
     ){
         this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
@@ -161,12 +163,19 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-       orderItem.refundPVTotal = orderItem.refundTotal * orderItem.pvTotal / orderItem.total;
-       orderItem.refundUnitPV = orderItem.refundPVTotal / orderItem.returnQuantity;
-       orderItem.refundCVTotal = orderItem.refundTotal * orderItem.cvTotal / orderItem.total;
-       orderItem.refundUnitCV = orderItem.refundCVTotal / orderItem.returnQuantity;
+       if(orderItem.returnQuantity != 0){
+           orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+           orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
+           orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+           orderItem.refundCVTotal = orderItem.refundUnitCV * orderItem.returnQuantity;
+       }else{
+           orderItem.refundUnitPV = 0;
+           orderItem.refundPVTotal = 0;
+           orderItem.refundUnitCV = 0;
+           orderItem.refundCVTotal = 0;
+       }
        
-       orderItem.taxRefundAmount = orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity;
+       orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity)*100)/100;
        
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{
@@ -217,12 +226,13 @@ class SWReturnOrderItemsController{
     }
    
     private updateRefundTotals = () =>{
-       let refundSubtotal = 0;
-       let refundPVTotal = 0;
-       let refundCVTotal = 0;
-       let allocatedOrderDiscountAmountTotal = 0;
-       let allocatedOrderPVDiscountAmountTotal = 0;
-       let allocatedOrderCVDiscountAmountTotal = 0;
+        let refundSubtotal = 0;
+        let refundPVTotal = 0;
+        let refundCVTotal = 0;
+        let allocatedOrderDiscountAmountTotal = 0;
+        let allocatedOrderPVDiscountAmountTotal = 0;
+        let allocatedOrderCVDiscountAmountTotal = 0;
+        let modifiedUnitPriceFlag = false;
         
         this.orderItems.forEach((item:any)=>{
             refundSubtotal += item.refundTotal + ( item.taxRefundAmount || 0 );
@@ -231,7 +241,14 @@ class SWReturnOrderItemsController{
             allocatedOrderDiscountAmountTotal += item.getAllocatedRefundOrderDiscountAmount() || 0;
             allocatedOrderPVDiscountAmountTotal += item.getAllocatedRefundOrderPVDiscountAmount() || 0;
             allocatedOrderCVDiscountAmountTotal += item.getAllocatedRefundOrderCVDiscountAmount() || 0;
+            
+            if(item.refundUnitPrice != item.calculatedExtendedUnitPriceAfterDiscount){
+                modifiedUnitPriceFlag = true;
+            }
         })
+        
+        this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
+        
         this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
         this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
         this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
@@ -262,7 +279,7 @@ class SWReturnOrderItemsController{
        const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
            if(payment != orderPayment){
                if(payment.paymentMethodType == 'giftCard'){
-                   payment.amount = payment.amountToRefund
+                   payment.amount = Math.min(payment.amountToRefund,this.refundTotal);
                }
                return total += payment.amount;
            }

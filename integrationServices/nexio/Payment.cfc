@@ -474,19 +474,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Request Data
 			var requestData = {
 				'data' = {
-					'amount' = arguments.requestBean.getOrder().getCalculatedTotal(),
-					'partialAmount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
+					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
 		    	},
 		    	'id' = arguments.requestBean.getOriginalChargeProviderTransactionID()
 			}
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
-
+			
 			// Response Data
 			if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderTransactionID(responseData.id);
 				arguments.responseBean.setAuthorizationCode(responseData.authCode);
-				arguments.responseBean.setAmountCredited(responseData.amount);
+				arguments.responseBean.setAmountCredited(-1 * responseData.amount);
 				
 				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");

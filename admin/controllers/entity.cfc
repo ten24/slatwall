@@ -107,6 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
 	this.secureMethods=listAppend(this.secureMethods, 'listform');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
+	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 
@@ -267,16 +268,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
-private void function populateWithAddressVerification(required struct rc){
+	private void function populateWithAddressVerification(required struct rc){
 		
 		if(
-			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
-			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
+			len(getHibachiScope().setting('globalIntegrationForAddressVerification')) &&
+			getHibachiScope().setting('globalIntegrationForAddressVerification') != 'internal' &&
 			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
 			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
 		){
 
-			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.orderFulfillment.getShippingAddress().getAddressID());
 
 			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
 				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
@@ -299,7 +300,7 @@ private void function populateWithAddressVerification(required struct rc){
 	}
 
 	public void function updateAddressWithSuggestedAddress(required struct rc){
-		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.addressID);
 		var address = getService("AddressService").getAddress(rc.addressID);
 		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
 

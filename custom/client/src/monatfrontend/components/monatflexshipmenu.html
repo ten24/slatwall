@@ -33,6 +33,9 @@
 		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'">
 		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
 		</li>
+		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode != 'otstActive'">
+		    <a href="##" ng-click="monatFlexshipMenu.showDeleteFlexshipModal()"><span sw-rbkey="'frontend.flexshipEdit.deleteFlexship'"></span></a>
+		</li>
 		
 	</ul>
 </div>

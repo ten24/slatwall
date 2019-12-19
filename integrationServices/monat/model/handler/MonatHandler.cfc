@@ -1,4 +1,4 @@
-component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     property name="OrderService";
     property name="AccountService";
 
@@ -15,15 +15,15 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         var accountAuthentications = accountAuthCollection.getRecords();
 
         for (var accountAuthentication in accountAuthentications) {
-            var accountAuthEntity = arguments.slatwallScope.getService('AccountService').getAccountAuthentication(accountAuthentication['accountAuthenticationID']);
+            var accountAuthEntity = getAccountService().getAccountAuthentication(accountAuthentication['accountAuthenticationID']);
 
             if(!isNull(accountAuthEntity) && 
                 len(accountAuthentication['legacyPassword']) > 29 && 
                 accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29))){
 
-                accountAuthEntity.setPassword(arguments.slatwallScope.getService('AccountService').getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
+                accountAuthEntity.setPassword(getAccountService().getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
                 accountAuthEntity.setLegacyPassword(javacast("null", ""));
-                accountAuthEntity = arguments.slatwallScope.getService('AccountService').saveAccountAuthentication(accountAuthEntity);                
+                accountAuthEntity = getAccountService().saveAccountAuthentication(accountAuthEntity);
             } else {
                 continue;
             }
@@ -41,37 +41,60 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
 
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
-		
+
 		var account = arguments.order.getAccount();
 		
 		//snapshot the pricegroups on the order.
-		if (!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){
-            var firstPriceGroup = account.getPriceGroups()[1];
-            order.setPriceGroup(firstPriceGroup);
+		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
+            arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
+        if( account.getAccountType() == 'marketPartner' && arguments.order.hasStarterKit() ) {
+			account.setStarterKitPurchasedFlag(true);
+        }
+    	
+    	if(arguments.order.getUpgradeFlag() == true){
+    		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
+    			account.setAccountType('VIP');
+    			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
+    		}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
+    			account.setAccountType('marketPartner');	
+    			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
+    		}
+    	}
+    	
 		if( 
 			!isNull(account.getAccountStatusType()) 
-			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getTypeCode() ) 
+			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
 		) {
 			
-			if(account.getAccountStatusType().getTypeCode() == 'astEnrollmentPending') {
+			if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending') {
 				
 				account.setActiveFlag(true);
+				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
-				account.setAccountStatusType(getService('typeService').getTypeByTypeCode('astGoodStanding'));
+				
+				if(isNull(account.getEnrollmentDate())) {
+					account.setEnrollmentDate(now());
+				}
 				
 				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					if(IsNull(account.getEnrollmentDate())) {
-						account.setEnrollmentDate(now());
-					}
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
-					account.setRenewalDate(renewalDate);
+					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
+				}
+				
+				// Email opt-in when finishing enrollment
+				if ( account.getAllowCorporateEmailsFlag() ) {
+					try{
+						getService('MailchimpAPIService').addMemberToListByAccount( account );
+					}catch(any e){
+						logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
+					}
 				}
 				
 			} else if ( 
-				account.getAccountStatusType().getTypeCode() == 'astGoodStanding' 
+				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
 				&& arguments.order.hasMPRenewalFee()
 			) {
@@ -82,7 +105,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				account.setRenewalDate(renewalDate);
 			}
 			
-			getService("accountService").saveAccount(account);
+			getAccountService().saveAccount(account);
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
@@ -91,14 +114,59 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
 			);
 		}
+		
 
 		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//set the initial order flag if needed.
 		try{
+			
+			//Commission Date
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
-			order.setCommissionPeriod(commissionDate);
-			getService("orderService").saveOrder(order);
+			//adding shipping and billing to flexship and activating
+			if(!isNull(arguments.data.orderTemplateID)){
+				
+				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
+				
+				var shippingMethodID = orderFulFillment.getShippingMethod().getShippingMethodID();
+				var shippingAddressID = orderFulFillment.getShippingAddress().getAddressID();
+				var accountPaymentMethodID = arguments.order.getOrderPayments()[1].getAccountPaymentMethod().getAccountPaymentMethodID();
+				var billingAccountAddressID = arguments.order.getOrderPayments()[1].getBillingAccountAddress().getAccountAddressID();
+				var orderTemplateID = orderTemplate.getOrderTemplateID();
+				var orderTemplateStatusTypeID = getService('typeService').getTypeBySystemCode('otstActive').getTypeID() ?:'2c948084697d51bd01697d9be217000a';
+				
+				QueryExecute("
+					UPDATE swordertemplate 
+					SET shippingMethodID =:shippingMethodID, shippingAddressID=:shippingAddressID, billingAccountAddressId=:billingAccountAddressID,accountPaymentMethodID=:accountPaymentMethodID, orderTemplateStatusTypeID=:orderTemplateStatusTypeID 
+					WHERE orderTemplateID =:orderTemplateID",
+					{
+			            shippingMethodID = {value=shippingMethodID, cfsqltype="cf_sql_varchar"}, 
+			            shippingAddressID = {value=shippingAddressID, cfsqltype="cf_sql_varchar"},
+			            accountPaymentMethodID = {value=accountPaymentMethodID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateID = {value=orderTemplateID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateStatusTypeID = {value=orderTemplateStatusTypeID, cfsqltype="cf_sql_varchar"},
+			            billingAccountAddressID = {value=billingAccountAddressID, cfsqltype="cf_sql_varchar"}
+		        	}
+		        );
+			}
+			arguments.order.setCommissionPeriod(commissionDate);
+			
+			//Initial Order Flag
+			//Set the Initial Order Flag as needed
+			var previousOrdersCollection = getOrderService().getOrderCollectionList();
+			//Find if they have any previous Sales Orders that are not this one that just purchased.
+			previousOrdersCollection.addFilter("account.accountID", arguments.order.getAccount().getAccountID());
+			previousOrdersCollection.addFilter("orderType.systemCode", "otSalesOrder");
+			previousOrdersCollection.addFilter("orderID", arguments.order.getOrderID(), "!=");
+			
+			var previousInitialOrderCount = previousOrdersCollection.getRecordsCount();
+			
+			if (!previousInitialOrderCount){
+				//this is the first order for this account
+				arguments.order.setInitialOrderFlag(true);
+			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate#");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 	}
 }

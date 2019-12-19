@@ -434,9 +434,13 @@
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0 && swListingDisplay.hasAverageOrTotal()">
                                 <span  >
-                                    <div class="btn-group" style="position: static;">
-                                        <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">Total <span class="caret"></span></button>
-                                            <ul class="dropdown-menu pull-right" id="">
+                                    <div class="btn-group pull-right" style="position: static;">
+                                        <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">
+                                            <span class="sw-total">Total</span>
+                                            <span class="sw-average" style="display:none" >Average</span>
+                                            <span class="caret"></span>
+                                        </button>
+                                            <ul class="dropdown-menu" id="">
                                                <li><a ng-click="swListingDisplay.showCalculation('average')">Average</a></li>
                                                <li><a ng-click="swListingDisplay.showCalculation('total')">Total</a></li>
                                             </ul>

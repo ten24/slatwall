@@ -176,6 +176,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
 	property name="taxTotal" persistent="false" hb_formatType="currency";
+	property name="VATTotal" persistent="false" hb_formatType="currency";
 	property name="taxTotalNotRefunded" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
@@ -262,12 +263,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
+
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-	
+    property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+    property name="upgradeFlag" ormtype="boolean";
+    
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
@@ -1425,6 +1428,25 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getSubtotalAfterItemDiscounts() {
 		return getService('HibachiUtilityService').precisionCalculate(getSubtotal() - getItemDiscountAmountTotal());
 	}
+	
+	public numeric function getVATTotal() {
+		var vatTotal = 0;
+		var orderItems = this.getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderItems[i].getVATAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - orderItems[i].getVATAmount());
+			} else {
+				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+			}
+		}
+
+		variables.vatTotal = vatTotal;
+		
+		return vatTotal;
+	}
+	
 
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
@@ -2023,7 +2045,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
-	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-vip");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
@@ -2070,13 +2092,22 @@ public numeric function getPersonalVolumeSubtotal(){
 		return variables.orderHasMPRenewalFee;
 	}
 	
+	public boolean function hasStarterKit() {
+	    if(!structKeyExists(variables,'orderHasStarterKit')){
+            variables.orderHasStarterKit = getService('orderService').orderHasStarterKit(this.getOrderID());
+		}
+		return variables.orderHasStarterKit;
+	}
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
 	        return true;
 	    }
-	    
-	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
 	    if(dateDiff <= 30){
 	        return true;
 	    }else if(dateDiff > 365){
@@ -2100,6 +2131,26 @@ public numeric function getPersonalVolumeSubtotal(){
 
 	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
 	    }
+        return true;
 	}
-	//CUSTOM FUNCTIONS END
+	
+	public boolean function hasProductPackOrderItem(){
+        var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
+        orderItemCollectionList.addFilter('order.orderID',getOrderID());
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
+        return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	/**
+	 * This validates that the orders site matches the accounts created site
+	 * if the order has an account already.
+	 **/
+	public boolean function orderCreatedSiteMatchesAccountCreatedSite(){
+        if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountCreatedSite())){
+            if (this.getOrderCreatedSite().getSiteID() != this.getAccount().getAccountCreatedSite().getSiteID()){
+                return false;
+            }
+        }
+        return true;
+	}//CUSTOM FUNCTIONS END
 }

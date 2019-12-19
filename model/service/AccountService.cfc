@@ -105,6 +105,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account.getFullName();
 	}
 	
+	
+	public any function getAvailablePaymentMethods() {
+		
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+		
+		return accountPaymentMethodList;
+	}
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -738,6 +752,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
 					arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
 
 				}
 				
@@ -766,6 +781,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Invalid email, no account authentication exists
 		} else {
 			arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
+			arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login the account
@@ -779,6 +795,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
 				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
 			}
 		// Login was invalid
 		} else {
@@ -952,6 +969,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountEmailAddress.setAccount(arguments.account);
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
 
+			//Setup username
+			arguments.account.setUsername( processObject.getUsername() );
+			
 			// Setup the authentication
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
@@ -2025,8 +2045,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
-			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
-
+			if(arguments.account.getAdminAccountFlag()){
+				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
+			}
+			
 		}
 
 		return delete( arguments.account );

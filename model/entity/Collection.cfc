@@ -2119,6 +2119,45 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         return aliasList;
     }
 
+	public void function executeUpdate(required struct updateSetStruct){
+		ormExecuteQuery(getUpdateHQL(argumentCollection=arguments), getHQLParams());
+	}
+
+	public string function getUpdateHQL(required struct updateSetStruct){
+
+		var alias = getBaseEntityAlias();//make sure it doesn't conflict
+		var entityReference = getDao('hibachiDAO').getApplicationKey() & getCollectionObject(); 
+
+		var updateHQL = 'UPDATE #entityReference# as #alias# ';
+
+		updateHQL &= 'SET ';
+		
+		for(var property in arguments.updateSetStruct){
+			//not paramatizing to prevent conflicts with filters:
+			updateHQL &= ' #alias#.#property# = #arguments.updateSetStruct[property]# ';
+		} 	
+
+		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() ); 
+
+		this.setDisplayProperties(primaryIDPropertyName); 
+
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+		if(arraylen(filterGroupArray)){
+			var filterGroupHQL = getFilterHQL(filterGroupArray);
+		
+			var joins = getValidJoins();
+			for(var join in joins){
+				var removeJoinAlias = alias & '.' & replaceNoCase( listRest(join.alias,'_'), '_', '.', 'ALL' );
+					
+				filterGroupHQL = replaceNoCase( filterGroupHQL, join.alias, removeJoinAlias, 'ALL' );
+			}
+				
+			updateHQL &= filterGroupHQL;	
+		}
+
+		return updateHQL; 
+	}
+
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false, recordsCountJoins=false){
 		
 		structDelete(variables,'groupBys');
@@ -3816,7 +3855,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									addTotalSumAggregate(column);
 								}
 
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								if(arguments.forExport  && structKeyExists(column, 'ormtype') && column.ormtype == 'timestamp'){
+									var dateFormat = '%m/%d/%Y %H:%i:%s';
+									if(structKeyExists(column, 'type')){
+										if(column.type == 'date'){
+											dateFormat = '%m/%d/%Y';
+										}else if(column.type == 'time'){
+											dateFormat = '%H:%i:%s';
+										}
+									}
+									
+									columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#dateFormat#') as #columnAlias#";
+								}else{
+									columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								}
 							}
 						}else{
 							continue;

@@ -3,13 +3,22 @@ class MonatOrderItemsController {
 	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
 	public orderFees; 
-
+	public orderSavings:number;
 	//@ngInject
-	constructor(public monatService, public orderTemplateService) {
+	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
 	}
 
 	public $onInit = () => {
 		this.getOrderItems();
+		
+		// cached account
+		this.publicService.getAccount().then(result =>{
+			if(!result.priceGroups.length || result.priceGroups[0].priceGroupCode == 2){
+				this.getUpgradedOrderSavings();
+				this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess');
+			}
+		}); 
+		
 	}
 	
 
@@ -22,6 +31,13 @@ class MonatOrderItemsController {
 		});
 	}
 	
+		
+	public getUpgradedOrderSavings = () => {
+		this.publicService.doAction('getUpgradedOrderSavingsAmount').then(result =>{
+			this.orderSavings = result.upgradedSavings;
+		});
+	}
+	
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
@@ -30,6 +46,7 @@ class MonatOrderItemsController {
 				this.starterKits.push( item );
 			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
+				this.todaysOrder.push( item );
 			}	else {
 				this.todaysOrder.push( item );
 			}

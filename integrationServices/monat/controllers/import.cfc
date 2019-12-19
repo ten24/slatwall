@@ -14,6 +14,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="skuService";
 	property name="paymentService";
 	property name="locationService";
+	property name="fulfillmentService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -23,6 +24,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
+	this.secureMethods=listAppend(this.secureMethods,'upsertCashReceiptsToOrders');
+	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -40,6 +44,96 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 2, '.'));
+	}
+	
+	/**
+	 * {
+	        "AccountNumber": "1096492",
+	        "UserInitials": "ZAN",
+	        "CommissionPeriod": "201907",
+	        "MCRReason": null,
+	        "ReceiptTypeCode": "2",
+	        "ReceiptTypeName": "Cash",
+	        "MiscCashReceiptId": 1,
+	        "ReceiptNumber": 18549,
+	        "ReceiptDate": "2019-08-03T00:00:00",
+	        "EntryDate": "2018-07-07T00:00:00",
+	        "CcAccountNumber": "",
+	        "PreAuthTransit": "",
+	        "Amount": 20.95,
+	        "AuthorizationDate": null,
+	        "Comment": "Mix & Match Refund Order 5129667",
+	        "ReferenceNumber": "",
+	        "OrderNumber": null
+        }
+	 **/
+	private any function getCashReceiptsData(pageNumber,pageSize){ 
+
+		var uri = "https://api.monatcorp.net:8443/api/Slatwall/queryMCR";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+
+		accountJson = httpService.send().getPrefix();
+
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			echo("Could not import cash receipts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+
+		return accountsResponse;
+
+	}
+	
+	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+	    var = {hasErrors: false};
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": arguments.dateFilterStart,
+			    "EndDate": arguments.dateFilterEnd
+			}
+		};
+
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+
+		var shipmentJson = httpService.send().getPrefix();
+		var apiData = deserializeJson(shipmentJson.fileContent);
+
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			fsResponse['Records'] = apiData.Data.Records;
+		    return fsResponse;
+		}
+
+		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		fsResponse.hasErrors = true;
+
+
+		return fsResponse;
 	}
 	
 	private any function getAccountData(pageNumber,pageSize){
@@ -116,6 +210,50 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return ordersResponse;
 	}
 	
+	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
+	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+		
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": "2019-11-01T19:16:28.693Z",
+			    "EndDate": "2019-11-26T19:16:28.693Z"
+			}
+		};
+		
+		/**
+		 * 
+		 * Filter example
+		 * "Filters": {
+		 *	"StartDate": "2019-11-20T19:16:28.693Z",
+		 *	"EndDate": "2019-11-20T19:16:28.693Z"
+		 * }
+		 *	 
+		 **/
+	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var accountJson = httpService.send().getPrefix();
+		
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			writeDump("Could not import accounts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+		
+		return accountsResponse;
+	}
+	
+	
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
@@ -150,6 +288,427 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		
 		return fsResponse;
+	}
+	
+	public void function importOrderShipments(required struct rc){ 
+        getService("HibachiTagService").cfsetting(requesttimeout="60");
+		getFW().setView("public:main.blank");
+
+        var MERGE_ARRAYS = true;
+        var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var dateFilterStart = rc.dateFilterStart?:dateFormat(now(), 'YYYY-mm-dd');
+		var dateFilterEnd = rc.dateFilterEnd?:dateFormat(now(), 'YYYY-mm-dd');
+        var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+        var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
+
+        // Begin Helper functions
+
+        /**
+         *  @param {Struct} body The request body to be serialized into a API filter.
+         *  @param {String} authKey The value for the Authorization header sent to Boomi.
+         *  @return {Struct | Array} The shipments to create or update in Slatwall.
+         *  @throws Exception when the api can not be accessed.
+         * 
+         *  @example Request Body {
+         *          "ProcessingDate": "2019-01-03"
+         *          }
+         *          
+         * 
+         *  @example Response {
+         *          "Status": "success",
+         *          "Data": {
+         *            "Records": [
+         *              {
+         *                "SalesDocNumber": "7944365",
+         *                "DeliveryDocNumber": "0080552438",
+         *                "DeliveryDate": "2019-01-03",
+         *                "CarrierName": "Ground",
+         *                "TrackingNumber": "472895051621"
+         *              }]
+         *          }
+         * 
+         **/ 
+
+        /**
+         * @param {Struct} hashmap A collection of key value pairs.
+         * @param {List<String>} keys A list of keys that reference values in the map.
+         * @return {Boolean} Returns True if the hashmap contains all the key 
+         * values in the keys list and those values are not null.
+         * False otherwise.
+         */
+        var containsAll = function(hashmap, keys){
+
+            for (var key in listToArray(keys)){
+                if (!structKeyExists(hashmap, key) || isNull(hashmap[key])){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var orderExists = function(orderNumber) {
+            return !isNull(getOrderService().getOrderByOrderNumber(orderNumber));
+        }
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var order = function(orderNumber) {
+            return getOrderService().getOrderByOrderNumber(orderNumber);
+        }
+
+        /**
+         * @param {Struct} The shipment to use to create the order delivery.
+         * @return {Boolean} Returns True if the tracking, ordernumber and 
+         * order exist. False otherwise.
+         */
+        var dataExistsToCreateDelivery = function(shipment) {
+
+            if (containsAll(shipment, "OrderNumber,Packages") && 
+                orderExists(shipment.OrderNumber)){
+                return true;    
+            }
+
+            return false;
+        };
+
+        /**
+         * @param {String} The name of the fulfillment type to return.
+         * @return {FulfillmentMethod} Returns the fulfillment method by name.
+         */
+        var fulfillmentMethod = function(name) {
+            return getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName(name);
+        };
+
+        /**
+         * @param {String} The name of the fulfillment method type to check.
+         * @return {FulfillmentMethod} Returns the fulfillment method by type name.
+         */
+        var isShippingMethodType = function(orderFulfillment) {
+            return orderFulfillment.getFulfillmentMethodType() == "Shipping";
+        };
+
+        /**
+         * @param {OrderFulfillment} The name of the fulfillment method type to check.
+         * @return {Array} Contains fulfillment items.
+         */
+        var getFulfillmentItems = function(orderFulfillment, orderFulfillmentItems) {
+            if (isShippingMethodType(orderFulfillment)){
+                arrayAppend( orderFulfillmentItems, orderFulfillment.getOrderFulfillmentItems(), MERGE_ARRAYS );
+            }
+            return orderFulfillmentItems;
+        };
+
+        /**
+         * @param {OrderDelivery} Creates and adds all delivery items for the order.
+         * @return {OrderDeliveryItem} Returns the newly created and save item. 
+         */
+        var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
+            var orderDeliveryItem = Slatwall.model.entity.OrderDeliveryItem();
+            orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
+            orderDeliveryItem.setOrderItem(orderFulfillmentItem.getOrderItem());
+            orderDeliveryItem.setOrderDelivery(orderDelivery);
+			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+            return orderDeliveryItem;
+        }
+
+        /**
+         * @param {OrderDelivery} Creates and adds all SHIPPING delivery items for the 
+         * order to a single delivery.
+         * @return {Void} 
+         */
+        var createDeliveryItems = function( orderDelivery ) {
+            var order = orderDelivery.getOrder();
+            var orderFulfillments = order.getOrderFulfillments();
+
+            //gets all the fulfillment items as a single array
+            var orderFulfillmentItems = [];
+
+            // Get all items.
+            for (var orderFulfillment in orderFulfillments){
+                orderFulfillmentItems = getFulfillmentItems( orderFulfillment, 
+                    orderFulfillmentItems );
+            }
+
+            // Create all the delivery items and add them to the delivery.
+            for (var orderFulfillmentItem in orderFulfillmentItems){
+                var orderDeliveryItem = createDeliveryItem( orderDelivery,  
+                    orderFulfillmentItem);
+            }
+        };
+
+        /**
+         * @param {Order} order The order to check 
+         * @return {Boolean} Returns true is the entire order is delivered.
+         * False otherwise.
+         */
+        var orderIsDelivered = function( order ){
+
+            if (order.getQuantityUndelivered() <= 0){
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @param {Struct} Shipment A shipment (with packages) is used to build a delivery.
+         * @return {Void}
+         */
+        var createDelivery = function(shipment){
+        	logHibachi("createDelivery: shipment.shipmentNumber");
+			var order = order(shipment.OrderNumber);
+
+            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
+                // Create the delivery.  
+                var orderDelivery = new Slatwall.model.entity.OrderDelivery();
+    			orderDelivery.setOrder(order);
+    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
+    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
+    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			orderDelivery.setRemoteID( shipment.shipmentId );
+
+    		    //get the tracking numbers.
+    		    //get tracking information...
+    		    var concatTrackingNumber = "";
+    		    var concatScanDate = "";
+    		    var packageShipDate = "";
+    		    if (structKeyExists(shipment, "Packages")){
+    		    	 for (var packages in shipment.Packages){
+    		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
+
+    		    		if (!isNull(packages['ScanDate'])){
+    		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+    		    		}
+
+    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+    		    		}
+
+    		    		if (!isNull(shipment['PackageShipDate'])){
+    		    			packageShipDate = shipment['PackageShipDate'];
+    		    		}
+    		    	 }
+    		    }
+
+    		    // all tracking on one fulfillment.
+    		    orderDelivery.setTrackingNumber(concatTrackingNumber);
+    		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
+    		    orderDelivery.setModifiedDateTime( now() );
+                orderDelivery.setShippingMethod( shippingMethod );
+                ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
+                createDeliveryItems( orderDelivery );
+                echo("Created a delivery for orderNumber: #shipment['OrderNumber']# <br>");
+                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
+
+            }else{
+            	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
+
+			}
+        };
+
+        // Map all the shipments -> deliveries.
+        // This wraps the map in a new stateless session to keep things fast
+
+        var tx = ormStatelessSession.beginTransaction();
+
+        // Do one page at a time, flushing and clearing as we go.
+        while (pageNumber < pageMax){
+        	logHibachi("Importing pagenumber: #pageNumber#");
+	        // Call the api and get shipment records for the date defined as the filter.
+	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
+
+	        if (isNull(response)){
+	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
+	            throw("Unable to get a usable response from Shipments API #now()#");
+	        }
+
+	        var shipments = response.Records?:"null";
+
+	        if (shipments.equals("null")){
+	        	logHibachi("Response did not contain shipments.");
+	            throw("Response did not contain shipments data.");
+	        }
+
+	        if (containsAll(rc, "viewResponse")){
+	            writedump(shipments);abort;
+	        }
+
+			try{
+
+	    		arrayMap( shipments, createDelivery );
+	    		tx.commit();
+	    		ormGetSession().clear();
+			}catch(shipmentError){
+
+				ormGetSession().clear();
+				logHibachi("Error: shipmentError.getMessage()");
+				writedump(shipmentError);
+				abort;	
+			}
+			logHibachi("End Importing pagenumber: #pageNumber#");
+			pageNumber++;
+        }
+
+		ormStatelessSession.close();
+		writeDump("End: #pageNumber# - #pageSize#");
+        // Sets the default view 
+
+    }
+    
+    /*
+		Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+	*/
+	public void function upsertCashReceiptsToOrders(rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		while (pageNumber < pageMax){
+			
+    		var receiptResponse = getCashReceiptsData(pageNumber, pageSize);
+    		if (receiptResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var receipts = receiptResponse.Data.Records;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var cashReceipt in receipts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			if (!isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1){
+        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'], false );
+        			}
+        			
+        			if (isNull(foundOrder)){
+        				pageNumber++;
+        				echo("Could not find this order to update: Order number #cashReceipt['OrderNumber']?:'null'#<br>");
+        				continue;
+        			}
+        			
+        			//Create a comment and add it to the order.
+        			if (!isNull(cashReceipt['Comment']) && !isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1 ){
+			        	
+			        	try{
+			        		var comment = getCommentService().getCommentByRemoteID(cashReceipt["OrderNumber"]);
+			        	}catch(commentError){
+			        		continue;
+			        	}
+			        	var commentIsNew = false;
+			        	
+			        	if (isNull(comment)){
+			        		commentIsNew = true;
+			        		var comment = new Slatwall.model.entity.Comment();
+			        		var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+			        		comment.setRemoteID(cashReceipt["OrderNumber"]);
+			        	}
+			        	
+			        	//build the comment
+			        	/**
+			        	 * 
+			        	 * Comment Structure Example:  
+			        	 * Receipt Number: 34542. Order Number: 10157652. 
+			        	 * Entered: 07/15/19. 
+			        	 * Initials: KYR. 
+			        	 * Commission Period: 07/2019. 
+			        	 * MCR Reason: 2-Shipping Refund. 
+			        	 * Comments: Shipping error refund for order#10157652. 
+			        	 * Amount: $20.55. 
+			        	 * Payment Account: 1945. 
+			        	 * Authorization: SUCCESS. 
+			        	 * ReferenceNumber: 1524825-4815845636
+			        	 
+			        	   Api results
+			        	   {
+				                "AccountNumber": "1096492",
+				                "UserInitials": "ZAN",
+				                "CommissionPeriod": "201907",
+				                "MCRReason": null,
+				                "ReceiptTypeCode": "2",
+				                "ReceiptTypeName": "Cash",
+				                "MiscCashReceiptId": 1,
+				                "ReceiptNumber": 18549,
+				                "ReceiptDate": "2019-08-03T00:00:00",
+				                "EntryDate": "2018-07-07T00:00:00",
+				                "CcAccountNumber": "",
+				                "PreAuthTransit": "",
+				                "Amount": 20.95,
+				                "AuthorizationDate": null,
+				                "Comment": "Mix & Match Refund Order 5129667",
+				                "ReferenceNumber": "",
+				                "OrderNumber": null
+				            }
+				            
+			        	 Format example: 
+			        	 Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+			        	 **/
+			        	 
+			        
+			        	var commentText = "";
+			        	commentText = "Receipt Number: #cashReceipt.ReceiptNumber?:''#. Order Number:#cashReceipt.OrderNumber?:''#. Entered: #cashReceipt.EntryDate?:''#. Initials: #cashReceipt.UserInitials?:''#. Commission Period: #cashReceipt.CommissionPeriod?:''#. MCR Reason: #cashReceipt.MCRReason?:''#. Comments: #cashReceipt.Comment?:''#. Amount: #dollarFormat(cashReceipt.Amount?:'0.00')#. Authorization: #cashReceipt.PreAuthTransit?:''#. ReferenceNumber: #cashReceipt.ReferenceNumber?:''#.";
+			        	
+			        	comment.setComment(commentText);
+			        	
+			        	if (commentIsNew){
+			        		ormStatelessSession.insert("SlatwallComment", comment); 
+			        		comment.setPublicFlag(false);
+			        		comment.setCreatedDateTime(now());
+			        		commentRelationship.setOrder( foundOrder );
+			        		commentRelationship.setComment( comment );
+			        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+			        	}else{
+			        		ormStatelessSession.update("SlatwallComment", comment); 
+			        	}
+        			}
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Receipt Data ) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		logHibachi("End: #pageNumber# - #pageSize# - #index#");
+
+	}
+	
+	public void function importDailyAccountUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//Use a service instead.
+		getService("MonatDataService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		
 	}
 	
 	public any function getDateFromString(date) {
