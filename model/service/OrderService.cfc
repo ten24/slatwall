@@ -3501,13 +3501,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderDelivery_generateShippingLabel(required any orderDelivery, required any processObject, struct data){
 		//prevent overwriting existing labels
 
-		if (
-			(
-				isNull(arguments.orderDelivery.getTrackingNumber())
-				|| !len(arguments.orderDelivery.getTrackingNumber())
-			)
-			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()
-		) {
+		if ((isNull(arguments.orderDelivery.getTrackingNumber()) || !len(arguments.orderDelivery.getTrackingNumber()))
+			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()) {
 
 			//get the shipping integration from the previously attempting label generation 
 			var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.orderDelivery.getOrderFulfillment().getShippingIntegration());
@@ -3582,6 +3577,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				){
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
+				
+				//Sets the url for tracking
+				if (!isNull(arguments.orderDelivery.getTrackingNumber()) && !isNull(arguments.orderDelivery.getShippingMethod())
+					&& !isNull(arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL"))){
+					var url = arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
+					url.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
+					arguments.orderDelivery.setTrackingURL(url);
+				}
+				
 			}
 			
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"

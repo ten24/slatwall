@@ -52,6 +52,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
+	property name="trackingUrl" hb_populateEnabled="false" ormtype="string";
 	property name="containerLabel" ormtype="text";
 	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
 	property name="undeliverableOrderReason" ormtype="string";
@@ -81,9 +82,6 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	// Calculated Properties
-	property name="calculatedTrackingUrl" hb_populateEnabled="false" ormtype="string";
-	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
 	//CUSTOM PROPERTIES BEGIN
@@ -98,17 +96,6 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 			totalDelivered += getOrderDeliveryItems()[i].getQuantity();
 		}
 		return totalDelivered;
-	}
-	
-	// Generates a tracking url if the tracking number exists, and we have the shipping method that was used.
-	public any function getTrackingUrl() {
-		if (!isNull(getTrackingNumber()) 
-			&& !isNull(getShippingMethod())
-			&& !isNull(getShippingMethod().setting("shippingMethodTrackingURL"))){
-				var url = getShippingMethod().setting("shippingMethodTrackingURL") 
-				url.replace("${trackingNumber}", getTrackingNumber());
-				return url;
-			}
 	}
 	
 	public any function getOrderDeliveryGiftCardSmartList() {
