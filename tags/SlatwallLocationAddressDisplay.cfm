@@ -69,7 +69,7 @@ Notes:
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-		<div class="slatwall-address-container form-horizontal" ng-init="showFullAddress = true">
+		<div class="slatwall-address-container form-horizontal" ng-init="showFullAddress = false">
 			<input type="hidden" name="#attributes.fieldNamePrefix#addressID" value="#attributes.address.getAddressID()#" />
 			<!--- Only show the country instead of the full address unless requested. --->
 			
@@ -77,9 +77,9 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-countryCode" />
 			</cfif>
 			
-			<div class="btn btn-primary" ng-click="showFullAddress=!showFullAddress"><i class="fa fa-plus" aria-hidden="true"></i> Show/Hide </div>
+			<div class="btn btn-primary" ng-click="showFullAddress=!showFullAddress"><i class="fa fa-plus" aria-hidden="true"></i> {{ showFullAddress ? 'Show' : 'Hide'  }} </div>
 			
-			<span style="display:{{(showFullAddress===true)?'show':'none'}};">
+			<span ng-show="showFullAddress">
 				<cfif attributes.showName>
 					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#name" property="name" edit="#attributes.edit#" fieldClass="slatwall-address-name" />
 				</cfif>
