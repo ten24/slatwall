@@ -9,13 +9,24 @@ class MonatProductListingController {
     public cmsContentFilterFlag:boolean;
     public pageRecordsShow:number = 12;
     public recordsCount:number;
+    public wishlistItems;
 
 	// @ngInject
 	constructor(
 		public publicService,
 		public observerService,
+		private monatService,
 		public $rootScope
 	) {}
+	
+	private $onInit = () => {
+        this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = data.wishlistItems;
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
+	}
 
 	public $postLink = () => {
 	    this.getProducts();

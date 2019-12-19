@@ -1033,6 +1033,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
+    public void function getWishlistItemsForAccount( require any data ) {
+        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
+        param name="arguments.data.displayProperties" default="orderTemplateItems.sku.product.productID|productID";
+        
+        var wishlistList = getService('OrderService').getOrderTemplateCollectionList();
+		wishlistList.setDisplayProperties( arguments.data.displayProperties );
+		wishlistList.addFilter( 'account.accountID', arguments.data.accountID );
+		wishlistList.addFilter( 'orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
+		var accountWishlistItems = wishlistList.getRecords();
+		
+		arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
+    }
+    
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();
@@ -1044,6 +1057,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productID');
         productCollectionList.addDisplayProperties('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
@@ -1205,6 +1219,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
             productMap[record.defaultSku_skuID] = {
+                'productID': record.productID,
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,

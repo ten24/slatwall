@@ -15,6 +15,8 @@ class MonatProductCardController {
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
     public isEnrollment: boolean = false;
+    public accountWishlistItems;
+    public isAccountWishlistItem: boolean = false;
 
 	// @ngInject
 	constructor(
@@ -28,6 +30,7 @@ class MonatProductCardController {
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
+        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess"); 
 	}
 	
 	public $onInit = () => {
@@ -186,10 +189,24 @@ class MonatProductCardController {
 	
 	private setIsEnrollment = (): void => {
 		this.isEnrollment = (
-			this.type !== 'enrollment'
-			&& this.type !== 'VIPenrollmentOrder'
-			&& this.type !== 'VIPenrollment'
+			this.type === 'enrollment'
+			|| this.type === 'VIPenrollmentOrder'
+			|| this.type === 'VIPenrollment'
 		);
+	}
+	
+	private setIsAccountWishlistItem = (): void => {
+		if ( 
+			'undefined' !== typeof this.accountWishlistItems 
+			&& this.accountWishlistItems.length
+		) {
+			this.accountWishlistItems.forEach(item => {
+				if ( item.productID === this.product.productID ) {
+					this.isAccountWishlistItem = true;
+					return;
+				}
+			});
+		}
 	}
 
 }
@@ -203,6 +220,7 @@ class MonatProductCard {
 		product: '=',
 		type: '@',
 		index: '@',
+		accountWishlistItems: '<?',
 		allProducts: '<?',
 		orderTemplate: '<?',
 	};
