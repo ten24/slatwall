@@ -121,7 +121,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
-	
+	property name="qualifiesForOFYProducts" persistent="false";
+
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -444,6 +445,17 @@ public boolean function getCustomerCanCreateFlag(){
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
+
+	public boolean function getQualifiesForOFYProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
+			
+			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+			
+			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
 
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";

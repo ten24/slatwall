@@ -99,11 +99,45 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
         
+		if(arguments.processObject.getNewAccountFlag()) {
+			
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+			
+			if(account.hasErrors()) {
+				arguments.orderTemplate.addError('create', account.getErrors());
+				return arguments.orderTemplate;
+			} 
+		} else if(!isNull(processObject.getAccount())){
+			var account = processObject.getAccount();
+		} else {
+			var account = getHibachiScope().getAccount();
+		}
+		
+		if( !account.getCanCreateFlexshipFlag()) {
+			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
+			return arguments.orderTemplate;
+		}
+		
+		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+			return arguments.orderTemplate; 
+		}
+		
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
 		}
-        
-        return super.processOrderTemplate_create(argumentCollection = arguments);
+		
+		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		return arguments.orderTemplate;
     }
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
@@ -389,24 +423,54 @@ component extends="Slatwall.model.service.OrderService" {
         }
     }
 	
-	public any function getOrderItemsByOrderID(struct data={}) {
+	//Return data: order fulfillments, order payments, order items, order 
+	public any function getOrderItemsHeavy(struct data={}) {
         param name="arguments.data.orderID" default="";
         param name="arguments.data.accountID" default=getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=10;
         
-
-		var ordersItemsList = getHibachiScope().getService('OrderService').getOrderItemCollectionList();
+        var order = this.getOrder(arguments.data.orderID);
+        
+        //order refund data
+		if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',order.getOrderType().getSystemCode())){
+			var orderRefundTotal = precisionEvaluate(order.getPaymentAmountCreditedTotal() - order.getPaymentAmountReceivedTotal());
+		}else{
+			var orderRefundTotal = ''
+		}
 		
-		ordersItemsList.setDisplayProperties('quantity,price,sku.skuName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,order.billingAddress.streetAddress,order.billingAddress.street2Address,order.billingAddress.city,order.billingAddress.stateCode,order.billingAddress.postalCode,order.billingAddress.name,order.billingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,order.fulfillmentTotal,order.calculatedSubTotal,order.taxTotal,order.discountTotal,order.total,mainCreditCardOnOrder,MainCreditCardExpirationDate,mainPromotionOnOrder,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.personalVolumeTotal');
-		
+		///Order Item Data
+		var ordersItemsList = this.getOrderItemCollectionList();
+		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersItemsList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return ordersItemsList.getPageRecords();
-
+		//Order payment data
+		var orderPaymentList = this.getOrderPaymentCollectionList();
+		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderPaymentList.setCurrentPageDeclaration(arguments.data.currentPage); 	
+		
+		//Order promotion data
+		var orderPromotionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
+		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		
+		var orderPayments = orderPaymentList.getPageRecords();
+		var orderItems = ordersItemsList.getPageRecords();
+		var orderPromtions = orderPromotionList.getPageRecords();
+		var orderItemData = {};
+		
+		orderItemData['orderPayments'] = orderPayments;
+		orderItemData['orderItems'] = orderItems;
+		orderItemData['orderPromtions'] = orderPromtions;
+		orderItemData['orderRefundTotal'] = orderRefundTotal;
+		
+		return orderItemData
     }
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
