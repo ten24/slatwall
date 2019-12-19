@@ -1,3 +1,4 @@
+
 <div ng-if="monatFlexshipCartContainer.orderTemplateID || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
 	
 	<div ng-show="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag && monatFlexshipCartContainer.showCanPlaceOrderAlert" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
@@ -7,6 +8,7 @@
 		</button>
 	</div>
 	
+
 	<div class="flexship-bar">
 		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
 			<a href="#">
@@ -51,7 +53,6 @@
 			<button
 				ng-if="monatFlexshipCartContainer.context != 'enrollment' "
 				class="btn bg-primary btn-block"
-				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 			>
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
