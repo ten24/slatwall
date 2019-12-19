@@ -345,7 +345,7 @@ component {
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("orderMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (getAccount.getAccountType() == "marketPartner" 
+		if (!isNull(getAccount()) && getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
@@ -372,7 +372,7 @@ component {
         var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("orderInitialEnrollmentPeriodForMarketPartner");
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (getAccount.getAccountType() == "marketPartner" 
+		if (!isNull(getAccount()) && getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& !isNull(getMarketPartnerEnrollmentOrderID())
@@ -401,7 +401,7 @@ component {
 	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("orderMaxDaysAfterAccountCreate");
 	    
 	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
-		if (!isNull(maxDaysAfterAccountCreate) && getAccount.getAccountType() == "marketPartner" 
+		if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount.getAccountType() == "marketPartner" 
 			&& !isNull(getAccount().getCreatedDateTime()) 
 			&& dateDiff("d", getAccount().getCreatedDateTime(), now()) > maxDaysAfterAccountCreate
 			&& this.hasProductPackOrderItem()){
@@ -409,7 +409,7 @@ component {
 			return false; //they can not purchase this because they already have purchased it.
 		
 		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
-		} else if (getAccount().getAccountType() == "marketPartner" 
+		} else if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
 				&& !isNull(getAccount().getCreatedDateTime()) 
 				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate){
 
