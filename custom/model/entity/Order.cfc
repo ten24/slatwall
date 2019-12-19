@@ -203,6 +203,25 @@ component {
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
+	public boolean function getMarketPartnerEnrollmentOrderDateTime(){
+	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+	    orderItemCollectionList.setDisplayProperties("orderOpenDateTime");// Date placed 
+	    return orderItemCollectionList.getRecords();
+	}
+	
+	public boolean function getMarketPartnerEnrollmentOrderID(){
+	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+	    orderItemCollectionList.setDisplayProperties("orderID");// Date placed 
+	    return orderItemCollectionList.getRecords();
+	}
+	
+	
 	public any function getAccountType() {
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
@@ -306,4 +325,94 @@ component {
         }
         return true;
 	}
+	
+	
+	/**
+	 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
+	 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
+	 * from ordering the enrollment kit.
+	 * var maxDaysAfterEnrollmentToPlaceOneOrder = getOrderCreatedSite().setting("maxDaysAfterEnrollmentToPlaceOrderMP");
+	 * 
+	 **/
+	 public boolean function MarketPartnerValidationMaxOrderAmount(){
+	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("initialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("maxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (getAccount.getAccountType() == "marketPartner" 
+			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			
+			//If this order is more than 200 pounds, fails.  
+			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			    return false; // they already have too much.
+			}
+	    }
+	 }
+	 
+	 /**
+	  * 2. If Site is UK and account is MP Max Order 1 placed in first 7 days 
+	  * after enrollment order.
+	  **/
+	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
+	    // If they've never enrolled, they can enroll.
+	    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
+	    if (!hasEnrollmentOrder){
+	        return true;
+	    }
+	    
+        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("initialEnrollmentPeriodForMarketPartner");
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (getAccount.getAccountType() == "marketPartner" 
+			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
+		
+			//This order is 1, so if they have any previous that is not the enrollment order,
+			//they can't place this one.
+			var previouslyOrdered = getService("OrderService").getOrderCollectionList();
+
+			//Find if they have placed more than the initial enrollment order already.
+			previouslyOrdered.addFilter("account.accountID", getAccount().getAccountID());
+			previouslyOrdered.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyOrdered.addFilter("orderType.systemCode", "otSalesOrder");
+			previouslyOrdered.addFiltered("orderID", getMarketPartnerEnrollmentOrderID(),"!=");
+			if (previouslyOrdered.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		} 
+	 }
+	 
+	 /**
+	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
+	  **/
+	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
+	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("maxDaysAfterAccountCreate");
+	    
+	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
+		if (getAccount.getAccountType() == "marketPartner" 
+			&& !isNull(getAccount().getCreatedDateTime()) 
+			&& dateDiff("d", getAccount().getCreatedDateTime(), now()) > maxDaysAfterAccountCreate
+			&& this.hasProductPackOrderItem()){
+		
+			return false; //they can not purchase this because they already have purchased it.
+		
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
+		} else if (getAccount().getAccountType() == "marketPartner" 
+				&& !isNull(getAccount().getCreatedDateTime()) 
+				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate){
+
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", getAccount().getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.systemCode", "otSalesOrder");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		}
+	 }
 }
