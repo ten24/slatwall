@@ -176,36 +176,55 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}
 	}
 	
+	
+	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
+		//try{
+			this.createOrderItemSkuBundle( arguments.orderItem );
+		/*}catch(bundleError){
+			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+		}*/
+	}
+	
+	/*public any function afterOrderItemDeleteSuccess(required any slatwallScope, required any orderItem){  
+		try{
+			this.removeOrderItemSkuBundle( arguments.orderItem );
+		}catch(bundleError){
+			logHibachi("afterOrderItemProcessDeleteSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()#. ");
+		}
+	}*/
+	
+	/*public any function removeOrderItemSkuBundle(required any orderItem){ 
+		QueryExecute("DELETE FROM SwOrderItemSkuBundle 
+					WHERE orderItemID = :orderItemID",
+					{ orderItemID = {value=orderItem.getOrderItemID(), cfsqltype="cf_sql_varchar"}});
+	}*/
+	
 	/**
 	 * Adds the calculated bundled order items
 	 * For each orderitem, create new orderItemSkuBundles for each sku that is 
 	 * a bundle.
 	 **/
-	 public any function createOrderItemSkuBundles(required any order){
+	 public any function createOrderItemSkuBundle(required any orderItem){
 	 	
-	 	var orderItems = arguments.order.getOrderItems();
-	 	
-	 	for (var orderitem in orderItems){
-	 		
-	 		var bundledSkus = orderItem.getSku().getBundledSkus();
-	 		
-	 		//skip if no bundled orderItems exist for this sku
-	 		if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
-	 			continue;
-	 		}
-	 		
-	 		//create
- 			for (var skuBundle in bundledSkus){
- 				
- 				var bundledOrderItem = getService("OrderService").newOrderItemSkuBundle();
- 				bundledOrderItem.setPrice(orderItem.getSkuPrice()?:0);
- 				bundledOrderItem.setSku(skuBundle.getBundledSku());
- 				bundledOrderItem.setQuantity(skuBundle.getBundledQuantity());
- 				bundledOrderItem.setOrderItem(orderItem);
- 				
- 				getService("OrderService").saveOrderItemSkuBundle(bundledOrderItem);
-
- 			}
+	 	var bundledSkus = orderItem.getSku().getBundledSkus();
+ 		//create
+ 		
+ 		for (var skuBundle in bundledSkus){
+ 			QueryExecute("INSERT INTO SwOrderItemSkuBundle 
+					SET orderItemSkuBundleID =:uuid, 
+					createdDateTime = :createdDateTime,
+					modifiedDateTime = :createdDateTime,
+					skuID = :skuID,
+					orderItemID = :orderItemID,
+					quantity = :quantity",
+					{
+			            uuid = {value=replace(lcase(createUUID()), '-', '', 'all'), cfsqltype="cf_sql_varchar"}, 
+			            createdDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
+			            modifiedDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
+			            skuID = {value=skuBundle.getBundledSku().getSkuID(), cfsqltype="cf_sql_varchar"},
+			            orderItemID = {value=orderItem.getOrderItemID(), cfsqltype="cf_sql_varchar"},
+			            quantity = {value=skuBundle.getBundledQuantity(), cfsqltype="cf_sql_varchar"}
+		        	});
 	 	}
 	}
 }
