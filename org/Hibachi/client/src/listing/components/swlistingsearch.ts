@@ -19,6 +19,7 @@ class SWListingSearchController {
     public swListingDisplay:any;
     
     public searchableOptions;
+    public searchableColumns:any[];
     private selectedSearchColumn;
    
     private selectedSearchFilter;
@@ -100,10 +101,14 @@ class SWListingSearchController {
 
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.collectionConfig.columns);
-    
-        // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
-        //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
-        // })
+        
+        this.searchableColumns = [];
+        for(var i = 0; i < this.searchableOptions.length; i++){
+            if(this.searchableOptions[i].isSearchable){
+                this.searchableColumns.push(this.searchableOptions[i].propertyIdentifier);
+            }
+        }
+
         
         if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
@@ -337,13 +342,6 @@ class SWListingSearchController {
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
-        // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        // if(this.selectedSearchFilter.criteria != 'all'){
-        //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
-        //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-        //     }
-        // }
-
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
@@ -351,21 +349,19 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
-        var searchableColumn = "";
+
+        var searchableColumns = [];
         if(column.propertyIdentifier){
-            searchableColumn = column.propertyIdentifier;
-        //default to All columns
+            searchableColumns.push(column.propertyIdentifier);
+        }else{
+            searchableColumns = this.searchableColumns;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
-            if(searchableColumn.length){
-                if(searchableColumn === this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier){
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                }else{
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
-                }
-            }else{
+            if(searchableColumns.indexOf(this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1){
                 this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+            }else{
+                this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
             }
         }
     }
