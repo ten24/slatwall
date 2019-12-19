@@ -798,6 +798,20 @@ property name="personalVolume" ormtype="big_decimal";
 				quantity += item['quantity'];
 			}
 		}
+		
+		var replacementOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		replacementOrderItemCollectionList.setDisplayProperties('quantity');
+		replacementOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReplacement');
+		replacementOrderItemCollectionList.addFilter('order.orderType.systemCode','otReplacementOrder');
+		replacementOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
+		replacementOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = replacementOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity += item['quantity'];
+			}
+		}
+		
 		return quantity;
 	}
 
