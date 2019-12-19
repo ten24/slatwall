@@ -13,17 +13,27 @@ component {
 
 	public boolean function canBePurchased(required any account){
 		
-		var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
-		if(notValidVipItem){
-			return false;
-		}
-		var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
-		if(notValidMpItem){
-			return false;
-		}
-		var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
-		if(notValidRetailItem){
-			return false;
+		if ( !isNull( arguments.account.getAccountType() ) ) {
+			
+			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
+			if(notValidVipItem){
+				return false;
+			}
+			var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
+			if(notValidMpItem){
+				return false;
+			}
+			var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
+			if(notValidRetailItem){
+				return false;
+			}
+			
+		} else {
+			
+			// If failed to get account type (not logged in usually), and isn't a retail Sku
+			if ( this.getRetailFlag() != true ) {
+				return false;
+			}
 		}
 		
 		//Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack. They can't.
