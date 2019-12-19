@@ -47,6 +47,7 @@ import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 
 // controllers
+import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
@@ -109,6 +110,7 @@ var monatfrontendmodule = angular
 		
 	// Controllers
 	.controller('searchController', MonatSearchController)
+	.controller('forgotPasswordController', MonatForgotPasswordController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
 	.controller('siteOwnerController', MonatSiteOwnerController)

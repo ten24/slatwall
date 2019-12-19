@@ -35,14 +35,14 @@
             <!--- Link to product if not enrollment type --->
             <a 
                 class="d-block" 
-                ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined }}"
+                ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined }}"
                 ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
             >
            
         </figure>
       
         <h3 class="pb-0 mb-0"
-            ><a ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined  }}"
+            ><a ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined  }}"
                 >{{monatProductCard.product.productName}}</a
             ></h3
         >
@@ -64,7 +64,7 @@
    </div>
    
    <!-- Add To Cart -->
-   <div class="product-actions">
+   <div ng-if="monatProductCard.product.qats > 0" class="product-actions">
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
             class="btn btn-border-primary add-to-cart" 
@@ -77,8 +77,18 @@
              <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
          </button>
    </div>
+   
+    <div ng-if="monatProductCard.product.qats <= 0" class="product-actions">
+        <button 
+            class="btn btn-border-primary add-to-cart" 
+            ng-class="{
+                'bg-primary': monatProductCard.type == 'enrollment',
+            }"
+        >
+            <span sw-rbKey="'frontend.cart.soldOut'"></span>
+        </button>
+    </div>
 </div>
-
 
 <!--- Delete Wishlist Item Modal --->
 <div

@@ -99,11 +99,45 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
         
+		if(arguments.processObject.getNewAccountFlag()) {
+			
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+			
+			if(account.hasErrors()) {
+				arguments.orderTemplate.addError('create', account.getErrors());
+				return arguments.orderTemplate;
+			} 
+		} else if(!isNull(processObject.getAccount())){
+			var account = processObject.getAccount();
+		} else {
+			var account = getHibachiScope().getAccount();
+		}
+		
+		if( !account.getCanCreateFlexshipFlag()) {
+			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
+			return arguments.orderTemplate;
+		}
+		
+		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+			return arguments.orderTemplate; 
+		}
+		
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
 		}
-        
-        return super.processOrderTemplate_create(argumentCollection = arguments);
+		
+		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		return arguments.orderTemplate;
     }
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
