@@ -65,7 +65,7 @@ component {
 		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
 			
 			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
-			promotionalFreeRewardSkuCollection.setCollectionConfig(this.getPromotionalFreeRewardSkuCollectionConfig());
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
 			
 			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
 		}	
