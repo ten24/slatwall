@@ -34,7 +34,7 @@
 					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency()"
 					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
-					ng-disabled = "!monatFlexshipFrequencyModal.selectedFrequencyTermID"
+					ng-disabled = "!monatFlexshipFrequencyModal.selectedFrequencyTermID || monatFlexshipFrequencyModal.loading"
 				></button>
 				<button
 					type="button"
