@@ -168,5 +168,60 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
+		
+		try{
+			this.createOrderItemSkuBundles( arguments.order );
+		}catch(bundleError){
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ create bundle items for order. ");
+		}
+	}
+	
+	/**
+	 * Adds the calculated bundled order items
+	 * For each orderitem, create new orderItemSkuBundles for each sku that is 
+	 * a bundle.
+	 **/
+	 public any function createOrderItemSkuBundles(required any order){
+	 	
+	 	var orderItems = arguments.order.getOrderItems();
+	 	
+	 	//If there are no items on it, then return.
+	 	if (isNull(orderItems) || !arrayLen(orderItems)){
+	 		return arguments.order; //no items.
+	 	}
+	 	
+	 	for (var orderitem in orderItems){
+	 		
+	 		var bundledSkus = orderItem.getSku().getBundledSkus();
+	 		
+	 		//skip if no bundled orderItems exist for this sku
+	 		if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
+	 			continue;
+	 		}
+	 		
+	 		//create
+ 			for (var skuBundle in bundledSkus){
+ 				//If this doesn't already exist, then create it.
+ 				var foundBundledItem = getService("OrderService").getOrderItemSkuBundleCollectionList();
+ 				foundBundledItem.addFilter("orderItem.orderItemID", orderItem.getOrderItemID());
+ 				foundBundledItem.addFilter("sku.skuID", skuBundle.getBundledSku().getSkuID());
+ 				foundBundledItem.addFilter("quantity", skuBundle.getBundledQuantity() * orderItem.getQuantity());
+ 				var foundItem = foundBundledItem.getRecords();
+ 				
+ 				if (!arrayLen(foundItem)){
+	 				var bundledOrderItem = getService("OrderService").newOrderItemSkuBundle();
+	 				bundledOrderItem.setPrice(orderItem.getCalculatedExtendedPrice()?:0);
+	 				bundledOrderItem.setSku(skuBundle.getBundledSku());
+	 				bundledOrderItem.setQuantity(skuBundle.getBundledQuantity() * orderItem.getQuantity());
+	 				bundledOrderItem.setOrderItem(orderItem);
+	 				
+	 				getService("OrderService").saveOrderItemSkuBundle(bundledOrderItem);
+	 				
+ 				}
+ 			}
+	 	}
+			
+	 	getService("OrderService").saveOrder(arguments.order);
+	 	
 	}
 }

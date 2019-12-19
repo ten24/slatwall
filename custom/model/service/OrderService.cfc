@@ -622,7 +622,6 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public boolean function orderHasMPRenewalFee(required orderID) {
-
 		var renewalFeeMPProductType = getService('productService').getProductTypeBySystemCode('RenewalFee-MP');
 		
 		var orderItemCollectionList = this.getOrderItemCollectionList();
