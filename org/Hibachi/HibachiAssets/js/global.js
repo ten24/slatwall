@@ -1075,9 +1075,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		    var $rootScope = injector.get('$rootScope');
 		    jQuery('#adminModal').html($compile(html)($rootScope));
 		}else{
-			jQuery('#adminModal').html(html);
+			AngularHelper.Compile($('#adminModal'),html);
 		}
-
+		
 		initUIElements('#adminModal');
 
 		jQuery('#adminModal').css({

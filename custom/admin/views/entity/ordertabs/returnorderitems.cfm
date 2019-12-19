@@ -10,7 +10,7 @@
 				order-id="#rc.order.getOrderID()#" 
 				currency-code="#rc.order.getCurrencyCode()#" 
 				initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
-				order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
+				order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serializeJSON(rc.processObject.getRefundOrderPaymentIDOptions()))#"
 				fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 				<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 					refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"

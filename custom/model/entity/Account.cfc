@@ -117,5 +117,4 @@ component {
 		return variables.subscribedToMailchimp;
 	}
 	
-	
 } 

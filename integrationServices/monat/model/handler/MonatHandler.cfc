@@ -52,7 +52,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasStarterKit() ) {
 			account.setStarterKitPurchasedFlag(true);
         }
-      
+    	
+    	if(arguments.order.getUpgradeFlag() == true){
+    		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
+    			account.setAccountType('VIP');
+    			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
+    		}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
+    			account.setAccountType('marketPartner');	
+    			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
+    		}
+    	}
+    	
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
@@ -118,17 +128,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethod = orderFulFillment.getShippingMethod();
-				var shippingAddress = orderFulFillment.getShippingAddress();
-				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-				var billingAccountAddress = arguments.order.getBillingAccountAddress();
+				var shippingMethodID = orderFulFillment.getShippingMethod().getShippingMethodID();
+				var shippingAddressID = orderFulFillment.getShippingAddress().getAddressID();
+				var accountPaymentMethodID = arguments.order.getOrderPayments()[1].getAccountPaymentMethod().getAccountPaymentMethodID();
+				var billingAccountAddressID = arguments.order.getOrderPayments()[1].getBillingAccountAddress().getAccountAddressID();
+				var orderTemplateID = orderTemplate.getOrderTemplateID();
+				var orderTemplateStatusTypeID = getService('typeService').getTypeBySystemCode('otstActive').getTypeID() ?:'2c948084697d51bd01697d9be217000a';
 				
-				orderTemplate.setShippingAddress(shippingAddress);
-				orderTemplate.setShippingMethod(shippingMethod);
-				orderTemplate.setBillingAccountAddress(billingAccountAddress);
-				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-				orderTemplate.setOrderTemplateStatusType(getService('typeService').getTypeBySystemCode('otstActive'))
-				getOrderService().saveOrderTemplate(orderTemplate);
+				QueryExecute("
+					UPDATE swordertemplate 
+					SET shippingMethodID =:shippingMethodID, shippingAddressID=:shippingAddressID, billingAccountAddressId=:billingAccountAddressID,accountPaymentMethodID=:accountPaymentMethodID, orderTemplateStatusTypeID=:orderTemplateStatusTypeID 
+					WHERE orderTemplateID =:orderTemplateID",
+					{
+			            shippingMethodID = {value=shippingMethodID, cfsqltype="cf_sql_varchar"}, 
+			            shippingAddressID = {value=shippingAddressID, cfsqltype="cf_sql_varchar"},
+			            accountPaymentMethodID = {value=accountPaymentMethodID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateID = {value=orderTemplateID, cfsqltype="cf_sql_varchar"},
+			            orderTemplateStatusTypeID = {value=orderTemplateStatusTypeID, cfsqltype="cf_sql_varchar"},
+			            billingAccountAddressID = {value=billingAccountAddressID, cfsqltype="cf_sql_varchar"}
+		        	}
+		        );
 			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
@@ -146,8 +165,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				//this is the first order for this account
 				arguments.order.setInitialOrderFlag(true);
 			}
-			
-			getOrderService().saveOrder(arguments.order);
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}

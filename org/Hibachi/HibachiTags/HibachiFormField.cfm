@@ -184,7 +184,7 @@
 						</cfif>
 						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 						<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-						<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
+						<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>><span ng-bind-html="'#thisOptionName#'"></span></option>
 					</cfloop>
 				</select>
 			</cfoutput>
@@ -269,7 +269,7 @@
 							<cfset thisOptionName = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionName)>
 							<cfset thisOptionData = thisOptionData>
 
-							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
+							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif> ng-bind-html="'#thisOptionName#'"></option>
 						</cfloop>
 					</select>
 				</cfif>
@@ -329,7 +329,7 @@
 			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			
 			<cfoutput>
-				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+				<div ng-cloak class="#attributes.fieldClass#" #attributes.fieldAttributes#>
 					<hb:HibachiTypeahead 
 						edit="#attributes.edit#" 
 						collectionList="#entityCollectionList#"

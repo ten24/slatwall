@@ -17,7 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public orderItemsLength:number;
     public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
@@ -35,9 +34,12 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
+    public orderPayments:any;
     public uploadImageError:boolean;
     public accountProfileImage;
-    
+    public orderPromotions:any;
+    public orderItemTotal:number = 0;
+    public orderRefundTotal:any;
     // @ngInject
     constructor(
         public publicService,
@@ -70,6 +72,9 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
+        if(this.urlParams.get('orderid')){
+            this.getOrderItemsByOrderID();
+        }
 	}
 
     public getAccount = () => {
@@ -85,10 +90,6 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
-            
-            if(this.urlParams.get('orderid')){
-                this.getOrderItemsByOrderID();
-            }
             
             switch(window.location.pathname){
                 case '/my-account/':
@@ -148,13 +149,27 @@ class swfAccountController {
     
     public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        
-        const accountID = this.accountData.accountID
-        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
-            result.OrderItemsByOrderID.forEach(orderItem =>{
-                this.orderItems.push(orderItem);
-            });
-            this.orderItemsLength = result.OrderItemsByOrderID.length;
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
+            if(result.OrderItemsByOrderID){
+                this.orderItems = result.OrderItemsByOrderID.orderItems;
+                this.orderPayments = result.OrderItemsByOrderID.orderPayments;
+                this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
+                this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                
+                if(this.orderPayments.length){
+                    Object.keys(this.orderPayments[0]).forEach(key => {
+                        if(typeof(this.orderPayments[0][key]) == "number") {
+                            this.orderPayments[0][key] = Math.abs(this.orderPayments[0][key]);
+                        }
+                    });
+                }
+                
+                for(let item of this.orderItems as Array<any>){
+                    this.orderItemTotal += item.quantity;
+                }
+            }
+            
+            this.loading = false;
         });
     }
     

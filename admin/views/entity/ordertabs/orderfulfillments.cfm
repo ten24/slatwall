@@ -64,7 +64,8 @@ Notes:
 <cfoutput>
 	<hb:HibachiListingDisplay collectionList="#local.collectionOrderFulfillmentList#"
 							   recordDetailAction="admin:entity.detailorderfulfillment"
-							   recordEditAction="admin:entity.editorderfulfillment">
+							   recordEditAction="admin:entity.editorderfulfillment"
+							   currencyCode="#rc.order.getCurrencyCode()#">
 		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
 		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
