@@ -85,7 +85,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
 				
 				// Email opt-in when finishing enrollment
-				if ( account.getAllowCorporateEmailsFlag() ) {
+				if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
 					try{
 						getService('MailchimpAPIService').addMemberToListByAccount( account );
 					}catch(any e){

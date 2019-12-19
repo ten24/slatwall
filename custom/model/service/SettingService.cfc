@@ -7,9 +7,9 @@ component extends="Slatwall.model.service.SettingService" {
 			listingMultiselectEntityName="Type"
 		}
 
-		settingMetaData["orderInitialEnrollmentPeriodForMarketPartner"] = {fieldtype="text", defaultValue="7"};
-		settingMetaData["orderMaxAmountAllowedToSpendInInitialEnrollmentPeriod"] = {fieldtype="text", defaultValue="200"};
-		settingMetaData["orderMaxDaysAfterAccountCreate"] = {fieldtype="text", defaultValue="30"};
+		settingMetaData["siteInitialEnrollmentPeriodForMarketPartner"] = {fieldtype="text", defaultValue="7"};
+		settingMetaData["siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod"] = {fieldtype="text", defaultValue="200"};
+		settingMetaData["siteMaxDaysAfterAccountCreate"] = {fieldtype="text", defaultValue="30"};
 		
 		return settingMetaData;
 	}

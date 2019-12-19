@@ -341,12 +341,12 @@ component {
 	 * 
 	 **/
 	 public boolean function MarketPartnerValidationMaxOrderAmount(){
-	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("orderInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("orderMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			
@@ -369,11 +369,11 @@ component {
 	        return true;
 	    }
 	    
-        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("orderInitialEnrollmentPeriodForMarketPartner");
+        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "UK"
+			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& !isNull(getMarketPartnerEnrollmentOrderID())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
@@ -398,7 +398,7 @@ component {
 	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
 	  **/
 	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
-	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("orderMaxDaysAfterAccountCreate");
+	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
 	    
 	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
 		if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
