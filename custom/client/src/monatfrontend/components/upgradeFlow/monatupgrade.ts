@@ -1,8 +1,7 @@
 declare var hibachiConfig: any;
 declare var angular: any;
-declare var $: any;
 
-class MonatEnrollmentController {
+class MonatUpgradeController {
 	public cart: any;
 	public backUrl: string = '/';
 	public position: number = 0;
@@ -16,14 +15,13 @@ class MonatEnrollmentController {
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
-	public showCanPlaceOrderAlert:boolean = false;
-	
+
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
-
+		
 		if (angular.isUndefined(this.onFinish)) {
 			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
 			this.$rootScope.slatwall.OrderPayment_addOrderPayment.saveFlag = 1;
@@ -47,15 +45,18 @@ class MonatEnrollmentController {
 
 	public $onInit = () => {
 		this.publicService.getAccount(true).then(result=>{
+			this.$rootScope.currentAccount = result;
+			console.log(result)
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
 					this.goToLastStep();
-				})
+				});
 			}else{
 				//if its a new account clear data in local storage and ensure they are logged out
 				localStorage.clear()
 			}
+			this.observerService.notify('accountRetrieved', result.ownerAccount.accountNumber);
 		})
 		
 	}
@@ -109,7 +110,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if (index < 1 || index == this.position) {
+		if (index < 0 || index == this.position) {
 			return;
 		}
 		
@@ -175,7 +176,7 @@ class MonatEnrollmentController {
 	}
 }
 
-class MonatEnrollment {
+class MonatUpgrade {
 	public restrict: string = 'EA';
 	public transclude: boolean = true;
 	public templateUrl: string;
@@ -184,8 +185,8 @@ class MonatEnrollment {
 		finishText: '@',
 		onFinish: '=?',
 	};
-	public controller = MonatEnrollmentController;
-	public controllerAs = 'monatEnrollment';
+	public controller = MonatUpgradeController;
+	public controllerAs = 'monatUpgrade';
 
 	public static Factory() {
 		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
@@ -194,8 +195,8 @@ class MonatEnrollment {
 	}
 
 	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
+		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/upgradeFlow/monatupgrade.html';
 	}
 }
 
-export { MonatEnrollment };
+export { MonatUpgrade };

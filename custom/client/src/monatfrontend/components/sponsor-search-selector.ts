@@ -13,6 +13,8 @@ class SponsorSearchSelectorController {
 	public argumentsObject:any;
 	public recordsCount:number;
 	public hasBeenSearched:boolean = false;
+	public originalAccountOwner:string;;
+
 	
 	// Form fields for the sponsor search.
 	public form: any = {
@@ -36,6 +38,10 @@ class SponsorSearchSelectorController {
 			this.getSearchResults(true);
 		}
 		
+		this.observerService.attach((account) =>{
+			this.form.text = account;
+			this.getSearchResults(false, true);				
+		}, 'accountRetrieved');
 	}
 	
 	private getCountryCodeOptions = () => {
@@ -60,7 +66,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = (useHibachConfig = false) => {
+	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -87,10 +93,10 @@ class SponsorSearchSelectorController {
 		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'?slatAction=monat:public.getmarketpartners',data
+			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
-			if(useHibachConfig){
+			if(useHibachConfig || useOriginalAccountOwner){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}
@@ -124,6 +130,7 @@ class SponsorSearchSelector {
 		accountSearchType: '@',
 		siteCountryCode: '@',
 		title: '@',
+		originalAccountOwner: '<?'
 	};
 
 	public controller = SponsorSearchSelectorController;

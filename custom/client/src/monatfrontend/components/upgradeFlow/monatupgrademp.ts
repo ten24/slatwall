@@ -1,6 +1,4 @@
-declare var $;
-
-class EnrollmentMPController {
+class UpgradeMPController {
 	public Account_CreateAccount;
 	public isMPEnrollment: boolean = false;
 	public countryCodeOptions: any = [];
@@ -8,7 +6,7 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean = false;
 	public contentId: string;
-	public bundleErrors: Array<any> = [];
+	public bundleHasErrors: boolean = false;
 	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
@@ -24,22 +22,17 @@ class EnrollmentMPController {
 	public productRecordsCount:any;
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
+	constructor(public publicService, public observerService, public monatService) {}
 	
 	public $onInit = () => {
 		this.getDateOptions();
-		//this.getProductList()
-		
-		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
-		this.observerService.attach(this.getProductList, 'createSuccess'); 
+		this.getProductList()
+		this.getStarterPacks();
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
-		
-		$('.site-tooltip').tooltip();
+		this.publicService.doAction('setUpgradeOrderType', {upgradeType: 'MarketPartner'}).then(response => {
+			console.log(response);
+		});
 	};
-	
-	public adjustInputFocuses = () => {
-		this.monatService.adjustInputFocuses();
-	}
 	
 	public getDateOptions = () => {
 		this.currentDate = new Date();
@@ -106,24 +99,14 @@ class EnrollmentMPController {
 	};
 
 	public submitStarterPack = () => {
-		
-		this.bundleErrors = [];
-		
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-			this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
-				this.loading = false;
-        		
-				if ( data.hasErrors ) {
-					for ( let error in data.errors ) {
-						this.bundleErrors = this.bundleErrors.concat( data.errors[ error ] );
-					}
-				} else {
-					this.observerService.notify('onNext');
-				}
-    		});
+        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
+        		this.loading = false;
+            	this.observerService.notify('onNext');
+        	})
         } else {
-            this.bundleErrors.push( this.rbkeyService.rbKey('frontend.enrollment.selectPack'));
+            this.bundleHasErrors = true;
         }
     }
 
@@ -153,7 +136,7 @@ class EnrollmentMPController {
 
 	public selectBundle = (bundleID) => {
 		this.selectedBundleID = bundleID;
-		this.bundleErrors = [];
+		this.bundleHasErrors = false;
 		this.openedBundle = null;
 	};
 
@@ -165,7 +148,7 @@ class EnrollmentMPController {
 
 	public getProductList = (pageNumber = 1, pageRecordsShow = 12 ) => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
@@ -174,7 +157,7 @@ class EnrollmentMPController {
 	}
 }
 
-class MonatEnrollmentMP {
+class MonatUpgradeMP {
 	public require = {
 		ngModel: '?^ngModel',
 	};
@@ -190,15 +173,15 @@ class MonatEnrollmentMP {
 		contentId: '@',
 	};
 
-	public controller = EnrollmentMPController;
-	public controllerAs = 'enrollmentMp';
-	// @ngInject
+	public controller = UpgradeMPController;
+	public controllerAs = 'upgradeMp';
+	// @ngInjects
 	constructor() {}
 
 	public static Factory() {
-		var directive = () => new MonatEnrollmentMP();
+		var directive = () => new MonatUpgradeMP();
 		directive.$inject = [];
 		return directive;
 	}
 }
-export { MonatEnrollmentMP };
+export { MonatUpgradeMP };
