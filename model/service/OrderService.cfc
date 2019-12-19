@@ -3578,14 +3578,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
 				
-				//Sets the url for tracking
-				if (!isNull(arguments.orderDelivery.getTrackingNumber()) && !isNull(arguments.orderDelivery.getShippingMethod())
-					&& !isNull(arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL"))){
+				// Sets the url for tracking
+				if (!isNull(arguments.orderDelivery.getTrackingNumber()) && 
+						!isNull(arguments.orderDelivery.getShippingMethod())){
+					
 					var url = arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
-					url.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
-					arguments.orderDelivery.setTrackingURL(url);
+					if (!isNull(url)){
+						url = url.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
+						arguments.orderDelivery.setTrackingURL(url);
+					}
 				}
-				
 			}
 			
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"

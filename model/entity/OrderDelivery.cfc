@@ -52,7 +52,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
-	property name="trackingUrl" hb_populateEnabled="false" ormtype="string";
+	property name="trackingUrl" ormtype="string";
 	property name="containerLabel" ormtype="text";
 	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
 	property name="undeliverableOrderReason" ormtype="string";
