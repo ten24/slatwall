@@ -15,6 +15,7 @@ class MonatProductCardController {
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
     public isEnrollment: boolean = false;
+    public currencyCode:string;
 
 	// @ngInject
 	constructor(
@@ -102,6 +103,7 @@ class MonatProductCardController {
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
+				currencyCode:this.currencyCode,
 				product: this.product,
 				type: this.type,
 				isEnrollment: this.isEnrollment,
@@ -205,6 +207,7 @@ class MonatProductCard {
 		index: '@',
 		allProducts: '<?',
 		orderTemplate: '<?',
+		currencyCode:'@'
 	};
 
 	public controller = MonatProductCardController;

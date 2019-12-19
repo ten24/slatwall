@@ -55,6 +55,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="domainNames" ormtype="string";
 	property name="allowAdminAccessFlag" ormtype="boolean";
 	property name="resetSettingCache" ormtype="boolean";
+	property name="currencyCode" ormtype="string";
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 

@@ -54,13 +54,13 @@
   				<div class="price-block">
   					
   					<div ng-if="monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
-			            <strong ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.product.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
+			            <strong ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
 			            <span class="vip-price">
 			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 3">
-			                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode"></span>
+			                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.currencyCode"></span>
 			                </span> 
 			                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 2">
-			                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.product.currencyCode"></span>
+			                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.currencyCode"></span>
 			                </span> 
 			            </span>
 			            <span ng-if="monatProductModal.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}} </strong></span>

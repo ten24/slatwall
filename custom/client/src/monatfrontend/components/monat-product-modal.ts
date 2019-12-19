@@ -2,7 +2,7 @@ class MonatProductModalController {
 	public product;
 	public type: string;
 	public orderTemplateID: string;
-
+	public currencyCode:string;
 	public close; // injected from angularModalService
 
 	public quantityToAdd: number = 1;
@@ -131,6 +131,7 @@ class MonatProductModal {
 
 	public scope = {};
 	public bindToController = {
+		currencyCode:'<',
 		product: '<',
 		type: '<',
 		orderTemplateID: '<',
