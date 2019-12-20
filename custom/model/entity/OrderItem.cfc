@@ -37,7 +37,7 @@ component {
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
-	
+
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -51,6 +51,8 @@ component {
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     
+    property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
+	
     public void function refreshAmounts(){
         variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
         variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');

@@ -168,5 +168,49 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
+		
+	}
+	
+	
+	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
+		// Flush so the item is there when we need it. 
+		if (!arguments.orderItem.getOrder().hasErrors()){
+			ormFlush();
+		}
+		
+		try{
+			this.createOrderItemSkuBundle( arguments.orderItem );
+		}catch(bundleError){
+			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+		}
+	}
+	
+	/**
+	 * Adds the calculated bundled order items
+	 * For each orderitem, create new orderItemSkuBundles for each sku that is 
+	 * a bundle.
+	 **/
+	 public any function createOrderItemSkuBundle(required any orderItem){
+	 	
+	 	var bundledSkus = orderItem.getSku().getBundledSkus();
+ 		//create
+ 		
+ 		for (var skuBundle in bundledSkus){
+ 			QueryExecute("INSERT INTO SwOrderItemSkuBundle 
+					SET orderItemSkuBundleID =:uuid, 
+					createdDateTime = :createdDateTime,
+					modifiedDateTime = :createdDateTime,
+					skuID = :skuID,
+					orderItemID = :orderItemID,
+					quantity = :quantity",
+					{
+			            uuid = {value=replace(lcase(createUUID()), '-', '', 'all'), cfsqltype="cf_sql_varchar"}, 
+			            createdDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
+			            modifiedDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
+			            skuID = {value=skuBundle.getBundledSku().getSkuID(), cfsqltype="cf_sql_varchar"},
+			            orderItemID = {value=orderItem.getOrderItemID(), cfsqltype="cf_sql_varchar"},
+			            quantity = {value=skuBundle.getBundledQuantity(), cfsqltype="cf_sql_varchar"}
+		        	});
+	 	}
 	}
 }
