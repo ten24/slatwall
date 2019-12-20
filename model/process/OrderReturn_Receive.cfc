@@ -53,6 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Data Properties
 	property name="locationID" hb_formFieldType="select" hb_rbKey="entity.location";
+	property name="location";
 	property name="packingSlipNumber" hb_rbKey="entity.stockReceiver.packingSlipNumber";
 	property name="boxCount" hb_rbKey="entity.stockReceiver.boxCount";
 	property name="orderReturnItems" type="array" hb_populateArray="true";
@@ -65,6 +66,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.locationIDOptions = sl.getRecords();
 		}
 		return variables.locationIDOptions;
+	}
+	
+	public any function getLocationID(){
+		if(!structKeyExists(variables,'locationID') && !isNull(getLocation())){
+			variables.locationID = getLocation().getLocationID();
+		}
+		if(structKeyExists(variables,'locationID')){
+			return variables.locationID;
+		}
+	}
+	
+	public any function getLocation(){
+		if(!structKeyExists(variables,'location') && !isNull(getOrderReturn())){
+			variables.location = getOrderReturn().getReturnLocation();
+		}
+		if(structKeyExists(variables,'location')){
+			return variables.location;
+		}
 	}
 	
 	public boolean function validReturnItemsQuantity(){

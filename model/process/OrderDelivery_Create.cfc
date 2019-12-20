@@ -92,6 +92,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return;
 	}
 	
+	public any function getLocation(){
+		if(!structKeyExists(variables,'location') && !isNull(getOrder())){
+			variables.location = getOrder().getDefaultStockLocation();
+		}
+		if(structKeyExists(variables,'location')){
+			return variables.location;
+		}
+	}
+	
 	public array function getContainers(){
 		if(!structKeyExists(variables,'containers')){
 			variables.containers = [];
