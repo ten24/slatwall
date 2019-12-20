@@ -193,24 +193,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	 public any function createOrderItemSkuBundle(required any orderItem){
 	 	
 	 	var bundledSkus = orderItem.getSku().getBundledSkus();
- 		//create
- 		
- 		for (var skuBundle in bundledSkus){
- 			QueryExecute("INSERT INTO SwOrderItemSkuBundle 
-					SET orderItemSkuBundleID =:uuid, 
-					createdDateTime = :createdDateTime,
-					modifiedDateTime = :createdDateTime,
-					skuID = :skuID,
-					orderItemID = :orderItemID,
-					quantity = :quantity",
-					{
-			            uuid = {value=replace(lcase(createUUID()), '-', '', 'all'), cfsqltype="cf_sql_varchar"}, 
-			            createdDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
-			            modifiedDateTime = {value=now(), cfsqltype="cf_sql_timestamp"},
-			            skuID = {value=skuBundle.getBundledSku().getSkuID(), cfsqltype="cf_sql_varchar"},
-			            orderItemID = {value=orderItem.getOrderItemID(), cfsqltype="cf_sql_varchar"},
-			            quantity = {value=skuBundle.getBundledQuantity(), cfsqltype="cf_sql_varchar"}
-		        	});
+	 	
+	 	if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
+	 		return;	
 	 	}
+	 	
+ 		//create
+ 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) VALUES ";
+		
+		//VALUES (100, 1), (100, 2), (100, 3)
+		var valueList = "";
+		for (var skuBundle in bundledSkus){ 
+			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.getBundledSku().getSkuID()#', '#orderItem.getOrderItemID()#', #skuBundle.getBundledQuantity()#)");
+		}
+		insertSQL = insertSQL & valueList;
+		
+ 		QueryExecute(insertSQL);
 	}
 }
