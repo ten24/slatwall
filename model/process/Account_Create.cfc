@@ -71,6 +71,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
+	property name="accountPhoneType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPhoneTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountPhoneType";
 	
 	public any function getParentAccount(){
 		if(!structKeyExists(variables,'parentAccount')){
@@ -139,4 +140,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return options;
 	}
 	
+	public any function getAccountPhoneTypeOptions(){
+		var accountPhoneTypeCollection = getService('TypeService').getTypeCollectionList();
+		accountPhoneTypeCollection.setDisplayProperties('typeName|name,typeID|value'); 
+		accountPhoneTypeCollection.addFilter('parentType.systemCode','accountPhoneType');
+		
+		var accountPhoneTypeOptions = [{value ="", name="None"}];
+		
+		arrayAppend(accountPhoneTypeOptions, accountPhoneTypeCollection.getRecords(), true );
+
+		return accountPhoneTypeOptions;
+	}
 }

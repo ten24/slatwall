@@ -1313,6 +1313,5 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		
 		return variables.subscribedToMailchimp;
 	}
-	
 	//CUSTOM FUNCTIONS END
 }

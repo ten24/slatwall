@@ -434,13 +434,18 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.account.setCompany( processObject.getCompany() );
 			}
 	
-			// If phone number was passed in the add a primary phone number
+			// If phone number was passed in then add a primary phone number
 			if(!isNull(processObject.getPhoneNumber())) {
 				var accountPhoneNumber = this.newAccountPhoneNumber();
 				accountPhoneNumber.setAccount( arguments.account );
 				accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
+				
+				// If phone type was passed in then add phone type
+				if(!isNull(processObject.getAccountPhoneType().getTypeID())) {
+					accountPhoneNumber.setAccountPhoneType(getTypeService().getType(processObject.getAccountPhoneType().getTypeID()));
+				}
 			}
-	
+			
 			// If email address was passed in then add a primary email address
 			if(!isNull(processObject.getEmailAddress())) {
 				var accountEmailAddress = this.newAccountEmailAddress();
