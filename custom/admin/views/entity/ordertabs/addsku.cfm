@@ -70,7 +70,7 @@ Notes:
 	
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
 	<cfset local.accountID = "#!isNull(rc.order.getAccount()) ? rc.order.getAccount().getAccountID() : ''#">
-	<cfset local.siteID = "#!isNull(rc.order.getAccount().getAccountCreatedSite()) ? rc.order.getAccount().getAccountCreatedSite().getSiteID() : ''#">
+	<cfset local.siteID = (!isNull(rc.order.getAccount().getAccountCreatedSite())) ? rc.order.getAccount().getAccountCreatedSite().getSiteID() : '' >
 
 	<sw-add-order-items-by-sku 
     	data-order="'#rc.order.getOrderId()#'" 
