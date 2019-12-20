@@ -62,8 +62,8 @@ component {
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-    property name="upgradeFlag" ormtype="boolean";
-    
+    property name="upgradeFlag" ormtype="boolean" default="0";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }

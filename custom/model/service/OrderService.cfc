@@ -89,7 +89,22 @@ component extends="Slatwall.model.service.OrderService" {
         }
         for(var priceField in variables.customPriceFields){
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-                arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode( priceField, arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.newOrderItem.getQuantity(), account)});
+            	
+            	var customPriceByCurrencyCodeArguments  = {
+            		'customPriceField' : priceField, 
+            		'currencyCode' : arguments.newOrderItem.getOrder().getCurrencyCode(), 
+            		'quantity' : arguments.newOrderItem.getQuantity()
+            	};
+            	
+            	if(!account.getNewFlag()){
+            		customPriceByCurrencyCodeArguments['accountID'] = account.getAccountID();
+            	}
+		        if(!isNull(arguments.newOrderItem.getAppliedPriceGroup())){ 
+					customPriceByCurrencyCodeArguments['priceGroups'] = [];
+					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
+				}
+            
+                arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
             }
         }
         
@@ -697,5 +712,555 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		arguments.volumeRebuildBatch.setVolumeRebuildBatchStatusType(getService('TypeService').getTypeByTypeCode('vrbstProcessed'));
 		return arguments.volumeRebuildBatch;
+	}
+	
+	
+		// Process: Order
+	public any function processOrder_addOrderItem(required any order, required any processObject){
+
+		// Setup a boolean to see if we were able to just add this order item to an existing one
+		var foundItem = false;
+
+		// Make sure that the currencyCode gets set for this order
+		if(isNull(arguments.order.getCurrencyCode())) {
+			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		}
+
+		// If this is a Sale Order Item then we need to setup the fulfillment
+		if(listFindNoCase("oitSale,oitDeposit",arguments.processObject.getOrderItemTypeSystemCode())) {
+
+			// First See if we can use an existing order fulfillment
+			var orderFulfillment = processObject.getOrderFulfillment();
+			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
+			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
+				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
+					if(listFindNoCase(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'), arguments.order.getOrderFulfillments()[f].getFulfillmentMethod().getFulfillmentMethodID()) ) {
+						var orderFulfillment = arguments.order.getOrderFulfillments()[f];
+						break;
+					}
+				}
+			}
+
+			// Last if we can't use an existing one, then we need to create a new one
+			if(isNull(orderFulfillment) || orderFulfillment.getOrder().getOrderID() != arguments.order.getOrderID()) {
+
+				// get the correct fulfillment method for this new order fulfillment
+				var fulfillmentMethod = arguments.processObject.getFulfillmentMethod();
+
+				// If the fulfillmentMethod is still null because the above didn't execute, then we can pull it in from the first ID in the sku settings
+				if(isNull(fulfillmentMethod) && listLen(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'))) {
+					var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod( listFirst(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods')) );
+				}
+
+				if(!isNull(fulfillmentMethod)) {
+					// Setup a new order fulfillment
+					var orderFulfillment = this.newOrderFulfillment();
+
+					orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+					orderFulfillment.setCurrencyCode( arguments.order.getCurrencyCode() );
+					orderFulfillment.setOrder( arguments.order );
+
+					// Setup 'Shipping' Values
+					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
+						
+						
+						if(!isNull(arguments.processObject.getThirdPartyShippingAccountIdentifier()) && len(arguments.processObject.getThirdPartyShippingAccountIdentifier())){
+							orderFulfillment.setThirdPartyShippingAccountIdentifier(arguments.processObject.getThirdPartyShippingAccountIdentifier());
+						} 
+						// Check for an accountAddress
+						if(len(arguments.processObject.getShippingAccountAddressID())) {
+
+							// Find the correct account address, and set it in the order fulfillment
+							var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getShippingAccountAddressID() );
+							orderFulfillment.setAccountAddress( accountAddress );
+							var address = getAddressService().saveAddress(arguments.processObject.getShippingAddress());
+							if(!address.hasErrors()){
+								orderFulfillment.setShippingAddress(address);
+							}else{
+								orderFulfillment.addErrors(address.getErrors());
+							}
+						// Otherwise try to setup a new shipping address
+						} else {
+
+							// Check to see if the new shipping address passes full validation.
+							fullAddressErrors = getHibachiValidationService().validate( arguments.processObject.getShippingAddress(), 'full', false );
+
+							if(!fullAddressErrors.hasErrors()) {
+								// First we need to persist the address from the processObject
+								getAddressService().saveAddress( arguments.processObject.getShippingAddress() );
+
+								// If we are supposed to save the new address, then we can do that here
+								if(arguments.processObject.getSaveShippingAccountAddressFlag() && !isNull(arguments.order.getAccount()) ) {
+
+									var newAccountAddress = getAccountService().newAccountAddress();
+									newAccountAddress.setAccount( arguments.order.getAccount() );
+									newAccountAddress.setAccountAddressName( arguments.processObject.getSaveShippingAccountAddressName() );
+									newAccountAddress.setAddress( arguments.processObject.getShippingAddress() );
+									orderFulfillment.setAccountAddress( newAccountAddress );
+
+								// Otherwise just set then new address in the order fulfillment
+								} else {
+
+									orderFulfillment.setShippingAddress( arguments.processObject.getShippingAddress() );
+								}
+							}
+						}
+
+					// Set 'Pickup' Values
+					} else if (orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup") {
+
+						// Check for a pickupLocationID
+						if(!isNull(arguments.processObject.getPickupLocationID()) && len(arguments.processObject.getPickupLocationID())) {
+
+							// Find the pickup location
+							var pickupLocation = getLocationService().getLocation(arguments.processObject.getPickupLocationID());
+
+							// if found set in the orderFulfillment
+							if(!isNull(pickupLocation)) {
+								orderFulfillment.setPickupLocation(pickupLocation);
+							}
+						}
+
+					// Set 'Email' Value
+					} else if (orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email") {
+
+						// Check for an email address
+						if(!isNull(arguments.processObject.getEmailAddress()) && len(arguments.processObject.getEmailAddress())) {
+							orderFulfillment.setEmailAddress( arguments.processObject.getEmailAddress() );
+						}
+
+					}
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
+					//we will update order amounts at the end of the process
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=false );
+                    //check the fulfillment and display errors if needed.
+                    if (orderFulfillment.hasErrors()){
+                        arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
+                    }
+
+				} else {
+
+					arguments.processObject.addError('fulfillmentMethodID', rbKey('validate.processOrder_addOrderitem.orderFulfillmentID.noValidFulfillmentMethod'));
+
+				}
+
+			}
+			
+			// Set Stock reference, check the fullfillment for a pickup location
+			if (!isNull(orderFulfillment.getPickupLocation())){
+				// The item being added to the cart should have its stockID added based on that location
+				var location = orderFulfillment.getPickupLocation();
+				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
+				
+				//If we found a stock for that location, then set the stock to the process.
+				if (!isNull(stock)){
+					arguments.processObject.setStock(stock);
+				}
+			}
+
+			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
+			if(!arguments.order.hasErrors()) {
+				for(var i=arraylen(orderFulfillment.getOrderFulfillmentItems());i>0; i--  ){
+				
+					var orderItem = orderFulfillment.getOrderFulfillmentItems()[i];
+					//evaluate existing stockHold
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
+					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
+					if(
+						arguments.processObject.matchesOrderItem( orderItem ) 
+						&& isNull(orderItem.getParentOrderItem())
+					){
+						foundItem = true;
+						var foundOrderItem = orderItem;
+						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
+							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
+						}
+						foundOrderItem.validate(context='save');
+						
+						if(foundOrderItem.hasErrors()) {
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  foundOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = foundOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in foundOrderItem.getErrors()){
+								for (var errorMessage in foundOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = foundOrderItem.stringReplace(message);
+								
+									foundOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+
+							}
+						}
+						break;
+					}
+				}
+			}
+
+		// If this is a return order item, then we need to setup or find the orderReturn
+		} else if (listFindNoCase("oitReturn",arguments.processObject.getOrderItemTypeSystemCode())) {
+
+			// First see if we can use an existing order return
+			var orderReturn = processObject.getOrderReturn();
+
+			// Next if we can't use an existing one, then we need to create a new one
+			if(isNull(orderReturn) || orderReturn.getOrder().getOrderID() neq arguments.order.getOrderID()) {
+
+				// Setup a new order return
+				var orderReturn = this.newOrderReturn();
+				orderReturn.setOrder( arguments.order );
+				orderReturn.setCurrencyCode( arguments.order.getCurrencyCode() );
+				orderReturn.setReturnLocation( arguments.processObject.getReturnLocation() );
+				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+
+				orderReturn = this.saveOrderReturn( orderReturn );
+			}
+
+		}
+
+		// If we didn't already find the item in an orderFulfillment, then we can add it here.
+		if(!foundItem && !arguments.order.hasErrors()) {
+			// Create a new Order Item
+			var newOrderItem = this.newOrderItem();
+
+			if (!isNull(arguments.processObject.getStock())){
+				newOrderItem.setStock(arguments.processObject.getStock());
+			}
+
+			if (processObject.getSellOnBackOrderFlag() == true){
+				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
+			}
+			
+			/******* CUSTOM CODE FOR MONAT *******/
+			if(!isNull(arguments.order.getUpgradeFlag()) && arguments.order.getUpgradeFlag() && !isNull(arguments.order.getPriceGroup())){
+				newOrderItem.setAppliedPriceGroup(arguments.order.getPriceGroup());
+			}
+			/******* END CUSTOM CODE FOR MONAT *******/
+			
+			// Set Header Info
+			newOrderItem.setOrder( arguments.order );
+			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
+			if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
+				newOrderItem.setOrderFulfillment( orderFulfillment );
+				newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitSale') );
+			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
+				newOrderItem.setOrderReturn( orderReturn );
+				newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
+			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitDeposit") {
+				newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
+			}
+
+			// Setup child items for a bundle
+			//Need to also check child order items for child order items.
+			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
+				if(arraylen(arguments.processObject.getChildOrderItems())){
+					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
+						var childOrderItem = this.newOrderItem();
+						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
+					}
+				}
+
+			}
+			// Setup the Sku / Quantity / Price details
+			addNewOrderItemSetup(newOrderItem, arguments.processObject);
+
+			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
+			if(
+				(
+					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
+					  ||
+					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
+				) && isNumeric(arguments.processObject.getPrice()) ) {
+				newOrderItem.setPrice( arguments.processObject.getPrice() );
+			} else {
+				
+				/******* CUSTOM CODE FOR MONAT *******/
+				var priceByCurrencyCodeArgs = {
+					'currencyCode' : arguments.order.getCurrencyCode(),
+					'quantity' : arguments.processObject.getQuantity()
+				};
+				if(!isNull(	newOrderItem.getAppliedPriceGroup()) ){
+					priceByCurrencyCodeArgs['priceGroups'] = [];
+					arrayAppend(priceByCurrencyCodeArgs['priceGroups'], newOrderItem.getAppliedPriceGroup());
+				}
+				
+				if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
+					priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+				}
+				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
+				/******* END CUSTOM CODE FOR MONAT *******/
+			}
+
+			// If a stock was passed in assign it to this new item
+			if( !isNull(arguments.processObject.getStock()) ) {
+				newOrderItem.setStock( arguments.processObject.getStock() );
+			}
+
+			// If attributeValues were passed in set them
+			if( !isNull(arguments.processObject.getAttributeValuesByCodeStruct()) ) {
+				for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+					newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
+				}
+			}
+
+			if(arguments.order.isNew()){
+				this.saveOrder(order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag());
+			}
+
+			// Save the new order items don't update order amounts we'll do it at the end of this process
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+
+			if(newOrderItem.hasErrors()) {
+				//String replace the max order qty to give user feedback with the minimum of 0
+				var messageReplaceKeys = {
+					quantityAvailable = newOrderItem.getMaximumOrderQuantity(),
+					maxQuantity = newOrderItem.getSku().setting('skuOrderMaximumQuantity')
+				};
+				
+ 				for (var error in newOrderItem.getErrors()){
+					for (var errorMessage in newOrderItem.getErrors()[error]){
+						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+						message = newOrderItem.stringReplace(message);
+					
+						arguments.order.addError('addOrderItem', message, true);
+						newOrderItem.addError("addOrderItem", message, true);
+					}
+				}
+			}else{
+				//begin stock hold logic
+				if(arguments.processObject.getSku().setting('skuStockHold')){
+					var stockHold = getService('stockService').newStockHold();
+					stockHold.setSku(arguments.processObject.getSku());
+					stockHold.setOrderItem(newOrderItem);
+					stockHold.setStock(arguments.processObject.getStock());
+					stockHold.setStockHoldExpirationDateTime(dateAdd('n',arguments.processObject.getSku().setting('skuStockHoldTime'),now()));
+					
+					stockHold = getService('stockService').saveStockHold(stockHold);
+				}
+			}
+		}
+
+		// Applies only to order items for gift card skus
+		if(arguments.processObject.getSku().isGiftCardSku()){
+			
+			var orderItem = "";
+			if(foundItem){
+				orderItem = foundOrderItem;
+			} else {
+				orderItem = newOrderItem;
+			}
+
+			// Additional processing when gift card codes manually provided or gift gard recipient(s) required
+			if (!arguments.processObject.getSku().getGiftCardAutoGenerateCodeFlag() || arguments.processObject.getSku().getGiftCardRecipientRequiredFlag()) {
+
+				// Retrieve gift card recipient data from order_addOrderItem process object
+				var orderItemGiftCardRecipientData = arguments.processObject.getRecipients();
+
+				if (!isNull(orderItemGiftCardRecipientData)) {
+
+					// Loop over all gift card recipient data.
+					for (var data in orderItemGiftCardRecipientData){
+						
+						// Note: OrderItemGiftRecipient entity is used to handle a couple use cases.
+						// A small subset of its properties might used depending on the context, sku settings, order item fulfillment type
+						// Entity may contain all recipient detail email/contact or simply for storage of manually provided gift card codes
+
+						// Populate using the orderItemGiftRecipient data provided
+						var orderItemGiftRecipient = this.newOrderItemGiftRecipient();
+						orderItemGiftRecipient.populate(data);
+						orderItemGiftRecipient.setOrderItem(orderItem);
+
+						// Set values using process object
+						// This process should really be done using a process like processOrderItem_AddGiftRecipient(..., {orderItemGiftRecipient=...}, 'create') so a new process object for each
+						// Because same instance of a process object will be used for entire life of the order object
+						// TODO: Refactor later
+						addOrderItemGiftRecipientProcessObject = arguments.order.getProcessObject('addOrderItemGiftRecipient', {
+							orderItem = orderItem,
+							recipient = orderItemGiftRecipient
+						});
+						// Allows subproperty validation to occur on these objects
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('orderItem', orderItem);
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('recipient', orderItemGiftRecipient);
+						
+						// Run process to associate gift recipient with orderItem
+						this.processOrder(arguments.order, {}, 'addOrderItemGiftRecipient');
+
+						if (addOrderItemGiftRecipientProcessObject.hasErrors()) {
+							if (addOrderItemGiftRecipientProcessObject.getRecipient().hasErrors()) {
+								orderItem.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
+								arguments.order.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item.
+		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
+
+			var depositsOnlyFlag = false;
+			var salesOnlyFlag = false;
+			var orderItemsToCreateCount = 1;
+			var salesCount = 0;
+			var depositsCount = 0;
+			var currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
+			var hasSaleFlag = false;
+			var hasDepositFlag = false;
+
+			// If order item contains both sales orders AND deposits we'll create the sale order item, then we'll create a separate deposit order item.
+			for(var registrant in arguments.processObject.getRegistrants()) {
+				if(registrant.toWaitlistFlag == "1")	{
+					hasDepositFlag = true;
+				} else {
+					hasSaleFlag = true;
+				}
+				if(hasDepositFlag && hasSaleFlag) {
+					// Setup iterator to make 2 passes, the first for sales only
+					orderItemsToCreateCount = 2;
+					salesOnlyFlag = true;
+					break;
+				}
+			}
+
+			for( var i=1;i<=orderItemsToCreateCount;i++) {
+
+				if(i==2) {
+					// If we're here it means we had to split the order item into two and we're done with the first.
+
+					// Create a separate order Item for deposits
+					var depositOrderItem = this.newOrderItem();
+
+					// Set Header Info
+					depositOrderItem.setOrder( arguments.order );
+					depositOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
+
+					// Setup the Sku / Quantity / Price details
+					depositOrderItem.setSku( arguments.processObject.getSku() );
+					depositOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() );
+					depositOrderItem.setPrice( arguments.processObject.getPrice() );
+					depositOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( depositOrderItem.getCurrencyCode() ) );
+
+					// Set any customizations
+					depositOrderItem.populate( arguments.data );
+
+					// Save the deposit order items
+					depositOrderItem = this.saveOrderItem( depositOrderItem );
+
+					if(depositOrderItem.hasErrors()) {
+						arguments.order.addError('addOrderItem', depositOrderItem.getErrors());
+					}
+
+					// Update the quantities to reflect the sales/deposit split.
+					newOrderItem.setQuantity( salesCount );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() - salesCount );
+
+					// Update the flags that drive sales/deposit related specifics
+					salesOnlyFlag = false;
+					depositsOnlyFlag = true;
+				}
+
+				// ProcessObject should contain account info in registrants array
+				for(var registrant in arguments.processObject.getRegistrants()) {
+
+					// Make sure we put the registrants in the right order item
+					if( (orderItemsToCreateCount == 1) || (salesOnlyFlag && registrant.toWaitlistFlag == "0") || (depositsOnlyFlag && registrant.toWaitlistFlag == "1") ) {
+
+						// Create new event registration	 record
+						var eventRegistration = this.newEventRegistration();
+
+						eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstNotPlaced"));
+						eventRegistration.generateAndSetAttendanceCode();
+
+						if(depositsOnlyFlag) {
+							eventRegistration.setOrderItem(depositOrderItem);
+							eventRegistration.setSku(depositOrderItem.getSku());
+						} else {
+							eventRegistration.setOrderItem(newOrderItem);
+							eventRegistration.setSku(newOrderItem.getSku());
+						}
+
+						// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+						if(registrant.newAccountFlag == 0) {
+							eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+						} else {
+							//Create new account to associate with registration
+							var newAccount = getAccountService().newAccount();
+							if(isDefined("registrant.firstName") && len(registrant.firstName)) {
+								newAccount.setFirstName(registrant.firstName);
+							}
+							if(isDefined("registrant.lastName") && len(registrant.lastName)) {
+								newAccount.setLastName(registrant.lastName);
+							}
+							if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
+								var newEmailAddress = getAccountService().newAccountEmailAddress();
+								newEmailAddress.setEmailAddress(registrant.emailAddress);
+								newAccount.setPrimaryEmailAddress(newEmailAddress);
+
+							}
+							if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
+								var newPhoneNumber = getAccountService().newAccountPhoneNumber();
+								newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
+								newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+							}
+							newAccount = getAccountService().saveAccount(newAccount);
+							eventRegistration.setAccount(newAccount);
+
+						}
+
+						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
+							depositsCount++;
+
+						}else {
+								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
+									salesCount++;
+
+								} else {
+									// If we have an unexprected waitlister due to event filling before order item was created
+									// check to see if there were any sales that went through. If there were then move the registrant
+									// to a waitlist/deposit order item. If not then change the order item type to deposit and waitlist registrant.
+									if( !salesOnlyFlag && salesCount > 0 ) {
+										registrant.toWaitlistFlag = "1";
+										orderItemsToCreateCount = 2;
+										salesOnlyFlag = true;
+									} else {
+										newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
+									}
+
+								}
+							}
+
+						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+
+					}
+
+
+				}
+
+
+			}
+
+		}
+
+		// Call save order to place in the hibernate session and re-calculate all of the totals
+		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
+
+		return arguments.order;
 	}
 }

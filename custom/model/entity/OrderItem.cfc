@@ -53,6 +53,15 @@ component {
     
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
 	
+    public void function refreshAmounts(){
+        variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
+        variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
+        variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
+        variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
+        variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
+        variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
+    }
+    
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
             variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
@@ -197,6 +206,11 @@ component {
 		if(!isNull(this.getOrder().getAccount())){ 
 			arguments.accountID = this.getOrder().getAccount().getAccountID();  
 		}
+		if(!isNull(this.getAppliedPriceGroup())){ 
+			arguments.priceGroups = [];
+			arrayAppend(arguments.priceGroups, this.getAppliedPriceGroup());
+		}
+		
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
