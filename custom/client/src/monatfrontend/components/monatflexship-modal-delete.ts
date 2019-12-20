@@ -5,16 +5,17 @@ class MonatFlexshipDeleteController {
 	public close; // injected from angularModalService
 	
 	//@ngInject
-    constructor(public orderTemplateService, public observerService) {
+    constructor(public orderTemplateService, public observerService,public monatAlertService,public rbkeyService) {
     	this.observerService.attach(this.closeModal,"deleteOrderTemplateSuccess");
     }
     
     public deleteOrderTemplateItem = () => {
         this.loading = true;
         this.orderTemplateService.deleteOrderTemplate(this.orderTemplate.orderTemplateID).then( () => {
-            this.loading = false;
+            this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flaxship.deleteFlexshipAlert'));
         }).catch((error)=>{
-            console.error(error);
+           this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
             this.loading = false;
         });
     }

@@ -15,7 +15,7 @@
         <form 
         name="updateBillingForm" 
          ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
-         sw-form>
+         >
 		<div class="modal-content">
 			<!-- Modal Close -->
 			<button
@@ -78,7 +78,7 @@
 								ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_nickName"></label>
-							<div ng-if="updateBillingForm.accountAddressName.$touched" ng-messages="updateBillingForm.accountAddressName.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.accountAddressName.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -94,7 +94,7 @@
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_name"></label>
-							<div ng-if="updateBillingForm.newAddress_name.$touched" ng-messages="updateBillingForm.newAddress_name.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_name.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -110,7 +110,7 @@
 								ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address"></label>
-							<div ng-if="updateBillingForm.newAddress_address.$touched" ng-messages="updateBillingForm.newAddress_address.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_address.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -139,7 +139,7 @@
 								readonly
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_country"></label>
-							<div ng-if="updateBillingForm.newAddress_country.$touched" ng-messages="updateBillingForm.newAddress_country.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_country.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -158,7 +158,7 @@
 								<option disabled></option>
 							</select>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_state"></label>
-							<div ng-if="updateBillingForm.newAddress_state.$touched" ng-messages="updateBillingForm.newAddress_state.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_state.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -175,7 +175,7 @@
 								name="newAddress_city"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_city"></label>
-							<div ng-if="updateBillingForm.newAddress_city.$touched" ng-messages="updateBillingForm.newAddress_city.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_city.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -191,7 +191,7 @@
 								name="newAddress_postalCode"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_zipCode"></label>
-							<div ng-if="updateBillingForm.newAddress_postalCode.$touched" ng-messages="updateBillingForm.newAddress_postalCode.$error">
+							<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_postalCode.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -255,7 +255,7 @@
 								swvalidationrequired="true"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nickName"></label>
-							<div ng-if="updateBillingfOrm.newCreditCard_nickName.$touched" 
+							<div ng-if="updateBillingForm.$submitted" 
 							ng-messages="updateBillingfOrm.newCreditCard_nickName.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
@@ -273,7 +273,7 @@
 								name = "newAccountPaymentMethod_creditCardNumber"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_creditCardNumber"></label>
-							<div ng-if="updateBillingForm.newAccountPaymentMethod_creditCardNumber.$touched" 
+							<div ng-if="updateBillingForm.$submitted" 
 							ng-messages="updateBillingForm.newAccountPaymentMethod_creditCardNumber.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
@@ -290,7 +290,7 @@
 								name = "newCreditCard_nameOnCard"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nameOnCard"></label>
-								<div ng-if="updateBillingForm.newCreditCard_nameOnCard.$touched" 
+								<div ng-if="updateBillingForm.$submitted" 
 							         ng-messages="updateBillingForm.newCreditCard_nameOnCard.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
@@ -310,7 +310,7 @@
 								<option disabled></option>
 							</select>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationMonth"></label>
-							<div ng-if="updateBillingForm.newCreditCard_expirationMonth.$touched" 
+							<div ng-if="updateBillingForm.$submitted" 
 							         ng-messages="updateBillingForm.newCreditCard_expirationMonth.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
@@ -330,7 +330,7 @@
 								<option disabled></option>
 							</select>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationYear"></label>
-							<div ng-if="updateBillingForm.newCreditCard_expirationYear.$touched" 
+							<div ng-if="updateBillingForm.$submitted" 
 							     ng-messages="updateBillingForm.newCreditCard_expirationYear.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
@@ -348,7 +348,7 @@
 								name = "newCreditCard_securityCode"
 							/>
 							<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
-								<div ng-if="updateBillingForm.newCreditCard_securityCode.$touched" 
+								<div ng-if="updateBillingForm.$submitted" 
 							     ng-messages="updateBillingForm.newCreditCard_securityCode.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>

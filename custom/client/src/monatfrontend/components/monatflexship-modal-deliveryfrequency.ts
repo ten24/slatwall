@@ -1,4 +1,3 @@
-
 class monatFlexshipFrequencyModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
@@ -14,8 +13,9 @@ class monatFlexshipFrequencyModalController {
         this.loading = true;
     	this.makeTranslations();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
-			if(this.orderTemplate.frequencyTerm_termID)
+			if(this.orderTemplate.frequencyTerm_termID) {
 			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
+			}
 			this.frequencyTermOptions = response.frequencyTermOptions;
 			
 		})
@@ -34,11 +34,7 @@ class monatFlexshipFrequencyModalController {
     }
     
     public setOrderTemplateFrequency() {
-
-    	//TODO frontend validation
 		this.loading = true;
-		
-    	// make api request
         this.orderTemplateService.updateOrderTemplateFrequency(
             this.orderTemplate.orderTemplateID, 
             this.selectedFrequencyTermID, 
@@ -52,7 +48,6 @@ class monatFlexshipFrequencyModalController {
         		throw(data);
         	}
         }).catch(error => {
-            console.error(error);
 	        this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;

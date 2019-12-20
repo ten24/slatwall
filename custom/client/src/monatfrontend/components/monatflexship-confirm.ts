@@ -10,12 +10,7 @@ class MonatFlexshipConfirmController {
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
-<<<<<<< HEAD
     public loading :boolean = false;
-=======
-    public loading:boolean;
-    
->>>>>>> 486118879a5da7ada3114b825e6707755a4f9865
     //@ngInject
     constructor(
     	public monatService, 
@@ -29,6 +24,7 @@ class MonatFlexshipConfirmController {
     }
     
     public $onInit = () => {
+        this.loading= true;
     	this.makeTranslations();
 	
 		this.monatService.getOptions({"frequencyTermOptions":false,"frequencyDateOptions":false})
@@ -37,6 +33,8 @@ class MonatFlexshipConfirmController {
 			this.frequencyDateOptions = data.frequencyDateOptions;
 			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
 			this.selectedFrequencyDate = this.orderTemplate.scheduleOrderDayOfTheMonth;
+		}).finally(()=>{
+		    this.loading =false;
 		});
 	
     };

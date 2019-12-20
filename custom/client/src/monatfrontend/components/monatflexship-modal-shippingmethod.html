@@ -9,7 +9,6 @@
         <form 
         name="updateShippingAddressForm" 
         ng-submit=" updateShippingAddressForm.$valid && monatFlexshipShippingMethodModal.updateShippingAddress()"
-        sw-form
         >
     
 		<div class="modal-content">
@@ -37,8 +36,10 @@
 						type="radio"
 						name="shippingMethodID"
 						ng-checked="shippingMethod.value === monatFlexshipShippingMethodModal.selectedShippingMethod.shippingMethodID"
+					
 					/>
 					<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
+				
 				</div>
 
 				<h6 class="title-with-line mb-5">
@@ -94,7 +95,7 @@
 								ng-model="monatFlexshipShippingMethodModal.newAccountAddress.accountAddressName"
 							/>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_nickName"></label>
-    						<div ng-if="updateShippingAddressForm.accountAddressName.$touched" ng-messages="updateShippingAddressForm.accountAddressName.$error">
+    						<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.accountAddressName.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
     						
@@ -112,7 +113,7 @@
 							/>
 							
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_name"></label>
-							<div ng-if="updateShippingAddressForm.newAddress_name.$touched" ng-messages="updateShippingAddressForm.newAddress_name.$error">
+							<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.newAddress_name.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 
@@ -129,7 +130,7 @@
 								ng-model="monatFlexshipShippingMethodModal.newAddress.streetAddress"
 							/>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_address"></label>
-							<div ng-if="updateShippingAddressForm.newAddress_streetAddress.$touched" ng-messages="updateShippingAddressForm.newAddress_streetAddress.$error">
+							<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.newAddress_streetAddress.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -172,7 +173,7 @@
 								<option disabled></option>
 							</select>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_selectYourState"></label>
-							<div ng-if="updateShippingAddressForm.newAddress_stateCode.$touched" ng-messages="updateShippingAddressForm.newAddress_stateCode.$error">
+							<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.newAddress_stateCode.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -188,7 +189,7 @@
 							  name="newAddress_city"
 							/>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_city"></label>
-							<div ng-if="updateShippingAddressForm.newAddress_city.$touched" ng-messages="updateShippingAddressForm.newAddress_city.$error">
+							<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.newAddress_city.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -204,7 +205,7 @@
 								name="newAddress_zipCode"
 							/>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_zipCode"></label>
-							<div ng-if="updateShippingAddressForm.newAddress_zipCode.$touched" ng-messages="updateShippingAddressForm.newAddress_zipCode.$error">
+							<div ng-if="updateShippingAddressForm..$submitted" ng-messages="updateShippingAddressForm.newAddress_zipCode.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
 						</div>
@@ -218,7 +219,7 @@
 					class="btn btn-block bg-primary"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
 					ng-class="{loading: monatFlexshipShippingMethodModal.loading}"
-					ng-disabled = "!updateShippingAddressForm.$valid || monatFlexshipShippingMethodModal.loading"
+					ng-disabled = "monatFlexshipShippingMethodModal.loading"
 				></button>
 				<button
 					type="button"

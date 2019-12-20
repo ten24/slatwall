@@ -19,10 +19,12 @@ class MonatFlexshipAddGiftCardModalController {
         this.loading = true;
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
-    	    if(giftCards) {
+    	    if(giftCards.lenght) {
+    	        console.log("hello Shashi");
     		    this.giftCards = giftCards;
     	    } else {
     	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'));
+    	        console.log("hello Ranjan");
     	    }
     	})
     	.catch( (error) => {

@@ -8,6 +8,9 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
+			<form name = "updateScheduleForm"
+			  ng-submit = "updateScheduleForm.$valid && monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
+			  >
 			<button
 				type="button"
 				class="close"
@@ -53,7 +56,8 @@
 						ng-disabled="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip !== 'delay'"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						autocomplete="off"
-						readonly
+						readonly 
+						swvalidationrequired = "true"
 					/>
 				</div>
 
@@ -66,6 +70,8 @@
 						type="radio"
 						name="change-order"
 						ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'"
+						swvalidationrequired = "true"
+						ng-model = "monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip"
 					/>
 					<label for="change-order2">
 						{{ monatFlexshipChangeOrSkipOrderModal.translations.skipThisMonthsOrder }}
@@ -84,16 +90,21 @@
 						placeholder="{{
 							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
 						}}"
+					   swvalidationrequired = "true"
+					   name="selectedReason"
 					>
 						<option value="">
 							{{ monatFlexshipChangeOrSkipOrderModal.translations.whyAreYouCancellingFlexship }}
 						</option>
 					</select>
+					 <div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.selectedReason.$error">
+    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+    						</div>
 				</div>
 
 				<div
 					class="form-group"
-					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes"
+					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes=='2c9280846a023949016a029455f0000c'"
 				>
 					<input
 						type="text"
@@ -102,6 +113,7 @@
 						placeholder="{{
 							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason
 						}}"
+						swvalidationrequired = "true"
 					/>
 					<!--TODO: RB-Keys text has extra chars on it-->
 				</div>
@@ -109,12 +121,10 @@
 
 			<div class="footer">
 				<button
-					type="button"
+					type="submit"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
-					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
-					ng-disabled = "!monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip  
-					&& monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime!==''"
+					ng-class="{ loading: monatFlexshipChangeOrSkipOrderModal.loading }"
+					ng-disabled = "monatFlexshipChangeOrSkipOrderModal.loading"
 				>
 					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
@@ -126,6 +136,7 @@
 					<span sw-rbkey="'frontend.modal.closeButton'"></span>
 				</button>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>
