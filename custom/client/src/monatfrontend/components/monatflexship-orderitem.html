@@ -14,7 +14,7 @@
 	</div>
 </td>
 <td class="item-price">
-	<span class="price">{{monatFlexshipOrderItem.orderItem.sku_priceByCurrencyCode | currency}}</span>
+	<span class="price">{{monatFlexshipOrderItem.orderItem.total | swcurrency:monatFlexshipOrderItem.orderTemplate_currencyCode}}</span>
 </td>
 
 				
