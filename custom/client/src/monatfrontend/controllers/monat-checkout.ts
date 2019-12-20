@@ -24,9 +24,14 @@ class MonatCheckoutController {
 	        
 		}, 'ownerAccountSelected');	
 		
+		this.observerService.attach(()=>{
+		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
+
+		}, 'shippingAddressSelected');	
+		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'addOrderPaymentSuccess' );
-		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' );
+		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' ); 
 		
 		this.getCurrentCheckoutScreen();
 	}
@@ -57,7 +62,7 @@ class MonatCheckoutController {
 		
 	}
 	
-	private closeNewAddressForm = () => {
+	public closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
