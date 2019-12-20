@@ -37,10 +37,10 @@ class MonatProductModalController {
 	private getModalInfo = () => {
 		this.publicService.doAction( 'getQuickShopModalBySkuID', { skuID: this.product.skuID } ).then( data => {
 			this.skuBundles = data.skuBundles;
-			this.productRating = new Number( data.productRating );
+			this.productRating = data.productRating.product_calculatedProductRating;
 			this.reviewsCount = data.reviewsCount;
 			this.getReviewStars( this.productRating );
-		})
+		});
 	}
 	
 	private getReviewStars = ( productRating ) => {

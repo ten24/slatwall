@@ -66,7 +66,6 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountPhoneType" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="username" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
@@ -83,7 +82,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#">
 
 				<!--- Parent Account --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,phoneType" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber" edit="true">
 				
 				<!--- Account Custom Attributes --->
 				<cfloop array="#rc.account.getAttributeSets()#" index="attributeSet">

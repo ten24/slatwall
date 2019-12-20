@@ -9,7 +9,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
-	public loading : boolean = false;
 
 	public formData = {
 		delayOrSkip : '',
@@ -66,7 +65,9 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     }
     
     public updateSchedule() {
-        this.loading = true;
+
+    	//TODO frontend validation
+    	
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
@@ -97,9 +98,8 @@ class MonatFlexshipChangeOrSkipOrderModalController {
             }
         )
         .catch( (error) => {
+        	console.error(error);
         	this.monatAlertService.showErrorsFromResponse(error);
-        }).finally(()=>{
-            this.loading = false;
         });
     }
 
