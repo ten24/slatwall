@@ -25,9 +25,7 @@ class MonatProductCardController {
 		public monatService,
         public observerService,
         public ModalService,
-        public $scope,
-        private monatAlertService,
-        public rbkeyService
+        public $scope
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
@@ -65,12 +63,7 @@ class MonatProductCardController {
 				} else if (setNewTemplateID) {
 					this.newTemplateID = result.orderTemplates[0].orderTemplateID;
 				}
-			})
-			.catch((error)=>{
-			    this.monatAlertService.showErrorsFromResponse(error)
-			})
-			.finally(()=>{
-			    this.loading=false;
+				this.loading = false;
 			});
 	};
 
@@ -79,13 +72,8 @@ class MonatProductCardController {
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
 			this.allProducts.splice(index, 1);
+			this.loading = false;
 			return result;
-		})
-		.catch((error)=>{
-		    this.monatAlertService.error(this.rbkeyService.rbKey('define.flaxship.addProducterror'));
-		})
-		.finally(()=>{
-		    this.loading =false;
 		});
 	};
 
@@ -94,27 +82,17 @@ class MonatProductCardController {
 		this.orderTemplateService
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
+				this.loading = false;
 				this.getAllWishlists();
 				return result;
-			})
-			.catch((error)=>{
-			 this.monatAlertService.showErrorsFromResponse(error);   
-			})
-			.finally(()=>{
-			  this.loading = false;  
 			});
 	};
 
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
+			this.loading = false;
 			return result;
-		})
-		.catch((error)=>{
-		    this.monatAlertService.showErrorsFromResponse(error);
-		})
-		.finally(()=>{
-		    this.loading = false;
 		});
 	};
 
@@ -163,26 +141,12 @@ class MonatProductCardController {
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
-			.then( (result) =>{
-				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
-			} )
-			.catch((error)=>{
-			  this.monatAlertService.showErrorsFromResponse(error);  
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then((result) =>{
+				this.loading = false;
 			})
-			.finally(()=>{
-			     this.loading=false;
-			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
-				
-			})
-			.catch((error)=>{
-			    this.monatAlertService.showErrorFromeResponse(error);
-			})
-			.finally(()=>{
-			 this.loading=false;
+				this.loading = false;
 			});
 		}
 	};

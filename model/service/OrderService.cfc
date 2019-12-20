@@ -2064,15 +2064,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
 		
 		if( isNull(orderTemplate) ){
-			ArrayAppend(arguments.data.messages, {
-			    'orderTemplate': 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#'
-			    });
+			ArrayAppend(arguments.data.messages, 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#');
 			return;
 		}  
 		
 		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
-			ArrayAppend(arguments.data.messages, {
-			    'orderTemplate': "OrderTemplate doesn't belong to the User"});
+			ArrayAppend(arguments.data.messages, "OrderTemplate doesn't belong to the User");
 			return; 
 		}
 	

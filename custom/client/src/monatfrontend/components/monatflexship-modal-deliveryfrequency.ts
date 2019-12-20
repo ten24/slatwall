@@ -1,29 +1,18 @@
+
 class monatFlexshipFrequencyModalController {
 	public orderTemplate; 
 	public close; // injected from angularModalService
 	public loading: boolean = false;
-    public frequencyTermOptions:any;
-    public selectedFrequencyTermID:string;
+    public frequencyTerms:any;
 
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService, public publicService, public monatAlertService) {
     }
     
     public $onInit = () => {
-        this.loading = true;
     	this.makeTranslations();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
-			if(this.orderTemplate.frequencyTerm_termID) {
-			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
-			}
-			this.frequencyTermOptions = response.frequencyTermOptions;
-			
-		})
-		.catch((error)=>{
-		    console.error(error);
-		})
-		.finally(()=>{
-		 this.loading = false;   
+			this.frequencyTerms = response.frequencyTermOptions;
 		})
     };
     
@@ -33,13 +22,13 @@ class monatFlexshipFrequencyModalController {
     	 this.translations['flexshiFrequency'] = this.rbkeyService.rbKey('frontend.flexshipEdit.flexshipFrequency');
     }
     
-    public setOrderTemplateFrequency() {
+    public setOrderTemplateFrequency(frequencyTermID) {
+
+    	//TODO frontend validation
 		this.loading = true;
-        this.orderTemplateService.updateOrderTemplateFrequency(
-            this.orderTemplate.orderTemplateID, 
-            this.selectedFrequencyTermID, 
-            this.orderTemplate.scheduleOrderDayOfTheMonth
-            ).then(data => {
+		
+    	// make api request
+        this.orderTemplateService.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, frequencyTermID, this.orderTemplate.scheduleOrderDayOfTheMonth).then(data => {
         	if(data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency') ) {
                 this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
             	this.monatAlertService.success("Your flexship has been updated successfully");
@@ -48,6 +37,7 @@ class monatFlexshipFrequencyModalController {
         		throw(data);
         	}
         }).catch(error => {
+            console.error(error);
 	        this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;
@@ -112,3 +102,4 @@ class MonatFlexshipFrequencyModal {
 export {
 	MonatFlexshipFrequencyModal
 };
+

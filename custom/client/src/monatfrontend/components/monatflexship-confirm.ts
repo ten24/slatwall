@@ -10,30 +10,28 @@ class MonatFlexshipConfirmController {
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
-    public loading :boolean = false;
+    public loading:boolean;
+    
     //@ngInject
     constructor(
     	public monatService, 
     	public orderTemplateService, 
     	public rbkeyService,
     	public $scope, 
-    	public $window,
-    	public monatAlertService
+    	public $window
     ) { 
         
     }
     
     public $onInit = () => {
-        this.loading= true;
     	this.makeTranslations();
+	
 		this.monatService.getOptions({"frequencyTermOptions":false,"frequencyDateOptions":false})
 		.then(data => {
 			this.frequencyTermOptions = data.frequencyTermOptions;
 			this.frequencyDateOptions = data.frequencyDateOptions;
 			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
 			this.selectedFrequencyDate = this.orderTemplate.scheduleOrderDayOfTheMonth;
-		}).finally(()=>{
-		    this.loading =false;
 		});
 	
     };
@@ -48,7 +46,9 @@ class MonatFlexshipConfirmController {
     }
 
     public confirm = () => {
-        this.loading =true;
+    	this.loading = true;
+    	
+    	//TODO frontend validation, success/failure alert    
     	this.orderTemplateService
     	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
     	.then( data => { 
@@ -59,12 +59,11 @@ class MonatFlexshipConfirmController {
 	            throw(data);
         	}
     	}).catch(error => {
-    		this.monatAlertService.showErrorsFromResponse(error);
-    	})
-    	.finally(() => { 
-    	    this.loading =false;
-    	 });
-    	
+    		console.error("setAsCurrentFlexship :",error);	
+            // TODO: handle errors
+    	}).finally(() => { 
+    		this.loading = false;
+    	});
     }
 }
 

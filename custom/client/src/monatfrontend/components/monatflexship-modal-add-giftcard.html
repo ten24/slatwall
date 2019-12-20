@@ -2,9 +2,6 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
-			<form 
-			    name = "applyGiftCardForm" 
-			    ng-submit = "applyGiftCardForm.$valid && monatFlexshipAddGiftCardModal.applyGiftCard()" >
 			<button
 				type="button"
 				class="close"
@@ -19,7 +16,7 @@
 					{{ monatFlexshipAddGiftCardModal.translations.giftCards }}
 				</h6>
 
-				<div 
+				<div
 					class="custom-radio form-group"
 					ng-repeat="giftCard in monatFlexshipAddGiftCardModal.giftCards"
 					ng-click="$parent.monatFlexshipAddGiftCardModal.setSelectedGiftCard(giftCard)"
@@ -28,13 +25,8 @@
 						type="radio" 
 						name="giftCardID"
 						ng-checked="giftCard.giftCardID === monatFlexshipAddGiftCardModal.selectedGiftCard.giftCardID"
-						swvalidationrequired = "true"
-					    
 					/>
 					<label for="giftCardID" > {{ giftCard.giftCardCode }} - {{ giftCard.calculatedBalanceAmount | currency }}</label>
-					  <div ng-if="applyGiftCardForm.$submitted" ng-messages="applyGiftCardForm.giftCardID.$error">
-    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
-    						</div>
 				</div>
 
 				<div class="material-field">
@@ -42,24 +34,18 @@
 						type="number"
 						class="form-control"
 						ng-model="monatFlexshipAddGiftCardModal.amountToApply"
-						swvalidationrequired = "true"
-						swvalidationnumeric ="true"
-						name = "amountToApply"
 					/>
 					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
-					     <div ng-if="applyGiftCardForm.$submitted || applyGiftCardForm.amountToApply.$touch " ng-messages="applyGiftCardForm.amountToApply.$error">
-    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
-    						</div>
 				</div>
 			</div>
 
 			<div class="footer">
 				<button
-					type="submit"
+					type="button"
 					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipAddGiftCardModal.applyGiftCard()"
 					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
-					ng-disabled ="monatFlexshipAddGiftCardModal.loading"
 				></button>
 				<button
 					type="button"
@@ -68,7 +54,6 @@
 					sw-rbkey="'frontend.modal.closeButton'"
 				></button>
 			</div>
-			</form>
 		</div>
 	</div>
 </div>
