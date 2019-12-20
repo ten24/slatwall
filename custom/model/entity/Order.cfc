@@ -28,6 +28,8 @@ component {
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
     property name="vipEnrollmentOrderFlag" persistent="false";
+    property name="marketPartnerEnrollmentOrderDateTime" persistent="false";
+    property name="marketPartnerEnrollmentOrderID" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
@@ -204,27 +206,38 @@ component {
 	}
 	
 	public any function getMarketPartnerEnrollmentOrderDateTime(){
-	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
-	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
-	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
-	    var records = orderItemCollectionList.getRecords();
-	    if (arrayLen(records)){
-	        return records[1]['order_orderOpenDateTime'];
+	    
+	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
+    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+    	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
+    	    var records = orderItemCollectionList.getRecords();
+    	    if (arrayLen(records)){
+    	        variables.marketPartnerEnrollmentOrderDateTime = records[1]['order_orderOpenDateTime'];
+    	        return records[1]['order_orderOpenDateTime'];
+    	    }
 	    }
+	    
+	    return variables.marketPartnerEnrollmentOrderDateTime;
 	}
 	
 	public any function getMarketPartnerEnrollmentOrderID(){
-	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
-	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
-	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
-	    var records = orderItemCollectionList.getRecords();
-	    if (arrayLen(records)){
-	        return records[1]['order_orderID'];
+	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
+    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+    	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
+    	    var records = orderItemCollectionList.getRecords();
+    	    if (arrayLen(records)){
+    	        variables.marketPartnerEnrollmentOrderID = records[1]['order_orderID'];
+    	        return records[1]['order_orderID'];
+    	    }
 	    }
+	    
+	    return variables.marketPartnerEnrollmentOrderID;
 	}
 	
 	
