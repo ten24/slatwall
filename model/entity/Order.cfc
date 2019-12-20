@@ -271,7 +271,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean";
-    
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";

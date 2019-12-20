@@ -64512,6 +64512,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
+            if (angular.isDefined(_this.siteId)) {
+                _this.addSkuCollection.addFilter('product.sites.siteID', _this.siteId, '=', undefined, true);
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -64635,6 +64638,7 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
             order: '<?',
             orderFulfillmentId: '<?',
             accountId: '<?',
+            siteId: '<?',
             currencyCode: '<?',
             simpleRepresentation: '<?',
             returnOrderId: '<?',
@@ -65383,6 +65387,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             _this.viewOrderTemplateItemsCollection = _this.orderTemplateService.getViewOrderTemplateItemCollection();
             _this.editOrderTemplateItemsCollection = _this.orderTemplateService.getEditOrderTemplateItemCollection();
             _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection();
+            if (angular.isDefined(_this.siteId)) {
+                _this.addSkuCollection.addFilter('product.sites.siteID', _this.siteId, '=', undefined, true);
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.editOrderTemplateColumns = angular.copy(_this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
             _this.viewOrderTemplateColumns = angular.copy(_this.editOrderTemplateItemsCollection.getCollectionConfig().columns);
@@ -65418,6 +65425,7 @@ var SWOrderTemplateItems = /** @class */ (function () {
             currencyCode: '@?',
             edit: "=?",
             orderTemplate: '<?',
+            siteId: '@?',
             skuPropertiesToDisplay: '@?',
             skuPropertyColumnConfigs: '<?' //array of column configs
         };
