@@ -51,21 +51,40 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
-<hb:HibachiListingDisplay 	smartList="#rc.product.getProductReviewsSmartList()#"
-                            createAction="admin:entity.createProductReview"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
+<cfset local.productReviewCollectionList = rc.product.getProductReviewsCollectionList() />
+<cfset local.productReviewCollectionList.setDisplayProperties(
+  	"product.productName,rating,rating,reviewTitle,account.primaryEmailAddress.emailAddress,createdDateTime",
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+) />
+<cfset local.productReviewCollectionList.addDisplayProperty(
+	"productReviewStatusType.typeName",
+	"Status",
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+) />
+<cfset local.productReviewCollectionList.addDisplayProperty(
+	"productReviewID",
+	"ProductReviewID",
+	{
+		isVisible=false,
+		isSearchable=true,
+		isDeletable=false
+	},
+	true
+) />
+
+<hb:HibachiListingDisplay 	collectionList="#local.productReviewCollectionList#"
 							recorddetailaction="admin:entity.detailproductreview"
 							recorddetailmodal="true"
 							recordeditaction="admin:entity.editproductreview"
 							recordeditmodal="true">
-	<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />						
-	<hb:HibachiListingColumn propertyIdentifier="product.productName" />						
-	<hb:HibachiListingColumn propertyIdentifier="rating" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewerName" />
-	<hb:HibachiListingColumn propertyIdentifier="account.primaryEmailAddress.emailAddress" />
-    <hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" title="Status"/>
 </hb:HibachiListingDisplay>
+
+<hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />

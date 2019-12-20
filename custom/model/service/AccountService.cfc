@@ -1,6 +1,6 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,subscribedToMailchimp';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {
@@ -70,7 +70,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
 		
 		if(arguments.data.orderID != false){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );

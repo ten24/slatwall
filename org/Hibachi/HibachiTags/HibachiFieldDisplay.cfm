@@ -91,7 +91,7 @@
 								</cfif>
 							<cfelse>
 								<cfif attributes.valueLink neq "">
-									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
+									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#"><span ng-bind-html="'#attributes.value#'"></span></a></p>
 									<cfif IsImageFile(expandPath(attributes.valueLink))>
 										<div class="s-image">
 											<img src="#attributes.valueLink#" height="250" width="250" /> 
@@ -102,7 +102,7 @@
 									<cfif attributes.fieldType EQ "password" AND len(attributes.value) GT 0 >
 									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
 									<cfelse>
-										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><span ng-bind-html="'#attributes.value#'"></span></p>
 									</cfif>
 								</cfif>
 							</cfif>
@@ -128,9 +128,9 @@
 					<tr>
 						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></td>
 						<cfif attributes.valueLink neq "">
-							<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></td>
+							<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#"><span ng-bind-html="'#attributes.value#'"></span></a></td>
 						<cfelse>
-							<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</td>
+							<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><span ng-bind-html="'#attributes.value#'"></span></td>
 						</cfif>
 					</tr>
 				</cfoutput>
@@ -150,9 +150,9 @@
 				<cfoutput>
 					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif>: </span>
 					<cfif attributes.valueLink neq "">
-						<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></span>
+						<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#"><span ng-bind-html="'#attributes.value#'"></span></a></span>
 					<cfelse>
-						<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</span>
+						<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><span ng-bind-html="'#attributes.value#'"></span></span>
 					</cfif>
 				</cfoutput>
 			</cfif>
@@ -167,7 +167,7 @@
 			<cfelse>
 				<cfoutput>
 					<cfif attributes.valueLink neq "">
-						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a>
+						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#"><span ng-bind-html="'#attributes.value#'"></span></a>
 					<cfelse>
 						<cfif attributes.fieldType eq "listingMultiselect">
 							<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist))>
@@ -195,7 +195,7 @@
 			<cfelse>
 				<cfoutput>
 					<cfif attributes.valueLink neq "">
-						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a>
+						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#"><span ng-bind-html="'#attributes.value#'"></span></a>
 					<cfelse>
 						<cfif attributes.fieldType eq "listingMultiselect">
 							<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist))>

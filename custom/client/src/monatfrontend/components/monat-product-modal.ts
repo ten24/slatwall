@@ -2,19 +2,64 @@ class MonatProductModalController {
 	public product;
 	public type: string;
 	public orderTemplateID: string;
-
+	public currencyCode:string;
+	public siteCode:string;
 	public close; // injected from angularModalService
 
 	public quantityToAdd: number = 1;
 	
 	public loading=false;
+	public skuBundles: Array<any> = [];
+	public productRating: Number;
+	public reviewsCount: number = 0;
+	public reviewStars: any = {
+		full: 0,
+		half: false,
+		empty: 0
+	};
 
 	//@ngInject
-	constructor(public monatService, public observerService, public rbkeyService, private orderTemplateService, private monatAlertService) {}
+	constructor(
+		public monatService, 
+		public observerService, 
+		public rbkeyService, 
+		private orderTemplateService, 
+		private monatAlertService,
+		private publicService
+	) {}
 
 	public $onInit = () => {
 		this.makeTranslations();
+		
+		this.getModalInfo();
 	};
+	
+	private getModalInfo = () => {
+		this.publicService.doAction( 'getQuickShopModalBySkuID', { skuID: this.product.skuID } ).then( data => {
+			this.skuBundles = data.skuBundles;
+			this.productRating = new Number( data.productRating );
+			this.reviewsCount = data.reviewsCount;
+			this.getReviewStars( this.productRating );
+		})
+	}
+	
+	private getReviewStars = ( productRating ) => {
+	
+		let rating = productRating.toFixed(1).split('.');
+		
+		let full = +rating[0];
+		let remainder = +rating[1];
+		
+		if ( remainder > 2 && remainder < 8 ) {
+			this.reviewStars.full = new Array( full );
+			this.reviewStars.half = true;
+			this.reviewStars.empty = new Array( 5 - full - 1 )
+		} else {
+			this.reviewStars.full = new Array( this.productRating.toFixed(0) );
+			this.reviewStars.empty = 5 - this.reviewStars.full.length;
+		}
+	
+	}
 
 	public translations = {};
 	private makeTranslations = () => {
@@ -87,6 +132,8 @@ class MonatProductModal {
 
 	public scope = {};
 	public bindToController = {
+		siteCode:'<',
+		currencyCode:'<',
 		product: '<',
 		type: '<',
 		orderTemplateID: '<',

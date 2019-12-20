@@ -88,7 +88,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public array function getFrequencyTermIDOptions() {
 		return getOrderTemplate().getFrequencyTermOptions();
 	}
-
+	
 	public array function getOrderTemplateTypeIDOptions() {
 		var typeCollection = getService('TypeService').getTypeCollectionList();
 		typeCollection.setDisplayProperties('typeID|value,typeName|name');
@@ -121,26 +121,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		arrayPrepend(siteAndCurrencyOptions, pleaseSelectOption); 
 	
 		return siteAndCurrencyOptions;  
-	} 	
+	}
+	
 	
 	public any function getSite() {
 		if(!StructKeyExists(variables, 'site') ) {
 			
 			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
-				
 				variables['site'] = getService('SiteService').getSite( variables.siteID );
-				
-			} else if ( StructKeyExists(variables, 'cmsSiteID') && !IsNull( variables.cmsSiteID ) && len( trim(variables.cmsSiteID) ) ) {
-				
+			} 
+			else if ( StructKeyExists(variables, 'cmsSiteID') && !IsNull( variables.cmsSiteID ) && len( trim(variables.cmsSiteID) ) ) {
 				variables['site'] = getService('SiteService').getSiteByCmsSiteID( variables.cmsSiteID );
-				
-			} else if ( StructKeyExists(variables, 'siteCode') && !IsNull( variables.siteCode ) && len( trim(variables.siteCode) ) ) {
-				
+			} 
+			else if ( StructKeyExists(variables, 'siteCode') && !IsNull( variables.siteCode ) && len( trim(variables.siteCode) ) ) {
 				variables['site'] = getService('SiteService').getSiteBySiteCode( variables.siteCode );
 			} 
 		}
 		
 		return variables['site'];
+	}
+	
+	public any function getCurrencyCode() {
+		if(!StructKeyExists(variables, 'currencyCode') || IsNull(variables.currencyCode) ) {
+			variables['currencyCode'] = getSite().setting('skuCurrency');
+		}
+		return variables['currencyCode'];
 	}
 	
 	public boolean function getNewAccountFlag() {

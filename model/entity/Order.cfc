@@ -199,6 +199,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedSubTotalAfterItemDiscounts" column="calcSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedVATTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItems" ormtype="integer";
 	property name="calculatedTotalQuantity" ormtype="integer";
 	property name="calculatedTotalSaleQuantity" ormtype="integer";
@@ -268,8 +269,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="iceRecordNumber" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-	  property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-
+    property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+    property name="upgradeFlag" ormtype="boolean";
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";

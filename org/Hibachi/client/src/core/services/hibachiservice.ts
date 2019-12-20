@@ -508,6 +508,14 @@ class HibachiService{
 
 		return request.promise;
 	};
+	
+	savePersonalCollection= (params) => {
+
+		var urlString = this.getUrlWithActionPrefix()+'api:main.savePersonalCollection';
+		let request = this.requestService.newAdminRequest(urlString,params);
+		
+		return request.promise;
+	};
 
 	getExistingCollectionsByBaseEntity= (entityName) => {
 

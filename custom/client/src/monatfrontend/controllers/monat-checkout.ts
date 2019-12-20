@@ -17,7 +17,6 @@ class MonatCheckoutController {
 	) {}
 
 	public $onInit = () => {
-		
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
@@ -25,9 +24,14 @@ class MonatCheckoutController {
 	        
 		}, 'ownerAccountSelected');	
 		
+		this.observerService.attach(()=>{
+		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
+
+		}, 'shippingAddressSelected');	
+		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'addOrderPaymentSuccess' );
-		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' );
+		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' ); 
 		
 		this.getCurrentCheckoutScreen();
 	}
@@ -37,13 +41,15 @@ class MonatCheckoutController {
 		this.publicService.getCart().then(data => {
 			let screen = 'shipping';
 			
-			if ( this.publicService.hasShippingAddressAndMethod() ) {
-				screen = 'payment'
-			} 
-			
-			if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
-				screen = 'review';
-			} 
+			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
+				if (this.publicService.hasShippingAddressAndMethod() ) {
+					screen = 'payment'
+				} 
+				
+				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
+					screen = 'review';
+				}
+			}
 			
 			if ( this.screen !== screen ) {
 				window.scrollTo( 0, 0 );
@@ -56,7 +62,7 @@ class MonatCheckoutController {
 		
 	}
 	
-	private closeNewAddressForm = () => {
+	public closeNewAddressForm = () => {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
@@ -201,7 +207,6 @@ class MonatCheckoutController {
 			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 0;
 		}
 	}
-
 }
 
 export { MonatCheckoutController };
