@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
     	
     	if(arguments.order.getUpgradeFlag() == true){
+    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
@@ -69,7 +70,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		) {
 			
 			if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending') {
-				
+	    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Enrollment'));
 				account.setActiveFlag(true);
 				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
@@ -103,6 +104,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
 				var renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
 				account.setRenewalDate(renewalDate);
+			}else{
+    			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			
 			getAccountService().saveAccount(account);
