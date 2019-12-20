@@ -1474,11 +1474,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
 
-
-    
     public void function getMarketPartners(required struct data){
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+    }
+    
+    public any function getCartWithImages(){
+        var lightCart = super.getCartData();
+        for(skuID in )
     }
 }
