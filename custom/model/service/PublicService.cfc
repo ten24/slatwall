@@ -314,6 +314,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
+     
+    /**
+     * Function to get all orders for user
+     * adds ordersOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/ 
+    public void function getAllOrdersOnAccount(required any data){
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+     
     
     /**
      * Function to get all order fulfilments for user
@@ -850,6 +863,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
+        if (structKeyExists(data, "typeID") && len(data.typeID)){
+            var phoneType = getTypeService().getType(arguments.data.typeID);
+            var primaryPhone = account.getPrimaryPhoneNumber()
+            primaryPhone.setAccountPhoneType(phoneType);
+        }
+        
         account.setAccountStatusType(accountStatusType);
 
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -936,6 +955,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             // Update subscription in Mailchimp.
             if ( structKeyExists( arguments.data, 'subscribedToMailchimp' ) ) {
                 getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
+            }
+            
+            if (structKeyExists(data, "typeID") && len(data.typeID)){
+                var phoneType = getTypeService().getType(arguments.data.typeID);
+                var primaryPhone = account.getPrimaryPhoneNumber()
+                primaryPhone.setAccountPhoneType(phoneType);
             }
         }
         return account;

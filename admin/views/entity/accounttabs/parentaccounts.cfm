@@ -63,14 +63,14 @@ Notes:
 		isDeletable=true
 	}
 )/>
-
+<cfset rc.parentAccountCollection.addDisplayProperty(displayProperty='accountRelationshipID',columnConfig={isVisible:false,isSearchable:false,isDeletable:false},prepend=true) />
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.parentAccountCollection#"
 	  recordEditAction="admin:entity.editaccountrelationship"
 	  recordDetailAction="admin:entity.detailaccountrelationship"
 	  recordDeleteAction="admin:entity.deleteaccountrelationship"
-	  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
+	  recordDeleteQueryString="redirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 	  usingPersonalCollection="false">
 </hb:HibachiListingDisplay>
 

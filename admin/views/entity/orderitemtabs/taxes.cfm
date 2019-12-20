@@ -59,7 +59,11 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="taxImpositionName" />
 		<hb:HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
 		<hb:HibachiListingColumn propertyIdentifier="taxRate" />
-		<hb:HibachiListingColumn propertyIdentifier="taxAmount" />
+		<cfif rc.orderItem.getVATAmount() GT 0>
+		    <hb:HibachiListingColumn propertyIdentifier="vatAmount" />
+		<cfelse>
+		    <hb:HibachiListingColumn propertyIdentifier="taxAmount" />
+		</cfif>
 		<hb:HibachiListingColumn propertyIdentifier="taxLiabilityAmount" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

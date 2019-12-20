@@ -255,6 +255,7 @@ class swfAccountController {
     
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
             this.stars[i] = "fas";
