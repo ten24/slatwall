@@ -23,9 +23,6 @@ class MonatFlexshipCancelModalController {
     }
     
     public cancelFlexship() {
-
-    	//TODO frontend validation
-
     	// make api request
         this.orderTemplateService.cancelOrderTemplate(
         	this.orderTemplate.orderTemplateID, 

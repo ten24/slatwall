@@ -63,7 +63,7 @@ import { MonatAlertService } from './services/monatAlertService';
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster', 'ngMessages'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
