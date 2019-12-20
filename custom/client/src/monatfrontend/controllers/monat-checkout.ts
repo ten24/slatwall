@@ -36,10 +36,7 @@ class MonatCheckoutController {
 		this.publicService.getCart().then(data => {
 			let screen = 'shipping';
 			
-			if(this.publicService.cart &&
-				this.publicService.cart.account &&
-				this.publicService.cart.account.accountID &&
-				this.publicService.cart.account.accountID.length){
+			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = 'payment'
 				} 

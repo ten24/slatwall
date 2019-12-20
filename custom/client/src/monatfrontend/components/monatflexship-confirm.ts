@@ -10,7 +10,12 @@ class MonatFlexshipConfirmController {
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
+<<<<<<< HEAD
     public loading :boolean = false;
+=======
+    public loading:boolean;
+    
+>>>>>>> 486118879a5da7ada3114b825e6707755a4f9865
     //@ngInject
     constructor(
     	public monatService, 
