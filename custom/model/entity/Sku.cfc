@@ -23,7 +23,7 @@ component {
 			if(notValidMpItem){
 				return false;
 			}
-			var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
+			var notValidRetailItem = arguments.account.getAccountType() == "customer" && this.getRetailFlag() != true;
 			if(notValidRetailItem){
 				return false;
 			}

@@ -3,7 +3,7 @@
 	    <h6 class="title-with-line"><span ng-bind="monatFlexshipConfirm.orderTemplate.orderTemplateName"></span></h6>
 	    
     	<h3>You'll still receive your items every
-	    	<span class="date" >
+	    	<span class="date">
 				<select type="text"
             			ng-model="monatFlexshipConfirm.selectedFrequencyTermID"
             			ng-options="term.value as term.name for term in monatFlexshipConfirm.frequencyTermOptions"
@@ -26,9 +26,7 @@
     	</div>
 
 	    <div class="confirm-footer">
-	    	<button ng-click="monatFlexshipConfirm.confirm()" 
-	    	ng-class="{loading: monatFlexshipConfirm.loading}" 
-	    	ng-disable = "monatFlexshipConfirm.loading" href="##" class="btn btn-light btn-block" >Confirm</button>
+	    	<button ng-click="monatFlexshipConfirm.confirm()" ng-class="{loading: monatFlexshipConfirm.loading}" href="##" class="btn btn-light btn-block" >Confirm</button>
 	    	<a href="##" class="btn btn-cancel cancel-light" ng-click="monatFlexshipConfirm.cancel()">Cancel</a>
 	    </div>
     </div>
