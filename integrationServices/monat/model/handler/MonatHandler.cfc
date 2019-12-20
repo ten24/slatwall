@@ -85,7 +85,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
 				
 				// Email opt-in when finishing enrollment
-				if ( account.getAllowCorporateEmailsFlag() ) {
+				if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
 					try{
 						getService('MailchimpAPIService').addMemberToListByAccount( account );
 					}catch(any e){
@@ -168,5 +168,46 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
+		
+	}
+	
+	
+	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
+		// Flush so the item is there when we need it. 
+		if (!arguments.orderItem.getOrder().hasErrors()){
+			ormFlush();
+		}
+		
+		try{
+			this.createOrderItemSkuBundle( arguments.orderItem );
+		}catch(bundleError){
+			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+		}
+	}
+	
+	/**
+	 * Adds the calculated bundled order items
+	 * For each orderitem, create new orderItemSkuBundles for each sku that is 
+	 * a bundle.
+	 **/
+	 public any function createOrderItemSkuBundle(required any orderItem){
+	 	
+	 	var bundledSkus = orderItem.getSku().getBundledSkus();
+	 	
+	 	if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
+	 		return;	
+	 	}
+	 	
+ 		//create
+ 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) VALUES ";
+		
+		//VALUES (100, 1), (100, 2), (100, 3)
+		var valueList = "";
+		for (var skuBundle in bundledSkus){ 
+			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.getBundledSku().getSkuID()#', '#orderItem.getOrderItemID()#', #skuBundle.getBundledQuantity()#)");
+		}
+		insertSQL = insertSQL & valueList;
+		
+ 		QueryExecute(insertSQL);
 	}
 }

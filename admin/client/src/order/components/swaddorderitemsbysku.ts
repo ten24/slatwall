@@ -13,6 +13,8 @@ class SWAddOrderItemsBySkuController{
     public orderFulfillmentId:string;
     
     public accountId:string;
+
+    public siteId:string;
     
     public currencyCode:string;
     
@@ -30,7 +32,8 @@ class SWAddOrderItemsBySkuController{
 	            public collectionConfigService, 
 				public observerService,
 	            public orderTemplateService,
-				public rbkeyService){
+				public rbkeyService,
+				public alertService){
 		if(this.edit == null){
 			this.edit = false;
 		}
@@ -74,6 +77,10 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
+
+		if(angular.isDefined(this.siteId)){
+	        this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
+		}
 
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 	    
@@ -167,7 +174,11 @@ class SWAddOrderItemsBySkuController{
 		this.postData(url, data)
 		.then(data => {
 			
-			if (data.preProcessView){
+			//Item can't be purchased
+			if (data.processObjectErrors && data.processObjectErrors.isPurchasableItemFlag){
+				this.observerService.notify("addOrderItemStopLoading", {});
+			//Display the modal	
+			}else if (data.preProcessView){
 				//populate a modal with the template data...
 	        	var parsedHtml:any = $.parseHTML( data.preProcessView );
 				$('#adminModal').modal();
@@ -207,6 +218,7 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         order: '<?', 
         orderFulfillmentId: '<?',
         accountId: '<?',
+        siteId: '<?',
         currencyCode: '<?',
         simpleRepresentation: '<?',
         returnOrderId: '<?',
@@ -223,18 +235,21 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 		    orderPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
-			rbkeyService
+			rbkeyService,
+			alertService
         ) => new SWAddOrderItemsBySku(
 			orderPartialsPath,
 			slatwallPathBuilder,
 			$hibachi,
-			rbkeyService
+			rbkeyService,
+			alertService
         );
         directive.$inject = [
 			'orderPartialsPath',
 			'slatwallPathBuilder',
 			'$hibachi',
-			'rbkeyService'
+			'rbkeyService',
+			'alertService'
         ];
         return directive;
     }
@@ -242,7 +257,8 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 	constructor(private orderPartialsPath, 
 				private slatwallPathBuilder, 
 				private $hibachi,
-				private rbkeyService
+				private rbkeyService,
+				private alertService
 	){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/addorderitemsbysku.html";
 	}

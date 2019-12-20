@@ -695,9 +695,9 @@
 												#local.methodOutput#
 											<cfelseif len(column.propertyIdentifier)>
 												<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
-												#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+													#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
 												<cfelse>
-													#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
+													<span ng-bind-html="'#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#'"></span>
 												</cfif>
 											<cfelseif len(column.processObjectProperty)>
 												<cfset attData = duplicate(column) />

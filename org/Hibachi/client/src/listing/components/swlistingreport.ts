@@ -107,14 +107,12 @@ class SWListingReportController {
                 serializedJSONData['collectionName'] = collectionName;
             }
             
-            this.$hibachi.saveEntity(
-                'Collection',
-                this.collectionId || "",
+            this.$hibachi.savePersonalCollection(
                 {
+                    'entityID': this.collectionId,
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
-                },
-                'save'  
+                }  
             ).then((data)=>{
                 if(this.collectionId){
                     
