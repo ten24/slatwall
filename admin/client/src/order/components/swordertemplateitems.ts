@@ -10,6 +10,8 @@ class SWOrderTemplateItemsController{
     
     public orderTemplate;
     
+    public siteId: string;
+    
     public viewOrderTemplateColumns;
     public editOrderTemplateColumns;
     public skuColumns; 
@@ -44,7 +46,12 @@ class SWOrderTemplateItemsController{
 		
 		this.viewOrderTemplateItemsCollection = this.orderTemplateService.getViewOrderTemplateItemCollection();
 		this.editOrderTemplateItemsCollection = this.orderTemplateService.getEditOrderTemplateItemCollection();
+		
 		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(); 
+	    
+	    if( angular.isDefined(this.siteId) ){
+	    	this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
+	    }
 	    
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 	    this.editOrderTemplateColumns = angular.copy( this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
@@ -79,6 +86,7 @@ class SWOrderTemplateItems implements ng.IDirective {
 		currencyCode: '@?',
 		edit:"=?",
         orderTemplate: '<?', 
+        siteId: '@?', 
         skuPropertiesToDisplay: '@?',
         skuPropertyColumnConfigs: '<?'//array of column configs
 	};
