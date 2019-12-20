@@ -1468,8 +1468,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
     }
     
-    public any function getCartWithImages(){
-        var lightCart = super.getCartData();
-        for(skuID in )
+    public any function getCartWithImages(any data){
+        var lightCart = super.getCartData(data);
+        writeDump(lightCart);
     }
 }
