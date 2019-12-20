@@ -67,9 +67,8 @@ Notes:
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.childAccountCollection#"
-	  recordEditAction="admin:entity.editaccountrelationship"
-	  recordDetailAction="admin:entity.detailaccountrelationship"
-	  recordDeleteAction="admin:entity.deleteaccountrelationship"
+	  recordDetailActionIdProperty="childAccount"
+	  recordDetailActionIdKey="childAccount_accountID"
 	  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 	  usingPersonalCollection="false">
 </hb:HibachiListingDisplay>

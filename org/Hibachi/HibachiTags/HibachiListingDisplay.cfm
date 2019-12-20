@@ -35,7 +35,8 @@
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditIcon" type="string" default="" />
-	
+	<cfparam name="attributes.recordDetailActionIdProperty" type="string" default="" />
+	<cfparam name="attributes.recordDetailActionIdKey" type="string" default="" />
 	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
@@ -166,6 +167,14 @@
 				data-actions="#attributes.recordActions#"
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
+				
+				<cfif !isNull(attributes.recordDetailActionIdProperty)>
+					record-detail-action-id-property="#attributes.recordDetailActionIdProperty#"
+				</cfif>
+				
+				<cfif !isNull(attributes.recordDetailActionIdKey)>
+					record-detail-action-id-key="#attributes.recordDetailActionIdKey#"
+				</cfif>
 				<cfif len(attributes.recordEditIcon)>
 					record-edit-icon="#attributes.recordEditIcon#"
 				</cfif> 
