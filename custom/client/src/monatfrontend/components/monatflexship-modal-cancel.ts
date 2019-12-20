@@ -25,8 +25,11 @@ class MonatFlexshipCancelModalController {
     }
     
     public cancelFlexship() {
+<<<<<<< HEAD
 
 		this.loading=true;
+=======
+>>>>>>> parent of 6c432edd0e... Revert "Merge pull request #1221 from ten24/develop-team-sr-validationerror"
     	// make api request
         this.orderTemplateService.cancelOrderTemplate(
         	this.orderTemplate.orderTemplateID, 

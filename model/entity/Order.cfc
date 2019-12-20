@@ -2272,7 +2272,8 @@ public numeric function getPersonalVolumeSubtotal(){
 		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
 		} else if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
 				&& !isNull(getAccount().getCreatedDateTime()) 
-				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate){
+				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate
+				&& this.hasProductPackOrderItem()){
 
 			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
 

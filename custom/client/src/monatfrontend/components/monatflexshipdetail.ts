@@ -2,22 +2,25 @@
 class MonatFlexshipDetailController {
     public orderTemplateId: string;
     public orderTemplate: any;
-    
+    public loading: boolean = false;
+
     //@ngInject
-    constructor(public orderTemplateService) {
+    constructor(public orderTemplateService, private monatAlertService) {
     }
     
     public $onInit = () => {
+        this.loading = true;
         if (this.orderTemplate == null) {
             this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateId)
-            .then(
-	            (response) => {
+            .then( (response) => {
 	                this.orderTemplate = response.orderTemplate;
-	            }, 
-	            (reason) => {
-	                throw (reason);
 	            }
-	        );
+	        ).catch((error)=>{
+	            this.monatAlertService.showErrorsFromResponse(error);
+	        })
+	        .finally( () =>{
+	            this.loading=false;
+	        })
         }
         
     };
@@ -31,7 +34,7 @@ class MonatFlexshipDetail {
 	public scope = {};
 	public bindToController = {
 	    orderTemplateId:'@',
-	    orderTemplate:'<'
+	    orderTemplate:'<',
 	};
 	public controller=MonatFlexshipDetailController;
 	public controllerAs="monatFlexshipDetail";
