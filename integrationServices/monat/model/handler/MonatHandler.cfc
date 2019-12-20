@@ -169,17 +169,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 		
-		try{
-			this.createOrderItemSkuBundles( arguments.order );
-		}catch(bundleError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ create bundle items for order. ");
-		}
 	}
 	
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
 		// Flush so the item is there when we need it. 
-		if (!orderItem.getOrder().hasErrors()){
+		if (!arguments.orderItem.getOrder().hasErrors()){
 			ormFlush();
 		}
 		
