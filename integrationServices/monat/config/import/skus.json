@@ -3,21 +3,12 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode"
-        },
-        {
-          "sourceColumn":"SKUItemID",
-          "propertyIdentifier":"remoteID"
-        },
-        {
-          "sourceColumn":"PRODUCTItemCode",
-          "propertyIdentifier":"remoteCode"
-        },
-        {
-          "sourceColumn":"ImportKey",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
-          "propertyIdentifier":"ImportKey",
+          "propertyIdentifier":"skuCode",
           "key":true
+        },
+        {
+          "sourceColumn":"SAPItemCode",
+          "propertyIdentifier":"remoteID"
         },
         {
           "sourceColumn":"ItemName",

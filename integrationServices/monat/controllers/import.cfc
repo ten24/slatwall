@@ -3331,10 +3331,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 									}
 									break;
 							}
-						}, true, 10);
+						}, true, 5);
 						
 						ArrayAppend(skuPrices, skuPrice);
-					}, true, 10);
+					}, true, 5);
 				}
 
 				previousCountryCode = currentCountryCode;
@@ -3387,10 +3387,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							}
 							break;
 					}
-				}, true, 10);
+				}, true, 5);
 				
 				ArrayAppend(skuPrices, skuPrice);
-			}, true, 10);
+			}, true, 5);
 		}
 
 
@@ -3403,6 +3403,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var data = {};
 		var query = arguments.skuQuery;
 		var skuPriceData = [];
+		var tempSkuData = arguments.skuData;
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
@@ -3424,7 +3425,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
-					data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
+					// data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'ItemNote':
 					data['ItemNote'] = Trim(fieldValue);
@@ -3450,18 +3451,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'SAPItemCodes':
 					if (ArrayLen(fieldValue)) {
 						data['SAPItemCode'] = fieldValue[1]['SAPItemCode'];
+					} else {
+						writeOutput("No SAP Codes found for ItemCode: #tempSkuData.ItemCode#");
+						writeOutput("<br>");
 					}
 					break;
 			}
-		}, true, 10);
+		}, true, 5);
 
 		// create skubundle data
 		if(ArrayLen(arguments.skuData['KitLines'])){
 			var currentCountryCode = "";
 			var previousCountryCode = "";
 			var index = 0;
+			var multipleCountries = false;
 
 			ArrayEach(arguments.skuData['KitLines'], function(item){
+
+				if(multipleCountries){
+					break;
+				}
 
 				switch (arguments.item['CountryCode']){	
 					case 'CAN':
@@ -3491,11 +3500,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					}
 
 					if(index > 0){
-						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
+						writeOutput("Multiple countries found in Kitline Data for ItemCode: #tempSkuData.ItemCode#");
+						writeOutput("<br>");
+						multipleCountries = true;
+						break;
+						// data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
+						// data['SKUItemCode'] &= currentCountryCode;
+					} /* else {
 						data['SKUItemCode'] &= currentCountryCode;
-					} else {
-						data['SKUItemCode'] &= currentCountryCode;
-					}
+					} */
 					
 					QueryAddRow(query, data);
 					index++;
@@ -3539,7 +3552,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		ArrayEach(skuPricesFlattened, function(item){
 			QueryAddRow(query, item);
-		}, true, 10);
+		}, true, 5);
 
 		return arguments.skuPriceQuery;
 	}
@@ -3576,14 +3589,41 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						skuBundleData['ComponentQuantity'] = arguments.value;
 						break;
 				}
-			}, true, 10);
+			}, true, 5);
 			if(StructIsEmpty(skuBundleData)){
 				continue;
 			}
 			QueryAddRow(query, skuBundleData);
-		}, true, 10);
+		}, true, 5);
 
 		return query;
+	}
+
+	private any function populateProductSiteQuery(required any productSiteQuery, required struct skuData, required struct sites){
+		var productCode = arguments.skuData['ItemCode'];
+
+		var productIDQuery = QueryExecute(
+			"SELECT productID FROM swproduct WHERE productCode = :productCode 
+			 AND productID NOT IN (SELECT site.productID FROM swproductsite site)",
+			{productCode = productCode}
+		);
+		
+		var productID = productIDQuery["productID"][1];
+		
+		if(!len(productID)){
+			return arguments.productSiteQuery;
+		}
+
+		for(var sapCode in arguments.skuData['SAPItemCodes']){
+			var countryCode = sapCode['CountryCode'];
+
+			if(structKeyExists(arguments.sites, countryCode)){
+				var siteID = arguments.sites[countryCode];
+				QueryAddRow(arguments.productSiteQuery, {productID = productID, siteID = siteID});
+			}
+		}
+
+		return arguments.productSiteQuery;
 	}
 
 	private string function getSkuColumnsList(){
@@ -3596,6 +3636,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private string function getSkuBundleColumnsList(){
 		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
+	}
+	
+	private string function getProductSiteColumnsList(){
+		return "productID,siteID";
 	}
 
 	public void function importMonatProducts(){
@@ -3613,6 +3657,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
 		var importSkuBundles = rc.importSkuBundles?:false;
+		var importProductSites = rc.importProductSites?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -3625,9 +3670,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
 		
-		var skuBundleColumns = this.getSkuBundleColumnsList();
+		var skuBundleColumns = this.getProductSiteColumnsList();
 		skuBundleColumnTypes = [];
 		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
+		
+		var productSiteColumns = this.getProductSiteColumnsList();
+		productSiteColumnTypes = [];
+		ArraySet(productSiteColumnTypes, 1, ListLen(productSiteColumns), 'varchar');
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -3639,8 +3688,62 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
+			// writedump(monatProducts);abort;
 
-			if(!importSkuBundles){
+			if(importSkuBundles){
+				try{
+					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+					for (var skuData in monatProducts){
+						if(arrayLen(skuData['KitLines'])){
+							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+
+							// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+
+							// importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+						}
+					}
+				
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+				
+			} else if(importProductSites) {
+				try{
+					var productSiteQuery = QueryNew(productSiteColumns, productSiteColumnTypes);
+					var sites = {
+						CAN = "2c9280846974b77e016974ee40cb0019",
+						GBR = "2c9280846974b77e016974fe89070025",
+						AUD = "2c9280846974b77e016974fe91d5002a",
+						IRL = "2c9280846974b77e016974fe999e002f",
+						POL = "2c9280846974b77e016974fea1e90034",
+						USA = "2c97808468a979b50168a97b20290021"
+					};
+
+					for(var skuData in monatProducts){
+						if(arrayLen(skuData['SAPItemCodes'])){
+							productSiteQuery = this.populateProductSiteQuery(productSiteQuery, skuData, sites);
+						}
+					}
+
+					insertSQL = "INSERT INTO swproductsite (productID, siteID) VALUES";
+
+					var valueList = "";
+					for(var productSite in productSiteQuery){
+						valueList = listAppend(valueList, "('#productSite.productID#', '#productSite.siteID#')");
+					}
+					insertSQL = insertSQL & valueList;
+
+					if(len(valueList)){
+						QueryExecute(insertSQL);
+					}
+
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+			} else {
 
 				try{
 					
@@ -3656,31 +3759,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						}
 					}
 
-					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+					// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+					// getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
-					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-				} catch (any e){
-					writeDump(e); // rollback the tx
-				}
-			} else {
-
-				try{
-					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
-
-					for (var skuData in monatProducts){
-						if(arrayLen(skuData['KitLines'])){
-							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
-
-							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-
-							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-						}
-					}
-				
+					// importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+					// getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
 				} catch (any e){
 					writeDump(e); // rollback the tx
 				}
@@ -3688,59 +3771,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			pageNumber++
 		}
 
-		abort;
-	}
-
-	public void function importVibeAccounts(){
-		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		var importSuccess = true;
-
-		try{
-			var userNameQuery = "UPDATE swaccount a 
-								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = 
-									CASE 
-										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
-										THEN temp.username
-										ELSE temp.consultant_id
-									END
-									a.modifiedDateTime = NOW()";
-			var accountAuthQuery = "INSERT INTO swaccountauthentication (
-										accountAuthenticationID, 
-										password, 
-										activeFlag, 
-										createdDateTime, 
-										accountID, 
-										legacyPassword
-									) 
-									SELECT
-										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
-										'LEGACY' password,
-										1 activeFlag,
-										NOW() createdDateTime,
-										a.accountID accountID,
-										temp.encrypted_password legacyPassword
-										FROM swaccount a 
-										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
-										WHERE aa.accountID IS NULL
-									";
-
-
-			var usernameQuery = QueryExecute(userNameQuery);
-			var accountAuthQuery = QueryExecute(accountAuthQuery);
-
-		} catch(any e){
-			importSuccess = false;
-			writeDump("Something Went Wrong!!!");
-			writeDump(var=e, label="ERROR");
-		}
-
-		if(importSuccess){
-			writeDump("Import Success!!!");
-			writedump(usernameQuery);
-			writedump(accountAuthQuery);
-		}
 		abort;
 	}
     

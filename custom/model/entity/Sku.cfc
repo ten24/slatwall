@@ -1,6 +1,4 @@
 component {
-	property name="importKey" ormtype="string";
-	property name="remoteCode" ormtype="string";
 	property name="sapItemCode" ormtype="string";
     property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
