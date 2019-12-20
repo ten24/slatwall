@@ -25,9 +25,7 @@ class MonatCheckoutController {
 		}, 'ownerAccountSelected');	
 		
 		this.observerService.attach(()=>{
-			console.log(this.publicService.toggleForm)
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
-			console.log(this.publicService.toggleForm)
 
 		}, 'shippingAddressSelected');	
 		
