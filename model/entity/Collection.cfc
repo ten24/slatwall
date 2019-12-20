@@ -4062,7 +4062,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
-				!this.getNonPersistentColumn() &&
 				(
 					( 
 					  structKeyExists(variables, "groupByRequired") &&
