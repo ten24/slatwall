@@ -17,6 +17,8 @@ class MonatProductCardController {
     public isEnrollment: boolean = false;
     public accountWishlistItems;
     public isAccountWishlistItem: boolean = false;
+    public currencyCode:string;
+    public siteCode:string;
 
 	// @ngInject
 	constructor(
@@ -109,6 +111,8 @@ class MonatProductCardController {
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
+				siteCode:this.siteCode,
+				currencyCode:this.currencyCode,
 				product: this.product,
 				type: this.type,
 				isEnrollment: this.isEnrollment,
@@ -227,6 +231,8 @@ class MonatProductCard {
 		accountWishlistItems: '<?',
 		allProducts: '<?',
 		orderTemplate: '<?',
+		currencyCode:'@',
+		siteCode:'@'
 	};
 
 	public controller = MonatProductCardController;

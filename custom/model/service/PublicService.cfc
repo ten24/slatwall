@@ -314,6 +314,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
+     
+    /**
+     * Function to get all orders for user
+     * adds ordersOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/ 
+    public void function getAllOrdersOnAccount(required any data){
+        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+     
     
     /**
      * Function to get all order fulfilments for user
@@ -1471,19 +1484,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
-    }
-    
-    public void function getCountries(){
-        var currentCountryCode = getService('siteService').getCountryCodeByCurrentSite();
-        var cacheKey = "getCountries#currentCountryCode#";
-        if(!structKeyExists(variables,cacheKey)){
-            var smartList = getService('addressService').getCountrySmartList();
-    		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
-    		smartList.addFilter('countryCode',currentCountryCode);
-    		smartList.addSelect(propertyIdentifier="countryName", alias="name");
-    		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
-    		variables[cacheKey] = smartList.getRecords();
-        }
-        arguments.data.ajaxResponse['countryCodeOptions'] =  variables[cacheKey];
     }
 }

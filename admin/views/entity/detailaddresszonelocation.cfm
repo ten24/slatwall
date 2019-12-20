@@ -64,7 +64,7 @@ Notes:
 					cancelQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#">
 		</hb:HibachiEntityActionBar>
 		
-		<swa:SlatwallAdminAddressDisplay address="#rc.addressZoneLocation#" fieldNamePrefix="addressZoneLocations[1]." edit="#rc.edit#" showName="false" showCompany="false" showStreetAddress="false" showStreet2Address="false">
+		<swa:SlatwallLocationAddressDisplay address="#rc.addressZoneLocation#" fieldNamePrefix="addressZoneLocations[1]." overrideRequiredFlag="statecode,city,postalCode" edit="#rc.edit#" showName="false" showCompany="false" showStreetAddress="false" showStreet2Address="false">
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

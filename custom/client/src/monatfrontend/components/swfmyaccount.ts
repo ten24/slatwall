@@ -155,7 +155,15 @@ class swfAccountController {
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
-              
+                
+                if(this.orderPayments.length){
+                    Object.keys(this.orderPayments[0]).forEach(key => {
+                        if(typeof(this.orderPayments[0][key]) == "number") {
+                            this.orderPayments[0][key] = Math.abs(this.orderPayments[0][key]);
+                        }
+                    });
+                }
+                
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
                 }
@@ -247,6 +255,7 @@ class swfAccountController {
     
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
             this.stars[i] = "fas";
