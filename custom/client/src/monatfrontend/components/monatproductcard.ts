@@ -37,6 +37,10 @@ class MonatProductCardController {
 		this.$scope.$evalAsync(this.init);
 		
 		this.setIsEnrollment();
+		
+		// We want to run this on init AND attach to the "accountWishlistItemsSuccess" 
+		// because this directive could load before or after that trigger happens
+		this.setIsAccountWishlistItem();
 	}
 	
 	public init = () => {
@@ -195,7 +199,7 @@ class MonatProductCardController {
 		);
 	}
 	
-	private setIsAccountWishlistItem = (): void => {
+	public setIsAccountWishlistItem = () => {
 		if ( 
 			'undefined' !== typeof this.accountWishlistItems 
 			&& this.accountWishlistItems.length

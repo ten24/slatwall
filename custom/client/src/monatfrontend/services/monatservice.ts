@@ -180,12 +180,8 @@ export class MonatService {
 
 	public getAccountWishlistItemIDs = () => {
 		var deferred = this.$q.defer();
-		this.publicService.getAccount().then( data => {
-			if ( 'undefined' !== typeof data.accountID && data.accountID.length ) {
-				this.publicService.doAction( 'getWishlistItemsForAccount', { accountID: data.accountID } ).then( data => {
-					deferred.resolve( data );
-				});
-			}
+		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
+			deferred.resolve( data );
 		});
 		return deferred.promise;
 	}

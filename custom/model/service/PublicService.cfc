@@ -1034,12 +1034,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getWishlistItemsForAccount( require any data ) {
-        param name="arguments.data.accountID" default="getHibachiScope().getAccount().getAccountID()";
         param name="arguments.data.displayProperties" default="orderTemplateItems.sku.product.productID|productID";
+        
+        var accountID = getHibachiScope().getAccount().getAccountID();
         
         var wishlistList = getService('OrderService').getOrderTemplateCollectionList();
         wishlistList.setDisplayProperties( arguments.data.displayProperties );
-        wishlistList.addFilter( 'account.accountID', arguments.data.accountID );
+        wishlistList.addFilter( 'account.accountID', accountID );
         wishlistList.addFilter( 'orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
         var accountWishlistItems = wishlistList.getRecords();
         
