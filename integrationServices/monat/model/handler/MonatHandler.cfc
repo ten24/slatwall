@@ -178,26 +178,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
-		//try{
-			this.createOrderItemSkuBundle( arguments.orderItem );
-		/*}catch(bundleError){
-			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
-		}*/
-	}
-	
-	/*public any function afterOrderItemDeleteSuccess(required any slatwallScope, required any orderItem){  
-		try{
-			this.removeOrderItemSkuBundle( arguments.orderItem );
-		}catch(bundleError){
-			logHibachi("afterOrderItemProcessDeleteSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()#. ");
+		// Flush so the item is there when we need it. 
+		if (!orderItem.getOrder().hasErrors()){
+			ormFlush();
 		}
-	}*/
-	
-	/*public any function removeOrderItemSkuBundle(required any orderItem){ 
-		QueryExecute("DELETE FROM SwOrderItemSkuBundle 
-					WHERE orderItemID = :orderItemID",
-					{ orderItemID = {value=orderItem.getOrderItemID(), cfsqltype="cf_sql_varchar"}});
-	}*/
+		
+		try{
+			this.createOrderItemSkuBundle( arguments.orderItem );
+		}catch(bundleError){
+			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+		}
+	}
 	
 	/**
 	 * Adds the calculated bundled order items
