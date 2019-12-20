@@ -80,6 +80,13 @@ Notes:
 		<cfif isObject(attributes.entity)>
 			
 			<!--- Setup Translate attributes for persistent entities with string properties --->
+			
+			<!---
+			<cfdump var="#attributes.entity.getAttributesProperties()#">
+			<cfset local.a = "#attributes.entity.getAttributeValues()#">
+			<cfdump var="#local.a#">
+			--->
+			<!---
 			<cfif 
 				attributes.entity.hasProperty(fdattributes.fieldName)
 				and attributes.entity.isPersistent() 
@@ -98,8 +105,21 @@ Notes:
 				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseID=#attributes.entity.getPrimaryIDValue()#", "&") />
 				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "basePropertyName=#fdattributes.fieldName#", "&") />
 			</cfif>
+			--->
+			<cfdump var="#attribute.getAttributeCode()#">
+			<cfdump var="#listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attribute.getClassName())#">
 			
-			
+			<cfif 
+				listFindNoCase('text,textarea,wysiwyg', attribute.getFormFieldType()) 
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attribute.getClassName())
+			>
+				<cfset fdattributes.translateAttributes = {} />
+				<cfset fdattributes.translateAttributes.queryString = '' />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseObject=#attribute.getClassName()#", "&") />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseID=#attribute.getPrimaryIDValue()#", "&") />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "basePropertyName=#attribute.getAttributeCode()#", "&") />
+				<cfdump var="#fdattributes.translateAttributes#">
+			</cfif>
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
