@@ -64,10 +64,19 @@ Notes:
 	}
 )/>
 
+<cfset rc.childAccountCollection.addDisplayProperties("childAccount.accountID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
+	}
+)/>
+
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.childAccountCollection#"
-	  recordDetailActionIdProperty="childAccount"
+	  recordDetailAction="admin:entity.detailAccount"
+	  recordDetailActionIdProperty="accountID"
 	  recordDetailActionIdKey="childAccount_accountID"
 	  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 	  usingPersonalCollection="false">

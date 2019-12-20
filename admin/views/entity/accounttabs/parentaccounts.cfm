@@ -55,7 +55,7 @@ Notes:
 <cfset rc.parentAccountCollection = rc.$.slatwall.getService("AccountService").getCollectionList("AccountRelationship")>
 <cfset rc.parentAccountCollection.addFilter("childAccount.accountID", "#rc.account.getAccountID()#","=")>
 
-<cfset local.displayPropertyList = 'parentAccount.firstName,parentAccount.lastName,parentAccount.accountCode,parentAccount.company,parentAccount.primaryPhoneNumber.phoneNumber,parentAccount.primaryEmailAddress.emailAddress,parentAccount.guestAccountFlag,parentAccount.organizationFlag'/>
+<cfset local.displayPropertyList = 'parentAccount.firstName,parentAccount.lastName,parentAccount.accountID,parentAccount.accountCode,parentAccount.company,parentAccount.primaryPhoneNumber.phoneNumber,parentAccount.primaryEmailAddress.emailAddress,parentAccount.guestAccountFlag,parentAccount.organizationFlag'/>
 <cfset rc.parentAccountCollection.setDisplayProperties(displayPropertyList,
 	{
 		isVisible=true,
@@ -63,11 +63,18 @@ Notes:
 		isDeletable=true
 	}
 )/>
-<cfset rc.parentAccountCollection.addDisplayProperty(displayProperty='accountRelationshipID',columnConfig={isVisible:false,isSearchable:false,isDeletable:false},prepend=true) />
+<cfset rc.parentAccountCollection.addDisplayProperties("childAccount.accountID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
+	}
+)/>
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.parentAccountCollection#"
-	  recordDetailActionIdProperty="parentAccount"
+	  recordDetailAction="admin:entity.detailAccount"
+	  recordDetailActionIdProperty="accountID"
 	  recordDetailActionIdKey="parentAccount_accountID"
 	  recordDeleteQueryString="redirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
 	  usingPersonalCollection="false">

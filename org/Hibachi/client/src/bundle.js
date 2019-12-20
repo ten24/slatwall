@@ -59017,12 +59017,16 @@ var AlertService = /** @class */ (function () {
             var alerts = [];
             if (messages && messages.length) {
                 for (var message in messages) {
+                    if (messages[message].messageType == "error" && messages[message].message == "Pre Process Displayed Flag must be equal to 1") {
+                        //skip this type of message as its just used to display the modal.
+                        continue;
+                    }
                     var alert = new alert_1.Alert(messages[message].message, messages[message].messageType);
                     alerts.push(alert);
                     if (alert.type === 'success' || alert.type === 'error') {
                         _this.$timeout(function () {
                             alert.fade = true;
-                        }, 3500);
+                        }, 4500);
                         alert.dismissable = false;
                     }
                     else {
@@ -72159,6 +72163,11 @@ var HibachiService = /** @class */ (function () {
             var request = _this.requestService.newAdminRequest(urlString, params);
             return request.promise;
         };
+        this.savePersonalCollection = function (params) {
+            var urlString = _this.getUrlWithActionPrefix() + 'api:main.savePersonalCollection';
+            var request = _this.requestService.newAdminRequest(urlString, params);
+            return request.promise;
+        };
         this.getExistingCollectionsByBaseEntity = function (entityName) {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
             var request = _this.requestService.newAdminRequest(urlString);
@@ -73849,13 +73858,6 @@ exports.OrderService = OrderService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -74979,7 +74981,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, __spreadArrays([self], args));
+            return fn.bind.apply(fn, [self].concat(args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -75697,10 +75699,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -80501,7 +80503,7 @@ var SWListingDisplayController = /** @class */ (function () {
             persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
             persistedReportsCollectionList.addFilter('reportFlag', 1);
             persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', '${account.accountID}', '=', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.setAllRecords(true);
             persistedReportsCollectionList.getEntity().then(function (data) {
@@ -81230,10 +81232,11 @@ var SWListingReportController = /** @class */ (function () {
                 if (collectionName) {
                     serializedJSONData['collectionName'] = collectionName;
                 }
-                _this.$hibachi.saveEntity('Collection', _this.collectionId || "", {
+                _this.$hibachi.savePersonalCollection({
+                    'entityID': _this.collectionId,
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (_this.collectionId) {
                         window.location.reload();
                     }
@@ -81849,9 +81852,12 @@ var SWListingSearchController = /** @class */ (function () {
             }
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
-            // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
-            //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
-            // })
+            _this.searchableColumns = [];
+            for (var i = 0; i < _this.searchableOptions.length; i++) {
+                if (_this.searchableOptions[i].isSearchable) {
+                    _this.searchableColumns.push(_this.searchableOptions[i].propertyIdentifier);
+                }
+            }
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
                 _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
@@ -81942,10 +81948,10 @@ var SWListingSearchController = /** @class */ (function () {
                         _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription'] == _this.personalCollectionIdentifier))) {
                 var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
                 if (selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey]) {
-                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID, {
-                        'accountOwner.accountID': _this.$rootScope.slatwall.account.accountID,
+                    _this.$hibachi.savePersonalCollection({
+                        'entityID': selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString
-                    }, 'save').then(function (data) {
+                    }).then(function (data) {
                     });
                     return;
                 }
@@ -81955,15 +81961,12 @@ var SWListingSearchController = /** @class */ (function () {
                     'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString,
                     'collectionName': collectionName,
                     'collectionDescription': _this.personalCollectionIdentifier,
-                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName,
-                    'accountOwner': {
-                        'accountID': _this.$rootScope.slatwall.account.accountID
-                    }
+                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName
                 };
-                _this.$hibachi.saveEntity('Collection', "", {
+                _this.$hibachi.savePersonalCollection({
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionDescription'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (!_this.localStorageService.hasItem('selectedPersonalCollection')) {
                         _this.localStorageService.setItem('selectedPersonalCollection', '{}');
                     }
@@ -81987,7 +81990,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (!_this.hasPersonalCollections) {
                 var personalCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
                 personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
-                personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
+                personalCollectionList.addFilter('accountOwner.accountID', '${account.accountID}');
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
                 personalCollectionList.addFilter('reportFlag', 0);
                 personalCollectionList.addFilter('softDeleteFlag', true, "!=");
@@ -82012,32 +82015,23 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
-            // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-            // if(this.selectedSearchFilter.criteria != 'all'){
-            //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
-            //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-            //     }
-            // }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
         this.configureSearchableColumns = function (column) {
-            var searchableColumn = "";
+            var searchableColumns = [];
             if (column.propertyIdentifier) {
-                searchableColumn = column.propertyIdentifier;
-                //default to All columns
+                searchableColumns.push(column.propertyIdentifier);
+            }
+            else {
+                searchableColumns = _this.searchableColumns;
             }
             for (var i = 0; i < _this.swListingDisplay.collectionConfig.columns.length; i++) {
-                if (searchableColumn.length) {
-                    if (searchableColumn === _this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) {
-                        _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                    }
-                    else {
-                        _this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
-                    }
+                if (searchableColumns.indexOf(_this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1) {
+                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
                 }
                 else {
-                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
                 }
             }
         };
@@ -82057,7 +82051,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -82192,11 +82186,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 case 'ADD_SELECTION':
-                    return __assign(__assign({}, state), { action: action });
+                    return __assign({}, state, { action: action });
                 default:
                     return state;
             }
@@ -86056,11 +86050,12 @@ module.exports = function(module) {
 /* 844 */,
 /* 845 */,
 /* 846 */,
-/* 847 */
+/* 847 */,
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(303);
 
 
 /***/ })
-],[847]);
+],[848]);

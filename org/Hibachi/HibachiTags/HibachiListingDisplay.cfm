@@ -169,11 +169,11 @@
 				record-edit-action="#attributes.recordEditAction#"
 				
 				<cfif !isNull(attributes.recordDetailActionIdProperty)>
-					record-detail-action-id-property="#attributes.recordDetailActionIdProperty#"
+					record-detail-action-property="#attributes.recordDetailActionIdProperty#"
 				</cfif>
 				
 				<cfif !isNull(attributes.recordDetailActionIdKey)>
-					record-detail-action-id-key="#attributes.recordDetailActionIdKey#"
+					record-detail-action-property-identifier="#attributes.recordDetailActionIdKey#"
 				</cfif>
 				<cfif len(attributes.recordEditIcon)>
 					record-edit-icon="#attributes.recordEditIcon#"
