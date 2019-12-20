@@ -57,7 +57,6 @@
 						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						autocomplete="off"
 						readonly 
-						swvalidationrequired = "true"
 					/>
 				</div>
 
@@ -70,8 +69,6 @@
 						type="radio"
 						name="change-order"
 						ng-checked="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'"
-						swvalidationrequired = "true"
-						ng-model = "monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip"
 					/>
 					<label for="change-order2">
 						{{ monatFlexshipChangeOrSkipOrderModal.translations.skipThisMonthsOrder }}
@@ -90,7 +87,7 @@
 						placeholder="{{
 							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
 						}}"
-					   swvalidationrequired = "true"
+ng-required="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'"
 					   name="selectedReason"
 					>
 						<option value="">
