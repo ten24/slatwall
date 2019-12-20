@@ -26,7 +26,6 @@ class MonatFlexshipConfirmController {
     public $onInit = () => {
         this.loading= true;
     	this.makeTranslations();
-	
 		this.monatService.getOptions({"frequencyTermOptions":false,"frequencyDateOptions":false})
 		.then(data => {
 			this.frequencyTermOptions = data.frequencyTermOptions;

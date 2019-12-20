@@ -114,8 +114,11 @@
 							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason
 						}}"
 						swvalidationrequired = "true"
+						namev= "otherReasonNotes"
 					/>
-					<!--TODO: RB-Keys text has extra chars on it-->
+					<div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.otherReasonNotes.$error">
+    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+    						</div>
 				</div>
 			</div>
 

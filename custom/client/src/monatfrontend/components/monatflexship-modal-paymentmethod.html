@@ -1,11 +1,3 @@
- <script type="text/ng-template" id="monat-form-generic-validation-error-messages">
-    <div ng-message="required" sw-Rbkey="'validation.define.required'" class="text-danger error_text" > </div>
-    <div ng-message="swvalidationrequired" sw-Rbkey="'validation.define.required'" class="text-danger error_text"> </div>
-    <div ng-message="swvalidationemail" sw-Rbkey="'validation.define.emailrequired'" class="text-danger error_text"> </div>
-    <div ng-message="swvalidationnumeric" sw-Rbkey="'validation.define.numeric'"  class="text-danger error_text"> </div>
-   
-</script>
-
 <div
 	class="modal using-modal-service"
 	role="dialog"
@@ -362,6 +354,7 @@
 					type="submit"
 					class="btn btn-block bg-primary"
 					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
+					ng-disabled = "monatFlexshipPaymentMethodModal.loading"
 				>
 					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
