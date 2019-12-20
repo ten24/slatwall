@@ -40,7 +40,7 @@
 																</h2>
 																
 																<p class="mbe" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;text-align:left;">
-																		The current items on this wishlist are included below.
+																		Hi there! These are some Monat products I love, thought you might like them too! 
 																</p>
 															</td>
 														</tr>
