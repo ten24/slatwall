@@ -190,9 +190,9 @@ class MonatProductCardController {
 	
 	private setIsEnrollment = (): void => {
 		this.isEnrollment = (
-			this.type !== 'enrollment'
-			&& this.type !== 'VIPenrollmentOrder'
-			&& this.type !== 'VIPenrollment'
+			this.type === 'enrollment'
+			|| this.type === 'VIPenrollmentOrder'
+			|| this.type === 'VIPenrollment'
 		);
 	}
 
