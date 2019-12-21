@@ -138,7 +138,8 @@ class SWSkuPriceModalController{
                 skuID : pageRecord["sku_skuID"],
                 skuCode : pageRecord["sku_skuCode"],
                 calculatedSkuDefinition : pageRecord["sku_calculatedSkuDefinition"],
-                skuName : pageRecord["sku_skuName"]
+                skuName : pageRecord["sku_skuName"],
+                imagePath : pageRecord["sku_imagePath"]
             }
             
             let promotionRewardData = {
