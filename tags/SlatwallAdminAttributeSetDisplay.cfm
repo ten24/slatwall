@@ -81,10 +81,6 @@ Notes:
 			
 			<!--- Setup Translate attributes for persistent entities with string properties --->
 			<cfif 
-				(
-					attributes.entity.hasProperty(fdattributes.fieldName) 
-					or true
-				)
 				and listFindNoCase('text,textarea,wysiwyg', fdattributes.fieldType) 
 				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.entity.getClassName())
 			>
