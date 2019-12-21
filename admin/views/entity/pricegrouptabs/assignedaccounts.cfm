@@ -62,10 +62,18 @@ Notes:
     		isDeletable=true
     	}
     )/>
+    <cfset rc.assignedAccounts.addDisplayProperty("accountID", "",
+    	{
+    		isVisible=false,
+    		isSearchable=false,
+    		isDeletable=false
+    	}
+    )/>
 
 <hb:HibachiListingDisplay
 	  collectionList="#rc.assignedAccounts#"
-	  recordEditAction="admin:entity.editaccount"
+	  recordEditAction="admin:entity.edit#lcase(rc.assignedAccounts.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.assignedAccounts.getCollectionObject())#"
 	  usingPersonalCollection="false">
 </hb:HibachiListingDisplay>
 </cfoutput>
