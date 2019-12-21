@@ -34,7 +34,7 @@
 					</button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
+							<img onError="this.onerror=null;this.src=hibachiConfig.missingImagePath;" ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
 					</div>
 					<h6 class="title-sm">
