@@ -80,24 +80,13 @@ Notes:
 		<cfif isObject(attributes.entity)>
 			
 			<!--- Setup Translate attributes for persistent entities with string properties --->
-			
-			<!---
-			<cfdump var="#attributes.entity.getAttributesProperties()#">
-			<cfset local.a = "#attributes.entity.getAttributeValues()#">
-			<cfdump var="#local.a#">
-			--->
-			<!---
 			<cfif 
-				attributes.entity.hasProperty(fdattributes.fieldName)
-				and attributes.entity.isPersistent() 
-				and listFindNoCase('text,textarea,wysiwyg', fdattributes.fieldType) 
-				and structKeyExists(attributes.entity.getPropertyMetaData(fdattributes.fieldName), 'ormtype')
-				and attributes.entity.getPropertyMetaData(fdattributes.fieldName).ormtype eq 'string'
-				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.entity.getClassName())
-				and (
-					not structKeyExists(attributes.entity.getPropertyMetaData(fdattributes.fieldName), "hb_translate") 
-					or attributes.entity.getPropertyMetaData(fdattributes.fieldName).hb_translate
+				(
+					attributes.entity.hasProperty(fdattributes.fieldName) 
+					or true
 				)
+				and listFindNoCase('text,textarea,wysiwyg', fdattributes.fieldType) 
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.entity.getClassName())
 			>
 				<cfset fdattributes.translateAttributes = {} />
 				<cfset fdattributes.translateAttributes.queryString = '' />
@@ -105,21 +94,7 @@ Notes:
 				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseID=#attributes.entity.getPrimaryIDValue()#", "&") />
 				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "basePropertyName=#fdattributes.fieldName#", "&") />
 			</cfif>
-			--->
-			<cfdump var="#attribute.getAttributeCode()#">
-			<cfdump var="#listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attribute.getClassName())#">
 			
-			<cfif 
-				listFindNoCase('text,textarea,wysiwyg', attribute.getFormFieldType()) 
-				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attribute.getClassName())
-			>
-				<cfset fdattributes.translateAttributes = {} />
-				<cfset fdattributes.translateAttributes.queryString = '' />
-				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseObject=#attribute.getClassName()#", "&") />
-				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseID=#attribute.getPrimaryIDValue()#", "&") />
-				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "basePropertyName=#attribute.getAttributeCode()#", "&") />
-				<cfdump var="#fdattributes.translateAttributes#">
-			</cfif>
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
