@@ -5,9 +5,11 @@ class MonatFlexshipCancelModalController {
 	public close; // injected from angularModalService
 	
 	public formData = {}; // {typeID:'', typeIDOther: '' }
-
+	
+	public loading = false;
+	
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService) {
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -24,30 +26,30 @@ class MonatFlexshipCancelModalController {
     
     public cancelFlexship() {
 
-    	//TODO frontend validation
-
+		this.loading=true;
     	// make api request
         this.orderTemplateService.cancelOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
-	        this.formData['typeID'], 
-	        this.formData['typeIDOther'] 
-	    ).then(
+	        this.formData['orderTemplateCancellationReasonType'], 
+	        this.formData['orderTemplateCancellationReasonTypeOther'] 
+	    )
+	    .then(
             (data) => {
-            	if(data.orderTemplate) {
+            	if(data && data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
 	                this.closeModal();
             	} else {
-            		console.error(data);
-            		//TODO handle errors
+            		throw(data);	
             	}
-            	// TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
             }
-        );
+        )
+        .catch( (error) => {
+    		this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally(() => {
+        	this.loading = false;
+        });
     }
     
     public closeModal = () => {

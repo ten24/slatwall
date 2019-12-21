@@ -47,7 +47,7 @@ class MonatFlexshipOrderItem {
 				private rbkeyService
 	){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-orderitem.html";
-		this.restrict = "E";
+		this.restrict = "EA";
 	}
 
 	public link = (scope, element, attrs) =>{
