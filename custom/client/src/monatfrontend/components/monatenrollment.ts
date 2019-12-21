@@ -46,8 +46,6 @@ class MonatEnrollmentController {
 	}
 
 	public $onInit = () => {
-		this.publicService.doAction('getCartWithImages');
-		
 		this.publicService.getAccount(true).then(result=>{
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
