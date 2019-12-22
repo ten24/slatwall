@@ -167,8 +167,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="subscribedToMailchimp" persistent="false";
 	
 
- property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="hyperWalletAcct" ormtype="string";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
