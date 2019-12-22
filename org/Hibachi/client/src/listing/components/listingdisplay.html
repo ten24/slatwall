@@ -263,22 +263,37 @@
                                     <div ng-transclude="saveAction"></div>
                                 </span>
 
-                                <!-- Detail -->
-                                <sw-action-caller
-                                        ng-if="swListingDisplay.hasRecordDetailAction"
-                                        data-action="{{swListingDisplay.recordDetailAction}}"
-                                        data-event="{{swListingDisplay.recordDetailEvent}}"
-                                        data-payload="pageRecord"
-                                        data-query-string="{{::swListingDisplay.makeQueryStringForAction('detail',pageRecord)}}"
-                                        data-class="btn btn-default btn-xs"
-                                        data-icon="eye-open"
-                                        data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal"
-                                        data-is-angular-route="swListingDisplay.isAngularRoute"
-                                >
+                                 <!-- Detail --> 
+                                <span ng-if="swListingDisplay.recordDetailActionProperty && swListingDisplay.recordDetailActionPropertyIdentifier">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionProperty+'='+pageRecord[swListingDisplay.recordDetailActionPropertyIdentifier]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
 
-                                </sw-action-caller>
+                                    </sw-action-caller>
 
+                                </span>
+                                <span ng-if="!swListingDisplay.recordDetailActionProperty || !swListingDisplay.recordDetailActionPropertyIdentifier">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+
+                                    </sw-action-caller>
+
+                                </span>
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
                                 </span>

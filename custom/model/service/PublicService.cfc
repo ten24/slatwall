@@ -1202,6 +1202,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
     	var imageService = getService('ImageService');
+    	
+    	var siteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite()
+    	siteCode = ( siteCode == 'default' ) ? '' : '/' & lcase( siteCode )
 
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
@@ -1217,13 +1220,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
+            
             productMap[record.defaultSku_skuID] = {
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
+                'skuProductURL': siteCode & productService.getProductUrlByUrlTitle( record.urlTitle ),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
