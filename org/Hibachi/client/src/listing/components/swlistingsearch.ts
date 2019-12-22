@@ -23,6 +23,7 @@ class SWListingSearchController {
    
     private selectedSearchFilter;
     public selectedWildCardPosition;
+    public limitCountTotal;
     
     public swListingControls:any;
     public hasPersonalCollections:boolean=false;
@@ -97,7 +98,7 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
-
+        this.limitCountTotal = this.swListingDisplay.collectionConfig.limitCountTotal;//Fetching initial val from config
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.collectionConfig.columns);
     
@@ -108,7 +109,7 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
-        
+
         this.selectedSearchColumn={title:'All'};
         this.configureSearchableColumns(this.selectedSearchColumn);
 
@@ -168,6 +169,15 @@ class SWListingSearchController {
                 wildCardPosition : position.value      
             });
         }
+    }
+    
+    //Documentation: Toggle flag function to either show or turn off all records count fetch.
+    public toggleCountLimit = (count)=>{
+        if (this.limitCountTotal > 0 ){ this.limitCountTotal = 0; }
+        else{this.limitCountTotal =  this.swListingDisplay.collectionConfig.limitCountTotal; }// fetch again from config file
+        this.updateListingSearchConfig({
+            limitCountTotal : this.limitCountTotal   
+        });
     }
 
     private updateListingSearchConfig(config?) {
