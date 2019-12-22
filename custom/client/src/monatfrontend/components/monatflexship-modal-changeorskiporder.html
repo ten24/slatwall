@@ -83,40 +83,36 @@
 						id="change-flexship"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.selectedReason"
 						ng-change="monatFlexshipChangeOrSkipOrderModal.selectedReasonChanged()"
-						ng-options="reason.value as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions"
-						placeholder="{{
-							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
-						}}"
-                       ng-required="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'"
-					   name="selectedReason"
+						ng-options="reason as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions"
+						placeholder="{{monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason}}"
+					   	swvalidationrequired = "true"
+					    name="selectedReason"
 					>
 						<option value="">
 							{{ monatFlexshipChangeOrSkipOrderModal.translations.whyAreYouCancellingFlexship }}
 						</option>
 					</select>
 					 <div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.selectedReason.$error">
-    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
-    						</div>
+					 	<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					 </div>
 				</div>
 
-				<div
-					class="form-group"
-					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes=='2c9280846a023949016a029455f0000c'"
+				<div class="material-field"
+					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes"
 				>
 					<input
 						type="text"
 						class="form-control"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.formData.otherReasonNotes"
-						placeholder="{{
-							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason
-						}}"
 						swvalidationrequired = "true"
-						namev= "otherReasonNotes"
+						name="otherReasonNotes"
 					/>
+					<label ng-bind="monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason"></label>
 					<div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.otherReasonNotes.$error">
-    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
-    						</div>
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
 				</div>
+				
 			</div>
 
 			<div class="footer">
@@ -125,15 +121,16 @@
 					class="btn btn-block bg-primary"
 					ng-class="{ loading: monatFlexshipChangeOrSkipOrderModal.loading }"
 					ng-disabled = "monatFlexshipChangeOrSkipOrderModal.loading"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
 				>
-					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
+				
 				<button
 					type="button"
 					class="btn btn-cancel cancel-dark"
 					ng-click="monatFlexshipChangeOrSkipOrderModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
 				>
-					<span sw-rbkey="'frontend.modal.closeButton'"></span>
 				</button>
 			</div>
 			</form>

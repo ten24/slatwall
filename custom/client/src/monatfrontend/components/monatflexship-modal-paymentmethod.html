@@ -4,9 +4,8 @@
 	id="flexship-modal-payment-method{{ monatFlexshipPaymentMethodModal.orderTemplate.orderTemplateID }}"
 >
 	<div class="modal-dialog modal-lg">
-        <form 
-        name="updateBillingForm" 
-         ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
+        <form name="updateBillingForm" 
+        	ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
          >
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -353,17 +352,17 @@
 				<button
 					type="submit"
 					class="btn btn-block bg-primary"
-					ng-class="{ loading: monatFlexshipAddGiftCardModal.loading }"
+					ng-class="{ loading: monatFlexshipPaymentMethodModal.loading }"
 					ng-disabled = "monatFlexshipPaymentMethodModal.loading"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
 				>
-					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
 				<button
 					type="button"
 					class="btn btn-cancel cancel-dark"
 					ng-click="monatFlexshipPaymentMethodModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
 				>
-					<span sw-rbkey="'frontend.modal.closeButton'"></span>
 				</button>
 			</div>
         </div>

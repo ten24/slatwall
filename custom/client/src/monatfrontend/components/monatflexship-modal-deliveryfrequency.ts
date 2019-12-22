@@ -39,7 +39,8 @@ class monatFlexshipFrequencyModalController {
             this.orderTemplate.orderTemplateID, 
             this.selectedFrequencyTermID, 
             this.orderTemplate.scheduleOrderDayOfTheMonth
-            ).then(data => {
+        )
+        .then( (data) => {
         	if(data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency') ) {
                 this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
             	this.monatAlertService.success("Your flexship has been updated successfully");
@@ -47,7 +48,7 @@ class monatFlexshipFrequencyModalController {
         	} else {
         		throw(data);
         	}
-        }).catch(error => {
+        }).catch( (error) => {
 	        this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;

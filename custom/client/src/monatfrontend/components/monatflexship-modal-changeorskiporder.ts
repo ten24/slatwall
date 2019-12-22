@@ -12,7 +12,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public loading : boolean = false;
 
 	public formData = {
-		delayOrSkip : '',
+		delayOrSkip : 'delay',
 		showOtherReasonNotes: false,
 	}; 
 	
