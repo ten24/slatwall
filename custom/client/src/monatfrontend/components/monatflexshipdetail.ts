@@ -34,7 +34,7 @@ class MonatFlexshipDetail {
 	public scope = {};
 	public bindToController = {
 	    orderTemplateId:'@',
-	    orderTemplate:'<',
+	    orderTemplate:'<'
 	};
 	public controller=MonatFlexshipDetailController;
 	public controllerAs="monatFlexshipDetail";
@@ -78,4 +78,3 @@ class MonatFlexshipDetail {
 export {
 	MonatFlexshipDetail
 };
-
