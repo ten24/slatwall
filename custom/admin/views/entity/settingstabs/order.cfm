@@ -51,5 +51,6 @@
 		<swa:SlatwallSetting settingName="orderReplacementReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="orderSecondaryReturnReasonTypeOptions" />
 		<swa:SlatwallSetting settingName="integrationmonatOrderMinimumDaysToRenewMP" />
+		<!---<swa:SlatwallSetting settingName="integrationmonatProductCodesRenewMP" />--->
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -68,11 +68,13 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     
     // =============== START: Custom Validation Methods ====================
     public boolean function orderMinimumDaysToRenewMPFailed(){
+        var productCodesRenewalMP = getService('SettingService').getSettingValue('integrationmonatGlobalProductCodesRenewMP');
+        
         // If order already has RENEWALFEE and cannot add another a Market Partner renewal
         var cartCollectionList = getHibachiScope().getService('orderService').getorderItemCollectionList();
         cartCollectionList.setDisplayProperties('order.orderID');
         cartCollectionList.addFilter('order.orderID', order.getOrderID());
-        cartCollectionList.addFilter('sku.product.productCode', 'RENEWALFEE');
+        cartCollectionList.addFilter('sku.product.productCode', 'productCodesRenewalMP', 'IN');
         var cartCollection = cartCollectionList.getRecords();
         
         if(arrayLen(cartCollection)){
@@ -88,8 +90,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
         var renewalDateCheck=DateDiff("d", accountRenewalDate, currentDate);
         
-        if( this.getProduct().getProductCode() == 'RENEWALFEE'
-        ){
+        if( productCodesRenewalMP CONTAINS this.getProduct().getProductCode()){
             if( this.getAccount().getAccountType() == 'marketPartner' &&
                 renewalDateCheck >= orderMinimumDaysToRenewMPSetting 
             ){
