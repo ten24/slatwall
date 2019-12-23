@@ -4,16 +4,16 @@
            
             <div class="modal-header">
                 
-                <h5 class="modal-title">{{ monatFlexshipConfirmMessageModel.title }}</h5>
+                <h5 class="modal-title">{{ monatConfirmMessageModel.title }}</h5>
                 
-                <button type="button" class="close" ng-click="monatFlexshipConfirmMessageModel.closeModal()" aria-label="Close">
+                <button type="button" class="close" ng-click="monatConfirmMessageModel.closeModal()" aria-label="Close">
 				    <i class="fas fa-times pt-2"></i>
                 </button>
                 
             </div>
             
             <div class="modal-body">
-                <p>{{monatFlexshipConfirmMessageModel.bodyText}}</p>
+                <p>{{monatConfirmMessageModel.bodyText}}</p>
             </div>
             
             
@@ -24,9 +24,9 @@
                     <button
                         type="button"
                         class="btn btn-block bg-primary"
-                        ng-click="monatFlexshipConfirmMessageModel.closeModal(true)"
+                        ng-click="monatConfirmMessageModel.closeModal(true)"
                     >
-                        <span> {{monatFlexshipConfirmMessageModel.buttonText}}</span>
+                        <span> {{monatConfirmMessageModel.buttonText}}</span>
                     </button>                
                 </div>
                 
@@ -34,7 +34,7 @@
                     <button
                         type="button"
                         class="btn btn-cancel cancel-dark"
-                        ng-click="monatFlexshipConfirmMessageModel.closeModal()"
+                        ng-click="monatConfirmMessageModel.closeModal()"
                     >
                         <span sw-rbkey="'frontend.modal.closeButton'"></span>
                     </button>    

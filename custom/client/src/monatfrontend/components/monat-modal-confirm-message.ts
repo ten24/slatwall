@@ -1,4 +1,4 @@
-class MonatFlexshipConfirmMessageController {
+class MonatConfirmMessageController {
 	public orderTemplate:any; 
 	public loading;
 	public close; // injected from angularModalService
@@ -14,7 +14,7 @@ class MonatFlexshipConfirmMessageController {
     };
 }
 
-class MonatFlexshipConfirmMessageModel {
+class MonatConfirmMessageModel {
 
 	public restrict:string;
 	public templateUrl:string;
@@ -26,8 +26,8 @@ class MonatFlexshipConfirmMessageModel {
 	    buttonText:'<?',
 	    close:'=' //injected by angularModalService
 	};
-	public controller=MonatFlexshipConfirmMessageController;
-	public controllerAs="monatFlexshipConfirmMessageModel";
+	public controller=MonatConfirmMessageController;
+	public controllerAs="monatConfirmMessageModel";
 
 	public static Factory(){
         var directive:any = (
@@ -35,7 +35,7 @@ class MonatFlexshipConfirmMessageModel {
 			$hibachi,
 			rbkeyService,
 			requestService
-        ) => new MonatFlexshipConfirmMessageModel(
+        ) => new MonatConfirmMessageModel(
 			monatFrontendBasePath,
 			$hibachi,
 			rbkeyService,
@@ -55,7 +55,7 @@ class MonatFlexshipConfirmMessageModel {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-confirm-message.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monat-modal-confirm-message.html";
 		this.restrict = "E";
 	}
 
@@ -66,5 +66,5 @@ class MonatFlexshipConfirmMessageModel {
 }
 
 export {
-	MonatFlexshipConfirmMessageModel
+	MonatConfirmMessageModel
 };

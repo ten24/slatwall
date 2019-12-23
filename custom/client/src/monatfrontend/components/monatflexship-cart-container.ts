@@ -105,7 +105,7 @@ class MonatFlexshipCartContainerController {
     
     public showFlexshipConfirmDeleteItemModal = (item) => {
 		this.ModalService.showModal({
-		      component: 'monatFlexshipConfirmMessageModel',
+		      component: 'monatConfirmMessageModel',
 		      bodyClass: 'angular-modal-service-active',
 			  bindings: {
 			    title: this.translations['confirmFlexshipRemoveItemDialogTitleText'],

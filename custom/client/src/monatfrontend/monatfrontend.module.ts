@@ -46,7 +46,7 @@ import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
 import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
-import { MonatFlexshipConfirmMessageModel } from './components/monatflexship-modal-confirm-message'
+import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -110,7 +110,7 @@ var monatfrontendmodule = angular
 	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
-	.directive ('monatFlexshipConfirmMessageModel',MonatFlexshipConfirmMessageModel.Factory())
+	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
