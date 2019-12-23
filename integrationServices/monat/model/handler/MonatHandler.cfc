@@ -50,7 +50,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
         
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasStarterKit() ) {
-			account.setStarterKitPurchasedFlag(true);
+			account.setProductPackPurchasedFlag(true);
         }
     	
     	if(arguments.order.getUpgradeFlag() == true){

@@ -6,7 +6,6 @@ component {
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="lastActivityDateTime" ormtype="timestamp";
-	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
