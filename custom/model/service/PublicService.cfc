@@ -812,6 +812,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     arguments.data['orderItemID'] = orderItem.getOrderItemID();
                     getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
                     StructDelete(arguments.data, 'orderItemID');
+                    getHibachiScope().flushORMSession();
                     break;
                 }
             }
