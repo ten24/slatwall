@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.orderItem" type="any" />
 
 <cfset rc.orderItemSkuBundleCollection = rc.$.slatwall.getService("SkuService").getCollectionList("OrderItemSkuBundle")>
-<cfset rc.orderItemSkuBundleCollection.addFilter("orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
+<cfset rc.orderItemSkuBundleCollection.addFilter("orderItem.orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
 
 <cfoutput>
 <cfset local.displayPropertyList = 'orderItem.sku.skuCode,quantity,price'/>
