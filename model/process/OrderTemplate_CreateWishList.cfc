@@ -118,9 +118,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getSite() {
 		if(!StructKeyExists(variables, 'site') ) {
-			if( !IsNull(variables.accountID) && len( trim(variables.accountID) ) ) {
-				variables['site'] = getService('AccountService').getAccount( variables.accountID ).getAccountCreatedSite();
-				
+			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
+				variables['site'] = getService('SiteService').getSite( variables.siteID );
 				return variables['site'];
 			}
 		} else {
