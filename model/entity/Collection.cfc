@@ -1828,6 +1828,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(isnull(filter.attributeID)){
 								if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
 									var propertyIdentifier = filter.propertyIdentifier;
+									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'),'filter');
 									
 									//Handle Booleans (BIT)
 									if(right(propertyIdentifier, 4) == 'Flag' && ListFind('<>,!=',comparisonOperator) > 0){
