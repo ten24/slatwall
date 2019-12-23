@@ -2378,6 +2378,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
 					}
+				}else{
+					returnOrder.getHibachiMessages().setMessages(returnOrder.getErrors());
+					returnOrder.clearHibachiErrors();
 				}
 			}
 			
@@ -2426,6 +2429,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
 			}
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
