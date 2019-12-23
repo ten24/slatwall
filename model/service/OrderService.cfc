@@ -1630,7 +1630,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
-
+	
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
+	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 
@@ -1738,7 +1740,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
@@ -2378,6 +2379,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
 					}
+				}else{
+					returnOrder.getHibachiMessages().setMessages(returnOrder.getErrors());
+					returnOrder.clearHibachiErrors();
 				}
 			}
 			
@@ -2426,6 +2430,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
 			}
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());

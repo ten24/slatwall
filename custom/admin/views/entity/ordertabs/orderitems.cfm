@@ -61,6 +61,7 @@ Notes:
 		isSearchable=true,
 		isDeletable=true
 	})/>
+	<cfset orderItemCollectionList.addDisplayProperty('sku.product.productType.productTypeName','Product Type',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
 	
 	<!--- Adds a type name fields if this is an exchange order --->
 	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
