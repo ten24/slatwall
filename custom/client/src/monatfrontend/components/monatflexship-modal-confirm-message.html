@@ -1,0 +1,46 @@
+<div class="modal using-modal-service" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content pt-0 px-2 pb-2">
+           
+            <div class="modal-header">
+                
+                <h5 class="modal-title">{{ monatFlexshipConfirmMessageModel.title }}</h5>
+                
+                <button type="button" class="close" ng-click="monatFlexshipConfirmMessageModel.closeModal()" aria-label="Close">
+				    <i class="fas fa-times pt-2"></i>
+                </button>
+                
+            </div>
+            
+            <div class="modal-body">
+                <p>{{monatFlexshipConfirmMessageModel.bodyText}}</p>
+            </div>
+            
+            
+            <!--footer-->
+            <div class="modal-footer row align-items-center justify-content-center border-0">
+                
+                <div class="d-block w-100">
+                    <button
+                        type="button"
+                        class="btn btn-block bg-primary"
+                        ng-click="monatFlexshipConfirmMessageModel.closeModal(true)"
+                    >
+                        <span> {{monatFlexshipConfirmMessageModel.buttonText}}</span>
+                    </button>                
+                </div>
+                
+                <div class="d-flex justify-content-center w-100">
+                    <button
+                        type="button"
+                        class="btn btn-cancel cancel-dark"
+                        ng-click="monatFlexshipConfirmMessageModel.closeModal()"
+                    >
+                        <span sw-rbkey="'frontend.modal.closeButton'"></span>
+                    </button>    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

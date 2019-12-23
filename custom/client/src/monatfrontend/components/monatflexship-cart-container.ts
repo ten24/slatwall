@@ -9,6 +9,7 @@ class MonatFlexshipCartContainerController {
     public orderTemplateItemTotal: number = 0;
     public showCanPlaceOrderAlert:false;
     public loading: boolean = false;
+    public monatFlexshipConfirmModel;
     
     //@ngInject
     constructor(
@@ -16,7 +17,7 @@ class MonatFlexshipCartContainerController {
     	public rbkeyService,
     	public ModalService,
     	public observerService,
-    	private monatAlertService
+    	private monatAlertService,
     ) {   
         this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
         this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
@@ -66,6 +67,8 @@ class MonatFlexshipCartContainerController {
     	 	'totalSteps': totalSteps,
     	 };
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+    	 this.translations['title'] = this.rbkeyService.rbKey('frontend.flaxship.confirmTitleTextDelete');
+    	 this.translations['bodyText'] = this.rbkeyService.rbKey('frontend.flaxship.confirmBodyTextDelete');
     }
     
     public next(){
@@ -101,15 +104,41 @@ class MonatFlexshipCartContainerController {
     	return this.orderTemplateItems.findIndex(it => it.orderTemplateItemID === orderTemplateItemID); 
     }
     
+    public showFlexshipConfirmDeleteItemModal = (item) => {
+		this.ModalService.showModal({
+		      component: 'monatFlexshipConfirmMessageModel',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.translations['title'],
+			    bodyText: this.translations['bodyText']
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		        console.log("confirm:::::", confirm);
+		        if(confirm){
+		            this.removeOrderTemplateItem(item);
+		        }else{
+		            item.loading=false;
+		        }
+		    });
+		}).catch((error) => {
+			console.error("unable to open showFlexshipConfirmModal :",error);	
+		});
+    }
+    
     public removeOrderTemplateItem = (item) => {
-    	this.loading =true;
     	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
             (data) => {
             	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems.splice(index, 1);
     				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
+    					this.setOrderTemplate( data.orderTemplate );
+    					this.monatAlertService.success("Item has been successfully removed")
     				}
         		} else {
         		    throw (data);

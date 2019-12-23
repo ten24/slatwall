@@ -136,7 +136,6 @@ class MonatProductCardController {
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
-				// this.changeTypeForDemo(); //TODO remove
 			},
 		}).then((modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
@@ -146,16 +145,6 @@ class MonatProductCardController {
 			console.error('unable to open model :', error);
 		});
 	
-	};
-	
-	//TODO remove
-	private changeTypeForDemo = () => {
-		let types = ['','flexship','wishlist','enrollment'];
-		let index = types.indexOf(this.type);
-		index++;
-		this.type = types[index % types.length];
-		
-		console.log('changed type for demo :', this.type);
 	};
 
 	public addToCart = (skuID, skuCode) => {
