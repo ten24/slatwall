@@ -9,7 +9,6 @@ class MonatFlexshipCartContainerController {
     public orderTemplateItemTotal: number = 0;
     public showCanPlaceOrderAlert:false;
     public loading: boolean = false;
-    public monatFlexshipConfirmModel;
     
     //@ngInject
     constructor(
@@ -17,7 +16,7 @@ class MonatFlexshipCartContainerController {
     	public rbkeyService,
     	public ModalService,
     	public observerService,
-    	private monatAlertService,
+    	private monatAlertService
     ) {   
         this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
         this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
@@ -267,4 +266,3 @@ class MonatFlexshipCartContainer {
 export {
 	MonatFlexshipCartContainer
 };
-
