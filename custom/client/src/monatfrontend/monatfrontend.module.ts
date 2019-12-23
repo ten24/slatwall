@@ -46,6 +46,7 @@ import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
 import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
+import { AddressDeleteModal } from './components/address-delete-modal';
 
 
 // controllers
@@ -97,6 +98,7 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
 	.directive('wishlistDeleteModal', WishlistDeleteModal.Factory())
 	.directive('wishlistEditModal', WishlistEditModal.Factory())
+	.directive('addressDeleteModal', AddressDeleteModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
