@@ -1507,7 +1507,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
-		arguments.orderTemplate.setSite(getSiteService().getSite( arguments.processObject.getSiteID()));
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		
