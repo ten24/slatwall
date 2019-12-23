@@ -2,6 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
+			<form name ="setOrderTemplateFrequencyForm" 
+			 ng-submit= "setOrderTemplateFrequencyForm.$valid && monatFlexshipFrequencyModal.setOrderTemplateFrequency()" >
 			<button
 				type="button"
 				class="close"
@@ -17,20 +19,24 @@
 				</h6>
 
 				<div class="material-field">
-              		<select ng-model="frequencyTerm" class="form-control">
-						<option value="">{{monatFlexshipFrequencyModal.translations.flexshiFrequency}}</option>
-						<option ng-repeat="term in monatFlexshipFrequencyModal.frequencyTerms" ng-value="term.value">{{term.name}}</option>
+              		<select 
+              		swvalidationrequired = "true"
+              		ng-model="monatFlexshipFrequencyModal.selectedFrequencyTermID" 
+              		class="form-control" 
+              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTermOptions"
+              		>
+              		<option value="">{{monatFlexshipFrequencyModal.translations.flexshipFrequency}}</option>
 					</select>
+					
 				</div>
 			</div>
-
 			<div class="footer">
 				<button
-					type="button"
+					type="submit"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipFrequencyModal.setOrderTemplateFrequency(frequencyTerm)"
 					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
+					ng-disabled = "monatFlexshipFrequencyModal.loading"
 				></button>
 				<button
 					type="button"
@@ -39,6 +45,7 @@
 					sw-rbkey="'frontend.modal.closeButton'"
 				></button>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>

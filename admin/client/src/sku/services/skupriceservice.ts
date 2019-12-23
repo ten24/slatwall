@@ -165,7 +165,7 @@ export class SkuPriceService {
     public getSkuOptions = (productID) =>{
         let skuOptions;
         let skuColectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
-        skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode");
+        skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode,imagePath");
         skuColectionConfig.addFilter("product.productID", productID, "=");
         skuColectionConfig.setAllRecords(true);
         

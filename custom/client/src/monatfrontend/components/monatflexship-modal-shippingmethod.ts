@@ -42,7 +42,6 @@ class MonatFlexshipShippingMethodModalController {
     	this.translations['shippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.shippingAddress');
     	this.translations['addNewShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.addNewShippingAddress');
     	this.translations['newShippingAddress'] = this.rbkeyService.rbKey('frontend.shippingMethodModal.newShippingAddress');
-
     	this.translations['newAddress_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
     	this.translations['newAddress_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
     	this.translations['newAddress_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');
@@ -67,7 +66,6 @@ class MonatFlexshipShippingMethodModalController {
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['shippingMethodID'] = this.selectedShippingMethod.shippingMethodID;
-    	
     	this.loading = true;
   
     	if(this.selectedShippingAddress.accountAddressID !== 'new') {
@@ -82,11 +80,9 @@ class MonatFlexshipShippingMethodModalController {
     	// make api request
         this.orderTemplateService.updateShipping(payload)
         .then( (response) => {
-               
            if(response.orderTemplate) {
                 this.orderTemplate = response.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-
                 if(response.newAccountAddress) {
             		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
             		this.accountAddresses.push(response.newAccountAddress);
@@ -107,7 +103,7 @@ class MonatFlexshipShippingMethodModalController {
         })
         .finally(() => {
         	this.loading = false;
-        });
+        }); 
     }
 
     public closeModal = () => {

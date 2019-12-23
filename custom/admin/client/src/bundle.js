@@ -32956,6 +32956,7 @@ var SWPricingManagerController = /** @class */ (function () {
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.imagePath", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
@@ -33202,7 +33203,8 @@ var SWSkuPriceModalController = /** @class */ (function () {
                 skuID: pageRecord["sku_skuID"],
                 skuCode: pageRecord["sku_skuCode"],
                 calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"],
-                skuName: pageRecord["sku_skuName"]
+                skuName: pageRecord["sku_skuName"],
+                imagePath: pageRecord["sku_imagePath"]
             };
             var promotionRewardData = {
                 promotionRewardID: pageRecord['promotionRewardID']
@@ -71450,7 +71452,7 @@ var SkuPriceService = /** @class */ (function () {
         this.getSkuOptions = function (productID) {
             var skuOptions;
             var skuColectionConfig = _this.collectionConfigService.newCollectionConfig("Sku");
-            skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode");
+            skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode,imagePath");
             skuColectionConfig.addFilter("product.productID", productID, "=");
             skuColectionConfig.setAllRecords(true);
             return skuColectionConfig.getEntity();
@@ -78620,7 +78622,6 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
-        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78634,6 +78635,7 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
+        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -94656,6 +94658,7 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.persistedReportCollections = data.records;
             });
         };
+        //init
         this.initListingDisplay($q, $rootScope, true);
     }
     Object.defineProperty(SWListingDisplayController.prototype, "columns", {

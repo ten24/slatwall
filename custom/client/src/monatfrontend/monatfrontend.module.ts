@@ -45,6 +45,8 @@ import { MonatUpgrade } from './components/upgradeFlow/monatupgrade';
 import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
 import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
+import { ImageManager } from './components/image-manager';
+
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -63,7 +65,7 @@ import { MonatAlertService } from './services/monatAlertService';
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster', 'ngMessages'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -107,7 +109,8 @@ var monatfrontendmodule = angular
 	.directive('upgradeMp', MonatUpgradeMP.Factory())
 	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
-		
+	.directive('imageManager', ImageManager.Factory())
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('forgotPasswordController', MonatForgotPasswordController)

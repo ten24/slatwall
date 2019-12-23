@@ -164,7 +164,7 @@ class SWListingDisplayController{
         public rbkeyService,
         public localStorageService
     ){
-       
+       //init
        this.initListingDisplay( $q, $rootScope, true );
 
     }
