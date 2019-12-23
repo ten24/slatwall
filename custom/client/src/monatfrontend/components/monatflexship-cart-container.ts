@@ -118,7 +118,6 @@ class MonatFlexshipCartContainerController {
 		}).then( (modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
 		    modal.close.then( (confirm) => {
-		        console.log("confirm:::::", confirm);
 		        if(confirm){
 		            this.removeOrderTemplateItem(item);
 		        }else{
