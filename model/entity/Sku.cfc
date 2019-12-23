@@ -619,12 +619,13 @@ property name="sapItemCode" ormtype="string";
 	}
 	
 	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
-		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
+		var cacheKey = 'PriceByCurrencyCode#arguments.currencyCode#';
 
 		var account = getHibachiScope().getAccount();
 		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}
+		
 		if(!structKeyExists(arguments,'priceGroups')){
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
@@ -633,40 +634,18 @@ property name="sapItemCode" ormtype="string";
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
 
-		arguments.skuID = this.getSkuID(); 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
+			
 			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
-				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-					var prices = [];
-						for(var i=1; i <= arrayLen(skuPriceResults); i++){
-							if(isNull(skuPriceResults[i]['price'])){
-								skuPriceResults[i]['price'] = 0;
-							}
-							ArrayAppend(prices, skuPriceResults[i]['price']);
-						}
-						ArraySort(prices, "numeric","asc");
-						variables[cacheKey]= prices[1];
-				}
-				
+				arguments.skuID = this.getSkuID(); 
+				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity(argumentCollection=arguments); 
+	
 				if(structKeyExists(variables,cacheKey)){
 					return variables[cacheKey];
 				}
-				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-				if(!isNull(baseSkuPrice)){
-					variables[cacheKey] = baseSkuPrice.getPrice(); 
-				}
-				
 			}
-			
-			if(structKeyExists(variables,cacheKey)){
-				return variables[cacheKey];
-			}
-			
 		}
-		
 		
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
@@ -675,7 +654,7 @@ property name="sapItemCode" ormtype="string";
     		variables[cacheKey]= getCurrencyDetails().price;
     		return variables[cacheKey];
     	}
-    	
+
     }
 
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
