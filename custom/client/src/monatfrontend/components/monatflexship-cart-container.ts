@@ -137,7 +137,7 @@ class MonatFlexshipCartContainerController {
     				this.orderTemplateItems.splice(index, 1);
     				if(data.orderTemplate){
     					this.setOrderTemplate( data.orderTemplate );
-    					this.monatAlertService.success("Item has been successfully removed")
+    					this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.removeItemsucessfull'))
     				}
         		} else {
         		    throw (data);
