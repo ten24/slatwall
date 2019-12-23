@@ -1630,7 +1630,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
-
+	
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
+	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 
@@ -1738,7 +1740,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
