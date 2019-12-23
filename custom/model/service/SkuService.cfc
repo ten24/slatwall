@@ -18,7 +18,7 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 			return prices[1];
 		}
 		
-		return " "; //can't return null as cf won't set that in the struct
+		return "null"; //can't return null as cf won't set that in the struct
 	}
 
 	
