@@ -77,7 +77,6 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 		){
 			variables.price = "N/A";
 			if(!isNull(getSku())) {
-				
 				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=account.getAccountID());
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
