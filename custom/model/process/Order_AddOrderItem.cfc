@@ -64,6 +64,29 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
     }
     
+    public any function getPrice() {
+		var account = getHibachiScope().getAccount();
+		if ( !isNull(getOrder().getAccount()) ){
+			account = getOrder().getAccount();
+		}
+		
+		if(
+			!structKeyExists(variables, "price") 
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(),account=account.getAccountID()) )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
+		){
+			variables.price = "N/A";
+			if(!isNull(getSku())) {
+				
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=account.getAccountID());
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				}
+			}
+		}
+		return variables.price;
+	}
+    
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
