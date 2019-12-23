@@ -55,7 +55,7 @@ Notes:
 <cfset rc.orderItemSkuBundleCollection.addFilter("orderItem.orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
 
 <cfoutput>
-<cfset local.displayPropertyList = 'orderItem.sku.skuCode,quantity,price'/>
+<cfset local.displayPropertyList = 'sku.skuName,sku.skuCode,quantity'/>
 <cfset rc.orderItemSkuBundleCollection.setDisplayProperties(displayPropertyList,
 	{
 		isVisible=true,
