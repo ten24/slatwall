@@ -67,8 +67,8 @@ class MonatFlexshipCartContainerController {
     	 	'totalSteps': totalSteps,
     	 };
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
-    	 this.translations['title'] = this.rbkeyService.rbKey('frontend.flaxship.confirmTitleTextDelete');
-    	 this.translations['bodyText'] = this.rbkeyService.rbKey('frontend.flaxship.confirmBodyTextDelete');
+    	 this.translations['confirmFlexshipRemoveItemDialogTitleText'] = this.rbkeyService.rbKey('alert.frontend.confirmTitleTextDelete');
+    	 this.translations['confirmFlexshipRemoveItemDialogBodyText'] = this.rbkeyService.rbKey('alert.frontend.confirmBodyTextDelete');
     }
     
     public next(){
@@ -109,8 +109,8 @@ class MonatFlexshipCartContainerController {
 		      component: 'monatFlexshipConfirmMessageModel',
 		      bodyClass: 'angular-modal-service-active',
 			  bindings: {
-			    title: this.translations['title'],
-			    bodyText: this.translations['bodyText']
+			    title: this.translations['confirmFlexshipRemoveItemDialogTitleText'],
+			    bodyText: this.translations['confirmFlexshipRemoveItemDialogBodyText']
 			  },
 			  preClose: (modal) => {
 				modal.element.modal('hide');
