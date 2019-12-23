@@ -642,6 +642,11 @@ property name="sapItemCode" ormtype="string";
 				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity(argumentCollection=arguments); 
 	
 				if(structKeyExists(variables,cacheKey)){
+					
+					if(variables[cacheKey] == "null"){
+						return;
+					}
+					
 					return variables[cacheKey];
 				}
 			}

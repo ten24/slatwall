@@ -5,20 +5,33 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 		
 		var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
 		
+		var price = "null";
+		
 		if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-			var prices = [];
-			for(var i=1; i <= arrayLen(skuPriceResults); i++){
-				if(isNull(skuPriceResults[i]['price'])){
-					skuPriceResults[i]['price'] = 0; //
-				}
-				ArrayAppend(prices, skuPriceResults[i]['price']);
+
+			ArraySort( skuPriceResults, function (a, b) {
+			    
+			    // equal items sort equally
+			    if (a['price'] === b['price']) {
+			        return 0;
+			    }
+			    // nulls sort after anything else
+			    else if ( IsNull(a['price']) ) {
+			        return 1;
+			    } else if ( IsNull(b['price']) ) {
+			        return -1;
+			    }
+			    
+			    // otherwise, we're ascending, lowest sorts first
+			     return a['price'] < b['price'] ? -1 : 1;
+			 });
+			 
+			if( !IsNull(skuPriceResults[1]['price']) ) {
+				price = skuPriceResults[1]['price']; // if it's not null it's the lowest price;
 			}
-			
-			ArraySort(prices, "numeric","asc");
-			return prices[1];
 		}
 		
-		return "null"; //can't return null as cf won't set that in the struct
+		return price; //not returning return the NULL null, as cf won't set that in any var
 	}
 
 	
