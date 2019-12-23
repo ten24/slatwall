@@ -79769,7 +79769,7 @@ var CollectionConfig = /** @class */ (function () {
             }
             return _this;
         };
-        this.setUseElasticSearch1 = function (flag) {
+        this.setUseElasticSearch = function (flag) {
             if (flag === void 0) { flag = false; }
             _this.useElasticSearch = flag;
             return _this;
@@ -80006,7 +80006,6 @@ var CollectionConfig = /** @class */ (function () {
             if (criteria === void 0) { criteria = 'One'; }
             if (readOnly === void 0) { readOnly = false; }
             _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatPropertyIdentifier(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
-            console.log("+++++");
             _this.notify('collectionConfigUpdated', {
                 collectionConfig: _this
             });
@@ -80112,8 +80111,6 @@ var CollectionConfig = /** @class */ (function () {
         };
         this.setLimitCountTotal = function (newCount) {
             _this.limitCountTotal = newCount;
-            console.log(newCount);
-            console.log("---------");
             return _this.limitCountTotal;
         };
         this.getLimitCountTotal = function () {
@@ -96800,10 +96797,6 @@ var SWListingSearchController = /** @class */ (function () {
         this.collectionNameSaveIsOpen = false;
         this.searchableFilterOptions = [
             {
-                title: 'Default',
-                value: 'default',
-            },
-            {
                 title: 'Last 1 Month',
                 value: 'lastOneMonth',
             },
@@ -96850,7 +96843,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
-            console.log(123123123);
+            _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; //Fetching initial val from config
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
             // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
@@ -96894,9 +96887,16 @@ var SWListingSearchController = /** @class */ (function () {
                 });
             }
         };
-        this.clearCountLimit = function (count) {
+        //Documentation: Toggle flag function to either show or turn off all records count fetch.
+        this.toggleCountLimit = function (count) {
+            if (_this.limitCountTotal > 0) {
+                _this.limitCountTotal = 0;
+            }
+            else {
+                _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; // fetch again from config file
+            }
             _this.updateListingSearchConfig({
-                limitCountTotal: 0
+                limitCountTotal: _this.limitCountTotal
             });
         };
         this.selectSearchColumn = function (column) {
@@ -98222,7 +98222,7 @@ var Pagination = /** @class */ (function () {
         this.pageStart = 0;
         this.pageEnd = 0;
         this.recordsCount = 0;
-        this.limitCountTotal = 0;
+        this.limitCountTotal = 0; //To be used to update the actual fetchcount instead of default 10
         this.totalPages = 0;
         this.pageShowOptions = [
             { display: 10, value: 10 },
@@ -98271,8 +98271,6 @@ var Pagination = /** @class */ (function () {
         };
         this.setLimitCountTotal = function (limitCountTotal) {
             _this.limitCountTotal = limitCountTotal;
-            console.log(_this.limitCountTotal);
-            console.log(234324);
         };
         this.getPageShowOptions = function () {
             return _this.pageShowOptions;
@@ -98306,9 +98304,13 @@ var Pagination = /** @class */ (function () {
             }
         };
         this.hasPrevious = function () {
-            return (_this.getPageStart() <= 1);
+            //With no actual recordsCount, need to check if previous page exists even if there's no data on current page. This enables user to go back to previous page if no results exist on current page, unloess its the very first page
+            return (_this.getPageStart() <= 1 && _this.getPageEnd() !== 0);
+            //this.getPageStart() checks if this isnt the first page itself
+            //this.getPageEnd() !== 0 tells us if a previous page exists even if the current page has no records 
         };
         this.hasNext = function () {
+            //Same as above hasPrevious: Need to alter this to fetch anyways and then show appropriate message if no data exists on next fetch
             return (_this.getPageEnd() === _this.getRecordsCount());
         };
         this.showPreviousJump = function () {
@@ -98344,15 +98346,31 @@ var Pagination = /** @class */ (function () {
             return false;
         };
         this.setPageRecordsInfo = function (collection) {
-            _this.setRecordsCount(collection.recordsCount);
-            _this.setLimitCountTotal(collection.limitCountTotal);
+            //Documentation: Partial transfer of pagination control to front-end. Needs to be further rewritten
+            var pageRecordsCount = collection.pageRecordsCount, //actual results obtained - defaults to limit 10 unless otherwise specified by pageRecordsShow
+            pageRecordsShow = collection.pageRecordsShow, recordsCount = collection.recordsCount, //arbitary fetch of recordsCount to get total records in db
+            pageRecordsEnd = collection.pageRecordsEnd, limitCountTotal = collection.limitCountTotal;
+            _this.setLimitCountTotal(limitCountTotal);
+            //Again, using the limitCountTotal to retain old functionality to work as before
+            if (limitCountTotal === 0) {
+                _this.setRecordsCount(recordsCount);
+                _this.setPageEnd(pageRecordsCount);
+            }
+            else {
+                if ((pageRecordsCount < recordsCount) && (pageRecordsCount < pageRecordsShow)) {
+                    _this.setPageEnd(pageRecordsCount);
+                }
+                else {
+                    _this.setPageEnd(pageRecordsEnd);
+                }
+                _this.setRecordsCount((pageRecordsCount < pageRecordsShow) ? pageRecordsCount : recordsCount);
+            }
             if (_this.getRecordsCount() === 0) {
                 _this.setPageStart(0);
             }
             else {
                 _this.setPageStart(collection.pageRecordsStart);
             }
-            _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
             _this.currentPage = collection.currentPage;
             _this.totalPagesArray = [];

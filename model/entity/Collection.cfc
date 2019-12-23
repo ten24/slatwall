@@ -509,8 +509,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
 			//return; //nothing to add //Can't return here till other conditions are met
 			//Commenting the above line here for Nitin's approval. Delete in future commit.
-		} 
-		else{
+		}else{
 			//Adding else condition to close loop on previous if clause
 		//        else add listingSearchFilter      //
 			var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
@@ -3094,8 +3093,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.recordsCountData['recordsCount'] = 0;
 			}
 			variables.recordsCountData['limitCountTotal'] = 0;//Passing flag here for pagination to show total records;Adding here since this is tied to the total recordsCountData set
-		}
-		else{//Return 250/config value by default
+		}else{//Return 250/config value by default
 			variables.recordsCountData['recordsCount'] = 250;
 			variables.recordsCountData['limitCountTotal'] = variables.limitCountTotal;//Default value from config
 		}
@@ -3246,8 +3244,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			if(pageRecordEnd > getRecordsCount()) {
 				pageRecordEnd = getRecordsCount();
 			}
-		}
-		else{
+		}else{
 			if(pageRecordEnd > variables.limitCountTotal){
 				pageRecordEnd = variables.limitCountTotal;
 			}

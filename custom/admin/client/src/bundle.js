@@ -97509,8 +97509,8 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.limitCountTotal = 0;
             }
             else {
-                _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal;
-            } // fetch again from config file
+                _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; // fetch again from config file
+            }
             _this.updateListingSearchConfig({
                 limitCountTotal: _this.limitCountTotal
             });

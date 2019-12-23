@@ -173,8 +173,11 @@ class SWListingSearchController {
     
     //Documentation: Toggle flag function to either show or turn off all records count fetch.
     public toggleCountLimit = (count)=>{
-        if (this.limitCountTotal > 0 ){ this.limitCountTotal = 0; }
-        else{this.limitCountTotal =  this.swListingDisplay.collectionConfig.limitCountTotal; }// fetch again from config file
+        if (this.limitCountTotal > 0 ){ 
+            this.limitCountTotal = 0; 
+        }else{
+            this.limitCountTotal =  this.swListingDisplay.collectionConfig.limitCountTotal; // fetch again from config file
+        }
         this.updateListingSearchConfig({
             limitCountTotal : this.limitCountTotal   
         });

@@ -166,13 +166,11 @@ class Pagination{
         if(limitCountTotal === 0){
             this.setRecordsCount(recordsCount);
             this.setPageEnd(pageRecordsCount);
-        }
-        else {
+        }else{
             if ((pageRecordsCount < recordsCount) && (pageRecordsCount < pageRecordsShow)){
-                this.setPageEnd(pageRecordsCount);
-            }
-            else{
-                this.setPageEnd(pageRecordsEnd);
+                    this.setPageEnd(pageRecordsCount);
+            }else{
+                    this.setPageEnd(pageRecordsEnd);
             }
             this.setRecordsCount((pageRecordsCount < pageRecordsShow) ? pageRecordsCount: recordsCount);
         }
