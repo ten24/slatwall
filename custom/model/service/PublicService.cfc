@@ -487,7 +487,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
-        param name="arguments.data.accountID" default="#getHibachiScope().getAccount().getAccountID()#";
         
         if(getHibachiScope().getAccount().isNew()){
             return;
@@ -498,7 +497,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
 
         processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setAccountID(arguments.data.accountID);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
         processObject.setOrderTemplateTypeID(wishlistTypeID);
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
