@@ -209,7 +209,6 @@ component {
 	    
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-    	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
@@ -220,13 +219,14 @@ component {
     	    }
 	    }
 	    
-	    return variables.marketPartnerEnrollmentOrderDateTime;
+	    if (!isNull(variables.marketPartnerEnrollmentOrderDateTime)){
+	    	return variables.marketPartnerEnrollmentOrderDateTime;
+	    }
 	}
 	
 	public any function getMarketPartnerEnrollmentOrderID(){
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-    	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
@@ -237,9 +237,10 @@ component {
     	    }
 	    }
 	    
-	    return variables.marketPartnerEnrollmentOrderID;
+	    if (!isNull(variables.marketPartnerEnrollmentOrderID)){
+	    	return variables.marketPartnerEnrollmentOrderID;
+	    }
 	}
-	
 	
 	public any function getAccountType() {
 	    if (structKeyExists(variables, "accountType")){
@@ -350,7 +351,8 @@ component {
 	 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
 	 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
 	 * from ordering the enrollment kit.
-	 * var maxDaysAfterEnrollmentToPlaceOneOrder = getOrderCreatedSite().setting("maxDaysAfterEnrollmentToPlaceOrderMP");
+	 * This only work if the max orders validation also works because this only checks the current order
+	 * for total instead of all orders.
 	 * 
 	 **/
 	 public boolean function MarketPartnerValidationMaxOrderAmount(){
@@ -377,10 +379,13 @@ component {
 	  **/
 	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
 	    // If they've never enrolled, they can enroll.
-	    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
-	    if (!isNull(hasEnrollmentOrder)){
-	        return true;
-	    }
+	    if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"){
+			    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
+			    if (isNull(hasEnrollmentOrder)){
+			        return true;
+			    }
+			}
 	    
         var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
         
@@ -396,10 +401,12 @@ component {
 			var previouslyOrdered = getService("OrderService").getOrderCollectionList();
 
 			//Find if they have placed more than the initial enrollment order already.
+			previouslyOrdered.addFilter("orderID", getMarketPartnerEnrollmentOrderID(),"!=");
 			previouslyOrdered.addFilter("account.accountID", getAccount().getAccountID());
 			previouslyOrdered.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
 			previouslyOrdered.addFilter("orderType.systemCode", "otSalesOrder");
-			previouslyOrdered.addFiltered("orderID", getMarketPartnerEnrollmentOrderID(),"!=");
+			
+			
 			if (previouslyOrdered.getRecordsCount() > 0){
 				return false; //they can not purchase this because they already have purchased it.
 			}
