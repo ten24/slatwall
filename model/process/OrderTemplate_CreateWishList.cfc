@@ -104,6 +104,29 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.newAccountFlag;
 	}
-
+	
+	public any function getCurrencyCode() {
+		if( !StructKeyExists(variables, 'currencyCode') || IsNull(variables.currencyCode) ) {
+			if(!IsNull(getSite())) {
+				variables['currencyCode'] = getSite().setting('skuCurrency');
+				return variables['currencyCode'];
+			}
+		} else {
+			return variables['currencyCode'];
+		}
+	}
+	
+	public any function getSite() {
+		if(!StructKeyExists(variables, 'site') ) {
+			if( !IsNull(variables.accountID) && len( trim(variables.accountID) ) ) {
+				variables['site'] = getService('AccountService').getAccount( variables.accountID ).getAccountCreatedSite();
+				
+				return variables['site'];
+			}
+		} else {
+			return variables['site'];
+		}
+		
+	}
 	
 }
