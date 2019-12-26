@@ -66,6 +66,8 @@ class MonatFlexshipCartContainerController {
     	 	'totalSteps': totalSteps,
     	 };
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+    	 this.translations['confirmFlexshipRemoveItemDialogTitleText'] = this.rbkeyService.rbKey('alert.frontend.confirmTitleTextDelete');
+    	 this.translations['confirmFlexshipRemoveItemDialogBodyText'] = this.rbkeyService.rbKey('alert.frontend.confirmBodyTextDelete');
     }
     
     public next(){
@@ -101,15 +103,40 @@ class MonatFlexshipCartContainerController {
     	return this.orderTemplateItems.findIndex(it => it.orderTemplateItemID === orderTemplateItemID); 
     }
     
+    public showFlexshipConfirmDeleteItemModal = (item) => {
+		this.ModalService.showModal({
+		      component: 'monatConfirmMessageModel',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.translations['confirmFlexshipRemoveItemDialogTitleText'],
+			    bodyText: this.translations['confirmFlexshipRemoveItemDialogBodyText']
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		        if(confirm){
+		            this.removeOrderTemplateItem(item);
+		        }else{
+		            item.loading=false;
+		        }
+		    });
+		}).catch((error) => {
+			console.error("unable to open showFlexshipConfirmModal :",error);	
+		});
+    }
+    
     public removeOrderTemplateItem = (item) => {
-    	this.loading =true;
     	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
             (data) => {
             	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems.splice(index, 1);
     				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
+    					this.setOrderTemplate( data.orderTemplate );
+    					this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.removeItemsucessfull'))
     				}
         		} else {
         		    throw (data);
@@ -239,4 +266,3 @@ class MonatFlexshipCartContainer {
 export {
 	MonatFlexshipCartContainer
 };
-
