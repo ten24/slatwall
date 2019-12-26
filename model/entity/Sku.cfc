@@ -640,7 +640,7 @@ property name="sapItemCode" ormtype="string";
 			if(!structKeyExists(variables,cacheKey)){
 				arguments.skuID = this.getSkuID(); 
 				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity(argumentCollection=arguments); 
-	
+}
 				if(structKeyExists(variables,cacheKey)){
 					
 					if(variables[cacheKey] == "null"){
