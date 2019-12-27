@@ -1495,16 +1495,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			var distinct = "";
 			if(aggregateFunction == 'COUNT'){
-				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.column.propertyIdentifier));
-				//when doing a count on objects it is important to inlcude that it is Distinct
-	//			 however if we are doing a query like
-	//			SELECT firstName,count(firstName) FROM swaccount
-	//			group by firstName
-	//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
-	//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections
-	//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
-
-				var isDistinct = isObject;
+			
+				var isDistinct = this.getNonPersistentColumn();
 
 				if(structKeyExists(column,'isDistinct')){
 					isDistinct = column.isDistinct;
