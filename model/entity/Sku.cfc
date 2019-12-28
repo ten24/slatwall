@@ -637,28 +637,27 @@ property name="sapItemCode" ormtype="string";
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 			
-			if(!structKeyExists(variables,cacheKey)){
+			if(!structKeyExists(variables,cacheKey)) {
 				arguments.skuID = this.getSkuID(); 
 				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity(argumentCollection=arguments); 
-}
-				if(structKeyExists(variables,cacheKey)){
-					
-					if(variables[cacheKey] == "null"){
-						return;
-					}
-					
-					return variables[cacheKey];
-				}
+                        }
+		}	
+		
+		if(structKeyExists(variables,cacheKey)) {
+			if(variables[cacheKey] == "null") { //we return 'null' string from custom service, instead of NULL val
+				return;
 			}
+			return variables[cacheKey];
 		}
 		
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
-    		variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
-    		return variables[cacheKey];
-    	}else if(structKeyExists(getCurrencyDetails(), "price")){
-    		variables[cacheKey]= getCurrencyDetails().price;
-    		return variables[cacheKey];
-    	}
+
+		if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
+			variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
+			return variables[cacheKey];
+		}else if(structKeyExists(getCurrencyDetails(), "price")){
+			variables[cacheKey]= getCurrencyDetails().price;
+			return variables[cacheKey];
+		}
 
     }
 
