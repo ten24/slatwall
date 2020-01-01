@@ -1351,22 +1351,34 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
         
+        var imageService = getService('imageService');
+        var imageURL = getHibachiScope().getBaseImageURL();
         //if the identifiers are not passed in get the account on scope
         if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
             account = getHibachiScope().getAccount();
-            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+            //if the account has a profile image, serve it, otherwise serve the default.
+            if(len(account.getProfileImage())){
+               arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height);
+            }else{
+              arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profile_default.svg', arguments.data.width, arguments.data.height);
+            }
         }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
             //if identifiers are passed in, try to get the account using them
             try{
                 var method = 'getAccountBy#toString(arguments.data.identifierType)#';
                 var account = invoke(accountService, method, [arguments.data.identifier]);   
-                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+                //if the account has a profile image, serve it, otherwise serve the default.
+                if(len(account.getProfileImage())){
+                   arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height);
+                }else{
+                    arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profile_default.svg', arguments.data.width, arguments.data.height);
+                }
             }catch(any e){
-                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+                arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profile_default.svg', arguments.data.width, arguments.data.height);
             }
         }else{
             // if someone passes empty strings as an argument, return an empty string
-            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            arguments.data['ajaxResponse']['accountProfileImage'] = imageService.getResizedImagePath('#imageURL#/profile_default.svg', arguments.data.width, arguments.data.height);
         }
 
 	}
