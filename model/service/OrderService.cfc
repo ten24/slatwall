@@ -1589,8 +1589,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(newOrder.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
+				newOrder.clearHibachiErrors();
 				arguments.orderTemplate.clearHibachiErrors();
-				return arguments.orderTemplate; 
+				//try to place as much of the order as possible should only fail in OFY case
+				continue;
 			}
 		} 	
 
@@ -1627,6 +1629,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
