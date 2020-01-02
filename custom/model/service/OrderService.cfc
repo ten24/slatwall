@@ -476,7 +476,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		//Tracking info
-		var orderList = getHibachiScope().getService('OrderService').getOrderCollectionList();
+		var orderList = this.getOrderDeliveryCollectionList();
 		orderList.setDisplayProperties('orderDeliveries.trackingUrl')
 		orderList.addFilter( 'orderID', arguments.data.orderID, '=');
 		
