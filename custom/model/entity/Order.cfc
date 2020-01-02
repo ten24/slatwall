@@ -210,6 +210,7 @@ component {
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
@@ -227,6 +228,7 @@ component {
 	public any function getMarketPartnerEnrollmentOrderID(){
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
@@ -356,14 +358,16 @@ component {
 	 * 
 	 **/
 	 public boolean function MarketPartnerValidationMaxOrderAmount(){
-	    var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = getOrderCreatedSite().setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+	 	
+	 	
+	    var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = this.getOrderCreatedSite().setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"
+			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
-			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
 			
 			//If this order is more than 200 pounds, fails.  
 			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
@@ -378,20 +382,21 @@ component {
 	  * after enrollment order.
 	  **/
 	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
+	 	
 	    // If they've never enrolled, they can enroll.
 	    if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"){
+			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"){
 			    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
 			    if (isNull(hasEnrollmentOrder)){
 			        return true;
 			    }
-			}
+		}
 	    
-        var initialEnrollmentPeriodForMarketPartner = getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
+        var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& !isNull(getOrderCreatedSite()) && getOrderCreatedSite().getSiteCode() == "mura-uk"
+		if (!isNull(initialEnrollmentPeriodForMarketPartner) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"
 			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
 			&& !isNull(getMarketPartnerEnrollmentOrderID())
 			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
@@ -418,7 +423,8 @@ component {
 	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
 	  **/
 	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
-	    var maxDaysAfterAccountCreate = getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
+	    
+	    var maxDaysAfterAccountCreate = this.getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
 	    
 	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
 		if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
@@ -429,7 +435,7 @@ component {
 			return false; //they can not purchase this because they already have purchased it.
 		
 		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
-		} else if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+		} else if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
 				&& !isNull(getAccount().getCreatedDateTime()) 
 				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate
 				&& this.hasProductPackOrderItem()){
