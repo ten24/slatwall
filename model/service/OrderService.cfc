@@ -1631,7 +1631,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}	
 	
-		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
@@ -2962,9 +2961,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-		if(order.hasErrors()){
+		
+		if(arguments.order.hasErrors()){
 			getHibachiScope().setORMHasErrors( true );
 		}
+
+		if(!arguments.order.hasErrors() && !isNull(arguments.order.getOrderTemplate())){
+			var orderTemplate = arguments.order.getOrderTemplate(); 
+			orderTemplate.setLastOrderPlacedDateTime( now() );
+
+			orderTemplate = this.saveOrderTemplate(orderTemplate);
+		}
+
 		return arguments.order;
 	}
 
