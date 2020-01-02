@@ -487,7 +487,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
         
         if(getHibachiScope().getAccount().isNew()){
             return;
@@ -496,11 +495,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("createWishlist");
         var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
 
         processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setSiteID(arguments.data.siteID);
-        processObject.setCurrencyCode(currencyCode);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
         processObject.setOrderTemplateTypeID(wishlistTypeID);
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
@@ -583,10 +580,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         var account = getHibachiScope().getAccount();
         var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
-
+        
         account.setPrimaryPaymentMethod(paymentMethod);
         account = getAccountService().saveAccount(account);
-        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        
+        if (account.hasErrors()){
+            addErrors(arguments.data, account.getErrors());
+            getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+            return;
+        }
+        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", false);
     }
     
     public any function updateProfile( required struct data ) {
@@ -812,6 +815,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     arguments.data['orderItemID'] = orderItem.getOrderItemID();
                     getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
                     StructDelete(arguments.data, 'orderItemID');
+                    getHibachiScope().flushORMSession();
                     break;
                 }
             }
