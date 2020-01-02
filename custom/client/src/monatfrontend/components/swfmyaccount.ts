@@ -17,7 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
@@ -47,7 +46,8 @@ class swfAccountController {
         public observerService,
         public ModalService, 
         public rbkeyService,
-        public monatAlertService
+        public monatAlertService,
+    	public $location
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
@@ -72,7 +72,7 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
-        if(this.urlParams.get('orderid')){
+        if(this.$location.search().orderid){
             this.getOrderItemsByOrderID();
         }
 	}
@@ -147,7 +147,7 @@ class swfAccountController {
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
+    public getOrderItemsByOrderID = (orderID = this.$location.search().orderid, pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
         return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
             if(result.OrderItemsByOrderID){
@@ -240,7 +240,7 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
-        if(!newAddress){
+        if(address.address.countryCode){
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;

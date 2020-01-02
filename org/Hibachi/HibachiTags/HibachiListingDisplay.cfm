@@ -35,7 +35,8 @@
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditIcon" type="string" default="" />
-	
+	<cfparam name="attributes.recordDetailActionIdProperty" type="string" default="" />
+	<cfparam name="attributes.recordDetailActionIdKey" type="string" default="" />
 	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
@@ -166,6 +167,14 @@
 				data-actions="#attributes.recordActions#"
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
+				
+				<cfif !isNull(attributes.recordDetailActionIdProperty)>
+					record-detail-action-property="#attributes.recordDetailActionIdProperty#"
+				</cfif>
+				
+				<cfif !isNull(attributes.recordDetailActionIdKey)>
+					record-detail-action-property-identifier="#attributes.recordDetailActionIdKey#"
+				</cfif>
 				<cfif len(attributes.recordEditIcon)>
 					record-edit-icon="#attributes.recordEditIcon#"
 				</cfif> 
@@ -695,9 +704,9 @@
 												#local.methodOutput#
 											<cfelseif len(column.propertyIdentifier)>
 												<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
-													#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+												#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
 												<cfelse>
-													<span ng-bind-html="'#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#'"></span>
+													#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
 												</cfif>
 											<cfelseif len(column.processObjectProperty)>
 												<cfset attData = duplicate(column) />

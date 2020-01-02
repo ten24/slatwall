@@ -1507,7 +1507,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
-		arguments.orderTemplate.setSite(getSiteService().getSite( arguments.processObject.getSiteID()));
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		
@@ -2067,12 +2067,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
 		
 		if( isNull(orderTemplate) ){
-			ArrayAppend(arguments.data.messages, 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#');
+			ArrayAppend(arguments.data.messages, {
+			    'orderTemplate': 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#'
+			    });
 			return;
 		}  
 		
 		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
-			ArrayAppend(arguments.data.messages, "OrderTemplate doesn't belong to the User");
+			ArrayAppend(arguments.data.messages, {
+			    'orderTemplate': "OrderTemplate doesn't belong to the User"});
 			return; 
 		}
 	
@@ -2378,6 +2381,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
 					}
+				}else{
+					returnOrder.getHibachiMessages().setMessages(returnOrder.getErrors());
+					returnOrder.clearHibachiErrors();
 				}
 			}
 			
@@ -2426,6 +2432,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
 			}
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());

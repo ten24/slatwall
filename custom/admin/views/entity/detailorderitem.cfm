@@ -79,7 +79,8 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" lazyLoad="false"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockholds" />
-
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/orderitemskubundles" lazyload="true" />
+			
 			<cfif rc.sku.isGiftCardSku() >
             	<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/orderitemgiftrecipients" />
 			</cfif>

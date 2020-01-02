@@ -79,7 +79,7 @@
 			type="button"
 			class="bg-primary btn" 
 			ng-click="sponsorSearchSelector.getSearchResults()"
-			ng-class="{ loading: sponsorSearchSelector.loadingResults }"
+			ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
 		>Search</button>
 	</div>
 	
