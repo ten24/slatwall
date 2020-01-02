@@ -1375,7 +1375,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var imageService = getService('imageService');
         var imageURL = getHibachiScope().getBaseImageURL();
         
-        if(!len(arguments.account.getProfileImage())){
+        if(len(arguments.account.getProfileImage())){
             return imageService.getResizedImagePath('#imageURL#/profileImage/#arguments.account.getProfileImage()#', arguments.width, arguments.height);
         }else{
             return imageService.getResizedImagePath('#imageURL#/profile_default.png', arguments.width, arguments.height);
