@@ -2,6 +2,6 @@
 
 	"properties": {
 		"isPurchasableItemFlag" : [{ "eq": true }],
-		"price": [ {"required": true, "dataType": "numeric", "neq":" " }]
+		"price": [ {"required": true, "dataType": "numeric" }]
 	}
 }
