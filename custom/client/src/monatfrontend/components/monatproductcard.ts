@@ -102,6 +102,7 @@ class MonatProductCardController {
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
 				this.getAllWishlists();
+				this.isAccountWishlistItem = true;
 				return result;
 			})
 			.catch((error)=>{
@@ -115,6 +116,7 @@ class MonatProductCardController {
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
+			this.isAccountWishlistItem = true;
 			return result;
 		})
 		.catch((error)=>{
