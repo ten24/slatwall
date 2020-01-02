@@ -13,6 +13,8 @@ class SWAddOrderItemsBySkuController{
     public orderFulfillmentId:string;
     
     public accountId:string;
+
+    public siteId:string;
     
     public currencyCode:string;
     
@@ -75,6 +77,10 @@ class SWAddOrderItemsBySkuController{
         this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
+
+		if(angular.isDefined(this.siteId)){
+	        this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
+		}
 
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 	    
@@ -212,6 +218,7 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         order: '<?', 
         orderFulfillmentId: '<?',
         accountId: '<?',
+        siteId: '<?',
         currencyCode: '<?',
         simpleRepresentation: '<?',
         returnOrderId: '<?',

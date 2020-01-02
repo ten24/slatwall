@@ -1798,7 +1798,7 @@ component  accessors="true" output="false"
 			    var wishListItemStruct={
 			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
 			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "price"                       :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
 			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
 			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
 			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
@@ -1808,8 +1808,8 @@ component  accessors="true" output="false"
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
   			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:""
-
+  			      "total"                       :       wishListItem.getTotal()?:"",
+                  "qats"                        :       wishlistItem.getSku().getCalculatedQATS()
 			    };
                 
                 arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
@@ -1948,6 +1948,12 @@ component  accessors="true" output="false"
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
             
+        var processObject = orderTemplate.getProcessObjects()['cancel'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+                    
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");

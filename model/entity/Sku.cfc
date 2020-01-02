@@ -2040,22 +2040,58 @@ property name="sapItemCode" ormtype="string";
 
 public boolean function canBePurchased(required any account){
 		
-		var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
-		if(notValidVipItem){
-			return false;
+		if ( !isNull( arguments.account.getAccountType() ) ) {
+			
+			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
+			if(notValidVipItem){
+				return false;
+			}
+			var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
+			if(notValidMpItem){
+				return false;
+			}
+			var notValidRetailItem = arguments.account.getAccountType() == "customer" && this.getRetailFlag() != true;
+			if(notValidRetailItem){
+				return false;
+			}
+			
+		} else {
+			
+			// If failed to get account type (not logged in usually), and isn't a retail Sku
+			if ( this.getRetailFlag() != true ) {
+				return false;
+			}
 		}
-		var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
-		if(notValidMpItem){
-			return false;
+		
+		//Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack. They can't.
+		if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) > 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+			
+			return false;	 //can't purchase one past 30 days from account creation.
+		
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
+		} else if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) <= 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+		
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+			
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", arguments.account.getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.systemCode", "otSalesOrder");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+			
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
 		}
-		var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
-		if(notValidRetailItem){
-			return false;
-		}
-
         return true; 
 	}
-
+	
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
