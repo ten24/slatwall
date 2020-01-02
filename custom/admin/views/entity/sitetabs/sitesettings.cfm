@@ -62,5 +62,8 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteMaximumFlexshipGiftCardAmount" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteInitialEnrollmentPeriodForMarketPartner" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteMaxDaysAfterAccountCreate" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -251,14 +251,11 @@ class SWListingSearchController {
             var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
             if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
-                this.$hibachi.saveEntity(
-                    'Collection',
-                    selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
+                this.$hibachi.savePersonalCollection(
                     {
-                        'accountOwner.accountID':this.$rootScope.slatwall.account.accountID,
+                        'entityID':selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
-                    },
-                    'save'
+                    }
                 ).then((data)=>{
 
                 });
@@ -270,20 +267,14 @@ class SWListingSearchController {
                 'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
                 'collectionDescription':this.personalCollectionIdentifier,
-                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                }
+                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName
             }
 
-            this.$hibachi.saveEntity(
-                'Collection',
-                "",
+            this.$hibachi.savePersonalCollection(
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
-                },
-                'save'
+                }
             ).then((data)=>{
 
                 if(!this.localStorageService.hasItem('selectedPersonalCollection')){
@@ -312,7 +303,7 @@ class SWListingSearchController {
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
             personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
-            personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
+            personalCollectionList.addFilter('accountOwner.accountID','${account.accountID}');
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
             personalCollectionList.addFilter('softDeleteFlag',true,"!=");

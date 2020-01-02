@@ -62,8 +62,6 @@ Notes:
     sRedirectAction="#rc.processObject.getCurrentAction()#" 
     edit="#rc.edit#"
     >
-    
-
 	
 	<input type="hidden" name="baseObject" value="#rc.processObject.getBaseObject()#">
     <input type="hidden" name="baseID" value="#rc.processObject.getBaseID()#">
@@ -85,15 +83,30 @@ Notes:
             <cfset local.fieldType = "">
             
             <cfif NOT isNull(rc.processObject.getBaseObject())>
+                <!--- Translations on base entity --->
                 <cfset local.baseSlatwallObjectName = "Slatwall#rc.processObject.getBaseObject()#">
                 <cfset local.baseObject = getHibachiScope().getService('HibachiService').getEntityObject(local.baseSlatwallObjectName)>
+                <cfset local.isAttribute = true />
                 <cfset local.basePropertyMetaData = "">
                 <cfif NOT isNull(local.baseObject)>
-                    <cfset local.basePropertyMetaData = local.baseObject.getPropertyMetaData(rc.processObject.getBasePropertyName())>
+                    <cfif local.baseObject.hasProperty(rc.processObject.getBasePropertyName()) >
+                        <cfset local.basePropertyMetaData = local.baseObject.getPropertyMetaData(rc.processObject.getBasePropertyName()) />
+                        <cfset local.isAttribute = false />
+                    </cfif>
                 </cfif>
-                <cfif NOT isNull(local.basePropertyMetaData) AND structKeyExists(local.basePropertyMetaData, 'hb_formFieldType')>
+                
+                <!--- Retrieve form field type based on whether it is property or attribute --->
+                <cfif
+                    NOT local.isAttribute
+                    AND NOT isNull(local.basePropertyMetaData) 
+                    AND structKeyExists(local.basePropertyMetaData, 'hb_formFieldType')>
                     <cfset local.fieldType = "#local.basePropertyMetaData.hb_formFieldType#">
                 </cfif>
+                <cfif local.isAttribute>
+                    <cfset local.attributeEntity = getHibachiScope().getService('AttributeService').getAttributeByAttributeCode(rc.processObject.getBasePropertyName()) />
+                    <cfset local.fieldType = local.attributeEntity.getAttributeInputType() />
+                </cfif>
+                
             </cfif>
             
             <cfloop from="1" to="#local.localeOptionsLength#" index="local.i">

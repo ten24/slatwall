@@ -37,7 +37,7 @@
 		</li>
 		<li>
 			<h6 class="title-sm"> <span sw-rbkey="'frontend.flexshipDetails.deliveryMethod'"></span> </h6>
-			<p> {{monatFlexshipShippingAndBillingCard.orderTemplate.shippingMethod_shippingMethodName}} <br> {{monatFlexshipShippingAndBillingCard.orderTemplate.fulfillmentTotal | currency}}</p>
+			<p> {{monatFlexshipShippingAndBillingCard.orderTemplate.shippingMethod_shippingMethodName}} <br> {{monatFlexshipShippingAndBillingCard.orderTemplate.fulfillmentTotal | swcurrency:monatFlexshipShippingAndBillingCard.orderTemplate.orderTemplateItems[0].orderTemplate_currencyCode}}</p>
 		</li>
 		<li>
 			<h6 class="title-sm"><span sw-rbkey="'frontend.flexshipDetails.creditCard'"></span></h6>

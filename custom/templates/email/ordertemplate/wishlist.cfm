@@ -22,13 +22,25 @@
 													<tbody>
 														<tr>
 															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding: 16px;font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;text-align:left;">
-															
-																<p class="mbe" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;text-align:left;">
-																	Dear #orderTemplate.getAccount().getFullName()#
-																</p>
+																
+																<cfif !isNull(orderTemplate.getAccount().getFullName())>
+																	<cfset var wishlistOwnerName="#orderTemplate.getAccount().getFullName()#'s" />
+																<cfelse>
+																	<cfset var wishlistOwnerName="#orderTemplate.getAccount().getFirstName()# #orderTemplate.getAccount().getLastName()#'s" />
+																</cfif>
+																
+																<cfif orderTemplate.getOrderTemplateName() DOES NOT CONTAIN 'wishlist' OR orderTemplate.getOrderTemplateName() DOES NOT CONTAIN 'wish list'>
+																	<cfset wishlistTitle="#orderTemplate.getOrderTemplateName()#" />
+																<cfelse>
+																	<cfset wishlistTitle="#orderTemplate.getOrderTemplateName()# Wishlist" />
+																</cfif>
+																
+																<h2 class="mbe" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;text-align:center;">
+																	#wishlistOwnerName# #wishlistTitle#
+																</h2>
 																
 																<p class="mbe" style="font-family: 'Miller-Banner-Roman', sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;text-align:left;">
-																		Thanks for visiting the Monat and creating a wish list. The current items on your wish list are included below.
+																		Hi there! These are some Monat products I love, thought you might like them too! 
 																</p>
 															</td>
 														</tr>

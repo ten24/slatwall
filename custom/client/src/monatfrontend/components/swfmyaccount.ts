@@ -242,7 +242,7 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
-        if(!newAddress){
+        if(address.address.countryCode){
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
@@ -257,6 +257,7 @@ class swfAccountController {
     
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
             this.stars[i] = "fas";
