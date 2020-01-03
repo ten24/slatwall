@@ -460,5 +460,12 @@ public boolean function getCustomerCanCreateFlag(){
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public boolean function userCanCancelFlexship(){
+		var canCancelFlexship = false;
+		canCancelFlexship = (getAccount().getAccountType() == 'MarketPartner');
+		return canCancelFlexship;
+	}
+//CUSTOM FUNCTIONS END
 }
