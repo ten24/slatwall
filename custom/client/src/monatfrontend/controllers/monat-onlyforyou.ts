@@ -1,4 +1,6 @@
 export class OnlyForYouController {
+	public products: any = {};
+	public loading: boolean = true;
 
 	// @ngInject
 	constructor(
@@ -6,7 +8,6 @@ export class OnlyForYouController {
 		public $location
 	) {
 		this.getPromotionSkus();
-		console.log( this.$location.search().ebhjwq );
 		
 	}
 	
@@ -17,13 +18,17 @@ export class OnlyForYouController {
 		}
 		
 		let data = {
-			orderTemplateId: this.$location.search().orderTemplateId
+			orderTemplateId: this.$location.search().orderTemplateId,
+			pageRecordsShow: 20,
 		}
 		
-		this.publicService.doAction( 'getOrderTemplatePromotionSkus', data )
+		this.publicService.doAction( 'getOrderTemplatePromotionProducts', data )
 			.then( result => {
-				console.log( result );
+				this.products = result.orderTemplatePromotionProducts;
 			})
+			.finally( result => {
+				this.loading = false;
+			} )
 	}
 	
 }

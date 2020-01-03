@@ -2098,8 +2098,8 @@ component  accessors="true" output="false"
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
