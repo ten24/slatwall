@@ -2092,7 +2092,7 @@ component  accessors="true" output="false"
 		}
 		
 		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
-	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
 	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
 	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;

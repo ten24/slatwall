@@ -1488,8 +1488,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        if( ! structKeyExists( arguments.data, 'orderTemplatePromotionSkuCollectionConfig' ) ) {
-            var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+        if ( !structKeyExists( arguments.data, 'orderTemplatePromotionSkuCollectionConfig' ) ) {
+            var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
             promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
             promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
             arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
@@ -1497,6 +1497,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
         promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
         promotionsCollectionList.setDisplayProperties('
             product.defaultSku.skuID|skuID,
             product.urlTitle|urlTitle,
