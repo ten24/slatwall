@@ -17,12 +17,12 @@ class ImageManagerController {
 			this.detachEvent(this.$element[0],'error');
 		} 
 		
-		e.target.src = this.getMissingImagePath( e.target );
+		e.target.src = this.getMissingImagePath();
 		
 		this.firstTry = true;
 	}
 	
-	private getMissingImagePath = ( e ) => {
+	private getMissingImagePath = () => {
 		
 		let width = this.$element[0].getAttribute('data-width');
 		let height = this.$element[0].getAttribute('data-height');
