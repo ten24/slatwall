@@ -17,8 +17,34 @@ class ImageManagerController {
 			this.detachEvent(this.$element[0],'error');
 		} 
 		
-		e.target.src = hibachiConfig.missingImagePath;
+		e.target.src = this.getMissingImagePath( e.target );
+		
 		this.firstTry = true;
+	}
+	
+	private getMissingImagePath = ( e ) => {
+		
+		let width = this.$element[0].getAttribute('data-width');
+		let height = this.$element[0].getAttribute('data-height');
+		
+		let missingImagePath = hibachiConfig.missingImagePath
+		
+		// Get resized missing image path if width and height are declared.
+		if ( null !== width && null !== height ) {
+			let matches = missingImagePath.match( /(\.[a-zA-Z]{3,4})$/ );
+			
+			console.log( matches );
+			
+			if ( matches.length > 1 ) {
+				let fileEnding  = `_${width}w_${height}h`;
+					fileEnding += matches[1];
+				
+				missingImagePath = missingImagePath.replace( matches[1], fileEnding );
+				console.log( missingImagePath );
+			}
+		}
+		
+		return missingImagePath;
 	}
 	
 	public detachEvent = (el, event) => {
