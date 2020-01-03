@@ -1496,8 +1496,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
-            promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
-            promotionsCollectionList.setDisplayProperties('
+        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setDisplayProperties('
             product.defaultSku.skuID|skuID,
             product.urlTitle|urlTitle,
             product.productName|productName
