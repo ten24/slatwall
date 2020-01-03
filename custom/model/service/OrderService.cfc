@@ -647,14 +647,14 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 	
-	public boolean function orderHasStarterKit(required orderID) {
+	public boolean function orderHasProductPack(required orderID) {
 
-		var starterKitProductType = getService('productService').getProductTypeBySystemCode('StarterKit');
+		var productPackProductType = getService('productService').getProductTypeBySystemCode('ProductPack');
 		
 		var orderItemCollectionList = this.getOrderItemCollectionList();
 		orderItemCollectionList.setDisplayProperties('orderItemID');
 		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
-		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#starterKitProductType.getProductTypeIDPath()#%','Like');
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#productPackProductType.getProductTypeIDPath()#%','Like');
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
