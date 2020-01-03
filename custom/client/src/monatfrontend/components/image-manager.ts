@@ -33,14 +33,11 @@ class ImageManagerController {
 		if ( null !== width && null !== height ) {
 			let matches = missingImagePath.match( /(\.[a-zA-Z]{3,4})$/ );
 			
-			console.log( matches );
-			
 			if ( matches.length > 1 ) {
 				let fileEnding  = `_${width}w_${height}h`;
 					fileEnding += matches[1];
 				
 				missingImagePath = missingImagePath.replace( matches[1], fileEnding );
-				console.log( missingImagePath );
 			}
 		}
 		
