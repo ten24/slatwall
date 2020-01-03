@@ -510,7 +510,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function createOrderTemplate( required struct data ) {
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
-        param name="arguments.data.frequencyTermID" default="23c6a8c4e605d0586869d7f3a8b36ba7";
+        param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
         
