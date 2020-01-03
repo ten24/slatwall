@@ -1507,7 +1507,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var imageService = getService('ImageService');
         records = arrayMap( records, function( product ) {
-        product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
             return product;
         }) 
         
