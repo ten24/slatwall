@@ -463,9 +463,7 @@ public boolean function getCustomerCanCreateFlag(){
 	}
 	
 	public boolean function userCanCancelFlexship(){
-		var canCancelFlexship = false;
-		canCancelFlexship = (getAccount().getAccountType() == 'MarketPartner');
-		return canCancelFlexship;
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 //CUSTOM FUNCTIONS END
 }

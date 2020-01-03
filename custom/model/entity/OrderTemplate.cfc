@@ -77,9 +77,7 @@ component {
 	}
 	
 	public boolean function userCanCancelFlexship(){
-		var canCancelFlexship = false;
-		canCancelFlexship = (getAccount().getAccountType() == 'MarketPartner');
-		return canCancelFlexship;
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 
 }
