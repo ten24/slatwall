@@ -1478,17 +1478,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
     }
 	
-	public any function getOrderTemplatePromotionProducts( required any data ){
+    public any function getOrderTemplatePromotionProducts( required any data ) {
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-        if( isNull(orderTemplate) ) {
-        	return;
+        var orderTemplate = getOrderService().getOrderTemplateForAccount( argumentCollection = arguments );
+        if ( isNull( orderTemplate ) ) {
+            return;
         }
         
-        if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
+        if( ! structKeyExists( arguments.data, 'orderTemplatePromotionSkuCollectionConfig' ) ) {
             var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
             promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
             promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
@@ -1496,8 +1496,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
-        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
-        promotionsCollectionList.setDisplayProperties('
+            promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+            promotionsCollectionList.setDisplayProperties('
             product.defaultSku.skuID|skuID,
             product.urlTitle|urlTitle,
             product.productName|productName
@@ -1507,10 +1507,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var imageService = getService('ImageService');
         records = arrayMap( records, function( product ) {
-            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+        product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
             return product;
         }) 
         
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
-	}
+    }
 }

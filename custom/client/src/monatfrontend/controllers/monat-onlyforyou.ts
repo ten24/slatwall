@@ -8,7 +8,6 @@ export class OnlyForYouController {
 		public $location
 	) {
 		this.getPromotionSkus();
-		
 	}
 	
 	private getPromotionSkus = () => {
