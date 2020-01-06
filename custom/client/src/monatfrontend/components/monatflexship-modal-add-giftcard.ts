@@ -20,8 +20,10 @@ class MonatFlexshipAddGiftCardModalController {
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
     	    if(giftCards.length) {
+    	        console.log("aagya main ");
     		    this.giftCards = giftCards;
     	    } else {
+    	        console.log("na ji nahin aaunga");
     	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'));
     	    }
     	})

@@ -29,6 +29,7 @@
 						name="giftCardID"
 						ng-checked="giftCard.giftCardID === monatFlexshipAddGiftCardModal.selectedGiftCard.giftCardID"
 						swvalidationrequired = "true"
+						ng-model = "monatFlexshipAddGiftCardModal.selectedGiftCard.giftCardID"
 					    
 					/>
 					<label for="giftCardID" > {{ giftCard.giftCardCode }} - {{ giftCard.calculatedBalanceAmount | currency }}</label>
@@ -45,7 +46,7 @@
 						swvalidationrequired = "true"
 						swvalidationnumeric ="true"
 						name = "amountToApply"
-						swvalidationregex = "/^\d*\.?\d*$/"
+						step="0.01"
 						onkeydown="return event.keyCode !== 69 && event.keyCode !== 189"
 					/>
 					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
