@@ -166,18 +166,17 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="subscribedToMailchimp" persistent="false";
 	
 
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
- property name="hyperWalletAcct" ormtype="string";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
- property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
- property name="status" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
  property name="complianceStatus" ormtype="string" hb_formFieldType="select";
@@ -191,7 +190,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
- property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
