@@ -88,7 +88,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		} else{
 			arguments.urlString &= "?token=#token#&consultant_id=#accountNumber#"
 		}
-		dd(arguments.urlString);
 		return arguments.urlString;
 	}
 	
