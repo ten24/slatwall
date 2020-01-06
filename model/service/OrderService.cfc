@@ -1439,6 +1439,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
 			return arguments.orderTemplate;
 		} 
+		
+ 		if( arguments.processObject.hasErrors() ){
+ 		    arguments.orderTemplate.addErrors( arguments.processObject.getErrors() );
+ 		    return arguments.orderTemplate;
+ 		}
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
 		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
