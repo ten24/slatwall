@@ -2092,14 +2092,14 @@ component  accessors="true" output="false"
 		}
 		
 		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
-	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
 	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
 	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
