@@ -26,7 +26,7 @@ class MonatProductCardController {
         public ModalService,
         public $scope,
         private monatAlertService,
-        public rbkeyService
+        public rbkeyService,
         public $location
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
