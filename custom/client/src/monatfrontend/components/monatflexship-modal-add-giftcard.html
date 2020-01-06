@@ -45,6 +45,7 @@
 						swvalidationrequired = "true"
 						swvalidationnumeric ="true"
 						name = "amountToApply"
+						swvalidationregex = "/^\d*\.?\d*$/"
 					/>
 					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
 					     <div ng-if="applyGiftCardForm.$submitted || applyGiftCardForm.amountToApply.$touch " ng-messages="applyGiftCardForm.amountToApply.$error">
