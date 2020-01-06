@@ -159,7 +159,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="lastActivityDateTime" ormtype="timestamp";
-	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
@@ -167,7 +166,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="subscribedToMailchimp" persistent="false";
 	
 
- property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
@@ -178,7 +176,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
- property name="status" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
  property name="complianceStatus" ormtype="string" hb_formFieldType="select";

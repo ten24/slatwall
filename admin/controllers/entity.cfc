@@ -110,6 +110,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -254,9 +255,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		
 		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
-			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
-			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+			var order = getService('orderService').getOrder(rc.orderID);
+
+			// Only display "The order cannot be edited as the order is fully paid or closed." if the order
+			// is paid and closed. This is showing in some cases while the order still owes money. That combined with
+			// failing 'Save' context validations causes a stack overflow.
+			
+			if (order.getPaymentAmountDue() <= 0 && order.getOrderStatusType.getSystemCode() == "ostClosed"){
+				getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+				renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+			}
+			
 		}
 		
 		genericEditMethod(entityName="Order", rc=arguments.rc);

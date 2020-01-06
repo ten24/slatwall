@@ -487,7 +487,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function createWishlist( required struct data ) {
         param name="arguments.data.orderTemplateName";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
         
         if(getHibachiScope().getAccount().isNew()){
             return;
@@ -496,11 +495,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("createWishlist");
         var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-        var currencyCode = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID).setting('skuCurrency');
 
         processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setSiteID(arguments.data.siteID);
-        processObject.setCurrencyCode(currencyCode);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
         processObject.setOrderTemplateTypeID(wishlistTypeID);
         
         orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
@@ -513,7 +510,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function createOrderTemplate( required struct data ) {
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
-        param name="arguments.data.frequencyTermID" default="23c6a8c4e605d0586869d7f3a8b36ba7";
+        param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
         
@@ -583,10 +580,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         var account = getHibachiScope().getAccount();
         var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
-
+        
         account.setPrimaryPaymentMethod(paymentMethod);
         account = getAccountService().saveAccount(account);
-        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        
+        if (account.hasErrors()){
+            addErrors(arguments.data, account.getErrors());
+            getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+            return;
+        }
+        getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", false);
     }
     
     public any function updateProfile( required struct data ) {
@@ -812,6 +815,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     arguments.data['orderItemID'] = orderItem.getOrderItemID();
                     getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
                     StructDelete(arguments.data, 'orderItemID');
+                    getHibachiScope().flushORMSession();
                     break;
                 }
             }
@@ -1202,6 +1206,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
     	var imageService = getService('ImageService');
+    	
+    	var siteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite()
+    	siteCode = ( siteCode == 'default' ) ? '' : '/' & lcase( siteCode )
 
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
@@ -1217,13 +1224,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
+            
             productMap[record.defaultSku_skuID] = {
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': productService.getProductUrlByUrlTitle(record.urlTitle),
+                'skuProductURL': siteCode & productService.getProductUrlByUrlTitle( record.urlTitle ),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
@@ -1342,25 +1350,36 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.identifier" default= ''; 
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
-        
+
         //if the identifiers are not passed in get the account on scope
         if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
-            account = getHibachiScope().getAccount();
-            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+            arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
         }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
             //if identifiers are passed in, try to get the account using them
             try{
                 var method = 'getAccountBy#toString(arguments.data.identifierType)#';
                 var account = invoke(accountService, method, [arguments.data.identifier]);   
-                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+                //if the account has a profile image, serve it, otherwise serve the default.
+                arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(account=account, height = arguments.data.height, width = arguments.data.width);
             }catch(any e){
-                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+                arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
             }
         }else{
-            // if someone passes empty strings as an argument, return an empty string
-            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            // if someone passes empty strings as an argument
+            arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
         }
 
+	}
+	
+	public any function getResizedProfileImage(account = getHibachiScope().getAccount(), height= 250, width = 250){
+        var imageService = getService('imageService');
+        var imageURL = getHibachiScope().getBaseImageURL();
+        
+        if(len(arguments.account.getProfileImage())){
+            return imageService.getResizedImagePath('#imageURL#/profileImage/#arguments.account.getProfileImage()#', arguments.width, arguments.height);
+        }else{
+            return imageService.getResizedImagePath('#imageURL#/profile_default.png', arguments.width, arguments.height);
+        }
 	}
 
     public any function getSiteOwnerAccount(required struct data){
@@ -1468,5 +1487,42 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+    }
+	
+    public any function getOrderTemplatePromotionProducts( required any data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+        
+        var orderTemplate = getOrderService().getOrderTemplateForAccount( argumentCollection = arguments );
+        if ( isNull( orderTemplate ) ) {
+            return;
+        }
+        
+        if ( !structKeyExists( arguments.data, 'orderTemplatePromotionSkuCollectionConfig' ) ) {
+            var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
+            promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+            promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+            arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+        }
+        
+        var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
+        promotionsCollectionList.setDisplayProperties('
+            product.defaultSku.skuID|skuID,
+            product.urlTitle|urlTitle,
+            product.productName|productName
+        ');
+        
+        var records = promotionsCollectionList.getPageRecords();
+        
+        var imageService = getService('ImageService');
+        records = arrayMap( records, function( product ) {
+            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+            return product;
+        }) 
+        
+        arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
 }

@@ -17,6 +17,7 @@ class MonatFlexshipPaymentMethodModalController {
 	public newAddress = {'countryCode':'US'}; // hard-coded default
 
 	public newAccountPaymentMethod = {};
+	public loading : boolean = false;
 
 	//@ngInject
     constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
@@ -56,7 +57,6 @@ class MonatFlexshipPaymentMethodModalController {
     	this.translations['newBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
     	this.translations['paymentMethod'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
     	this.translations['addNewCreditCard'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
-
     	this.translations['newCreditCard'] = this.rbkeyService.rbKey('frontend.newCreditCard');
     	this.translations['newCreditCard_nickName'] = this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
     	this.translations['newCreditCard_creditCardNumber'] = this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
@@ -86,6 +86,7 @@ class MonatFlexshipPaymentMethodModalController {
     }
     
     public updateBilling() {
+        this.loading = true;
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
 
@@ -134,8 +135,9 @@ class MonatFlexshipPaymentMethodModalController {
 			}
         })
         .catch( (error) => {
-            console.error (error);
 	        this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
+            this.loading = false;
         });
     }
     
