@@ -34,70 +34,43 @@
             
             <!--- Link to product if not enrollment type --->
             <a 
-                ng-if="monatProductCard.type != 'enrollment'" 
                 class="d-block" 
-                ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined }}"
+                ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined }}"
                 ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
             >
            
         </figure>
       
         <h3 class="pb-0 mb-0"
-            ><a ng-href="{{ monatProductCard.showProductLink ? monatProductCard.product.skuProductURL : undefined  }}"
+            ><a ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined  }}"
                 >{{monatProductCard.product.productName}}</a
             ></h3
         >
          
-        <!-- TODO for tom: Refactor wishlist and enrollment api's/formatting to use this style of formatting Product Listing Pricing and remove pricing conditionals below -->
-        <div ng-if="monatProductCard.type ==='productListing' || monatProductCard.type ==='VIPenrollment' || monatProductCard.type ==='VIPenrollmentOrder' || monatProductCard.type === 'flexship'" class="price">
-            <strong ng-bind-html="monatProductCard.product.price | swcurrency:MonatProductCard.product.currencyCode"><span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
+        <div class="price">
+            <strong>
+                <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>
+                <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span>
+            </strong> 
             <span class="vip-price">
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 3">
-                    <span sw-rbKey="'frontend.global.vip'"></span> {{monatProductCard.product.upgradedPricing.price | currency }}
+                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
                 </span> 
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 2">
-                    <span sw-rbKey="'frontend.global.retail'"></span> {{monatProductCard.product.upgradedPricing.price | currency }}
-                </span> 
+                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span> 
+                </span>
+                 <span class="personal-volume" ng-if="monatProductCard.product.priceGroupCode == 1"> 
+                    <br> 
+                    <strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong>
+                </span>
             </span>
-            <span ng-if="monatProductCard.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong></span>
         </div>
-        
-        <!-- Market Partner Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 1 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
-            <strong ng-bind-html="monatProductCard.product.marketPartnerPrice">/</strong> <span class="vip-price"><span sw-rbKey="'frontend.global.retail'"></span> {{monatProductCard.product.retailPrice}}
-            <br><strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}}</strong> 
-        </div>
-        
-        <!-- VIP Pricing -->
-        <div ng-if="monatProductCard.product.accountPriceGroup == 3 && monatProductCard.type !='enrollment' && monatProductCard.type !='productListing'" class="price">
-            <strong ng-bind-html="monatProductCard.product.vipPrice"> /</strong> <span class="vip-price">Retail <span ng-bind-html="monatProductCard.product.retailPrice"></span>
-        </div>
-        
-        <!-- Retail Pricing -->
-        <div 
-            ng-if="
-                monatProductCard.product.accountPriceGroup != 3 
-                && monatProductCard.product.accountPriceGroup != 1 
-                && monatProductCard.type != 'enrollment' 
-                && monatProductCard.type != 'productListing'
-                && monatProductCard.type != 'VIPenrollment' 
-                && monatProductCard.type != 'VIPenrollmentOrder'
-                && monatProductCard.type != 'flexship'
-            " 
-            class="price"
-        >
-            <strong ng-bind-html="monatProductCard.product.retailPrice"> /</strong> <span class="vip-price">VIP <span ng-bind-html="monatProductCard.product.vipPrice"></span>
-        </div>
-        
-        <!-- Enrollment Pricing -->
-        <div ng-if="monatProductCard.type ==='enrollment'" class="price">
-            <strong ng-bind-html="monatProductCard.product.marketPartnerPrice"> /</strong> <span class="vip-price">PV {{monatProductCard.product.personalVolume}}</span>
-        </div>
+
 
    </div>
    
    <!-- Add To Cart -->
-   <div class="product-actions">
+   <div ng-if="monatProductCard.product.qats > 0" class="product-actions">
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
             class="btn btn-border-primary add-to-cart" 
@@ -110,8 +83,18 @@
              <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
          </button>
    </div>
+   
+    <div ng-if="monatProductCard.product.qats <= 0" class="product-actions">
+        <button 
+            class="btn btn-border-primary add-to-cart" 
+            ng-class="{
+                'bg-primary': monatProductCard.type == 'enrollment',
+            }"
+        >
+            <span sw-rbKey="'frontend.cart.soldOut'"></span>
+        </button>
+    </div>
 </div>
-
 
 <!--- Delete Wishlist Item Modal --->
 <div

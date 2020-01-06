@@ -390,7 +390,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
-
+			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
+			
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
@@ -400,7 +401,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMaximumAmount = {fieldType="text", defaultValue=1000},
-
+		
+			
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},

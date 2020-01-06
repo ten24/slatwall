@@ -1829,24 +1829,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
 									var propertyIdentifier = filter.propertyIdentifier;
 									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'),'filter');
-
-									if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
-										propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
-									}
-									if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
-										switch(filter.measureType){
-											case 'd':
-												propertyIdentifier = 'day(#propertyIdentifier#)';
-												break;
-											case 'm':
-												propertyIdentifier = 'month(#propertyIdentifier#)';
-												break;
-											case 'y':
-												propertyIdentifier = 'year(#propertyIdentifier#)';
-												break;
+									
+									//Handle Booleans (BIT)
+									if(right(propertyIdentifier, 4) == 'Flag' && ListFind('<>,!=',comparisonOperator) > 0){
+										filterGroupHQL &= " #logicalOperator# (#propertyIdentifier# #comparisonOperator# #predicate# OR #propertyIdentifier# IS NULL) ";
+									}else{
+										if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
+											propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
 										}
+										if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
+											switch(filter.measureType){
+												case 'd':
+													propertyIdentifier = 'day(#propertyIdentifier#)';
+													break;
+												case 'm':
+													propertyIdentifier = 'month(#propertyIdentifier#)';
+													break;
+												case 'y':
+													propertyIdentifier = 'year(#propertyIdentifier#)';
+													break;
+											}
+										}
+										filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
+										
 									}
-									filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
 								}
 						}else{
 							var attributeHQL = getFilterAttributeHQL(filter);
@@ -3855,7 +3861,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									addTotalSumAggregate(column);
 								}
 
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								if(arguments.forExport  && structKeyExists(column, 'ormtype') && column.ormtype == 'timestamp'){
+									var dateFormat = '%m/%d/%Y %H:%i:%s';
+									if(structKeyExists(column, 'type')){
+										if(column.type == 'date'){
+											dateFormat = '%m/%d/%Y';
+										}else if(column.type == 'time'){
+											dateFormat = '%H:%i:%s';
+										}
+									}
+									
+									columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#dateFormat#') as #columnAlias#";
+								}else{
+									columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								}
 							}
 						}else{
 							continue;
@@ -4049,7 +4068,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
-				!this.getNonPersistentColumn() &&
 				(
 					( 
 					  structKeyExists(variables, "groupByRequired") &&

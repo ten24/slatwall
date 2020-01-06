@@ -1449,42 +1449,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
-
+		
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} else if(!isNull(processObject.getAccountID())){
+			
+			if(account.hasErrors()) {
+				arguments.orderTemplate.addError('create', account.getErrors());
+				return arguments.orderTemplate;
+			} 
+		} 
+		else if(!isNull(processObject.getAccountID())){
 			var account = getAccountService().getAccount(processObject.getAccountID());
-		} else{
+		} 
+		else {
 			var account = getHibachiScope().getAccount();
 		}
-		
-		if(account.hasErrors()) {
-			arguments.orderTemplate.addError('create', account.getErrors());
-		} else {
-			if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
-				arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
-				return arguments.orderTemplate; 
-			}
-
-			arguments.orderTemplate.setAccount(account);
-			
-			var site = arguments.processObject.getSite() 
-			arguments.orderTemplate.setSite( site  );
-			
-			arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-			
-			if(isNull(arguments.orderTemplate.getCurrencyCode()) && !isNull(site)){
-				arguments.orderTemplate.setCurrencyCode(site.setting('skuCurrency'));		
-			} 
-
-			arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
-			arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-			arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-			arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-			arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
-			arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+	
+		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
+			return arguments.orderTemplate; 
 		}
-
+		
+		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
+		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
+		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		
 		return arguments.orderTemplate;
 	}
 	
@@ -1616,17 +1612,51 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate = this.processOrderTemplate_removePromotionCode(arguments.orderTemplate, processOrderTemplateRemovePromotionCode);  
 		}
 
+		
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}
+		
+		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+		ormFlush();//flush so that the order exists
+
+		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
+		newOrder = this.processOrder_placeOrder(newOrder);
+
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.clearHibachiErrors();
+			return arguments.orderTemplate;
+		}	
+	
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
+	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
-
-
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
+
+			var giftCardBalanceAmount = orderTemplateAppliedGiftCard.getGiftCard().getBalanceAmount();  
+
+			if( giftCardBalanceAmount < orderTemplateAppliedGiftCard.getAmountToApply() ){
+
+				orderTemplateAppliedGiftCard.setAmountToApply(giftCardBalanceAmount);	
+				orderTemplateAppliedGiftCard = this.saveOrderTemplateAppliedGiftCard(orderTemplateAppliedGiftCard);
+			} 
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# applying GC #giftCardBalanceAmount# < #orderTemplateAppliedGiftCard.getAmountToApply()# when placing order', true);
 
 			var processData = {	
 				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
 				'amount' : orderTemplateAppliedGiftCard.getAmountToApply(),
 				'copyFromType' : 'accountGiftCard', 
 				'newOrderPayment':	{
+					'order' : {
+						'orderID' : newOrder.getOrderID()
+					},
 					'orderPaymentID' : '',
+					'orderPaymentType' : {
+						'typeID' : '444df2f0fed139ff94191de8fcd1f61b'
+					},
 					'paymentMethod' : {
 						'paymentMethodID' : '50d8cd61009931554764385482347f3a'//giftcard payment method
 					}
@@ -1636,31 +1666,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
 
+			if(newOrder.hasErrors()){
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
+				arguments.orderTemplate.clearHibachiErrors();
+				newOrder.clearHibachiErrors(); 	
+				//keep going potentially the gift card is already applied to another order 
+				continue;
+			}
 		}  
-	
 
-		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');	
-		
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
-		}
-		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
-		ormFlush();//flush so that the order exists
+		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');		
 
-		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
-		newOrder = this.processOrder_placeOrder(newOrder);
-
-		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when placing order', true);
-			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
-		}	
-	
 		var addOrderPaymentProcessData = {	
-			'accountPaymentMethodID':arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
-			'accountAddressID':arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID()
+			'accountPaymentMethodID': arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
+			'accountAddressID': arguments.orderTemplate.getBillingAccountAddress().getAccountAddressID(),
+			'copyFromType':'accountPaymentMethod',
+			'newOrderPayment': {
+				'orderPaymentType': {
+					'typeID': '444df2f0fed139ff94191de8fcd1f61b'
+				}
+			}
 		}
 
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
@@ -1669,8 +1694,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			//set Payment Declined status?
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding a payment', true);
-			arguments.orderTemplate.clearHibachiErrors();
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
+			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			//arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 
@@ -1714,7 +1740,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
@@ -2040,12 +2065,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
 		
 		if( isNull(orderTemplate) ){
-			ArrayAppend(arguments.data.messages, 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#');
+			ArrayAppend(arguments.data.messages, {
+			    'orderTemplate': 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#'
+			    });
 			return;
 		}  
 		
 		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
-			ArrayAppend(arguments.data.messages, "OrderTemplate doesn't belong to the User");
+			ArrayAppend(arguments.data.messages, {
+			    'orderTemplate': "OrderTemplate doesn't belong to the User"});
 			return; 
 		}
 	
@@ -2351,6 +2379,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
 					}
+				}else{
+					returnOrder.getHibachiMessages().setMessages(returnOrder.getErrors());
+					returnOrder.clearHibachiErrors();
 				}
 			}
 			
@@ -2399,6 +2430,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
 			}
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
@@ -3501,13 +3535,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderDelivery_generateShippingLabel(required any orderDelivery, required any processObject, struct data){
 		//prevent overwriting existing labels
 
-		if (
-			(
-				isNull(arguments.orderDelivery.getTrackingNumber())
-				|| !len(arguments.orderDelivery.getTrackingNumber())
-			)
-			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()
-		) {
+		if ((isNull(arguments.orderDelivery.getTrackingNumber()) || !len(arguments.orderDelivery.getTrackingNumber()))
+			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()) {
 
 			//get the shipping integration from the previously attempting label generation 
 			var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.orderDelivery.getOrderFulfillment().getShippingIntegration());
@@ -3581,6 +3610,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& len(arguments.processObject.getContainerLabel())
 				){
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
+				}
+				
+				// Sets the url for tracking
+				if (!isNull(arguments.orderDelivery.getTrackingNumber()) && 
+						!isNull(arguments.orderDelivery.getShippingMethod())){
+					
+					var trackingUrl = arguments.orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
+					if (!isNull(trackingUrl)){
+						trackingUrl = trackingUrl.replace("${trackingNumber}", arguments.orderDelivery.getTrackingNumber());
+						arguments.orderDelivery.setTrackingURL(trackingUrl);
+					}
 				}
 			}
 			

@@ -94,6 +94,7 @@ class SWReturnOrderItemsController{
     public currencySymbol:string;
     public fulfillmentTaxAmount:number;
     public fulfillmentRefundTaxAmount:number=0;
+    public orderDiscountAmount:number;
     
     public setupOrderItemCollectionList = () =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
@@ -250,6 +251,9 @@ class SWReturnOrderItemsController{
         this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
         
         this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+        if(this.orderDiscountAmount){
+            this.allocatedOrderDiscountAmountTotal = Math.min(this.orderDiscountAmount,this.allocatedOrderDiscountAmountTotal);
+        }
         this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
         this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
 
@@ -311,7 +315,8 @@ class SWReturnOrderItems {
 	    refundOrderItems:'<?',
 	    orderType:'@',
 	    orderTotal:'<?',
-	    fulfillmentTaxAmount:'@'
+	    fulfillmentTaxAmount:'@',
+	    orderDiscountAmount:'<?'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";

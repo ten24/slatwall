@@ -1,7 +1,7 @@
 declare var $;
 class MonatProductCardController {
 	public product;
-	public type: string = '';
+	public type: string;
 	public loading: boolean;
 	public lastAddedSkuID: string; 
 	public newTemplateID: string;
@@ -14,7 +14,9 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public urlParams = new URLSearchParams(window.location.search);
-    public showProductLink: boolean = false;
+    public isEnrollment: boolean = false;
+    public currencyCode:string;
+    public siteCode:string;
 
 	// @ngInject
 	constructor(
@@ -23,7 +25,9 @@ class MonatProductCardController {
 		public monatService,
         public observerService,
         public ModalService,
-        public $scope
+        public $scope,
+        private monatAlertService,
+        public rbkeyService
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
@@ -33,7 +37,7 @@ class MonatProductCardController {
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
 		
-		this.setShowProductLinkByType();
+		this.setIsEnrollment();
 	}
 	
 	public init = () => {
@@ -61,7 +65,12 @@ class MonatProductCardController {
 				} else if (setNewTemplateID) {
 					this.newTemplateID = result.orderTemplates[0].orderTemplateID;
 				}
-				this.loading = false;
+			})
+			.catch((error)=>{
+			    this.monatAlertService.showErrorsFromResponse(error)
+			})
+			.finally(()=>{
+			    this.loading=false;
 			});
 	};
 
@@ -70,8 +79,13 @@ class MonatProductCardController {
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
 			this.allProducts.splice(index, 1);
-			this.loading = false;
 			return result;
+		})
+		.catch((error)=>{
+		    this.monatAlertService.error(this.rbkeyService.rbKey('define.flaxship.addProducterror'));
+		})
+		.finally(()=>{
+		    this.loading =false;
 		});
 	};
 
@@ -80,17 +94,27 @@ class MonatProductCardController {
 		this.orderTemplateService
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
-				this.loading = false;
 				this.getAllWishlists();
 				return result;
+			})
+			.catch((error)=>{
+			 this.monatAlertService.showErrorsFromResponse(error);   
+			})
+			.finally(()=>{
+			  this.loading = false;  
 			});
 	};
 
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
-			this.loading = false;
 			return result;
+		})
+		.catch((error)=>{
+		    this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(()=>{
+		    this.loading = false;
 		});
 	};
 
@@ -102,8 +126,11 @@ class MonatProductCardController {
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
+				siteCode:this.siteCode,
+				currencyCode:this.currencyCode,
 				product: this.product,
 				type: this.type,
+				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
 			},
 			preClose: (modal) => {
@@ -136,12 +163,26 @@ class MonatProductCardController {
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then((result) =>{
-				this.loading = false;
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
+			.then( (result) =>{
+				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
+			} )
+			.catch((error)=>{
+			  this.monatAlertService.showErrorsFromResponse(error);  
 			})
+			.finally(()=>{
+			     this.loading=false;
+			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				this.loading = false;
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull'));
+				
+			})
+			.catch((error)=>{
+			    this.monatAlertService.showErrorFromeResponse(error);
+			})
+			.finally(()=>{
+			 this.loading=false;
 			});
 		}
 	};
@@ -183,11 +224,11 @@ class MonatProductCardController {
 			});
 	};
 	
-	private setShowProductLinkByType = (): void => {
-		this.showProductLink = (
-			this.type !== 'enrollment'
-			&& this.type !== 'VIPenrollmentOrder'
-			&& this.type !== 'VIPenrollment'
+	private setIsEnrollment = (): void => {
+		this.isEnrollment = (
+			this.type === 'enrollment'
+			|| this.type === 'VIPenrollmentOrder'
+			|| this.type === 'VIPenrollment'
 		);
 	}
 
@@ -204,6 +245,8 @@ class MonatProductCard {
 		index: '@',
 		allProducts: '<?',
 		orderTemplate: '<?',
+		currencyCode:'@',
+		siteCode:'@'
 	};
 
 	public controller = MonatProductCardController;

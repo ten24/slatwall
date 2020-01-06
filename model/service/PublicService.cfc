@@ -1400,7 +1400,7 @@ component  accessors="true" output="false"
         }
         
         if (len(data.orderID)) {
-            var order = getOrderService().getOrder(orderID);
+            var order = getOrderService().getOrder(data.orderID);
         }
         else {
             var order = getHibachiScope().getCart();
@@ -1433,9 +1433,12 @@ component  accessors="true" output="false"
             }
         }
 
-
+        
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
+            // Only create a new billing address here if its not being created later using the account payment method.
+            if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
+                && (!structKeyExists(data, "accountPaymentMethodID") 
+                && len(data.accountPaymentMethodID))) {
 
                 var orderPayment = getPaymentService().newOrderPayment();
                 orderPayment.populate(data.newOrderPayment);
@@ -1453,8 +1456,11 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
                 return;
             }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            
+            if ((!structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID))){
+                //use this billing information
+                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
@@ -1462,7 +1468,7 @@ component  accessors="true" output="false"
             return;
         }
 
-        
+       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1792,7 +1798,7 @@ component  accessors="true" output="false"
 			    var wishListItemStruct={
 			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
 			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "price"                       :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
 			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
 			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
 			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
@@ -1802,8 +1808,8 @@ component  accessors="true" output="false"
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
   			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:""
-
+  			      "total"                       :       wishListItem.getTotal()?:"",
+                  "qats"                        :       wishlistItem.getSku().getCalculatedQATS()
 			    };
                 
                 arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
@@ -1942,6 +1948,12 @@ component  accessors="true" output="false"
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
             
+        var processObject = orderTemplate.getProcessObjects()['cancel'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+                    
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");
@@ -2261,16 +2273,6 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
-    }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-    }
-    
-    public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
     

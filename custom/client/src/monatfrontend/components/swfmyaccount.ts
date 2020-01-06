@@ -17,7 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public orderItemsLength:number;
     public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
@@ -35,21 +34,31 @@ class swfAccountController {
     public holdingWishlist:any;
     public totalOrders:any;
     public ordersArgumentObject = {};
-
+    public orderPayments:any;
+    public uploadImageError:boolean;
     public accountProfileImage;
-    
+    public orderPromotions:any;
+    public orderItemTotal:number = 0;
+    public orderRefundTotal:any;
     // @ngInject
     constructor(
         public publicService,
         public $scope,
         public observerService,
-        public ModalService
+        public ModalService, 
+        public rbkeyService,
+        public monatAlertService
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
+        
+        this.observerService.attach(()=>{
+    		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
+        },"deleteAccountPaymentMethodFailure");
+        
         
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -63,6 +72,9 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
+        if(this.urlParams.get('orderid')){
+            this.getOrderItemsByOrderID();
+        }
 	}
 
     public getAccount = () => {
@@ -78,10 +90,6 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
-            
-            if(this.urlParams.get('orderid')){
-                this.getOrderItemsByOrderID();
-            }
             
             switch(window.location.pathname){
                 case '/my-account/':
@@ -141,13 +149,27 @@ class swfAccountController {
     
     public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        
-        const accountID = this.accountData.accountID
-        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
-            result.OrderItemsByOrderID.forEach(orderItem =>{
-                this.orderItems.push(orderItem);
-            });
-            this.orderItemsLength = result.OrderItemsByOrderID.length;
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
+            if(result.OrderItemsByOrderID){
+                this.orderItems = result.OrderItemsByOrderID.orderItems;
+                this.orderPayments = result.OrderItemsByOrderID.orderPayments;
+                this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
+                this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                
+                if(this.orderPayments.length){
+                    Object.keys(this.orderPayments[0]).forEach(key => {
+                        if(typeof(this.orderPayments[0][key]) == "number") {
+                            this.orderPayments[0][key] = Math.abs(this.orderPayments[0][key]);
+                        }
+                    });
+                }
+                
+                for(let item of this.orderItems as Array<any>){
+                    this.orderItemTotal += item.quantity;
+                }
+            }
+            
+            this.loading = false;
         });
     }
     
@@ -218,7 +240,7 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
-        if(!newAddress){
+        if(address.address.countryCode){
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
@@ -233,6 +255,7 @@ class swfAccountController {
     
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
             this.stars[i] = "fas";
@@ -266,13 +289,18 @@ class swfAccountController {
 		let url = window.location.href
 		let urlArray = url.split("/");
 		let baseURL = urlArray[0] + "//" + urlArray[2];
+		let that = this; 
 		
 		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
-		  	 } 
+		 	 	that.getUserProfileImage();
+		  	 }else{
+    		    that.uploadImageError = true;
+    		    that.$scope.$digest();
+		  	 }
 		};
         xhr.send(tempdata);
     }     

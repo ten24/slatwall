@@ -75,7 +75,11 @@
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
+				<cfif rc.order.getVATTotal() GT 0 >
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="VATTotal" edit="false" displayType="table">
+				<cfelse>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
+				</cfif>
 				
 				<!--- Display summarized fulfillment charge if no handling fees --->
 				<cfif not rc.order.getFulfillmentHandlingFeeTotal()>
