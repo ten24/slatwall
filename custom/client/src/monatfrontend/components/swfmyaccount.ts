@@ -39,6 +39,8 @@ class swfAccountController {
     public orderPromotions:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
+    public profileImageLoading:boolean = false;
+    
     // @ngInject
     constructor(
         public publicService,
@@ -279,7 +281,6 @@ class swfAccountController {
             this.moMoneyBalance = res.moMoneyBalance;
         });
     }
-    
 
     public uploadImage = () =>{
         let tempdata = new FormData();
@@ -306,11 +307,12 @@ class swfAccountController {
     }     
     
     public getUserProfileImage = () =>{
+        this.profileImageLoading = true;
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
+            this.profileImageLoading = false;
         });
     }
-
 
 	public showDeleteWishlistModal = () => {
 		this.ModalService.showModal({

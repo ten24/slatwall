@@ -1350,25 +1350,36 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.identifier" default= ''; 
         param name="arguments.data.height" default= 250; 
         param name="arguments.data.width" default= 250; 
-        
+
         //if the identifiers are not passed in get the account on scope
         if(!len(arguments.data.identifier) || !len(arguments.data.identifierType)) {
-            account = getHibachiScope().getAccount();
-            arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:''; // find the best wa
+            arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
         }else if(len(arguments.data.identifier) && len(arguments.data.identifierType)){
             //if identifiers are passed in, try to get the account using them
             try{
                 var method = 'getAccountBy#toString(arguments.data.identifierType)#';
                 var account = invoke(accountService, method, [arguments.data.identifier]);   
-                arguments.data['ajaxResponse']['accountProfileImage'] = getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#account.getProfileImage()#', arguments.data.width, arguments.data.height) ?:'';
+                //if the account has a profile image, serve it, otherwise serve the default.
+                arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(account=account, height = arguments.data.height, width = arguments.data.width);
             }catch(any e){
-                arguments.data['ajaxResponse']['accountProfileImage'] = ''
+                arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
             }
         }else{
-            // if someone passes empty strings as an argument, return an empty string
-            arguments.data['ajaxResponse']['accountProfileImage'] = ''
+            // if someone passes empty strings as an argument
+            arguments.data['ajaxResponse']['accountProfileImage'] = getResizedProfileImage(height = arguments.data.height, width = arguments.data.width);
         }
 
+	}
+	
+	public any function getResizedProfileImage(account = getHibachiScope().getAccount(), height= 250, width = 250){
+        var imageService = getService('imageService');
+        var imageURL = getHibachiScope().getBaseImageURL();
+        
+        if(len(arguments.account.getProfileImage())){
+            return imageService.getResizedImagePath('#imageURL#/profileImage/#arguments.account.getProfileImage()#', arguments.width, arguments.height);
+        }else{
+            return imageService.getResizedImagePath('#imageURL#/profile_default.png', arguments.width, arguments.height);
+        }
 	}
 
     public any function getSiteOwnerAccount(required struct data){
