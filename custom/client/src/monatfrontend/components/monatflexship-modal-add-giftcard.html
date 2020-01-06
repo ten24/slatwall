@@ -46,6 +46,7 @@
 						swvalidationnumeric ="true"
 						name = "amountToApply"
 						swvalidationregex = "/^\d*\.?\d*$/"
+						onkeydown="return event.keyCode !== 69 && event.keyCode !== 189"
 					/>
 					<label ng-bind="monatFlexshipAddGiftCardModal.translations.amountToApply"></label>
 					     <div ng-if="applyGiftCardForm.$submitted || applyGiftCardForm.amountToApply.$touch " ng-messages="applyGiftCardForm.amountToApply.$error">
