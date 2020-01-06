@@ -2058,7 +2058,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
+    	    orderItemCollectionList.addFilter("order.account.accountID", getAccount().getAccountID());
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
@@ -2076,7 +2076,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	public any function getMarketPartnerEnrollmentOrderID(){
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
+    	    orderItemCollectionList.addFilter("order.account.accountID", getAccount().getAccountID());
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
