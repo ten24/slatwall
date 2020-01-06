@@ -167,7 +167,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
- property name="hyperWalletAcct" ormtype="string";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
@@ -177,7 +176,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
- property name="status" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
  property name="complianceStatus" ormtype="string" hb_formFieldType="select";
