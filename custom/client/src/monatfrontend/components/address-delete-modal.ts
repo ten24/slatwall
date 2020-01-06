@@ -1,5 +1,5 @@
 
-class AddressDeleteModalConroller {
+class AddressDeleteModalController {
     public wishlist; 
     public translations = {};
 	public close; // injected from angularModalService
@@ -46,7 +46,7 @@ class AddressDeleteModal {
 		close:'=' //injected by angularModalService
 	};
 	
-	public controller = AddressDeleteModalConroller;
+	public controller = AddressDeleteModalController;
 	public controllerAs = "addressDeleteModal";
 
 	public static Factory(){
