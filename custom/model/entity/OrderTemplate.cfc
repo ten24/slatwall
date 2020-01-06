@@ -75,4 +75,9 @@ component {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+
 }

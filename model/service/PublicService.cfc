@@ -1947,13 +1947,7 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
-            
-        var processObject = orderTemplate.getProcessObjects()['cancel'];
-        if( processObject.hasErrors() ){
-            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
-            return;
-        }
-                    
+        
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");

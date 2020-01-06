@@ -460,5 +460,10 @@ public boolean function getCustomerCanCreateFlag(){
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+//CUSTOM FUNCTIONS END
 }
