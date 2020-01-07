@@ -582,7 +582,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
         
         account.setPrimaryPaymentMethod(paymentMethod);
-        account = getAccountService().saveAccount(account);
+        account = getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
         
         if (account.hasErrors()){
             addErrors(arguments.data, account.getErrors());
