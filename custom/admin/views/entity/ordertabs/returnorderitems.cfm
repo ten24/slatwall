@@ -2,7 +2,7 @@
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-	<hb:HibachiPropertyRow>
+	<hb:HibachiPropertyRow divAttributes="style='overflow-x:auto'">
 		<hb:HibachiPropertyList>
 			<!--- Items Selector --->
 			<sw-return-order-items 
@@ -10,7 +10,7 @@
 				order-id="#rc.order.getOrderID()#" 
 				currency-code="#rc.order.getCurrencyCode()#" 
 				initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
-				order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
+				order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serializeJSON(rc.processObject.getRefundOrderPaymentIDOptions()))#"
 				fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 				<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 					refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
@@ -18,6 +18,7 @@
 				<cfelse>
 					order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
 				</cfif>
+				order-discount-amount="#rc.order.getOrderDiscountAmountTotal()#"
 			></sw-return-order-items>
 			
 		</hb:HibachiPropertyList>

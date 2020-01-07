@@ -2,10 +2,8 @@
 class MonatFlexshipAddGiftCardModalController {
 	public orderTemplate; 
 	public giftCards;
-	
 	public close; // injected from angularModalService
 	public loading: boolean = false;
-
 	public selectedGiftCard;
 	public amountToApply;
 
@@ -18,13 +16,19 @@ class MonatFlexshipAddGiftCardModalController {
     };
     
     private fetchGiftCrds() {
+        this.loading = true;
     	this.orderTemplateService.getAccountGiftCards()
     	.then( (giftCards) => {
-    		this.giftCards = giftCards;
+    	    if(giftCards.length) {
+    		    this.giftCards = giftCards;
+    	    } else {
+    	        this.monatAlertService.error(this.rbkeyService.rbKey('frontend.flexshipAddGiftCardModal.noGiftavailbale'));
+    	    }
     	})
     	.catch( (error) => {
-    		console.error(error);	
     		this.monatAlertService.showErrorsFromResponse(error);
+    	}).finally(()=>{
+    	    this.loading = false;
     	});
     }
     
@@ -40,10 +44,7 @@ class MonatFlexshipAddGiftCardModalController {
     }
     
     public applyGiftCard() {
-
-    	//TODO frontend validation
 		this.loading = true;
-		
     	// make api request
         this.orderTemplateService.applyGiftCardToOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
@@ -59,7 +60,6 @@ class MonatFlexshipAddGiftCardModalController {
         		throw(data);
         	}
         }).catch(error => {
-            console.error(error);
             this.monatAlertService.showErrorsFromResponse(error);
         }).finally(() => {
         	this.loading = false;
@@ -124,4 +124,3 @@ class MonatFlexshipAddGiftCardModal {
 export {
 	MonatFlexshipAddGiftCardModal
 };
-

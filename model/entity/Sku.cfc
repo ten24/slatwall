@@ -619,12 +619,13 @@ property name="sapItemCode" ormtype="string";
 	}
 	
 	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
-		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
+		var cacheKey = 'PriceByCurrencyCode#arguments.currencyCode#';
 
 		var account = getHibachiScope().getAccount();
 		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
 			account = getService('AccountService').getAccount(arguments.accountID);
 		}
+		
 		if(!structKeyExists(arguments,'priceGroups')){
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
@@ -633,49 +634,31 @@ property name="sapItemCode" ormtype="string";
 			cacheKey &= '_#priceGroup.getPriceGroupID()#';
 		}
 
-		arguments.skuID = this.getSkuID(); 
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
-			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
-				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-					var prices = [];
-						for(var i=1; i <= arrayLen(skuPriceResults); i++){
-							if(isNull(skuPriceResults[i]['price'])){
-								skuPriceResults[i]['price'] = 0;
-							}
-							ArrayAppend(prices, skuPriceResults[i]['price']);
-						}
-						ArraySort(prices, "numeric","asc");
-						variables[cacheKey]= prices[1];
-				}
-				
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
-				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-				if(!isNull(baseSkuPrice)){
-					variables[cacheKey] = baseSkuPrice.getPrice(); 
-				}
-				
-			}
 			
-			if(structKeyExists(variables,cacheKey)){
-				return variables[cacheKey];
+			if(!structKeyExists(variables,cacheKey)) {
+				arguments.skuID = this.getSkuID(); 
+				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity(argumentCollection=arguments); 
+                        }
+		}	
+		
+		if(structKeyExists(variables,cacheKey)) {
+			if(variables[cacheKey] == "null") { //we return 'null' string from custom service, instead of NULL val
+				return;
 			}
-			
+			return variables[cacheKey];
 		}
 		
-		
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
-    		variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
-    		return variables[cacheKey];
-    	}else if(structKeyExists(getCurrencyDetails(), "price")){
-    		variables[cacheKey]= getCurrencyDetails().price;
-    		return variables[cacheKey];
-    	}
-    	
+
+		if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
+			variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
+			return variables[cacheKey];
+		}else if(structKeyExists(getCurrencyDetails(), "price")){
+			variables[cacheKey]= getCurrencyDetails().price;
+			return variables[cacheKey];
+		}
+
     }
 
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
@@ -1819,8 +1802,13 @@ property name="sapItemCode" ormtype="string";
 	}
 
 	public boolean function isValidPublishedEndDateTime() {
-		return isNull(this.getPublishedEndDateTime()) || 
-				this.getPublishedEndDateTime() >= this.getPublishedStartDateTime();
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
 	}
 
 	// ===============  END: Custom Validation Methods =====================
@@ -2035,22 +2023,58 @@ property name="sapItemCode" ormtype="string";
 
 public boolean function canBePurchased(required any account){
 		
-		var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
-		if(notValidVipItem){
-			return false;
+		if ( !isNull( arguments.account.getAccountType() ) ) {
+			
+			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
+			if(notValidVipItem){
+				return false;
+			}
+			var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
+			if(notValidMpItem){
+				return false;
+			}
+			var notValidRetailItem = arguments.account.getAccountType() == "customer" && this.getRetailFlag() != true;
+			if(notValidRetailItem){
+				return false;
+			}
+			
+		} else {
+			
+			// If failed to get account type (not logged in usually), and isn't a retail Sku
+			if ( this.getRetailFlag() != true ) {
+				return false;
+			}
 		}
-		var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
-		if(notValidMpItem){
-			return false;
+		
+		//Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack. They can't.
+		if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) > 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+			
+			return false;	 //can't purchase one past 30 days from account creation.
+		
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
+		} else if (arguments.account.getAccountType() == "marketPartner" 
+				&& !isNull(arguments.account.getCreatedDateTime()) 
+				&& dateDiff("d", arguments.account.getCreatedDateTime(), now()) <= 30
+				&& getProduct().getProductType().getProductTypeName() == "Product Pack"){
+		
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+			
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", arguments.account.getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.systemCode", "otSalesOrder");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+			
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
 		}
-		var notValidRetailItem = arguments.account.getAccountType() == "retail" && this.getRetailFlag() != true;
-		if(notValidRetailItem){
-			return false;
-		}
-
         return true; 
 	}
-
+	
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();

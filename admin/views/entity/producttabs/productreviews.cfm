@@ -51,18 +51,40 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
-                            createAction="admin:entity.createProductReview"
-                            createQueryString="?productID=#rc.product.getProductID()#"
-                            createModal="true"
-						   recorddetailaction="admin:entity.detailproductreview"
-						   recorddetailmodal="true"
-						   recordeditaction="admin:entity.editproductreview"
-						   recordeditmodal="true">
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-	<hb:HibachiListingColumn propertyIdentifier="rating" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
-	<hb:HibachiListingColumn propertyIdentifier="productReviewStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+<cfset local.productReviewCollectionList = rc.product.getProductReviewsCollectionList() />
+<cfset local.productReviewCollectionList.setDisplayProperties(
+  	"product.productName,rating,reviewTitle,account.primaryEmailAddress.emailAddress,createdDateTime",
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+) />
+<cfset local.productReviewCollectionList.addDisplayProperty(
+	"productReviewStatusType.typeName",
+	"Status",
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+) />
+<cfset local.productReviewCollectionList.addDisplayProperty(
+	"productReviewID",
+	"ProductReviewID",
+	{
+		isVisible=false,
+		isSearchable=true,
+		isDeletable=false
+	},
+	true
+) />
+
+<hb:HibachiListingDisplay 	collectionList="#local.productReviewCollectionList#"
+							recorddetailaction="admin:entity.detailproductreview"
+							recorddetailmodal="true"
+							recordeditaction="admin:entity.editproductreview"
+							recordeditmodal="true">
 </hb:HibachiListingDisplay>
+
+<hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />

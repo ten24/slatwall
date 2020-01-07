@@ -1,0 +1,48 @@
+<header class="step-header">
+	<div class="container">
+		<a href="#" class="logo">
+			<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
+		</a>
+	</div>
+</header>
+
+<ng-transclude></ng-transclude>
+
+<footer class="steps-footer d-flex flex-column">
+	<div class="w-100 d-flex justify-content-between align-items-center">
+		<div class="d-flex align-items-center">
+			<a href data-ng-click="monatUpgrade.previous()" class="back d-inline-block" ng-class="{ 'disabled': monatUpgrade.position == 0 } ">
+				<span class="last" sw-rbkey="'frontend.global.back'"></span>
+				<i class="fas fa-chevron-left"></i> 
+			</a>
+
+			<span ng-if="monatUpgrade.cart.totalItemQuantity > 0 && monatUpgrade.showMiniCart" class="qty-and-price text-white pl-3">
+				{{ monatUpgrade.cart.totalItemQuantity }} ITEMS / TOTAL {{ monatUpgrade.cart.total | currency }} 
+				<small ng-click="monatUpgrade.toggleMiniCart()" class="border-bottom ml-3">{{monatUpgrade.cartText}}</small>
+			</span>
+		</div>
+		
+		<span class="step-status">Step {{monatUpgrade.position + 1}} of {{monatUpgrade.steps.length}} </span>
+		
+		<button style="z-index: 1" ng-disabled="!monatUpgrade.canPlaceCartOrder" data-ng-click="monatUpgrade.next()" class="btn btn-secondary forward-btn forward" ng-if="monatUpgrade.position + 1 != monatUpgrade.steps.length && monatUpgrade.reviewContext == false">
+			<span data-ng-bind="monatUpgrade.position + 1 == monatUpgrade.steps.length ? monatUpgrade.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</button>
+		<button style="z-index: 1" ng-disabled="!monatUpgrade.canPlaceCartOrder" data-ng-click="monatUpgrade.goToLastStep()" class="btn btn-secondary forward-btn forward" ng-if="monatUpgrade.position + 1 != monatUpgrade.steps.length && monatUpgrade.reviewContext">
+			<span data-ng-bind="monatUpgrade.position + 1 == monatUpgrade.steps.length ? monatUpgrade.finishText : 'Next'"></span>
+			<i class="fas fa-chevron-right"></i>
+		</button>
+		<span ng-if="monatUpgrade.position + 1 == monatUpgrade.steps.length"></span>
+	</div>
+	
+	<!--- Mini cart ---> 	
+	<div ng-if="monatUpgrade.cart.totalItemQuantity > 0 && monatUpgrade.showMiniCart" class="w-100">
+	    <monat-mini-cart type="enrollment" custom-style="monatUpgrade.style" cart="monatUpgrade.cart"></monat-mini-cart>		
+	</div>
+	
+	<!--- Flexship cart ---> 	
+	<div ng-if="monatUpgrade.showFlexshipCart" class="w-100">
+		<monat-flexship-cart-container context="enrollment"></monat-flexship-cart-container>	
+	</div>
+
+</footer>

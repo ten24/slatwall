@@ -26,6 +26,7 @@ class SWFPaginationController {
 	};
 	
 	public init = () => {
+	    this.pageTracker = 1;
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];

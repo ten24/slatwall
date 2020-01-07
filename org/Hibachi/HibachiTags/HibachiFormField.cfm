@@ -88,7 +88,7 @@
 		</cfcase>
 		<cfcase value="date">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datepicker form-control" #attributes.fieldAttributes#  autocomplete="off"/>
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control"  #attributes.fieldAttributes#  autocomplete="off"/>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="dateTime">
@@ -278,7 +278,7 @@
 		<cfcase value="text,email">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
-				<cfif isStruct(attributes.translateAttributes)>
+				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
 					<cfset attributes.translateAttributes.entity = "Translation" />
 					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
 					<cfset attributes.translateAttributes.processContext = "updateProperty" />
@@ -329,7 +329,7 @@
 			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			
 			<cfoutput>
-				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+				<div ng-cloak class="#attributes.fieldClass#" #attributes.fieldAttributes#>
 					<hb:HibachiTypeahead 
 						edit="#attributes.edit#" 
 						collectionList="#entityCollectionList#"
@@ -346,18 +346,20 @@
 
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
-				<cfif isStruct(attributes.translateAttributes)>
-					<cfset attributes.translateAttributes.entity = "Translation" />
-					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
-					<cfset attributes.translateAttributes.processContext = "updateProperty" />
-					<cfset attributes.translateAttributes.class = "form-control-feedback" />
-					<cfset attributes.translateAttributes.icon = "globe" />
-					<cfset attributes.translateAttributes.iconOnly = "true" />
-					<cfset attributes.translateAttributes.modal = "true" />
-					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
-					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
-				</cfif>
+				<div class="position-relative">
+					<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+					<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
+						<cfset attributes.translateAttributes.entity = "Translation" />
+						<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+						<cfset attributes.translateAttributes.processContext = "updateProperty" />
+						<cfset attributes.translateAttributes.class = "form-control-feedback" />
+						<cfset attributes.translateAttributes.icon = "globe" />
+						<cfset attributes.translateAttributes.iconOnly = "true" />
+						<cfset attributes.translateAttributes.modal = "true" />
+						<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+						<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+					</cfif>
+				</div>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="time">
@@ -372,7 +374,7 @@
 			<cfset request.isWysiwygPage = true />
 			<cfoutput>
 				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# wysiwyg form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
-				<cfif isStruct(attributes.translateAttributes)>
+				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
 					<cfset attributes.translateAttributes.entity = "Translation" />
 					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
 					<cfset attributes.translateAttributes.processContext = "updateProperty" />

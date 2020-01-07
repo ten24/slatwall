@@ -3855,7 +3855,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									addTotalSumAggregate(column);
 								}
 
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								if(arguments.forExport  && structKeyExists(column, 'ormtype') && column.ormtype == 'timestamp'){
+									var dateFormat = '%m/%d/%Y %H:%i:%s';
+									if(structKeyExists(column, 'type')){
+										if(column.type == 'date'){
+											dateFormat = '%m/%d/%Y';
+										}else if(column.type == 'time'){
+											dateFormat = '%H:%i:%s';
+										}
+									}
+									
+									columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#dateFormat#') as #columnAlias#";
+								}else{
+									columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								}
 							}
 						}else{
 							continue;
@@ -4049,7 +4062,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
-				!this.getNonPersistentColumn() &&
 				(
 					( 
 					  structKeyExists(variables, "groupByRequired") &&

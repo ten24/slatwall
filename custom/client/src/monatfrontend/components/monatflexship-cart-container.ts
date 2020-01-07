@@ -1,20 +1,22 @@
-
 class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
-    public urlParams = new URLSearchParams(window.location.search);
     public context:string;
     public canPlaceOrder:boolean;
     public isOpened: boolean = false;
     public orderTemplateItemTotal: number = 0;
+    public showCanPlaceOrderAlert:false;
+    public loading: boolean = false;
     
     //@ngInject
     constructor(
     	public orderTemplateService, 
     	public rbkeyService,
     	public ModalService,
-    	public observerService
+    	public observerService,
+    	private monatAlertService,
+    	public $location
     ) {   
         this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
         this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
@@ -64,6 +66,8 @@ class MonatFlexshipCartContainerController {
     	 	'totalSteps': totalSteps,
     	 };
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+    	 this.translations['confirmFlexshipRemoveItemDialogTitleText'] = this.rbkeyService.rbKey('alert.frontend.confirmTitleTextDelete');
+    	 this.translations['confirmFlexshipRemoveItemDialogBodyText'] = this.rbkeyService.rbKey('alert.frontend.confirmBodyTextDelete');
     }
     
     public next(){
@@ -71,8 +75,9 @@ class MonatFlexshipCartContainerController {
     }
     
     private fetchOrderTemplate = () => {
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplateId = this.urlParams.get('orderTemplateId');
+        this.loading = true;
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplateId = this.$location.search().orderTemplateId;
 		}else if(localStorage.getItem('flexshipID') && this.context == 'enrollment'){
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
@@ -84,15 +89,13 @@ class MonatFlexshipCartContainerController {
                 this.setOrderTemplate( data.orderTemplate );;
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
                 this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
-                //TODO handle errors / success
     		} else {
     			throw(data);
     		}
-        }).catch(error => {
-        	//TODO deal with the error
-        	throw(error); 
+        }).catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
         }).finally(()=>{
-        //TODO deal with the loader ui
+            this.loading = false;
         });
     }
     
@@ -100,29 +103,54 @@ class MonatFlexshipCartContainerController {
     	return this.orderTemplateItems.findIndex(it => it.orderTemplateItemID === orderTemplateItemID); 
     }
     
+    public showFlexshipConfirmDeleteItemModal = (item) => {
+		this.ModalService.showModal({
+		      component: 'monatConfirmMessageModel',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.translations['confirmFlexshipRemoveItemDialogTitleText'],
+			    bodyText: this.translations['confirmFlexshipRemoveItemDialogBodyText']
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		        if(confirm){
+		            this.removeOrderTemplateItem(item);
+		        }else{
+		            item.loading=false;
+		        }
+		    });
+		}).catch((error) => {
+			console.error("unable to open showFlexshipConfirmModal :",error);	
+		});
+    }
+    
     public removeOrderTemplateItem = (item) => {
-    	
     	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
             (data) => {
             	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
             		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
     				this.orderTemplateItems.splice(index, 1);
     				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
+    					this.setOrderTemplate( data.orderTemplate );
+    					this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.removeItemsucessfull'))
     				}
         		} else {
-                	console.log('removeOrderTemplateItem res: ', data); 
-            	}
-            	//TODO handle errors / success
-            	
-            }, (reason) => {
-                throw (reason);
-            }
-        );
+        		    throw (data);
+            	}})
+                .catch((error)=>{
+                    this.monatAlertService.showErrorsFromResponse(error);
+                })
+                .finally(()=>{
+                    this.loading = false;
+                });
     }
     
     public increaseOrderTemplateItemQuantity = (item) => {
-
+            this.loading = true;
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(
             (data) => {
             	if(data.orderTemplateItem) {
@@ -133,17 +161,19 @@ class MonatFlexshipCartContainerController {
     					this.setOrderTemplate( data.orderTemplate );;
     				}
         		} else {
-        			console.error('increaseOrderTemplateItemQuantity res: ', data); 
+        		    throw(data);
             	}
-            	//TODO handle errors / success
             	
-            }, (reason) => {
-                throw (reason);
-            }
-        );
+            }) 
+            .catch((error)=>{
+                this.monatAlertService.showErrorsFromResponse(error);
+            }).finally(()=>{
+                this.loading = false;
+            });
     }
     
     public decreaseOrderTemplateItemQuantity = (item) => {
+        this.loading = true;
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(
             (data) => {
             	if(data.orderTemplateItem) {
@@ -155,13 +185,15 @@ class MonatFlexshipCartContainerController {
     				}
     				
         		} else {
-        			console.error('decreaseOrderTemplateItemQuantity res: ', data); 
+        		    throw(data);
             	}
-            	//TODO handle errors / success
-            }, (reason) => {
-                throw (reason);
-            }
-        );
+            })
+            .catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
+            })
+            .finally(()=>{
+                this.loading = false;
+            });
     }
     
     public showFlexshipConfirmModal = () => {
@@ -234,4 +266,3 @@ class MonatFlexshipCartContainer {
 export {
 	MonatFlexshipCartContainer
 };
-

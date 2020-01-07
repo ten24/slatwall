@@ -276,7 +276,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
-			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
+			globalIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -310,7 +310,18 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
-
+			orderReturnReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderExchangeReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderReplacementReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
 			//Order Template
 			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},
@@ -379,7 +390,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
-
+			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
+			
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
@@ -389,7 +401,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMaximumAmount = {fieldType="text", defaultValue=1000},
-
+		
+			
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
@@ -596,8 +609,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
-			case "globalShippingIntegrationForAddressVerification":
-				var options = getShippingIntegrationOptions();
+			case "globalIntegrationForAddressVerification":
+				var options = getAddressIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
 			case "globalLocale":
@@ -704,11 +717,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 
-	public array function getShippingIntegrationOptions() {
+	public array function getAddressIntegrationOptions() {
 		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
 		integrationCollectionList.addFilter('activeFlag', '1');
 		integrationCollectionList.addFilter('installedFlag', '1');
-		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.addFilter('integrationTypeList', '%address%',"like");
 		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
 		var options = integrationCollectionList.getRecords();
 		return options;

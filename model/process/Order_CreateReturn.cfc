@@ -89,11 +89,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ====================== START: Data Options ==========================
     
     public any function getLocation(){
-    	if(!structKeyExists(variables,'location') && structKeyExists(variables,'locationID')){
+    	if(!structKeyExists(variables,'location') && !isNull(getLocationID())){
     		variables.location = getService('LocationService').getLocation(variables.locationID);
     	}
     	if(!isNull(variables.location)){
     		return variables.location;
+    	}
+    }
+    
+    public string function getLocationID(){
+    	if(!structKeyExists(variables,'locationID')){
+    		if(!isNull(getOrder().getDefaultStockLocation())){
+    			variables.locationID = getOrder().getDefaultStockLocation().getLocationID();
+    		}
+    	}
+    	if(structKeyExists(variables,'locationID')){
+    		return variables.locationID;
     	}
     }
     
@@ -162,6 +173,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
 		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
             typeCollection.addOrderBy('sortOrder|ASC');
+            
+            // Return
+            if (getOrderTypeCode() == 'otReturnOrder') {
+		        typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderReturnReasonTypeOptions'), 'IN');
+		        
+		    // Exchange
+            } else if (getOrderTypeCode() == 'otExchangeOrder') {
+                typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderExchangeReasonTypeOptions'), 'IN');
+                
+            // Replacement
+            } else if (getOrderTypeCode() == 'otReplacementOrder') {
+                typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderReplacementReasonTypeOptions'), 'IN');
+                
+            // Refund?
+            }
 
             variables.returnReasonTypeOptions = typeCollection.getRecords();
             arrayPrepend(variables.returnReasonTypeOptions, {name=rbKey('define.select'), value=""});

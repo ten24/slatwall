@@ -107,6 +107,8 @@ class MonatMiniCartController {
 			});
 	};
 	
+	
+	
 	public changePage = (dir)=>{
 		
 		if(dir === 'next' && ((this.currentPage + 1) * this.pageSize) <=  this.cart.orderItems.length -1){

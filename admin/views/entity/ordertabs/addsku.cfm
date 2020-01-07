@@ -69,7 +69,17 @@ Notes:
 	
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
 	<cfset local.accountID = "#rc.order.getAccount().getAccountID()#">
-	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'"></sw-add-order-items-by-sku>
+	<cfset local.siteID = "#rc.order.getOrderCreatedSite().getSiteID()#">
+
+	<sw-add-order-items-by-sku 
+    	data-order="'#rc.order.getOrderId()#'" 
+    	data-order-fulfillment-id="'#orderFulfillmentID#'" 
+    	data-simple-representation="'#simpleRepresentation#'" 
+    	data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" 
+    	data-account-id="'#local.accountID#'" 
+    	data-site-id="'#local.siteID#'" 
+    	data-currency-code="'#local.currencyCode#'"
+	>
+	</sw-add-order-items-by-sku>
 	
 </cfoutput>

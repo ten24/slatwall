@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCard" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" {
+component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCard" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" hb_permission="this"  {
 
 	// Persistent Properties
 	property name="giftCardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
