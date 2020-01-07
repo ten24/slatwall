@@ -1439,6 +1439,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be cancelled if it''s active');
 			return arguments.orderTemplate;
 		} 
+		
+ 		if( arguments.processObject.hasErrors() ){
+ 		    arguments.orderTemplate.addErrors( arguments.processObject.getErrors() );
+ 		    return arguments.orderTemplate;
+ 		}
 
 		arguments.orderTemplate.setOrderTemplateCancellationReasonType( arguments.processObject.getOrderTemplateCancellationReasonType());
 		arguments.orderTemplate.setOrderTemplateCancellationReasonTypeOther(arguments.processObject.getOrderTemplateCancellationReasonTypeOther());  
@@ -1507,7 +1512,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
-		arguments.orderTemplate.setSite(getSiteService().getSite( arguments.processObject.getSiteID()));
+		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		
@@ -1589,8 +1594,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(newOrder.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
+				newOrder.clearHibachiErrors();
 				arguments.orderTemplate.clearHibachiErrors();
-				return arguments.orderTemplate; 
+				//try to place as much of the order as possible should only fail in OFY case
+				continue;
 			}
 		} 	
 
@@ -1627,10 +1634,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
+			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}	
-
+	
+	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
 
@@ -1738,7 +1747,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
-		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
@@ -1786,6 +1794,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
+			
 		}
 
 
@@ -1801,6 +1810,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
 			} 
 		}
+		
+		if(arguments.orderTemplateItem.hasErrors()){
+			orderTemplate.addErrors(arguments.orderTemplateItem.getErrors());
+		}
+		
 		return arguments.orderTemplateItem;
 	}  
 
@@ -2025,7 +2039,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,total,scheduleOrderDayOfTheMonth,canPlaceOrderFlag,statusCode';
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
@@ -2378,6 +2392,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
 					}
+				}else{
+					returnOrder.getHibachiMessages().setMessages(returnOrder.getErrors());
+					returnOrder.clearHibachiErrors();
 				}
 			}
 			
@@ -2426,6 +2443,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentMethod(originalFulfillment.getFulfillmentMethod());
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
+			}
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
 			}
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
@@ -2964,9 +2984,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}	// END OF LOCK
-		if(order.hasErrors()){
+		
+		if(arguments.order.hasErrors()){
 			getHibachiScope().setORMHasErrors( true );
 		}
+
+		if(!arguments.order.hasErrors() && !isNull(arguments.order.getOrderTemplate())){
+			var orderTemplate = arguments.order.getOrderTemplate(); 
+			orderTemplate.setLastOrderPlacedDateTime( now() );
+
+			orderTemplate = this.saveOrderTemplate(orderTemplate);
+		}
+
 		return arguments.order;
 	}
 
