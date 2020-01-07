@@ -185,10 +185,10 @@
 					*/
 					if(reFindNoCase(regex, domain)){
 						var accountCode = reReplaceNoCase(domain, regex, '\1');
-						// add $.event('siteID')
+						
 						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
 			
-						if(isNull(account)){
+						if(isNull(account) || isNull(account.getAccountCreatedSite()) || account.getAccountCreatedSite().getCMSSiteID() != $.event('siteID')){
 							$.event('contentBean', $.getBean("content"));
 							$.event().getHandler('standard404').handle($.event());
 							return;
