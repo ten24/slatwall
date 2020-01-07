@@ -76,38 +76,38 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-countryCode" />
 			</cfif>
 			<cfif attributes.showName>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#name" property="name" edit="#attributes.edit#" fieldClass="slatwall-address-name" requiredFlag="false"/>
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#name" property="name" edit="#attributes.edit#" fieldClass="slatwall-address-name" notRequiredClass="s-not-required"/>
 			</cfif>
 			<cfif attributes.showCompany>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#company" property="company" edit="#attributes.edit#" fieldClass="slatwall-address-company"  requiredFlag="false"/>
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#company" property="company" edit="#attributes.edit#" fieldClass="slatwall-address-company"  notRequiredClass="s-not-required"/>
 			</cfif>
 			<cfif attributes.showPhoneNumber>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#phoneNumber" property="phoneNumber" edit="#attributes.edit#" fieldClass="slatwall-address-phoneNumber"  requiredFlag="false" />
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#phoneNumber" property="phoneNumber" edit="#attributes.edit#" fieldClass="slatwall-address-phoneNumber"  notRequiredClass="s-not-required" />
 			</cfif>
 			<cfif attributes.showEmailAddress>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#emailAddress" property="emailAddress" edit="#attributes.edit#" fieldClass="slatwall-address-emailAddress" requiredFlag="false" />
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#emailAddress" property="emailAddress" edit="#attributes.edit#" fieldClass="slatwall-address-emailAddress" notRequiredClass="s-not-required" />
 			</cfif>
 			<cfif attributes.showStreetAddress AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStreetAddressShowFlag()) AND attributes.address.getCountry().getStreetAddressShowFlag() ) )>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#streetAddress" property="streetAddress" edit="#attributes.edit#" fieldClass="slatwall-address-streetAddress" requiredFlag="false"/>	
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#streetAddress" property="streetAddress" edit="#attributes.edit#" fieldClass="slatwall-address-streetAddress" notRequiredClass="s-not-required"/>	
 			</cfif>
 			<cfif attributes.showStreet2Address AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStreet2AddressShowFlag()) AND attributes.address.getCountry().getStreet2AddressShowFlag() ) )>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#street2Address" property="street2Address" edit="#attributes.edit#" fieldClass="slatwall-address-street2Address" requiredFlag="false"/>	
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#street2Address" property="street2Address" edit="#attributes.edit#" fieldClass="slatwall-address-street2Address" notRequiredClass="s-not-required"/>	
 			</cfif>
 			<cfif attributes.showLocality AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getLocalityShowFlag()) AND attributes.address.getCountry().getLocalityShowFlag()  ))>
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#locality" property="locality" edit="#attributes.edit#" fieldClass="slatwall-address-locality" requiredFlag="false"/>	
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#locality" property="locality" edit="#attributes.edit#" fieldClass="slatwall-address-locality" notRequiredClass="s-not-required"/>	
 			</cfif>
 			<cfif attributes.showCity AND (isNull(attributes.address.getCountry()) OR  ( NOT isNULL(attributes.address.getCountry().getCityShowFlag()) AND attributes.address.getCountry().getCityShowFlag()) ) >
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#city" property="city" edit="#attributes.edit#" fieldClass="slatwall-address-city" requiredFlag="false" />	
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#city" property="city" edit="#attributes.edit#" fieldClass="slatwall-address-city" notRequiredClass="s-not-required" />	
 			</cfif>
 			<cfif attributes.showState AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStateCodeShowFlag()) AND attributes.address.getCountry().getStateCodeShowFlag() ))  >
 				<cfif attributes.edit and arrayLen(attributes.address.getStateCodeOptions()) gt 1>
-					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" requiredFlag="false" />
+					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" notRequiredClass="s-not-required" />
 				<cfelse>
-					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="text" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" requiredFlag="false" />
+					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="text" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" notRequiredClass="s-not-required" />
 				</cfif>
 			</cfif>
 			<cfif attributes.showPostalCode AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getPostalCodeShowFlag()) AND attributes.address.getCountry().getPostalCodeShowFlag() )) >
-				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" requiredFlag="false" />	
+				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" notRequiredClass="s-not-required" />	
 			</cfif>
 			
 		</div>
