@@ -33,13 +33,17 @@
 					ng-click="$parent.monatFlexshipShippingMethodModal.setSelectedShippingMethodID(shippingMethod.value)"
 				>
 					<input
+					    swvalidationrequired="true"
+					    ng-model = "monatFlexshipShippingMethodModal.selectedShippingMethod.shippingMethodID"
 						type="radio"
 						name="shippingMethodID"
 						ng-checked="shippingMethod.value === monatFlexshipShippingMethodModal.selectedShippingMethod.shippingMethodID"
-					
+					    
 					/>
 					<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
-				
+				    <div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.shippingMethodID.$error">
+    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+    						</div>
 				</div>
 
 				<h6 class="title-with-line mb-5">

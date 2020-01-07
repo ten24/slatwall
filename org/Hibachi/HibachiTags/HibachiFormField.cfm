@@ -346,18 +346,20 @@
 
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
-				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
-					<cfset attributes.translateAttributes.entity = "Translation" />
-					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
-					<cfset attributes.translateAttributes.processContext = "updateProperty" />
-					<cfset attributes.translateAttributes.class = "form-control-feedback" />
-					<cfset attributes.translateAttributes.icon = "globe" />
-					<cfset attributes.translateAttributes.iconOnly = "true" />
-					<cfset attributes.translateAttributes.modal = "true" />
-					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
-					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
-				</cfif>
+				<div class="position-relative">
+					<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+					<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
+						<cfset attributes.translateAttributes.entity = "Translation" />
+						<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+						<cfset attributes.translateAttributes.processContext = "updateProperty" />
+						<cfset attributes.translateAttributes.class = "form-control-feedback" />
+						<cfset attributes.translateAttributes.icon = "globe" />
+						<cfset attributes.translateAttributes.iconOnly = "true" />
+						<cfset attributes.translateAttributes.modal = "true" />
+						<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+						<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+					</cfif>
+				</div>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="time">

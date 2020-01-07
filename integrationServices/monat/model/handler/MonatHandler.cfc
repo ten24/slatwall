@@ -49,7 +49,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
-        if( account.getAccountType() == 'marketPartner' && arguments.order.hasStarterKit() ) {
+        if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
 			account.setProductPackPurchasedFlag(true);
         }
     	
