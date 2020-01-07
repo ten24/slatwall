@@ -65,5 +65,6 @@ Notes:
 		<swa:SlatwallSetting settingName="siteInitialEnrollmentPeriodForMarketPartner" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteMaxDaysAfterAccountCreate" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

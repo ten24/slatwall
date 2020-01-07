@@ -16,6 +16,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
         return {
             siteMaximumFlexshipGiftCardAmount = {fieldtype="text", defaultValue=20, validate={dataType="numeric", required=true, minValue=0}},
             siteDaysAfterMarketPartnerEnrollmentFlexshipCreate = {fieldtype="text", defaultValue=0, validate={dataType="numeric", required=true, minValue=0}},
+            siteMinCartTotalAfterUserIsEligibleForOFYAndFreeShipping = {fieldtype="text", defaultValue=86, validate={dataType="numeric", required=true, minValue=0}},
             baseImportURL = {fieldType="text", defaultValue=""},
 			authKey = {fieldType="password", encryptValue=true},
 			globalMPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}},
