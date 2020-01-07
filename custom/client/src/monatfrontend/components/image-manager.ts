@@ -2,6 +2,9 @@ declare var hibachiConfig
 
 class ImageManagerController {
 	public firstTry = false;
+	public imgWidth: string;
+	public imgHeight: string;
+	
 	// @ngInject
 	constructor(
 		public $element	
@@ -24,17 +27,14 @@ class ImageManagerController {
 	
 	private getMissingImagePath = () => {
 		
-		let width = this.$element[0].getAttribute('data-width');
-		let height = this.$element[0].getAttribute('data-height');
-		
 		let missingImagePath = hibachiConfig.missingImagePath
 		
 		// Get resized missing image path if width and height are declared.
-		if ( null !== width && null !== height ) {
+		if ( this.imgWidth && this.imgHeight ) {
 			let matches = missingImagePath.match( /(\.[a-zA-Z]{3,4})$/ );
 			
 			if ( matches.length > 1 ) {
-				let fileEnding  = `_${width}w_${height}h`;
+				let fileEnding  = `_${this.imgWidth}w_${this.imgHeight}h`;
 					fileEnding += matches[1];
 				
 				missingImagePath = missingImagePath.replace( matches[1], fileEnding );
@@ -52,9 +52,12 @@ class ImageManagerController {
 class ImageManager {
 	public restrict: string = 'A';
 	public templateUrl: string;
-	public scope: any = {};
+	public scope: boolean = true;
 
-	public bindToController: any = {};
+	public bindToController: any = {
+		imgWidth: '@?',
+		imgHeight: '@?',
+	};
 
 	public controller = ImageManagerController;
 	public controllerAs = 'imageManager';
