@@ -57,6 +57,12 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	property name="address" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all" hb_populateValidationContext="full";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountAddressID" cascade="all-delete-orphan" inverse="true";
 
+	property name="billingOrderTemplates" singularname="billingOrderTemplate" cfc="OrderTemplate" fieldtype="one-to-many" fkcolumn="billingOrderTemplateID" hb_populateEnabled="public" inverse="true";
+	property name="shippingOrderTemplates" singularname="shippingOrderTemplate" cfc="OrderTemplate" fieldtype="one-to-many" fkcolumn="shippingOrderTemplateID" hb_populateEnabled="public" inverse="true";
+	
+	property name="billingOrders" singularname="billingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="billingOrderID" hb_populateEnabled="public" inverse="true";
+	property name="shippingOrders" singularname="shippingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="shippingOrderID" hb_populateEnabled="public" inverse="true";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
