@@ -476,22 +476,22 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		//Tracking info
-		var orderList = this.getOrderCollectionList();
-		orderList.setDisplayProperties('orderDeliveries.trackingUrl')
-		orderList.addFilter( 'orderID', arguments.data.orderID, '=');
+		var orderDeliveriesList = this.getOrderDeliveryCollectionList();
+		orderDeliveriesList.setDisplayProperties('trackingUrl')
+		orderDeliveriesList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
 		var orderPromtions = orderPromotionList.getPageRecords();
-		var order = orderList.getPageRecords();
+		var orderDeliveries = orderDeliveriesList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
 		orderItemData['orderItems'] = orderItems;
 		orderItemData['orderPromtions'] = orderPromtions;
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
-		if ( len( order ) ) {
-			orderItemData['order'] = order[1];
+		if ( len( orderDeliveries ) ) {
+			orderItemData['orderDelivery'] = orderDeliveries[1];
 		}
 		
 		return orderItemData
