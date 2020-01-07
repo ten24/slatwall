@@ -179,11 +179,15 @@
 						
 						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
 			
-						if(isNull(account) || isNull(account.getAccountCreatedSite()) || account.getAccountCreatedSite().getCMSSiteID() != $.event('siteID')){
+						if(isNull(account) || isNull(account.getAccountCreatedSite())){
 							$.event('contentBean', $.getBean("content"));
 							$.event().getHandler('standard404').handle($.event());
 							return;
 						}
+						// if(account.getAccountCreatedSite().getCMSSiteID() != $.event('siteID')){
+						// 	$.redirect( $.createHREF(filename=$.getBean("content").getFilename(), siteid=account.getAccountCreatedSite().getCMSSiteID()) );
+						// 	return;
+						// }
 						
 						$.slatwall.setRouteEntity("account", account);
 					}
