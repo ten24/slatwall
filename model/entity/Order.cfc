@@ -2135,10 +2135,10 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public boolean function hasProductPack() {
-	    if(!structKeyExists(variables,'orderHasProductpack')){
-            variables.orderHasProductpack = getService('orderService').orderHasProductpack(this.getOrderID());
+	    if(!structKeyExists(variables,'orderHasProductPack')){
+            variables.orderHasProductPack = getService('orderService').orderHasProductPack(this.getOrderID());
 		}
-		return variables.orderHasProductpack;
+		return variables.orderHasProductPack;
 	}
 	
 	public boolean function subtotalWithinAllowedPercentage(){
