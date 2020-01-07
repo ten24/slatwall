@@ -707,9 +707,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
+		bundlePersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
+		bundlePersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -731,9 +731,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
 		}
