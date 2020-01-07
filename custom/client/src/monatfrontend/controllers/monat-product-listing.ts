@@ -9,8 +9,10 @@ class MonatProductListingController {
     public cmsContentFilterFlag:boolean;
     public pageRecordsShow:number = 12;
     public recordsCount:number;
+    public showAddToCardAlert;
     public callEndpoint = true;
     public showWishlist:boolean;
+
     
     public wishlistItems;
 
@@ -21,7 +23,10 @@ class MonatProductListingController {
         private monatService,
 		public $rootScope,
 		public ModalService
-	) {}
+	) {
+        this.observerService.attach(() => this.showAddToCardAlert = true,"addOrderItemSuccess"); 
+	}
+
     
     public $onInit = () => {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
@@ -41,6 +46,10 @@ class MonatProductListingController {
 	
 	public handleAddItem = () =>{
 	    if(!this.callEndpoint) this.showWishlist = true;
+	}
+	
+	public hideAlert = () =>{
+	    this.showAddToCardAlert = false
 	}
 	
     public getProducts = () => {

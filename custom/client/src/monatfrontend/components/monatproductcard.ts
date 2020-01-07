@@ -13,7 +13,6 @@ class MonatProductCardController {
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
 	public orderTemplate;
-    public urlParams = new URLSearchParams(window.location.search);
     public isEnrollment: boolean = false;
     public accountWishlistItems;
     public isAccountWishlistItem: boolean = false;
@@ -29,7 +28,8 @@ class MonatProductCardController {
         public ModalService,
         public $scope,
         private monatAlertService,
-        public rbkeyService
+        public rbkeyService,
+        public $location
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
@@ -48,12 +48,12 @@ class MonatProductCardController {
 	}
 	
 	public init = () => {
-		if(this.urlParams.get('type')){
-			this.type = this.urlParams.get('type');
+		if(this.$location.search().type){
+			this.type = this.$location.search().type;
 		}
 		
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplate = this.$location.search().orderTemplateId;
 		}
 	}
 	

@@ -15,7 +15,10 @@
 	</div>
 	
 	
-	<div ng-if="monatFlexshipCard.orderTemplate.canPlaceOrderFlag && monatFlexshipCard.orderTemplate.statusCode === 'otstDraft'" 
+	<div ng-if="monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
+	            && monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
+	            && monatFlexshipCard.orderTemplate.statusCode === 'otstDraft'
+	            " 
 	class="alert alert-success alert-dismissible">
 		Your Flexship is ready to activate
 		<a href="#" ng-click="monatFlexshipCard.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
