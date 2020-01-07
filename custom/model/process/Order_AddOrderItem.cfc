@@ -74,10 +74,10 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         var cartCollectionList = getHibachiScope().getService('orderService').getorderItemCollectionList();
         cartCollectionList.setDisplayProperties('order.orderID');
         cartCollectionList.addFilter('order.orderID', order.getOrderID());
-        cartCollectionList.addFilter('sku.product.productCode', 'productCodesRenewalMP', 'IN');
-        var cartCollection = cartCollectionList.getRecords();
+        cartCollectionList.addFilter('sku.product.productCode', productCodesRenewalMP, 'IN');
+        var cartCollectionCount = cartCollectionList.getRecordsCount();
         
-        if(arrayLen(cartCollection)){
+        if(cartCollectionCount > 0){
             return false;
         }
         
