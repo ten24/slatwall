@@ -2,7 +2,6 @@ class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
-    public urlParams = new URLSearchParams(window.location.search);
     public context:string;
     public canPlaceOrder:boolean;
     public isOpened: boolean = false;
@@ -16,7 +15,8 @@ class MonatFlexshipCartContainerController {
     	public rbkeyService,
     	public ModalService,
     	public observerService,
-    	private monatAlertService
+    	private monatAlertService,
+    	public $location
     ) {   
         this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
         this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
@@ -76,8 +76,8 @@ class MonatFlexshipCartContainerController {
     
     private fetchOrderTemplate = () => {
         this.loading = true;
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplateId = this.urlParams.get('orderTemplateId');
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplateId = this.$location.search().orderTemplateId;
 		}else if(localStorage.getItem('flexshipID') && this.context == 'enrollment'){
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
