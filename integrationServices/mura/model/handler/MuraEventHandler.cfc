@@ -174,17 +174,8 @@
 				
 				if ($.slatwall.setting('globalURLKeyAccount') == 'subdomain') {
 				
-					var domain = $.slatwall.getCurrentDomain();
-					var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
-					/*
-					Matches:
-						username.monat.local
-						username.monatglobal.com
-						username.mymonat.com
-						username.monat.ten24dev.com
-					*/
-					if(reFindNoCase(regex, domain)){
-						var accountCode = reReplaceNoCase(domain, regex, '\1');
+					var accountCode = getHibachiScope().getSubdomain();
+					if(len(accountCode)){
 						
 						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
 			
