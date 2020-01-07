@@ -171,8 +171,35 @@
 					}
 				}
 				
+				
+				if ($.slatwall.setting('globalURLKeyAccount') == 'subdomain') {
+				
+					var domain = $.slatwall.getCurrentDomain();
+					var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
+					/*
+					Matches:
+						username.monat.local
+						username.monatglobal.com
+						username.mymonat.com
+						username.monat.ten24dev.com
+					*/
+					if(reFindNoCase(regex, domain)){
+						var accountCode = reReplaceNoCase(domain, regex, '\1');
+						// add $.event('siteID')
+						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
+			
+						if(isNull(account)){
+							$.event('contentBean', $.getBean("content"));
+							$.event().getHandler('standard404').handle($.event());
+							return;
+						}
+						
+						$.slatwall.setRouteEntity("account", account);
+					}
+				
+				
 				// Look for the Account URL Key
-				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
+				} else if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );

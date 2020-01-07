@@ -166,6 +166,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="subscribedToMailchimp" persistent="false";
 	
 
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
@@ -1309,6 +1310,10 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		}
 		
 		return variables.subscribedToMailchimp;
+	}
+	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
 	//CUSTOM FUNCTIONS END
 }
