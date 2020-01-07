@@ -1046,7 +1046,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
@@ -1054,11 +1054,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var accountID = getHibachiScope().getAccount().getAccountID();
         
-        var wishlistList = getService('OrderService').getOrderTemplateCollectionList();
-        wishlistList.setDisplayProperties('orderTemplateItems.sku.product.productID|productID');
-        wishlistList.addFilter( 'account.accountID', accountID );
-        wishlistList.addFilter( 'orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
-        var accountWishlistItems = wishlistList.getRecords();
+        var orderTemplateItemList = getService('OrderService').getOrderTemplateItemCollectionList();
+        orderTemplateItemList.setDisplayProperties('sku.product.productID|productID');
+        orderTemplateItemList.addFilter( 'orderTemplate.account.accountID', accountID );
+        orderTemplateItemList.addFilter( 'orderTemplate.orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
+        var accountWishlistItems = orderTemplateItemList.getRecords();
         
         arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
     }

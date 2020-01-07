@@ -32,12 +32,7 @@ class MonatProductListingController {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
         
-        this.monatService.getAccountWishlistItemIDs().then( data => {
-            if ( 'undefined' !== typeof data.wishlistItems ) {
-                this.wishlistItems = data.wishlistItems;
-                this.observerService.notify('accountWishlistItemsSuccess');
-            }
-        });
+        this.getWishlistItems();
     }
     
 	public $postLink = () => {
@@ -45,11 +40,21 @@ class MonatProductListingController {
 	}
 	
 	public handleAddItem = () =>{
+	    this.getWishlistItems();
 	    if(!this.callEndpoint) this.showWishlist = true;
 	}
 	
 	public hideAlert = () =>{
 	    this.showAddToCardAlert = false
+	}
+	
+	public getWishlistItems = () => {
+	    this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = data.wishlistItems;
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
 	}
 	
     public getProducts = () => {
