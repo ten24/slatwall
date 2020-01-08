@@ -1046,8 +1046,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+    
+    public void function getWishlistItemsForAccount( require any data ) {
+        
+        var accountID = getHibachiScope().getAccount().getAccountID();
+        
+        var orderTemplateItemList = getService('OrderService').getOrderTemplateItemCollectionList();
+        orderTemplateItemList.setDisplayProperties('sku.product.productID|productID');
+        orderTemplateItemList.addFilter( 'orderTemplate.account.accountID', accountID );
+        orderTemplateItemList.addFilter( 'orderTemplate.orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
+        var accountWishlistItems = orderTemplateItemList.getRecords();
+        
+        arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
     }
     
     public any function getBaseProductCollectionList(required any data){
@@ -1061,6 +1074,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productID');
         productCollectionList.addDisplayProperties('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
@@ -1226,6 +1240,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var record in arguments.records){
             
             productMap[record.defaultSku_skuID] = {
+                'productID': record.productID,
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,

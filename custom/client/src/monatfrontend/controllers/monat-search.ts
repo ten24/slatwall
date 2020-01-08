@@ -6,6 +6,7 @@ class MonatSearchController {
 	public recordsCount: any;
 	public priceGroupCode;
 	public argumentsObject: any;
+	public wishlistItems: Array<any>;
 
 	// @ngInject
 	constructor(
@@ -17,6 +18,13 @@ class MonatSearchController {
 		if ( 'undefined' !== typeof this.$location.search().keyword ) {
 			this.getProductsByKeyword( this.$location.search().keyword );
 		}
+		
+		this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = data.wishlistItems;
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
 	}
 
 	public getProductsByKeyword = keyword => {
