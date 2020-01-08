@@ -13,8 +13,9 @@ class MonatProductCardController {
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
 	public orderTemplate;
-    public urlParams = new URLSearchParams(window.location.search);
     public isEnrollment: boolean = false;
+    public accountWishlistItems;
+    public isAccountWishlistItem: boolean = false;
     public currencyCode:string;
     public siteCode:string;
 
@@ -27,26 +28,32 @@ class MonatProductCardController {
         public ModalService,
         public $scope,
         private monatAlertService,
-        public rbkeyService
+        public rbkeyService,
+        public $location
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
+        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess"); 
 	}
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
 		
 		this.setIsEnrollment();
+		
+		// We want to run this on init AND attach to the "accountWishlistItemsSuccess" 
+		// because this directive could load before or after that trigger happens
+		this.setIsAccountWishlistItem();
 	}
 	
 	public init = () => {
-		if(this.urlParams.get('type')){
-			this.type = this.urlParams.get('type');
+		if(this.$location.search().type){
+			this.type = this.$location.search().type;
 		}
 		
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplate = this.$location.search().orderTemplateId;
 		}
 	}
 	
@@ -95,6 +102,7 @@ class MonatProductCardController {
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
 				this.getAllWishlists();
+				this.isAccountWishlistItem = true;
 				return result;
 			})
 			.catch((error)=>{
@@ -108,6 +116,7 @@ class MonatProductCardController {
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
+			this.isAccountWishlistItem = true;
 			return result;
 		})
 		.catch((error)=>{
@@ -136,7 +145,6 @@ class MonatProductCardController {
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
-				// this.changeTypeForDemo(); //TODO remove
 			},
 		}).then((modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
@@ -146,16 +154,6 @@ class MonatProductCardController {
 			console.error('unable to open model :', error);
 		});
 	
-	};
-	
-	//TODO remove
-	private changeTypeForDemo = () => {
-		let types = ['','flexship','wishlist','enrollment'];
-		let index = types.indexOf(this.type);
-		index++;
-		this.type = types[index % types.length];
-		
-		console.log('changed type for demo :', this.type);
 	};
 
 	public addToCart = (skuID, skuCode) => {
@@ -231,6 +229,20 @@ class MonatProductCardController {
 			|| this.type === 'VIPenrollment'
 		);
 	}
+	
+	public setIsAccountWishlistItem = () => {
+		if ( 
+			'undefined' !== typeof this.accountWishlistItems 
+			&& this.accountWishlistItems.length
+		) {
+			this.accountWishlistItems.forEach(item => {
+				if ( item.productID === this.product.productID ) {
+					this.isAccountWishlistItem = true;
+					return;
+				}
+			});
+		}
+	}
 
 }
 
@@ -243,6 +255,7 @@ class MonatProductCard {
 		product: '=',
 		type: '@',
 		index: '@',
+		accountWishlistItems: '<?',
 		allProducts: '<?',
 		orderTemplate: '<?',
 		currencyCode:'@',

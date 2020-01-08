@@ -27,6 +27,8 @@ class VIPController {
 	public flexshipItemList:any;
 	public recordsCount;
 	public flexshipTotal:number = 0;
+	public lastAddedProductName;
+	public addedItemToCart;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -62,7 +64,9 @@ class VIPController {
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
     	this.observerService.attach(this.getProductList,"createSuccess");
-    	
+		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
+		
+
 		this.localStorageCheck(); 
 		
 		if(this.isNotSafariPrivate){
@@ -219,6 +223,25 @@ class VIPController {
 		this.observerService.notify('editFlexshipDate');
 	}
 	
+	public showAddToCartMessage = () => {
+		var skuID = this.monatService.lastAddedSkuID;
+		
+		this.monatService.getCart().then( data => {
+
+			var orderItem;
+			data.orderItems.forEach( item => {
+				if ( item.sku.skuID === skuID ) {
+					orderItem = item;
+				}
+			});
+			
+			let productTypeName = orderItem.sku.product.productType.productTypeName;
+			if ( 'Starter Kit' !== productTypeName && 'Product Pack' !== productTypeName ) {
+				this.lastAddedProductName = orderItem.sku.product.productName;
+				this.addedItemToCart = true;
+			}
+		})
+	}
 }
 
 class MonatEnrollmentVIP {

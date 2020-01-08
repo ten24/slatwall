@@ -26,10 +26,11 @@
 		],
 		"expirationMonth": [
 			{
-				"contexts": "save",
+				"contexts": "save,create",
 				"conditions": "paymentTypeCreditCard",
 				"required": true,
-				"dataType": "numeric"
+				"dataType": "numeric",
+				"method": "hasValidExpirationMonth"
 			}
 		],
 		"expirationYear": [

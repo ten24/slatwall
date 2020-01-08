@@ -84,7 +84,7 @@
 					<button
 						class="close"
 						type="button"
-						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item); item.loading = true"
+						ng-click="$parent.monatFlexshipCartContainer.showFlexshipConfirmDeleteItemModal(item); item.loading = true"
 					><i class="fas fa-times"></i></button>
 					<div class="img">
 						<a ng-href="{{item.skuProductURL}}">
@@ -102,7 +102,7 @@
 								type="button"
 								class="minus"
 								ng-disabled="item.quantity <= 1"
-								ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)"
+								ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item); item.loading = true"
 							>&minus;</button>
 							<input
 								type="text"
@@ -114,7 +114,7 @@
 							<button
 								type="button"
 								class="plus"
-								ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item)"
+								ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item); item.loading = true"
 							>&plus;</button>
 						</div>
 						<div class="price-block">

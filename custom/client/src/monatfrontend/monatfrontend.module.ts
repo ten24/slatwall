@@ -47,6 +47,7 @@ import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
 import { AddressDeleteModal } from './components/address-delete-modal';
+import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
 
 
 // controllers
@@ -55,6 +56,7 @@ import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
 import { MonatSiteOwnerController } from './controllers/site-owner-controller';
+import { OnlyForYouController } from './controllers/monat-onlyforyou';
 
 //services
 import { MonatService } from './services/monatservice';
@@ -112,6 +114,7 @@ var monatfrontendmodule = angular
 	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
+	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
@@ -119,6 +122,7 @@ var monatfrontendmodule = angular
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
 	.controller('siteOwnerController', MonatSiteOwnerController)
+	.controller('onlyForYouController', OnlyForYouController)
 
 	// Services
 	.service('monatService', MonatService)

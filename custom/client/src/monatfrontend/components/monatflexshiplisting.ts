@@ -23,7 +23,9 @@ class MonatFlexshipListingController{
 		public orderTemplateService, 
 		public $window, 
 		public publicService,
-		public observerService
+		public observerService,
+		public monatAlertService,
+		public rbkeyService,
 	){
 		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
 		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
@@ -71,6 +73,7 @@ class MonatFlexshipListingController{
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
 				if(data.orderTemplate){
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
 					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`; 
 				} else{
 					throw(data);

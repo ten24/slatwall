@@ -9,16 +9,20 @@
 			"orderType.systemCode":{
 				"in":"otRefundOrder,otReturnOrder"
 			}
-		}	
+		},
+		"isMarketPartnerOrder":{
+			"account.accountType":{
+				"eq":"marketPartner"
+			}
+		}
 	},
 	"properties": {
-		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"}],
+		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
+				{ "conditions":"isMarketPartnerOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrderAmount" },
+				{ "conditions":"isMarketPartnerOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
+				{ "conditions":"isMarketPartnerOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }],
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],
-		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"},
-					  { "contexts": "save", "method": "MarketPartnerValidationMaxOrderAmount" },
-					  { "contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
-					  { "contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }
-		],
+		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}]
 	}
 }
