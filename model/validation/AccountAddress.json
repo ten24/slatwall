@@ -1,12 +1,6 @@
 {
 	"properties": {
-		"account": [{ "contexts": "save", "required": true }],
-		
-		"billingOrderTemplates": [{ "contexts": "delete", "maxCollection": 0 }],
-		"shippingOrderTemplates": [{ "contexts": "delete", "maxCollection": 0 }],
-		
-		"billingOrders": [{ "contexts": "delete", "maxCollection": 0 }],
-		"shippingOrders": [{ "contexts": "delete", "maxCollection": 0 }]
+		"account": [{ "contexts": "save", "required": true }]
 	},
 	"populatedPropertyValidation": {
 		"address": [{ "validate": "full" }]
