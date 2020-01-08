@@ -7,7 +7,7 @@
 	"properties": {
 		"isPurchasableItemFlag" :	[{ "eq": true }],
 		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
-		"price": [ {"required": true, "dataType": "numeric" }]
+		"price": [ {"required": true, "dataType": "numeric" }],
 		"quantity":[
 			{	
 				"conditions": "renewalFeeFlag",
