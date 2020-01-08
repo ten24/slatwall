@@ -13,13 +13,16 @@ class MonatProductListingController {
     public callEndpoint = true;
     public showWishlist:boolean;
 
+    
+    public wishlistItems;
+
 	// @ngInject
 	constructor(
 		public publicService,
 		public observerService,
+        private monatService,
 		public $rootScope,
 		public ModalService
-
 	) {
         this.observerService.attach(() => this.showAddToCardAlert = true,"addOrderItemSuccess"); 
 	}
@@ -28,6 +31,8 @@ class MonatProductListingController {
     public $onInit = () => {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
+        
+        this.getWishlistItems();
     }
     
 	public $postLink = () => {
@@ -35,11 +40,21 @@ class MonatProductListingController {
 	}
 	
 	public handleAddItem = () =>{
+	    this.getWishlistItems();
 	    if(!this.callEndpoint) this.showWishlist = true;
 	}
 	
 	public hideAlert = () =>{
 	    this.showAddToCardAlert = false
+	}
+	
+	public getWishlistItems = () => {
+	    this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = data.wishlistItems;
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
 	}
 	
     public getProducts = () => {

@@ -43,6 +43,24 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		}
 	}
 	
+	public any function getSubdomain() {
+		var domain = getCurrentDomain();
+		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
+		var subdomain = '';
+		/*
+		Matches:
+			username.monat.local
+			username.monatglobal.com
+			username.mymonat.com
+			username.monat.ten24dev.com
+		*/
+		if(reFindNoCase(regex, domain)){
+			var subdomain = reReplaceNoCase(domain, regex, '\1');
+		}
+		
+		return subdomain;
+	}
+	
 	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			accountEmailAddresses.accountEmailAddressID, accountEmailAddresses.emailAddress,
