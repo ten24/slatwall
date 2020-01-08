@@ -807,20 +807,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public any function selectStarterPackBundle(required struct data){
         var cart = getHibachiScope().cart();
-        
-        var currentOrderItemList = getService('orderService').getOrderItemCollectionList();
+        var orderService = getService("OrderService");
+        var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
-        currentOrderItemList.addFilter('sku.product.productType.urlTitle', 'starter-kit,productPack', 'IN');
+        currentOrderItemList.addFilter('sku.product.productType.systemCode', 'Starterkit,ProductPack', 'IN');
         currentOrderItemList.addDisplayProperties('orderItemID');
         var orderItems = currentOrderItemList.getRecords();
+        var orderData = {};
+        var list = '';
         
         //remove previously-selected StarterPackBundle
         for( orderItem in orderItems ) {
-            var orderItem = getService('orderService').getOrderItem(orderItem.orderItemID);
-            getService("OrderService").processOrder( cart, orderItem, 'removeOrderItem');
-            getHibachiScope().flushORMSession();
+            list = listAppend(list,orderItem.orderItemID);
         }
         
+        orderData['orderItemIDList'] = list;
+        if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
         this.addOrderItem(argumentCollection = arguments);
     }
 
