@@ -810,16 +810,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var currentOrderItemList = getService('orderService').getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
-        currentOrderItemList.addDisplayProperties('orderItemID,sku.product.productType.urlTitle');
+        currentOrderItemList.addFilter('sku.product.productType.urlTitle', 'starter-kit,productPack', 'IN');
+        currentOrderItemList.addDisplayProperties('orderItemID');
         var orderItems = currentOrderItemList.getRecords();
         
         //remove previously-selected StarterPackBundle
         for( orderItem in orderItems ) {
-            if( orderItem.sku_product_productType_urlTitle == 'starter-kit' ||  orderItem.sku_product_productType_urlTitle == 'productPack' ) {
-                var orderItem = getService('orderService').getOrderItem(orderItem.orderItemID);
-                getService("OrderService").processOrder( cart, orderItem, 'removeOrderItem');
-                getHibachiScope().flushORMSession();
-            }
+            var orderItem = getService('orderService').getOrderItem(orderItem.orderItemID);
+            getService("OrderService").processOrder( cart, orderItem, 'removeOrderItem');
+            getHibachiScope().flushORMSession();
         }
         
         this.addOrderItem(argumentCollection = arguments);
