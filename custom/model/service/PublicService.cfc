@@ -807,17 +807,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public any function selectStarterPackBundle(required struct data){
         var cart = getHibachiScope().cart();
-        
+
         //remove previously-selected StarterPackBundle
-        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
-            for( orderItem in cart.getOrderItems() ) {
-                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
-                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
-                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
-                    StructDelete(arguments.data, 'orderItemID');
-                    getHibachiScope().flushORMSession();
-                    break;
-                }
+        for( orderItem in cart.getOrderItems() ) {
+            
+            if( orderItem.getSku().getProduct().getProductType().getUrlTitle() == 'starter-kit' ||  orderItem.getSku().getProduct().getProductType().getUrlTitle() == 'productPack' ) {
+                arguments.data['orderItemID'] = orderItem.getOrderItemID();
+                getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
+                StructDelete(arguments.data, 'orderItemID');
+                getHibachiScope().flushORMSession();
+                break;
             }
         }
         
@@ -1495,8 +1494,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
-
-
     
     public void function getMarketPartners(required struct data){
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
@@ -1540,4 +1537,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
+    
+    
 }
