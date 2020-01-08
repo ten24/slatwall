@@ -1363,15 +1363,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function deleteProfileImage(imagePath = getHibachiScope().getAccount().getProfileImage() ?: '', account = getHibachiScope().getAccount()){
 	    
 	    if(arguments.account.getProfileImage() != imagePath || !len(imagePath)) return;
-	    
-		var strPath = getDirectoryFromPath( expandPath( "./" ));
-		
-		if (findNoCase("Slatwall", strPath)){
-			var imageFilePath = "#strPath#custom/assets/images/profileImage/#arguments.imagePath#";
-		}else{
-			var imageFilePath = "#strPath#Slatwall/custom/assets/images/profileImage/#arguments.imagePath#";
-		}
-	    
+        var imageURL = getHibachiScope().getBaseImageURL();
+		var imageFilePath = "#imageURL#/profileImage/#arguments.imagePath#";
+
 		if( fileExists(imageFilePath) ){
 		    fileDelete(imageFilePath);
 		}
@@ -1408,8 +1402,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public any function getResizedProfileImage(account = getHibachiScope().getAccount(), height= 250, width = 250){
         var imageService = getService('imageService');
         var imageURL = getHibachiScope().getBaseImageURL();
- 		var strPath = getDirectoryFromPath( expandPath( "./" ));
-		
+
         if(len(arguments.account.getProfileImage()) && fileExists('#imageURL#/profileImage/#arguments.account.getProfileImage()#')){
             return imageService.getResizedImagePath('#imageURL#/profileImage/#arguments.account.getProfileImage()#', arguments.width, arguments.height);
         }else{

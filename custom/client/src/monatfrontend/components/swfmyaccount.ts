@@ -318,8 +318,8 @@ class swfAccountController {
         this.profileImageLoading = true;
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
-            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
             this.profileImageLoading = false;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
         });
     }
 
