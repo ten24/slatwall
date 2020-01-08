@@ -1445,9 +1445,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
+    
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
-        var order = getHibachiScope().getCart();
+        var order = arguments.cart;
 		var account =  getHibachiScope().getAccount();
 		var currentOrderItemList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
 		currentOrderItemList.setDisplayProperties('sku.skuID,price,currencyCode,quantity');
@@ -1455,14 +1456,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var currentOrderItems = currentOrderItemList.getRecords();
 		var upgradedSkuList = '';
 		var upgradedPrice = 0;
-		var currentPrice = order.getSubtotal();
-		var skuPriceMap = {};
-		
+		var currentPrice = 0;
+		var skuQuantityMap = {};
+		var currentPriceMap = {};
+	
 		if(!arrayLen(currentOrderItems)) return;
 		
 		for(var item in currentOrderItems){
 			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
-			skuPriceMap[item.sku_skuID] = item.quantity;
+			skuQuantityMap[item.sku_skuID] = item.quantity;
+			currentPriceMap[item.sku_skuID] = precisionEvaluate(item.quantity * item.price);
 		}
 
 		var currencyCode = currentOrderItems[1].currencyCode;
@@ -1479,11 +1482,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if(!arrayLen(upgradedOrder)) return;
 		
 		for(var item in upgradedOrder){
-			precisionEvaluate(upgradedPrice += (item.price * skuPriceMap[item.sku_skuID]));
+			precisionEvaluate(upgradedPrice += (item.price * skuQuantityMap[item.sku_skuID]));
+		    precisionEvaluate(currentPrice += currentPriceMap[item.sku_skuID]);
 		}
-		
-		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
-		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
+
+		arguments.data['ajaxResponse']['upgradedSavings'] = precisionEvaluate(currentPrice - upgradedPrice);
     }
     
     public void function getAllOrdersOnAccount(required any data){
