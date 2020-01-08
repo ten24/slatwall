@@ -4579,7 +4579,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function prepareAliasForFilterGroups(required array filterGroup){
 		for(var filter in arguments.filterGroup){
 			if(structKeyExists(filter,'propertyIdentifier')){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier,'filter'));
+				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier),'filter');
 			}else if(structKeyExists(filter,'filterGroup')){
 				prepareAliasForFilterGroups(filter.filterGroup);
 			}
