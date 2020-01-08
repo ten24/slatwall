@@ -415,10 +415,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public string function getRBKey(required string key, struct replaceStringData) {
 		return rbKey(argumentcollection=arguments);
 	}
-	
-	public string function getRbLocale(){
-		return getSession().getRbLocale();
-	}
 
 	//convenience method for validate
 	public any function validate(required any object, string context="", boolean setErrors=true) {

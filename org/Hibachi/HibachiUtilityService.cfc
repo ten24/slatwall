@@ -166,6 +166,26 @@
 
 			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
+			}else{
+				return this.formatValue_language(value=arguments.value,formatDetails=arguments.formatDetails);
+			}
+			return arguments.value;
+		}
+		
+		public any function formatValue_language(required string value, struct formatDetails={}){
+			if(structKeyExists(formatDetails,'locale') 
+				&& structKeyExists(formatDetails,'propertyName')
+				&& structKeyExists(formatDetails,'object')
+			){
+				var translation = getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(
+					baseObject=formatDetails.object.getClassName(),
+					baseID = formatDetails.object.getPrimaryIDValue(),
+					basePropertyName=formatDetails.propertyName,
+					locale=formatDetails.locale
+				);
+				if(!isNull(translation)){
+					return translation.getValue();
+				}
 			}
 			return arguments.value;
 		}
