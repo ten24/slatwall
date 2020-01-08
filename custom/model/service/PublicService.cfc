@@ -1479,6 +1479,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
 		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
 		var upgradedOrder = upgradedCollectionList.getRecords();
+		
 		if(!arrayLen(upgradedOrder)) return;
 		
 		for(var item in upgradedOrder){
