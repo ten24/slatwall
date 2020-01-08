@@ -40,7 +40,7 @@ class swfAccountController {
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
-    
+    public isDefaultImage:boolean = false;
     // @ngInject
     constructor(
         public publicService,
@@ -306,10 +306,19 @@ class swfAccountController {
         xhr.send(tempdata);
     }     
     
+    public deleteProfileImage(){
+        this.profileImageLoading = true;
+        this.publicService.doAction('deleteProfileImage').then(result=>{
+            this.profileImageLoading = false;
+            this.getUserProfileImage();
+        });
+    }
+    
     public getUserProfileImage = () =>{
         this.profileImageLoading = true;
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
             this.profileImageLoading = false;
         });
     }
