@@ -1360,11 +1360,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-	public void function deleteProfileImage(imagePath = getHibachiScope().getAccount().getProfileImage() ?: '', account = getHibachiScope().getAccount()){
+	public void function deleteProfileImage(account = getHibachiScope().getAccount()){
+	    imagePath = arguments.account.getProfileImage() ?: '';
 	    
-	    if(arguments.account.getProfileImage() != imagePath || !len(imagePath)) return;
+	    if(!len(imagePath)) {
+            return;
+	    }
+	    
         var imageURL = getHibachiScope().getBaseImageURL();
-		var imageFilePath = "#imageURL#/profileImage/#arguments.imagePath#";
+		var imageFilePath = "#imageURL#/profileImage/#imagePath#";
 
 		if( fileExists(imageFilePath) ){
 		    fileDelete(imageFilePath);
