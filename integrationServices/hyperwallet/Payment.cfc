@@ -125,20 +125,25 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers', requestData);
 		
-		try{
+		if(structKeyExists(responseData,'status_code') && responseData.status_code == "201" && structKeyExists(responseData,'fileContent') ) {
 			
-			if(structKeyExists(responseData,'status_code') && responseData.status_code == "201") {
-				if(IsJson(responseData.fileContent)) {
-					responseData = deserializeJSON(responseData.fileContent);
-				}
+			if(IsJson(responseData.fileContent)) {
+				responseData = deserializeJSON(responseData.fileContent);
+			}
+			
+			if( structKeyExists(responseData,'token') && structKeyExists(responseData,'sourceAmount') ) {
+				
 				arguments.responseBean.setAuthorizationCode(responseData.token);
 				arguments.responseBean.setAmountAuthorized(responseData.sourceAmount);
+				
 			} else {
-				arguments.responseBean.addError("Processing error", "Error in attempting to authorize.");
+				arguments.responseBean.addError("Processing error", "Error while attempting to authorize.");
 			}
-		} catch(any e) {
-			arguments.responseBean.addError("Processing error", "Error while attempting to authorize.");
+			
+		} else {
+			arguments.responseBean.addError("Processing error", "Error in attempting to authorize.");
 		}
+		
 	}
 	
 	/**
@@ -163,21 +168,22 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers/#arguments.responseBean.getAuthorizationCode()#/status-transitions', requestData);
 		
-		try{
+		if(structKeyExists(responseData,'status_code') && responseData.status_code == "201" && structKeyExists(responseData,'fileContent') ) {
 			
-			if(structKeyExists(responseData,'status_code') && responseData.status_code == "201") {
-				if(IsJson(responseData.fileContent)) {
-					responseData = deserializeJSON(responseData.fileContent);
-				}
-				
-				arguments.responseBean.setProviderTransactionID(responseBean.getAuthorizationCode());
+			if(IsJson(responseData.fileContent)) {
+				responseData = deserializeJSON(responseData.fileContent);
+			}
+			
+			if( structKeyExists(responseData,'token') ) {
 				arguments.responseBean.setAuthorizationCode(responseData.token);
+				arguments.responseBean.setProviderTransactionID(responseBean.getAuthorizationCode());
 				arguments.responseBean.setAmountReceived(responseBean.getAmountAuthorized());
 			} else {
-				arguments.responseBean.addError("Processing error", "Error in attempting to Charge.");
+				arguments.responseBean.addError("Processing error", "Error while attempting to Charge.");
 			}
-		} catch(any e) {
-			arguments.responseBean.addError("Processing error", "Error while attempting to Charge.");
+			
+		} else {
+			arguments.responseBean.addError("Processing error", "Error in attempting to Charge.");
 		}
 		
 	}
@@ -206,23 +212,23 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'payments', requestData);
 		
-		try{
+		if(structKeyExists(responseData,'status_code') && responseData.status_code == "201" && structKeyExists(responseData,'fileContent') ) {
 			
-			if(structKeyExists(responseData,'status_code') && responseData.status_code == "201") {
-				if(IsJson(responseData.fileContent)) {
-					responseData = deserializeJSON(responseData.fileContent);
-				}
-				
+			if(IsJson(responseData.fileContent)) {
+				responseData = deserializeJSON(responseData.fileContent);
+			}
+			
+			if( structKeyExists(responseData,'token') && structKeyExists(responseData,'amount') ) {
 				arguments.responseBean.setProviderTransactionID(responseData.token);
 				arguments.responseBean.setAmountAuthorized(responseData.amount);
 				arguments.responseBean.setAmountCredited(responseData.amount);
 			} else {
-				arguments.responseBean.addError("Processing error", "Error in attempting to Credit.");
+				arguments.responseBean.addError("Processing error", "Error while attempting to Credit.");
 			}
-		} catch(any e) {
-			arguments.responseBean.addError("Processing error", "Error while attempting to Credit.");
+			
+		} else {
+			arguments.responseBean.addError("Processing error", "Error in attempting to Credit.");
 		}
-		
 	}
 	
 	private void function getAccountBalance(required any requestBean, required any responseBean) {
@@ -234,18 +240,22 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		var requestData = {};
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'users/#arguments.requestBean.getProviderToken()#/balances', requestData);
 		
-		try{
+		if( structKeyExists(responseData,'status_code') && responseData.status_code == "200" && structKeyExists(responseData,'fileContent') ) {
 			
-			if(structKeyExists(responseData,'status_code') && responseData.status_code == "200") {
-				if(IsJson(responseData.fileContent)) {
-					responseData = deserializeJSON(responseData.fileContent);
-				}
-				arguments.responseBean.setAmountAuthorized(responseData.data[1].amount);
-			} else {
-				arguments.responseBean.addError("Processing error", "Error in fetching account balance.");
+			if(IsJson(responseData.fileContent)) {
+				responseData = deserializeJSON(responseData.fileContent);
 			}
-		} catch(any e) {
-			arguments.responseBean.addError("Processing error", "Error while fetching account balance.");
+			
+			if( structKeyExists(responseData,'data') && structKeyExists(responseData.data[1],'amount') ) {
+				
+				arguments.responseBean.setAmountAuthorized(responseData.data[1].amount);
+				
+			} else {
+				arguments.responseBean.addError("Processing error", "Error while fetching account balance.");
+			}
+			
+		} else {
+			arguments.responseBean.addError("Processing error", "Error in fetching account balance.");
 		}
 	}
 	
@@ -255,18 +265,14 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		var vendorAccount = setting(settingName='vendorAccount', requestBean=arguments.requestBean);
 		var requestData = {};
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'programs/#programToken#/accounts/#vendorAccount#/balances', requestData);
-		try{
-			
-			if(IsJson(responseData.fileContent)) {
-				responseData = deserializeJSON(responseData.fileContent);
-			}
-			
-			if(structKeyExists(responseData, 'data')){
-				arguments.responseBean.setAmountAuthorized(responseData.data[1].amount);
-			}else{
-				arguments.responseBean.addError("Processing error", "Error attempting to fetch account balance.");
-			}
-		} catch (any e) {
+		
+		if(IsJson(responseData.fileContent)) {
+			responseData = deserializeJSON(responseData.fileContent);
+		}
+		
+		if(structKeyExists(responseData, 'data')){
+			arguments.responseBean.setAmountAuthorized(responseData.data[1].amount);
+		}else{
 			arguments.responseBean.addError("Processing error", "Error attempting to fetch account balance.");
 		}
 		
