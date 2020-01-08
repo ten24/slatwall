@@ -279,12 +279,12 @@ Notes:
 			if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
 				
 				
-				if(structKeyExists(arguments.data,'language')){
-					var language = arguments.data.language;
-				}else if(!isNull(emailTemplate.setting('emailLanguageString'))){
-					var language = lcase(templateObject.stringReplace(emailTemplate.setting('emailLanguageString')));
+				if(structKeyExists(arguments.data,'locale')){
+					var locale = arguments.data.locale;
+				}else if(!isNull(emailTemplate.setting('emailLocaleString'))){
+					var locale = lcase(templateObject.stringReplace(emailTemplate.setting('emailLocaleString')));
 				}else{
-					var language = 'en_us';
+					var locale = 'en_us';
 				}
 
 				// Setup the email values
@@ -295,7 +295,7 @@ Notes:
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
 				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getFormattedValue('EmailBodyHTML'),true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='EmailBodyHTML',locale=locale),true ) );
 				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
 
 

@@ -13,7 +13,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
-	property name="rbLocale";
+	property name="rbLocale" type="string";
 	property name="url" type="string";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
@@ -414,6 +414,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	public string function getRBKey(required string key, struct replaceStringData) {
 		return rbKey(argumentcollection=arguments);
+	}
+	
+	public string function getRbLocale(){
+		return getSession().getRbLocale();
 	}
 
 	//convenience method for validate
