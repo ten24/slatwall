@@ -513,6 +513,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        param name="arguments.data.saveContext" default="";
         
         if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
             return;
@@ -540,7 +541,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
-        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        if(len(arguments.data.saveContext)){
+            orderTemplate = getOrderService().processOrderTemplate_create(orderTemplate,processObject,{},arguments.data.saveContext);
+        }else{
+            orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        }
+      
         
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         if(orderTemplate.hasErrors()) {

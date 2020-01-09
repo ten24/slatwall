@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
     	
     	if(arguments.order.getUpgradeFlag() == true){
-    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
+    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades').getOrderOriginID());
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
@@ -131,26 +131,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethodID = orderFulFillment.getShippingMethod().getShippingMethodID();
-				var shippingAddressID = orderFulFillment.getShippingAddress().getAddressID();
-				var accountPaymentMethodID = arguments.order.getOrderPayments()[1].getAccountPaymentMethod().getAccountPaymentMethodID();
-				var billingAccountAddressID = arguments.order.getOrderPayments()[1].getBillingAccountAddress().getAccountAddressID();
-				var orderTemplateID = orderTemplate.getOrderTemplateID();
-				var orderTemplateStatusTypeID = getService('typeService').getTypeBySystemCode('otstActive').getTypeID() ?:'2c948084697d51bd01697d9be217000a';
-				
-				QueryExecute("
-					UPDATE swordertemplate 
-					SET shippingMethodID =:shippingMethodID, shippingAddressID=:shippingAddressID, billingAccountAddressId=:billingAccountAddressID,accountPaymentMethodID=:accountPaymentMethodID, orderTemplateStatusTypeID=:orderTemplateStatusTypeID 
-					WHERE orderTemplateID =:orderTemplateID",
-					{
-			            shippingMethodID = {value=shippingMethodID, cfsqltype="cf_sql_varchar"}, 
-			            shippingAddressID = {value=shippingAddressID, cfsqltype="cf_sql_varchar"},
-			            accountPaymentMethodID = {value=accountPaymentMethodID, cfsqltype="cf_sql_varchar"},
-			            orderTemplateID = {value=orderTemplateID, cfsqltype="cf_sql_varchar"},
-			            orderTemplateStatusTypeID = {value=orderTemplateStatusTypeID, cfsqltype="cf_sql_varchar"},
-			            billingAccountAddressID = {value=billingAccountAddressID, cfsqltype="cf_sql_varchar"}
-		        	}
-		        );
+				var shippingMethod = orderFulFillment.getShippingMethod();
+				var shippingAddress = orderFulFillment.getShippingAddress();
+				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
+				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
+				orderTemplate.setShippingMethod(shippingMethod);
+				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+				orderTemplate.setBillingAccountAddress(billingAccountAddress);
+				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
+				getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
