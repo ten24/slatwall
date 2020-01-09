@@ -106,5 +106,5 @@ component {
 	    
 	    return variables.moMoneyBalance;
 	}
-
+	
 }

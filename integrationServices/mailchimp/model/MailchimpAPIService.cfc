@@ -191,10 +191,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		}
 		
 		var response = httpRequest.send().getPrefix();
-			
-		response = deserializeJson( response.FileContent );
-		
-		return response;
+		if(isJson(response.FileContent)){
+			return deserializeJson( response.FileContent );
+		}
+		return {};
     }
     
 }

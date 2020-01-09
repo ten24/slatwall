@@ -582,7 +582,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var paymentMethod = getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
         
         account.setPrimaryPaymentMethod(paymentMethod);
-        account = getAccountService().saveAccount(account);
+        account = getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
         
         if (account.hasErrors()){
             addErrors(arguments.data, account.getErrors());
@@ -707,9 +707,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
 		
 		var bundlePersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundlePersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
+		bundlePersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
+		bundlePersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
+		bundlePersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -731,9 +731,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
 		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.activeFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.publishedFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'bundledSku.product.productType.urlTitle', 'starter-kit,productPack','in' );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
+		bundleNonPersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
 		}
@@ -807,20 +807,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public any function selectStarterPackBundle(required struct data){
         var cart = getHibachiScope().cart();
+        var orderService = getService("OrderService");
+        var currentOrderItemList = orderService.getOrderItemCollectionList();
+        currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
+        currentOrderItemList.addFilter('sku.product.productType.systemCode', 'Starterkit,ProductPack', 'IN');
+        currentOrderItemList.addDisplayProperties('orderItemID');
+        var orderItems = currentOrderItemList.getRecords();
+        var orderData = {};
+        var list = '';
         
         //remove previously-selected StarterPackBundle
-        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
-            for( orderItem in cart.getOrderItems() ) {
-                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
-                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
-                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
-                    StructDelete(arguments.data, 'orderItemID');
-                    getHibachiScope().flushORMSession();
-                    break;
-                }
-            }
+        for( orderItem in orderItems ) {
+            list = listAppend(list,orderItem.orderItemID);
         }
         
+        orderData['orderItemIDList'] = list;
+        if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
         this.addOrderItem(argumentCollection = arguments);
     }
 
@@ -1046,8 +1048,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
+    }
+    
+    public void function getWishlistItemsForAccount( require any data ) {
+        
+        var accountID = getHibachiScope().getAccount().getAccountID();
+        
+        var orderTemplateItemList = getService('OrderService').getOrderTemplateItemCollectionList();
+        orderTemplateItemList.setDisplayProperties('sku.product.productID|productID');
+        orderTemplateItemList.addFilter( 'orderTemplate.account.accountID', accountID );
+        orderTemplateItemList.addFilter( 'orderTemplate.orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
+        var accountWishlistItems = orderTemplateItemList.getRecords();
+        
+        arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
     }
     
     public any function getBaseProductCollectionList(required any data){
@@ -1061,6 +1076,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
+        productCollectionList.addDisplayProperties('productID');
         productCollectionList.addDisplayProperties('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
@@ -1226,6 +1242,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var record in arguments.records){
             
             productMap[record.defaultSku_skuID] = {
+                'productID': record.productID,
                 'skuID': record.defaultSku_skuID,
                 'personalVolume': record.defaultSku_skuPrices_personalVolume,
                 'price': record.defaultSku_skuPrices_price,
@@ -1430,9 +1447,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
+    
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
-        var order = getHibachiScope().getCart();
+        var order = arguments.cart;
 		var account =  getHibachiScope().getAccount();
 		var currentOrderItemList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
 		currentOrderItemList.setDisplayProperties('sku.skuID,price,currencyCode,quantity');
@@ -1440,14 +1458,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var currentOrderItems = currentOrderItemList.getRecords();
 		var upgradedSkuList = '';
 		var upgradedPrice = 0;
-		var currentPrice = order.getSubtotal();
-		var skuPriceMap = {};
-		
+		var currentPrice = 0;
+		var skuQuantityMap = {};
+		var currentPriceMap = {};
+	
 		if(!arrayLen(currentOrderItems)) return;
 		
 		for(var item in currentOrderItems){
 			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
-			skuPriceMap[item.sku_skuID] = item.quantity;
+			skuQuantityMap[item.sku_skuID] = item.quantity;
+			currentPriceMap[item.sku_skuID] = precisionEvaluate(item.quantity * item.price);
 		}
 
 		var currencyCode = currentOrderItems[1].currencyCode;
@@ -1461,14 +1481,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
 		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
 		var upgradedOrder = upgradedCollectionList.getRecords();
+		
 		if(!arrayLen(upgradedOrder)) return;
 		
 		for(var item in upgradedOrder){
-			precisionEvaluate(upgradedPrice += (item.price * skuPriceMap[item.sku_skuID]));
+			precisionEvaluate(upgradedPrice += (item.price * skuQuantityMap[item.sku_skuID]));
+		    precisionEvaluate(currentPrice += currentPriceMap[item.sku_skuID]);
 		}
-		
-		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
-		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
+
+		arguments.data['ajaxResponse']['upgradedSavings'] = precisionEvaluate(currentPrice - upgradedPrice);
     }
     
     public void function getAllOrdersOnAccount(required any data){
@@ -1480,8 +1501,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
-
-
     
     public void function getMarketPartners(required struct data){
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
@@ -1525,4 +1544,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
+    
+    
 }

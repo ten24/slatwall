@@ -59,6 +59,12 @@
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			}
 		],
+		"primaryPaymentMethod": [
+			{
+				"contexts": "updatePrimaryPaymentMethod",
+				"method": "isPrimaryMethodExpired"
+			}
+		],
 		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],
 		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
 		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }],
