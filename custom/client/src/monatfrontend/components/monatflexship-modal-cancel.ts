@@ -4,10 +4,12 @@ class MonatFlexshipCancelModalController {
 	public cancellationReasonTypeOptions: any[];
 	public close; // injected from angularModalService
 	
-	public formData = {}; // {typeID:'', typeIDOther: '' }
+	public formData = {
+	    showOtherReasonNotes: false,
+	}; // {typeID:'', typeIDOther: '' }
 	
 	public loading = false;
-	
+	public flexshipCancelReasonType;
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
@@ -24,13 +26,12 @@ class MonatFlexshipCancelModalController {
     	 this.translations['flexshipCancelOtherReasonNotes'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
     }
     
-    public cancelFlexship() {
 
+    public cancelFlexship() {
 		this.loading=true;
-    	// make api request
         this.orderTemplateService.cancelOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
-	        this.formData['orderTemplateCancellationReasonType'], 
+	        this.formData['orderTemplateCancellationReasonType'].value, 
 	        this.formData['orderTemplateCancellationReasonTypeOther'] 
 	    )
 	    .then(
@@ -38,6 +39,7 @@ class MonatFlexshipCancelModalController {
             	if(data && data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+	                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.cancleSucessfull'));
 	                this.closeModal();
             	} else {
             		throw(data);	
