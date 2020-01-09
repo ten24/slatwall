@@ -61,6 +61,7 @@ import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 import { MonatAlertService } from './services/monatAlertService';
+import { MonatDatePicker} from './directives/monatdatepicker';
 
 //declare variables out of scope
 declare var $: any;
@@ -112,6 +113,7 @@ var monatfrontendmodule = angular
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
 	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
+	.directive('monatDatePicker',MonatDatePicker.Factory())
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
