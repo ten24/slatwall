@@ -259,11 +259,6 @@
 			<!--- Setup the example entity --->
 			<cfset thistag.exampleEntity = entityNew(attributes.smartList.getBaseEntityName()) />
 
-			<!--- Setup export action --->
-			<cfif not len(attributes.exportAction)>
-				<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
-			</cfif>
-
 			<!--- Setup the default table class --->
 			<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-bordered table-hover', ' ') />
 
@@ -507,11 +502,12 @@
 						<li class="s-table-action">
 							<div class="btn-group navbar-left dropdown">
 
-								<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
-
-								<ul class="dropdown-menu pull-right" role="menu">
-									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-								</ul>
+								<cfif len(attributes.exportAction)>
+									<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
+									<ul class="dropdown-menu pull-right" role="menu">
+										<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+									</ul>
+								</cfif>
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
 									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
