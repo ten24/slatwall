@@ -5,11 +5,9 @@ class MonatFlexshipCancelModalController {
 	public close; // injected from angularModalService
 	
 	public formData = {
-	    showOtherReasonNotes: false,
 	}; // {typeID:'', typeIDOther: '' }
 	
 	public loading = false;
-	public flexshipCancelReasonType;
     //@ngInject
 	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
