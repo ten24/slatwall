@@ -228,7 +228,7 @@ Notes:
 		return sl.getRecords();
 	}
 
-	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate, string language) {
+	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate, string locale) {
 		var email = this.newEmail();
 		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');

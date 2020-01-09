@@ -56,8 +56,6 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-	    <!--    <hb:HibachiProcessCaller action="admin:entity.processEmail" entity="email" processContext="createFromTemplate" querystring="emailTemplateID=#rc.emailTemplate.getEmailTemplateID()#&accountID=2c9580846d68b4c3016d68b6fe550008" type="list" modal="true" />-->
-	    <!--</hb:HibachiEntityActionBar>-->
 
 		<hb:HibachiEntityDetailGroup object="#rc.emailTemplate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
