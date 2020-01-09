@@ -811,7 +811,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 		return options;
 	}
-
+	
+	public boolean function isPrimaryMethodExpired(){
+		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1212,7 +1215,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isGuestAccount() {
 		return getGuestAccountFlag();
 	}
-
+	
 	// ==================  END:  Deprecated Methods ========================
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";

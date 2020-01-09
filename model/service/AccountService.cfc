@@ -1800,7 +1800,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 				
-		return super.save(entity=arguments.account,data=arguments.data);
+		return super.save(entity=arguments.account,data=arguments.data,context=arguments.context);
 	}
 	
 	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
