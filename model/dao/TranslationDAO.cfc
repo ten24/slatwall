@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,21 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="HibachiDAO" {
+    
+	public any function getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(required baseObject, required baseID, required basePropertyName, required locale){
+        return ormExecuteQuery( "SELECT t FROM SlatwallTranslation t WHERE t.baseObject = :baseObject AND t.baseID = :baseID AND t.basePropertyName = :basePropertyName AND t.locale = :locale",
+            {
+                baseObject=arguments.baseObject,
+                baseId=arguments.baseId,
+                basePropertyName=arguments.basePropertyName,
+                locale=arguments.locale
+                
+            }, true ); 
+    }
+    
+}
 
 
-<cfparam name="rc.emailTemplate" type="any">
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-	    <!--    <hb:HibachiProcessCaller action="admin:entity.processEmail" entity="email" processContext="createFromTemplate" querystring="emailTemplateID=#rc.emailTemplate.getEmailTemplateID()#&accountID=2c9580846d68b4c3016d68b6fe550008" type="list" modal="true" />-->
-	    <!--</hb:HibachiEntityActionBar>-->
-
-		<hb:HibachiEntityDetailGroup object="#rc.emailTemplate#">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.emailTemplate.getAssignedAttributeSetSmartList().getRecords()#" index="local.attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.emailTemplate#" attributeSet="#local.attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
 

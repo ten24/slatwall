@@ -638,7 +638,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	public any function getFormattedValue(required string propertyName, string formatType, string locale ) {
 		arguments.value = invokeMethod("get#arguments.propertyName#");
-
 		// check if a formatType was passed in, if not then use the getPropertyFormatType() method to figure out what it should be by default
 		if(!structKeyExists(arguments, "formatType")) {
 			arguments.formatType = getPropertyFormatType( arguments.propertyName );

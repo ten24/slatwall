@@ -173,15 +173,15 @@
 		}
 		
 		public any function formatValue_language(required string value, struct formatDetails={}){
-			if(structKeyExists(formatDetails,'locale') 
-				&& structKeyExists(formatDetails,'propertyName')
-				&& structKeyExists(formatDetails,'object')
+			if(structKeyExists(arguments.formatDetails,'locale') 
+				&& structKeyExists(arguments.formatDetails,'propertyName')
+				&& structKeyExists(arguments.formatDetails,'object')
 			){
 				var translation = getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(
-					baseObject=formatDetails.object.getClassName(),
-					baseID = formatDetails.object.getPrimaryIDValue(),
-					basePropertyName=formatDetails.propertyName,
-					locale=formatDetails.locale
+					baseObject=arguments.formatDetails.object.getClassName(),
+					baseID = arguments.formatDetails.object.getPrimaryIDValue(),
+					basePropertyName=arguments.formatDetails.propertyName,
+					locale=arguments.formatDetails.locale
 				);
 				if(!isNull(translation)){
 					return translation.getValue();
