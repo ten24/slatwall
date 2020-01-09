@@ -1,6 +1,7 @@
 component extends="HibachiService" accessors="true" output="false" {
     
     property name="settingService" type="any";
+    property name="TranslationDAO" type="any";
 
     // ===================== START: Logical Methods ===========================
     
@@ -34,6 +35,10 @@ component extends="HibachiService" accessors="true" output="false" {
     // =====================  END: Logical Methods ============================
     
     // ===================== START: DAO Passthrough ===========================
+    
+    public any function getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(required baseObject, required baseID, required basePropertyName, required locale){
+        return getTranslationDAO().getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(argumentCollection=arguments);
+    }
     
     // =====================  END: DAO Passthrough ============================
     
