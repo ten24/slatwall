@@ -141,7 +141,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
-				getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
+				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
