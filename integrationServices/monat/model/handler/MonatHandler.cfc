@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
     	
     	if(arguments.order.getUpgradeFlag() == true){
-    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades').getOrderOriginID());
+    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
