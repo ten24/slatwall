@@ -1361,7 +1361,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
 	public void function deleteProfileImage(account = getHibachiScope().getAccount()){
-	    imagePath = arguments.account.getProfileImage() ?: '';
+	    var imagePath = arguments.account.getProfileImage() ?: '';
 	    
 	    if(!len(imagePath)) {
             return;
