@@ -41,19 +41,23 @@ component extends="HibachiDAO" {
 	public void function deleteDependentRelationsByAccountAddressID(required string accountAddressID){
 	
 		ORMExecuteQuery("
-			UPDATE #getApplicationKey()#OtderTemplate  
-			SET billingAccountAddressID = null 
-			WHERE billingAccountAddressID = :accountAddressID
-			",
-			{accountAddressID = arguments.accountAddressID}
+			UPDATE 
+				#getApplicationKey()#OrderTemplate  
+			SET 
+				billingAccountAddressID = null 
+			WHERE 
+				billingAccountAddressID = '#arguments.accountAddressID#'
+			"
 		);
 		
 		ORMExecuteQuery("
-			UPDATE #getApplicationKey()#OtderTemplate 
-			SET shippingAccountAddressID = null 
-			WHERE shippingAccountAddressID = :accountAddressID
-			",
-			{accountAddressID = arguments.accountAddressID}
+			UPDATE 
+				#getApplicationKey()#OrderTemplate 
+			SET 
+				shippingAccountAddressID = null 
+			WHERE 
+				shippingAccountAddressID = '#arguments.accountAddressID#'
+			"
 		);
 		
 		// TODO: do we need to do the same for orders and other entities?
