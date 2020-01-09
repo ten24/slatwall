@@ -122,6 +122,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
+	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
 
 	
 //CUSTOM PROPERTIES END
@@ -446,6 +447,18 @@ public boolean function getCustomerCanCreateFlag(){
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 
+	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
+		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
+			
+			if(this.getAccount().getAccountType() == 'MarketPartner') {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
+			} else {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
+			}
+		}	
+		return variables.cartTotalThresholdForOFYAndFreeShipping;
+	}
+	
 	public boolean function getQualifiesForOFYProducts(){
 		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
 			

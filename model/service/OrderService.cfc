@@ -2125,6 +2125,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
 		
+		//TODO: this (cartTotalThresholdForOFYAndFreeShipping) belongs in custom
+		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,'cartTotalThresholdForOFYAndFreeShipping'); 
+		
 		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
