@@ -1096,15 +1096,20 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		if(this.getNewFlag()){
 			return 0;
 		}
-		if(structKeyExists(variables, 'permissionGroupsCount')){
+		if(!structKeyExists(variables, 'permissionGroupsCount')){
 			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
 			permissionGroupCollection.setDisplayProperties('permissionGroupID');
 			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			
+			//Caution: hacky way to prevent Collection from calling getPermissionGroupsCount();
+			permissionGroupCollection.setPermissionAppliedFlag(true); 
+			
 			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
 		}
+		
 		return variables.permissionGroupsCount;
 	}
-
+	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
