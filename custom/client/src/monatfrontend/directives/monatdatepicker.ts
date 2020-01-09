@@ -5,6 +5,8 @@ class MonatDatePicker {
 
 	public scope = {
 		options: '<?',
+		startDayOfTheMonth: '<?',
+		endDayOfTheMonth: '<?',
 		startDate: '=?',
 		endDate: '=?',
 		maxDate:'=?',
@@ -24,10 +26,17 @@ class MonatDatePicker {
 				autoclose: true,
 				format: 'mm/dd/yyyy',
 				setDate: new Date(),
-				maxDate :'+15 d'
+				
 			};
 		}
-
+        
+        if($scope.maxDate) {
+            var date = new Date($scope.maxDate);
+              date.setDate(date.getDate()+15);
+              let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+               
+               $scope.options.maxDate=newDate;
+        }   
 		if (!$scope.startDayOfTheMonth) {
 			$scope.startDayOfTheMonth = 1;
 		}
