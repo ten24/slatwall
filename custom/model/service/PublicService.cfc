@@ -807,20 +807,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public any function selectStarterPackBundle(required struct data){
         var cart = getHibachiScope().cart();
+        var orderService = getService("OrderService");
+        var currentOrderItemList = orderService.getOrderItemCollectionList();
+        currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
+        currentOrderItemList.addFilter('sku.product.productType.systemCode', 'Starterkit,ProductPack', 'IN');
+        currentOrderItemList.addDisplayProperties('orderItemID');
+        var orderItems = currentOrderItemList.getRecords();
+        var orderData = {};
+        var list = '';
         
         //remove previously-selected StarterPackBundle
-        if( StructKeyExists(arguments.data, 'previouslySelectedStarterPackBundleSkuID') ) {
-            for( orderItem in cart.getOrderItems() ) {
-                if( orderItem.getSku().getSkuID() == arguments.data['previouslySelectedStarterPackBundleSkuID'] ) {
-                    arguments.data['orderItemID'] = orderItem.getOrderItemID();
-                    getService("OrderService").processOrder( cart, arguments.data, 'removeOrderItem');
-                    StructDelete(arguments.data, 'orderItemID');
-                    getHibachiScope().flushORMSession();
-                    break;
-                }
-            }
+        for( orderItem in orderItems ) {
+            list = listAppend(list,orderItem.orderItemID);
         }
         
+        orderData['orderItemIDList'] = list;
+        if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
         this.addOrderItem(argumentCollection = arguments);
     }
 
@@ -1445,9 +1447,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
     }
+    
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
-        var order = getHibachiScope().getCart();
+        var order = arguments.cart;
 		var account =  getHibachiScope().getAccount();
 		var currentOrderItemList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
 		currentOrderItemList.setDisplayProperties('sku.skuID,price,currencyCode,quantity');
@@ -1455,14 +1458,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var currentOrderItems = currentOrderItemList.getRecords();
 		var upgradedSkuList = '';
 		var upgradedPrice = 0;
-		var currentPrice = order.getSubtotal();
-		var skuPriceMap = {};
-		
+		var currentPrice = 0;
+		var skuQuantityMap = {};
+		var currentPriceMap = {};
+	
 		if(!arrayLen(currentOrderItems)) return;
 		
 		for(var item in currentOrderItems){
 			upgradedSkuList = listAppend(upgradedSkuList, item.sku_skuID);
-			skuPriceMap[item.sku_skuID] = item.quantity;
+			skuQuantityMap[item.sku_skuID] = item.quantity;
+			currentPriceMap[item.sku_skuID] = precisionEvaluate(item.quantity * item.price);
 		}
 
 		var currencyCode = currentOrderItems[1].currencyCode;
@@ -1476,14 +1481,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
 		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
 		var upgradedOrder = upgradedCollectionList.getRecords();
+		
 		if(!arrayLen(upgradedOrder)) return;
 		
 		for(var item in upgradedOrder){
-			precisionEvaluate(upgradedPrice += (item.price * skuPriceMap[item.sku_skuID]));
+			precisionEvaluate(upgradedPrice += (item.price * skuQuantityMap[item.sku_skuID]));
+		    precisionEvaluate(currentPrice += currentPriceMap[item.sku_skuID]);
 		}
-		
-		var upgradedSavings = precisionEvaluate(currentPrice - upgradedPrice);
-		arguments.data['ajaxResponse']['upgradedSavings'] = upgradedSavings;
+
+		arguments.data['ajaxResponse']['upgradedSavings'] = precisionEvaluate(currentPrice - upgradedPrice);
     }
     
     public void function getAllOrdersOnAccount(required any data){
@@ -1495,8 +1501,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
-
-
     
     public void function getMarketPartners(required struct data){
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
@@ -1540,4 +1544,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
+    
+    
 }

@@ -511,33 +511,29 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getPermissionGroupNameList() {
 		
-		if(!getNewFlag()){
-			if( !structKeyExists(variables,'permissionGroupNameList') ||
-				(!isNull(variables.permissionGroupNameList) &&
-				!len(trim(variables.permissionGroupNameList))
-				)
-			){
-				var permissionGroupNameList = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-				
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
-					}
-					
-					permissionGroupNameList = '( #permissionGroupNameList# )';
-				}
-				variables.permissionGroupNameList = permissionGroupNameList;
-			}
-		}else{
+		if(getNewFlag()){
 			return "";
 		}
+		if( !structKeyExists(variables,'permissionGroupNameList') ){
+			var permissionGroupNameList = "";
+			
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
+			}
+			
+			if(len(permissionGroupNameList)){
+				permissionGroupNameList = '( #permissionGroupNameList# )';
+			}
+
+			variables.permissionGroupNameList = permissionGroupNameList;
+		}
+		
 		return variables.permissionGroupNameList;
 	}
 
@@ -548,27 +544,24 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	
 	public string function getPermissionGroupCacheKey(){
-		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupCacheKey')){
-				var permissionGroupCacheKey = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
-					}
-				}
-				variables.permissionGroupCacheKey = permissionGroupCacheKey;
-
-			}
-			return variables.permissionGroupCacheKey;
+		if(getNewFlag()){
+			return "";
 		}
-		return "";
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			}
+			
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		return variables.permissionGroupCacheKey;
 	}
 
 	public string function getPhoneNumber() {
@@ -1098,6 +1091,19 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public numeric function getPermissionGroupsCount(){
+		if(this.getNewFlag()){
+			return 0;
+		}
+		if(structKeyExists(variables, 'permissionGroupsCount')){
+			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
+			permissionGroupCollection.setDisplayProperties('permissionGroupID');
+			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
+		}
+		return variables.permissionGroupsCount;
+	}
 
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
