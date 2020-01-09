@@ -10,7 +10,7 @@
 	<cfparam name="attributes.valueOptionsCollectionList" type="any" default="" />
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
-
+	<cfparam name="attributes.notRequiredClass" type="string" default="" />
 	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
@@ -220,8 +220,7 @@
 					</div>
 					
 					<cfif findNoCase(thisOptionName, 'other') AND len(thisOptionName) EQ 5 AND attributes.enableOtherInputForRadioGroup> 
-						<input type="text"
-							name="#attributes.fieldName#Other"	
+						<input type="text" name="#attributes.fieldName#Other"	
 
 							<cfif attributes.enableOtherInputForRadioGroupShowHide >
 								ng-if="#attributes.fieldName#.toString() == '#thisOptionValue#'"  
@@ -277,7 +276,7 @@
 		</cfcase>
 		<cfcase value="text,email">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass# <cfif attributes.notRequiredClass == 's-not-required'>s-not-required</cfif>" #attributes.fieldAttributes# />
 				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
 					<cfset attributes.translateAttributes.entity = "Translation" />
 					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
