@@ -14,6 +14,8 @@ class MonatProductCardController {
 	private wishlistTemplateName: string;
 	public orderTemplate;
     public isEnrollment: boolean = false;
+    public accountWishlistItems;
+    public isAccountWishlistItem: boolean = false;
     public currencyCode:string;
     public siteCode:string;
 
@@ -32,12 +34,17 @@ class MonatProductCardController {
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
+        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess"); 
 	}
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
 		
 		this.setIsEnrollment();
+		
+		// We want to run this on init AND attach to the "accountWishlistItemsSuccess" 
+		// because this directive could load before or after that trigger happens
+		this.setIsAccountWishlistItem();
 	}
 	
 	public init = () => {
@@ -95,6 +102,7 @@ class MonatProductCardController {
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
 				this.getAllWishlists();
+				this.isAccountWishlistItem = true;
 				return result;
 			})
 			.catch((error)=>{
@@ -108,6 +116,7 @@ class MonatProductCardController {
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
+			this.isAccountWishlistItem = true;
 			return result;
 		})
 		.catch((error)=>{
@@ -220,6 +229,20 @@ class MonatProductCardController {
 			|| this.type === 'VIPenrollment'
 		);
 	}
+	
+	public setIsAccountWishlistItem = () => {
+		if ( 
+			'undefined' !== typeof this.accountWishlistItems 
+			&& this.accountWishlistItems.length
+		) {
+			this.accountWishlistItems.forEach(item => {
+				if ( item.productID === this.product.productID ) {
+					this.isAccountWishlistItem = true;
+					return;
+				}
+			});
+		}
+	}
 
 }
 
@@ -232,6 +255,7 @@ class MonatProductCard {
 		product: '=',
 		type: '@',
 		index: '@',
+		accountWishlistItems: '<?',
 		allProducts: '<?',
 		orderTemplate: '<?',
 		currencyCode:'@',

@@ -177,6 +177,14 @@ export class MonatService {
 			}
 		});
 	}
+
+	public getAccountWishlistItemIDs = () => {
+		var deferred = this.$q.defer();
+		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
+			deferred.resolve( data );
+		});
+		return deferred.promise;
+	}
 	
 
 }
