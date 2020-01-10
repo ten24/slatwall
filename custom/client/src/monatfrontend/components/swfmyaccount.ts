@@ -92,20 +92,21 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            const url = window.location.pathname;
             
-            switch(window.location.pathname){
-                case '/my-account/':
-                    this.getOrdersOnAccount(1);
-                    this.getMostRecentFlexship(); 
-                    break;
-                case '/my-account/order-history/':
+            switch(true){
+                case (url.indexOf('/my-account/order-history/') > -1):
                     this.getOrdersOnAccount();
                     break;
-                case '/my-account/my-details/profile/':
+                case (url.indexOf('/my-account/my-details/profile/') > -1):
                     this.getUserProfileImage();
                     break;
-                case '/my-account/my-details/':
+                case (url.indexOf('/my-account/my-details/') > -1):
                     this.getMoMoneyBalance();
+                    break;
+                case (url.indexOf('/my-account/') > -1):
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
                     break;
             }
             
