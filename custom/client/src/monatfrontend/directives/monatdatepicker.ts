@@ -26,6 +26,7 @@ class MonatDatePicker {
 				autoclose: true,
 				format: 'mm/dd/yyyy',
 				setDate: new Date(),
+				minDate: new Date()
 				
 			};
 		}
@@ -36,7 +37,8 @@ class MonatDatePicker {
               let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                
                $scope.options.maxDate=newDate;
-        }   
+        }
+        
 		if (!$scope.startDayOfTheMonth) {
 			$scope.startDayOfTheMonth = 1;
 		}

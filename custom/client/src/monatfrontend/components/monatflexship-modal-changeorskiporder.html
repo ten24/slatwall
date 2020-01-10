@@ -50,9 +50,9 @@
 						id="scheduleOrderNextPlaceDateTime"
 						name="scheduleOrderNextPlaceDateTime"
 						placeholder="{{ monatFlexshipChangeOrSkipOrderModal.translations.forHowLong }}"
-						sw-date-picker
+						monat-date-picker
 						data-end-day-of-the-month="monatFlexshipChangeOrSkipOrderModal.endDayOfTheMonth"
-						data-end-date="monatFlexshipChangeOrSkipOrderModal.endDate"
+						data-max-date="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						ng-disabled="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip !== 'delay'"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						autocomplete="off"
