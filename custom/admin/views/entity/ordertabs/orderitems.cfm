@@ -61,6 +61,7 @@ Notes:
 		isSearchable=true,
 		isDeletable=true
 	})/>
+	<cfset orderItemCollectionList.addDisplayProperty('sku.product.productType.productTypeName','Product Type',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
 	
 	<!--- Adds a type name fields if this is an exchange order --->
 	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
@@ -73,7 +74,11 @@ Notes:
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPrice',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPersonalVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedCommissionableVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
-	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='taxAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfif rc.order.getVATTotal() GT 0>
+		<cfset orderItemCollectionList.addDisplayProperty(displayProperty='VATAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfelse>
+		<cfset orderItemCollectionList.addDisplayProperty(displayProperty='taxAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	</cfif>
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPriceAfterDiscount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	
 	

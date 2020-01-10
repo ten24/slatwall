@@ -162,9 +162,9 @@ class VIPUpgradeController {
 		});
 	};
 
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
+    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
         this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
         	this.flexshipID = result.orderTemplate;
         	if(this.isNotSafariPrivate && this.flexshipID){
         		localStorage.setItem('flexshipID', this.flexshipID);

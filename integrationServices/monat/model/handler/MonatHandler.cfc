@@ -49,11 +49,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
-        if( account.getAccountType() == 'marketPartner' && arguments.order.hasStarterKit() ) {
-			account.setStarterKitPurchasedFlag(true);
+        if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
+			account.setProductPackPurchasedFlag(true);
         }
     	
     	if(arguments.order.getUpgradeFlag() == true){
+    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
@@ -69,7 +70,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		) {
 			
 			if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending') {
-				
+	    		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Enrollment'));
 				account.setActiveFlag(true);
 				account.setAccountStatusType(getService('typeService').getTypeBySystemCodeOnly('astGoodStanding'));
 				account.getAccountNumber();
@@ -83,15 +84,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
 				}
-				
-				// Email opt-in when finishing enrollment
-				if ( account.getAllowCorporateEmailsFlag() ) {
-					try{
-						getService('MailchimpAPIService').addMemberToListByAccount( account );
-					}catch(any e){
-						logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
-					}
-				}
+				//TODO: Move this logic to account save
+				// // Email opt-in when finishing enrollment
+				// if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
+				// 	try{
+				// 		getService('MailchimpAPIService').addMemberToListByAccount( account );
+				// 	}catch(any e){
+				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
+				// 	}
+				// }
 				
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
@@ -103,6 +104,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
 				var renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
 				account.setRenewalDate(renewalDate);
+			}else{
+    			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			
 			getAccountService().saveAccount(account);
@@ -128,26 +131,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethodID = orderFulFillment.getShippingMethod().getShippingMethodID();
-				var shippingAddressID = orderFulFillment.getShippingAddress().getAddressID();
-				var accountPaymentMethodID = arguments.order.getOrderPayments()[1].getAccountPaymentMethod().getAccountPaymentMethodID();
-				var billingAccountAddressID = arguments.order.getOrderPayments()[1].getBillingAccountAddress().getAccountAddressID();
-				var orderTemplateID = orderTemplate.getOrderTemplateID();
-				var orderTemplateStatusTypeID = getService('typeService').getTypeBySystemCode('otstActive').getTypeID() ?:'2c948084697d51bd01697d9be217000a';
-				
-				QueryExecute("
-					UPDATE swordertemplate 
-					SET shippingMethodID =:shippingMethodID, shippingAddressID=:shippingAddressID, billingAccountAddressId=:billingAccountAddressID,accountPaymentMethodID=:accountPaymentMethodID, orderTemplateStatusTypeID=:orderTemplateStatusTypeID 
-					WHERE orderTemplateID =:orderTemplateID",
-					{
-			            shippingMethodID = {value=shippingMethodID, cfsqltype="cf_sql_varchar"}, 
-			            shippingAddressID = {value=shippingAddressID, cfsqltype="cf_sql_varchar"},
-			            accountPaymentMethodID = {value=accountPaymentMethodID, cfsqltype="cf_sql_varchar"},
-			            orderTemplateID = {value=orderTemplateID, cfsqltype="cf_sql_varchar"},
-			            orderTemplateStatusTypeID = {value=orderTemplateStatusTypeID, cfsqltype="cf_sql_varchar"},
-			            billingAccountAddressID = {value=billingAccountAddressID, cfsqltype="cf_sql_varchar"}
-		        	}
-		        );
+				var shippingMethod = orderFulFillment.getShippingMethod();
+				var shippingAddress = orderFulFillment.getShippingAddress();
+				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
+				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
+				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
+				orderTemplate.setShippingMethod(shippingMethod);
+				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+				orderTemplate.setBillingAccountAddress(billingAccountAddress);
+				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
+				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			arguments.order.setCommissionPeriod(commissionDate);
 			
@@ -168,5 +162,46 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}catch(any dateError){
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
+		
+	}
+	
+	
+	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
+		// Flush so the item is there when we need it. 
+		if (!arguments.orderItem.getOrder().hasErrors()){
+			ormFlush();
+		}
+		
+		try{
+			this.createOrderItemSkuBundle( arguments.orderItem );
+		}catch(bundleError){
+			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+		}
+	}
+	
+	/**
+	 * Adds the calculated bundled order items
+	 * For each orderitem, create new orderItemSkuBundles for each sku that is 
+	 * a bundle.
+	 **/
+	 public any function createOrderItemSkuBundle(required any orderItem){
+	 	
+	 	var bundledSkus = orderItem.getSku().getBundledSkus();
+	 	
+	 	if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
+	 		return;	
+	 	}
+	 	
+ 		//create
+ 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) VALUES ";
+		
+		//VALUES (100, 1), (100, 2), (100, 3)
+		var valueList = "";
+		for (var skuBundle in bundledSkus){ 
+			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.getBundledSku().getSkuID()#', '#orderItem.getOrderItemID()#', #skuBundle.getBundledQuantity()#)");
+		}
+		insertSQL = insertSQL & valueList;
+		
+ 		QueryExecute(insertSQL);
 	}
 }

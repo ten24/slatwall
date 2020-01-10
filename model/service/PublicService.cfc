@@ -467,8 +467,12 @@ component  accessors="true" output="false"
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
         if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            
+            getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
+            
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+            
         } else {
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
@@ -1798,7 +1802,7 @@ component  accessors="true" output="false"
 			    var wishListItemStruct={
 			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
 			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
+			      "price"                       :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
 			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
 			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
 			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
@@ -1808,8 +1812,8 @@ component  accessors="true" output="false"
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
   			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:""
-
+  			      "total"                       :       wishListItem.getTotal()?:"",
+                  "qats"                        :       wishlistItem.getSku().getCalculatedQATS()
 			    };
                 
                 arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
@@ -1947,7 +1951,7 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
-            
+        
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");
@@ -2086,14 +2090,14 @@ component  accessors="true" output="false"
 		}
 		
 		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
-	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
 	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
 	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}

@@ -76,18 +76,18 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public string function appendVibeQueryParamsToURL(required string urlString, required any user ){
 		var accountNumber = arguments.user.getAccountNumber();
-		var authToken = this.setting('authToken');
-		var dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
-		
+		var authToken = this.setting('ssoAuthKey');
+
+		var dateString = DateFormat( DateConvert('local2Utc', now()), "m/d/YYYY");
 		var string_to_hash = accountNumber & authToken & dateString;
-		var token = hash(string_to_hash); //default hashing algo is MD5
+		var md5hash = lCase(hash(string_to_hash));
+		var token = ToBase64(md5hash);
 		
 		if( Find("?", arguments.urlString) ) {
 			arguments.urlString &= "&token=#token#&consultant_id=#accountNumber#"
 		} else{
 			arguments.urlString &= "?token=#token#&consultant_id=#accountNumber#"
 		}
-		
 		return arguments.urlString;
 	}
 	
@@ -131,7 +131,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		vibeAccount['homephone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
 		
 		vibeAccount['address1'] = swAccountStruct['primaryAddress_address_streetAddress'];
-		vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
+		if(structKeyExists(swAccountStruct, 'primaryAddress_address_street2Address')){
+			vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
+		}
 		vibeAccount['city'] = swAccountStruct['primaryAddress_address_city'];
 		vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
 		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];

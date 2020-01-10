@@ -151,6 +151,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+    property name="preferredLocale" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
@@ -159,7 +160,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="lastActivityDateTime" ormtype="timestamp";
-	property name="starterKitPurchasedFlag" ormtype="boolean" default="false";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
@@ -178,7 +178,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
- property name="status" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
  property name="complianceStatus" ormtype="string" hb_formFieldType="select";
@@ -216,7 +215,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		}
 	}
 
-	public string function getPreferedLocale(){
+	public string function getPreferredLocale(){
 		var localMapping = {
 			'en' : 'en_us',		// English (United States)
 			'gb' : 'gb_en',		// English (United Kingdom)
@@ -513,33 +512,29 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getPermissionGroupNameList() {
 		
-		if(!getNewFlag()){
-			if( !structKeyExists(variables,'permissionGroupNameList') ||
-				(!isNull(variables.permissionGroupNameList) &&
-				!len(trim(variables.permissionGroupNameList))
-				)
-			){
-				var permissionGroupNameList = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-				
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
-					}
-					
-					permissionGroupNameList = '( #permissionGroupNameList# )';
-				}
-				variables.permissionGroupNameList = permissionGroupNameList;
-			}
-		}else{
+		if(getNewFlag()){
 			return "";
 		}
+		if( !structKeyExists(variables,'permissionGroupNameList') ){
+			var permissionGroupNameList = "";
+			
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
+			}
+			
+			if(len(permissionGroupNameList)){
+				permissionGroupNameList = '( #permissionGroupNameList# )';
+			}
+
+			variables.permissionGroupNameList = permissionGroupNameList;
+		}
+		
 		return variables.permissionGroupNameList;
 	}
 
@@ -550,27 +545,24 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	
 	public string function getPermissionGroupCacheKey(){
-		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupCacheKey')){
-				var permissionGroupCacheKey = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
-					}
-				}
-				variables.permissionGroupCacheKey = permissionGroupCacheKey;
-
-			}
-			return variables.permissionGroupCacheKey;
+		if(getNewFlag()){
+			return "";
 		}
-		return "";
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			}
+			
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		return variables.permissionGroupCacheKey;
 	}
 
 	public string function getPhoneNumber() {
@@ -820,7 +812,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 		return options;
 	}
-
+	
+	public boolean function isPrimaryMethodExpired(){
+		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1100,7 +1095,25 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
-
+	
+	public numeric function getPermissionGroupsCount(){
+		if(this.getNewFlag()){
+			return 0;
+		}
+		if(!structKeyExists(variables, 'permissionGroupsCount')){
+			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
+			permissionGroupCollection.setDisplayProperties('permissionGroupID');
+			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			
+			//Caution: hacky way to prevent Collection from calling getPermissionGroupsCount();
+			permissionGroupCollection.setPermissionAppliedFlag(true); 
+			
+			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
+		}
+		
+		return variables.permissionGroupsCount;
+	}
+	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -1203,7 +1216,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isGuestAccount() {
 		return getGuestAccountFlag();
 	}
-
+	
 	// ==================  END:  Deprecated Methods ========================
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
@@ -1314,5 +1327,8 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.subscribedToMailchimp;
 	}
 	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
+	}
 	//CUSTOM FUNCTIONS END
 }

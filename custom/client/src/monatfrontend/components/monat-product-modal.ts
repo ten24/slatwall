@@ -2,7 +2,8 @@ class MonatProductModalController {
 	public product;
 	public type: string;
 	public orderTemplateID: string;
-
+	public currencyCode:string;
+	public siteCode:string;
 	public close; // injected from angularModalService
 
 	public quantityToAdd: number = 1;
@@ -36,10 +37,10 @@ class MonatProductModalController {
 	private getModalInfo = () => {
 		this.publicService.doAction( 'getQuickShopModalBySkuID', { skuID: this.product.skuID } ).then( data => {
 			this.skuBundles = data.skuBundles;
-			this.productRating = new Number( data.productRating );
+			this.productRating = data.productRating.product_calculatedProductRating;
 			this.reviewsCount = data.reviewsCount;
 			this.getReviewStars( this.productRating );
-		})
+		});
 	}
 	
 	private getReviewStars = ( productRating ) => {
@@ -131,6 +132,8 @@ class MonatProductModal {
 
 	public scope = {};
 	public bindToController = {
+		siteCode:'<',
+		currencyCode:'<',
 		product: '<',
 		type: '<',
 		orderTemplateID: '<',

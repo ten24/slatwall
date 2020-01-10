@@ -12,7 +12,19 @@
     <!-- Product Card -->
     
         <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
- 	    <button ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID,monatProductCard.product.productName)" ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && monatProductCard.type != 'enrollment' && monatProductCard.type !='VIPenrollment' && monatProductCard.type !='VIPenrollmentOrder' " type="button" class="wishlist"><i class="far fa-heart"></i></button>  
+        <button 
+            ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID,monatProductCard.product.productName)" 
+            ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && !monatProductCard.isEnrollment" 
+            type="button" 
+            class="wishlist"
+            ><i 
+                class="fa-heart" 
+                ng-class="{
+                    'fas no-hover': monatProductCard.isAccountWishlistItem,
+                    'far' : !monatProductCard.isAccountWishlistItem
+                }"
+            ></i></button
+        >  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
@@ -48,16 +60,22 @@
         >
          
         <div class="price">
-            <strong>{{monatProductCard.product.price | currency }} <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span></strong> 
+            <strong>
+                <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>
+                <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span>
+            </strong> 
             <span class="vip-price">
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 3">
-                    <span sw-rbKey="'frontend.global.vip'"></span> {{monatProductCard.product.upgradedPricing.price | currency }}
+                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
                 </span> 
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 2">
-                    <span sw-rbKey="'frontend.global.retail'"></span> {{monatProductCard.product.upgradedPricing.price | currency }}
-                </span> 
+                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span> 
+                </span>
+                 <span class="personal-volume" ng-if="monatProductCard.product.priceGroupCode == 1"> 
+                    <br> 
+                    <strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong>
+                </span>
             </span>
-            <span ng-if="monatProductCard.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong></span>
         </div>
 
 

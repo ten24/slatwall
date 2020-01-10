@@ -1,7 +1,7 @@
 <div class="row s-table-footer" >
 	<div class="col-xs-4" span ng-show="swPaginationBar.paginator.pageShow !== 'Auto'">
 		<div class="dataTables_info" id="example3_info" ng-show="swPaginationBar.paginator.recordsCount">
-			Showing 
+			<span class="pl-1">Showing 
 			<b>
 				<span ng-bind="swPaginationBar.paginator.pageStart">
 					<!-- record start -->
@@ -10,6 +10,7 @@
 				<span>
 			</b>
 			of <span ng-bind="swPaginationBar.paginator.recordsCount"><!-- records Count --></span> entries
+			</span>
 		</div>
 	</div>
 	

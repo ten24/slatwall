@@ -13,6 +13,7 @@ import "./angular/angular-cookies.min.js";
 import "./angular/angular-route.min.js";
 import "./angular/angular-animate.min.js";
 import "./angular/angular-sanitize.min.js";
+import "./angular/angular-messages.min.js";
 import "./metismenu/metismenu.js";
 import "./angularjs-datetime-picker/angularjs-datetime-picker.js";
 import "../../HibachiAssets/js/jquery-typewatch-2.0.js";

@@ -17,7 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
@@ -40,6 +39,8 @@ class swfAccountController {
     public orderPromotions:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
+    public profileImageLoading:boolean = false;
+    public isDefaultImage:boolean = false;
     // @ngInject
     constructor(
         public publicService,
@@ -47,7 +48,8 @@ class swfAccountController {
         public observerService,
         public ModalService, 
         public rbkeyService,
-        public monatAlertService
+        public monatAlertService,
+    	public $location
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
@@ -72,7 +74,7 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
-        if(this.urlParams.get('orderid')){
+        if(this.$location.search().orderid){
             this.getOrderItemsByOrderID();
         }
 	}
@@ -147,7 +149,7 @@ class swfAccountController {
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
+    public getOrderItemsByOrderID = (orderID = this.$location.search().orderid, pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
         return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
             if(result.OrderItemsByOrderID){
@@ -240,7 +242,7 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
-        if(!newAddress){
+        if(address.address.countryCode){
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
@@ -255,17 +257,11 @@ class swfAccountController {
     
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
         this.stars = ['','','','',''];
         for(let i = 0; i <= rating - 1; i++) {
             this.stars[i] = "fas";
         };
-    }
-    
-    public deleteAccountAddress = (addressID, index) => {
-        this.loading = true;
-        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
-            this.loading = false;
-        });
     }
     
     public closeModals = () =>{
@@ -278,7 +274,6 @@ class swfAccountController {
             this.moMoneyBalance = res.moMoneyBalance;
         });
     }
-    
 
     public uploadImage = () =>{
         let tempdata = new FormData();
@@ -304,12 +299,22 @@ class swfAccountController {
         xhr.send(tempdata);
     }     
     
-    public getUserProfileImage = () =>{
-        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
-            this.accountProfileImage = result.accountProfileImage;
+    public deleteProfileImage(){
+        this.profileImageLoading = true;
+        this.publicService.doAction('deleteProfileImage').then(result=>{
+            this.profileImageLoading = false;
+            this.getUserProfileImage();
         });
     }
-
+    
+    public getUserProfileImage = () =>{
+        this.profileImageLoading = true;
+        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
+            this.accountProfileImage = result.accountProfileImage;
+            this.profileImageLoading = false;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
+        });
+    }
 
 	public showDeleteWishlistModal = () => {
 		this.ModalService.showModal({
@@ -339,6 +344,28 @@ class swfAccountController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showDeleteAccountAddressModal = (address) => {
+		this.ModalService.showModal({
+			component: 'addressDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                address: address
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
