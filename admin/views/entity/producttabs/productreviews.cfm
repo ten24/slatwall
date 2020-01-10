@@ -53,7 +53,7 @@ Notes:
 
 <cfset local.productReviewCollectionList = rc.product.getProductReviewsCollectionList() />
 <cfset local.productReviewCollectionList.setDisplayProperties(
-  	"product.productName,rating,reviewTitle,account.primaryEmailAddress.emailAddress,createdDateTime",
+  	"product.productName,rating,reviewTitle,review,reviewerName,account.primaryEmailAddress.emailAddress,createdDateTime",
 	{
 		isVisible=true,
 		isSearchable=true,

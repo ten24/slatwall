@@ -91,7 +91,7 @@ Notes:
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productReviewStatusType.typeName" ></sw-listing-column>
 	</sw-listing-display>--->
-	<cfset displayPropertyList = "reviewTitle,reviewerName,rating,product.productName,product.defaultSku.price,createdDateTime"/>
+	<cfset displayPropertyList = "product.productName,rating,reviewTitle,review,reviewerName,account.primaryEmailAddress.emailAddress,createdDateTime"/>
 	<cfset rc.productReviewCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
