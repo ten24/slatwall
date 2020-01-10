@@ -1254,7 +1254,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': siteCode & productService.getProductUrlByUrlTitle( record.urlTitle ),
+                'skuProductURL': productService.getProductUrlByUrlTitle( record.urlTitle ),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,

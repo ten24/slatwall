@@ -89,6 +89,41 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
+    public boolean function orderMinimumDaysToRenewMPFailed(){
+        var productCodesRenewalMP = getService('SettingService').getSettingValue('integrationmonatGlobalProductCodesRenewMP');
+        
+        // If order already has RENEWALFEE and cannot add another a Market Partner renewal
+        var cartCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
+        cartCollectionList.setDisplayProperties('order.orderID');
+        cartCollectionList.addFilter('order.orderID', order.getOrderID());
+        cartCollectionList.addFilter('sku.product.productCode', productCodesRenewalMP, 'IN');
+        var cartCollectionCount = cartCollectionList.getRecordsCount();
+        
+        if(cartCollectionCount > 0){
+            return false;
+        }
+        
+        // If account qualifies for a Market Partner renewal
+        var currentDate = Now();
+        var orderMinimumDaysToRenewMPSetting = getOrder().setting('integrationmonatOrderMinimumDaysToRenewMP');
+        var accountRenewalDate = 0;
+        if(!isNull(getAccount().getRenewalDate())){
+            accountRenewalDate = getAccount().getRenewalDate();
+        }
+        var renewalDateCheck=DateDiff("d", accountRenewalDate, currentDate);
+        
+        if( listFindNoCase(productCodesRenewalMP,this.getProduct().getProductCode())){
+            if( this.getAccount().getAccountType() == 'marketPartner' &&
+                renewalDateCheck >= orderMinimumDaysToRenewMPSetting 
+            ){
+                return true;
+            }
+            
+            return false;
+        }
+        
+        return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     
