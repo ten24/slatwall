@@ -40,6 +40,7 @@ class swfAccountController {
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
+    public prouctReviewForm:any;
     
     // @ngInject
     constructor(
@@ -49,14 +50,13 @@ class swfAccountController {
         public ModalService, 
         public rbkeyService,
         public monatAlertService,
-    	public $location
+    	public $location,
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
-        
         this.observerService.attach(()=>{
     		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
         },"deleteAccountPaymentMethodFailure");
@@ -255,15 +255,6 @@ class swfAccountController {
         });
     }
     
-    public setRating = (rating) => {
-        this.newProductReview.rating = rating;
-        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
-        this.stars = ['','','','',''];
-        for(let i = 0; i <= rating - 1; i++) {
-            this.stars[i] = "fas";
-        };
-    }
-    
     public deleteAccountAddress = (addressID, index) => {
         this.loading = true;
         return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
@@ -342,6 +333,29 @@ class swfAccountController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showProductReviewModal = (item) => {
+		this.ModalService.showModal({
+			component: 'monatProductReview',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                productReview: item,
+                reviewerName: this.accountData.firstName + " " + this.accountData.lastName
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');

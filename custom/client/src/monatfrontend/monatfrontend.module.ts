@@ -38,6 +38,7 @@ import { MonatProductModal } from './components/monat-product-modal';
 import { MonatEnrollmentMP } from './components/monatenrollmentmp';
 import { SponsorSearchSelector } from './components/sponsor-search-selector';
 import { SWFPagination } from './components/swfpagination';
+import { MonatProductReview } from './components/monat-product-review';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
@@ -105,6 +106,7 @@ var monatfrontendmodule = angular
 	.directive('monatProductModal', MonatProductModal.Factory())
 	.directive('swfAccount', SWFAccount.Factory())
 	.directive('monatMiniCart', MonatMiniCart.Factory())
+	.directive('monatProductReview', MonatProductReview.Factory())
 
 	.directive('monatUpgrade', MonatUpgrade.Factory())
 	.directive('upgradeMp', MonatUpgradeMP.Factory())
