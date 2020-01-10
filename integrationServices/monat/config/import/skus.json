@@ -61,16 +61,6 @@
           "propertyIdentifier":"product.remoteID"
         },
         {
-          "sourceColumn":"PRODUCTItemCode",
-          "propertyIdentifier":"product.remoteCode"
-        },
-        {
-          "sourceColumn":"ProductImportKey",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
-          "propertyIdentifier":"product.importKey",
-          "key":true
-        },
-        {
           "sourceColumn":"ItemName",
           "propertyIdentifier":"product.productName"
         },

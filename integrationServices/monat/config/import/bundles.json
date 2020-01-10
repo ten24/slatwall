@@ -18,7 +18,7 @@
         },
         {
           "sourcecolumn":"importKey",
-          "sourceColumnDataGenerator":"'IMPORT' + SKUItemCode + '-' + ComponentItemCode",
+          "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
           "propertyidentifier":"importKey",
           "key":true
         },

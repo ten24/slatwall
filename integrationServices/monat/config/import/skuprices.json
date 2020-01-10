@@ -8,15 +8,10 @@
         },
         {
             "sourcecolumn":"ImportKey",
-            "sourceColumnDataGenerator":"'IMPORT-' + ItemCode + '-' + CountryCode + '-' + PriceLevel",
-            "propertyidentifier":"importKey",
+            "sourceColumnDataGenerator":"ItemCode + '-' + CountryCode + '-' + PriceLevel",
+            "propertyidentifier":"remoteID",
             "key":true
         },
-        {
-            "sourcecolumn":"ItemPricelevelId",
-            "propertyidentifier":"remoteID"
-        },
-        {
         {
             "sourceColumn":"SellingPrice",
             "propertyIdentifier":"price"
