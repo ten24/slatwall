@@ -151,6 +151,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+    property name="preferredLocale" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
@@ -214,7 +215,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		}
 	}
 
-	public string function getPreferedLocale(){
+	public string function getPreferredLocale(){
 		var localMapping = {
 			'en' : 'en_us',		// English (United States)
 			'gb' : 'gb_en',		// English (United Kingdom)
@@ -811,7 +812,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 		return options;
 	}
-
+	
+	public boolean function isPrimaryMethodExpired(){
+		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1096,15 +1100,20 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		if(this.getNewFlag()){
 			return 0;
 		}
-		if(structKeyExists(variables, 'permissionGroupsCount')){
+		if(!structKeyExists(variables, 'permissionGroupsCount')){
 			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
 			permissionGroupCollection.setDisplayProperties('permissionGroupID');
 			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			
+			//Caution: hacky way to prevent Collection from calling getPermissionGroupsCount();
+			permissionGroupCollection.setPermissionAppliedFlag(true); 
+			
 			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
 		}
+		
 		return variables.permissionGroupsCount;
 	}
-
+	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -1207,7 +1216,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isGuestAccount() {
 		return getGuestAccountFlag();
 	}
-
+	
 	// ==================  END:  Deprecated Methods ========================
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";

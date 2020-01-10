@@ -467,8 +467,12 @@ component  accessors="true" output="false"
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
         if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            
+            getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
+            
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+            
         } else {
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }

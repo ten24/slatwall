@@ -66,6 +66,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
+	property name="calculatedExpirationDate" ormType="timestamp";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
@@ -101,6 +102,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="securityCode" hb_populateEnabled="public" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
+
 	//CUSTOM PROPERTIES BEGIN
 property name="moMoneyBalance" persistent="false";
 	property name="moMoneyWallet" fieldtype="boolean" persistent="false";
@@ -506,6 +508,13 @@ property name="moMoneyBalance" persistent="false";
 		super.populate(argumentCollection=arguments);
 
 		setupEncryptedProperties();
+	}
+	
+	public any function getExpirationDate(){
+		if(structKeyExists(variables, 'expirationMonth') && structKeyExists(variables, 'expirationYear')){
+			var lastDayOfMonth = daysInMonth(createDate(variables.expirationYear, variables.expirationMonth, '1'));
+			return createDate(variables.expirationYear, variables.expirationMonth, lastDayOfMonth);
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================

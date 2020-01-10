@@ -89632,7 +89632,7 @@ var RbKeyService = /** @class */ (function () {
                 }
                 if (_this.resourceBundles[locale]) {
                     var bundle = _this.resourceBundles[locale];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkeyfound:'+bundle[key]);
                         return bundle[key];
                     }
@@ -89649,7 +89649,7 @@ var RbKeyService = /** @class */ (function () {
                 //$log.debug(localeListArray);
                 if (localeListArray.length === 2) {
                     bundle = _this.resourceBundles[localeListArray[0]];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkey found:'+bundle[key]);
                         return bundle[key];
                     }

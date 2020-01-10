@@ -100,15 +100,49 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if (arguments.requestBean.getTransactionType() == "chargePreAuthorization") {
 			sendRequestToChargePreAuthorization(arguments.requestBean, responseBean);
 		} else if (arguments.requestBean.getTransactionType() == "credit") {
-			sendRequestToCredit(arguments.requestBean, responseBean);
-		// } else if (arguments.requestBean.getTransactionType() == "void") {
-		// 	sendRequestToVoid(arguments.requestBean, responseBean);
+			var originalTransactionHasSettled = getOriginalTransactionHasSettled(arguments.requestBean);
+			if(originalTransactionHasSettled){
+				sendRequestToCredit(arguments.requestBean, responseBean);
+			}else {
+				sendRequestToVoid(arguments.requestBean, responseBean);
+			}
 		} else {
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			// throw("Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
 		
 		return responseBean;
+	}
+	
+	private boolean function getOriginalTransactionHasSettled(required any requestBean){
+		if(!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID())){
+			var transactionID = arguments.requestBean.getOriginalChargeProviderTransactionID();
+		}else if(!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID())){
+			var transactionID = arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
+		}
+		if(!isNull(transactionID)){
+			var transactionStatus = getTransactionStatus(transactionID, requestBean);
+			if(!isNull(transactionStatus)){
+				return transactionStatus == 20;
+			}
+		}
+		return false;
+	}
+	
+	private numeric function getTransactionStatus(required string transactionID, required any requestBean){
+		var responseBean = getTransient('DataResponseBean');
+		// Request Data
+		var requestData = {
+			'transactionId' = arguments.transactionID
+		}
+
+		responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'transactionStatus', requestData);
+
+		// Response Data
+		if (!responseBean.hasErrors() && structKeyExists(responseData,'transactionStatus')) {
+			return responseData.transactionStatus;
+		}
+		return 50;
 	}
 
 	// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
@@ -502,45 +536,45 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 	}
 	
-	// private void function sendRequestToVoid(required any requestBean, required any responseBean) {
-	// 	if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
-	// 		// Void Authorize & Charge
-	// 		var voidRequiredTransactionID = arguments.requestBean.getOriginalChargeProviderTransactionID();
-	// 	} else if ((!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()))) {
-	// 		// Void Authorize
-	// 		var voidRequiredTransactionID = arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
-	// 	}
+	private void function sendRequestToVoid(required any requestBean, required any responseBean) {
+		if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
+			// Void Authorize & Charge
+			var voidRequiredTransactionID = arguments.requestBean.getOriginalChargeProviderTransactionID();
+		} else if ((!isNull(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()) && len(arguments.requestBean.getOriginalAuthorizationProviderTransactionID()))) {
+			// Void Authorize
+			var voidRequiredTransactionID = arguments.requestBean.getOriginalAuthorizationProviderTransactionID();
+		}
 		 
-	// 	if (!isNull(voidRequiredTransactionID) && len(voidRequiredTransactionID)) {
-	// 		// Request Data
-	// 		var requestData = {
-	// 			'data': {
-	// 				'amount': LSParseNumber(arguments.requestBean.getTransactionAmount())
-	// 	    	},
-	// 	    	'id': voidRequiredTransactionID
-	// 		}
+		if (!isNull(voidRequiredTransactionID) && len(voidRequiredTransactionID)) {
+			// Request Data
+			var requestData = {
+				'data': {
+					'amount': LSParseNumber(arguments.requestBean.getTransactionAmount())
+		    	},
+		    	'id': voidRequiredTransactionID
+			}
 			
-	// 		responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
+			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
 
-	// 		// Response Data
-	// 		if (!responseBean.hasErrors()) {
-	// 			arguments.responseBean.setProviderTransactionID(responseData.id);
-	// 			arguments.responseBean.setAuthorizationCode(responseData.authCode);
-	// 			// arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
+			// Response Data
+			if (!responseBean.hasErrors()) {
+				arguments.responseBean.setProviderTransactionID(responseData.id);
+				arguments.responseBean.setAuthorizationCode(responseData.authCode);
+				arguments.responseBean.setAmountCredited(responseData.amount);
 				
-	// 			arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
-	// 			arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
-	// 			arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-	// 			if (!isNull(responseData.gatewayResponse.batchRef)){
-					// arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-	// 			}
-				// arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
-	// 			arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
-	// 		}
-	// 	} else {
-	// 		throw("There is no 'originalChargeProviderTransactionID' or originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value to be a reference to transactionID for the original charge/capture or credit.");
-	// 	}
-	// }
+				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
+				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
+				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
+				if (!isNull(responseData.gatewayResponse.batchRef)){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
+				}
+				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
+				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
+			}
+		} else {
+			throw("There is no 'originalChargeProviderTransactionID' or originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value to be a reference to transactionID for the original charge/capture or credit.");
+		}
+	}
 	
 	private any function sendHttpAPIRequest(required any requestBean, required any responseBean, required string transactionName, required struct data) {
 		var apiUrl = setting(settingName='apiUrlTest', requestBean=arguments.requestBean);
@@ -571,18 +605,28 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			apiUrl &= '/pay/v3/capture';
 		} else if (arguments.transactionName == 'credit') {
 			apiUrl &= '/pay/v3/refund';
-		// } else if (arguments.transactionName == 'void') {
-		// 	apiUrl &= '/pay/v3/void';
-		} 
+		} else if (arguments.transactionName == 'void') {
+			apiUrl &= '/pay/v3/void';
+		} else if(arguments.transactionName == 'transactionStatus'){
+			apiUrl &= '/transaction/v3?plugin.originalId=#arguments.data.transactionID#&gateway.&customer.';
+		}
 		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
-		httpRequest.setMethod('post');
+		if(arguments.transactionName == 'transactionStatus'){
+			httpRequest.setMethod('GET');
+		}else{
+			httpRequest.setMethod('POST');
+		}
 		httpRequest.setCharset('UTF-8');
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
-		httpRequest.addParam(type="header", name="Content-Type", value='application/json');
-		httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		if(arguments.transactionName == 'transactionStatus'){
+			httpRequest.addParam(type="header", name="Accept", value="application/json");
+		} else {
+			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
+			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+		}
 	
 		// ---> Comment Out:
 		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
@@ -606,7 +650,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		
 		// Make HTTP request to endpoint
 		var httpResponse = httpRequest.send().getPrefix();
-		
+
 		if (arguments.transactionName == 'deleteToken') {
 			var responseData = {};
 			
@@ -615,7 +659,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			return responseData;
 		} else {
 			var responseData = {};
-		
+			
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
