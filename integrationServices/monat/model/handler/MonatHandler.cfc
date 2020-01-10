@@ -146,7 +146,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
 				} else {
 					
-					//If the user chose not to create save the address, we'll create a new-one for flexship, as flexship frontend UI relies on that;
+					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
 					var newAccountAddress = getAccountService().newAccountAddress();
 					newAccountAddress.setAddress( arguments.order.getShippingAddress() );
 					newAccountAddress.setAccount( orderTemplate.getAccount() );
