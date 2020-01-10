@@ -131,16 +131,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethod = orderFulFillment.getShippingMethod();
-				var shippingAddress = orderFulFillment.getShippingAddress();
+				//NOTE: there's only one shipping method allowed for flexship
+				var shippingMethod = getService('ShippingService').getShippingMethod(ListFirst(setting('orderTemplateEligibleShippingMethods')));
+				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
 				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
 				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
+				
 				orderTemplate.setShippingMethod(shippingMethod);
-				orderTemplate.setShippingAddress(shippingAddress);
+				orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
+				
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			arguments.order.setCommissionPeriod(commissionDate);

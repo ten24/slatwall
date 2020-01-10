@@ -48,11 +48,10 @@ class MonatFlexshipCartContainerController {
     
     private setOrderTemplate = ( orderTemplate ) => {
         this.orderTemplate = orderTemplate;
-        this.qualifiesForOFYAndFreeShipping = this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping <= this.orderTemplate.calculatedTotal;
+        this.qualifiesForOFYAndFreeShipping = this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping <= this.orderTemplate.subtotal;
     }
 
     private makeCurrentStepTranslation = ( currentStep:number=1, totalSteps:number=2 ) => {
-    	 //TODO BL?
     	 let stepsPlaceHolderData = {
     	 	'currentStep' : currentStep,
     	 	'totalSteps': totalSteps,
@@ -74,11 +73,17 @@ class MonatFlexshipCartContainerController {
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
 		
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
+		
+		if(this.context == 'enrollment'){
+		    extraProperties += ",canPlaceOrderFlag"; //mind the comma
+		}
+		
         this.orderTemplateService
-        .getOrderTemplateDetails(this.orderTemplateId)
+        .getOrderTemplateDetails(this.orderTemplateId, extraProperties)
         .then(data => {
     		if(data.orderTemplate){
-                this.setOrderTemplate( data.orderTemplate );;
+                this.setOrderTemplate( data.orderTemplate );
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
     		} else {
     			throw(data);

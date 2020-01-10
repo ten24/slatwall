@@ -19,7 +19,7 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.calculatedTotal | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
 			</span>
 		</div>
 		
@@ -38,7 +38,7 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.calculatedOrderTemplateItemsCount === 1"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.calculatedTotal | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
 				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3">{{ !monatFlexshipCartContainer.isOpened ? 'Show Cart' : 'Hide Cart' }}</small>
 			</span>
 		</div>
@@ -71,10 +71,21 @@
 	</div>
 
 	<div class="flexship-container" ng-class="{ 'd-block': monatFlexshipCartContainer.isOpened }">
-		<p ng-if="!monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping">
+		
+		<p ng-if="monatFlexshipCartContainer.context != 'enrollment' && !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping">
 			<i class="fas fa-info-circle"></i>
-			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessage'"></span>
+			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | currency }}
+			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP2'"></span>
 		</p>
+		
+		<p ng-if="monatFlexshipCartContainer.context == 'enrollment' && ( !monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag || !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping )">
+			<i class="fas fa-info-circle"></i>
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP1'"></span>
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | currency }}
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP2'"></span>
+		</p>
+		
 		<div class="product-container">
 			<ul class="item-slider">
 				<li 

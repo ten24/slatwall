@@ -2117,16 +2117,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
+		 param name="arguments.data.optionalProperties" type="string" default="";
+
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
-
+		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
+		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
 		
 		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
-		
-		//TODO: this (cartTotalThresholdForOFYAndFreeShipping) belongs in custom
-		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,'cartTotalThresholdForOFYAndFreeShipping'); 
 		
 		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
