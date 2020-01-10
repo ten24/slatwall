@@ -19,7 +19,7 @@ component extends="Slatwall.model.service.ProductService" accessors="true" outpu
 		
 		productURL &= "/#getHibachiScope().setting('globalURLKeyProduct')#";
 		
-		if ( structKeyExists( arguments,'urlTitle' ) ) {
+		if ( structKeyExists( arguments, 'urlTitle' ) ) {
 			productURL &= '/#arguments.urlTitle#/';
 		}
 		
