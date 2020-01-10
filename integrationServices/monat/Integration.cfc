@@ -19,7 +19,10 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
             baseImportURL = {fieldType="text", defaultValue=""},
 			authKey = {fieldType="password", encryptValue=true},
 			globalMPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}},
-		    globalVIPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}}
+		    globalVIPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}},
+		    globalProductCodesRenewMP = {fieldtype="text", defaultValue="", validate={required=true}},
+		    orderMinimumDaysToRenewMP = {fieldType="text", defaultValue=0, validate={dataType="numeric"}
+			},
 		};
     }
     
