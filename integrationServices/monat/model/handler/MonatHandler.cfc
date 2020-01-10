@@ -139,13 +139,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
 				
 				orderTemplate.setShippingMethod(shippingMethod);
-				orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+				
+				if( !IsNull(arguments.order.getShippingAccountAddress() ) ){
+					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+				} else {
+					
+					//If the user chose not to create save the address, we'll create a new-one for flexship, as flexship frontend UI relies on that;
+					var newAccountAddress = getAccountService().newAccountAddress();
+					newAccountAddress.setAccount( orderTemplate.getAccount() );
+					newAccountAddress.setAddress( arguments.order.getShippingAddress() );
+					
+					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+				}
+				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
 				
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
+			
 			arguments.order.setCommissionPeriod(commissionDate);
 			
 			//Initial Order Flag
