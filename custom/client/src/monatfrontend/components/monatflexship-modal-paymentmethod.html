@@ -334,11 +334,14 @@
 									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
 									swvalidationrequired = "true"
 									swvalidationnumeric="true"
+									swvalidationmaxlength = "4"
+									swvalidationminlength = "3"
 									name = "newCreditCard_securityCode"
 								/>
 								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
 									<div ng-if="updateBillingForm.$submitted" 
 								     ng-messages="updateBillingForm.newCreditCard_securityCode.$error">
+									 <div ng-message="swvalidationmaxlength" sw-Rbkey="'validation.define.maxlength4'" class="text-danger error_text"></div>
 	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 	    						</div>
 							</div>
@@ -354,7 +357,6 @@
 					ng-class="{ loading: monatFlexshipPaymentMethodModal.loading }"
 					ng-disabled = "monatFlexshipPaymentMethodModal.loading"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
-					ng-click="monatFlexshipPaymentMethodModal.updateBilling()"
 				>
 				</button>
 				<button
