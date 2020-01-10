@@ -33,9 +33,9 @@
 			
 			<span class="steps-footer__nav-summary">
 				<!--- For requests to get the orderTemplate, orderItems is more reliable than the calculated items count --->
-				{{ monatFlexshipCartContainer.calculatedOrderTemplateItemsCount }}
-				<span sw-rbkey="'frontend.flexshipCartContainer.items'" ng-if="monatFlexshipCartContainer.calculatedOrderTemplateItemsCount !== 1"></span>
-				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.calculatedOrderTemplateItemsCount === 1"></span>
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount }}
+				<span sw-rbkey="'frontend.flexshipCartContainer.items'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount !== 1"></span>
+				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount === 1"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
 				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
