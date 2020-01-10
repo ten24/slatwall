@@ -8724,7 +8724,7 @@ table.s-detail-content-table tbody tr.s-done {
   border-radius: 17px;
 }
 
-.position-relative{
+.tab-pane,.position-relative{
   position:relative;
 }
 
