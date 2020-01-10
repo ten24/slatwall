@@ -151,6 +151,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+    property name="preferredLocale" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
@@ -214,7 +215,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		}
 	}
 
-	public string function getPreferedLocale(){
+	public string function getPreferredLocale(){
 		var localMapping = {
 			'en' : 'en_us',		// English (United States)
 			'gb' : 'gb_en',		// English (United Kingdom)

@@ -40,7 +40,7 @@ class swfAccountController {
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
-    
+    public isDefaultImage:boolean = false;
     // @ngInject
     constructor(
         public publicService,
@@ -264,13 +264,6 @@ class swfAccountController {
         };
     }
     
-    public deleteAccountAddress = (addressID, index) => {
-        this.loading = true;
-        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
-            this.loading = false;
-        });
-    }
-    
     public closeModals = () =>{
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
@@ -306,11 +299,20 @@ class swfAccountController {
         xhr.send(tempdata);
     }     
     
+    public deleteProfileImage(){
+        this.profileImageLoading = true;
+        this.publicService.doAction('deleteProfileImage').then(result=>{
+            this.profileImageLoading = false;
+            this.getUserProfileImage();
+        });
+    }
+    
     public getUserProfileImage = () =>{
         this.profileImageLoading = true;
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
             this.profileImageLoading = false;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
         });
     }
 
@@ -342,6 +344,28 @@ class swfAccountController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showDeleteAccountAddressModal = (address) => {
+		this.ModalService.showModal({
+			component: 'addressDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                address: address
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
