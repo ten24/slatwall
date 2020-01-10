@@ -12,7 +12,7 @@
 		<column name="currencyISONumber" />
 		<column name="activeFlag" datatype="bit" update="false" />
 		<column name="currencyName" />
-		<column name="currencySymbol" />
+		<column name="currencySymbol" update="false" />
 	</Columns>
 	<Records>
 		<Record currencyCode="AED" currencyISONumber="784" activeFlag="0" currencyName="AED - United Arab Emirates Dirham" currencySymbol="&#164;" />
