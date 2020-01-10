@@ -196,7 +196,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 	private void function sendRequestToCredit(required any requestBean, required any responseBean) {
 		// Request Data
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.#SerializeJson(arguments.requestBean)#");
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
 
