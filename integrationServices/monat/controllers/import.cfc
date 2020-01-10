@@ -3263,7 +3263,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var sku = arguments.skuData;
 		var skuPriceData = arguments.skuPriceData;
 
-		if(ArrayLen(sku['KitLines'])){
+		/*if(ArrayLen(sku['KitLines'])){
 			var currentCountryCode = "";
 			var previousCountryCode = "";
 			var index = 0;
@@ -3340,7 +3340,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				previousCountryCode = currentCountryCode;
 			});
 
-		} else {
+		} else {*/
 			ArrayEach(skuPriceData, function(item){
 				var skuPrice = {};
 				var itemData = arguments.item;
@@ -3391,7 +3391,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				
 				ArrayAppend(skuPrices, skuPrice);
 			}, true, 5);
-		}
+		// }
 
 
 		
@@ -3425,6 +3425,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
+					// attempt to set url titles product
 					// data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'ItemNote':
@@ -3451,26 +3452,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'SAPItemCodes':
 					if (ArrayLen(fieldValue)) {
 						data['SAPItemCode'] = fieldValue[1]['SAPItemCode'];
-					} else {
-						writeOutput("No SAP Codes found for ItemCode: #tempSkuData.ItemCode#");
-						writeOutput("<br>");
 					}
 					break;
 			}
 		}, true, 5);
 
 		// create skubundle data
-		if(ArrayLen(arguments.skuData['KitLines'])){
+		/*if(ArrayLen(arguments.skuData['KitLines'])){
 			var currentCountryCode = "";
 			var previousCountryCode = "";
 			var index = 0;
-			var multipleCountries = false;
 
 			ArrayEach(arguments.skuData['KitLines'], function(item){
-
-				if(multipleCountries){
-					break;
-				}
 
 				switch (arguments.item['CountryCode']){	
 					case 'CAN':
@@ -3500,15 +3493,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					}
 
 					if(index > 0){
-						writeOutput("Multiple countries found in Kitline Data for ItemCode: #tempSkuData.ItemCode#");
-						writeOutput("<br>");
-						multipleCountries = true;
-						break;
-						// data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
-						// data['SKUItemCode'] &= currentCountryCode;
-					} /* else {
+						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
 						data['SKUItemCode'] &= currentCountryCode;
-					} */
+					}  else {
+						data['SKUItemCode'] &= currentCountryCode;
+					} 
 					
 					QueryAddRow(query, data);
 					index++;
@@ -3517,7 +3506,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				previousCountryCode = currentCountryCode;
 			});
 
-		} else {
+		} else {*/
 
 			if(!arrayIsEmpty(skuPriceData)){
 				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
@@ -3534,7 +3523,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 
 			QueryAddRow(query, data);
-		}
+		// }
 
 		return query;
 	}
@@ -3563,7 +3552,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var currentCountryCode = "";
 		ArrayEach(arguments.skuData.KitLines, function(item){
 			var skuBundleData = {};
-			switch (arguments.item['CountryCode']){	
+		/*	switch (arguments.item['CountryCode']){	
 				case 'CAN':
 					currentCountryCode = 'CAD';
 					break;
@@ -3573,9 +3562,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'USA':
 					currentCountryCode = 'USD';
 					break;
-			}
+			}*/
 
-			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
+			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']);
 
 			StructEach(arguments.item, function(key, value){
 				switch (arguments.key){
@@ -3670,7 +3659,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		skuPriceColumnTypes = [];
 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
 		
-		var skuBundleColumns = this.getProductSiteColumnsList();
+		var skuBundleColumns = this.getSkuBundleColumnsList();
 		skuBundleColumnTypes = [];
 		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 		
@@ -3688,6 +3677,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
+			// to dump API data 
 			// writedump(monatProducts);abort;
 
 			if(importSkuBundles){
@@ -3697,6 +3687,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					for (var skuData in monatProducts){
 						if(arrayLen(skuData['KitLines'])){
 							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+							
+							
+							
+							// these line do the actual importing
 
 							// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
 							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
@@ -3705,6 +3699,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
 						}
 					}
+					
+					writedump(skuBundleQuery);abort;
 				
 				} catch (any e){
 					writeDump(e); // rollback the tx
@@ -3727,6 +3723,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							productSiteQuery = this.populateProductSiteQuery(productSiteQuery, skuData, sites);
 						}
 					}
+					
+					writedump(productSiteQuery);abort;
 
 					insertSQL = "INSERT INTO swproductsite (productID, siteID) VALUES";
 
@@ -3758,6 +3756,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
 						}
 					}
+					
+					writedump(skuQuery);
+					writedump(skuPriceQuery);abort;
 
 					// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
 					// getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
