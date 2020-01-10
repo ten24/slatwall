@@ -32,7 +32,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	//TODO make translations for success/failure alert messages
     	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
         //TODO business-logic
-    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 1234 });
+    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 15 });
     	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
     	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
     	this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
@@ -47,7 +47,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
-	    //TODO business-logic
 	    this.endDate = new Date(date.setMonth(date.getMonth()+2));
 	    console.log(this);
     }
