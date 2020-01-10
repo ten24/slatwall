@@ -2,15 +2,15 @@
     <div class="container">
 	    <h6 class="title-with-line"><span ng-bind="monatFlexshipConfirm.orderTemplate.orderTemplateName"></span></h6>
 	    
-    	<h3>You'll still receive your items every` 
-	    	<span class="date">
+    	<h3>You'll receive your items as a subscription
+	    	<span class="date" >
 				<select type="text"
             			ng-model="monatFlexshipConfirm.selectedFrequencyTermID"
             			ng-options="term.value as term.name for term in monatFlexshipConfirm.frequencyTermOptions"
             			placeholder="Frequency">
             	</select> 	    	
            </span> 
-	    	on the` 
+	    	on the
 	    	<span class="date">
 	    		<select type="text"
             			ng-model="monatFlexshipConfirm.selectedFrequencyDate"
@@ -19,14 +19,11 @@
             	</select> 	
 	    	</span>
     	</h3>
-    	
-    	<div class="total">
-			<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>    		
-			<span>{{monatFlexshipConfirm.orderTemplate.total | currency}}</span>
-    	</div>
 
 	    <div class="confirm-footer">
-	    	<a href="##" class="btn bg-secondary btn-block" ng-click="monatFlexshipConfirm.confirm()">Confirm</a>
+	    	<button ng-click="monatFlexshipConfirm.confirm()" 
+	    	ng-class="{loading: monatFlexshipConfirm.loading}" 
+	    	ng-disable = "monatFlexshipConfirm.loading" class="btn btn-light btn-block" >Confirm</button>
 	    	<a href="##" class="btn btn-cancel cancel-light" ng-click="monatFlexshipConfirm.cancel()">Cancel</a>
 	    </div>
     </div>

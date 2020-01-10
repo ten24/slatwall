@@ -8723,3 +8723,15 @@ table.s-detail-content-table tbody tr.s-done {
 .Mbtn-round {
   border-radius: 17px;
 }
+
+.position-relative{
+  position:relative;
+}
+
+.valign-middle {
+  vertical-align: middle;
+}
+
+.pl-1 {
+  padding-left: 1rem;
+}

@@ -1,5 +1,6 @@
 declare var hibachiConfig: any;
 declare var angular: any;
+declare var $: any;
 
 class MonatEnrollmentController {
 	public cart: any;
@@ -15,7 +16,8 @@ class MonatEnrollmentController {
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
-
+	public showCanPlaceOrderAlert:boolean = false;
+	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
 		if (hibachiConfig.baseSiteURL) {
@@ -23,6 +25,9 @@ class MonatEnrollmentController {
 		}
 
 		if (angular.isUndefined(this.onFinish)) {
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.saveFlag = 1;
+			this.$rootScope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 1;
 			this.onFinish = () => console.log('Done!');
 		}
 
@@ -72,7 +77,7 @@ class MonatEnrollmentController {
 		this.monatService.getCart().then(data =>{
 			let cartData = this.removeStarterKitsFromCart( data );
 			this.cart = cartData;
-			this.canPlaceCartOrder = this.cart.orderRequirementsList.search('canPlaceOrderReward') > 0 ? false : true;
+			this.canPlaceCartOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		});
 	}
 
@@ -104,7 +109,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if (index < 0 || index == this.position) {
+		if (index < 1 || index == this.position) {
 			return;
 		}
 		

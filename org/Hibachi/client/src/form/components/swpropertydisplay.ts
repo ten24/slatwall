@@ -226,11 +226,12 @@ class SWPropertyDisplayController {
         }
         
         if(this.object && this.propertyIdentifier){
-            if(this.object.$$isPersisted()){
-                this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
-            }else{
-                this.updateAuthInfo = this.publicService.authenticateEntityProperty('Create',this.object.className,this.propertyIdentifier);
-            }
+            this.updateAuthInfo = true;
+            // if(this.object.$$isPersisted()){
+            //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
+            // }else{
+            //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Create',this.object.className,this.propertyIdentifier);
+            // }
         }
 
 	}

@@ -195,6 +195,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
+			emailLocaleString = {fieldType="text"},
 			emailReplyToAddress = {fieldType="text", defaultValue=""},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailSMTPServer = {fieldType="text", defaultValue=""},
@@ -310,7 +311,18 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
-
+			orderReturnReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderExchangeReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderReplacementReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
 			//Order Template
 			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},
@@ -379,7 +391,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
-
+			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
+			
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
@@ -389,7 +402,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMaximumAmount = {fieldType="text", defaultValue=1000},
-
+		
+			
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},

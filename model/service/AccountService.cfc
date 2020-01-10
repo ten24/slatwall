@@ -105,6 +105,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account.getFullName();
 	}
 	
+	
+	public any function getAvailablePaymentMethods() {
+		
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+		
+		return accountPaymentMethodList;
+	}
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -1786,7 +1800,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 				
-		return super.save(entity=arguments.account,data=arguments.data);
+		return super.save(entity=arguments.account,data=arguments.data,context=arguments.context);
 	}
 	
 	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
@@ -2031,8 +2045,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
-			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
-
+			if(arguments.account.getAdminAccountFlag()){
+				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
+			}
+			
 		}
 
 		return delete( arguments.account );

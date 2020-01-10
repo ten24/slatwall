@@ -179,12 +179,12 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	}
 	
 	public string function getRbLocale(){
-		if(structKeyExists(variables, 'rbLocale')){
+		if(structKeyExists(variables, 'rbLocale') && !len(getAccount().getPreferredLocale())){
 			return variables.rbLocale;
 		}
 		
-		if(len(getAccount().getPreferedLocale())){
-			variables.rbLocale = getAccount().getPreferedLocale();
+		if(len(getAccount().getPreferredLocale())){
+			variables.rbLocale = getAccount().getPreferredLocale();
 		}else if(structKeyExists(COOKIE, 'rbLocale')){
 			variables.rbLocale = COOKIE['rbLocale'];
 		}else{
