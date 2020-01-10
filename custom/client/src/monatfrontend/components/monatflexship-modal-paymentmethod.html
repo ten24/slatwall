@@ -342,6 +342,7 @@
 									<div ng-if="updateBillingForm.$submitted" 
 								     ng-messages="updateBillingForm.newCreditCard_securityCode.$error">
 									 <div ng-message="swvalidationmaxlength" sw-Rbkey="'validation.define.maxlength4'" class="text-danger error_text"></div>
+									 <div ng-message="swvalidationminlength" sw-Rbkey="'validation.define.minlength3'" class="text-danger error_text"></div>
 	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 	    						</div>
 							</div>
