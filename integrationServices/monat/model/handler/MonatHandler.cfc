@@ -132,7 +132,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
 				//NOTE: there's only one shipping method allowed for flexship
-				var shippingMethod = getService('ShippingService').getShippingMethod(ListFirst(setting('orderTemplateEligibleShippingMethods')));
+				var shippingMethod = getService('ShippingService').getShippingMethod(
+					ListFirst( orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+				);
 				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
 				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
@@ -146,10 +148,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					
 					//If the user chose not to create save the address, we'll create a new-one for flexship, as flexship frontend UI relies on that;
 					var newAccountAddress = getAccountService().newAccountAddress();
-					newAccountAddress.setAccount( orderTemplate.getAccount() );
 					newAccountAddress.setAddress( arguments.order.getShippingAddress() );
+					newAccountAddress.setAccount( orderTemplate.getAccount() );
+					newAccountAddress.setAccountAddressName(arguments.order.getShippingAddress().getName());
 					
-					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+					orderTemplate.setShippingAccountAddress(newAccountAddress);
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
