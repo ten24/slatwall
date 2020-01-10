@@ -48,7 +48,6 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
 	    this.endDate = new Date(date.setMonth(date.getMonth()+2));
-	    console.log(this);
     }
     
     public updateDelayOrSkip = (val:string) =>{
