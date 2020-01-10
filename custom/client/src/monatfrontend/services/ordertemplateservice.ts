@@ -141,17 +141,16 @@ export class OrderTemplateService {
     
     /**
      * orderTemplateID:string, 
-     * typeID:string,  => OrderTEmplateCancellationReasonTypeID
-     * typeIDOther?:string => other reason text from user
+     * orderTemplateCancellationReasonType:string,  => OrderTEmplateCancellationReason::TypeID
+     * orderTemplateCancellationReasonTypeOther?:string => some explaination from user
      */ 
-    public cancelOrderTemplate = (orderTemplateID:string, typeID:string, typeIDOther:string = "") => {
+    public cancelOrderTemplate = (orderTemplateID:string, orderTemplateCancellationReasonType:string, orderTemplateCancellationReasonTypeOther:string = "") => {
         
         let payload = {};
     	payload['orderTemplateID'] = orderTemplateID;
-    	payload['orderTemplateCancellationReasonType'] = {};
-    	payload['orderTemplateCancellationReasonType']['typeID'] =  typeID;
-    	payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
-    	
+    	payload['orderTemplateCancellationReasonType'] =  orderTemplateCancellationReasonType;
+    	payload['orderTemplateCancellationReasonTypeOther'] = orderTemplateCancellationReasonTypeOther;
+
     	payload = this.getFlattenObject(payload);
     	
         return this.requestService
@@ -313,9 +312,10 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-    public createOrderTemplate = (orderTemplateSystemCode) => {
+    public createOrderTemplate = (orderTemplateSystemCode, context="save") => {
         return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
             orderTemplateSystemCode: orderTemplateSystemCode,
+            saveContext: context,
             returnJSONObjects:''
         });
     }   

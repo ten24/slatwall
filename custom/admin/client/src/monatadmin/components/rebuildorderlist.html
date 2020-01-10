@@ -1,0 +1,90 @@
+<section class="container">
+
+	<div class="row" ng-if="swOrderListController.orderCollection">
+		<div class="col-md-12">
+			<div class="row s-body-nav">
+			    <nav class="navbar navbar-default" role="navigation">
+			        <div class="col-md-6 s-header-info">
+			            <h1 class="actionbar-title">Order Listing 
+			            </h1>
+			        </div> 
+			        <div class="col-md-6">
+			            <div class="btn-toolbar">
+							<div class="btn-group btn-group-sm">
+			                    <a href="##" title="Create Batch" class="btn btn-primary" data-toggle="modal" data-target="#j-pick-list-modal-fulfillments">Create Batch</a> 
+								<!-- Button trigger modal -->
+
+								<div id="j-pick-list-modal-fulfillments" class="modal fade in" aria-hidden="false">
+								    
+								        <div class="modal-dialog">
+								            <div class="modal-content">
+								                <div class="modal-header">
+								                    <a class="close" data-dismiss="modal">×</a>
+								                    <h3>Create Batch <span class="s-title-detail">({{swOrderListController.getTotalOrdersSelected()||0}} orders selected)</span></h3>
+								                </div>
+								                <div class="modal-body s-visable">
+							                        <div class="row">
+							                            <div class="col-md-12 s-select-list-wrapper s-search">
+							                                <div class="s-property form-horizontal">
+																<div class="form-group">
+							                                        <label class="control-label col-sm-4">Batch Name <span class="s-label-desc"></span></label>
+							                                        <div class="col-sm-8">
+							                                            <textarea name="batchName" value="" placeholder="" class="form-control" ng-model="swOrderListController.getProcessObject().data.volumeRebuildBatchName"></textarea>
+							                                        </div>
+							                                    </div>
+							                                </div>
+							                            </div>
+							                        </div>
+							                        <div class="modal-footer">
+								                    	<a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
+								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderListController.addBatch()" ng-disabled="swOrderListController.getTotalFulfillmentsSelected() == 0 || !swOrderListController.getProcessObject().data">Add Batch <i ng-if="swOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button> 
+								                	</div>
+								                </div>
+								            </div>
+								        </div>
+								</div>
+			                </div>
+			            </div>
+			        </div>
+			    </nav>
+			</div>
+
+		</div>
+		<div class="row s-detail-content-wrapper" ng-if="swOrderListController.refreshFlag">
+			<center>
+        		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> LOADING
+			</center>
+		</div>
+		<span ng-init="multislot = true"></span>
+		<div class="row s-detail-content-wrapper">	
+			<div class="col-xs-12">
+				<div class="s-detail-body" ng-init="swOrderListController.refreshFlag = false">
+					<sw-listing-display
+						data-base-entity-name="Order"
+						data-edit="true"
+						data-has-search="true"
+						data-record-detail-action="admin:entity.detailorder"
+						data-is-angular-route="false"
+						data-angular-links="false"
+						data-has-action-bar="false"
+						data-using-personal-collection="true"
+						data-persisted-collection-config="true" 
+						data-multiselect-field-name="orderID"
+						data-name="orderCollectionTable"
+						data-collection-config="swOrderListController.orderCollectionConfig"
+
+						>
+					</sw-listing-display>
+			
+				</div>
+			</div>
+		</div>
+	</div>
+<section>			
+
+
+
+
+
+
+

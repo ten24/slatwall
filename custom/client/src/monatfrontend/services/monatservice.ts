@@ -167,5 +167,24 @@ export class MonatService {
 		return deferred.promise;
 	}
 	
+	public adjustInputFocuses = () => {
+		$('input, select').focus(function() {
+			var ele = $(this);
+			if ( !ele.isInEnrollmentViewport() ) {
+				$('html, body').animate({
+					scrollTop: ele.offset().top - 80 
+				}, 800);
+			}
+		});
+	}
+
+	public getAccountWishlistItemIDs = () => {
+		var deferred = this.$q.defer();
+		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
+			deferred.resolve( data );
+		});
+		return deferred.promise;
+	}
+	
 
 }

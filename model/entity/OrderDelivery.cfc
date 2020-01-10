@@ -52,6 +52,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
+	property name="trackingUrl" ormtype="string";
 	property name="containerLabel" ormtype="text";
 	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
 	property name="undeliverableOrderReason" ormtype="string";
@@ -80,7 +81,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
+	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
 	//CUSTOM PROPERTIES BEGIN
@@ -96,7 +97,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		}
 		return totalDelivered;
 	}
-
+	
 	public any function getOrderDeliveryGiftCardSmartList() {
 		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
 		giftcardSmartList.joinRelatedProperty("SlatwallGiftCard", "originalOrderItem");

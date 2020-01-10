@@ -163,6 +163,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return listFirst(cgi.HTTP_HOST,':');
 	}
 	
+	public any function getSubdomain() {
+		var domain = getCurrentDomain();
+		var regex = '^([^.]+)\.[^.]+\.(com|local)$';
+		var subdomain = '';
+		/*
+		Matches:
+			subdomain.site.local
+			subdomain.site.com
+		*/
+		if(reFindNoCase(regex, domain)){
+			var subdomain = reReplaceNoCase(domain, regex, '\1');
+		}
+		
+		return subdomain;
+	}
+	
 	public string function renderJSObject() {
 		var config = getService('HibachiSessionService').getConfig();
 		
@@ -429,7 +445,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,";
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,";
 		}
 		
 		//orderItemData

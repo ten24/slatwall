@@ -107,8 +107,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
 	this.secureMethods=listAppend(this.secureMethods, 'listform');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
+	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -253,9 +255,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		
 		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
-			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
-			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+			var order = getService('orderService').getOrder(rc.orderID);
+
+			// Only display "The order cannot be edited as the order is fully paid or closed." if the order
+			// is paid and closed. This is showing in some cases while the order still owes money. That combined with
+			// failing 'Save' context validations causes a stack overflow.
+			
+			if (order.getPaymentAmountDue() <= 0){
+				if (!isNull(order) && !isNull(order.getOrderStatusType()) && 
+					!isNull(order.getOrderStatusType().getSystemCode()) && 
+					order.getOrderStatusType().getSystemCode() == "ostClosed"){
+					getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+					renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);	
+				}
+			}
 		}
 		
 		genericEditMethod(entityName="Order", rc=arguments.rc);
@@ -267,16 +282,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
-private void function populateWithAddressVerification(required struct rc){
+	private void function populateWithAddressVerification(required struct rc){
 		
 		if(
-			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
-			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
+			len(getHibachiScope().setting('globalIntegrationForAddressVerification')) &&
+			getHibachiScope().setting('globalIntegrationForAddressVerification') != 'internal' &&
 			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
 			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
 		){
 
-			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.orderFulfillment.getShippingAddress().getAddressID());
 
 			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
 				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
@@ -299,7 +314,7 @@ private void function populateWithAddressVerification(required struct rc){
 	}
 
 	public void function updateAddressWithSuggestedAddress(required struct rc){
-		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.addressID);
 		var address = getService("AddressService").getAddress(rc.addressID);
 		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
 

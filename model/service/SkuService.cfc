@@ -94,6 +94,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}
 	}
+	
+	
+	public any function getPriceBySkuIDAndCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups) {
+		
+		var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+		
+		if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
+			var prices = [];
+			for(var i=1; i <= arrayLen(skuPriceResults); i++){
+				if(isNull(skuPriceResults[i]['price'])){
+					skuPriceResults[i]['price'] = 0;
+				}
+				ArrayAppend(prices, skuPriceResults[i]['price']);
+			}
+			
+			ArraySort(prices, "numeric","asc");
+			return prices[1];
+		}
+		
+		var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(arguments.skuID, arguments.currencyCode);  
+		
+		if(!isNull(baseSkuPrice)){
+			return baseSkuPrice.getPrice(); 
+		}
+	}
 
 
 	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false, string joinType="inner") {

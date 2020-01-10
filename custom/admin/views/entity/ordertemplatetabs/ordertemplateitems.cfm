@@ -22,6 +22,7 @@
 <cfoutput>
 	<sw-order-template-items data-edit="#rc.edit#"
 							 data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+							 data-site-id="#rc.orderTemplate.getSite().getSiteID()#" <!---the ordertemplate should always have a site--->
 							 data-currency-code="#rc.orderTemplate.getCurrencyCode()#"
 							 data-sku-properties-to-display="personalVolumeByCurrencyCode"
 							 data-sku-property-column-configs="#getHibachiScope().hibachiHtmlEditFormat(serializeJson(rc.skuColumnConfigs))#"

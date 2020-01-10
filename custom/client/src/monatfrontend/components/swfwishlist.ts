@@ -1,5 +1,6 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
+declare var $;
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
@@ -20,7 +21,7 @@ class SWFWishlistController {
     public showWishlistModal:boolean;
 	public close; // injected from angularModalService
     public productName;
-    
+    public newWishlist:boolean = false;
     // @ngInject
     constructor(
         public $scope,
@@ -38,8 +39,8 @@ class SWFWishlistController {
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-        this.observerService.attach(this.closeModal,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModal,"addItemSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"createWishlistSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
@@ -49,9 +50,10 @@ class SWFWishlistController {
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplateItems = result['orderTemplateItems'];
+            this.orderTemplateItems = result.orderTemplateItems;
             this.loading = false;
         });
+        
     }
 
     public deleteItem =(index)=>{
@@ -101,7 +103,7 @@ class SWFWishlistController {
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
         })
-        .cache( (e) => {
+        .catch( (e) => {
             //TODO
             console.error(e);
         })
@@ -124,7 +126,6 @@ class SWFWishlistController {
     
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
-        
     }
     
     public setWishlistName = (newName) => {
@@ -139,7 +140,13 @@ class SWFWishlistController {
     }
     
     
-    public closeModal = () => {
+    public onAddItemSuccess = () => {
+        
+        // Set the heart to be filled on the product details page
+        $('.product-template .wishlist .fa-heart').removeClass('far').addClass('fas');
+        
+        // Close the modal
+        if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };
     
@@ -164,7 +171,7 @@ class SWFWishlist  {
         currentPage:"@?",
         sku:"<?",
         productName:"<?",
-        showWishlistModal:"@?",
+        showWishlistModal:"<?",
         close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;

@@ -46,18 +46,42 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
+component accessors="true" output="false" displayname="Avatax" 
+implements = "Slatwall.integrationServices.TaxInterface" 
+extends = "Slatwall.integrationServices.BaseTax" {
 	
+	property name='avataxService' type='any' persistent='false';
+
+	public any function init() {
+		setAvataxService( getService('avataxService') );
+		return super.init();
+	}
+	
+
 	public boolean function healthcheck() {
         var responseBean = testIntegration();
         return responseBean.healthcheckFlag;
     }
+    
+	// Override allow site settings
+	public any function setting(required string settingName, any requestBean) {
+		
+		if(!structKeyExists(arguments,"requestBean")){
+			return super.setting(argumentCollection=arguments);
+		}
+		
+		// Allows settings to be requested in the context of the site where the order was created
+		if (structKeyExists(arguments.requestBean,"getOrder") && !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+		return super.setting(argumentCollection=arguments);
+	}
 	
 	public any function getTaxRates(required any requestBean) {
-
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
-		
 		responseBean.healthcheckFlag = false;
 		
 		var docType = 'SalesOrder';
@@ -120,7 +144,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		// Setup the request data structure
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
-			companyCode = setting('companyCode'),
+			companyCode = setting('companyCode',arguments.requestBean),
 			DocCode = docCode,
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
@@ -157,7 +181,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		}
 		
 		if(!isNull(arguments.requestBean.getAccount())) {
-			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
+			requestDataStruct.CustomerCode = arguments.requestBean.getAccountShortReferenceID( true );
 		}
 		
 		// Loop over each unique tax address
@@ -183,6 +207,24 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			// Add this address to the request data struct
 			arrayAppend(requestDataStruct.addresses, addressData );
 			
+			/**
+			 * 
+			 * Discounts at the item level are handled by sending the extended
+			 * price after discount. Discounts at the order level need to be
+			 * handled by settings the total discount amount for the order
+			 * (key: Discount), and then setting discounted to TRUE on all the
+			 * orderItems. This tells Avatax to distribute the order discount
+			 * to the items automatically.
+			 * 
+			 **/
+			var orderDiscount = arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
+			var allItemsHaveDiscount = false;
+			if (orderDiscount > 0){
+				//distribute the order discount to all of the orderItems.
+				allItemsHaveDiscount = true;
+				requestDataStruct.Discount = orderDiscount;
+			}
+			
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
 				if (item.getReferenceObjectType() == 'OrderItem'){
@@ -199,6 +241,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
+					}
+					
+					if (allItemsHaveDiscount){
+						itemData.Discounted = true;
 					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
@@ -227,8 +273,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			}
 		}
 		
-		// Setup the auth string
-		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
 		// Setup Request to push to Avatax
         var httpRequest = new http();
         httpRequest.setMethod("POST");
@@ -242,14 +286,14 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         } else {
         	httpRequest.setUrl(setting('productionURL'));
         }
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+        
+        // Set the auth and other http headers
+        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
+        
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
-		
+
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -266,7 +310,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
 				responseBean.addMessage("Response", serializeJSON(responseData));
 			}
-			
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
@@ -279,7 +322,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0) {
+							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
@@ -294,7 +337,23 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 								responseBean.addTaxRateItem(
 									argumentCollection=args
 								);
-									
+							}
+							if(listContains(setting("VATCountries"),taxDetail.Country)){
+								var args = {
+									"#primaryIDName#" = taxLine.LineNo,
+									VATAmount = taxDetail.Tax, 
+									VATPrice = taxDetail.Taxable,
+									taxRate = taxDetail.Rate * 100,
+									taxJurisdictionName=taxDetail.JurisName,
+									taxJurisdictionType=taxDetail.JurisType,
+									taxImpositionName=taxDetail.TaxName,
+									referenceObjectType="#referenceObjectType#"
+								};
+								
+								// Add the details of the taxes charged
+								responseBean.addTaxRateItem(
+									argumentCollection=args
+								);
 							}
 						}
 					}
@@ -326,9 +385,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			DocType = 'SalesInvoice'
 		};
 		
-		// Setup the auth string
-		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
-		
 		// Setup Request to push to Avatax
         var httpRequest = new http();
         httpRequest.setMethod("POST");
@@ -342,11 +398,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
         } else {
         	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/cancel");
         }
-
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+        
+        // Set the auth and other http headers
+        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
+	
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 		
 		var responseData = httpRequest.send().getPrefix();

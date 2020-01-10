@@ -151,6 +151,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+    property name="preferredLocale" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
@@ -158,9 +159,12 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="canCreateFlexshipFlag" persistent="false";
+	property name="subscribedToMailchimp" persistent="false";
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -174,7 +178,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
  property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
- property name="status" ormtype="string";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
  property name="complianceStatus" ormtype="string" hb_formFieldType="select";
@@ -212,9 +215,21 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		}
 	}
 
-	public string function getPreferedLocale(){
-		//TODO: Get qualified locale based on account prefered language
-		return '';
+	public string function getPreferredLocale(){
+		var localMapping = {
+			'en' : 'en_us',		// English (United States)
+			'gb' : 'gb_en',		// English (United Kingdom)
+			'fr' : 'fr_ca',		// French (Canada)
+			'pl' : 'pl_pl', 	// Polish
+			'ga' : 'ga_ie', 	// Irish (Ireland)
+			'es' : 'es_mx'	 	// Spanish (Mexico)
+		};
+		
+		if(structKeyExists(variables, 'languagePreference') && structKeyExists(localMapping, variables.languagePreference)){
+			return localMapping[variables.languagePreference];
+		}else{
+			return '';
+		}
 	}
 
 	public array function getOrderCurrencies(){
@@ -497,33 +512,29 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getPermissionGroupNameList() {
 		
-		if(!getNewFlag()){
-			if( !structKeyExists(variables,'permissionGroupNameList') ||
-				(!isNull(variables.permissionGroupNameList) &&
-				!len(trim(variables.permissionGroupNameList))
-				)
-			){
-				var permissionGroupNameList = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-				
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
-					}
-					
-					permissionGroupNameList = '( #permissionGroupNameList# )';
-				}
-				variables.permissionGroupNameList = permissionGroupNameList;
-			}
-		}else{
+		if(getNewFlag()){
 			return "";
 		}
+		if( !structKeyExists(variables,'permissionGroupNameList') ){
+			var permissionGroupNameList = "";
+			
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
+			}
+			
+			if(len(permissionGroupNameList)){
+				permissionGroupNameList = '( #permissionGroupNameList# )';
+			}
+
+			variables.permissionGroupNameList = permissionGroupNameList;
+		}
+		
 		return variables.permissionGroupNameList;
 	}
 
@@ -534,27 +545,24 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	
 	public string function getPermissionGroupCacheKey(){
-		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupCacheKey')){
-				var permissionGroupCacheKey = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
-					}
-				}
-				variables.permissionGroupCacheKey = permissionGroupCacheKey;
-
-			}
-			return variables.permissionGroupCacheKey;
+		if(getNewFlag()){
+			return "";
 		}
-		return "";
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			}
+			
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		return variables.permissionGroupCacheKey;
 	}
 
 	public string function getPhoneNumber() {
@@ -804,7 +812,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 		return options;
 	}
-
+	
+	public boolean function isPrimaryMethodExpired(){
+		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1084,7 +1095,25 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
-
+	
+	public numeric function getPermissionGroupsCount(){
+		if(this.getNewFlag()){
+			return 0;
+		}
+		if(!structKeyExists(variables, 'permissionGroupsCount')){
+			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
+			permissionGroupCollection.setDisplayProperties('permissionGroupID');
+			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			
+			//Caution: hacky way to prevent Collection from calling getPermissionGroupsCount();
+			permissionGroupCollection.setPermissionAppliedFlag(true); 
+			
+			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
+		}
+		
+		return variables.permissionGroupsCount;
+	}
+	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -1187,7 +1216,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isGuestAccount() {
 		return getGuestAccountFlag();
 	}
-
+	
 	// ==================  END:  Deprecated Methods ========================
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
@@ -1239,7 +1268,7 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return variables.accountNumber;
 	}
 
-	public boolean function userCanCreateFlexship() {
+	public boolean function getCanCreateFlexshipFlag() {
 	
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
@@ -1280,6 +1309,26 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function onlyOnePriceGroup(){
+		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public boolean function getSubscribedToMailchimp(){
+		if(!structKeyExists(variables, 'subscribedToMailchimp')){
+			variables.subscribedToMailchimp = false;
+			
+			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
+				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+			}
+		}
+		
+		return variables.subscribedToMailchimp;
+	}
+	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
 	//CUSTOM FUNCTIONS END
 }

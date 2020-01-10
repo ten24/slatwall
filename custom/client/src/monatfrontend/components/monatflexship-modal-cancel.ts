@@ -4,10 +4,11 @@ class MonatFlexshipCancelModalController {
 	public cancellationReasonTypeOptions: any[];
 	public close; // injected from angularModalService
 	
-	public formData = {}; // {typeID:'', typeIDOther: '' }
-
+	public formData = {}
+	
+	public loading = false;
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService) {
+	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -22,32 +23,32 @@ class MonatFlexshipCancelModalController {
     	 this.translations['flexshipCancelOtherReasonNotes'] = this.rbkeyService.rbKey('frontend.cancelFlexshipModal.flexshipCancelOtherReasonNotes');
     }
     
+
     public cancelFlexship() {
-
-    	//TODO frontend validation
-
-    	// make api request
+		this.loading=true;
         this.orderTemplateService.cancelOrderTemplate(
         	this.orderTemplate.orderTemplateID, 
-	        this.formData['typeID'], 
-	        this.formData['typeIDOther'] 
-	    ).then(
+	        this.formData['orderTemplateCancellationReasonType'].value, 
+	        this.formData['orderTemplateCancellationReasonTypeOther'] 
+	    )
+	    .then(
             (data) => {
-            	if(data.orderTemplate) {
+            	if(data && data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+	                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.canceledSucessfull'));
 	                this.closeModal();
             	} else {
-            		console.error(data);
-            		//TODO handle errors
+            		throw(data);	
             	}
-            	// TODO: show alert
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
             }
-        );
+        )
+        .catch( (error) => {
+    		this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally(() => {
+        	this.loading = false;
+        });
     }
     
     public closeModal = () => {
@@ -109,4 +110,3 @@ class MonatFlexshipCancelModal {
 export {
 	MonatFlexshipCancelModal
 };
-

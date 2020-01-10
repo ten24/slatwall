@@ -1,11 +1,12 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	
 	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
+	property name="qualifiesForOFYProducts" persistent="false";
+
 	
 	public boolean function getCustomerCanCreateFlag(){
 			
@@ -59,8 +60,24 @@ component {
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 
+	public boolean function getQualifiesForOFYProducts(){
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
+			
+			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+			
+			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+
 }

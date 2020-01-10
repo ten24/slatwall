@@ -11,7 +11,6 @@ class MonatFlexshipListingController{
 	public expirationYearOptions: any[];
 	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
-	public showCreateButton;
 	public account:any;
 	
 		
@@ -24,9 +23,13 @@ class MonatFlexshipListingController{
 		public orderTemplateService, 
 		public $window, 
 		public publicService,
-		public observerService
+		public observerService,
+		public monatAlertService,
+		public rbkeyService,
 	){
-		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess")
+		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
+		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
 	}
 	
 	public $onInit = () => {
@@ -36,10 +39,6 @@ class MonatFlexshipListingController{
 		});
 		
 		this.account = this.publicService.account;
-		
-		if ( null === this.showCreateButton ) {
-			this.showCreateButton = true;
-		}
 	}
 	
 	private fetchFlexships = () => {
@@ -74,7 +73,8 @@ class MonatFlexshipListingController{
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
 				if(data.orderTemplate){
-					this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
+					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`; 
 				} else{
 					throw(data);
 				}
@@ -87,6 +87,7 @@ class MonatFlexshipListingController{
 			});
 	}
 	
+
 	public setAsCurrentFlexship(orderTemplateID:string) {
 
 		// make api request
@@ -118,9 +119,7 @@ class MonatFlexshipListing {
 	public restrict:string;
 	public templateUrl:string;
 	public scope = {};
-	public bindToController = {
-		showCreateButton: '=?'
-	};
+	public bindToController = {};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
 

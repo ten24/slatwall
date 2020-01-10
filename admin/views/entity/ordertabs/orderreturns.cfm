@@ -51,16 +51,12 @@ Notes:
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" /> 
-
+<cfset local.orderReturnCollectionList = rc.order.getOrderReturnsCollectionList() />
+<cfset local.orderReturnCollectionList.setDisplayProperties('returnLocation.locationName,fulfillmentRefundAmount',{isVisible:true,isSearchable:false,isEditable:false}) />
+<cfset local.orderReturnCollectionList.addDisplayProperty(displayProperty="orderReturnID",columnConfig={isVisible:false,isSearchable:false,isEditable:false},prepend=true) />
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.order.getOrderReturnsSmartList()#"
-							  recordDetailAction="admin:entity.detailorderreturn">
-		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="returnLocation.locationName" />
-		<hb:HibachiListingColumn propertyIdentifier="fulfillmentRefundAmount" />
-		<!---
-		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
-		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
-		--->
+	<hb:HibachiListingDisplay collectionList="#local.orderReturnCollectionList#"
+							  recordDetailAction="admin:entity.detailorderreturn"
+							  currencyCode="#rc.order.getCurrencyCode()#">
 	</hb:HibachiListingDisplay>
 </cfoutput>

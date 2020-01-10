@@ -27,6 +27,8 @@ import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
+import { WishlistDeleteModal } from './components/wishlist-delete-modal';
+import { WishlistEditModal } from './components/wishlist-edit-modal';
 
 import { SWFReviewListing } from './components/swfreviewlisting';
 import { SWFWishlist } from './components/swfwishlist';
@@ -39,22 +41,35 @@ import { SWFPagination } from './components/swfpagination';
 
 import { MonatMiniCart } from './components/minicart/monat-minicart';
 
+import { MonatUpgrade } from './components/upgradeFlow/monatupgrade';
+import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
+import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
+import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
+import { ImageManager } from './components/image-manager';
+import { AddressDeleteModal } from './components/address-delete-modal';
+import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
+
+
+// controllers
+import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
-
+import { MonatSiteOwnerController } from './controllers/site-owner-controller';
+import { OnlyForYouController } from './controllers/monat-onlyforyou';
 
 //services
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 import { MonatAlertService } from './services/monatAlertService';
+import { MonatDatePicker} from './directives/monatdatepicker';
 
 //declare variables out of scope
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster'])
+	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster', 'ngMessages'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -84,19 +99,32 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 	.directive('paginationController', SWFPagination.Factory())
 	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
+	.directive('wishlistDeleteModal', WishlistDeleteModal.Factory())
+	.directive('wishlistEditModal', WishlistEditModal.Factory())
+	.directive('addressDeleteModal', AddressDeleteModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
 	.directive('monatProductCard', MonatProductCard.Factory())
 	.directive('monatProductModal', MonatProductModal.Factory())
 	.directive('swfAccount', SWFAccount.Factory())
-
 	.directive('monatMiniCart', MonatMiniCart.Factory())
+
+	.directive('monatUpgrade', MonatUpgrade.Factory())
+	.directive('upgradeMp', MonatUpgradeMP.Factory())
+	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
+	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
+	.directive('imageManager', ImageManager.Factory())
+	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
+	.directive('monatDatePicker',MonatDatePicker.Factory())
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
+	.controller('forgotPasswordController', MonatForgotPasswordController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
+	.controller('siteOwnerController', MonatSiteOwnerController)
+	.controller('onlyForYouController', OnlyForYouController)
 
 	// Services
 	.service('monatService', MonatService)

@@ -28,9 +28,9 @@
 			},
 			{
 				"contexts": "save",
-				"regex": "^[a-zA-Z0-9-_.|:~^]+$",
+				"regex": "^[a-zA-Z0-9_-]+$",
 				"maxLength": 35,
-				"minLength": 5
+				"minLength": 3
 			}
 		],
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
@@ -57,6 +57,12 @@
 				"contexts": "save",
 				"conditions": "nonIntegrationAuthenticatedAccount",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
+			}
+		],
+		"primaryPaymentMethod": [
+			{
+				"contexts": "updatePrimaryPaymentMethod",
+				"method": "isPrimaryMethodExpired"
 			}
 		],
 		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],

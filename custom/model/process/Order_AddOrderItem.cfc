@@ -64,9 +64,66 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
     }
     
+    public any function getPrice() {
+		var account = getHibachiScope().getAccount();
+		if ( !isNull(getOrder().getAccount()) ){
+			account = getOrder().getAccount();
+		}
+		
+		if(
+			!structKeyExists(variables, "price") 
+			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(),account=account.getAccountID()) )
+			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
+		){
+			variables.price = "N/A";
+			if(!isNull(getSku())) {
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=account.getAccountID());
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				}
+			}
+		}
+		return variables.price;
+	}
+    
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
+    public boolean function orderMinimumDaysToRenewMPFailed(){
+        var productCodesRenewalMP = getService('SettingService').getSettingValue('integrationmonatGlobalProductCodesRenewMP');
+        
+        // If order already has RENEWALFEE and cannot add another a Market Partner renewal
+        var cartCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
+        cartCollectionList.setDisplayProperties('order.orderID');
+        cartCollectionList.addFilter('order.orderID', order.getOrderID());
+        cartCollectionList.addFilter('sku.product.productCode', productCodesRenewalMP, 'IN');
+        var cartCollectionCount = cartCollectionList.getRecordsCount();
+        
+        if(cartCollectionCount > 0){
+            return false;
+        }
+        
+        // If account qualifies for a Market Partner renewal
+        var currentDate = Now();
+        var orderMinimumDaysToRenewMPSetting = getOrder().setting('integrationmonatOrderMinimumDaysToRenewMP');
+        var accountRenewalDate = 0;
+        if(!isNull(getAccount().getRenewalDate())){
+            accountRenewalDate = getAccount().getRenewalDate();
+        }
+        var renewalDateCheck=DateDiff("d", accountRenewalDate, currentDate);
+        
+        if( listFindNoCase(productCodesRenewalMP,this.getProduct().getProductCode())){
+            if( this.getAccount().getAccountType() == 'marketPartner' &&
+                renewalDateCheck >= orderMinimumDaysToRenewMPSetting 
+            ){
+                return true;
+            }
+            
+            return false;
+        }
+        
+        return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     

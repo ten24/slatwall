@@ -174,7 +174,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productIngredient3" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient3ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient4" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient4ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient5" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient5ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
- property name="hairConcernType" ormtype="string";//CUSTOM PROPERTIES END
+ property name="hairConcernType" ormtype="string";
+ property name="extendedDescriptionSubtitle" ormtype="string";
+ property name="extendedDescriptionTitle" ormtype="string" hb_formFieldType="textarea";
+ property name="extendedDescriptionLeft" ormtype="string" hb_formFieldType="textarea";
+ property name="extendedDescriptionRight" ormtype="string" hb_formFieldType="textarea";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -876,7 +880,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
+	public any function getAllRelatedProducts() {
+		var relatedProducts = getService("productService").getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
+	public any function getAllProductReviews() {
+		var relatedProducts = getService("productService").getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
 	public any function getBaseProductType() {
 		if(!isNull(getProductType())){
 			return getProductType().getBaseProductType();
@@ -1453,8 +1475,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// =============== START: Custom Validation Methods ====================
 
 	public boolean function isValidPublishedEndDateTime() {
-		return isNull(this.getPublishedEndDateTime()) || 
-				this.getPublishedEndDateTime() >= this.getPublishedStartDateTime();
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
 	}
 
 	// =============== END: Custom Validation Methods ======================
@@ -1512,5 +1539,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public string function getProductURL() {
+		
+		var productURL = '';
+		if ( 
+			structKeyExists( request, 'context' ) 
+			&& structKeyExists( request.context, 'cmsSiteID' ) 
+			&& request.context.cmsSiteID != 'default'
+		) {
+			productUrl &= '/' & request.context.cmsSiteID;
+		}
+		
+		productURL &= getService('ProductService').getProductUrlByUrlTitle( getUrlTitle() );
+		
+		return productURL;
+	}
+	//CUSTOM FUNCTIONS END
 }

@@ -1,6 +1,6 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode,profileImage,createdDateTime';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,subscribedToMailchimp';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {
@@ -70,7 +70,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
-		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNew,ostProcessing', 'IN' );
 		
 		if(arguments.data.orderID != false){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
@@ -80,6 +79,42 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
 		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
+	}
+	
+	/**
+	 * Function to get All Parents on Account
+	 * */
+	public any function getAllParentsOnAccount(struct data={}) {
+		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+		
+		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
+		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												parentAccount.emailAddress, 
+												parentAccount.firstName, 
+												parentAccount.lastName, 
+												parentAccount.username, 
+												parentAccount.accountID');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.data.accountID, '=');
+		parentAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		return parentAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	/**
+	 * Function to get All Childs on Account
+	 * */
+	public any function getAllChildsOnAccount(struct data={}) {
+		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+		
+		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
+		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												childAccount.emailAddress, 
+												childAccount.firstName, 
+												childAccount.lastName, 
+												childAccount.username, 
+												childAccount.accountID');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.data.accountID, '=');
+		childAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
 	//custom validation methods

@@ -3,13 +3,23 @@ class MonatOrderItemsController {
 	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
 	public orderFees; 
-
+	public orderSavings:number;
 	//@ngInject
-	constructor(public monatService, public orderTemplateService) {
+	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
 	}
 
 	public $onInit = () => {
 		this.getOrderItems();
+		
+		// cached account
+		this.publicService.getAccount().then(result =>{
+			if(!result.priceGroups.length || result.priceGroups[0].priceGroupCode == 2){
+				this.getUpgradedOrderSavings();
+				this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess'); 
+				this.observerService.attach(this.getUpgradedOrderSavings, 'removeOrderItemSuccess');
+			}
+		}); 
+		
 	}
 	
 
@@ -19,6 +29,13 @@ class MonatOrderItemsController {
 				this.orderItems = data.orderItems;
 				this.aggregateOrderItems( data.orderItems );
 			}
+		});
+	}
+	
+		
+	public getUpgradedOrderSavings = () => {
+		this.publicService.doAction('getUpgradedOrderSavingsAmount').then(result =>{
+			this.orderSavings = result.upgradedSavings;
 		});
 	}
 	

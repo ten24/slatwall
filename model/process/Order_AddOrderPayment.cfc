@@ -68,6 +68,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
+	property name="setPrimaryPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 
 	property name="saveGiftCardToAccountFlag" hb_formFieldType="yesno";
 
@@ -159,6 +160,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function getSaveAccountPaymentMethodFlag() {
 		if(!structKeyExists(variables, "saveAccountPaymentMethodFlag")) {
+			variables.saveAccountPaymentMethodFlag = 0;
+		}
+		return variables.saveAccountPaymentMethodFlag;
+	}
+	
+	public boolean function getSetPrimaryPaymentMethodFlag() {
+		if(!structKeyExists(variables, "setPrimaryPaymentMethodFlag")) {
 			variables.saveAccountPaymentMethodFlag = 0;
 		}
 		return variables.saveAccountPaymentMethodFlag;

@@ -5,6 +5,11 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<sw-order-template-items data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#" data-edit="#rc.edit#"></sw-order-template-items>
+    
+	<sw-order-template-items 
+    	data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#" 
+    	data-site-id="#rc.orderTemplate.getSite().getSiteID()#"
+    	data-edit="#rc.edit#"
+	></sw-order-template-items>
 </cfoutput>	
 
