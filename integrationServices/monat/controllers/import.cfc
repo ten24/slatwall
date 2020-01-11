@@ -3116,7 +3116,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
 			var uri = setting('baseImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
-			var authKey = setting('authKey');
+			var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting('authKey');
 		
 			var body = {
 				"Pagination": {
@@ -3408,15 +3408,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
 		}
-
+		
 		StructEach(arguments.skuData, function(key, value){
 			var skuField = Trim(arguments.key);
 			var fieldValue = arguments.value;
 			if(isNull(fieldValue)){
 				continue;
 			}
+			
 			switch(skuField){
-				case 'ItemID':
+				case 'ItemId':
 					data['SKUItemID'] = Trim(fieldValue);
 					break;
 				case 'ItemCode':
@@ -3426,7 +3427,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
 					// attempt to set url titles product
-					// data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
+				    //data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'ItemNote':
 					data['ItemNote'] = Trim(fieldValue);
@@ -3550,6 +3551,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var query = arguments.skuBundleQuery;
 		var skuData = arguments.skuData;
 		var currentCountryCode = "";
+		
 		ArrayEach(arguments.skuData.KitLines, function(item){
 			var skuBundleData = {};
 		/*	switch (arguments.item['CountryCode']){	
@@ -3568,6 +3570,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 			StructEach(arguments.item, function(key, value){
 				switch (arguments.key){
+					case 'kitId':
+						skuBundleData['kitId'] = arguments.value;
+						break;
 					case 'OnTheFlyFlag':
 						skuBundleData['ontheflykit'] = arguments.value;
 						break;
@@ -3616,7 +3621,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -3624,7 +3629,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private string function getSkuBundleColumnsList(){
-		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
+		return "SKUItemCode,KitId,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 	
 	private string function getProductSiteColumnsList(){
@@ -3685,22 +3690,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
 
 					for (var skuData in monatProducts){
+						
 						if(arrayLen(skuData['KitLines'])){
+							
 							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
 							
 							
 							
 							// these line do the actual importing
 
-							// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
-							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
 
-							// importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
-							// getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
 						}
 					}
 					
-					writedump(skuBundleQuery);abort;
+					//writedump(skuBundleQuery);abort;
 				
 				} catch (any e){
 					writeDump(e); // rollback the tx
@@ -3724,7 +3731,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						}
 					}
 					
-					writedump(productSiteQuery);abort;
+					//writedump(productSiteQuery);abort;
 
 					insertSQL = "INSERT INTO swproductsite (productID, siteID) VALUES";
 
@@ -3757,14 +3764,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						}
 					}
 					
-					writedump(skuQuery);
-					writedump(skuPriceQuery);abort;
+					//writedump(skuQuery);abort;
+					//writedump(skuPriceQuery);abort;
 
-					// var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-					// getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
+					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
+					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
 
-					// importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-					// getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
+					importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
+					getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
 				} catch (any e){
 					writeDump(e); // rollback the tx
 				}
