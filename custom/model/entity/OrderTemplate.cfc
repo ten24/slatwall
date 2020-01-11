@@ -74,14 +74,27 @@ component {
 	}
 	
 	public boolean function getQualifiesForOFYProducts(){
-		if(!structKeyExists(variables, 'qualifiesForOFYProducts')){
+		
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
 			
-			var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
-			promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+			variables.qualifiesForOFYProducts = (  
+				
+				this.getCartTotalThresholdForOFYAndFreeShipping() <= this.getSubtotal() 
+				
+				&&
+				
+				!this.hasOFYOrderTemplateItems()
+			);
 			
-			variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
 		}	
 		return variables.qualifiesForOFYProducts;
+	}
+	
+	public boolean function hasOFYOrderTemplateItems(){
+        var orderTemplateItemCollectionList = getService('orderService').getOrderTemplateItemCollectionList();
+        orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', this.getOrderTemplateID());
+        orderTemplateItemCollectionList.addFilter('sku.product.productType.productTypeName', 'Only Fo%', 'LIKE');
+        return orderTemplateItemCollectionList.getRecordsCount() > 0;
 	}
 
 	public struct function getListingSearchConfig() {

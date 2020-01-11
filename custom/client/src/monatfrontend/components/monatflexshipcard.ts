@@ -236,24 +236,12 @@ class MonatFlexshipCardController {
 			});
 	}
 
-	public setAsCurrentFlexship() {
-		// make api request
-		this.orderTemplateService
-			.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
-			.then((data) => {
-				if (
-					data.successfulActions &&
-					data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1
-				) {
-					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
-				} else {
-					throw data;
-				}
-			})
-			.catch((error) => {
-				console.error('setAsCurrentFlexship :', error);
-				// TODO: show alert
-			});
+	public goToProductListingPage() {
+		this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+	}
+	
+	public goToOFYProductListingPage() {
+		this.$window.location.href = `/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
 	}
 	
 	public showDeleteOrderTemplateModal = () => {
