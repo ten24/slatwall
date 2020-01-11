@@ -3570,14 +3570,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 			StructEach(arguments.item, function(key, value){
 				switch (arguments.key){
-					case 'kitId':
-						skuBundleData['kitId'] = arguments.value;
-						break;
 					case 'OnTheFlyFlag':
 						skuBundleData['ontheflykit'] = arguments.value;
 						break;
 					case 'ComponentItemCode':
 						skuBundleData['ComponentItemCode'] = arguments.value;
+						skuBundleData['importKey'] = skuBundleData['SKUItemCode'] & "-" & skuBundleData['ComponentItemCode'];
 						break;
 					case 'ComponentQty':
 						skuBundleData['ComponentQuantity'] = arguments.value;
@@ -3629,7 +3627,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private string function getSkuBundleColumnsList(){
-		return "SKUItemCode,KitId,ontheflykit,ComponentItemCode,ComponentQuantity";
+		return "SKUItemCode,KitId,importKey,ontheflykit,ComponentItemCode,ComponentQuantity";
 	}
 	
 	private string function getProductSiteColumnsList(){
@@ -3694,8 +3692,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						if(arrayLen(skuData['KitLines'])){
 							
 							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
-							
-							
 							
 							// these line do the actual importing
 
