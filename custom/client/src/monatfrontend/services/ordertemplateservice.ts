@@ -218,9 +218,10 @@ export class OrderTemplateService {
        'orderTemplateID',
        'skuID',
        'quantity'
+       temporaryFlag -> OFY/promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false) => {
         let payload = {
 			'orderTemplateID': orderTemplateID,
 			'skuID': skuID,
