@@ -7,9 +7,19 @@
           "key":true
         },
         {
-          "sourcecolumn":"remoteID",
-          "sourceColumnDataGenerator":"'IMPORT' + SKUItemCode + '-' + ComponentItemCode",
+          "sourcecolumn":"KitId",
           "propertyidentifier":"remoteID",
+
+        },
+        {
+          "sourcecolumn":"ComponentItemCode",
+          "propertyidentifier":"remoteCode",
+
+        },
+        {
+          "sourcecolumn":"importKey",
+          "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
+          "propertyidentifier":"importKey",
           "key":true
         },
         {
