@@ -9,7 +9,8 @@ export class OnlyForYouController {
 		public $location,
 		public $window,
 		public orderTemplateService,
-		public monatAlertService
+		public monatAlertService,
+		public rbkeyService, 
 	) {
 		this.getPromotionSkus();
 	}
@@ -44,7 +45,10 @@ export class OnlyForYouController {
 		
 		this.orderTemplateService.addOrderTemplateItem( skuID, this.orderTemplateID, 1, true )
 		.then((data) => {
-			this.monatAlertService.success("Product added to Flexship successfully");
+
+			this.monatAlertService.success(
+				this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull')
+			);
 			this.$window.location.href = '/my-account/flexships/';
 		})
 		.catch( (error) => {

@@ -93,7 +93,7 @@ component {
 	public boolean function hasOFYOrderTemplateItems(){
         var orderTemplateItemCollectionList = getService('orderService').getOrderTemplateItemCollectionList();
         orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', this.getOrderTemplateID());
-        orderTemplateItemCollectionList.addFilter('sku.product.productType.productTypeName', 'Only Fo%', 'LIKE');
+        orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
         return orderTemplateItemCollectionList.getRecordsCount() > 0;
 	}
 
