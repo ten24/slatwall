@@ -7,11 +7,6 @@
           "key":true
         },
         {
-          "sourcecolumn":"KitId",
-          "propertyidentifier":"remoteID",
-
-        },
-        {
           "sourcecolumn":"ComponentItemCode",
           "propertyidentifier":"remoteCode",
 
@@ -19,7 +14,7 @@
         {
           "sourcecolumn":"importKey",
           "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
-          "propertyidentifier":"importKey",
+          "propertyidentifier":"remoteID",
           "key":true
         },
         {

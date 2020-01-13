@@ -2,14 +2,14 @@
     "baseentity":"SkuBundle",
     "mapping":[
         {
-          "sourceColumn":"ComponentItemCode",
-          "propertyIdentifier":"bundledSku.skuCode",
+          "sourceColumn":"SKUItemCode",
+          "propertyIdentifier":"sku.skuCode",
           "key":true
         },
         {
-          "sourcecolumn":"KitId",
-          "propertyidentifier":"remoteID",
-
+          "sourceColumn":"ComponentItemCode",
+          "propertyIdentifier":"bundledSku.skuCode",
+          "key":true
         },
         {
           "sourcecolumn":"ComponentItemCode",
@@ -19,7 +19,7 @@
         {
           "sourcecolumn":"ImportKey",
           "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
-          "propertyidentifier":"importKey",
+          "propertyidentifier":"remoteID",
           "key":true
         },
         {
