@@ -9,12 +9,15 @@ component extends="Slatwall.model.service.ProductService" accessors="true" outpu
 	 public string function getProductURLByUrlTitle( string urlTitle ) {
 	 	var currentSiteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite();
 		
-		currentSiteCode = lCase( currentSiteCode );
-		currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
-		
 		var productURL = '';
-		if ( len( currentSiteCode ) ) {
-			productURL &= '/#currentSiteCode#';
+		
+		if ( !isNull( currentSiteCode ) ) {
+			currentSiteCode = lCase( currentSiteCode );
+			currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
+			
+			if ( len( currentSiteCode ) ) {
+				productURL &= '/#currentSiteCode#';
+			}
 		}
 		
 		productURL &= "/#getHibachiScope().setting('globalURLKeyProduct')#";

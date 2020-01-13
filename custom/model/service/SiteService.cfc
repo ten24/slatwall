@@ -13,9 +13,11 @@ component extends="Slatwall.model.service.SiteService" accessors="true" output="
 	}
 	
 	public any function getSlatwallSiteCodeByCurrentSite() {
-		var siteCodeArray = listToArray( getCurrentRequestSite().getSiteCode(), '-' );
-		var siteCode = ( len( siteCodeArray ) == 2 ) ? uCase( siteCodeArray[2] ) : '';
-		return siteCode;
+		if ( !isNull( getCurrentRequestSite() ) ) {
+			var siteCodeArray = listToArray( getCurrentRequestSite().getSiteCode(), '-' );
+			var siteCode = ( len( siteCodeArray ) == 2 ) ? uCase( siteCodeArray[2] ) : '';
+			return siteCode;
+		}
 	}
 	
 	public any function getCountryNameByCurrentSite() {
