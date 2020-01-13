@@ -24,8 +24,9 @@
 						name="flexshipCancelReasonType"
 						swvalidationrequired="true"
 						ng-model="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonType"
-						ng-options="reason.value as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions"
+						ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions"
 						placeholder="{{ monatFlexshipCancelModal.translations.flexshipCancelReason }}"
+						
 					>
 						<option value="">{{ monatFlexshipCancelModal.translations.whyAreYouCancelling }}</option>
 					</select>
@@ -35,11 +36,13 @@
 						<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
 					
-					<div class="material-field">
+					<div class="material-field" 
+					ng-if="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonType.systemCode === 'otcrtOther'">
 						<input type="text"
 							class="form-control"
 							name="flexshipCancelOtherReasonNotes"
-							swvalidationrequired="true"
+							swvalidationmaxlength ="250"
+							swvalidationrequired = "true"
 							ng-model="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonTypeOther"
 						/>
 						

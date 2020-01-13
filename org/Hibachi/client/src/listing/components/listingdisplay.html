@@ -376,7 +376,7 @@
                         </tr>
 
                     </tbody>
-                    <thead ng-show="swListingDisplay.hasNumerical() === false">
+                    <thead ng-if="swListingDisplay.hasNumerical() === false">
                         <tr>
                             <!-- Sortable -->
                             <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
@@ -389,17 +389,11 @@
                             <th class="s-detail-hidden-content"></th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
-                           data-listing-id="{{swListingDisplay.tableID}}"
-                           
-                           >
-
-                        <tr 
-                            data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
+                    <tbody data-ng-if="swListingDisplay.hasAverageOrTotal() && swListingDisplay.collectionData.pageRecords" data-listing-id="{{swListingDisplay.tableID}}">
+                        <tr data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
                             data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
-                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()"
-                        >
+                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()">
 
                             <!-- Sortable -->
                             <td  class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
@@ -407,9 +401,7 @@
                             </td><!-- Need to put the form here -->
 
                             <!--Selectable/Multiselectable-->
-                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"
-                            	ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}"
-                            >
+                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable" ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}">
                             </td>
 
                             <!--cell contents -->

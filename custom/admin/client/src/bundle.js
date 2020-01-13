@@ -72717,7 +72717,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
-            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.fulfillmentRefundTotal = _this.fulfillmentRefundAmount + _this.fulfillmentRefundTaxAmount;
+            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundTotal - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
             _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
             _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
@@ -78622,6 +78623,7 @@ exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
     function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+        var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
         if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
@@ -78635,7 +78637,6 @@ var CollectionConfig = /** @class */ (function () {
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
         if (listingSearchConfig === void 0) { listingSearchConfig = null; }
-        var _this = this;
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
@@ -89591,7 +89592,7 @@ var RbKeyService = /** @class */ (function () {
                 }
                 if (_this.resourceBundles[locale]) {
                     var bundle = _this.resourceBundles[locale];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkeyfound:'+bundle[key]);
                         return bundle[key];
                     }
@@ -89608,7 +89609,7 @@ var RbKeyService = /** @class */ (function () {
                 //$log.debug(localeListArray);
                 if (localeListArray.length === 2) {
                     bundle = _this.resourceBundles[localeListArray[0]];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkey found:'+bundle[key]);
                         return bundle[key];
                     }

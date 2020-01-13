@@ -56,6 +56,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="allowAdminAccessFlag" ormtype="boolean";
 	property name="resetSettingCache" ormtype="boolean";
 	property name="currencyCode" ormtype="string";
+	
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 
@@ -230,18 +231,8 @@ public any function getOwnerAccount() {
 		}
 		
 
-		var domain = getHibachiScope().getCurrentDomain();
-		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
-		/*
-		Matches:
-			username.monat.local
-			username.monatglobal.com
-			username.mymonat.com
-			username.monat.ten24dev.com
-		*/
-		
-		if(reFindNoCase(regex, domain)){
-			var accountCode = reReplaceNoCase(domain, regex, '\1');
+		var accountCode = getHibachiScope().getSubdomain();
+		if(len(accountCode)){
 			var account = getService('accountService').getAccountByAccountCode(accountCode);
 			
 			if(!isNull(account)){

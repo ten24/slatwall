@@ -112,7 +112,7 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     
-    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}, required string context="save") {
         
 		if(arguments.processObject.getNewAccountFlag()) {
 			
@@ -128,7 +128,7 @@ component extends="Slatwall.model.service.OrderService" {
 			var account = getHibachiScope().getAccount();
 		}
 		
-		if( !account.getCanCreateFlexshipFlag()) {
+		if( !account.getCanCreateFlexshipFlag() && arguments.context != "upgradeFlow") {
 			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
 			return arguments.orderTemplate;
 		}
@@ -151,7 +151,7 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 	
-		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
 		return arguments.orderTemplate;
     }
 
@@ -456,7 +456,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
+		ordersItemsList.setDisplayProperties('quantity,price,sku.product.productName,sku.product.productID,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -647,14 +647,14 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 	
-	public boolean function orderHasStarterKit(required orderID) {
+	public boolean function orderHasProductPack(required orderID) {
 
-		var starterKitProductType = getService('productService').getProductTypeBySystemCode('StarterKit');
+		var productPackProductType = getService('productService').getProductTypeBySystemCode('ProductPack');
 		
 		var orderItemCollectionList = this.getOrderItemCollectionList();
 		orderItemCollectionList.setDisplayProperties('orderItemID');
 		orderItemCollectionList.addFilter('order.orderID', "#arguments.orderID#");
-		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#starterKitProductType.getProductTypeIDPath()#%','Like');
+		orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#productPackProductType.getProductTypeIDPath()#%','Like');
 		
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}

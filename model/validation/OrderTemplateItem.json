@@ -1,7 +1,7 @@
 {
 	"conditions": {},
 	"properties": {
-		"sku": [{ "contexts": "save", "required": true }],
+		"sku": [{ "contexts": "save", "required": true, "method": "skuHasPriceByCurencyCode" }],
 		"quantity": [{ "contexts": "save", "required": true }]
 	}
 }

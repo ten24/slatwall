@@ -1539,5 +1539,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return smartList.getRecords();
 	}
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public string function getProductURL() {
+		
+		var productURL = '';
+		if ( 
+			structKeyExists( request, 'context' ) 
+			&& structKeyExists( request.context, 'cmsSiteID' ) 
+			&& request.context.cmsSiteID != 'default'
+		) {
+			productUrl &= '/' & request.context.cmsSiteID;
+		}
+		
+		productURL &= getService('ProductService').getProductUrlByUrlTitle( getUrlTitle() );
+		
+		return productURL;
+	}
+	//CUSTOM FUNCTIONS END
 }

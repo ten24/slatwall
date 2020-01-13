@@ -1,5 +1,6 @@
 {
-	"properties": {
-		"fulfillmentMethodName": [{ "contexts": "save", "required": true }]
+	"properties":{
+	    "fulfillmentMethodName":		[{"contexts":"save","required":true}],
+		"orderFulfillments":		[{"contexts":"delete","maxCollection":0}]
 	}
 }
