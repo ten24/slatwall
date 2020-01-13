@@ -11,13 +11,11 @@ component extends="Slatwall.model.service.ProductService" accessors="true" outpu
 		
 		var productURL = '';
 		
-		if ( !isNull( currentSiteCode ) ) {
-			currentSiteCode = lCase( currentSiteCode );
-			currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
-			
-			if ( len( currentSiteCode ) ) {
-				productURL &= '/#currentSiteCode#';
-			}
+		currentSiteCode = lCase( currentSiteCode );
+		currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
+		
+		if ( len( currentSiteCode ) ) {
+			productURL &= '/#currentSiteCode#';
 		}
 		
 		productURL &= "/#getHibachiScope().setting('globalURLKeyProduct')#";
