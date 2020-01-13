@@ -73,12 +73,13 @@ Notes:
 	<cfset local.siteID = "">
 	<cfif NOT IsNull(rc.order.getAccount()) >
 	    <cfset local.accountID = rc.order.getAccount().getAccountID()>
-	</cfif>
-	
-	<cfif NOT IsNull(rc.order.getOrderCreatedSite()) 
-	        AND NOT IsNull(rc.order.getOrderCreatedSite().getSiteID())
+	    
+	    <cfif NOT IsNull(rc.order.getAccount().getAccountCreatedSite()) 
+	        AND NOT IsNull(rc.order.getAccount().getAccountCreatedSite().getSiteID())
 	    >
-		<cfset local.siteID = rc.order.getOrderCreatedSite().getSiteID()>
+	        <cfset local.siteID = rc.order.getAccount().getAccountCreatedSite().getSiteID()>
+	    </cfif>
+	    
 	</cfif>
 
 	<sw-add-order-items-by-sku 
