@@ -36,6 +36,7 @@ class swfAccountController {
     public orderPayments:any;
     public uploadImageError:boolean;
     public accountProfileImage;
+    public orderDelivery:any;
     public orderPromotions:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
@@ -158,6 +159,7 @@ class swfAccountController {
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
                 
                 if(this.orderPayments.length){
                     Object.keys(this.orderPayments[0]).forEach(key => {
