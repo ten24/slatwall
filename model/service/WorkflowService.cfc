@@ -164,6 +164,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
+	public void function updateWorkflowTriggerRunning(required any workflowTrigger,required boolean runningFlag){
+		//application based workflows rely on application locking instead of database so keep running flag false
+		if(arguments.workflowTrigger.getLockLevel()=='database' || !arguments.runningFlag){
+			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=arguments.runningFlag);
+		}
+	}
+
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
@@ -172,11 +179,20 @@ component extends="HibachiService" accessors="true" output="false" {
 			getService('hibachiTagService').cfsetting(requesttimeout=timeout);
 		}
 
-		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+		if(
+			arguments.workflowTrigger.getLockLevel()=='database'
+			&& arguments.workflowTrigger.getStartDateTime() > now() 
+			|| (
+				!isNull(arguments.workflowTrigger.getEndDateTime()) 
+				&& arguments.workflowTrigger.getEndDateTime() < now()
+			)
+		){	
 			return arguments.workflowTrigger;
 		}
+		
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceID()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout=timeout{
 			//Change WorkflowTrigger runningFlag to TRUE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
+			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	
 			if(workflowTrigger.getSaveTriggerHistoryFlag() == true){
 				// Create a new workflowTriggerHistory to be logged
@@ -184,7 +200,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				//Attach workflowTrigger to workflowTriggerHistory
 				workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
 				workflowTriggerHistory.setStartTime(now());
-	
+				workflowTriggerHistory.setServerInstance(getHibachiScope().getServerInstance());
 				// Persist the info to the DB
 				workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 				getHibachiDAO().flushORMSession();
@@ -196,7 +212,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				//get workflowTriggers Object
 				//execute Collection and return only the IDs
 
-
+				getService('hibachiEventService').announceEvent('beforeWorkflowTriggerPopulate',{workflowTrigger=arguments.workflowTrigger,timeout=timeout});
+				
 				if(
 					!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
 					|| !isNull(arguments.workflowTrigger.getScheduleCollection())
@@ -305,9 +322,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					workflowTrigger.setWorkflowTriggerException(e);
 				}
 			}
-	
-			//Change WorkflowTrigger runningFlag to FALSE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
+		}
+		
+		//Change WorkflowTrigger runningFlag to FALSE
+		updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=false);
 	
 
 		if(!isNull(workflowTriggerHistory)) {

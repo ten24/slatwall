@@ -54,7 +54,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="collectionPassthrough" ormType="boolean" hb_formatType="yesno" default="false";
 	property name="timeout" ormtype="integer" default="90"; 
 	property name="scheduleCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
-
+	property name="lockLevel" ormtype="string" hb_formatfieldtype="select" default="database" hint="if lock level is database, then isRunningFlag is checked in the database for locking. If application then we lock by serverInstanceKey";
 	
 	// Calculated Properties
 
@@ -84,6 +84,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	// Non-Persistent Properties
 	
 	property name="workflowTriggerException" persistent="false";
+	property name="lockLevelOptions" persistent="false";
 	
 	public void function setWorkflowTriggerException(required any e){
 		variables.workflowTriggerException = arguments.e;
@@ -93,6 +94,20 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 		if(structKeyExists(variables,"workflowTriggerException")){
 			return variables.workflowTriggerException;
 		}
+	}
+	
+	public array function lockLevelOptions(){
+		return [
+			{'name'='application','value'='application'},
+			{'name'='database','value'='database'}
+		];
+	}
+
+	public string function getLockLevel(){
+		if(!structKeyExists(variables,'lockLevel')){
+			variables.lockLevel = 'database';
+		}
+		return variables.lockLevel;
 	}
 	
 	

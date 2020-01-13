@@ -494,5 +494,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 	}
 	
+	public string function getServerInstanceID(){
+		return server[getApplicationKey()].serverInstanceID;
+	}
+
+	public any function getServerInstance(){
+		return getService('HibachiCacheService').getServerInstance(getServerInstanceID());
+	}
+	
 	
 }

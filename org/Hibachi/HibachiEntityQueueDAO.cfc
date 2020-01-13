@@ -67,6 +67,38 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			params
 		);
 	}
+	
+	
+	public void function resetTimedOutEntityQueueItems(required numeric timeout){
+		var queryService = new query();
+		queryService.addParam(name='timeoutDateTime', value='#DateAdd("s",-1*arguments.timeout,now())#', CFSQLTYPE='CF_SQL_TIMESTAMP');
+			
+		var sql =	"UPDATE 
+						SwEntityQueue 
+					SET serverInstanceID=NULL
+					WHERE 
+						serverInstanceID IS NOT NULL
+						AND modifiedDateTime < :timeoutDateTime
+					";
+						
+		queryService.execute(sql=sql);
+	}
+	
+	public void function claimEntityQueueItemsByServer(required string serverInstanceID, required numeric fetchSize){
+		var queryService = new query();
+		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstanceID#', CFSQLTYPE='CF_SQL_STRING');
+		
+		
+		var sql =	"UPDATE 
+						SwEntityQueue 
+					SET serverInstanceID=:serverInstanceID
+					WHERE 
+						serverInstanceID IS NULL
+					LIMIT
+					#arguments.fetchSize#";
+						
+		queryService.execute(sql=sql);
+	}
 
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
