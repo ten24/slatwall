@@ -15,7 +15,7 @@ component extends="Slatwall.model.service.SiteService" accessors="true" output="
 	public string function getSlatwallSiteCodeByCurrentSite() {
 		if ( !isNull( getCurrentRequestSite() ) ) {
 			var siteCodeArray = listToArray( getCurrentRequestSite().getSiteCode(), '-' );
-			var siteCode = ( len( siteCodeArray ) == 2 ) ? uCase( siteCodeArray[2] ) : '';
+			var siteCode = ( arrayLen( siteCodeArray ) == 2 ) ? uCase( siteCodeArray[2] ) : '';
 			return siteCode;
 		}
 
