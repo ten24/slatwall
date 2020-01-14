@@ -55,7 +55,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                 
                 if (hasItems && len(currentSkuCodes)){
                     //Find the products from this cart that belong on this site.
-                    var productsValidOnThisSite = slatwallScope.getSkuCollection();
+                    var productsValidOnThisSite = slatwallScope.getService("skuService").getSkuCollection();
                     productsValidOnThisSite.addFilter("product.sites.sitesID", "#requestSite.getSiteID()#", "=");
                     productsValidOnThisSite.addFilter("skuCode", "#currentSkuCodes#", "in");
                     productsValidOnThisSite.setDisplayProperties("sku.skuCode");
