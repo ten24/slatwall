@@ -72,8 +72,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                     //Check each orderItem to see if its allowed. Build a single list
                     //that can be passed in one go to the orderitem remove function
                     for (var orderItem in orderItems){
-                        if (!listContains(validSkuCodes, orderItem.getSkuCode())){
-                            orderItemIDList = listAppend(orderItemIDList, orderItem.getSkuCode());
+                        if (!listContains(validSkuCodes, orderItem.getSku().getSkuCode())){
+                            orderItemIDList = listAppend(orderItemIDList, orderItem.getSku().getSkuCode());
                         }
                     }
                     
