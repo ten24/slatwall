@@ -473,7 +473,20 @@ component  accessors="true" output="false"
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
             
+            if(!deleteOk) {
+                
+                if(accountAddress.hasErrors()){
+                    this.addErrors( arguments.data, accountAddress.getErrors() );
+                } else {
+                    this.addErrors( 
+                        arguments.data, 
+                        [ { 'AccountAddress': 'Something went wrong please try again' } ]
+                    );
+                }
+            }
+            
         } else {
+            this.addErrors(arguments.data, [ { 'AccountAddress': 'Invalid AccountAddress/ID' } ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
