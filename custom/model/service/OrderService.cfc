@@ -1274,11 +1274,11 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	
-	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required string accountID){
+	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required any orderTemplate){
 	
 		var flexshipsCollectionList = this.getOrderTemplateCollectionList();
 		flexshipsCollectionList.setDisplayProperties('orderTemplateID');
-		flexshipsCollectionList.addFilter('account.accountID', arguments.accountID);
+		flexshipsCollectionList.addFilter('account.accountID', arguments.orderTemplate.getAccount().getAccountID());
 		flexshipsCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule');
 
 		var totalFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
@@ -1293,16 +1293,16 @@ component extends="Slatwall.model.service.OrderService" {
 		if(canceledFlexshipsCount < totalFlexshipsCount) { 
 			return false;
 		}	
+	
+		var flexshipCancellationGracePeriodForMpUsers = arguments.orderTemplategetSite().setting('integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers'); 
 		
-		var mpAccountFlexshipCancellationGracePeriod = 60; // We can make this a setting?
-
 		flexshipsCollectionList.setDisplayProperties('orderTemplateID,canceledDateTime');
 		flexshipsCollectionList.addOrderBy("canceledDateTime|DESC");
 		flexshipsCollectionList.setPageRecordsShow(1);
-
-		var lastCanceledFlexship = flexshipsCollectionList.getRecords()[1]; 
 		
-		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < mpAccountFlexshipCancellationGracePeriod ) {
+		var lastCanceledFlexship = flexshipsCollectionList.getPageRecords( refresh=true, formatRecords=false )[1]; 
+
+		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < flexshipCancellationGracePeriodForMpUsers ) {
 			return true;
 		}
 		
