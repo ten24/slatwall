@@ -152,15 +152,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				orderTemplate.setShippingMethod(shippingMethod);
 				
-				if( !IsNull(arguments.order.getShippingAccountAddress() ) ){
-					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+				if( !IsNull(orderFulFillment.getAccountAddress() ) ){
+					orderTemplate.setShippingAccountAddress(orderFulFillment.getAccountAddress() );
 				} else {
 					
 					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
 					var newAccountAddress = getAccountService().newAccountAddress();
-					newAccountAddress.setAddress( arguments.order.getShippingAddress() );
+					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
 					newAccountAddress.setAccount( orderTemplate.getAccount() );
-					newAccountAddress.setAccountAddressName(arguments.order.getShippingAddress().getName());
+					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
 					
 					orderTemplate.setShippingAccountAddress(newAccountAddress);
 				}
