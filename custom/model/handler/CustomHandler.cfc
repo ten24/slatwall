@@ -58,13 +58,13 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                     var productsValidOnThisSite = slatwallScope.getService("skuService").getSkuCollectionList();
                     productsValidOnThisSite.addFilter("product.sites.siteID", "#requestSite.getSiteID()#", "=");
                     productsValidOnThisSite.addFilter("skuCode", "#currentSkuCodes#", "in");
-                    productsValidOnThisSite.setDisplayProperties("sku.skuCode");
+                    productsValidOnThisSite.setDisplayProperties("skuCode");
                     var products = productsValidOnThisSite.getRecords();
                     
                     //if its not in this collection, its not allowed on this site.
                     var validSkuCodes = "";
-                    arrayEach( collectionItem, function(product){
-                        validSkuCodes = listAppend(validSkuCodes, product.sku_skuCode);
+                    arrayEach( collectionItem, function(sku){
+                        validSkuCodes = listAppend(validSkuCodes, sku.skuCode);
                     });
                     
                     var orderItemIDList = "";
