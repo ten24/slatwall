@@ -1300,7 +1300,7 @@ component extends="Slatwall.model.service.OrderService" {
 		flexshipsCollectionList.addOrderBy("canceledDateTime|DESC");
 		flexshipsCollectionList.setPageRecordsShow(1);
 
-		var lastCanceledFlexship = flexshipsCollectionList.getRecords()[1]; 
+		var lastCanceledFlexship = flexshipsCollectionList.getPageRecords( refresh=true, formatRecords=false )[1]; 
 		
 		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < mpAccountFlexshipCancellationGracePeriod ) {
 			return true;
