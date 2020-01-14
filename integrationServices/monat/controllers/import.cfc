@@ -2428,15 +2428,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		 **/
                     		var isKit = isParentSku(detail['KitFlagCode']?:false);
                     		
-                    		if (isKit) {
-                    			try{
-                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
-                    			}catch(skuError){
-                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
-                    			}
-                    		} else {
-                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
-                    		}
+                    		var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
                     		
                     		// Create an orderitem for the order if its a kit parent item OR if its not part of a kit.
     			            
@@ -3795,15 +3787,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		 **/
                     		var isKit = isParentSku(detail['KitFlagCode']?:false);
                     		
-                    		if (isKit) {
-                    			try{
-                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode & currencyCode, false);
-                    			}catch(skuError){
-                    				var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
-                    			}
-                    		} else {
-                    			var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
-                    		}
+                    		var sku = getSkuService().getSkuBySkuCode(detail.itemCode, false);
                     		
                     		// Create an orderitem for the order if its a kit parent item OR if its not part of a kit.
     			            
