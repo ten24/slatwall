@@ -1272,4 +1272,43 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return arguments.order;
 	}
+	
+	
+	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required string accountID){
+	
+		var flexshipsCollectionList = this.getOrderTemplateCollectionList();
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID');
+		flexshipsCollectionList.addFilter('account.accountID', arguments.accountID);
+		flexshipsCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule');
+
+		var totalFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(totalFlexshipsCount < 1){
+			return false;
+		}
+		
+		flexshipsCollectionList.addFilter('orderTemplateStatusType.systemCode', 'otstCancelled');
+		var canceledFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(canceledFlexshipsCount < totalFlexshipsCount) { 
+			return false;
+		}	
+		
+		var mpAccountFlexshipCancellationGracePeriod = 60; // We can make this a setting?
+
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID,canceledDateTime');
+		flexshipsCollectionList.addOrderBy("canceledDateTime|DESC");
+		flexshipsCollectionList.setPageRecordsShow(1);
+
+		var lastCanceledFlexship = flexshipsCollectionList.getRecords()[1]; 
+		
+		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < mpAccountFlexshipCancellationGracePeriod ) {
+			return true;
+		}
+		
+		return false;
+			
+	}
+	
+	
 }
