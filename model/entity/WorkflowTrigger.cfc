@@ -145,7 +145,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 		}
 		// Convert collection config into collection object
 		if(structKeyExists(variables, 'scheduleCollectionConfig') && len(variables.scheduleCollectionConfig)){
-			var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
+			var scheduleCollectionConfig = deserializeJSON(variables.scheduleCollectionConfig);
 			variables.collection = getService('HibachiCollectionService').invokeMethod('get#scheduleCollectionConfig["baseEntityName"]#CollectionList');
 			variables.collection.setCollectionConfigStruct(scheduleCollectionConfig);
 			return variables.collection;

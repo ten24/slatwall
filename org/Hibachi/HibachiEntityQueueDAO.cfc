@@ -87,11 +87,11 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public void function claimEntityQueueItemsByServer(required string serverInstanceID, required numeric fetchSize){
 		var queryService = new query();
 		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstanceID#', CFSQLTYPE='CF_SQL_STRING');
-		
+		queryService.addParam(name='now', value='#now()#', CFSQLTYPE='CF_SQL_TIMESTAMP');
 		
 		var sql =	"UPDATE 
 						SwEntityQueue 
-					SET serverInstanceID=:serverInstanceID
+					SET serverInstanceID=:serverInstanceID, modifiedDateTime = :now
 					WHERE 
 						serverInstanceID IS NULL
 					LIMIT
@@ -208,9 +208,9 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public void function updateModifiedDateTimeAndMostRecentError(required string entityQueueID, required string errorMessage){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage WHERE entityQueueID = :entityQueueID";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceID = NULL WHERE entityQueueID = :entityQueueID";
 
 		queryService.execute(sql=sql);
 	}
