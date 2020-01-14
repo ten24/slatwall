@@ -1794,7 +1794,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
-			
 		}
 
 
@@ -1810,11 +1809,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
 			} 
 		}
-		
-		if(arguments.orderTemplateItem.hasErrors()){
-			orderTemplate.addErrors(arguments.orderTemplateItem.getErrors());
-		}
-		
 		return arguments.orderTemplateItem;
 	}  
 

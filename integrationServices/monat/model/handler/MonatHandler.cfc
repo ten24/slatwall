@@ -6,10 +6,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         param name="arguments.data.emailAddressOrUsername" default="";
         param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
-
+        if(!arguments.account.getActiveFlag()){
+        	return;
+        }
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
-        accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        
+        if( len(arguments.data.emailAddressOrUsername) && REFind("^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddressOrUsername);
+        } else if( len(arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.username", arguments.data.emailAddressOrUsername);
+        } else {
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        }
+        
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
