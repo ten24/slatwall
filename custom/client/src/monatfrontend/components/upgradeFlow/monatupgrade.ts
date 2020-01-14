@@ -15,7 +15,9 @@ class MonatUpgradeController {
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
-
+	public firstStep = false;
+	public isUpgradeable:boolean = true;
+	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {
 		if (hibachiConfig.baseSiteURL) {
@@ -41,12 +43,18 @@ class MonatUpgradeController {
     	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+    	this.publicService.isUpgradeable= true;
+    	this.observerService.attach( () =>{
+    		this.isUpgradeable = false
+    		this.publicService.isUpgradeable = false;
+    	},"CanNotUpgrade");
+
 	}
 
 	public $onInit = () => {
+		
 		this.publicService.getAccount(true).then(result=>{
 			this.$rootScope.currentAccount = result;
-			console.log(result)
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
@@ -57,7 +65,7 @@ class MonatUpgradeController {
 				localStorage.clear()
 			}
 			this.observerService.notify('accountRetrieved', result.ownerAccount.accountNumber);
-		})
+		});
 		
 	}
 
@@ -83,9 +91,13 @@ class MonatUpgradeController {
 	}
 
 	public addStep = (step) => {
+		if(step.showMiniCart && !this.firstStep){
+			this.showMiniCart = true;
+		}
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
+		this.firstStep = true;
 		this.steps.push(step);
 	};
 
@@ -110,6 +122,7 @@ class MonatUpgradeController {
 	}
 
 	private navigate(index) {
+
 		if (index < 0 || index == this.position) {
 			return;
 		}
@@ -118,6 +131,7 @@ class MonatUpgradeController {
 		if (index > this.position && !this.steps[this.position].onNext()) {
 			return;
 		}
+		
 		if (index >= this.steps.length) {
 			return this.onFinish();
 		}

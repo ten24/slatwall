@@ -38,9 +38,12 @@ class VIPUpgradeController {
 			this.frequencyTerms = response.frequencyTermOptions;
 		});
 		
+		this.getProductList();
+		
 		this.publicService.doAction('setUpgradeOrderType', {upgradeType: 'VIP'}).then(response => {
-			if(response.upgradeResponseFailure) alert(response.upgradeResponseFailure); // add fe validation here
-			console.log(response);
+			if(response.upgradeResponseFailure){
+				this.observerService.notify('CanNotUpgrade');
+			}
 		});
 		
 		//checks to local storage in case user has refreshed
@@ -66,7 +69,6 @@ class VIPUpgradeController {
 		}
 		
     	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
-    	this.observerService.attach(this.getProductList,"submitSponsorSuccess");
     	
 		this.localStorageCheck(); 
 		
