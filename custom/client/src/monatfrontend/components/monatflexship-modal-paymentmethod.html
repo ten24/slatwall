@@ -5,7 +5,7 @@
 >
 	<div class="modal-dialog modal-lg">
         <form name="updateBillingForm" 
-        	ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
+        	ng-submit="updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
          >
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -26,7 +26,10 @@
 				<div
 					class="custom-radio form-group"
 					ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
-					ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID)"
+					ng-click="
+						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
+						updateBillingForm.$valid = true;
+					"
 				>
 					<input
 						type="radio"

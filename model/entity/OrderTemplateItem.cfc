@@ -102,20 +102,7 @@ property name="commissionableVolumeTotal" persistent="false";
 			arrayDeleteAt(arguments.orderTemplate.getOrderTemplateItems(), index);
 		}
 		structDelete(variables, "orderTemplate");
-	}		
-	
-	public boolean function skuHasPriceByCurencyCode(){
-		var skuPriceByCurrencyCode = this.getSku().getPriceByCurrencyCode(
-			currencyCode = this.getOrderTemplate().getCurrencyCode(), 
-			quantity = this.getQuantity(),
-			accountID = this.getOrderTemplate().getAccount().getAccountID()
-		);
-		
-		return !IsNull( skuPriceByCurrencyCode) && IsNumeric(skuPriceByCurrencyCode);
-	}
-
-	
-	//CUSTOM FUNCTIONS BEGIN
+	}		//CUSTOM FUNCTIONS BEGIN
 
 public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();

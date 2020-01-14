@@ -6,10 +6,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         param name="arguments.data.emailAddressOrUsername" default="";
         param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
-
+        if(!arguments.account.getActiveFlag()){
+        	return;
+        }
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
-        accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        
+        if( len(arguments.data.emailAddressOrUsername) && REFind("^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddressOrUsername);
+        } else if( len(arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.username", arguments.data.emailAddressOrUsername);
+        } else {
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        }
+        
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
@@ -142,15 +152,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				orderTemplate.setShippingMethod(shippingMethod);
 				
-				if( !IsNull(arguments.order.getShippingAccountAddress() ) ){
-					orderTemplate.setShippingAccountAddress(arguments.order.getShippingAccountAddress());
+				if( !IsNull(orderFulFillment.getAccountAddress() ) ){
+					orderTemplate.setShippingAccountAddress(orderFulFillment.getAccountAddress() );
 				} else {
 					
 					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
 					var newAccountAddress = getAccountService().newAccountAddress();
-					newAccountAddress.setAddress( arguments.order.getShippingAddress() );
+					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
 					newAccountAddress.setAccount( orderTemplate.getAccount() );
-					newAccountAddress.setAccountAddressName(arguments.order.getShippingAddress().getName());
+					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
 					
 					orderTemplate.setShippingAccountAddress(newAccountAddress);
 				}
