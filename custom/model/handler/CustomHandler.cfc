@@ -49,8 +49,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                 var hasItems = arrayLen(!isNull(orderItems) ? getHibachiScope().getCart().getOrderItems() : 0);
                 
                 var currentSkuCodes = "";
-                for (var sku in orderItems){
-                    currentSkuCodes = listAppend(currentSkuCodes, sku.getSkuCode());
+                for (var orderItem in orderItems){
+                    currentSkuCodes = listAppend(currentSkuCodes, orderItem.getSku().getSkuCode());
                 }
                 
                 if (hasItems && len(currentSkuCodes)){
