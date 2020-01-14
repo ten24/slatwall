@@ -190,7 +190,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.workflowTrigger;
 		}
 		
-		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceID()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout=timeout{
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout=timeout{
 			//Change WorkflowTrigger runningFlag to TRUE
 			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	
@@ -214,20 +214,10 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				getService('hibachiEventService').announceEvent('beforeWorkflowTriggerPopulate',{workflowTrigger=arguments.workflowTrigger,timeout=timeout});
 				
-				if(
-					!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
-					|| !isNull(arguments.workflowTrigger.getScheduleCollection())
-				){
-					//transient collection takes precedent
-					if(!isNull(arguments.workflowTrigger.getScheduleCollectionConfig())){
-						var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
-						var currentObjectName = scheduleCollectionConfig['baseEntityName'];
-						var scheduleCollection = getService('HibachiCollectionService').invokeMethod('get#currentObjectName#CollectionList');
-						scheduleCollection.setCollectionConfigStruct(scheduleCollectionConfig);
-					}else{
-						var scheduleCollection = arguments.workflow.getScheduleCollection();
-						var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
-					}
+				if(	!isNull(arguments.workflowTrigger.getCollection()) ){
+					
+					var scheduleCollection = arguments.workflowTrigger.getCollection();
+					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							

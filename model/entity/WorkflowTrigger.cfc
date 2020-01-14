@@ -85,6 +85,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	
 	property name="workflowTriggerException" persistent="false";
 	property name="lockLevelOptions" persistent="false";
+	property name="collection" persistent="false";
 	
 	public void function setWorkflowTriggerException(required any e){
 		variables.workflowTriggerException = arguments.e;
@@ -131,6 +132,25 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 		}
 		structDelete(variables, "workflow");
     }
+    
+    public any function getCollection(){
+    	// If Already cached
+		if(structKeyExists(variables,'collection')){
+			return variables.collection;
+		}
+		// handle legacy workflowTrigger 
+		if(structKeyExists(variables,'scheduleCollection')){
+			variables.collection = variables.scheduleCollection;
+			return variables.collection;
+		}
+		// Convert collection config into collection object
+		if(structKeyExists(variables, 'scheduleCollectionConfig') && len(variables.scheduleCollectionConfig)){
+			var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
+			variables.collection = getService('HibachiCollectionService').invokeMethod('get#scheduleCollectionConfig["baseEntityName"]#CollectionList');
+			variables.collection.setCollectionConfigStruct(scheduleCollectionConfig);
+			return variables.collection;
+		}
+	}
 	
 	// Deprecated Properties
 

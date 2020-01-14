@@ -44,7 +44,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}
 		}
-		server[getApplicationKey()].serverInstanceID = serverInstance.getServerInstanceID();
 		return serverInstance;	
 	} 
 	

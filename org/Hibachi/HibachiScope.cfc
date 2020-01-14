@@ -494,12 +494,15 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 	}
 	
-	public string function getServerInstanceID(){
-		return server[getApplicationKey()].serverInstanceID;
+	public string function getServerInstanceKey(){
+		return server[getApplicationKey()].serverInstanceKey;
 	}
 
 	public any function getServerInstance(){
-		return getService('HibachiCacheService').getServerInstance(getServerInstanceID());
+		if(!structKeyExists(variables, 'serverInstance')){
+			variables.serverInstance = getService('hibachiCacheService').getServerInstanceByServerInstanceKey(getServerInstanceKey());
+		}
+		return variables.serverInstance;
 	}
 	
 	

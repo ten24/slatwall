@@ -18,8 +18,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			//reset items that have an abandoned server
 			getService('HibachiEntityQueueService').resetTimedOutEntityQueueItems(arguments.timeout);
 			//reserve items based on fetchSize to be processed by specific server
-			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(getHibachiScope().getServerInstanceID(),arguments.workflowTrigger.getCollectionFetchSize());
-			arguments.workflowTrigger.getScheduleCollection().addFilter('serverInstance.serverInstanceID',getHibachiScope().getServerInstanceID());
+			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(getHibachiScope().getServerInstance().getServerInstanceID(),arguments.workflowTrigger.getCollectionFetchSize());
+			arguments.workflowTrigger.getCollection().addFilter('serverInstance.serverInstanceKey',getHibachiScope().getServerInstanceKey());
 		}
 	}
 
