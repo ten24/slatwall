@@ -77,15 +77,21 @@ component {
 		
 		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
 			
-			variables.qualifiesForOFYProducts = (  
+			if(!getHibachiScope().getAccount().getAdminAccountFlag() ) {
 				
-				this.getCartTotalThresholdForOFYAndFreeShipping() <= this.getSubtotal() 
+				variables.qualifiesForOFYProducts = (  
+					this.getCartTotalThresholdForOFYAndFreeShipping() <= this.getSubtotal() 
+					&&
+					!this.hasOFYOrderTemplateItems()
+				);
 				
-				&&
+			} else {
 				
-				!this.hasOFYOrderTemplateItems()
-			);
-			
+				var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+				promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
+				variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+				
+			}
 		}	
 		return variables.qualifiesForOFYProducts;
 	}
