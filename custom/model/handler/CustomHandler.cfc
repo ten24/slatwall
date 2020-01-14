@@ -59,11 +59,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                     productsValidOnThisSite.addFilter("product.sites.siteID", "#requestSite.getSiteID()#", "=");
                     productsValidOnThisSite.addFilter("skuCode", "#currentSkuCodes#", "in");
                     productsValidOnThisSite.setDisplayProperties("skuCode");
-                    var products = productsValidOnThisSite.getRecords();
+                    var skus = productsValidOnThisSite.getRecords();
                     
                     //if its not in this collection, its not allowed on this site.
                     var validSkuCodes = "";
-                    arrayEach( collectionItem, function(sku){
+                    arrayEach( skus, function(sku){
                         validSkuCodes = listAppend(validSkuCodes, sku.skuCode);
                     });
                     
