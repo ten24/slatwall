@@ -71,7 +71,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                     //Check each orderItem to see if its allowed. 
                     for (var orderItem in orderItems){
                         if (!listContains(validSkuCodes, orderItem.getSku().getSkuCode())){
-                            slatwallScope.getService("PublicService").removeOrderItem({ orderItemID: orderItem.getOrderItemID() });
+                            slatwallScope.getService("PublicService").removeOrderItem({ orderItemID: orderItem.getOrderItemID(), orderID: getHibachiScope().getCart().getOrderID()});
                         }
                     }
                 }
