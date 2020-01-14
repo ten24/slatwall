@@ -46,7 +46,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             //Only run this logic if the sites don't match.
             if (!isNull(userSite) && userSite.getSiteID() != requestSite.getSiteID()){
                 var orderItems = getHibachiScope().getCart().getOrderItems();
-                var hasItems = arrayLen(!isNull(orderItems) ? getHibachiScope().getCart().getOrderItems() : 0);
+                var hasItems = arrayLen(!isNull(orderItems) ? getHibachiScope().getCart().getOrderItems() : []);
                 
                 var currentSkuCodes = "";
                 for (var orderItem in orderItems){
@@ -67,19 +67,12 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
                         validSkuCodes = listAppend(validSkuCodes, sku.skuCode);
                     });
                     
-                    var orderItemIDList = "";
                     
-                    //Check each orderItem to see if its allowed. Build a single list
-                    //that can be passed in one go to the orderitem remove function
+                    //Check each orderItem to see if its allowed. 
                     for (var orderItem in orderItems){
                         if (!listContains(validSkuCodes, orderItem.getSku().getSkuCode())){
-                            orderItemIDList = listAppend(orderItemIDList, orderItem.getSku().getSkuCode());
+                            slatwallScope.getService("PublicService").removeOrderItem({ orderItemID: orderItem.getOrderItemID() });
                         }
-                    }
-                    
-                    //Remove the orderItems
-                    if (len(orderItemIDList)){
-                        slatwallScope.getService("PublicService").removeOrderItem({ orderItemIDList: orderItemIDList });
                     }
                 }
             }
