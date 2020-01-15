@@ -12,7 +12,7 @@ class MonatFlexshipListingController{
 	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
 	public account:any;
-	
+	public customerCanCreateFlexship:boolean;
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
@@ -39,6 +39,7 @@ class MonatFlexshipListingController{
 		});
 		
 		this.account = this.publicService.account;
+		this.getCanCreateFlexshipFlag();
 	}
 	
 	private fetchFlexships = () => {
@@ -110,6 +111,12 @@ class MonatFlexshipListingController{
 			.finally( () => {
 				//TODO
 			});
+	}
+	
+	public getCanCreateFlexshipFlag = () => {
+	    this.publicService.doAction('getCustomerCanCreateFlexship').then(res=>{
+	       this.customerCanCreateFlexship = res.customerCanCreateFlexship;
+	    });
 	}
 
 }
