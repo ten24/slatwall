@@ -21,9 +21,7 @@ component {
 			if( !IsNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner' ){
 				
 				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
-														.getAccountIsInFlexshipCancellationGracePeriod( 
-															this.getAccount().getAccountID() 
-														);
+														.getAccountIsInFlexshipCancellationGracePeriod( this );
 			}
 		}
 		
