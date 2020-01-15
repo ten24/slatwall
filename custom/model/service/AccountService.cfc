@@ -131,8 +131,9 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	 * */
 	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required any processObject) {
 		
-		var requestBean = request.slatwallScope.getTransient('CreditCardTransactionRequestBean');
+		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
 	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
+	    
 		var responseData = getService('integrationService').getIntegrationByIntegrationPackage('nexio').getIntegrationCFC("Payment").getCardStatus(requestBean);
 		
         if( !StructIsEmpty(responseData ) )
