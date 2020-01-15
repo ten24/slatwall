@@ -26,13 +26,15 @@ class MonatCheckoutController {
 		
 		this.observerService.attach(()=>{
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
+		    window.scrollTo(0, 0);
 		}, 'shippingAddressSelected');	
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'addOrderPaymentSuccess' );
 		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' ); 
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addShippingAddressSuccess' ); 
-		
+		this.observerService.attach( () => window.scrollTo(0, 0), 'addNewAccountAddressSuccess' );
+
 
 		this.getCurrentCheckoutScreen();
 	}
