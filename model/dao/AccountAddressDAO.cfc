@@ -60,8 +60,6 @@ component extends="HibachiDAO" {
 			"
 		);
 		
-		// TODO: do we need to do the same for orders and other entities?
-		
 	}
 	
 }

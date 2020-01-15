@@ -42,12 +42,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
     public string function getTranslationValue(string locale) {
         var translatedValue = "";
         if (hasTranslatedPropertyObject()) {
-            var translationEntity = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([
+            var translationEntity = getHibachiScope().getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(
                 this.getBaseObject(),
                 this.getBaseID(),
                 this.getBasePropertyName(),
-                arguments.locale
-                ], true);
+                arguments.locale);
                 
             if (!isNull(translationEntity) && len(translationEntity.getTranslationID())) {
                 translatedValue = translationEntity.getValue();
