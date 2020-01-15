@@ -174,7 +174,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productIngredient3" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient3ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient4" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient4ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient5" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient5ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
- property name="hairConcernType" ormtype="string";//CUSTOM PROPERTIES END
+ property name="hairConcernType" ormtype="string";
+ property name="extendedDescriptionSubtitle" ormtype="string";
+ property name="extendedDescriptionTitle" ormtype="string" hb_formFieldType="textarea";
+ property name="extendedDescriptionLeft" ormtype="string" hb_formFieldType="textarea";
+ property name="extendedDescriptionRight" ormtype="string" hb_formFieldType="textarea";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();

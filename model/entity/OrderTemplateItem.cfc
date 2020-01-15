@@ -70,7 +70,7 @@ property name="commissionableVolumeTotal" persistent="false";
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 //CUSTOM PROPERTIES END
 
