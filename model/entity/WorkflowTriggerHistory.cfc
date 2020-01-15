@@ -54,10 +54,10 @@ component entityname="SlatwallWorkflowTriggerHistory" table="SwWorkflowTriggerHi
 	property name="response" ormtype="string" length="8000";
 	property name="startTime" ormtype="timestamp";
 	property name="endTime" ormtype="timestamp";
+	property name="serverInstanceKey" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="workflowTrigger" cfc="WorkflowTrigger" fieldtype="many-to-one" fkcolumn="workflowTriggerID";
-	property name="serverInstance" cfc="ServerInstance" fieldtype="many-to-one" fkcolumn="serverInstanceID";
 
 	// Related Object Properties (one-to-many)
 

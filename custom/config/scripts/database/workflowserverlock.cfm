@@ -2,41 +2,26 @@
 
 <cftry>
     <cfquery name="local.workflowUpdates">
-        SET foreign_key_checks=OFF;
         
         ALTER TABLE swentityqueue 
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN serverInstanceID varchar(32) DEFAULT NULL;
+            ADD COLUMN serverInstanceKey varchar(36) DEFAULT NULL;
             
-        ALTER TABLE swentityqueue 
-            LOCK=NONE,
-            ALGORITHM=INPLACE,
-            ADD CONSTRAINT FK9718DDCAAF274AC1 FOREIGN KEY (serverInstanceID) REFERENCES swserverinstance (serverInstanceID);
             
         ALTER TABLE swworkflowtrigger 
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN lockLevel varchar(255) DEFAULT NULL;
+            ADD COLUMN lockLevel varchar(50) DEFAULT NULL;
             
             
         ALTER TABLE swworkflowtriggerhistory 
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN serverInstanceID varchar(32) DEFAULT NULL;
-            
-        ALTER TABLE swworkflowtriggerhistory 
-            LOCK=NONE,
-            ALGORITHM=INPLACE,
-            ADD CONSTRAINT FK70EEACFFAF274AC1 FOREIGN KEY (serverInstanceID) REFERENCES swserverinstance (serverInstanceID);
-        
-        SET foreign_key_checks=ON;
+            ADD COLUMN serverInstanceKey varchar(36) DEFAULT NULL;
         
 	</cfquery>
     <cfcatch >
-        <cfquery name="local.reEnableForeignKeyCheck">
-            SET foreign_key_checks=ON;
-        </cfquery>
         <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Workflow Server Lock (#cfcatch.detail#)">
     	<cfset local.scriptHasErrors = true />
     </cfcatch>

@@ -200,7 +200,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				//Attach workflowTrigger to workflowTriggerHistory
 				workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
 				workflowTriggerHistory.setStartTime(now());
-				workflowTriggerHistory.setServerInstance(getHibachiScope().getServerInstance());
+				workflowTriggerHistory.setServerInstanceKey(getHibachiScope().getServerInstanceKey());
 				// Persist the info to the DB
 				workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 				getHibachiDAO().flushORMSession();

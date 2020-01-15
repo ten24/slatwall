@@ -73,11 +73,10 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		var queryService = new query();
 		queryService.addParam(name='timeoutDateTime', value='#DateAdd("s",-1*arguments.timeout,now())#', CFSQLTYPE='CF_SQL_TIMESTAMP');
 			
-		var sql =	"UPDATE 
-						SwEntityQueue 
-					SET serverInstanceID=NULL
+		var sql =	"UPDATE SwEntityQueue 
+					SET serverInstanceKey=NULL
 					WHERE 
-						serverInstanceID IS NOT NULL
+						serverInstanceKey IS NOT NULL
 						AND modifiedDateTime < :timeoutDateTime
 					";
 						
@@ -87,22 +86,20 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
 		
 		var newCollection = arguments.collection.duplicateCollection();
-		newCollection.addFilter('serverInstance.serverInstanceID', 'NULL', 'IS');
+		newCollection.addFilter('serverInstanceKey', 'NULL', 'IS');
 		var entityQueueIDs = newCollection.getPrimaryIDList(fetchSize * 2);
 		
-		var serverInstanceID = getHibachiScope().getServerInstance().getServerInstanceID();
-		
 		var queryService = new query();
-		queryService.addParam(name='serverInstanceID', value='#serverInstanceID#', CFSQLTYPE='CF_SQL_STRING');
-		queryService.addParam(name='entityQueueIDs', value='#entityQueueIDs#', CFSQLTYPE='CF_SQL_STRING', list=true);
+		queryService.addParam(name='serverInstanceKey', value=getHibachiScope().getServerInstanceKey(), CFSQLTYPE='CF_SQL_STRING');
+		queryService.addParam(name='entityQueueIDs', value=entityQueueIDs, CFSQLTYPE='CF_SQL_STRING', list=true);
 		
 		var sql =	"UPDATE 
 						SwEntityQueue 
-					SET serverInstanceID=:serverInstanceID
+					SET serverInstanceKey=:serverInstanceKey
 					WHERE 
 						entityQueueID IN (:entityQueueIDs)
 					AND
-						serverInstanceID IS NULL
+						serverInstanceKey IS NULL
 					LIMIT
 					#arguments.fetchSize#";
 						
@@ -219,7 +216,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
 		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceID = NULL WHERE entityQueueID = :entityQueueID";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL WHERE entityQueueID = :entityQueueID";
 
 		queryService.execute(sql=sql);
 	}

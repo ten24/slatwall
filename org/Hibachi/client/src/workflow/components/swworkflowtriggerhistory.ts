@@ -44,7 +44,7 @@ class SWWorkflowTriggerHistory{
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
-                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstance.serverInstanceKey");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstanceKey");
             }
         };
     }
