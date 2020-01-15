@@ -934,7 +934,15 @@ component extends="Slatwall.model.service.OrderService" {
 				orderReturn.setOrder( arguments.order );
 				orderReturn.setCurrencyCode( arguments.order.getCurrencyCode() );
 				orderReturn.setReturnLocation( arguments.processObject.getReturnLocation() );
-				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
+					orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
+					orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
+					orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
+				}
 
 				orderReturn = this.saveOrderReturn( orderReturn );
 			}

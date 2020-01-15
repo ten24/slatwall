@@ -61,7 +61,7 @@
 			<div class="items-center flex">
 				<span ng-bind-html="swReturnOrderItems.currencySymbol"></span>
 				<input 
-					name="fulfillmentRefundDisplayAmount" 
+					name="fulfillmentRefundPreTax" 
 					type="number" 
 					ng-model="swReturnOrderItems.fulfillmentRefundAmount" 
 					ng-change="swReturnOrderItems.validateFulfillmentRefundAmount()"
@@ -71,6 +71,7 @@
 		<td>
 			<span ng-bind-html="swReturnOrderItems.fulfillmentRefundTaxAmount.toFixed(2) | swcurrency:swReturnOrderItems.currencyCode"></span>
 			<input type="hidden" name="fulfillmentRefundAmount" value="{{swReturnOrderItems.fulfillmentRefundTotal}}">
+			<input type="hidden" name="fulfillmentTaxRefund" value="{{swReturnOrderItems.fulfillmentRefundTaxAmount.toFixed(2)}}"
 		</td>
 		<td></td>
 		<td></td>
