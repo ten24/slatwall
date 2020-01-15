@@ -48,7 +48,7 @@ class MonatFlexshipCartContainerController {
     
     private setOrderTemplate = ( orderTemplate ) => {
         this.orderTemplate = orderTemplate;
-        this.qualifiesForOFYAndFreeShipping = this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping <= this.orderTemplate.subtotal;
+        this.qualifiesForOFYAndFreeShipping = this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping <= this.orderTemplate.calculatedSubTotal;
     }
 
     private makeCurrentStepTranslation = ( currentStep:number=1, totalSteps:number=2 ) => {
