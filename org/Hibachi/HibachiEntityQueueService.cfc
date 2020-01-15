@@ -23,7 +23,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		getHibachiEntityQueueDAO().resetTimedOutEntityQueueItems(argumentCollection=arguments);	
 	}
 
-	public void function claimEntityQueueItemsByServer(required string serverInstanceID, required numeric fetchSize){
+	public void function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
 		getHibachiEntityQueueDAO().claimEntityQueueItemsByServer(argumentCollection=arguments);
 	}
 

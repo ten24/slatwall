@@ -231,6 +231,7 @@ component extends="HibachiService" accessors="true" output="false" {
 							};
 
 							if(arguments.workflowTrigger.getCollectionFetchRecordsFlag()){
+								scheduleCollection.setDirtyReadFlag(true);
 								processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
 							}
 

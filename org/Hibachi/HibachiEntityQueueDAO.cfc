@@ -84,20 +84,29 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	}
 	
-	public void function claimEntityQueueItemsByServer(required string serverInstanceID, required numeric fetchSize){
+	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
+		
+		var newCollection = arguments.collection.duplicateCollection();
+		newCollection.addFilter('serverInstance.serverInstanceID', 'NULL', 'IS');
+		var entityQueueIDs = newCollection.getPrimaryIDList(fetchSize * 2);
+		
+		var serverInstanceID = getHibachiScope().getServerInstance().getServerInstanceID();
+		
 		var queryService = new query();
-		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstanceID#', CFSQLTYPE='CF_SQL_STRING');
-		queryService.addParam(name='now', value='#now()#', CFSQLTYPE='CF_SQL_TIMESTAMP');
+		queryService.addParam(name='serverInstanceID', value='#serverInstanceID#', CFSQLTYPE='CF_SQL_STRING');
+		queryService.addParam(name='entityQueueIDs', value='#entityQueueIDs#', CFSQLTYPE='CF_SQL_STRING', list=true);
 		
 		var sql =	"UPDATE 
 						SwEntityQueue 
-					SET serverInstanceID=:serverInstanceID, modifiedDateTime = :now
+					SET serverInstanceID=:serverInstanceID
 					WHERE 
+						entityQueueID IN (:entityQueueIDs)
+					AND
 						serverInstanceID IS NULL
 					LIMIT
 					#arguments.fetchSize#";
 						
-		queryService.execute(sql=sql);
+		return queryService.execute(sql=sql);
 	}
 
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
