@@ -263,11 +263,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			// is paid and closed. This is showing in some cases while the order still owes money. That combined with
 			// failing 'Save' context validations causes a stack overflow.
 			
-			if (order.getPaymentAmountDue() <= 0 && order.getOrderStatusType.getSystemCode() == "ostClosed"){
-				getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
-				renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+			if (order.getPaymentAmountDue() <= 0){
+				if (!isNull(order) && !isNull(order.getOrderStatusType()) && 
+					!isNull(order.getOrderStatusType().getSystemCode()) && 
+					order.getOrderStatusType().getSystemCode() == "ostClosed"){
+					getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+					renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);	
+				}
 			}
-			
 		}
 		
 		genericEditMethod(entityName="Order", rc=arguments.rc);

@@ -36,11 +36,13 @@ class swfAccountController {
     public orderPayments:any;
     public uploadImageError:boolean;
     public accountProfileImage;
+    public orderDelivery:any;
     public orderPromotions:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
     public prouctReviewForm:any;
+    public isDefaultImage:boolean = false;
     
     // @ngInject
     constructor(
@@ -92,20 +94,21 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            const url = window.location.pathname;
             
-            switch(window.location.pathname){
-                case '/my-account/':
-                    this.getOrdersOnAccount(1);
-                    this.getMostRecentFlexship(); 
-                    break;
-                case '/my-account/order-history/':
+            switch(true){
+                case (url.indexOf('/my-account/order-history/') > -1):
                     this.getOrdersOnAccount();
                     break;
-                case '/my-account/my-details/profile/':
+                case (url.indexOf('/my-account/my-details/profile/') > -1):
                     this.getUserProfileImage();
                     break;
-                case '/my-account/my-details/':
+                case (url.indexOf('/my-account/my-details/') > -1):
                     this.getMoMoneyBalance();
+                    break;
+                case (url.indexOf('/my-account/') > -1):
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
                     break;
             }
             
@@ -157,6 +160,7 @@ class swfAccountController {
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
                 
                 if(this.orderPayments.length){
                     Object.keys(this.orderPayments[0]).forEach(key => {
@@ -262,6 +266,15 @@ class swfAccountController {
         });
     }
     
+    public setRating = (rating) => {
+        this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
+        this.stars = ['','','','',''];
+        for(let i = 0; i <= rating - 1; i++) {
+            this.stars[i] = "fas";
+        };
+    }
+    
     public closeModals = () =>{
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
@@ -297,11 +310,20 @@ class swfAccountController {
         xhr.send(tempdata);
     }     
     
+    public deleteProfileImage(){
+        this.profileImageLoading = true;
+        this.publicService.doAction('deleteProfileImage').then(result=>{
+            this.profileImageLoading = false;
+            this.getUserProfileImage();
+        });
+    }
+    
     public getUserProfileImage = () =>{
         this.profileImageLoading = true;
         this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
             this.accountProfileImage = result.accountProfileImage;
             this.profileImageLoading = false;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
         });
     }
 
@@ -333,6 +355,28 @@ class swfAccountController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showDeleteAccountAddressModal = (address) => {
+		this.ModalService.showModal({
+			component: 'addressDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                address: address
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');

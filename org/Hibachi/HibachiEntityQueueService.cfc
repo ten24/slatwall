@@ -34,7 +34,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	private any function getServiceForEntityQueue(required struct entityQueue){ 
 		
 		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
-		var hasIntegration = structKeyExists(entityQueue, "integrationID") && !isNull(entityQueue['integrationID']) && len(trim(entityQueue['integrationID'])) 			
+		var hasIntegration = structKeyExists(entityQueue, 'integration_integrationID') && !isNull(entityQueue['integration_integrationID']) && len(trim(entityQueue['integration_integrationID'])) 			
 
 		if(hasIntegration || hasIntegrationPackageService){
 			
@@ -93,10 +93,11 @@ component accessors="true" output="false" extends="HibachiService" {
  
 
 	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
+		
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
 		}
-		
+	
 		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
 			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {

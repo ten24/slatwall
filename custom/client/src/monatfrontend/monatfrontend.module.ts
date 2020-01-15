@@ -47,7 +47,9 @@ import { MonatUpgradeVIP } from './components/upgradeFlow/monatupgradevip';
 import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
+import { AddressDeleteModal } from './components/address-delete-modal';
 import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
+
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -62,6 +64,7 @@ import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 import { MonatAlertService } from './services/monatAlertService';
+import { MonatDatePicker} from './directives/monatdatepicker';
 
 //declare variables out of scope
 declare var $: any;
@@ -99,6 +102,7 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
 	.directive('wishlistDeleteModal', WishlistDeleteModal.Factory())
 	.directive('wishlistEditModal', WishlistEditModal.Factory())
+	.directive('addressDeleteModal', AddressDeleteModal.Factory())
 
 	.directive('swfReviewListing', SWFReviewListing.Factory())
 	.directive('swfWishlist', SWFWishlist.Factory())
@@ -114,6 +118,7 @@ var monatfrontendmodule = angular
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
 	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
+	.directive('monatDatePicker',MonatDatePicker.Factory())
 
 	// Controllers
 	.controller('searchController', MonatSearchController)

@@ -1,7 +1,20 @@
-{
-
+{	
+	"conditions": {
+		"renewalFeeFlag": {
+			"sku.skuCode": { "eq": "RENEWALFEE" }
+		}
+	},
 	"properties": {
-		"isPurchasableItemFlag" : [{ "eq": true }],
-		"price": [ {"required": true, "dataType": "numeric" }]
+		"isPurchasableItemFlag" :	[{ "eq": true }],
+		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
+		"price": [ {"required": true, "dataType": "numeric" }],
+		"quantity":[
+			{	
+				"conditions": "renewalFeeFlag",
+				"dataType": "numeric",
+				"minValue": 1,
+				"maxValue": 1
+			}
+		]
 	}
 }

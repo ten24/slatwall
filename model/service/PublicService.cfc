@@ -473,7 +473,21 @@ component  accessors="true" output="false"
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
             
+            if(!deleteOk) {
+                
+                if(accountAddress.hasErrors()){
+                    this.addErrors( arguments.data, accountAddress.getErrors() );
+                } else {
+                    this.addErrors(  arguments.data, [ 
+                        { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
+                    ]);
+                }
+            }
+            
         } else {
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.Invalid') }
+            ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
@@ -2121,18 +2135,9 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            orderTemplate.clearProcessObject("addOrderTemplateItem");
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            
-            //TODO ???
-            arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(argumentCollection=arguments);
-
-    // 		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
@@ -2150,17 +2155,9 @@ component  accessors="true" output="false"
 		orderTemplateItem.setQuantity(arguments.data.quantity); 
         var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
         
-        getHibachiScope().addActionResult( "public:orderTemplate.editItem", orderTemplateItem.hasErrors() );
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
             
-        if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return orderTemplate and updated-orderTemplateItem 
-            arguments.data.orderTemplateID = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
-            
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplateItem.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
         }
     }
@@ -2175,17 +2172,9 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
+        getHibachiScope().addActionResult( "public:order.removeOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return updated-orderTemplate 
-            
-            //TODO, figure out a way to get updated calculated prop in ordertemplate
-            arguments.data.orderTemplateID = orderTemplate.getOrderTemplateID();
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }

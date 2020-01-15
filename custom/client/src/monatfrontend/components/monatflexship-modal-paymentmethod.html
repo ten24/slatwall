@@ -5,7 +5,7 @@
 >
 	<div class="modal-dialog modal-lg">
         <form name="updateBillingForm" 
-        	ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
+        	ng-submit="updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
          >
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -26,7 +26,10 @@
 				<div
 					class="custom-radio form-group"
 					ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
-					ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID)"
+					ng-click="
+						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
+						updateBillingForm.$valid = true;
+					"
 				>
 					<input
 						type="radio"
@@ -334,11 +337,15 @@
 									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
 									swvalidationrequired = "true"
 									swvalidationnumeric="true"
+									swvalidationmaxlength = "4"
+									swvalidationminlength = "3"
 									name = "newCreditCard_securityCode"
 								/>
 								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
 									<div ng-if="updateBillingForm.$submitted" 
 								     ng-messages="updateBillingForm.newCreditCard_securityCode.$error">
+									 <div ng-message="swvalidationmaxlength" sw-Rbkey="'validation.define.maxlength4'" class="text-danger error_text"></div>
+									 <div ng-message="swvalidationminlength" sw-Rbkey="'validation.define.minlength3'" class="text-danger error_text"></div>
 	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 	    						</div>
 							</div>
@@ -354,7 +361,6 @@
 					ng-class="{ loading: monatFlexshipPaymentMethodModal.loading }"
 					ng-disabled = "monatFlexshipPaymentMethodModal.loading"
 					sw-rbkey="'frontend.modal.saveChangesButton'"
-					ng-click="monatFlexshipPaymentMethodModal.updateBilling()"
 				>
 				</button>
 				<button

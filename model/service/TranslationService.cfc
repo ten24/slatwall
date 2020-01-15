@@ -1,6 +1,7 @@
 component extends="HibachiService" accessors="true" output="false" {
     
     property name="settingService" type="any";
+    property name="TranslationDAO" type="any";
 
     // ===================== START: Logical Methods ===========================
     
@@ -35,6 +36,10 @@ component extends="HibachiService" accessors="true" output="false" {
     
     // ===================== START: DAO Passthrough ===========================
     
+    public any function getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(required baseObject, required baseID, required basePropertyName, required locale){
+        return getTranslationDAO().getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(argumentCollection=arguments);
+    }
+    
     // =====================  END: DAO Passthrough ============================
     
     // ===================== START: Process Methods ===========================
@@ -54,7 +59,7 @@ component extends="HibachiService" accessors="true" output="false" {
                 
                 var hasTranslationEntityArguments = arguments.processObject.hasTranslatedPropertyObject() && !isNull(translationData['locale']);
                 if (hasTranslationEntityArguments) {
-                    var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
+                    var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']);
                     var hasTranslationEntity = !isNull(translationEntity);
                     if (hasTranslationEntity) {
                         translation = translationEntity;

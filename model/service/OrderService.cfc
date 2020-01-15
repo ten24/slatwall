@@ -1794,7 +1794,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
-			
 		}
 
 
@@ -1810,11 +1809,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
 			} 
 		}
-		
-		if(arguments.orderTemplateItem.hasErrors()){
-			orderTemplate.addErrors(arguments.orderTemplateItem.getErrors());
-		}
-		
 		return arguments.orderTemplateItem;
 	}  
 
@@ -2117,9 +2111,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
+		 param name="arguments.data.optionalProperties" type="string" default="";
+
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
-
+		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
+		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
 		

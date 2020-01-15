@@ -112,7 +112,7 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     
-    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
+    public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}, required string context="save") {
         
 		if(arguments.processObject.getNewAccountFlag()) {
 			
@@ -128,7 +128,7 @@ component extends="Slatwall.model.service.OrderService" {
 			var account = getHibachiScope().getAccount();
 		}
 		
-		if( !account.getCanCreateFlexshipFlag()) {
+		if( !account.getCanCreateFlexshipFlag() && arguments.context != "upgradeFlow") {
 			arguments.orderTemplate.addError('canCreateFlexshipFlag', rbKey("validate.create.OrderTemplate_Create.canCreateFlexshipFlag") );
 			return arguments.orderTemplate;
 		}
@@ -151,7 +151,7 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 	
-		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
 		return arguments.orderTemplate;
     }
 
@@ -475,15 +475,24 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
+		//Tracking info
+		var orderDeliveriesList = this.getOrderDeliveryCollectionList();
+		orderDeliveriesList.setDisplayProperties('trackingUrl')
+		orderDeliveriesList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
 		var orderPromtions = orderPromotionList.getPageRecords();
+		var orderDeliveries = orderDeliveriesList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
 		orderItemData['orderItems'] = orderItems;
 		orderItemData['orderPromtions'] = orderPromtions;
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
+		if ( len( orderDeliveries ) ) {
+			orderItemData['orderDelivery'] = orderDeliveries[1];
+		}
 		
 		return orderItemData
     }
