@@ -1569,4 +1569,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     
+    public void function getOrderTemplates(required any data){ 
+		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		
+		super.getOrderTemplates(argumentCollection = arguments);
+    }
+    
 }
