@@ -19,7 +19,7 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | currency }}
 			</span>
 		</div>
 		
@@ -38,7 +38,7 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount === 1"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | currency }}
 				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3">{{ !monatFlexshipCartContainer.isOpened ? 'Show Cart' : 'Hide Cart' }}</small>
 			</span>
 		</div>

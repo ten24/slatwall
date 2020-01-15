@@ -1054,7 +1054,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
