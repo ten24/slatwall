@@ -51,6 +51,10 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     }
     
     public updateDelayOrSkip = (val:string) =>{
+        if(val==='skip'){
+            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+            this.nextPlaceDateTime = `${(date.getMonth() + 2)}/${date.getDate()}/${date.getFullYear()}`;
+        }
     	this.formData.delayOrSkip = val;
     }
     
@@ -62,6 +66,8 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     		//TODO disable the form
     	}
     }
+    
+    
     
     public updateSchedule() {
         this.loading = true;
@@ -77,6 +83,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     		payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
     	} else {
     		payload['skipNextMonthFlag'] = 1;
+    		
     	}
     	
     	payload = this.orderTemplateService.getFlattenObject(payload);
