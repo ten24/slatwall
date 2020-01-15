@@ -6,6 +6,10 @@
 	</div>
 </header>
 
+<div ng-if="!monatUpgrade.isUpgradeable" class="alert alert-danger text-center" role="alert">
+  <span sw-rbkey="'frontend.upgrade.canNotUpgrade'"></span>
+</div>
+
 <ng-transclude></ng-transclude>
 
 <footer class="steps-footer d-flex flex-column">
