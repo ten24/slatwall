@@ -1313,7 +1313,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
 
 		var pageRecords = myCollection.getPrimaryIDs(2);
-
 		if(arraylen(pageRecords)){
 			assert(!structKeyExists(pageRecords[1],'failedCollection'));
 		}
@@ -2492,61 +2491,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(HQLParams['testKey'],'testValue');
 	}
 	
-	/** DATE FILTER ALOGRITHM
-	 * Date - equal with sent date 
-	 * === operator = equal, value = input
-	 * In / Not In  Range - between with sent date (input value)
-	 * === operator = between, value = input range
-	 * Today / Yesterday - equal with calculated date
-	 * === operator = equal, measureCriteria = today / yesterday
-	 * This W / M / Q / Y - range with calculdated date
-	 * === operator = between, measureCriteria = t W/M/Q/Y
-	 * Last H / W / M / Q / Y - range with calculated date (past)
-	 * === operator = between, measureCriteria = l W/M/Q/Y, value = input
-	 * More than H / W / M / Q / Y Ago - <= with calculated date (past) (input value)
-	 * === operator = <=, measureCriteria = m W/M/Q/Y, value = input
-	 * Exact than H / W / M / Q / Y Ago - = with calculated date (input value)
-	 * === operator = equal, measureCriteria = e W/M/Q/Y, value = input
-	 * Match Month - equal with month (input value)
-	 * === operator = equal, measureCriteria = exactMonth, value = input ???
-	 * Match year - equal with year (input value)
-	 * === operator = equal, measureCriteria = exactYear, value = input ???
-	 * Defined - IS NOT 0
-	 * === operator = IS NOT, value = 0
-	 * Not Defined - IS 0
-	 * === operator = IS, value = 0
-	 * Past - <= with calculated date
-	 * === operator = <=, value = now()
-	 * Future - >= with calculated date
-	 * === operator = >=, value = now()
-	 * */
-	 
-	 /**
-	  *  LOGIC
-	  * IF MeasureCriteriaExists
-	  * 	CALCULATE(DATE) - it could be one or range - startRange & endRange
-	  * ELSE IF OPERATOR IS EQ
-	  * 	IF startRange IS NOT SET
-	  * 		startRange = FILTER.VALUE
-	  * ELSE IF OPERATOR IS GTE OR LTE
-	  * 	IF startRange AND endRange IS NOT SET
-	  * 		startRange = FILTER.VALUE
-	  * 		endRange = FILTER.VALUE
-	  * ELSE IF OPERATOR IS BETWEEN
-	  * 	IF startRange AND endRange IS NOT SET
-	  * 		startRange = FILTER.VALUE
-	  * 		endRange = FILTER.VALUE
-	  * */
-
 	/**
 	* @test
-	* @date-test-case
+	* 
+	* Test cases for updated date filters
 	*/
-	public void function dateExactFilter(){
+	public void function updatedDateFilter(){
+		
+		//Today
 		var collectionEntityData = {
 			collectionid = '',
-			collectionCode = 'test-exactDateProducts'&createUUID(),
-			collectionName = 'test-exactDateProducts'&createUUID(),
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
 			collectionObject = "SlatwallProduct",
 			collectionConfig = '
 				{
@@ -2575,14 +2531,1506 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				            {
 				               "displayPropertyIdentifier":"Purchase Start Date Time",
 				               "propertyIdentifier":"_product.purchaseStartDateTime",
-				               "comparisonOperator":"eq",
-				               "measureCriteria" : "today",
+				               "comparisonOperator":"between",
+				               "measureType":"today",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"0",
+				               "value":"0",
+				               "displayValue":"Today",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Today"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Today");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Yesterday
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"yesterday",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"1",
+				               "value":"1",
+				               "displayValue":"Yesterday",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Yesterday"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Yesterday");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//This week
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"tw",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"0",
+				               "value":"0",
+				               "displayValue":"This Week",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"This Week"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("This Week");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//This Month
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"tm",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"0",
+				               "value":"0",
+				               "displayValue":"This Month",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"This Month"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("This Month");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//This Quarter
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"tq",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"0",
+				               "value":"0",
+				               "displayValue":"This Quarter",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"This Quarter"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("This Quarter");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//This Year
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ty",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"0",
+				               "value":"0",
+				               "displayValue":"This Year",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"This Year"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("This Year");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Last N Day
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ld",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Last N Days",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Last N Days"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Last N Days");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Last N Week
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"lw",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Last N Week",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Last N Week"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Last N Week");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Last N Month
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"lm",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Last N Month",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Last N Month"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Last N Month");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Last N Quarter
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"lq",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Last N Quarter",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Last N Quarter"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Last N Quarter");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Last N Year
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ly",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Last N Year",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Last N Year"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Last N Year");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//More than N Day Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"<=",
+				               "measureType":"md",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"More than N Day Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"More than N Day Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("More than N Day Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//More than N Week Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"<=",
+				               "measureType":"mw",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"More than N Week Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"More than N Week Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("More than N Week Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//More than N Month Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"<=",
+				               "measureType":"mm",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"More than N Month Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"More than N Month Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("More than N Month Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//More than N Quarter Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"<=",
+				               "measureType":"mq",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"More than N Quarter Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"More than N Quarter Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("More than N Quarter Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//More than N Year Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"<=",
+				               "measureType":"my",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"More than N Year Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"More than N Year Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("More than N Year Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Day Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ed",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Day Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Day Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Day Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Week Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ew",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Week Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Week Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Week Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Month Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"em",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Month Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Month Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Month Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Quarter Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"eq",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Quarter Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Quarter Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Quarter Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Year Ago
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ey",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Year Ago",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Year Ago"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Year Ago");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Day From Now
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"edfn",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Day From Now",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Day From Now"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Day From Now");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Week From Now
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ewfn",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Week From Now",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Week From Now"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Week From Now");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Month From Now
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"emfn",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Month From Now",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Month From Now"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Month From Now");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Quarter From Now
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"eqfn",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Quarter From Now",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Quarter From Now"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Quarter From Now");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		//Exact N Year From Now
+		collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "measureType":"ey",
+				               "measureCriteria":"exactDate",
+				               "criteriaNumberOf":"2",
+				               "value":"2",
+				               "displayValue":"Exact N Year From Now",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"Exact N Year From Now"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		writeDump("Exact N Year From Now");
+		writeDump("#collectionEntity.getQuery()#");
+		
+		
+	}
+
+	/**
+	* @test
+	*/
+	public void function exactDateFilter(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'dProduct',
+			purchaseStartDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'cProduct',
+			purchaseStartDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'bProduct',
+			purchaseStartDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'aProduct',
+			purchaseStartDateTime = DateAdd('d', -10, now()),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Product",
+				                     "entityAlias":"_product",
+				                     "cfc":"_product",
+				                     "propertyIdentifier":"_product"
+				                  }
+				               ],
 				               "measureType":"d",
+				               "measureCriteria":"exactDate",
 				               "criteriaNumberOf":"10",
 				               "value":"10",
 				               "displayValue":"10 Days Ago",
 				               "ormtype":"timestamp",
 				               "conditionDisplay":"Exact N Day(s) Ago"
+				            },
+				            {
+				               "displayPropertyIdentifier":"Product Description",
+				               "propertyIdentifier":"_product.productDescription",
+				               "comparisonOperator":"=",
+				               "logicalOperator":"AND",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Product",
+				                     "entityAlias":"_product",
+				                     "cfc":"_product",
+				                     "propertyIdentifier":"_product"
+				                  }
+				               ],
+				               "value":"#uniqueNumberForDescription#",
+				               "displayValue":"#uniqueNumberForDescription#",
+				               "ormtype":"string",
+				               "conditionDisplay":"Equals"
 				            }
 				         ]
 				      }
@@ -2593,760 +4041,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		dump(collectionEntity.getQuery());
 		var pageRecords = collectionEntity.getPageRecords();
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
-	}
-	
-	/**
-	* @test
-	* @date-test-case
-	*/
-	public void function dateGetHQLTest_date_in_range_epoch(){
-		var collectionData = {
-			collectionid = '',
-			collectionName='dateInRangeEpoch',
-			collectionObject = 'SlatwallAccount',
-			collectionConfig = '
-				{
-				   "baseEntityName":"SlatwallAccount",
-				   "baseEntityAlias":"_account",
-				   "columns":[
-				      {
-				         "isDeletable":false,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.accountID",
-				         "ormtype":"id",
-				         "isVisible":false,
-				         "isSearchable":true,
-				         "title":"accountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.superUserFlag",
-				         "ormtype":"boolean",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Super User",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.firstName",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"First Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.lastName",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Last Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.company",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Company",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
-				         "ormtype":"timestamp",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Account Locked",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.failedLoginAttemptCount",
-				         "ormtype":"integer",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Failed Login Attempts",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.cmsAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"CMS Account ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteEmployeeID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Employee ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteCustomerID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Customer ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteContactID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Contact ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.createdByAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Created By AccountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.modifiedByAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Modified By AccountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "title":"Created Date Time",
-				         "propertyIdentifier":"_account.createdDateTime",
-				         "isVisible":true,
-				         "isDeletable":true,
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      }
-				   ],
-				   "filterGroups":[
-				      {
-				         "filterGroup":[
-				            {
-				               "displayPropertyIdentifier":"Created Date Time",
-				               "propertyIdentifier":"_account.createdDateTime",
-				               "comparisonOperator":"between",
-				               "breadCrumbs":[
-				                  {
-				                     "rbKey":"Account",
-				                     "entityAlias":"_account",
-				                     "cfc":"_account",
-				                     "propertyIdentifier":"_account"
-				                  }
-				               ],
-				               "value":"1393218000000-1420693199999",
-				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
-				               "ormtype":"timestamp",
-				               "conditionDisplay":"In Range"
-				            }
-				         ]
-				      }
-				   ]
-				}
-			'
-		};
-		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
-		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
-	}
-	
-	/**
-    * @test
-    * @date-test-case
-    */
-    public void function dateBetweenDateTest(){
 
-        var uniqueSkuName = createUUID();
-
-        var productWithActiveSkusData = {
-            productID = '',
-            productName = 'ProductUnitTest',
-            skus = [
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_1',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_2',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_3',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_4',
-                activeFlag = false
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_5',
-                activeFlag = false
-            }
-                ]
-        };
-
-        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
-
-        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
-
-        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
-            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, startDateTime));
-        }
-
-        var collectionData = {
-            collectionid = '',
-            collectionName='dateInRangeEpoch',
-            collectionObject = 'SlatwallSku',
-            collectionConfig = '
-				{
-				   "baseEntityName":"Sku",
-				   "baseEntityAlias":"_sku",
-				   "columns":[
-				      {
-				         "isDeletable":false,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.skuID",
-				         "ormtype":"id",
-				         "isVisible":false,
-				         "isSearchable":true,
-				         "title":"accountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.skuCode",
-				         "ormtype":"boolean",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Super User",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.createdDateTime",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"First Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      }
-				   ],
-				   "filterGroups":[
-				      {
-				         "filterGroup":[
-				            {
-				               "displayPropertyIdentifier":"Created Date Time",
-				               "propertyIdentifier":"_sku.createdDateTime",
-				               "comparisonOperator":"between",
-				               "value":"1533303982000-1533563182000",
-				               "ormtype":"timestamp",
-				               "conditionDisplay":"In Range"
-				            },
-				            {
-				               "propertyIdentifier":"_sku.skuName",
-				               "comparisonOperator":"=",
-				               "value":"#uniqueSkuName#",
-				               "ormtype":"string",
-				               "logicalOperator":"AND"
-				            }
-				         ]
-				      }
-				   ]
-				}
-			'
-        };
-        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
-
-        assert(arraylen(collectionEntity.getRecords()) == 3);
-    }
-    
-    /**
-    * @test
-    * @date-test-case
-    */
-    public void function dateBetweenDateTimeTest(){
-
-
-
-        var uniqueSkuName = createUUID();
-
-
-        var productWithActiveSkusData = {
-            productID = '',
-            productName = 'ProductUnitTest',
-            skus = [
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_1',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_2',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_3',
-                activeFlag = true
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_4',
-                activeFlag = false
-            },
-            {
-                skuID = '',
-                skuName = uniqueSkuName,
-                skuCode = 'sku_code_5',
-                activeFlag = false
-            }
-                ]
-        };
-
-        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
-
-        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
-
-
-        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
-
-            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, dateAdd('h', i, startDateTime)));
-        }
-
-        var collectionData = {
-            collectionid = '',
-            collectionName='dateInRangeEpoch',
-            collectionObject = 'SlatwallSku',
-            collectionConfig = '
-				{
-				   "baseEntityName":"Sku",
-				   "baseEntityAlias":"_sku",
-				   "columns":[
-				      {
-				         "isDeletable":false,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.skuID",
-				         "ormtype":"id",
-				         "isVisible":false,
-				         "isSearchable":true,
-				         "title":"accountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.skuCode",
-				         "ormtype":"boolean",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Super User",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_sku.createdDateTime",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"First Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      }
-				   ],
-				   "filterGroups":[
-				      {
-				         "filterGroup":[
-				            {
-				               "displayPropertyIdentifier":"Created Date Time",
-				               "propertyIdentifier":"_sku.createdDateTime",
-				               "comparisonOperator":"between",
-				               "value":"1533254400000-1533513600000",
-				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
-				               "ormtype":"timestamp",
-				               "conditionDisplay":"In Range"
-				            },
-				            {
-				               "propertyIdentifier":"_sku.skuName",
-				               "comparisonOperator":"=",
-				               "value":"#uniqueSkuName#",
-				               "ormtype":"string",
-				               "logicalOperator":"AND"
-				            }
-				         ]
-				      }
-				   ]
-				}
-			'
-        };
-        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
-        assert(arrayLen(collectionEntity.getRecords()) == 2);
-    }
-
-	/**
-	* @test
-	* @date-test-case
-	*/
-	public void function dateGetHQLTest_date_in_range_gregorian(){
-		var collectionData = {
-			collectionid = '',
-			collectionName='dateInRangeGregorian',
-			collectionObject = 'SlatwallAccount',
-			collectionConfig = '
-				{
-				   "baseEntityName":"SlatwallAccount",
-				   "baseEntityAlias":"_account",
-				   "columns":[
-				      {
-				         "isDeletable":false,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.accountID",
-				         "ormtype":"id",
-				         "isVisible":false,
-				         "isSearchable":true,
-				         "title":"accountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.superUserFlag",
-				         "ormtype":"boolean",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Super User",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.firstName",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"First Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.lastName",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Last Name",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.company",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Company",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
-				         "ormtype":"timestamp",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Account Locked",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.failedLoginAttemptCount",
-				         "ormtype":"integer",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Failed Login Attempts",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.cmsAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"CMS Account ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteEmployeeID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Employee ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteCustomerID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Customer ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.remoteContactID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Remote Contact ID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.createdByAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Created By AccountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "isDeletable":true,
-				         "isExportable":true,
-				         "propertyIdentifier":"_account.modifiedByAccountID",
-				         "ormtype":"string",
-				         "isVisible":true,
-				         "isSearchable":true,
-				         "title":"Modified By AccountID",
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      },
-				      {
-				         "title":"Created Date Time",
-				         "propertyIdentifier":"_account.createdDateTime",
-				         "isVisible":true,
-				         "isDeletable":true,
-				         "sorting":{
-				            "active":false,
-				            "sortOrder":"asc",
-				            "priority":0
-				         }
-				      }
-				   ],
-				   "filterGroups":[
-				      {
-				         "filterGroup":[
-				            {
-				               "displayPropertyIdentifier":"Created Date Time",
-				               "propertyIdentifier":"_account.createdDateTime",
-				               "comparisonOperator":"between",
-				               "breadCrumbs":[
-				                  {
-				                     "rbKey":"Account",
-				                     "entityAlias":"_account",
-				                     "cfc":"_account",
-				                     "propertyIdentifier":"_account"
-				                  }
-				               ],
-				               "value":"1/1/2015-1/1/2017",
-				               "displayValue":"01/01/2015 - 01/01/2017 ",
-				               "ormtype":"timestamp",
-				               "conditionDisplay":"In Range"
-				            }
-				         ]
-				      }
-				   ]
-				}
-			'
-		};
-		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
-		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
-		//addToDebug("HQL: #collectionEntity.getHQL()#");
 	}
 
 	/**
@@ -4150,6 +4848,757 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		return smartList;
 	}*/
+
+
+
+	/**
+	* @test
+	*/
+	public void function getHQLTest_date_in_range_epoch(){
+		var collectionData = {
+			collectionid = '',
+			collectionName='dateInRangeEpoch',
+			collectionObject = 'SlatwallAccount',
+			collectionConfig = '
+				{
+				   "baseEntityName":"SlatwallAccount",
+				   "baseEntityAlias":"_account",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.accountID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.superUserFlag",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.firstName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.lastName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Last Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.company",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Company",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
+				         "ormtype":"timestamp",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Account Locked",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.failedLoginAttemptCount",
+				         "ormtype":"integer",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Failed Login Attempts",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.cmsAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"CMS Account ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteEmployeeID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Employee ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteCustomerID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Customer ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteContactID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Contact ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.createdByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Created By AccountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.modifiedByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Modified By AccountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "title":"Created Date Time",
+				         "propertyIdentifier":"_account.createdDateTime",
+				         "isVisible":true,
+				         "isDeletable":true,
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_account.createdDateTime",
+				               "comparisonOperator":"between",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Account",
+				                     "entityAlias":"_account",
+				                     "cfc":"_account",
+				                     "propertyIdentifier":"_account"
+				                  }
+				               ],
+				               "value":"1393218000000-1420693199999",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
+	}
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTest(){
+
+        var uniqueSkuName = createUUID();
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, startDateTime));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533303982000-1533563182000",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+
+        assert(arraylen(collectionEntity.getRecords()) == 3);
+    }
+
+
+
+    /**
+    * @test
+    */
+    public void function betweenDateTimeTest(){
+
+
+
+        var uniqueSkuName = createUUID();
+
+
+        var productWithActiveSkusData = {
+            productID = '',
+            productName = 'ProductUnitTest',
+            skus = [
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_1',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_2',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_3',
+                activeFlag = true
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_4',
+                activeFlag = false
+            },
+            {
+                skuID = '',
+                skuName = uniqueSkuName,
+                skuCode = 'sku_code_5',
+                activeFlag = false
+            }
+                ]
+        };
+
+        var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+        var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+
+
+        for(var i = 1; i <= arrayLen(productWithActiveSkus.getSkus()); i++){
+
+            productWithActiveSkus.getSkus()[i].setCreatedDateTime(dateAdd('d', i, dateAdd('h', i, startDateTime)));
+        }
+
+        var collectionData = {
+            collectionid = '',
+            collectionName='dateInRangeEpoch',
+            collectionObject = 'SlatwallSku',
+            collectionConfig = '
+				{
+				   "baseEntityName":"Sku",
+				   "baseEntityAlias":"_sku",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.skuCode",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_sku.createdDateTime",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_sku.createdDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533254400000-1533513600000",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            },
+				            {
+				               "propertyIdentifier":"_sku.skuName",
+				               "comparisonOperator":"=",
+				               "value":"#uniqueSkuName#",
+				               "ormtype":"string",
+				               "logicalOperator":"AND"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+        };
+        var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+        assert(arrayLen(collectionEntity.getRecords()) == 2);
+    }
+
+	/**
+	* @test
+	*/
+	public void function getHQLTest_date_in_range_gregorian(){
+		var collectionData = {
+			collectionid = '',
+			collectionName='dateInRangeGregorian',
+			collectionObject = 'SlatwallAccount',
+			collectionConfig = '
+				{
+				   "baseEntityName":"SlatwallAccount",
+				   "baseEntityAlias":"_account",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.accountID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.superUserFlag",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.firstName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.lastName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Last Name",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.company",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Company",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
+				         "ormtype":"timestamp",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Account Locked",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.failedLoginAttemptCount",
+				         "ormtype":"integer",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Failed Login Attempts",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.cmsAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"CMS Account ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteEmployeeID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Employee ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteCustomerID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Customer ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteContactID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Contact ID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.createdByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Created By AccountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.modifiedByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Modified By AccountID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {
+				         "title":"Created Date Time",
+				         "propertyIdentifier":"_account.createdDateTime",
+				         "isVisible":true,
+				         "isDeletable":true,
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_account.createdDateTime",
+				               "comparisonOperator":"between",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Account",
+				                     "entityAlias":"_account",
+				                     "cfc":"_account",
+				                     "propertyIdentifier":"_account"
+				                  }
+				               ],
+				               "value":"1/1/2015-1/1/2017",
+				               "displayValue":"01/01/2015 - 01/01/2017 ",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            }
+				         ]
+				      }
+				   ]
+				}
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
+		//addToDebug("HQL: #collectionEntity.getHQL()#");
+	}
 
 	/**
 	* @test
@@ -5566,43 +7015,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getRecords();
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
 
-	}
-	
-		/**
-	* @test
-	*/
-	public void function ListingSearchConfigTest(){
-		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties('productID,productName,productDescription',{isSearchable:true});
-		writeDump('simple collection :');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.addFilter('productDescription',"abc");
-		writeDump('Added filter : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.setKeywords('ProductABC');
-		writeDump('added keywords : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.setCollectionObjectListingSearchConfig({
-			'selectedSearchFilterCode' = 'lastOneYear'
-		});
-		writeDump('added selectedSearchFilterCode lastOneYear: ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-
-		myCollection.setCollectionObjectListingSearchConfig({
-			'ignoreSearchFilters' = true
-		});
-		writeDump('added ignoreSearchFilters : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		abort;
 	}
 
 
