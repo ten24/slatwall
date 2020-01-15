@@ -668,6 +668,43 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 	
+	public boolean function orderTemplateQualifiesForOFYProducts(required any orderTemplate) {
+		
+		if( 
+			arguments.orderTemplate.getTypeCode() != 'ottSchedule'  || 
+			arguments.orderTemplate.getStatusCode() == 'otstCancelled' 
+		){
+			return false;
+		}
+		
+		if( arguments.orderTemplate.getSubtotal() < arguments.orderTemplate.getCartTotalThresholdForOFYAndFreeShipping()){
+		 	return false;
+		}
+		 
+        var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList();
+        orderTemplateItemCollectionList.addFilter(
+        	'orderTemplate.orderTemplateID', 
+        	arguments.orderTemplate.getOrderTemplateID()
+        );
+        orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
+        
+		if( orderTemplateItemCollectionList.getRecordsCount( refresh=true ) > 0 ){
+			// there's only one Free-item is allowed per order, per flexship, 
+			// and that get's removed every time there a new-order-placed for the Flexship
+			return false; 
+		}
+		
+		
+		//This is an expensive check, so we do it at the last
+		var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+		promotionalFreeRewardSkuCollection.setCollectionConfigStruct(
+			arguments.orderTemplate.getPromotionalFreeRewardSkuCollectionConfig()
+		);
+		
+		return promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+	}
+	
+	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
 		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		

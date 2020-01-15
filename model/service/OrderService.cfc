@@ -2031,6 +2031,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" type="string" default="";
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
@@ -2043,6 +2044,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ',' & shippingAddressPropList; 
 		displayProperties &= ',' & billingAddressPropList;  
 	
+		if(len(arguments.data.optionalProperties)){
+			displayProperties &= ","&arguments.data.optionalProperties;
+		}
+
 		orderTemplateCollection.setDisplayProperties(displayProperties);
 		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
 		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
@@ -2111,11 +2116,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
-		 param name="arguments.data.optionalProperties" type="string" default="";
-
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
-		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");

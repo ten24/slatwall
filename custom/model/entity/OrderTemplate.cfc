@@ -76,33 +76,11 @@ component {
 	public boolean function getQualifiesForOFYProducts(){
 		
 		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
-			
-			if(!getHibachiScope().getAccount().getAdminAccountFlag() ) {
-				
-				variables.qualifiesForOFYProducts = (  
-					this.getCartTotalThresholdForOFYAndFreeShipping() <= this.getSubtotal() 
-					&&
-					!this.hasOFYOrderTemplateItems()
-				);
-				
-			} else {
-				
-				var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
-				promotionalFreeRewardSkuCollection.setCollectionConfigStruct(this.getPromotionalFreeRewardSkuCollectionConfig());
-				variables.qualifiesForOFYProducts = promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
-				
-			}
+			variables.qualifiesForOFYProducts =  getService('OrderService').orderTemplateQualifiesForOFYProducts(this);
 		}	
 		return variables.qualifiesForOFYProducts;
 	}
 	
-	public boolean function hasOFYOrderTemplateItems(){
-        var orderTemplateItemCollectionList = getService('orderService').getOrderTemplateItemCollectionList();
-        orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', this.getOrderTemplateID());
-        orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
-        return orderTemplateItemCollectionList.getRecordsCount() > 0;
-	}
-
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
