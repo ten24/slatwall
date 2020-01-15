@@ -478,15 +478,16 @@ component  accessors="true" output="false"
                 if(accountAddress.hasErrors()){
                     this.addErrors( arguments.data, accountAddress.getErrors() );
                 } else {
-                    this.addErrors( 
-                        arguments.data, 
-                        [ { 'AccountAddress': 'Something went wrong please try again' } ]
-                    );
+                    this.addErrors(  arguments.data, [ 
+                        { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
+                    ]);
                 }
             }
             
         } else {
-            this.addErrors(arguments.data, [ { 'AccountAddress': 'Invalid AccountAddress/ID' } ]);
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.Invalid') }
+            ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
