@@ -35,7 +35,6 @@ class MonatCheckoutController {
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addShippingAddressSuccess' ); 
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addNewAccountAddressSuccess' );
 
-
 		this.getCurrentCheckoutScreen();
 	}
 	
