@@ -80,8 +80,8 @@
 	}
 	
 	if ( scriptHasErrors ) {
-		writeLog( file = 'Slatwall', text = 'ERROR: Update Script - Update mura navigation components failed.' );
+		writeLog( file = 'Slatwall', text = 'ERROR: Update Script - Update component translations failed.' );
 	} else {
-		writeLog( file = 'Slatwall', text = 'Update Script - Updated mura navigation components.' );
+		writeLog( file = 'Slatwall', text = 'Update Script - Updated component translations.' );
 	}
 </cfscript>
