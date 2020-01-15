@@ -2034,7 +2034,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
-		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName";
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,currencyCode";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
