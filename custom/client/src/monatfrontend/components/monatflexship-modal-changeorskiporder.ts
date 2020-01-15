@@ -55,6 +55,10 @@ class MonatFlexshipChangeOrSkipOrderModalController {
             var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
             this.nextPlaceDateTime = `${(date.getMonth() + 2)}/${date.getDate()}/${date.getFullYear()}`;
         }
+        else{
+            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+           this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;  
+        }
     	this.formData.delayOrSkip = val;
     }
     
