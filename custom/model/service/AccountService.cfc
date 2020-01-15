@@ -65,7 +65,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
+			orderFulfillments.shippingAddress.postalCode,
+			orderDeliveries.trackingUrl
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');

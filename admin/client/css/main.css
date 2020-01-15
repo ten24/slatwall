@@ -8735,3 +8735,7 @@ table.s-detail-content-table tbody tr.s-done {
 .pl-1 {
   padding-left: 1rem;
 }
+
+.form-control-feedback {
+  pointer-events: all;
+}

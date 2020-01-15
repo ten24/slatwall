@@ -7,8 +7,7 @@
           "key":true
         },
         {
-          "sourceColumn":"RemoteID",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "sourceColumn":"SAPItemCode",
           "propertyIdentifier":"remoteID"
         },
         {
@@ -56,11 +55,9 @@
         {
           "sourceColumn":"PRODUCTItemCode",
           "propertyIdentifier":"product.productCode",
-          "key":true
         },
         {
-          "sourceColumn":"RemoteID",
-          "sourceColumnDataGenerator":"'Import-'+SKUItemCode",
+          "sourceColumn":"SKUItemID",
           "propertyIdentifier":"product.remoteID"
         },
         {
