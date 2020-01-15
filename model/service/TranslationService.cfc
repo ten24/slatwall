@@ -59,7 +59,7 @@ component extends="HibachiService" accessors="true" output="false" {
                 
                 var hasTranslationEntityArguments = arguments.processObject.hasTranslatedPropertyObject() && !isNull(translationData['locale']);
                 if (hasTranslationEntityArguments) {
-                    var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale([arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']], true);
+                    var translationEntity = this.getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(arguments.processObject.getBaseObject(), arguments.processObject.getBaseID(), arguments.processObject.getBasePropertyName(), translationData['locale']);
                     var hasTranslationEntity = !isNull(translationEntity);
                     if (hasTranslationEntity) {
                         translation = translationEntity;
