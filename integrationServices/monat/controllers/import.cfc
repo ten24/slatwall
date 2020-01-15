@@ -1063,7 +1063,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	//monat:import.importAccounts&pageNumber=33857&pageSize=50&pageMax=36240
+	//monat:import.importAccounts&pageNumber=38465&pageSize=50&pageMax=41113
 	//monat:import.importAccounts&pageNumber=1&pageSize=100&pageMax=18000 //36240
 	public void function importAccounts(rc){ 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
@@ -1078,15 +1078,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		//Objects we need to set over and over...
 		var countryUSA = getAddressService().getCountryByCountryCode3Digit("USA");
-		var aetShipping =  getTypeService().getTypeBySystemCode("aetShipping");
-		var aetBilling = getTypeService().getTypeBySystemCode("aetBilling");
-		var aatShipping =  getTypeService().getTypeByTypeCode("Ship");
-		var aatBilling = getTypeService().getTypeByTypeCode("Bill");
-		var aptHome =  getTypeService().getTypeBySystemCode("aptHome");
-		var aptWork = getTypeService().getTypeBySystemCode("aptWork");
-		var aptMobile =  getTypeService().getTypeBySystemCode("aptMobile");
-		var aptFax = getTypeService().getTypeBySystemCode("aptFax");
-		var aptShipTo =  getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
+		var aetShipping =  getTypeService().getTypeByTypeID("2c9180856e182f7b016e1832f78a0009");//aetShipping
+		var aetBilling = getTypeService().getTypeByTypeID("2c9180836e18300f016e18329c5e000b");//aetBilling
+		var aatShipping =  getTypeService().getTypeByTypeID("2c91808b6e965f30016e9de515af01e9");
+		var aatBilling = getTypeService().getTypeByTypeID("2c9180876e99b4d1016e9de4d656006f");
+		var aptHome =  getTypeService().getTypeByTypeID("444df29eaef3cfd1af021d4d31205328");
+		var aptWork = getTypeService().getTypeByTypeID("444df2a1c6cdd58d027199dcbb5b28c9");
+		var aptMobile =  getTypeService().getTypeByTypeID("444df29ff763bac292f9aba2d3debafb");
+		var aptFax = getTypeService().getTypeByTypeID("444df2a0d49e6a3a5951a3cc1c5eefbe");
+		var aptShipTo =  getTypeService().getTypeByTypeID("2c9280846e1dad76016e1de8d2ec0006");
 		
 		
 		// Call the api and get records from start to end.
@@ -1096,6 +1096,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		while (pageNumber < pageMax){
 			
     		var accountsResponse = getAccountData(pageNumber, pageSize);
+    		
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    pageNumber++;
@@ -1197,10 +1198,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	if (!isNull(newAccountStatusTypeID)){
                     		newAccount.setAccountStatus(account['AccountStatusCode']?:""); //*
                     		
-                    		var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
+                    		//set this from th account status code after!
+                    		/*var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
                     		if (!isNull(statusType)){
                     			newAccount.setAccountStatusType( statusType );//*
-                    		}
+                    		}*/
                     	}
                     }
                     
@@ -1254,16 +1256,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     
                     //create a new SwAccountGovernementID if needed
-                    if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account.GovernmentNumber) > 2){
+                    /*if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account.GovernmentNumber) > 2){
                     	
-                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
+                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentIdentification();
 	                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']);//*
 	                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
 	                    accountGovernmentID.setAccount(newAccount);//*
 	                    
 	                    //insert the relationship
-	                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
-                    }
+	                    ormStatelessSession.insert("SlatwallAccountGovernmentIdentification", accountGovernmentID);
+                    }*/
                     
                     //set created account id
                     newAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );//can't change as Irta is using...
@@ -1361,7 +1363,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        newAddress.setStreetAddress( address['Address1']?:"" );//*
         			        newAddress.setStreet2Address( address['Address2']?:"" );//*
         			        newAddress.setPostalCode(address['postalCode']?:"");//*
-        			        
+        			        newAddress.setRemoteID(address['addressID']?:"");//*
         			        //handle country
         			        //&& address.countryCode contains "USA"
         			        if (structKeyExists(address, "CountryCode")){
@@ -1374,7 +1376,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			                    newAddress.setStateCode( address.stateOrProvince?:"" );//*
         			                }else{
         			                    //using province
-        			                    newAddress.setProvince( address.stateOrProvince?:"" );//*
+        			                    newAddress.setLocality( address.stateOrProvince?:"" );//*
         			                }
         			            }
         			        }
@@ -1800,7 +1802,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        			                    newAddress.setStateCode( address.stateOrProvince?:"" );//*
 	        			                }else{
 	        			                    //using province
-	        			                    newAddress.setProvince( address.stateOrProvince?:"" );//*
+	        			                    newAddress.setLocality( address.stateOrProvince?:"" );//*
 	        			                }
 	        			            }
 	        			        }
@@ -2045,7 +2047,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function importOrders(rc){ 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
-	    
+	 
 		//get the api key from integration settings.
 		//var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var pageNumber = rc.pageNumber?:1;
@@ -2054,17 +2056,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var updateFlag = rc.updateFlag?:false;
 		var ostCanceled = getTypeService().getTypeByTypeName("Canceled");
 		var ostClosed = getTypeService().getTypeByTypeID("444df2b8b98441f8e8fc6b5b4266548c");
-		var oitSale = getTypeService().getTypeBySystemCode("oitSale");
-		var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
+		var oitSale = getTypeService().getTypeByTypeID("444df2e9a6622ad1614ea75cd5b982ce");
+		var oitReturn = getTypeService().getTypeByTypeID("444df2eac18fa589af0f054442e12733");
 		var shippingFulfillmentMethod = getOrderService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
-		var oistFulfilled = getTypeService().getTypeBySystemCode("oistFulfilled");
+		var oistFulfilled = getTypeService().getTypeByTypeID("444df2bedf079c901347d35abab7c032");
 		var paymentMethod = getOrderService().getPaymentMethodByPaymentMethodID( "2c9280846b09283e016b09d1b596000d" );
 		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");
-		var otSalesOrder = getTypeService().getTypeBySystemCode("otSalesOrder");
-		var otReturnOrder = getTypeService().getTypeBySystemCode("otReturnOrder");
-		var otExchangeOrder = getTypeService().getTypeBySystemCode("otExchangeOrder");
-		var otReplacementOrder = getTypeService().getTypeBySystemCode("otReplacementOrder");
-		var otRefundOrder = getTypeService().getTypeBySystemCode("otRefundOrder");
+		var otSalesOrder = getTypeService().getTypeByTypeID("444df2df9f923d6c6fd0942a466e84cc");
+		var otReturnOrder = getTypeService().getTypeByTypeID("444df2dd05a67eab0777ba14bef0aab1");
+		var otExchangeOrder = getTypeService().getTypeByTypeID("444df2e00b455a2bae38fb55f640c204");
+		var otReplacementOrder = getTypeService().getTypeByTypeID("b3bdf58418894bf08e6e3c0e1cd882fe");
+		var otRefundOrder = getTypeService().getTypeByTypeID("ce5f32ef5ead4abb81e68d76706b0aee");
+		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");
 		var returnLocation = getLocationService().getLocationByLocationName("Default");
 	    var index=0;
 	    var MASTER = "M";
@@ -2072,7 +2075,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         var isParentSku = function(kitCode) {
         	return (kitCode == MASTER);
         };
-		var reasonType = getTypeService().getTypeByTypeID("2c9580846b042a78016b052d7d34000b");	
+		
 			        
 			//here
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
@@ -2105,7 +2108,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			for (var order in orders){
     			    index++;
     			    
-    			    if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag == true){
+    			    /*if (!isNull(rc.skipKitsFlag) && rc.skipKitsFlag == true){
 	    			    //This is temp to get orders in without kits. 
 	    			    
 	    			    var hasKit = false;
@@ -2124,7 +2127,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    			    }
 	    			    
 	    			    //This is temp to get orders in without kits.
-    			    }
+    			    }*/
     			    
 			    	isNewOrderFlag = true;
     				var newOrder = new Slatwall.model.entity.Order();
@@ -2459,9 +2462,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        		orderItem.setItemCategoryCode(detail['ItemCategoryCode']);	
         			        	}
         			        	
-        			        	var oitReturn = getTypeService().getTypeBySystemCode("oitReturn");
         			        	if (isReturn){
-        			        		
         			        		orderItem.setOrderItemType(oitReturn);
         			        		orderItem.setOrderReturn(orderReturn);
         			        		orderItem.setReturnsReceived(detail['ReturnsReceived']);
@@ -2550,7 +2551,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             			    	newOrderPayment.setCreatedDateTime(getDateFromString(orderPayment['EntryDate'])?:now());
             			    }
             			    
-                            newOrderPayment.setRemoteID(calculatedRemoteID);//* use orderPayment
+                            newOrderPayment.setRemoteID(orderPayment['orderPaymentID']);//* use orderPaymentID
                             newOrderPayment.setAmount(orderPayment['amountReceived']?:0);//*
                             newOrderPayment.setPaymentMethod(paymentMethod); // ReceiptTypeCode *
                             newOrderPayment.setProviderToken(orderPayment['PaymentToken']?:""); //*
@@ -2592,9 +2593,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                             paymentTransaction.setAuthorizationCode( orderPayment.OriginalAuth?:"" ); // Add this
                             paymentTransaction.setReferenceNumber( orderPayment.ReferenceNumber?:"" );//Add this.
                             paymentTransaction.setCreatedDateTime(orderPayment['AuthDate']?:now());
-                            
                             paymentTransaction.setOrderPayment(newOrderPayment);
-                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//*
+                            paymentTransaction.setRemoteID(orderPayment['orderPaymentID']);//* Uses the orderPaymentID
                             
                             ormStatelessSession.insert("SlatwallPaymentTransaction", paymentTransaction);
                         	
@@ -2610,7 +2610,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			        newAddress.setPostalCode( orderPayment['CardHolderAddress_Zip']?:"" );
         			        newAddress.setPhoneNumber( orderPayment['CardHolderAddress_Phone']?:"" );
         			        newAddress.setEmailAddress( orderPayment['CardHolderAddress_Email']?:"" );
-        			        newAddress.setRemoteID( calculatedRemoteID ); //*
+        			        newAddress.setRemoteID( orderPayment['orderPaymentID'] ); //* Uses the order payment id to match the transaction and payment.
         			        
         			        if (structKeyExists(orderPayment, 'CardHolderAddress_CountryCode')){
         			            //get the country by three digit
@@ -2622,7 +2622,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			                    newAddress.setStateCode( orderPayment['CardHolderAddress_State']?:"" );
         			                }else{
         			                    //using province
-        			                    newAddress.setProvince( orderPayment['CardHolderAddress_State']?:"" );
+        			                    newAddress.setLocality( orderPayment['CardHolderAddress_State']?:"" );
         			                }
         			            }
         			        }
@@ -2728,7 +2728,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
 	        			                }else{
 	        			                    //using province
-	        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
+	        			                    newAddress.setLocality( shipment['ShipToState']?:"" );
 	        			                }
 	        			            }
 	        			        }
@@ -3007,7 +3007,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						orderTemplate.setLastOrderNumber(flexship['LastOrderNumber']?:"");
 						
 						//Snapshot the priceLevelCode
-						orderTemplate.setPriceLevelCode(flexship['PriceLevelCode']?:"");
+						//orderTemplate.setPriceLevelCode(flexship['PriceLevelCode']?:"");
 						
 						//add a date field for this.
 						if (!isNull(flexship['DateLastGenerated']) && len(flexship['DateLastGenerated'])){
@@ -4036,7 +4036,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			                    newAddress.setStateCode( orderPayment['CardHolderAddress_State']?:"" );
         			                }else{
         			                    //using province
-        			                    newAddress.setProvince( orderPayment['CardHolderAddress_State']?:"" );
+        			                    newAddress.setLocality( orderPayment['CardHolderAddress_State']?:"" );
         			                }
         			            }
         			        }
@@ -4163,7 +4163,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        			                    newAddress.setStateCode( shipment['ShipToState']?:"" );
 	        			                }else{
 	        			                    //using province
-	        			                    newAddress.setProvince( shipment['ShipToState']?:"" );
+	        			                    newAddress.setLocality( shipment['ShipToState']?:"" );
 	        			                }
 	        			            }
 	        			        }
