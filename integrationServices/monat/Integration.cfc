@@ -18,7 +18,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
             siteDaysAfterMarketPartnerEnrollmentFlexshipCreate = {fieldtype="text", defaultValue=0, validate={dataType="numeric", required=true, minValue=0}},
             siteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping = {fieldtype="text", defaultValue=86, validate={dataType="numeric", required=true, minValue=0}},
             siteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping = {fieldtype="text", defaultValue=69, validate={dataType="numeric", required=true, minValue=0}},
-            siteFlexshipCancellationGracePeriodForMPUsers = {fieldType="text", defaultValue=60, validate = {dataType="numeric", required=true, minValue=0}},
             baseImportURL = {fieldType="text", defaultValue=""},
 			authKey = {fieldType="password", encryptValue=true},
 			globalMPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}},
