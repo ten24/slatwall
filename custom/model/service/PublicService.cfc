@@ -1170,8 +1170,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         
-        
-        getHibachiScope().logHibachi("getProductsByCategoryOrContentID: #productCollectionList.getHQL()#", true);
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
