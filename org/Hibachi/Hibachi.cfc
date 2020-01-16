@@ -331,7 +331,10 @@ component extends="framework.one" {
 			
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - setting cache expired, resetting setting cache for instance #server[variables.framework.applicationKey].serverInstanceKey#");
 				getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
-	
+				
+				//Reset Permission Cache
+				getBeanFactory().getBean('hibachiCacheService').resetPermissionCache();
+				
 				var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
 				serverInstance.setSettingsExpired(false);
 				getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);

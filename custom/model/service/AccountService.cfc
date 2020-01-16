@@ -124,4 +124,31 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		var oneYearFromNow = DateAdd('yyyy', 1, Now());
 		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
 	}
+	
+	/**
+	 * Function to check card status on Nexio and Update if needed
+	 * This function will be called from WorkFlow
+	 * */
+	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required any processObject) {
+		
+		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
+	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
+	    
+		var responseData = getService('integrationService').getIntegrationByIntegrationPackage('nexio').getIntegrationCFC("Payment").getCardStatus(requestBean);
+		
+        if( !StructIsEmpty(responseData ) )
+        {
+        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.expirationMonth) {
+        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
+        	}
+        	
+        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.expirationYear) {
+        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+        	}
+        	
+        	arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        }
+        
+        return arguments.accountPaymentMethod;
+	}
 }
