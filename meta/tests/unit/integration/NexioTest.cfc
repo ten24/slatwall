@@ -4,6 +4,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
         super.setup();
         
         variables.service = variables.mockservice.getIntegrationServiceMock();
+        variables.accountPaymentMethodID = '2c9180876fa59460016fa9624bbc09f6';
+        
+        variables.integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('nexio');
+		variables.paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
 	}
 
 	/**
@@ -182,5 +186,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			{'providerTransactionID' = responseBean.getProviderTransactionID()},
 			{'securityCodeMatchFlag' = responseBean.getSecurityCodeMatchFlag()},
 		]});
+	}
+	
+	/**
+	 * @test
+	 * */
+	public void function processCardView() {
+		var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+		
+		var accountPaymentMethod = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('#variables.accountPaymentMethodID#');
+		requestBean.setProviderToken(accountPaymentMethod.getProviderToken()); //Set Provider Token
+		var responseBean = variables.paymentIntegrationCFC.getCardStatus(requestBean);
+		writeDump(var = responseBean, top = 2);
 	}
 }
