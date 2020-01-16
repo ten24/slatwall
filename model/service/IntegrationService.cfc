@@ -134,14 +134,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			throw("IntegrationType: #arguments.integrationTypeName# does not exist for Integration: #arguments.integration.getDisplayName()#");
 		}
 		
-		var cacheKey = "#lcase(arguments.integrationTypeName)#IntegrationCFCs";
+		var cacheKey = "#lcase(arguments.integrationTypeName)#IntegrationCFCs"; // e.g. paymentIntegrationCFCs, addressIntegrationCFCs
 		if( !structKeyExists( variables[cacheKey], arguments.integration.getIntegrationPackage()) ) {
+			
 			//TODO: ability to pass arguments in the constructor, 
-			variables[cacheKey] = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#").init();
+			variables[cacheKey][arguments.integration.getIntegrationPackage()] = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#").init();
 
 		}
 
-		return variables[cacheKey][arguments.integrationTypeName];
+		return variables[cacheKey][arguments.integration.getIntegrationPackage()];
 	}
 	
 	
