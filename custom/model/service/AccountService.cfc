@@ -146,7 +146,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
         		updateCardSuccess = true;
         	}
         	
-        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getexpirationYear()) {
+        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
         		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
         		updateCardSuccess = true;
         	}
