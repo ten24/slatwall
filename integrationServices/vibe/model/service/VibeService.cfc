@@ -100,7 +100,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
+		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,company,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber,ownerAccount.accountNumber";
 		var addressPropList = getService('hibachiUtilityService').prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
 
 		accountPropList = accountPropList & ',' & addressPropList;
@@ -126,6 +126,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		vibeAccount['firstname'] = swAccountStruct['firstName'];
 		vibeAccount['lastname'] = swAccountStruct['lastName'];
 		vibeAccount['screenname'] = swAccountStruct['username'];
+		vibeAccount['companyname'] = swAccountStruct['company'];
+		vibeAccount['sponsorid'] = swAccountStruct['ownerAccount_accountNumber'];
 		
 		vibeAccount['email'] = swAccountStruct['primaryEmailAddress_emailAddress'];
 		vibeAccount['homephone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
@@ -162,10 +164,14 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			} 
 			else if( swAccountStruct.accountType = 'marketpartner' ) {
 				vibeAccount['type'] = 3; 
+				vibeAccount['rankid'] = 1; 
+				vibeAccount['lifetimerankid'] = 1; 
 			}
 		}
-
+		
 		vibeAccount['password'] = setting('defaultUserPassword');
+	
+
 		
 		return vibeAccount;		
 	}
