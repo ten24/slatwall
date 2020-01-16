@@ -67,5 +67,7 @@ Notes:
 		<swa:SlatwallSetting settingName="siteMaxDaysAfterAccountCreate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers" settingObject="#rc.site#" />
+	
 	</swa:SlatwallSettingTable>
 </cfoutput>

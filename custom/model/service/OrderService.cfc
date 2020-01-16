@@ -1280,4 +1280,43 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return arguments.order;
 	}
+	
+	
+	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required any orderTemplate){
+	
+		var flexshipsCollectionList = this.getOrderTemplateCollectionList();
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID');
+		flexshipsCollectionList.addFilter('account.accountID', arguments.orderTemplate.getAccount().getAccountID());
+		flexshipsCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule');
+
+		var totalFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(totalFlexshipsCount < 1){
+			return false;
+		}
+		
+		flexshipsCollectionList.addFilter('orderTemplateStatusType.systemCode', 'otstCancelled');
+		var canceledFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(canceledFlexshipsCount < totalFlexshipsCount) { 
+			return false;
+		}	
+	
+		var flexshipCancellationGracePeriodForMpUsers = arguments.orderTemplate.getSite().setting('integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers'); 
+		
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID,canceledDateTime');
+		flexshipsCollectionList.addOrderBy("canceledDateTime|DESC");
+		flexshipsCollectionList.setPageRecordsShow(1);
+		
+		var lastCanceledFlexship = flexshipsCollectionList.getPageRecords( refresh=true, formatRecords=false )[1]; 
+
+		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < flexshipCancellationGracePeriodForMpUsers ) {
+			return true;
+		}
+		
+		return false;
+			
+	}
+	
+	
 }
