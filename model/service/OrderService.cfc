@@ -488,8 +488,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderReturn.setOrder( arguments.order );
 				orderReturn.setCurrencyCode( arguments.order.getCurrencyCode() );
 				orderReturn.setReturnLocation( arguments.processObject.getReturnLocation() );
-				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
-
+				if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
+					orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
+					orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
+					orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
+				}
+				
 				orderReturn = this.saveOrderReturn( orderReturn );
 			}
 
@@ -2114,7 +2122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 param name="arguments.data.optionalProperties" type="string" default="";
 
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
@@ -2482,7 +2490,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}else{
 			var orderReturn = this.newOrderReturn();
 			orderReturn.setOrder( arguments.returnOrder );
-			orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+			if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
+				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+			}
+			if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
+				orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
+			}
+			if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
+				orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
+			}
 			orderReturn.setReturnLocation( arguments.processObject.getLocation() );
 			this.saveOrderReturn(orderReturn);
 		}

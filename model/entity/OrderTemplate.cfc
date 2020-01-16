@@ -87,6 +87,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	// Calculated Properties
 	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";

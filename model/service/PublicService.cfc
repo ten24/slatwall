@@ -473,7 +473,21 @@ component  accessors="true" output="false"
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
             
+            if(!deleteOk) {
+                
+                if(accountAddress.hasErrors()){
+                    this.addErrors( arguments.data, accountAddress.getErrors() );
+                } else {
+                    this.addErrors(  arguments.data, [ 
+                        { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
+                    ]);
+                }
+            }
+            
         } else {
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.Invalid') }
+            ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
@@ -2121,6 +2135,7 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
+ 		orderTemplate.updateCalculatedProperties();
         getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {

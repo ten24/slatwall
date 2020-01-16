@@ -72731,7 +72731,15 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
                 _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
             }
-            _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            if (_this.fulfillmentRefundAmount < 0) {
+                _this.fulfillmentRefundAmount = 0;
+            }
+            if (_this.fulfillmentRefundAmount > 0) {
+                _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            }
+            else {
+                _this.fulfillmentRefundTaxAmount = 0;
+            }
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
