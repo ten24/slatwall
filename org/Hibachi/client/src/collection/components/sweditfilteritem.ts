@@ -330,6 +330,7 @@ class SWEditFilterItem{
                                 break;
                                 //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
                             case 'timestamp':
+                                console.log("sweditfilteritem -- creating filter");
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is it null or a range
@@ -337,51 +338,50 @@ class SWEditFilterItem{
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
                                     filterItem.displayValue = filterItem.value;
                                 }else{
-                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
+                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
+                                        
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
 
                                         filterItem.value = _daysBetween;
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        filterItem.criteriaNumberOf = "0";
+                                        
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                        }
-
-                                    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && (
-                                             selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate' ||
-                                             selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDateFuture'
-                                    )){
-                                        if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
-                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-                                        }else{
-                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
-                                            filterItem.criteriaNumberOf = "0";
-
-
-                                            if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                            }
                                             filterItem.value = filterItem.criteriaNumberOf;
-                                            filterItem.displayValue = filterItem.criteriaNumberOf;
-
-                                            switch(filterItem.measureType){
-                                                case 'd':
-                                                    filterItem.displayValue +=' Day';
-                                                    break;
-                                                case 'm':
-                                                    filterItem.displayValue +=' Month';
-                                                    break;
-                                                case 'y':
-                                                    filterItem.displayValue +=' Year';
-                                                    break;
-                                            }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
-                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') 
-                                                ? filterItem.displayValue += ' Ago'
-                                                : filterItem.displayValue += ' from Now';
                                         }
-                                    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
+                                        
+                                        // switch(filterItem.measureType){
+                                        //     case 'd':
+                                        //         filterItem.displayValue +=' Day';
+                                        //         break;
+                                        //     case 'm':
+                                        //         filterItem.displayValue +=' Month';
+                                        //         break;
+                                        //     case 'y':
+                                        //         filterItem.displayValue +=' Year';
+                                        //         break;
+                                        // }
+                                        
+                                        // filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
+                                        // (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') 
+                                        //     ? filterItem.displayValue += ' Ago'
+                                        //     : filterItem.displayValue += ' from Now';
+                                        
+                                        // if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
+                                        //     filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+                                        //     filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+                                        // }else{
+                                        //     filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        //     filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        //     filterItem.criteriaNumberOf = "0";
+                                        // }
+                                            
+
+                                    }else  if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
                                         filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
                                         filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){

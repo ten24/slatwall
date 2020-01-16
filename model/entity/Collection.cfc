@@ -3277,7 +3277,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case 'tw': //This Week
 				//first day of current week
 				setStartRange = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
-				setEndRange = now();
+				//Last day of week
+				setEndRange = DateAdd("d",  7, setStartRange);
 			break;
 			case 'tm': //This Month
 				//first day of current month
@@ -3294,6 +3295,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case 'ty': //This Year
 				//first day of current year
 				setStartRange = CreateDate(year(now()), 1, 1);
+				setEndRange = now();
+			break;
+			case 'lh': //Last H Hours
+				setStartRange = DateAdd("h",  - arguments.criteria, Now());
 				setEndRange = now();
 			break;
 			case 'ld': //Last N Day
