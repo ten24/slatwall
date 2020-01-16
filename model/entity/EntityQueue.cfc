@@ -60,6 +60,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="mostRecentError" ormtype="string" length="8000";
 	property name="tryCount" ormType="integer" default="0";
 	property name="entityQueueProcessingDateTime" ormtype="timestamp";
+	property name="serverInstanceKey" ormType="string";
 	
 	// Related Object Properties (many-to-one)
 	

@@ -139,8 +139,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'transactionStatus', requestData);
 
 		// Response Data
-		if (!responseBean.hasErrors() && structKeyExists(responseData,'transactionStatus')) {
-			return responseData.transactionStatus;
+		if (!responseBean.hasErrors()){
+			if(structKeyExists(responseData,'rows')){
+				responseData = responseData.rows[1];
+			}
+			if(structKeyExists(responseData,'transactionStatus')) {
+				return responseData.transactionStatus;
+			}
 		}
 		return 50;
 	}
@@ -555,7 +560,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			}
 			
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
-
+			
 			// Response Data
 			if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderTransactionID(responseData.id);

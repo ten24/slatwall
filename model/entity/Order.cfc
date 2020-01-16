@@ -785,20 +785,20 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getFulfillmentChargeAfterDiscountPreTaxTotal() {
 		var fulfillmentChargeAfterDiscountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
+			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscountPreTax());
 		}
 
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
 	public numeric function getFulfillmentChargeNotRefunded() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundTotalOnReferencingOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundPreTaxOnReferencingOrders());
 	}
 	
-	public numeric function getFulfillmentRefundTotalOnReferencingOrders(){
+	public numeric function getFulfillmentRefundPreTaxOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
-			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundTotal();
+			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
 			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
 		}
 		return fulfillmentRefundTotal;

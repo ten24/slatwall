@@ -494,5 +494,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 	}
 	
+	public string function getServerInstanceKey(){
+		return server[getApplicationKey()].serverInstanceKey;
+	}
+
+	public any function getServerInstance(){
+		if(!structKeyExists(variables, 'serverInstance')){
+			variables.serverInstance = getService('hibachiCacheService').getServerInstanceByServerInstanceKey(getServerInstanceKey());
+		}
+		return variables.serverInstance;
+	}
+	
 	
 }
