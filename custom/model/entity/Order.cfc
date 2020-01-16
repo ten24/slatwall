@@ -211,7 +211,7 @@ component {
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
@@ -230,7 +230,7 @@ component {
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
