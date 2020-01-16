@@ -34,7 +34,8 @@ class MonatProductCardController {
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addOrderTemplateItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
-        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess"); 
+        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess");
+        this.observerService.attach(this.setIsAccountWishlistItem,"paginationEvent");
 	}
 	
 	public $onInit = () => {
@@ -235,12 +236,15 @@ class MonatProductCardController {
 			'undefined' !== typeof this.accountWishlistItems 
 			&& this.accountWishlistItems.length
 		) {
+			let found = false;
 			this.accountWishlistItems.forEach(item => {
+				console.log(item.productID +' === '+ this.product.productID + '? '+ (item.productID === this.product.productID))
 				if ( item.productID === this.product.productID ) {
-					this.isAccountWishlistItem = true;
+					found = true;
 					return;
 				}
 			});
+			this.isAccountWishlistItem = found;
 		}
 	}
 
