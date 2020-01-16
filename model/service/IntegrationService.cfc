@@ -141,7 +141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 
-		return variables[cacheKey];
+		return variables[cacheKey][arguments.integrationTypeName];
 	}
 	
 	

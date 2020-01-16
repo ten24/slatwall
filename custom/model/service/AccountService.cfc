@@ -134,7 +134,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
 	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
 	    
-		var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('nexio').getIntegrationCFC("Payment");//.getCardStatus(requestBean);
+		var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);//.getCardStatus(requestBean);
 		
 		var responseData = paymentIntegration.getCardStatus(requestBean);
 		
