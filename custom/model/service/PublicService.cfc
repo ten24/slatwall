@@ -1287,9 +1287,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }else if(account.getAccountType() == 'marketPartner' || arguments.mpUpgrade){
-                var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
-                return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
         }
