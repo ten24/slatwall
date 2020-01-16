@@ -1279,24 +1279,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Brand (many-to-one)
-	public void function setBrand(required any brand) {
-		variables.brand = arguments.brand;
-		if(isNew() or !arguments.brand.hasProduct( this )) {
-			arrayAppend(arguments.brand.getProducts(), this);
-		}
-	}
-	public void function removeBrand(any brand) {
-		if(!structKeyExists(arguments, "brand")) {
-			arguments.brand = variables.brand;
-		}
-		var index = arrayFind(arguments.brand.getProducts(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.brand.getProducts(), index);
-		}
-		structDelete(variables, "brand");
-	}
-
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setProduct( this );
@@ -1359,26 +1341,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public void function removeDeliveryScheduleDate(required any deliveryScheduleDate){
 		arguments.deliveryScheduleDate.removeProduct(this);
-	}
-
-	//  (many-to-many - owner)
- 	public void function addCategory(required any category) {
- 		if(isNew() or !hasCategory(arguments.category)) {
- 			arrayAppend(variables.categories, arguments.category);
- 		}
- 		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
- 			arrayAppend(arguments.category.getProducts(), this);
- 		}
- 	}
- 	public void function removeCategory(required any category) {
- 		var thisIndex = arrayFind(variables.categories, arguments.category);
- 		if(thisIndex > 0) {
- 			arrayDeleteAt(variables.categories, thisIndex);
- 		}
- 		var thatIndex = arrayFind(arguments.category.getProducts(), this);
- 		if(thatIndex > 0) {
- 			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
- 		}
 	}
 
 	// Promotion Rewards (many-to-many - inverse)
