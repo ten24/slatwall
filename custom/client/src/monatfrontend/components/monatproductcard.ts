@@ -32,7 +32,7 @@ class MonatProductCardController {
         public $location
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModals,"addItemSuccess"); 
+        this.observerService.attach(this.closeModals,"addOrderTemplateItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
         this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess"); 
 	}
@@ -194,7 +194,7 @@ class MonatProductCardController {
 	};
 	
     public closeModals = () =>{
-        $('.modal').modal('hide')
+        $('.modal').modal('hide');
         $('.modal-backdrop').remove() 
     }
     
