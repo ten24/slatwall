@@ -9,7 +9,7 @@
 				<span sw-rbkey="'frontend.miniCart.items'"></span>
 				/
 				<span sw-rbkey="'frontend.miniCart.total'"></span>
-				{{ monatMiniCart.cart.total | currency }} 
+				{{ monatMiniCart.cart.total | swcurrency:slatwall.cart.currencyCode }} 
 			</span>
 		</div>
 		
@@ -68,7 +68,7 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.extendedPriceAfterDiscount | currency }}</span>
+							<span class="price">{{ item.extendedPriceAfterDiscount | swcurrency:slatwall.cart.currencyCode }}</span>
 						</div>
 					</div>
 				</li>

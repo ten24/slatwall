@@ -7,6 +7,9 @@
 		"customerCanCreateFlag": [
 			{ "contexts": "create,save", "conditions": "scheduleOrderTemplate", "eq": "true" }
 		],
+		"accountIsNotInFlexshipCancellationGracePeriod": [
+			{ "contexts": "create,save", "conditions": "scheduleOrderTemplate", "eq": "true" }
+		],
 		"account": [
 			{"contexts": "cancel", "conditions": "activeScheduleOrderTemplate", "method": "userCanCancelFlexship" }
 		]

@@ -1054,7 +1054,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
@@ -1568,5 +1568,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
     
+    public void function getCustomerCanCreateFlexship(){
+        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var daysTillCanCreate = site.setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+        var createdDateTime = getHibachiScope().getAccount().getCreatedDateTime();
+        var now = now();
+        var adjustedDate = dateAdd("d",daysTillCanCreate,createdDateTime);
+        var dateCompare = dateCompare(now, adjustedDate);
+        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = (dateCompare > -1) ? true : false;
+    }
+    
+    public void function getOrderTemplates(required any data){ 
+		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		
+		super.getOrderTemplates(argumentCollection = arguments);
+    }
     
 }

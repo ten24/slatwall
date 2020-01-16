@@ -17,6 +17,15 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory.setSuccessFlag(arguments.success);
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
+	
+	
+	public void function resetTimedOutEntityQueueItems(required numeric timeout){
+		getHibachiEntityQueueDAO().resetTimedOutEntityQueueItems(argumentCollection=arguments);	
+	}
+
+	public void function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
+		getHibachiEntityQueueDAO().claimEntityQueueItemsByServer(argumentCollection=arguments);
+	}
 
 	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
 	//entry point will always be from workflow which should pass collectionData  

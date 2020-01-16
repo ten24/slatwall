@@ -57,7 +57,9 @@
 						{{ monatFlexshipPaymentMethodModal.translations.addNewCreditCard }}
 					</label>
 				</div>
-				<div ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
+				
+				<!-- new billing -->
+				<div ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
 					<h6 class="title-with-line mb-5">
 						{{ monatFlexshipPaymentMethodModal.translations.billingAddress }}
 					</h6>
@@ -91,6 +93,8 @@
 							{{ monatFlexshipPaymentMethodModal.translations.addNewBillingAddress }}
 						</label>
 					</div>
+					
+					
 					<!--- Conditional: Add New Shipping Address form --->
 					<div
 						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
@@ -232,7 +236,7 @@
 	
 					<!-- Conditional: Add New Payment method form -->
 					<div
-						ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
 						class="row"
 					>
 						<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard"></div>

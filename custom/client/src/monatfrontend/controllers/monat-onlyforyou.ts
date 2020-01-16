@@ -1,11 +1,16 @@
 export class OnlyForYouController {
 	public products: any = {};
 	public loading: boolean = true;
+	public orderTemplateID;
 
 	// @ngInject
 	constructor(
 		public publicService,
-		public $location
+		public $location,
+		public $window,
+		public orderTemplateService,
+		public monatAlertService,
+		public rbkeyService, 
 	) {
 		this.getPromotionSkus();
 	}
@@ -16,8 +21,12 @@ export class OnlyForYouController {
 			return;
 		}
 		
+		this.orderTemplateID = this.$location.search().orderTemplateId;
+		
+		
+		
 		let data = {
-			orderTemplateId: this.$location.search().orderTemplateId,
+			orderTemplateId: this.orderTemplateID,
 			pageRecordsShow: 20,
 		}
 		
@@ -29,5 +38,25 @@ export class OnlyForYouController {
 				this.loading = false;
 			} )
 	}
+	
+	
+	public addToFlexship = (skuID) => {
+		this.loading = true;
+		
+		this.orderTemplateService.addOrderTemplateItem( skuID, this.orderTemplateID, 1, true )
+		.then((data) => {
+
+			this.monatAlertService.success(
+				this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull')
+			);
+			this.$window.location.href = '/my-account/flexships/';
+		})
+		.catch( (error) => {
+            this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(() => {
+			this.loading = false;
+		});
+	};
 	
 }

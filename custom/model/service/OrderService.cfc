@@ -668,6 +668,43 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderItemCollectionList.getRecordsCount(true) > 0;
 	}
 	
+	public boolean function orderTemplateQualifiesForOFYProducts(required any orderTemplate) {
+		
+		if( 
+			arguments.orderTemplate.getTypeCode() != 'ottSchedule'  || 
+			arguments.orderTemplate.getStatusCode() == 'otstCancelled' 
+		){
+			return false;
+		}
+		
+		if( arguments.orderTemplate.getSubtotal() < arguments.orderTemplate.getCartTotalThresholdForOFYAndFreeShipping()){
+		 	return false;
+		}
+		 
+        var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList();
+        orderTemplateItemCollectionList.addFilter(
+        	'orderTemplate.orderTemplateID', 
+        	arguments.orderTemplate.getOrderTemplateID()
+        );
+        orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
+        
+		if( orderTemplateItemCollectionList.getRecordsCount( refresh=true ) > 0 ){
+			// there's only one Free-item is allowed per order, per flexship, 
+			// and that get's removed every time there a new-order-placed for the Flexship
+			return false; 
+		}
+		
+		
+		//This is an expensive check, so we do it at the last
+		var promotionalFreeRewardSkuCollection = getService('SkuService').getSkuCollectionList();
+		promotionalFreeRewardSkuCollection.setCollectionConfigStruct(
+			arguments.orderTemplate.getPromotionalFreeRewardSkuCollectionConfig()
+		);
+		
+		return promotionalFreeRewardSkuCollection.getRecordsCount( refresh=true ) > 0;
+	}
+	
+	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
 		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
@@ -934,7 +971,15 @@ component extends="Slatwall.model.service.OrderService" {
 				orderReturn.setOrder( arguments.order );
 				orderReturn.setCurrencyCode( arguments.order.getCurrencyCode() );
 				orderReturn.setReturnLocation( arguments.processObject.getReturnLocation() );
-				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
+					orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
+					orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
+				}
+				if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
+					orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
+				}
 
 				orderReturn = this.saveOrderReturn( orderReturn );
 			}
@@ -1272,4 +1317,43 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return arguments.order;
 	}
+	
+	
+	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required any orderTemplate){
+	
+		var flexshipsCollectionList = this.getOrderTemplateCollectionList();
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID');
+		flexshipsCollectionList.addFilter('account.accountID', arguments.orderTemplate.getAccount().getAccountID());
+		flexshipsCollectionList.addFilter('orderTemplateType.systemCode', 'ottSchedule');
+
+		var totalFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(totalFlexshipsCount < 1){
+			return false;
+		}
+		
+		flexshipsCollectionList.addFilter('orderTemplateStatusType.systemCode', 'otstCancelled');
+		var canceledFlexshipsCount = flexshipsCollectionList.getRecordsCount( refresh=true );
+		
+		if(canceledFlexshipsCount < totalFlexshipsCount) { 
+			return false;
+		}	
+	
+		var flexshipCancellationGracePeriodForMpUsers = arguments.orderTemplate.getSite().setting('integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers'); 
+		
+		flexshipsCollectionList.setDisplayProperties('orderTemplateID,canceledDateTime');
+		flexshipsCollectionList.addOrderBy("canceledDateTime|DESC");
+		flexshipsCollectionList.setPageRecordsShow(1);
+		
+		var lastCanceledFlexship = flexshipsCollectionList.getPageRecords( refresh=true, formatRecords=false )[1]; 
+
+		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < flexshipCancellationGracePeriodForMpUsers ) {
+			return true;
+		}
+		
+		return false;
+			
+	}
+	
+	
 }
