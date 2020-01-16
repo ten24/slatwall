@@ -267,7 +267,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 				this.logHibachi("setProperSession: softLogout=false");
 			}
 		}
-		this.logHibachi("setProperSession: Done");
+		this.logHibachi("setProperSession: Done | Account ID #getHibachiScope().getSession().getAccount().getAccountID()#");
+		this.logHibachi("setProperSession: Done | Order ID #getHibachiScope().cart().getOrderID()#");
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
