@@ -134,19 +134,32 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
 	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
 	    
-		var responseData = getService('integrationService').getIntegrationByIntegrationPackage('nexio').getIntegrationCFC("Payment").getCardStatus(requestBean);
+		var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('nexio').getIntegrationCFC("Payment");//.getCardStatus(requestBean);
+		
+		var responseData = paymentIntegration.getCardStatus(requestBean);
 		
         if( !StructIsEmpty(responseData ) )
         {
-        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.expirationMonth) {
+        	var updateCardSuccess = false;
+        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
         		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
+        		updateCardSuccess = true;
         	}
         	
-        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.expirationYear) {
+        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getexpirationYear()) {
         		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+        		updateCardSuccess = true;
         	}
         	
-        	arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
+        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+        		updateCardSuccess = true;
+        	}
+        	
+        	//Added flag to make sure save doesn't run without any update
+        	if(updateCardSuccess) {
+        		arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        	}
         }
         
         return arguments.accountPaymentMethod;
