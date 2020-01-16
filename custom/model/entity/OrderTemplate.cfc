@@ -2,15 +2,36 @@ component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="customerCanCreateFlag" persistent="false";
+	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
 
+
+	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
+		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
+			return true;
+		}
+
+		if(!structKeyExists(variables, "accountIsNotInFlexshipCancellationGracePeriod")){
+			variables.accountIsNotInFlexshipCancellationGracePeriod = true;
+			
+			if( !IsNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner' ){
+				
+				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
+														.getAccountIsInFlexshipCancellationGracePeriod( this );
+			}
+		}
+		
+		return variables.accountIsNotInFlexshipCancellationGracePeriod;
+	}
+
+
 	
 	public boolean function getCustomerCanCreateFlag(){
-			
+
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
 			variables.customerCanCreateFlag = true;
 			if( !isNull(getSite()) && 
