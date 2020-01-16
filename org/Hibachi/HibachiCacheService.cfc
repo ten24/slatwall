@@ -98,6 +98,12 @@ component accessors="true" output="false" extends="HibachiService" {
 		return false;
 	}
 	
+	public void function resetPermissionCache() {
+		this.resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+		//clears cache keys on the permissiongroup Object
+		this.resetCachedKeyByPrefix('PermissionGroup.');
+	}
+	
 	public void function updateServerInstanceCache(string serverInstanceKey){
 		if(!structKeyExists(arguments, 'serverInstanceKey')){
 			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
@@ -205,6 +211,8 @@ component accessors="true" output="false" extends="HibachiService" {
 			cachePut( arguments.key, tuple );
 		}
 	}
+	
+	
 	
 	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
 		

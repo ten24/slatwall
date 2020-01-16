@@ -72,7 +72,11 @@ class MonatFlexshipListingController{
 		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
-				if(data.orderTemplate){
+				
+				if (
+					data.successfulActions &&
+					data.successfulActions.indexOf('public:order.create') > -1
+				) {
 				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
 					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`; 
 				} else{
@@ -80,7 +84,7 @@ class MonatFlexshipListingController{
 				}
 			})
 			.catch((e) => {
-				console.error(e);
+			    this.monatAlertService.showErrorsFromResponse(e);
 			})
 			.finally( () => {
 				this.loading = false;

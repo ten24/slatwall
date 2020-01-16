@@ -62,6 +62,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
+	property name="fulfillmentRefundPreTax";
+	property name="fulfillmentTaxRefund";
 	property name="fulfillmentAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
 	property name="locationID" hb_formFieldType="select";
