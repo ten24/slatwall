@@ -129,7 +129,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	 * Function to check card status on Nexio and Update if needed
 	 * This function will be called from WorkFlow
 	 * */
-	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required any processObject) {
+	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
 		
 		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
 	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
