@@ -166,7 +166,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			if( swAccountStruct.accountType == 'vip' ) {
 				vibeAccount['type'] = 2; 
 			} 
-			else if( swAccountStruct.accountType = 'marketpartner' ) {
+			else if( swAccountStruct.accountType == 'marketpartner' ) {
 				vibeAccount['type'] = 3; 
 				vibeAccount['rankid'] = 1; 
 				vibeAccount['lifetimerankid'] = 1; 
