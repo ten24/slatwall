@@ -13,5 +13,6 @@
 		<Record updateScriptID="debeebedeebd12ea9fa692bff9de04d9" scriptPath="database/stocklossreason.cfm" loadOrder="104" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5631c4311ea9fa612bff9d404c8" scriptPath="database/promoqualifiermessage.cfm" loadOrder="105" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1dj4311ea9fa612bff9d404c8" scriptPath="database/muranavigationurls.cfm" loadOrder="106" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c8" scriptPath="database/workflowserverlock.cfm" loadOrder="107" maxExecutionCount="1" />
 	</Records> 
 </Table>
