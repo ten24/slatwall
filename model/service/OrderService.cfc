@@ -2122,7 +2122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 param name="arguments.data.optionalProperties" type="string" default="";
 
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "subtotal,fulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
