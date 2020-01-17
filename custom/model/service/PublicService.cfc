@@ -1469,6 +1469,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!order.hasErrors()) {
 			// Also make sure that this cart gets set in the session as the order
 			getHibachiScope().getSession().setOrder( order );
+			getHibachiSessionService().persistSession();
 		}else{
 		    this.logHibachi('setUpgradeOrderType: order has errors', true);
 		}
