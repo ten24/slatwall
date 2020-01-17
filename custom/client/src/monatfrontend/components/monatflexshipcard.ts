@@ -239,7 +239,7 @@ class MonatFlexshipCardController {
 					);
 					
 					this.monatAlertService.success(
-							this.rbkeyService.rbKey('alert.flaxship.activationSuccessfull')
+							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
 						);
 						
 					this.$window.location.href = `/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
