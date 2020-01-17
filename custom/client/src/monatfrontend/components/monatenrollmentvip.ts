@@ -29,6 +29,7 @@ class VIPController {
 	public flexshipTotal:number = 0;
 	public lastAddedProductName;
 	public addedItemToCart;
+	public defaultTerm;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -38,6 +39,11 @@ class VIPController {
 		this.getCountryCodeOptions();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
+			for(let term of response.frequencyTermOptions){
+				if(term.name=='Monthly'){
+					this.defaultTerm = term;
+				}
+			}
 		})
 		
 		//checks to local storage in case user has refreshed
@@ -179,7 +185,14 @@ class VIPController {
     }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
-		
+
+    	if("string" == typeof(frequencyTerm)){
+    		let holdingValue = frequencyTerm;
+    		frequencyTerm = {};
+    		frequencyTerm.value = holdingValue;
+    		frequencyTerm.name = frequencyTerm.value == '2c92808469a0e1ec0169a132879f0020' ? 'Bi-Monthly' : 'Monthly';
+    	}
+
 		if (
 			'undefined' === typeof frequencyTerm
 			|| 'undefined' === typeof dayOfMonth
@@ -193,6 +206,7 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
+		
 		if(this.isNotSafariPrivate){
 			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
 			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
