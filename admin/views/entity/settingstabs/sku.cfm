@@ -91,6 +91,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuStockHold"/>
 		<swa:SlatwallSetting settingName="skuStockHoldTime"/>
+		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation"/>
 
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -75,9 +75,12 @@ class MonatUpgradeController {
 		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
 			if(!this.cart) {
 				// Applying fee populates cart, if cart is already populated, do not add another fee
-				this.monatService.addEnrollmentFee();
+				this.monatService.addEnrollmentFee().then(()=>{
+					this.next();
+				});
+			}else{
+				this.next();
 			}
-			this.next();
 		}
 		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}

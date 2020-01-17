@@ -1485,6 +1485,9 @@ property name="sapItemCode" ormtype="string";
 	}
 
 	public any function getAverageCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
@@ -1495,6 +1498,9 @@ property name="sapItemCode" ormtype="string";
 	}
 	
 	public any function getAverageLandedCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){

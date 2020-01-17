@@ -125,7 +125,7 @@ class MonatFlexshipCartContainerController {
     	.removeOrderTemplateItem(item.orderTemplateItemID)
     	.then( (data) => {
         	if(data.successfulActions && data.successfulActions.indexOf('public:order.removeOrderTemplateItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.removeItemsucessfull'))
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.removeItemsucessfull'))
     		} else {
     		    throw (data);
             }
@@ -144,7 +144,7 @@ class MonatFlexshipCartContainerController {
     	.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1)
     	.then( (data) => {
         	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.editItemsucessfull'))
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.editItemsucessfull'))
     		} else {
     		    throw (data);
             }
@@ -162,7 +162,7 @@ class MonatFlexshipCartContainerController {
     	.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1)
     	.then( (data) => {
         	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flaxship.editItemsucessfull'))
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.editItemsucessfull'))
     		} else {
     		    throw (data);
             }
