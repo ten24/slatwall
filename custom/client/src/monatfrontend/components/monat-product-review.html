@@ -20,18 +20,18 @@
 						<h3 class="mb-0">{{monatProductReview.newProductReview.sku_product_productName}}</h3>
 					</div>
 					<div class="modal-body w-100">
-						<h3>Leave a Review</h3>
+						<h3 sw-rbkey="'frontend.productReview.leaveReview'"></h3>
 	                    <div class="mx-auto material-field">
 	                    	<!---Overriding material field style for this instance with inline ---> 
-	                    	<label style="position:static">Your rating</label>
+	                    	<label style="position:static" sw-rbkey="'frontend.productReview.yourRating'"></label>
 							<i ng-repeat="star in monatProductReview.stars track by $index" ng-click="monatProductReview.setRating($index + 1)" class="fal fa-star {{star}}"></i>
 							<input type="hidden" required name="newProductReview.rating" ng-model="monatProductReview.newProductReview.rating" />
-                          	<span class="text-danger mt-2 d-block">This field is required.</span>
+                          	<span class="text-danger mt-2 d-block" sw-rbkey="'frontend.gloabl.thisFieldRequired'"></span>
 	                    </div>
 	                    <div class="material-field mx-auto">
 	                        <textarea id="newProductReview" type="text" name="newProductReview.review"  class="d-block form-control success" ng-model="monatProductReview.newProductReview.review" required></textarea>
-                          	<span class="text-danger">This field is required.</span>
-	                        <label for="newProductReview.review">Add a Comment</label>
+                          	<span class="text-danger" sw-rbkey="'frontend.gloabl.thisFieldRequired'"></span>
+	                        <label for="newProductReview.review" sw-rbkey="'frontend.productReview.addComment'"></label>
 							<input type="hidden" name="newProductReview.reviewerName" ng-model="monatProductReview.newProductReview.reviewerName" />
 							<input type="hidden" name="newProductReview.productReviewID" ng-model="monatProductReview.newProductReview.productReviewID" value="" />
                         	<input id="skuID" type="hidden" name="newProductReview.product.skuID"  class="form-control success" ng-model="monatProductReview.newProductReview.sku_skuID">

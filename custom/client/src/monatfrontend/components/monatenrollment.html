@@ -29,12 +29,20 @@
 			</a>
 
 			<span ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="qty-and-price text-white pl-3">
-				{{ monatEnrollment.cart.totalItemQuantity }} ITEMS / TOTAL <span ng-bind-html="monatEnrollment.cart.total | swcurrency:monatEnrollment.cart.currencyCode"></span> 
+				{{ monatEnrollment.cart.totalItemQuantity }} 
+				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span> / 
+				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span> 
+				<span ng-bind-html="monatEnrollment.cart.total | swcurrency:monatEnrollment.cart.currencyCode"></span> 
 				<small ng-click="monatEnrollment.toggleMiniCart()" class="border-bottom ml-3">{{monatEnrollment.cartText}}</small>
 			</span>
 		</div>
 		
-		<span class="step-status">Step {{monatEnrollment.position + 1}} of {{monatEnrollment.steps.length}} </span>
+		<span class="step-status">
+			<span sw-rbkey="'frontend.global.step'"></span> 
+			{{monatEnrollment.position + 1}} 
+			<span sw-rbkey="'frontend.global.of'"></span> 
+			{{monatEnrollment.steps.length}} 
+		</span>
 		
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
 			<button 
@@ -43,7 +51,7 @@
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
 			>
-				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>
 			<button 
@@ -52,7 +60,7 @@
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext"
 			>
-				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>			
 		</div>
@@ -64,7 +72,7 @@
 				class="btn btn-secondary forward-btn forward disabled" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
 			>
-				<span data-ng-bind="monatEnrollment.position + 1 == monatEnrollment.steps.length ? monatEnrollment.finishText : 'Next'"></span>
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>
 		</div>
