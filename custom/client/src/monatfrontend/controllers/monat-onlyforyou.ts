@@ -47,7 +47,7 @@ export class OnlyForYouController {
 		.then((data) => {
 
 			this.monatAlertService.success(
-				this.rbkeyService.rbKey('alert.flaxship.addProductsucessfull')
+				this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')
 			);
 			this.$window.location.href = '/my-account/flexships/';
 		})
