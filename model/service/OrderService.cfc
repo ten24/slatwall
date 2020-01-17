@@ -1904,7 +1904,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAccount(account); 
 
 			accountAddress = getAccountService().saveAccountAddress(accountAddress);
-
+			getHibachiScope().flushORMSession();
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getShippingAccountAddress())) { 
