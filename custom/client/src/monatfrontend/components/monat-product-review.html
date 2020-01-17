@@ -26,11 +26,11 @@
 	                    	<label style="position:static" sw-rbkey="'frontend.productReview.yourRating'"></label>
 							<i ng-repeat="star in monatProductReview.stars track by $index" ng-click="monatProductReview.setRating($index + 1)" class="fal fa-star {{star}}"></i>
 							<input type="hidden" required name="newProductReview.rating" ng-model="monatProductReview.newProductReview.rating" />
-                          	<span class="text-danger mt-2 d-block" sw-rbkey="'frontend.gloabl.thisFieldRequired'"></span>
+                          	<span class="text-danger mt-2 d-block" sw-rbkey="'frontend.global.thisFieldRequired'"></span>
 	                    </div>
 	                    <div class="material-field mx-auto">
 	                        <textarea id="newProductReview" type="text" name="newProductReview.review"  class="d-block form-control success" ng-model="monatProductReview.newProductReview.review" required></textarea>
-                          	<span class="text-danger" sw-rbkey="'frontend.gloabl.thisFieldRequired'"></span>
+                          	<span class="text-danger" sw-rbkey="'frontend.global.thisFieldRequired'"></span>
 	                        <label for="newProductReview.review" sw-rbkey="'frontend.productReview.addComment'"></label>
 							<input type="hidden" name="newProductReview.reviewerName" ng-model="monatProductReview.newProductReview.reviewerName" />
 							<input type="hidden" name="newProductReview.productReviewID" ng-model="monatProductReview.newProductReview.productReviewID" value="" />

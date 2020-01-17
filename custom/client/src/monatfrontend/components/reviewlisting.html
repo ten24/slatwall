@@ -24,7 +24,7 @@
 				</li>
 				<li class="page-item" ng-show=><a class="page-link" href="##">...</a></li>
 				<li class="page-item" ng-class="{active:swfReviewListing.currentPage == page.value}" ng-repeat="page in swfReviewListing.pageNumberArray">
-					<a class="page-link" ng-click="swfReviewListing.getPage(page.value)">{{page.name}}<span class="sr-only" ng-if="swfReviewListing.currentPage == page.value">(<span sw-rbkey="'frontend.gloabl.current'"></span>)</span>
+					<a class="page-link" ng-click="swfReviewListing.getPage(page.value)">{{page.name}}<span class="sr-only" ng-if="swfReviewListing.currentPage == page.value">(<span sw-rbkey="'frontend.global.current'"></span>)</span>
 					</a>
 				</li>
 				<li class="page-item" ng-show="!swfReviewListing.currentPageIsMax()">
