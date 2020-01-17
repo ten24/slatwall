@@ -61,7 +61,7 @@ class SWCriteriaDate{
 				    			display:"Today",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'today'
 				    			}
 				    		},
@@ -69,7 +69,7 @@ class SWCriteriaDate{
 				    			display:"Yesterday",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'yesterday'
 				    			}
 				    		},
@@ -77,7 +77,7 @@ class SWCriteriaDate{
 				    			display:"This Week",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'thisWeek'
 				    			}
 				    		},
@@ -85,7 +85,7 @@ class SWCriteriaDate{
 				    			display:"This Month",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'thisMonth'
 				    			}
 				    		},
@@ -93,7 +93,7 @@ class SWCriteriaDate{
 				    			display:"This Quarter",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'thisQuarter'
 				    			}
 				    		},
@@ -101,7 +101,7 @@ class SWCriteriaDate{
 				    			display:"This Year",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'thisYear'
 				    			}
 				    		},
@@ -109,7 +109,7 @@ class SWCriteriaDate{
 				    			display:"Last N Hour(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastHour',
 				    				measureTypeDisplay:'Hours'
 				    			}
@@ -118,7 +118,7 @@ class SWCriteriaDate{
 				    			display:"Last N Day(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastDay',
 				    				measureTypeDisplay:'Days'
 				    			}
@@ -127,7 +127,7 @@ class SWCriteriaDate{
 				    			display:"Last N Week(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastWeek',
 				    				measureTypeDisplay:'Weeks'
 
@@ -137,7 +137,7 @@ class SWCriteriaDate{
 				    			display:"Last N Month(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastMonth',
 				    				measureTypeDisplay:'Months'
 				    			}
@@ -146,7 +146,7 @@ class SWCriteriaDate{
 				    			display:"Last N Quarter(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastQuarter',
 				    				measureTypeDisplay:'Quarters'
 				    			}
@@ -155,7 +155,7 @@ class SWCriteriaDate{
 				    			display:"Last N Year(s)",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'lastYear',
 				    				measureTypeDisplay:'Years'
 				    			} 
@@ -164,7 +164,7 @@ class SWCriteriaDate{
 				    			display:"More Than N Day(s) Ago",
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'moreDays',
 				    				measureTypeDisplay:'Days'
 				    			}
@@ -173,7 +173,7 @@ class SWCriteriaDate{
 				    			display:"More Than N Week(s) Ago",
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'moreWeeks',
 				    				measureTypeDisplay:'Weeks'
  				    			}
@@ -182,7 +182,7 @@ class SWCriteriaDate{
 				    			display:"More Than N Month(s) Ago",
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'moreMonths',
 				    				measureTypeDisplay:'Months'
 				    			}
@@ -191,7 +191,7 @@ class SWCriteriaDate{
 				    			display:"More Than N Year(s) Ago",
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'calculation',
 				    				measureType:'moreYears',
 				    				measureTypeDisplay:'Years'
 				    			}
@@ -201,7 +201,7 @@ class SWCriteriaDate{
                                 display:"Exact N Day(s) Ago",
                                 comparisonOperator:	"between",
                                 dateInfo:{
-                                    type:'exactDate',
+                                    type:'calculation',
                                     measureType:'exactDays',
                                     measureTypeDisplay:'Days'
                                 }
@@ -210,7 +210,7 @@ class SWCriteriaDate{
                                 display:"Exact N Month(s) Ago",
                                 comparisonOperator:	"between",
                                 dateInfo:{
-                                    type:'exactDate',
+                                    type:'calculation',
                                     measureType:'exactMonths',
                                     measureTypeDisplay:'Months'
                                 }
@@ -219,16 +219,16 @@ class SWCriteriaDate{
                                 display:"Exact N Year(s) Ago",
                                 comparisonOperator:	"between",
                                 dateInfo:{
-                                    type:'exactDate',
+                                    type:'calculation',
                                     measureType:'exactYears',
                                     measureTypeDisplay:'Years'
                                 }
-                            },//HERE PROG
+                            },
 							{
                                 display:"Exact N Day(s) From Now",
                                 comparisonOperator:	"between",
                                 dateInfo:{
-                                    type:'exactDate',
+                                    type:'calculation',
                                     measureType:'exactDayFromNow',
                                     measureTypeDisplay:'Days'
                                 }
@@ -348,7 +348,7 @@ class SWCriteriaDate{
 				  	//check whether condition is checking for null values in date
 				  	if(angular.isDefined(selectedCondition.dateInfo)){
 				  		//is condition a calculation
-				  		if(selectedCondition.dateInfo.type === 'exactDate'){
+				  		if(selectedCondition.dateInfo.type === 'calculation'){
 				  			
 			  				var setStartRange = false;
 							var setEndRange = false;
@@ -602,7 +602,7 @@ class SWCriteriaDate{
 					  $log.debug(selectedFilterProperty);
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 				  	var measureCount = selectedFilterProperty.criteriaNumberOf;
-				  	if(selectedCondition.dateInfo.type === 'exactDate'){
+				  	if(selectedCondition.dateInfo.type === 'calculation'){
 		  				switch(selectedCondition.dateInfo.measureType){
 		  					case 'lastHour':
 			  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();

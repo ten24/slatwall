@@ -337,7 +337,7 @@ class SWEditFilterItem{
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
                                     filterItem.displayValue = filterItem.value;
                                 }else{
-                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
+                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
                                         
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
                                         
@@ -349,6 +349,10 @@ class SWEditFilterItem{
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
                                             filterItem.value = filterItem.criteriaNumberOf;
+                                            
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
+                                        
                                         } else {
                                             filterItem.criteriaNumberOf = "0";
                                             filterItem.value = _daysBetween;
