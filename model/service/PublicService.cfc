@@ -1215,10 +1215,13 @@ component  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+            //flushing for can place order check
+            getHibachiScope().flushORMSession(); 
+            
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
-        getHibachiScope().flushORMSession(); //flushing for can place order check
+        
         return cart;
     }
     
