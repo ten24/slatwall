@@ -30,6 +30,7 @@ class VIPController {
 	public lastAddedProductName;
 	public addedItemToCart;
 	public defaultTerm;
+	public termMap = {};
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -40,6 +41,8 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 			for(let term of response.frequencyTermOptions){
+				this.termMap[term.value] = term;
+				
 				if(term.name=='Monthly'){
 					this.defaultTerm = term;
 				}
@@ -185,12 +188,11 @@ class VIPController {
     }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
-
+		
+		
+		//TODO: REFACTOR MARKUP TO USE NGOPTIONS
     	if("string" == typeof(frequencyTerm)){
-    		let holdingValue = frequencyTerm;
-    		frequencyTerm = {};
-    		frequencyTerm.value = holdingValue;
-    		frequencyTerm.name = frequencyTerm.value == '2c92808469a0e1ec0169a132879f0020' ? 'Bi-Monthly' : 'Monthly';
+			frequencyTerm = this.termMap[frequencyTerm];
     	}
 
 		if (
