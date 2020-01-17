@@ -91,7 +91,7 @@ class MonatProductModalController {
 		.then((data) => {
 			
 			this.monatAlertService.success(
-				this.rbkeyService.rbKey("alert.flaxship.addProductsucessfull")
+				this.rbkeyService.rbKey("alert.flexship.addProductsucessfull")
 			);
 			this.closeModal();
 		})
