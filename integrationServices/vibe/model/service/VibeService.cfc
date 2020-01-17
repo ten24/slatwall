@@ -127,7 +127,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		vibeAccount['lastname'] = swAccountStruct['lastName'];
 		vibeAccount['screenname'] = swAccountStruct['username'];
 		
-		if( StructKeyExists( swAccountStruct, 'company' ) && !IsNull(swAccountStruct.company) ){
+		if( StructKeyExists( swAccountStruct, 'company' ) && !IsNull(swAccountStruct['company']) ){
 			vibeAccount['companyname'] = swAccountStruct['company'];
 		}
 		
@@ -145,28 +145,26 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		vibeAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
 
-		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct.languagePreference) ){
+		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct['languagePreference']) ){
 			vibeAccount['preferredlanguage'] = swAccountStruct['languagePreference'];
 		}
 		
-		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct.activeFlag) ) {
+		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct['activeFlag']) ) {
 			vibeAccount['statusid'] = 1; // we treat null as active
-		} 
-		else if( IsBoolean(swAccountStruct.activeFlag) ) {
-			vibeAccount['statusid'] = swAccountStruct.activeFlag ? 1 : 0;
+		} else if( IsBoolean(swAccountStruct['activeFlag']) ) {
+			vibeAccount['statusid'] = swAccountStruct['activeFlag'] ? 1 : 0;
 		}
 		
 		vibeAccount['type'] = 1; //default for customer(Retail) type
-		if( StructKeyExists( swAccountStruct, 'accountType' ) && 
-			!IsNull(swAccountStruct.accountType) &&
-			Len( Trim(swAccountStruct.accountType ) )
+	
+		if( StructKeyExists( swAccountStruct, 'accountType' ) &&  !IsNull(swAccountStruct['accountType']) && Len( Trim(swAccountStruct['accountType'] ) )
 		) {
-			
-			swAccountStruct.accountType = Lcase(swAccountStruct.accountType);
-			if( swAccountStruct.accountType == 'vip' ) {
+
+			swAccountStruct['accountType'] = Lcase(swAccountStruct['accountType']);
+			if( swAccountStruct['accountType'] == 'vip' ) {
 				vibeAccount['type'] = 2; 
 			} 
-			else if( swAccountStruct.accountType == 'marketpartner' ) {
+			else if( swAccountStruct['accountType'] == 'marketpartner' ) {
 				vibeAccount['type'] = 3; 
 				vibeAccount['rankid'] = 1; 
 				vibeAccount['lifetimerankid'] = 1; 
@@ -175,8 +173,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		vibeAccount['password'] = setting('defaultUserPassword');
 	
-
-		
 		return vibeAccount;		
 	}
 	
