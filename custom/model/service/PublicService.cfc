@@ -1025,14 +1025,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
+        var account = cart.getAccount();
         if(!cart.hasErrors() 
-        && !isNull(cart.getAccount()) 
-        && !isNull(cart.getAccount().getAccountStatusType()) 
-        && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+        && !isNull(account) 
+        && !isNull(account.getAccountStatusType()) 
+        && account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
         && isNull(cart.getMonatOrderType())){
-            if(cart.getAccount().getAccountType() == 'marketPartner' ){
+            if(account.getAccountType() == 'marketPartner' ){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
-            }else if(cart.getAccount().getAccountType() == 'vip'){
+            }else if(account.getAccountType() == 'vip'){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motVipEnrollment'));
             }
             
@@ -1169,8 +1170,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         
-        
-        getHibachiScope().logHibachi("getProductsByCategoryOrContentID: #productCollectionList.getHQL()#", true);
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
@@ -1288,9 +1287,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }else if(account.getAccountType() == 'marketPartner' || arguments.mpUpgrade){
-                var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
-                return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
         }
@@ -1469,6 +1465,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
+        
+        if(!order.hasErrors()) {
+			// Also make sure that this cart gets set in the session as the order
+			getHibachiScope().getSession().setOrder( order );
+		}
     }
     
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){

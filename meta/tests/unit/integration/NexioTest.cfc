@@ -199,4 +199,31 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var responseBean = variables.paymentIntegrationCFC.getCardStatus(requestBean);
 		writeDump(var = responseBean, top = 2);
 	}
+	
+	/**
+	 * @test
+	 * */
+	 public void function processCardUpdate() {
+	 	
+		var accountService = request.slatwallScope.getService("accountService");
+		var accountPaymentMethod = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod('#variables.accountPaymentMethodID#');
+		
+		var accountData = {
+			firstName = "Account",
+			lastName = "Delete",
+			phoneNumber = "1234567890",
+			createAuthenticationFlag = 0
+		};
+
+		// var account = entityNew("SlatwallAccount");
+
+		// account = accountService.processAccount(account, accountData, 'create');
+		// var accountHasErrors = account.hasErrors();
+		
+		var processContext = "cardStatus";
+		
+		//process will determine whether we need to inflate a process object or pass data directly
+		var paymentMethod = accountService.process(accountPaymentMethod, accountData, processContext);
+		writeDump(var = paymentMethod, top = 2); abort;
+	 }
 }

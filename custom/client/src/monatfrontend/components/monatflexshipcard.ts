@@ -1,7 +1,11 @@
+declare var hibachiConfig;
+
 class MonatFlexshipCardController {
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
+	
+	public urlSitePrefix: string;
 
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
@@ -18,6 +22,7 @@ class MonatFlexshipCardController {
 	constructor(public observerService, public orderTemplateService, public $window, public ModalService, public monatAlertService) {}
 
 	public $onInit = () => {
+		this.urlSitePrefix = ( hibachiConfig.cmsSiteID === 'default' ) ? '' : `${hibachiConfig.cmsSiteID}/`;
 		
 		this.observerService.attach(
 			this.updateOrderTemplate,

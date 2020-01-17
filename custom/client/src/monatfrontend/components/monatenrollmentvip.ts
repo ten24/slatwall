@@ -242,6 +242,7 @@ class VIPController {
 			}
 		})
 	}
+	
 }
 
 class MonatEnrollmentVIP {

@@ -34,16 +34,16 @@ component {
 			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
 			var mpPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
 			
-			var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
-			var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
-			var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
-			var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
+			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+			// var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+			// var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+			// var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
 			
 			var skuAdjustedPricing = {
-				adjustedPriceForAccount = formattedAccountPricing,
-				vipPrice = formattedVipPricing,
-				retailPrice = formattedRetailPricing,
-				MPPrice = formattedMPPricing,
+				adjustedPriceForAccount = adjustedAccountPrice,
+				vipPrice = adjustedVipPrice,
+				retailPrice = adjustedRetailPrice,
+				MPPrice = adjustedMPPrice,
 				personalVolume = mpPersonalVolume,
 				accountPriceGroup = priceGroupCode
 			};

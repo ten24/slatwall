@@ -6,9 +6,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         param name="arguments.data.emailAddressOrUsername" default="";
         param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
-        if(!arguments.account.getActiveFlag()){
-        	return;
-        }
+		
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
         
@@ -23,21 +21,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
-
+		
         for (var accountAuthentication in accountAuthentications) {
             var accountAuthEntity = getAccountService().getAccountAuthentication(accountAuthentication['accountAuthenticationID']);
-
-            if(!isNull(accountAuthEntity) && 
+			
+            if( !isNull(accountAuthEntity) && 
                 len(accountAuthentication['legacyPassword']) > 29 && 
-                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29))){
-
+                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29)) && 
+                accountAuthEntity.getAccount().getActiveFlag()
+                ){
+				
                 accountAuthEntity.setPassword(getAccountService().getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
                 accountAuthEntity.setLegacyPassword(javacast("null", ""));
                 accountAuthEntity = getAccountService().saveAccountAuthentication(accountAuthEntity);
             } else {
                 continue;
             }
-
+			
             if(!accountAuthEntity.hasErrors()){
                 arguments.slatwallScope.getService("hibachiSessionService").loginAccount( accountAuthEntity.getAccount(), accountAuthEntity );
             }
