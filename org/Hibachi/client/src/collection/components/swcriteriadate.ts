@@ -489,31 +489,6 @@ class SWCriteriaDate{
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								break;
-	  							// case 'd':
-	  							// 	var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
-	  							// 	dateBOD.setHours(0,0,0,0);
-	  							// 	selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
-	  							// 	break;
-	  							// case 'w':
-	  							// 	var firstDayOfWeek = Date.today().last().monday();
-	  							// 	selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
-	  							// 	break;
-	  							// case 'm':
-	  							// 	var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-				  				// 	selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-	  							// 	break;
-	  							// case 'q':
-	  							// 	var month = Date.parse('today').toString('MM');
-	  							// 	var year = Date.parse('today').toString('yyyy');
-	  							// 	var quarterMonth = (Math.floor(month/3)*3);
-	  							// 	var firstDayOfQuarter = new Date(year,quarterMonth,1);
-	  							// 	selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
-	  							// 	break;
-	  							// case 'y':
-	  							// 	var year = Date.parse('today').toString('yyyy');
-	  							// 	var firstDayOfYear = new Date(year,0,1);
-	  							// 	selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-	  							// 	break;
 	  						}
 	  						
 	  						if(setStartRange == true) {

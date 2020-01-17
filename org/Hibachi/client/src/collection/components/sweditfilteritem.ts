@@ -357,34 +357,6 @@ class SWEditFilterItem{
                                             filterItem.criteriaNumberOf = "0";
                                             filterItem.value = _daysBetween;
                                         }
-                                        
-                                        // switch(filterItem.measureType){
-                                        //     case 'd':
-                                        //         filterItem.displayValue +=' Day';
-                                        //         break;
-                                        //     case 'm':
-                                        //         filterItem.displayValue +=' Month';
-                                        //         break;
-                                        //     case 'y':
-                                        //         filterItem.displayValue +=' Year';
-                                        //         break;
-                                        // }
-                                        
-                                        // filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
-                                        // (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') 
-                                        //     ? filterItem.displayValue += ' Ago'
-                                        //     : filterItem.displayValue += ' from Now';
-                                        
-                                        // if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
-                                        //     filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                        //     filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-                                        // }else{
-                                        //     filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                        //     filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
-                                        //     filterItem.criteriaNumberOf = "0";
-                                        // }
-                                            
-
                                     }else  if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
                                         filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
                                         filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
