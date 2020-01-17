@@ -40,10 +40,10 @@ class VIPController {
 		this.getCountryCodeOptions();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
+			this.publicService.model = {};
 			for(let term of response.frequencyTermOptions){
 				this.termMap[term.value] = term;
 				if(term.name=='Monthly'){
-					this.publicService.model = {};
 					this.publicService.model.term = term;
 				}
 			}
