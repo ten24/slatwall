@@ -42,9 +42,9 @@ class VIPController {
 			this.frequencyTerms = response.frequencyTermOptions;
 			for(let term of response.frequencyTermOptions){
 				this.termMap[term.value] = term;
-				
 				if(term.name=='Monthly'){
-					this.defaultTerm = term;
+					this.publicService.model = {};
+					this.publicService.model.term = term;
 				}
 			}
 		})
