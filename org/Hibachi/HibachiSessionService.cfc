@@ -292,6 +292,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
+		this.logHibachi('Persisting Session - #getHibachiScope().getSession().getSessionID()#', true);
+		this.logHibachi('Persisting Session - OrderID: #getHibachiScope().getSession().getOrderID()#', true);
 		if (arguments.updateLoginCookies == true){
 			
 			//Generate new session cookies for every time the session is persisted (on every login);
