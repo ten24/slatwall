@@ -156,7 +156,6 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
-			variables.order = variables.requestOrder;
 			
 		}
 		return variables.requestOrder;
