@@ -3274,19 +3274,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				setStartRange = DateAdd('d', -1, now());
 				setEndRange = setStartRange;
 			break;
-			case 'tw': //This Week
+			case 'thisWeek': //This Week
 				//first day of current week
 				setStartRange = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
 				//Last day of week
 				setEndRange = DateAdd("d",  7, setStartRange);
 			break;
-			case 'tm': //This Month
+			case 'thisMonth': //This Month
 				//first day of current month
 				setStartRange = createDate(year(now()), month(now()), 1);
 				setEndRange = DateAdd("m",  1, setStartRange); //first day of next month
 				setEndRange = DateAdd("d",  -1, setEndRange); //last day of last month
 			break;
-			case 'tq': //This Quarter
+			case 'thisQuarter': //This Quarter
 				//get quarter
 				var quarter = floor(month(now()) / 3);
 				//First day of quarter
@@ -3294,21 +3294,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				setEndRange = DateAdd("m",  4, setStartRange); //first of 4th month
 				setEndRange = DateAdd("d",  -1, setEndRange); //last day of quarter
 			break;
-			case 'ty': //This Year
+			case 'thisYear': //This Year
 				//first day of current year
 				setStartRange = CreateDate(year(now()), 1, 1);
 				setEndRange = DateAdd("y",  1, setStartRange);
 				setEndRange = DateAdd("d",  -1, setEndRange); //last day of year
 			break;
-			case 'lh': //Last H Hours
+			case 'lastHour': //Last H Hours
 				setStartRange = DateAdd("h",  - arguments.criteria, Now());
 				setEndRange = now();
 			break;
-			case 'ld': //Last N Day
+			case 'lastDay': //Last N Day
 				setStartRange = DateAdd("d",  - arguments.criteria, Now());
 				setEndRange = DateAdd("d",  - 1, Now());
 			break;
-			case 'lw': //Last N Week
+			case 'lastWeek': //Last N Week
 				//first day of current week
 				var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
 				//get criteria week
@@ -3316,96 +3316,75 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//set criteria end of week
 				setEndRange = DateAdd('d',-1,firstOfCurrentWeek);
 			break;
-			case 'lm': //Last N Month
+			case 'lastMonth': //Last N Month
 				var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
 				setStartRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
 				setEndRange = DateAdd('d',-1,firstOfCurrentMonth);
 			break;
-			case 'lq': //Last N Quarter
+			case 'lastQuarter': //Last N Quarter
 				var quarter = floor(month(now()) / 3);
 				var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
 				setStartRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
 				setEndRange = DateAdd("d",  - 1, firstDayOfCurrentQuarter);
 			break;
-			case 'ly': //Last N Year
+			case 'lastYear': //Last N Year
 				var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
 				setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 				setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
 			break;
-			case 'md': //More than N Day Ago
+			case 'moreDays': //More than N Day Ago
 				setStartRange = DateAdd("d",  - arguments.criteria, Now());
 			break;
-			case 'mw': //More than N Week Ago
+			case 'moreWeeks': //More than N Week Ago
 				var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
 				setStartRange = DateAdd("d",  - arguments.criteria * 7, firstOfCurrentWeek);
 			break;
-			case 'mm': //More than N Month Ago
+			case 'moreMonths': //More than N Month Ago
 				var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
 				setStartRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
 			break;
-			case 'mq': //More than N Quarter Ago
+			case 'moreQuarters': //More than N Quarter Ago
 				var quarter = floor(month(now()) / 3);
 				var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
 				setStartRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
 			break;
-			case 'my': //More than N Year Ago
+			case 'moreYears': //More than N Year Ago
 				var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
 				setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 			break;
-			case 'ed': //Exact N Day Ago
+			case 'exactDays': //Exact N Day Ago
 				setStartRange = DateAdd("d",  - arguments.criteria, Now());
 				setEndRange = setStartRange;
 			break;
-			case 'ew': //Exact N Week Ago
+			case 'exactWeeks': //Exact N Week Ago
 				var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
 				setStartRange = DateAdd("d",  - arguments.criteria * 7, firstOfCurrentWeek);
 				setEndRange = setStartRange;
 			break;
-			case 'em': //Exact N Month Ago
+			case 'exactMonths': //Exact N Month Ago
 				var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
 				setStartRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
 				setEndRange = setStartRange;
 			break;
-			case 'eq': //Exact N Quarter Ago
+			case 'exactQuaters': //Exact N Quarter Ago
 				var quarter = floor(month(now()) / 3);
 				var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
 				setStartRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
 				setEndRange = setStartRange;
 			break;
-			case 'ey': //Exact N Year Ago
+			case 'exactYears': //Exact N Year Ago
 				var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
 				setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 				setEndRange = setStartRange;
 			break;
-			case 'edfn': //Exact N Day From Now
+			case 'exactDayFromNow': //Exact N Day From Now
 				var setStartRange = DateAdd("d",  arguments.criteria, Now());
-				setEndRange = setStartRange;
-			break;
-			case 'ewfn': //Exact N Week From Now
-				var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
-				setStartRange = DateAdd("d",  arguments.criteria * 7, firstOfCurrentWeek);
-				setEndRange = setStartRange;
-			break;
-			case 'emfn': //Exact N Month From Now
-				var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
-				setStartRange = DateAdd("m",  arguments.criteria, firstOfCurrentMonth);
-				setEndRange = setStartRange;
-			break;
-			case 'eqfn': //Exact N Quarter From Now
-				var quarter = floor(month(now()) / 3);
-				var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
-				setStartRange = DateAdd("m",  arguments.criteria * 3, firstDayOfCurrentQuarter);
-				setEndRange = setStartRange;
-			break;
-			case 'eyfn': //Exact N Year From Now
-				var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
-				setStartRange = DateAdd("yyyy", arguments.criteria, firstDayOfCurrentYear);
 				setEndRange = setStartRange;
 			break;
 		}
 		
 		if(setStartRange != "") {
-			if(arguments.measureType== "lh") {
+			if(arguments.measureType== "lastHour") {
 				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange));
 			} else {
 				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
@@ -3414,7 +3393,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		if(setEndRange != "") {
-			if(arguments.measureType== "lh") {
+			if(arguments.measureType== "lastHour") {
 				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange));
 			} else {
 				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);

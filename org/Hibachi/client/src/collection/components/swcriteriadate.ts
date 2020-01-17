@@ -78,7 +78,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'tw'
+				    				measureType:'thisWeek'
 				    			}
 				    		},
 				    		{
@@ -86,7 +86,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'tm'
+				    				measureType:'thisMonth'
 				    			}
 				    		},
 				    		{
@@ -94,7 +94,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'tq'
+				    				measureType:'thisQuarter'
 				    			}
 				    		},
 				    		{
@@ -102,7 +102,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'ty'
+				    				measureType:'thisYear'
 				    			}
 				    		},
 				    		{
@@ -110,7 +110,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'lh',
+				    				measureType:'lastHour',
 				    				measureTypeDisplay:'Hours'
 				    			}
 				    		},
@@ -119,7 +119,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'ld',
+				    				measureType:'lastDay',
 				    				measureTypeDisplay:'Days'
 				    			}
 				    		},
@@ -128,7 +128,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'lw',
+				    				measureType:'lastWeek',
 				    				measureTypeDisplay:'Weeks'
 
 				    			}
@@ -138,7 +138,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'lm',
+				    				measureType:'lastMonth',
 				    				measureTypeDisplay:'Months'
 				    			}
 				    		},
@@ -147,7 +147,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'lq',
+				    				measureType:'lastQuarter',
 				    				measureTypeDisplay:'Quarters'
 				    			}
 				    		},
@@ -156,7 +156,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'ly',
+				    				measureType:'lastYear',
 				    				measureTypeDisplay:'Years'
 				    			} 
 				    		},
@@ -165,7 +165,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'md',
+				    				measureType:'moreDays',
 				    				measureTypeDisplay:'Days'
 				    			}
 				    		},
@@ -174,7 +174,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'mw',
+				    				measureType:'moreWeeks',
 				    				measureTypeDisplay:'Weeks'
  				    			}
 				    		},
@@ -183,7 +183,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'mm',
+				    				measureType:'moreMonths',
 				    				measureTypeDisplay:'Months'
 				    			}
 				    		},
@@ -192,7 +192,7 @@ class SWCriteriaDate{
 				    			comparisonOperator:	"<",
 				    			dateInfo:{
 				    				type:'exactDate',
-				    				measureType:'my',
+				    				measureType:'moreYears',
 				    				measureTypeDisplay:'Years'
 				    			}
 				    			
@@ -202,7 +202,7 @@ class SWCriteriaDate{
                                 comparisonOperator:	"between",
                                 dateInfo:{
                                     type:'exactDate',
-                                    measureType:'ed',
+                                    measureType:'exactDays',
                                     measureTypeDisplay:'Days'
                                 }
                             },
@@ -211,7 +211,7 @@ class SWCriteriaDate{
                                 comparisonOperator:	"between",
                                 dateInfo:{
                                     type:'exactDate',
-                                    measureType:'em',
+                                    measureType:'exactMonths',
                                     measureTypeDisplay:'Months'
                                 }
                             },
@@ -220,7 +220,7 @@ class SWCriteriaDate{
                                 comparisonOperator:	"between",
                                 dateInfo:{
                                     type:'exactDate',
-                                    measureType:'ey',
+                                    measureType:'exactYears',
                                     measureTypeDisplay:'Years'
                                 }
                             },//HERE PROG
@@ -229,7 +229,7 @@ class SWCriteriaDate{
                                 comparisonOperator:	"between",
                                 dateInfo:{
                                     type:'exactDate',
-                                    measureType:'edfn',
+                                    measureType:'exactDayFromNow',
                                     measureTypeDisplay:'Days'
                                 }
                             },
@@ -368,19 +368,19 @@ class SWCriteriaDate{
 	  								setStartDate = setStartDate.add(-1).days();
 	  								setEndDate = setStartDate;
 	  								break;
-	  							case 'tw': //This Week
+	  							case 'thisWeek': //This Week
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setStartDate = Date.today().monday().add(-7).days(); //added 7 days because Date.today().monday() is not returning this week's monday
 	  								setEndDate = Date.today().sunday();
 	  								break;
-	  							case 'tm': //This Month
+	  							case 'thisMonth': //This Month
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setStartDate = new Date.today().moveToFirstDayOfMonth();
 	  								setEndDate = new Date.today().moveToLastDayOfMonth();
 	  								break;
-	  							case 'tq': //This Quarter
+	  							case 'thisQuarter': //This Quarter
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								var month = Date.parse('today').toString('M');
@@ -389,40 +389,40 @@ class SWCriteriaDate{
 	  								setStartDate = new Date(year,quarterMonth,1);
 	  								setEndDate = new Date(year,quarterMonth,1).addMonths(3).add(-1).days();
 	  								break;
-	  							case 'ty': //This Year
+	  							case 'thisYear': //This Year
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								var year = Date.parse('today').toString('yyyy');
 	  								setStartDate = new Date(year,0,1);
 	  								setEndDate = new Date(year,11,31);
 	  								break;
-	  							case 'lh': //Last N Hour
+	  							case 'lastHour': //Last N Hour
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
 	  								break;
-	  							case 'ld': //Last N Day
+	  							case 'lastDay': //Last N Day
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
 	  								setStartDate = setStartDate.add(-1).days();
 	  								setEndDate = setStartDate;
 	  								break;
-	  							case 'lw': //Last N Week
+	  							case 'lastWeek': //Last N Week
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
 	  								setStartDate = Date.today().monday().add(-2).weeks();
 	  								setEndDate = Date.today().sunday().add(-1).weeks();
 	  								break;
-	  							case 'lm': //Last N Month
+	  							case 'lastMonth': //Last N Month
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
 	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
 	  								setEndDate = new Date.today().last().month().moveToLastDayOfMonth();
 	  								break;
-	  							case 'lq': //Last Quarter
+	  							case 'lastQuarter': //Last Quarter
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
@@ -432,7 +432,7 @@ class SWCriteriaDate{
 	  								setStartDate = new Date(year,quarterMonth,1).addMonths(-3);
 	  								setEndDate = new Date(year,quarterMonth,1).add(-1).days();
 	  								break;
-	  							case 'ly': //Last N Year
+	  							case 'lastYear': //Last N Year
 	  								setStartRange = true;
 	  								setEndRange = true;
 	  								setNumberOf = true;
@@ -440,51 +440,51 @@ class SWCriteriaDate{
 	  								setStartDate = new Date(year - 1,0,1);
 	  								setEndDate = new Date(year - 1,11,31);
 	  								break;
-	  							case 'md': //More than N Day Ago
-	  								setStartRange = false;
+	  							case 'moreDays': //More than N Day Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = setStartDate.add(-1).days();
 	  								break;
-	  							case 'mw': //More than N Week Ago
-	  								setStartRange = false;
+	  							case 'moreWeeks': //More than N Week Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = Date.today().monday().add(-2).weeks();
 	  								break;
-	  							case 'mm': //More than N Month Ago
-	  								setStartRange = false;
+	  							case 'moreMonths': //More than N Month Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
 	  								break;
-	  							case 'my': //More than N Year Ago
-	  								setStartRange = false;
+	  							case 'moreYears': //More than N Year Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								var year = Date.parse('today').toString('yyyy');
 	  								setStartDate = new Date(year - 1,0,1);
 	  								break;
-	  							case 'ed': //Exact N Day Ago
-	  								setStartRange = false;
+	  							case 'exactDays': //Exact N Day Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = setStartDate.add(-1).days();
 	  								break;
-	  							case 'em': //Exact N Month Ago
-	  								setStartRange = false;
+	  							case 'exactMonths': //Exact N Month Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
 	  								break;
-	  							case 'ey': //Exact N Year Ago
-	  								setStartRange = false;
+	  							case 'exactYears': //Exact N Year Ago
+	  								setStartRange = true;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								var year = Date.parse('today').toString('yyyy');
 	  								setStartDate = new Date(year - 1,0,1);
 	  								break;
-	  							case 'edfn':
+	  							case 'exactDayFromNow':
 	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
@@ -519,7 +519,7 @@ class SWCriteriaDate{
 	  						if(setStartRange == true) {
 	  							selectedCondition.showCriteriaStart = true;
 	  							selectedCondition.disableCriteriaStart = true;
-	  							if(selectedCondition.dateInfo.measureType != "lh") //set time to current, if filter is for hours
+	  							if(selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
 				  				{
 	  								selectedFilterProperty.criteriaRangeStart = setStartDate.setHours(0,0,0,0);
 				  				} else {
@@ -533,7 +533,7 @@ class SWCriteriaDate{
 	  						if(setEndRange == true) {
 	  							selectedCondition.showCriteriaEnd = true;
 				  				selectedCondition.disableCriteriaEnd = true;
-				  				if(selectedCondition.dateInfo.measureType != "lh") //set time to current, if filter is for hours
+				  				if(selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
 				  				{
 				  					selectedFilterProperty.criteriaRangeEnd = setEndDate.setHours(23,59,59,999);
 				  				} else {
@@ -604,40 +604,40 @@ class SWCriteriaDate{
 				  	var measureCount = selectedFilterProperty.criteriaNumberOf;
 				  	if(selectedCondition.dateInfo.type === 'exactDate'){
 		  				switch(selectedCondition.dateInfo.measureType){
-		  					case 'lh':
+		  					case 'lastHour':
 			  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
 			  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
 		  						break;
-		  					case 'ld':
-		  					case 'md':
+		  					case 'lastDay':
+		  					case 'moreDays':
 		  					//case 'ed':
 		  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
 								selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
 								break;
-							case 'lw':
-							case 'mw':
+							case 'lastWeek':
+							case 'moreWeeks':
 								var lastXWeeksAgo = Date.today().last().monday().add(-(measureCount)).weeks();
 								selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
 								break;
-							case 'lm':
-							case 'mm':
+							case 'lastMonth':
+							case 'moreMonths':
 							//case 'em':
 			  					var lastXMonthsAgo = Date.today().months().moveToFirstDayOfMonth().add(-(measureCount)).months();
 			  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
 								break;
-							case 'lq':
+							case 'lastQuarter':
 								 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
 								 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 							 	lastXQuartersAgo.add(-(measureCount * 3)).months();
 							 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
 								break;
-							case 'ly':
-							case 'my':
+							case 'lastYear':
+							case 'moreYears':
 							//case 'ey':
 			  					var lastXYearsAgo = new Date(new Date().getFullYear(), 0, 1).add(-measureCount).years();
 			  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
 								break;
-							case 'edfn':
+							case 'exactDayFromNow':
 								var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
 								selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0,0,0,0);
 								selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
