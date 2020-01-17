@@ -119,9 +119,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public void function setProperSession() {
+		this.logHibachi('setProperSession override: start', true);
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), getRemoteAddress())) {
+			this.logHibachi('setProperSession override: setPersistSessionFlag( false )', true);
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
+			this.logHibachi('setProperSession override: setPersistSessionFlag( false )', true);
 			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
@@ -129,11 +132,15 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {
+			this.logHibachi('setProperSession override: logoutAccount', true);
 			logoutAccount();
 		}
 		
 		// If the session was set with a persistent cookie, and the session has an non new order on it... then remove all of the personal information
 		if(getHibachiScope().getSessionFoundPSIDCookieFlag() && !getHibachiScope().getSession().getOrder().getNewFlag()) {
+			
+			this.logHibachi('setProperSession override: removePersonalInfo from order', true);
+			
 			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
 			
 			// Force persistance

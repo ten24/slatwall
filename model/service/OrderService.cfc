@@ -1904,7 +1904,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAccount(account); 
 
 			accountAddress = getAccountService().saveAccountAddress(accountAddress);
-
+			
+			// Note: we need to flush here so the new account-address and address has primary-IDs, 
+			// otherwise the **canPlaceOrder** threading logic fails (not able to save a temp-fulfillment due to foreign-key-constraints)
+			getHibachiScope().flushORMSession(); 
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
 		} else if (!isNull(processObject.getShippingAccountAddress())) { 

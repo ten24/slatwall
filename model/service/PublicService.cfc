@@ -2018,24 +2018,7 @@ component  accessors="true" output="false"
             return;
         }
         orderTemplate.clearProcessObject("updateFrequency");
-        
-        //try to activate if we can
-        if( 
-			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
-        ) {
-            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-            getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
-            
-            if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
-                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-                return;
-            }
-            orderTemplate.clearProcessObject("activate");
-            
-            //Clear the currentFlexship from session
-            getHibachiScope().getSession().setCurrentFlexship(JavaCast("null",''));
-        }
+     
 	} 
 	
 	public any function getAccountGiftCards( required struct data) {
