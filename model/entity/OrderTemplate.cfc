@@ -410,7 +410,6 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 				
 				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
 														.getAccountIsInFlexshipCancellationGracePeriod( this );
-
 			}
 		}
 		

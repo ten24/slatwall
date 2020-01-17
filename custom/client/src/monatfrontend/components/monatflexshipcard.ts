@@ -19,7 +19,14 @@ class MonatFlexshipCardController {
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	//@ngInject
-	constructor(public observerService, public orderTemplateService, public $window, public ModalService, public monatAlertService) {}
+	constructor(
+		public observerService, 
+		public orderTemplateService, 
+		public $window, 
+		public ModalService, 
+		public monatAlertService,
+		public rbkeyService
+	) {}
 
 	public $onInit = () => {
 		this.urlSitePrefix = ( hibachiConfig.cmsSiteID === 'default' ) ? '' : `${hibachiConfig.cmsSiteID}/`;
@@ -230,7 +237,12 @@ class MonatFlexshipCardController {
 						'orderTemplateUpdated' + data.orderTemplate.orderTemplateID,
 						data.orderTemplate,
 					);
-					this.monatAlertService.success("Your flexship has been Activated successfully");
+					
+					this.monatAlertService.success(
+							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
+						);
+						
+					this.$window.location.href = `/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
 				} else {
 					throw(data);
 				}

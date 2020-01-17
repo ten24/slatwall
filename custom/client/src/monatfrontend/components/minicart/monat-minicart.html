@@ -68,7 +68,7 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.extendedPriceAfterDiscount | swcurrency:slatwall.cart.currencyCode }}</span>
+							<span ng-bind-html="item.extendedPriceAfterDiscount | swcurrency: monatMiniCart.cart.currencyCode" class="price"></span>
 						</div>
 					</div>
 				</li>

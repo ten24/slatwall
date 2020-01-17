@@ -1215,10 +1215,13 @@ component  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+            //flushing for can place order check
+            getHibachiScope().flushORMSession(); 
+            
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
-        getHibachiScope().flushORMSession(); //flushing for can place order check
+        
         return cart;
     }
     
@@ -2018,24 +2021,7 @@ component  accessors="true" output="false"
             return;
         }
         orderTemplate.clearProcessObject("updateFrequency");
-        
-        //try to activate if we can
-        if( 
-			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
-        ) {
-            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-            getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
-            
-            if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
-                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-                return;
-            }
-            orderTemplate.clearProcessObject("activate");
-            
-            //Clear the currentFlexship from session
-            getHibachiScope().getSession().setCurrentFlexship(JavaCast("null",''));
-        }
+     
 	} 
 	
 	public any function getAccountGiftCards( required struct data) {
