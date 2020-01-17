@@ -41,7 +41,7 @@
             
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn" sw-rbkey="'frontend.global.quickShop'"></a></span>
                 </div>
             </div>
             
@@ -92,8 +92,8 @@
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" >Add To Cart</span>
-             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" sw-rbkey="'frontend.global.addToCart'"></span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'" sw-rbkey="'frontend.global.addToFlexship'"></span>
          </button>
    </div>
    

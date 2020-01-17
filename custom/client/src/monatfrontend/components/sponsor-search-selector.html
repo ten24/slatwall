@@ -3,7 +3,7 @@
 	<p class="partner">
 		<span ng-bind="sponsorSearchSelector.title"></span>
 		<i class="fas fa-question-circle modal-after-load" data-toggle="modal" data-target="#sponsor-selector-tooltip"></i>
-		<span ng-if="sponsorSearchSelector.selectedSponsor" ng-click="sponsorSearchSelector.setSelectedSponsor( null )">(change)</span>
+		<span ng-if="sponsorSearchSelector.selectedSponsor" ng-click="sponsorSearchSelector.setSelectedSponsor( null )">(<span sw-rbkey="'frontend.global.change'"></span>)</span>
 	</p>
 	
 	<input 
@@ -25,7 +25,7 @@
 					type="text" 
 					ng-model="sponsorSearchSelector.form.text"
 				/>
-				<label for="market-partner-name-field">Name/Member ID</label>
+				<label for="market-partner-name-field" sw-rbkey="'frontend.global.nameMemberID'"></label>
 			</div>
 		</div>
 		
@@ -41,7 +41,7 @@
 					<option disabled></option>
 					<option ng-repeat="country in sponsorSearchSelector.countryCodeOptions" value="{{country.value}}">{{country.name}}</option>
 				</select>
-				<label for="marketPartner_countryCode">Country</label>
+				<label for="marketPartner_countryCode" sw-rbkey="'frontend.global.country'"></label>
 			</div>
 		</div> 
 		
@@ -57,8 +57,8 @@
 					<option disabled></option>
 					<option ng-repeat="state in sponsorSearchSelector.stateCodeOptions" value="{{state.value}}">{{state.name}}</option>
 				</select>
-				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'US'">State</label>
-				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'CA'">Province</label>
+				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'US'" sw-rbkey="'frontend.global.state'"></label>
+				<label for="marketPartner_state" ng-if="sponsorSearchSelector.form.countryCode == 'CA'" sw-rbkey="'frontend.global.province'"></label>
 			</div>
 			<div class="material-field" ng-if="!sponsorSearchSelector.stateCodeOptions.length">
 				<input 
@@ -68,7 +68,7 @@
 					name="stateCode"
 					ng-model="sponsorSearchSelector.form.stateCode"
 				/>
-				<label for="marketPartner_locality">Locality</label>
+				<label for="marketPartner_locality" sw-rbkey="'frontend.global.locality'"></label>
 			</div>
 		</div> 
 		
@@ -80,7 +80,8 @@
 			class="bg-primary btn" 
 			ng-click="sponsorSearchSelector.getSearchResults()"
 			ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
-		>Search</button>
+			sw-rbkey="'frontend.global.search'"
+		></button>
 	</div>
 	
 	<!--- Results --->
