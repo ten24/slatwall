@@ -40,7 +40,7 @@ class SWCriteriaDate{
 				    			display:"Date",
 				    			comparisonOperator:	"between",
 				    			dateInfo:{
-				    				type:'exactDate',
+				    				type:'date',
 				    			}
 				    		},
 				    		{
@@ -342,7 +342,6 @@ class SWCriteriaDate{
 				scope.format = scope.formats[1];
 
 				scope.selectedConditionChanged = function(selectedFilterProperty){
-					console.log("selectedConditionChanged called....");
 					$log.debug('selectedConditionChanged Begin');
 
 				  	var selectedCondition:any = selectedFilterProperty.selectedCriteriaType;
@@ -442,25 +441,25 @@ class SWCriteriaDate{
 	  								setEndDate = new Date(year - 1,11,31);
 	  								break;
 	  							case 'md': //More than N Day Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = setStartDate.add(-1).days();
 	  								break;
 	  							case 'mw': //More than N Week Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = Date.today().monday().add(-2).weeks();
 	  								break;
 	  							case 'mm': //More than N Month Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
 	  								break;
 	  							case 'my': //More than N Year Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
 	  								var year = Date.parse('today').toString('yyyy');
@@ -576,6 +575,7 @@ class SWCriteriaDate{
 				  			selectedCondition.showCriteriaStart = true;
 				  			selectedCondition.showCriteriaEnd = false;
 				  			selectedCondition.disableCriteriaStart = false;
+				  			selectedCondition.showNumberOf = false;
 				  		}
 				  		else  if(selectedCondition.dateInfo.type === 'matchPart'){
 				  			selectedCondition.showCriteriaStart = false;
@@ -598,7 +598,6 @@ class SWCriteriaDate{
 				  }; //End selectedConditionChanged
 
 				  scope.criteriaRangeChanged = function(selectedFilterProperty){
-				  	console.log("criteriaRangeChanged called....");
 					  $log.debug('criteriaRangeChanged');
 					  $log.debug(selectedFilterProperty);
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;

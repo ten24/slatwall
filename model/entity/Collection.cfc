@@ -3283,19 +3283,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case 'tm': //This Month
 				//first day of current month
 				setStartRange = createDate(year(now()), month(now()), 1);
-				setEndRange = now();
+				setEndRange = DateAdd("m",  1, setStartRange); //first day of next month
+				setEndRange = DateAdd("d",  -1, setEndRange); //last day of last month
 			break;
 			case 'tq': //This Quarter
 				//get quarter
 				var quarter = floor(month(now()) / 3);
 				//First day of quarter
 				setStartRange = CreateDate(year(now()), (quarter)*3 + 1, 1);
-				setEndRange = now();
+				setEndRange = DateAdd("m",  4, setStartRange); //first of 4th month
+				setEndRange = DateAdd("d",  -1, setEndRange); //last day of quarter
 			break;
 			case 'ty': //This Year
 				//first day of current year
 				setStartRange = CreateDate(year(now()), 1, 1);
-				setEndRange = now();
+				setEndRange = DateAdd("y",  1, setStartRange);
+				setEndRange = DateAdd("d",  -1, setEndRange); //last day of year
 			break;
 			case 'lh': //Last H Hours
 				setStartRange = DateAdd("h",  - arguments.criteria, Now());
@@ -3303,7 +3306,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 			case 'ld': //Last N Day
 				setStartRange = DateAdd("d",  - arguments.criteria, Now());
-				setEndRange = now();
+				setEndRange = DateAdd("d",  - 1, Now());
 			break;
 			case 'lw': //Last N Week
 				//first day of current week
@@ -3402,11 +3405,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		if(setStartRange != "") {
-			rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
+			if(arguments.measureType== "lh") {
+				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange));
+			} else {
+				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
+			}
+			
 		}
 		
 		if(setEndRange != "") {
-			rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);
+			if(arguments.measureType== "lh") {
+				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange));
+			} else {
+				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);
+			}
+			
 		}
 		
 		// switch (arguments.measureType) {

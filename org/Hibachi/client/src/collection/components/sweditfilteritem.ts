@@ -330,7 +330,6 @@ class SWEditFilterItem{
                                 break;
                                 //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
                             case 'timestamp':
-                                console.log("sweditfilteritem -- creating filter");
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is it null or a range
@@ -341,17 +340,18 @@ class SWEditFilterItem{
                                     if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
                                         
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
-
-                                        filterItem.value = _daysBetween;
+                                        
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
                                         
                                         filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
                                         filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
-                                        filterItem.criteriaNumberOf = "0";
                                         
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
                                             filterItem.value = filterItem.criteriaNumberOf;
+                                        } else {
+                                            filterItem.criteriaNumberOf = "0";
+                                            filterItem.value = _daysBetween;
                                         }
                                         
                                         // switch(filterItem.measureType){
