@@ -24,7 +24,7 @@
 				{{ monatUpgrade.cart.totalItemQuantity }} 
 				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span> / 
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span> 
-				{{ monatUpgrade.cart.total | currency }} 
+				{{ monatUpgrade.cart.total | swcurrency:monatUpgrade.cart.currencyCode }} 
 				<small ng-click="monatUpgrade.toggleMiniCart()" class="border-bottom ml-3">{{monatUpgrade.cartText}}</small>
 			</span>
 		</div>
