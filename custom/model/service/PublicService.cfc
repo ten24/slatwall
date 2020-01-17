@@ -1465,6 +1465,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
+        
+        if(!order.hasErrors()) {
+			// Also make sure that this cart gets set in the session as the order
+			getHibachiScope().getSession().setOrder( order );
+		}
     }
     
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
