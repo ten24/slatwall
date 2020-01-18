@@ -860,6 +860,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		while (pageNumber < pageMax){
 			
     		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+    		
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    pageNumber++;
@@ -2801,7 +2802,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			}
     			//echo("committing all order.");
     			tx.commit();
-    			ormGetSession().clear();//clear every page records...
+    			ormGetSession().clear();
     		}catch(e){
     			if (!isNull(tx) && tx.isActive()){
     			    tx.rollback();
@@ -2813,7 +2814,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			abort;
     		}
     		
-    		this.logHibachi('Import (Create Order) Page #pageNumber# completed ', true);
+    		//this.logHibachi('Import (Create Order) Page #pageNumber# completed ', true);
+    		
 		    pageNumber++;
     	}
 		
