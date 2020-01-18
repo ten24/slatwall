@@ -1,4 +1,4 @@
-component extends="Slatwall.model.service.HibachiService" {
+component extends="Slatwall.model.service.HibachiService" accessors="true" {
     property name="ProductService";
 	property name="SettingService";
 	property name="AddressService";
@@ -237,44 +237,59 @@ component extends="Slatwall.model.service.HibachiService" {
 	}
 	
 	public void function importOrderShipments(required struct rc){ 
-
+        /**
+         * Allows the user to override the last n minutes that get checked. 
+         * Defaults to 20 minutes.
+         **/
+        var intervalOverride = rc.intervalOverride ?: 20;
         var MERGE_ARRAYS = true;
+        var SHIPPED = "5";
+        var CLOSED_STATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        
+        /**
+         * The page number to start with 
+         **/
         var pageNumber = rc.pageNumber?:1;
-		var pageSize = rc.pageSize?:25;
+        
+        /**
+         * How many records to process per page. 
+         **/
+		var pageSize = rc.pageSize?:500;
+		
+		/**
+		 * the page number to end on (exclusive) 
+		 **/
 		var pageMax = rc.pageMax?:1;
-		var dateFilterStart = rc.dateFilterStart?:dateFormat(now(), 'YYYY-mm-dd');
-		var dateFilterEnd = rc.dateFilterEnd?:dateFormat(now(), 'YYYY-mm-dd');
+		var MINUTES = 'n';
+		
+		/**
+		 * The date and time from 20 minutes ago.
+		 **/
+		var twentyMinutesAgo = DateAdd(MINUTES, -intervalOverride, now());
+		
+		/**
+		 * The string representation for the date twenty minutes ago. 
+		 **/
+		var startDate = "#year(twentyMinutesAgo)#-#month(twentyMinutesAgo)#-#day(twentyMinutesAgo)#T#hour(twentyMinutesAgo)#:#minute(twentyMinutesAgo)#:#second(now())#.693Z";
+		
+		/**
+		 * This should always equal now.
+		 **/
+		var endDate =  "#year(now())#-#month(now())#-#day(now())#T#hour(now())#:#minute(now())#:#second(now())#.693Z";
+		
+		/**
+		 * You can pass in a start date or end date in the rc 
+		 **/
+		var dateFilterStart = 
+		    rc.dateFilterStart ?: startDate;
+		var dateFilterEnd = 
+		    rc.dateFilterEnd ?: endDate;
+        
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
         var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
-
-        // Begin Helper functions
-
-        /**
-         *  @param {Struct} body The request body to be serialized into a API filter.
-         *  @param {String} authKey The value for the Authorization header sent to Boomi.
-         *  @return {Struct | Array} The shipments to create or update in Slatwall.
-         *  @throws Exception when the api can not be accessed.
-         * 
-         *  @example Request Body {
-         *          "ProcessingDate": "2019-01-03"
-         *          }
-         *          
-         * 
-         *  @example Response {
-         *          "Status": "success",
-         *          "Data": {
-         *            "Records": [
-         *              {
-         *                "SalesDocNumber": "7944365",
-         *                "DeliveryDocNumber": "0080552438",
-         *                "DeliveryDate": "2019-01-03",
-         *                "CarrierName": "Ground",
-         *                "TrackingNumber": "472895051621"
-         *              }]
-         *          }
-         * 
-         **/ 
-
+        
+		logHibachi("Finding deliveries for #startDate# to #endDate#");
+		
         /**
          * @param {Struct} hashmap A collection of key value pairs.
          * @param {List<String>} keys A list of keys that reference values in the map.
@@ -412,12 +427,23 @@ component extends="Slatwall.model.service.HibachiService" {
 			var order = order(shipment.OrderNumber);
 
             if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
-                // Create the delivery.  
+                
+    			var findOrderDeliveryByRemoteID = getService("OrderService").getOrderDeliveryByRemoteID(shipment.shipmentId, false);
+    			
+    			//Do not create this again if it already exists.
+    			if (!isNull(findOrderDeliveryByRemoteID)){
+    			    logHibachi("Not creating order delivery because it already exists: remoteID: #shipment.shipmentId#");
+    			    return;
+    			}
+    			
+    			// Create the delivery.  
                 var orderDelivery = new Slatwall.model.entity.OrderDelivery();
     			orderDelivery.setOrder(order);
     			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
     			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
     			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			
+    			
     			orderDelivery.setRemoteID( shipment.shipmentId );
 
     		    //get the tracking numbers.
@@ -450,13 +476,22 @@ component extends="Slatwall.model.service.HibachiService" {
                 orderDelivery.setShippingMethod( shippingMethod );
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 createDeliveryItems( orderDelivery );
-                echo("Created a delivery for orderNumber: #shipment['OrderNumber']# <br>");
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
-
-            }else{
-            	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
-
-			}
+                
+                var orderOnDelivery = orderDelivery.getOrder();
+                orderOnDelivery.updateOrderStatus();
+                var  isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
+			
+    			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
+    			
+    			if(isOrderPaidFor && isOrderFullyDelivered)	{
+    				orderOnDelivery.setOrderStatusType(CLOSED_STATUS);
+    				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
+                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#");
+    
+                }else{
+                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
+    			}
         };
 
         // Map all the shipments -> deliveries.

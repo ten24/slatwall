@@ -443,7 +443,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 		
 		//Use a service instead.
-		getService("MonatDataService").importDailyAccountUpdates(rc);
+		getService("MonatDataService").importOrderShipments(rc);
 		
 	}
 	
