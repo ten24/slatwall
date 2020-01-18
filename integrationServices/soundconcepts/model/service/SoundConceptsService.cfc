@@ -102,7 +102,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		soundConceptsAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		soundConceptsAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
 		
-		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct.languagePreference) ){
+		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct['languagePreference']) ){
 			soundConceptsAccount['default_language'] = swAccountStruct['languagePreference'];
 		}
 		
@@ -118,7 +118,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		if( setting('sendMagicLinkFlag') ) {
 			soundConceptsAccount['send_magic_link'] = 1;
 		}
-		
 		return soundConceptsAccount;
 	}
 	

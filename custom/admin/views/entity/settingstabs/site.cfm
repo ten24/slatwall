@@ -48,27 +48,18 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.site" type="any" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
-		<swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" settingObject="#rc.site#" />	
-		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteMissingImagePath" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="integrationmonatSiteMaximumFlexshipGiftCardAmount" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteInitialEnrollmentPeriodForMarketPartner" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteMaxDaysAfterAccountCreate" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteDefaultOFYSkuCode" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers" settingObject="#rc.site#" />
-	
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="siteAvailableLocales" />
+		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" />	
+		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
+		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
+		<swa:SlatwallSetting settingName="siteOrderOrigin" />
+		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" />
+		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
+		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
+		<swa:SlatwallSetting settingName="siteDefaultOFYSkuCode" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
+
