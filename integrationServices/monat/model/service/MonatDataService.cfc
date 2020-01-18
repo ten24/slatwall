@@ -203,7 +203,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	    var = {hasErrors: false};
 	    // Test range
 	    // "StartDate": "2020-11-15T00:16:28.693Z",
@@ -218,8 +218,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				"PageNumber": "#arguments.pageNumber#"
 			},
 			"Filters": {
-			    "StartDate": "2020-01-15T00:16:28.693Z",
-                "EndDate": "2020-01-17T23:16:28.693Z"
+			    "StartDate": arguments.dateFilterStart,
+	            "EndDate": arguments.dateFilterEnd
 			}
 		};
 
