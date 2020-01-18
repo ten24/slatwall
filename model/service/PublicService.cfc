@@ -2142,7 +2142,8 @@ component  accessors="true" output="false"
 		
 		orderTemplateItem.setQuantity(arguments.data.quantity); 
         var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
-        
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
         getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
             
         if(orderTemplateItem.hasErrors()) {
@@ -2160,6 +2161,7 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
+        orderTemplate.updateCalculatedProperties();
         getHibachiScope().addActionResult( "public:order.removeOrderTemplateItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {
@@ -2183,33 +2185,6 @@ component  accessors="true" output="false"
     }
     
     public void function editOrderTemplate(required any data){
-        param name="data.orderTemplateID" default="";
-        param name="data.orderTemplateName" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-	    
-	    if(len(arguments.data.orderTemplateName)) {
- 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
-	    }
-	    
-	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
-        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
-
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            getHibachiScope().flushORMSession(); 
-            //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-        
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-        }
-    }
-    
-     public void function editOrderTemplate(required any data){
         param name="data.orderTemplateID" default="";
         param name="data.orderTemplateName" default="";
         
