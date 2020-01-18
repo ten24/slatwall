@@ -1,9 +1,9 @@
 component extends="Slatwall.model.service.HibachiService" accessors="true" {
-    property name="ProductService";
-	property name="SettingService";
-	property name="AddressService";
-	property name="AccountService";
-	property name="TypeService";
+    property name="productService";
+	property name="settingService";
+	property name="addressService";
+	property name="accountService";
+	property name="typeService";
 	property name="settingService";
 	property name="integrationService";
 	property name="siteService";
@@ -15,6 +15,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="paymentService";
 	property name="locationService";
 	property name="fulfillmentService";
+	property name="shippingService";
 	
     // @hint helper function to return the integration
     public any function getIntegration(){
@@ -202,16 +203,23 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
 	    var = {hasErrors: false};
+	    // Test range
+	    // "StartDate": "2020-11-15T00:16:28.693Z",
+        // "EndDate": "2020-01-17T23:16:28.693Z"
+        
+        // Real Range
+        //"StartDate": arguments.dateFilterStart,
+	    //"EndDate": arguments.dateFilterEnd
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
 			},
 			"Filters": {
-			    "StartDate": arguments.dateFilterStart,
-			    "EndDate": arguments.dateFilterEnd
+			    "StartDate": "2020-01-15T00:16:28.693Z",
+                "EndDate": "2020-01-17T23:16:28.693Z"
 			}
 		};
 
@@ -237,14 +245,20 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	public void function importOrderShipments(required struct rc){ 
+        logHibachi("Begin importing order deliveries.");
         /**
          * Allows the user to override the last n minutes that get checked. 
          * Defaults to 20 minutes.
          **/
         var intervalOverride = rc.intervalOverride ?: 20;
+        
+        /**
+         * CONSTANTS 
+         **/
         var MERGE_ARRAYS = true;
         var SHIPPED = "5";
-        var CLOSED_STATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        var MINUTES = 'n';
         
         /**
          * The page number to start with 
@@ -260,7 +274,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		 * the page number to end on (exclusive) 
 		 **/
 		var pageMax = rc.pageMax?:1;
-		var MINUTES = 'n';
 		
 		/**
 		 * The date and time from 20 minutes ago.
@@ -280,13 +293,16 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		/**
 		 * You can pass in a start date or end date in the rc 
 		 **/
-		var dateFilterStart = 
-		    rc.dateFilterStart ?: startDate;
-		var dateFilterEnd = 
-		    rc.dateFilterEnd ?: endDate;
-        
+		var dateFilterStart = rc.dateFilterStart ?: startDate;
+		var dateFilterEnd = rc.dateFilterEnd ?: endDate;
+		
+		/**
+		 * Use a stateless session so we can use objects without memory issues.
+		 * Statelss sessions don't populate any entity related data. Just the
+		 * first level. You can set data on them and save them so good use-case.
+		 **/
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
-        var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
+        var shippingMethod = getShippingService().getShippingMethodByShippingMethodCode("defaultShippingMethod");
         
 		logHibachi("Finding deliveries for #startDate# to #endDate#");
 		
@@ -306,7 +322,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             }
 
             return true;
-        }
+        };
 
         /**
          * @param {String} The order number to lookup in Slatwall.
@@ -314,7 +330,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          */
         var orderExists = function(orderNumber) {
             return !isNull(getOrderService().getOrderByOrderNumber(orderNumber));
-        }
+        };
 
         /**
          * @param {String} The order number to lookup in Slatwall.
@@ -322,7 +338,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          */
         var order = function(orderNumber) {
             return getOrderService().getOrderByOrderNumber(orderNumber);
-        }
+        };
 
         /**
          * @param {Struct} The shipment to use to create the order delivery.
@@ -371,13 +387,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * @return {OrderDeliveryItem} Returns the newly created and save item. 
          */
         var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
-            var orderDeliveryItem = Slatwall.model.entity.OrderDeliveryItem();
+            var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
             orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
-            orderDeliveryItem.setOrderItem(orderFulfillmentItem.getOrderItem());
+            orderDeliveryItem.setOrderItem(orderFulfillmentItem);
             orderDeliveryItem.setOrderDelivery(orderDelivery);
 			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
             return orderDeliveryItem;
-        }
+        };
 
         /**
          * @param {OrderDelivery} Creates and adds all SHIPPING delivery items for the 
@@ -416,19 +432,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             }
 
             return false;
-        }
+        };
 
         /**
          * @param {Struct} Shipment A shipment (with packages) is used to build a delivery.
          * @return {Void}
          */
         var createDelivery = function(shipment){
-        	logHibachi("createDelivery: shipment.shipmentNumber");
+        	logHibachi("createDelivery: #shipment.shipmentNumber#");
 			var order = order(shipment.OrderNumber);
 
             if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
                 
-    			var findOrderDeliveryByRemoteID = getService("OrderService").getOrderDeliveryByRemoteID(shipment.shipmentId, false);
+    			var findOrderDeliveryByRemoteID = getOrderService().getOrderDeliveryByRemoteID(shipment.shipmentId, false);
     			
     			//Do not create this again if it already exists.
     			if (!isNull(findOrderDeliveryByRemoteID)){
@@ -465,33 +481,34 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
     		    		if (!isNull(shipment['PackageShipDate'])){
     		    			packageShipDate = shipment['PackageShipDate'];
+    		    			orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    		}
     		    	 }
     		    }
 
     		    // all tracking on one fulfillment.
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
-    		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( shippingMethod );
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
+                
                 createDeliveryItems( orderDelivery );
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
                 
+                //Close the order if its ready.
                 var orderOnDelivery = orderDelivery.getOrder();
-                orderOnDelivery.updateOrderStatus();
                 var  isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
-			
     			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
-    			
+
     			if(isOrderPaidFor && isOrderFullyDelivered)	{
-    				orderOnDelivery.setOrderStatusType(CLOSED_STATUS);
+    				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
     				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
                     logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#");
     
                 }else{
                 	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
     			}
+            }
         };
 
         // Map all the shipments -> deliveries.
@@ -500,37 +517,42 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var tx = ormStatelessSession.beginTransaction();
 
         // Do one page at a time, flushing and clearing as we go.
-        while (pageNumber < pageMax){
+        while (pageNumber <= pageMax){
         	logHibachi("Importing pagenumber: #pageNumber#");
 	        // Call the api and get shipment records for the date defined as the filter.
 	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
-
+	        
 	        if (isNull(response)){
 	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
 	            throw("Unable to get a usable response from Shipments API #now()#");
 	        }
-
+            
+            if (structKeyExists(rc, "viewResponse")){
+	            writedump(response);abort;    
+	        }
+            
 	        var shipments = response.Records?:"null";
-
+            
 	        if (shipments.equals("null")){
 	        	logHibachi("Response did not contain shipments.");
 	            throw("Response did not contain shipments data.");
 	        }
 
-	        if (containsAll(rc, "viewResponse")){
-	            writedump(shipments);abort;
-	        }
-
 			try{
-
+                /**
+                 * MAPS JSON to Slatwall OrderDeliverys
+                 * {JSON_OBJ} -> SlatwallOrderDelivery
+                 **/
 	    		arrayMap( shipments, createDelivery );
+	    		
 	    		tx.commit();
 	    		ormGetSession().clear();
 			}catch(shipmentError){
 
 				ormGetSession().clear();
-				logHibachi("Error: shipmentError.getMessage()");
+				
 				writedump(shipmentError);
+				logHibachi("Error: importing shipment. ");
 				abort;	
 			}
 			logHibachi("End Importing pagenumber: #pageNumber#");
