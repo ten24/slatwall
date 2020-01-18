@@ -1347,7 +1347,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var lastCanceledFlexship = flexshipsCollectionList.getPageRecords( refresh=true, formatRecords=false )[1]; 
 
-		if( dateDiff('d', lastCanceledFlexship.canceledDateTime, now() ) < flexshipCancellationGracePeriodForMpUsers ) {
+		if( dateDiff('d', lastCanceledFlexship['canceledDateTime'], now() ) < flexshipCancellationGracePeriodForMpUsers ) {
 			return true;
 		}
 		
