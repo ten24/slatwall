@@ -704,7 +704,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function importDailyAccountUpdates(rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		getFW().setView("public:main.blank");
 	
 		//Use a service instead.
 		getService("MonatDataService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
