@@ -803,6 +803,15 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return fulfillmentRefundTotal;
 	}
+	
+	public numeric function getFulfillmentRefundPreTax(){
+		var fulfillmentRefundPreTax = 0;
+		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
+			fulfillmentRefundPreTax = getService('HibachiUtilityService').precisionCalculate(fulfillmentRefundPreTax + getOrderReturns()[i].getFulfillmentRefundPreTax());
+		}
+
+		return fulfillmentRefundPreTax;
+	}
 
 	/**
 	 * Returns the earliest estimatedFulfillmentyDateTime

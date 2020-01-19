@@ -38,7 +38,7 @@
 					/>
 					<label
 						for="saved_cards"
-						ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : '--- `'"
+						ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : accountPaymentMethod.creditCardType + ' ' + accountPaymentMethod.creditCardLastFour"
 					>
 						<i class="fab fa-cc-visa"></i>
 					</label>
@@ -76,7 +76,7 @@
 						/>
 						<label
 							for="accountAddressID"
-							ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : '--- `'"
+							ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : accountAddress.address_streetAddress + ', ' + accountAddress.address_city + ', ' + accountAddress.address_stateCode + ' ' + accountAddress.address_postalCode"
 						></label>
 					</div>
 	
