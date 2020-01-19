@@ -131,6 +131,34 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 		return variables.fulfillmentRefundAmount;
 	}
 	
+	public numeric function getFulfillmentRefundPreTax() {
+		if(!structKeyExists(variables, "fulfillmentRefundPreTax")) {
+			variables.fulfillmentRefundPreTax = getFulfillmentRefundAmount() - getFulfillmentTaxRefund();
+		}
+		return variables.fulfillmentRefundPreTax;
+	}
+	
+	public numeric function getFulfillmentTaxRefund() {
+		if(!structKeyExists(variables, "fulfillmentTaxRefund")) {
+			variables.fulfillmentTaxRefund = 0;
+		}
+		return variables.fulfillmentTaxRefund;
+	}
+	
+	
+	public numeric function getFulfillmentRefundAmount() {
+		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
+			variables.fulfillmentRefundAmount = 0;
+			if(!isNull(getFulfillmentRefundPreTax())){
+				variables.fulfillmentRefundAmount += getFulfillmentRefundPreTax();
+			}
+			if(!isNull(getFulfillmentTaxRefund())){
+				variables.fulfillmentRefundAmount += getFulfillmentTaxRefund();
+			}
+		}
+		return variables.fulfillmentRefundAmount;
+	}
+	
 	public string function getSimpleRepresentation() {
 		return getOrder().getOrderNumber() & " - " & getReturnLocation().getLocationName();
 	}
