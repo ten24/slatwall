@@ -133,7 +133,11 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	
 	public numeric function getFulfillmentRefundPreTax() {
 		if(!structKeyExists(variables, "fulfillmentRefundPreTax")) {
-			variables.fulfillmentRefundPreTax = getFulfillmentRefundAmount() - getFulfillmentTaxRefund();
+			variables.fulfillmentRefundPreTax = 0;
+			if(structKeyExists(variables,'fulfillmentRefundAmount')){
+				variables.fulfillmentRefundPreTax += variables.fulfillmentRefundAmount;
+			}
+			variables.fulfillmentRefundPreTax -= getFulfillmentTaxRefund();
 		}
 		return variables.fulfillmentRefundPreTax;
 	}
