@@ -6,14 +6,17 @@ component extends="Slatwall.model.service.ProductService" accessors="true" outpu
 	 * @param {string} urlTitle - Product urlTitle field
 	 * @return {string} Product URL
 	 */
-	 public string function getProductURLByUrlTitle( string urlTitle ) {
-	 	var currentSiteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite();
-		
-		var productURL = '';
-		
-		currentSiteCode = lCase( currentSiteCode );
-		currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
-		
+	 public string function getProductURLByUrlTitle( string urlTitle, boolean includeSiteCode = false, string optionalSiteCode = '') {
+	 	
+ 		var productURL = '';
+ 		var currentSiteCode = arguments.optionalSiteCode;
+ 		
+	 	if(arguments.includeSiteCode){
+	 		currentSiteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite();
+ 			currentSiteCode = lCase( currentSiteCode );
+			currentSiteCode = ( 'default' == currentSiteCode ) ? '' : currentSiteCode;
+	 	}
+	 	
 		if ( len( currentSiteCode ) ) {
 			productURL &= '/#currentSiteCode#';
 		}

@@ -1229,7 +1229,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     	var imageService = getService('ImageService');
     	
     	var siteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite()
-    	siteCode = ( siteCode == 'default' ) ? '' : '/' & lcase( siteCode )
+    	siteCode = ( siteCode == 'default' ) ? '' : lcase( siteCode )
 
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
@@ -1253,7 +1253,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': productService.getProductUrlByUrlTitle( record.urlTitle ),
+                'skuProductURL': productService.getProductUrlByUrlTitle( record.urlTitle,  false,  siteCode),
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
