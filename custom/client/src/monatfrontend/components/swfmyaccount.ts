@@ -43,7 +43,7 @@ class swfAccountController {
     public profileImageLoading:boolean = false;
     public prouctReviewForm:any;
     public isDefaultImage:boolean = false;
-    public isProfileImagesChoosen:boolean = false;
+    public isNotProfileImagesChoosen:boolean = false;
     
     // @ngInject
     constructor(
@@ -288,8 +288,10 @@ class swfAccountController {
     }
 
     public uploadImage = () =>{
-        if((<HTMLInputElement>document.getElementById('profileImage')).files[0]) {
-        this.isProfileImagesChoosen = false;
+        if(!(<HTMLInputElement>document.getElementById('profileImage')).files[0]) {
+            this.isNotProfileImagesChoosen = true;
+        } else {
+        this.isNotProfileImagesChoosen = false;
         let tempdata = new FormData();
         tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
         tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
@@ -311,9 +313,8 @@ class swfAccountController {
 		  	 }
 		};
         xhr.send(tempdata);
-        } else{
-            this.isProfileImagesChoosen = true;
-        }
+        } 
+         
     }     
     
     public deleteProfileImage(){
