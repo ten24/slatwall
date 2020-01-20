@@ -1587,4 +1587,74 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		super.getOrderTemplates(argumentCollection = arguments);
     }
     
+	public void function getWishlistItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default=""; 
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		arguments.data['ajaxResponse']['orderTotal'] = 0;
+		
+		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
+        
+        if(!isNull(arguments.data.cmsSiteID)){
+            var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID); 
+            var currencyCode = site.setting('skuCurrency');
+        }else{
+            var currencyCode = 'USD';
+        }
+		
+		if (len(arguments.data.orderTemplateID)){
+		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
+		}
+		
+		var scrollableSession = ormGetSessionFactory().openSession();
+		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' :  arguments.data.cmsSiteID;
+    	
+		//now iterate over all the objects
+		
+		try{
+		    while(wishlistsItems.next()){
+		    
+			    var wishlistItem = wishlistsItems.get(0);
+			    var pricingStruct = wishListItem.getSkuAdjustedPricing(currencyCode);
+	            var sku = wishListItem.getSku();
+	            var product = sku.getProduct();
+	            
+			    var wishListItemStruct={
+			      "vipPrice"                    :       pricingStruct.vipPrice?:"",
+			      "marketPartnerPrice"          :       pricingStruct.MPPrice?:"",
+			      "price"                       :       pricingStruct.adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       pricingStruct.retailPrice?:"",
+			      "personalVolume"              :       pricingStruct.personalVolume?:"",
+			      "accountPriceGroup"           :       pricingStruct.accountPriceGroup?:"",
+			      "upgradedPricing"             :       {'price':pricingStruct.retailPrice?:""},
+			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
+			      "skuProductURL"               :       #siteCode# &= product.getProductURL() ?:"",
+			      "productName"                 :       product.getProductName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
+  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
+  			      "total"                       :       wishListItem.retailPrice?:"",
+                  "qats"                        :       sku.getCalculatedQATS(),
+                  'upgradedPriceGroupCode'      :       2
+			    }
+                
+                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+
+                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
+                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
+                }
+		    }
+		}catch (e){
+            throw(e)
+		}finally{
+			if (scrollableSession.isOpen()){
+				scrollableSession.close();
+			}
+		}
+	} 
+    
 }
