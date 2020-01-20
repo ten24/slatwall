@@ -152,7 +152,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     }
     
     private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -201,7 +201,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
+	    var uri = setting('baseImportURL') & "SWGetShipmentInfo";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	    var = {hasErrors: false};

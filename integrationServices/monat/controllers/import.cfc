@@ -69,7 +69,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	 **/
 	private any function getCashReceiptsData(pageNumber,pageSize){ 
 
-		var uri = "https://api.monatcorp.net:8443/api/Slatwall/queryMCR";
+		var uri = setting('baseImportURL') & "queryMCR";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 
@@ -99,45 +99,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
-	    var = {hasErrors: false};
-	    var body = {
-			"Pagination": {
-				"PageSize": "#arguments.pageSize#",
-				"PageNumber": "#arguments.pageNumber#"
-			},
-			"Filters": {
-			    "StartDate": arguments.dateFilterStart,
-			    "EndDate": arguments.dateFilterEnd
-			}
-		};
-
-	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
-		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
-		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
-		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
-		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
-
-		var shipmentJson = httpService.send().getPrefix();
-		var apiData = deserializeJson(shipmentJson.fileContent);
-
-		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
-			fsResponse['Records'] = apiData.Data.Records;
-		    return fsResponse;
-		}
-
-		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
-		fsResponse.hasErrors = true;
-
-
-		return fsResponse;
-	}
-	
 	private any function getAccountData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
+	    var uri = setting('baseImportURL') & "QueryAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -167,7 +130,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getOrderData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
+	    var uri = setting('baseImportURL') & "QueryOrders";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	
@@ -211,7 +174,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -235,7 +198,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		 * }
 		 *	 
 		 **/
-	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
+	    var httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
 		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
@@ -255,7 +218,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	
 	private any function getFlexshipData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
+	    var uri = setting('baseImportURL') &  "QueryFlexships";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	
