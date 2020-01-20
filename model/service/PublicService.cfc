@@ -1801,7 +1801,13 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['orderTotal'] = 0;
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
-		
+        
+        if(!isNull(arguments.data.cmsSiteID)){
+            var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID); 
+            var currencyCode = site.setting('skuCurrency');
+        }else{
+            var currencyCode = 'USD';
+        }
 		
 		if (len(arguments.data.orderTemplateID)){
 		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
@@ -1809,30 +1815,36 @@ component  accessors="true" output="false"
 		
 		var scrollableSession = ormGetSessionFactory().openSession();
 		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
-		
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' :  arguments.data.cmsSiteID;
+    	
 		//now iterate over all the objects
 		
 		try{
 		    while(wishlistsItems.next()){
 		    
 			    var wishlistItem = wishlistsItems.get(0);
-			    
+			    var pricingStruct = wishListItem.getSkuAdjustedPricing(currencyCode);
+	            var sku = wishListItem.getSku();
+	            var product = sku.getProduct();
+	            
 			    var wishListItemStruct={
-			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "price"                       :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
-			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
+			      "vipPrice"                    :       pricingStruct.vipPrice?:"",
+			      "marketPartnerPrice"          :       pricingStruct.MPPrice?:"",
+			      "price"                       :       pricingStruct.adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       pricingStruct.retailPrice?:"",
+			      "personalVolume"              :       pricingStruct.personalVolume?:"",
+			      "accountPriceGroup"           :       pricingStruct.accountPriceGroup?:"",
+			      "upgradedPricing"             :       {'price':pricingStruct.retailPrice?:""},
 			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
-			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
-			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
-			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
+			      "skuProductURL"               :       #siteCode# &= product.getProductURL() ?:"",
+			      "productName"                 :       product.getProductName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
   			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:"",
-                  "qats"                        :       wishlistItem.getSku().getCalculatedQATS()
-			    };
+  			      "total"                       :       wishListItem.retailPrice?:"",
+                  "qats"                        :       sku.getCalculatedQATS(),
+                  'upgradedPriceGroupCode'      :       2
+			    }
                 
                 arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
 

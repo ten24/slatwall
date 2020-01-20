@@ -1133,7 +1133,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
-       
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
+        
         if ( len( arguments.data.keyword ) ) {
             productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
         }
@@ -1144,7 +1145,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var pageRecords = productCollectionList.getPageRecords();
         if ( len( pageRecords ) ) {
-            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode,siteCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         } else {
             arguments.data['ajaxResponse']['productList'] = [];
@@ -1165,7 +1166,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
-  
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
         if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
@@ -1173,8 +1174,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-
-        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode);
+        
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
     }
@@ -1219,7 +1220,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
-    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
+    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode, required string siteID = 'default'){
         
         var productService = getProductService();
         var productMap = {};
@@ -1227,10 +1228,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
     	var imageService = getService('ImageService');
-    	
-    	var siteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite()
-    	siteCode = ( siteCode == 'default' ) ? '' : lcase( siteCode )
-
+        var siteCode = (arguments.siteID == 'default') ? '' : arguments.siteID;
+        
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
         } 

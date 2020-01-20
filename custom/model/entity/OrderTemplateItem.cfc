@@ -17,22 +17,22 @@ component {
 		return skuImagePath;
 	}
 	
-	public any function getSkuAdjustedPricing(){
+	public any function getSkuAdjustedPricing(required string currencyCode){
 			
 			var priceGroups = getHibachiScope().getAccount().getPriceGroups();
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
-			var currencyCode = getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
 			
 			var vipPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(3);
 			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
 			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
-			var adjustedAccountPrice = this.getSku().getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-			var mpPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
+			var sku = this.getSku();
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(arguments.currencyCode);
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(arguments.currencyCode,1,[vipPriceGroup]);
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(arguments.currencyCode,1,[retailPriceGroup]);
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(arguments.currencyCode,1,[MPPriceGroup]);
+			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(arguments.currencyCode)?:0;
 			
 			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
 			// var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
