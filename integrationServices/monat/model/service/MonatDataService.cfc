@@ -162,10 +162,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				"PageNumber": "#arguments.pageNumber#"
 			},
 			"Filters": {
-			    "StartDate": "#year(now())#-#month(now())#-#day(now())#T00:00:00.693Z",
+			    "StartDate": "#year(now())#-#month(now())#-#day(now())-1#T00:00:00.693Z",
 			    "EndDate": "#year(now())#-#month(now())#-#day(now())#T23:59:59.693Z"
 			}
 		};
+		
 		
 		/**
 		 * 
@@ -578,17 +579,21 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		*/
 		var index=0;
 		while (arguments.pageNumber < arguments.pageMax){
-			
+			logHibachi("Start Daily Account Updater");
     		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+    		
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    arguments.pageNumber++;
     		    continue;
     		}
     		
+			var goodStanding = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad11ebf2000e");
+			var terminated = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1296c90010");
+			var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
+			var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
+			var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
     		var accounts = accountsResponse.Data.Records;
-    		
-    		
     		
     		/**
     		 *  {
@@ -612,7 +617,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			    index++;
         		    
         			// Create a new account and then use the mapping file to map it.
-        			var foundAccount = getAccountService().getAccountByAccountNumber( account['AccountNumber'] );
+        			var foundAccount = getService("AccountService").getAccountByAccountNumber( account['AccountNumber'] );
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
@@ -625,16 +630,34 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
                     	
                     	//If the account is suspended, deactivate it.
-                    	if (account['AccountStatusName'] == "Suspended"){
+                    	if (account['AccountStatusName'] == "Suspended" || account['AccountStatusName'] == "Terminated"){
                     	    foundAccount.setActiveFlag(false);
+                    	}else{
+                    	    foundAccount.setActiveFlag(true);
+                    	}
+                    	
+                    	if (!isNull(account['AccountStatusName']) && len(account['AccountStatusName'])){
+                    	        var statusType = goodStanding;
+                    	        if (account['AccountStatusName'] == "Good Standing"){
+                    	            statusType = goodStanding;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Terminated"){
+                    	            statusType = terminated;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Suspended"){
+                    	            statusType = suspended;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Deleted"){
+                    	            statusType = deleted;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Enrollment Pending"){
+                    	            statusType = enrollmentPending;
+                    	        }
+                        		foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
+                        		foundAccount.setAccountStatusType( statusType );
+                        		
                     	}
                     }
-                    
-                    //Entry Date
-                    //This should be POST date
-                    /*if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
-                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); 
-                    }*/
                     
                     // SponsorNumber
                     
@@ -719,7 +742,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}else if(account['AccountTypeCode'] == "E"){
                     		foundAccount.setAccountType( "Employee" );
                     	}
-                    	
                     }
                     
                     //EntryPeriod (What is this mapping to)
@@ -773,7 +795,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		}catch(e){
     			
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #arguments.pageSize# PageNumber: #arguments.pageNumber#");
-    			//writeDump(e); // rollback the tx
+    			logHibachi(serializeJson(e));
     			ormGetSession().clear();
     			ormStatelessSession.close();
     			abort;

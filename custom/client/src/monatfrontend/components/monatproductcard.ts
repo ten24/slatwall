@@ -90,7 +90,7 @@ class MonatProductCardController {
 			return result;
 		})
 		.catch((error)=>{
-		    this.monatAlertService.error(this.rbkeyService.rbKey('define.flaxship.addProducterror'));
+		    this.monatAlertService.error(this.rbkeyService.rbKey('alert.flexship.addProducterror'));
 		})
 		.finally(()=>{
 		    this.loading =false;

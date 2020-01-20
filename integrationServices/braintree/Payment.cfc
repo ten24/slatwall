@@ -351,7 +351,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
 				'shipping' : { 
-					'shippingAmount': '#arguments.requestBean.getOrder().getfulfillmentChargeAfterDiscountTotal()#',
+					'shippingAmount': '#arguments.requestBean.getOrder().getFulfillmentChargeTotal()#',
 					'shippingAddress' : shippingAddress
 				},
 				'tax' : { 'taxAmount': '#arguments.requestBean.getOrder().getTaxTotal()#' },
@@ -381,7 +381,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			}
 			else{
 				responseBean.addError("Processing error", "Not able to process this request.");
-				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(response)# #SerializeJson(shippingAddress)#");
+				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(payload)# =====XXXXXX===== #SerializeJson(response)# =====XXXXXX===== #SerializeJson(shippingAddress)#");
 			}
 		}
 	}
