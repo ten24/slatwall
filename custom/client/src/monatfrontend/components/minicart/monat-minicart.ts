@@ -1,5 +1,3 @@
-declare var hibachiConfig;
-
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
 	public type:any;
@@ -24,8 +22,6 @@ class MonatMiniCartController {
 		}else{
 			this.cartAsAttribute = true;
 		}
-		
-		this.currencyCode = hibachiConfig.currencyCode;
 	};
 
 	public translations = {};
