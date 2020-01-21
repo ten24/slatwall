@@ -73,7 +73,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	// Related Object Properties (many-to-one)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_populateEnabled="public";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
