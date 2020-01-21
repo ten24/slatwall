@@ -1321,6 +1321,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
 		arguments.transientOrder.setAccount(account); 
+        arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());

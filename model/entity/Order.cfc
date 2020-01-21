@@ -73,7 +73,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	// Related Object Properties (many-to-one)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_populateEnabled="public";
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
@@ -264,8 +264,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
-    property name="accountType" ormtype="string";
-    property name="accountPriceGroup" ormtype="string";
+    property name="accountType" ormtype="string" hb_populateEnabled="public";
+    property name="accountPriceGroup" ormtype="string" hb_populateEnabled="public";
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
@@ -2102,14 +2102,12 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getAccountType() {
-	    if (structKeyExists(variables, "accountType")){
-	        return variables.accountType;
-	    }
 	    
-	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
-	        variables.accountType = getAccount().getAccountType();
-	    }else{
-	        variables.accountType = "";
+	    if (!structKeyExists(variables, "accountType") || !isNull(variables.accountType)) {
+	    	variable.accountType = "";
+	    	if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType()) && len(this.getAccount().getAccountType())){
+		        variables.accountType = this.getAccount().getAccountType();
+	    	}
 	    }
 	    return variables.accountType;
 	}

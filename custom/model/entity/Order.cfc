@@ -56,8 +56,8 @@ component {
     property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
-    property name="accountType" ormtype="string";
-    property name="accountPriceGroup" ormtype="string";
+    property name="accountType" ormtype="string" hb_populateEnabled="public";
+    property name="accountPriceGroup" ormtype="string" hb_populateEnabled="public";
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
@@ -245,14 +245,12 @@ component {
 	}
 	
 	public any function getAccountType() {
-	    if (structKeyExists(variables, "accountType")){
-	        return variables.accountType;
-	    }
 	    
-	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
-	        variables.accountType = getAccount().getAccountType();
-	    }else{
-	        variables.accountType = "";
+	    if (!structKeyExists(variables, "accountType") || !isNull(variables.accountType)) {
+	    	variable.accountType = "";
+	    	if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType()) && len(this.getAccount().getAccountType())){
+		        variables.accountType = this.getAccount().getAccountType();
+	    	}
 	    }
 	    return variables.accountType;
 	}
