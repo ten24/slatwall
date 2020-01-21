@@ -1619,7 +1619,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    while(wishlistsItems.next()){
 		    
 			    var wishlistItem = wishlistsItems.get(0);
-			    var pricingStruct = wishListItem.getSkuAdjustedPricing(currencyCode);
+			    var pricingStruct = wishListItem.getSkuAdjustedPricing();
 	            var sku = wishListItem.getSku();
 	            var product = sku.getProduct();
 	            
