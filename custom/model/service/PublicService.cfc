@@ -1093,10 +1093,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var currentRequestSite = getHibachiScope().getCurrentRequestSite();
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
-            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS');
             productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
         }
-
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
@@ -1143,6 +1142,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         
         var pageRecords = productCollectionList.getPageRecords();
+
         if ( len( pageRecords ) ) {
             var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
@@ -1257,7 +1257,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.calculatedQATS
+                'qats': record.defaultSku_stocks_calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
