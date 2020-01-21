@@ -246,11 +246,14 @@ component {
 	
 	public any function getAccountType() {
 	    
-	    if (!structKeyExists(variables, "accountType") || !isNull(variables.accountType)) {
-	    	variable.accountType = "";
-	    	if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType()) && len(this.getAccount().getAccountType())){
-		        variables.accountType = this.getAccount().getAccountType();
-	    	}
+	    if (structKeyExists(variables, "accountType")){
+	        return variables.accountType;
+	    }
+
+	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	        variables.accountType = getAccount().getAccountType();
+	    }else{
+	        variables.accountType = "";
 	    }
 	    return variables.accountType;
 	}
