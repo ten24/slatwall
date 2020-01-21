@@ -264,8 +264,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
-    property name="accountType" ormtype="string" hb_populateEnabled="public";
-    property name="accountPriceGroup" ormtype="string" hb_populateEnabled="public";
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
