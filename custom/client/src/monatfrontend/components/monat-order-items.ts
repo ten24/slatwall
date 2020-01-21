@@ -32,7 +32,6 @@ class MonatOrderItemsController {
 			if ( undefined !== data.orderItems ) {
 				this.orderItems = data.orderItems;
 				this.aggregateOrderItems( data.orderItems );
-				console.log(3)
 			}
 		});
 	}
