@@ -1,3 +1,5 @@
+declare var hibachiConfig;
+
 class MonatMiniCartController {
 	public cart: any; // orderTemplateDetails
 	public type:any;
@@ -5,6 +7,7 @@ class MonatMiniCartController {
 	public currentPage:number = 0;
 	public pageSize:number = 6;
 	public recordsStart:number = 0;
+	public currencyCode:string;
 	
 	
 
@@ -21,6 +24,8 @@ class MonatMiniCartController {
 		}else{
 			this.cartAsAttribute = true;
 		}
+		
+		this.currencyCode = hibachiConfig.currencyCode;
 	};
 
 	public translations = {};
