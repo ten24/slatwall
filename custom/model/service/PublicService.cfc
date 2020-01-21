@@ -1598,13 +1598,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
         
-        if(!isNull(arguments.data.cmsSiteID)){
-            var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID); 
-            var currencyCode = site.setting('skuCurrency');
-        }else{
-            var currencyCode = 'USD';
-        }
-		
 		if (len(arguments.data.orderTemplateID)){
 		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
 		}
@@ -1632,7 +1625,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			      "accountPriceGroup"           :       pricingStruct.accountPriceGroup?:"",
 			      "upgradedPricing"             :       {'price':pricingStruct.retailPrice?:""},
 			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
-			      "skuProductURL"               :       #siteCode# &= product.getProductURL() ?:"",
+			      "skuProductURL"               :       siteCode &= product.getProductURL() ?:"",
 			      "productName"                 :       product.getProductName()?:"",
 			      "skuID"                       :       sku.getSkuID()?:"",
 			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
