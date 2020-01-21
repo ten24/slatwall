@@ -5,7 +5,6 @@ class MonatMiniCartController {
 	public currentPage:number = 0;
 	public pageSize:number = 6;
 	public recordsStart:number = 0;
-	public currencyCode:string;
 	
 	
 
