@@ -64,7 +64,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			account.setProductPackPurchasedFlag(true);
         }
     	
-    	// Set the AccountType and PriceGroup
+	// Snapshot the account type to the order. This is placed before the upgrade logic
+	// so that we can capture that this account was still another account type at this time.
+	// on the users next order, they will be the upgraded type.
+	if (!isNull(account)){
+		if (!isNull(account.getAccountType())){
+			arguments.order.setAccountType(account.getAccountType());
+		}else{
+			logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
+		}
+	}
+	
+    	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
@@ -76,14 +87,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		}
     	}
     	
-    	// Snapshot the account type to the order.
-		if (!isNull(account)){
-			if (!isNull(account.getAccountType())){
-				arguments.order.setAccountType(account.getAccountType());
-			}else{
-				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
-			}
-		}
+    	
 		
 		// Sets the account status type, activeFlag and accountNumber
 		if( 
