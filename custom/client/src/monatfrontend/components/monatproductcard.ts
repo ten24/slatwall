@@ -1,4 +1,6 @@
 declare var $;
+declare var hibachiConfig;
+
 class MonatProductCardController {
 	public product;
 	public type: string;
@@ -40,6 +42,10 @@ class MonatProductCardController {
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
+		
+		if ( 'undefined' === typeof this.currencyCode ) {
+			this.currencyCode = hibachiConfig.currencyCode
+		}
 		
 		this.setIsEnrollment();
 		
