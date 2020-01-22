@@ -2072,7 +2072,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
 		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
-
 		displayProperties &= ',' & shippingAddressPropList; 
 		displayProperties &= ',' & billingAddressPropList;  
 	
@@ -2149,6 +2148,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
+		
+		
 		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
@@ -2165,7 +2166,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
 			response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
 		}
-		
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}
