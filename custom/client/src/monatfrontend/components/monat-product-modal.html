@@ -99,9 +99,16 @@
 					ng-click="monatProductModal.onAddButtonClick()" 
 					ng-class="{ loading: monatProductModal.loading }"
 					ng-disabled="monatProductModal.loading"
+					ng-if="monatProductModal.product.qats > 1"
 				>
 					{{ monatProductModal.translations.addButtonText }}
 				</button>
+		        <button 
+		            class="btn bg-primary disabled"
+					ng-if="monatProductModal.product.qats <= 0"
+		        >
+		            <span sw-rbKey="'frontend.cart.soldOut'"></span>
+		        </button>
 		
 				<!--end product details -->
 			</div>
