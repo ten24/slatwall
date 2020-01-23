@@ -300,12 +300,14 @@ class swfAccountController {
 		let urlArray = url.split("/");
 		let baseURL = urlArray[0] + "//" + urlArray[2];
 		let that = this; 
+		let form = <any>document.getElementById('imageForm');
 		
 		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
+		 	 	form.reset();
 		 	 	that.getUserProfileImage();
 		  	 }else{
     		    that.uploadImageError = true;
@@ -321,6 +323,8 @@ class swfAccountController {
         this.profileImageLoading = true;
         this.publicService.doAction('deleteProfileImage').then(result=>{
             this.profileImageLoading = false;
+            let form = <any>document.getElementById('imageForm');
+            form.reset();
             this.getUserProfileImage();
         });
     }
