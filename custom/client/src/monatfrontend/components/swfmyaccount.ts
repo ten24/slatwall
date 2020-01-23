@@ -307,12 +307,13 @@ class swfAccountController {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
 		 	 	console.log("File Uploaded");
-		 	 	form.reset();
-		 	 	that.getUserProfileImage();
 		  	 }else{
     		    that.uploadImageError = true;
     		    that.$scope.$digest();
 		  	 }
+		  	 
+ 	        form.reset();
+  	 	 	that.getUserProfileImage();
 		};
         xhr.send(tempdata);
         } 
