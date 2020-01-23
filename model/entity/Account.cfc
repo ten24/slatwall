@@ -159,7 +159,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
-	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="lastActivityDateTime" hb_populateEnabled="public" ormtype="timestamp";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
@@ -1200,10 +1200,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	
 	public boolean function isRestrictedKeyword(){
-		var retrictedKeywordsCollection = getService('accountService').getRestrictedKeywordCollectionList();
-		retrictedKeywordsCollection.setDisplayProperties('keyword');
-		retrictedKeywordsCollection.addFilter('keyword', variables.accountNumber);
-		return retrictedKeywordsCollection.getRecordsCount() > 0;
+		if(structKeyExists(variables, 'accountCode')){
+			var retrictedKeywordsCollection = getService('accountService').getReservedKeywordCollectionList();
+			retrictedKeywordsCollection.setDisplayProperties('keyword');
+			retrictedKeywordsCollection.addFilter('keyword', variables.accountCode);
+		
+			return retrictedKeywordsCollection.getRecordsCount() > 0;
+		}
+		return true;
 	}
 
 	// ==================  END:  Overridden Methods ========================
