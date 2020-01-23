@@ -6,7 +6,7 @@
         ALTER TABLE SwOrderItem 
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN calculatedQuantityReceived int(11);
+            ADD COLUMN calculatedQuantityDelivered int(11);
           
 	</cfquery>
     <cfcatch >
