@@ -104,7 +104,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			if(originalTransactionHasSettled){
 				sendRequestToCredit(arguments.requestBean, responseBean);
 			}else {
-				sendRequestToVoid(arguments.requestBean, responseBean);
+				if(!isNull(arguments.requestBean.getOrderPayment()) && !isNull(arguments.requestBean.getOrderPayment().getReferencedOrderPayment())){
+					var originalAmountReceived = arguments.requestBean.getOrderPayment().getReferencedOrderPayment().getAmountReceived();
+					if(originalAmountReceived == arguments.requestBean.getTransactionAmount()){
+						sendRequestToVoid(arguments.requestBean, responseBean);
+					}else{
+						responseBean.addError("Processing Error", rbKey('validate.orderPayment.partialVoid'));
+					}
+				}
 			}
 		} else {
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
@@ -139,8 +146,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'transactionStatus', requestData);
 
 		// Response Data
-		if (!responseBean.hasErrors() && structKeyExists(responseData,'transactionStatus')) {
-			return responseData.transactionStatus;
+		if (!responseBean.hasErrors()){
+			if(structKeyExists(responseData,'rows')){
+				responseData = responseData.rows[1];
+			}
+			if(structKeyExists(responseData,'transactionStatus')) {
+				return responseData.transactionStatus;
+			}
 		}
 		return 50;
 	}
@@ -555,7 +567,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			}
 			
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
-
+			
 			// Response Data
 			if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderTransactionID(responseData.id);
@@ -609,25 +621,27 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			apiUrl &= '/pay/v3/void';
 		} else if(arguments.transactionName == 'transactionStatus'){
 			apiUrl &= '/transaction/v3?plugin.originalId=#arguments.data.transactionID#&gateway.&customer.';
+		} else if(arguments.transactionName == "cardView") {
+			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
 		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
-		if(arguments.transactionName == 'transactionStatus'){
+		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
 			httpRequest.setMethod('GET');
 		}else{
 			httpRequest.setMethod('POST');
 		}
 		httpRequest.setCharset('UTF-8');
 		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
-		if(arguments.transactionName == 'transactionStatus'){
+		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
 			httpRequest.addParam(type="header", name="Accept", value="application/json");
 		} else {
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 		}
-	
+		
 		// ---> Comment Out:
 		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
 		// if (!directoryExists(logPath)){
@@ -715,6 +729,25 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			
 			return responseData;
 		}
+	}
+	
+	public any function getCardStatus(required any requestBean){
+		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
+			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			return;
+		}
+		// Request Data
+		var requestData = {};
+		var responseBean = getTransient('DataResponseBean');
+		
+		var responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'cardView', requestData);
+		
+		if( StructKeyExists(responseData,'card') ) { //Success
+			return responseData;
+		} else { //Failure
+			return {};
+		}
+		
 	}
 	
 	public any function testIntegration() {

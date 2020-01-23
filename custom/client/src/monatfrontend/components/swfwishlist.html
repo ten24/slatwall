@@ -9,7 +9,7 @@
 			
 			<h5 class="modal-title"><i class="fas fa-heart"></i>{{swfWishlist.productName}}</h5>
 			
-			<h3 ng-init="createWishList = {}">Choose a wishlist to save this product to.</h3>
+			<h3 ng-init="createWishList = {}" sw-rbkey="'frontend.wishlist.createToSaveTo'"></h3>
 			
 			<form 
 			ng-model="createWishList"
@@ -27,7 +27,7 @@
 					<li>
 						<div ng-click="swfWishlist.newWishlist = true" class="radio">
 							<input ng-checked ="swfWishlist.newWishlist" type="radio" name="wishlist" id="create-new" ng-value="''" ng-model="createWishList.orderTemplateID" >
-							<label for="create-new">Create a new wishlist</label>
+							<label for="create-new" sw-rbkey="'frontend.wishlist.createNew'"></label>
 						</div>
 						<div class="new-wishlist-name">
 							<input ng-disabled="!swfWishlist.newWishlist" placeholder="Name your wishlist" id="orderTemplateName" type="text" name="orderTemplateName" class="form-control success" value="newWishlist" ng-model="createWishList.orderTemplateName" swvalidationrequired="true">
@@ -42,18 +42,16 @@
 							ng-disabled="swfWishlist.loading"
 							ng-click="swfWishlist.addItemAndCreateWishlist(createWishList.orderTemplateName);"
 							class="btn text-white bg-primary"
-						>
-							Create new wishlist
-						</button>
+							sw-rbkey="'frontend.wishlist.createNew'"
+						></button>
 						<button 
 							ng-if="swfWishlist.wishlistTemplateID && !swfWishlist.newWishlist" 
 							ng-class="{loading: swfWishlist.loading}" 
 							ng-disabled="swfWishlist.loading"
 							ng-click="swfWishlist.addWishlistItem()" 
 							class="btn text-white bg-primary"
-						>
-							Add to wishlist
-						</button>
+							sw-rbkey="'frontend.wishlist.addToWishlist'"
+						></button>
 					</div>
 				</ul>
 			</form>

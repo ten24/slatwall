@@ -45,7 +45,7 @@ class SWRbKey{
 
 				var bindRBKey = ()=>{
 					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-						element.text(rbkeyService.getRBKey(rbKeyValue));
+						element.text(rbkeyService.getRBKey(rbKeyValue, rbkeyService.appConfig.rbLocale));
 					}
 				}
 

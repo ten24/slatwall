@@ -19,7 +19,7 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
 			</span>
 		</div>
 		
@@ -38,8 +38,9 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount === 1"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.subtotal | currency }}
-				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3">{{ !monatFlexshipCartContainer.isOpened ? 'Show Cart' : 'Hide Cart' }}</small>
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
+				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3" ng-if="!monatFlexshipCartContainer.isOpened" sw-rbkey="'frontend.checkout.showCart'"></small>
+				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3" ng-if="monatFlexshipCartContainer.isOpened" sw-rbkey="'frontend.checkout.hideCart'"></small>
 			</span>
 		</div>
 		
@@ -59,11 +60,11 @@
 			</button>
 			
 			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping" data-ng-click="monatFlexshipCartContainer.next(); monatFlexshipCartContainer.showCanPlaceOrderAlert = false" class="btn btn-secondary forward-btn forward">
-				<span>Next</span>
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>
 			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping" data-ng-click="monatFlexshipCartContainer.showCanPlaceOrderAlert = true" class="btn btn-secondary forward-btn forward disabled">
-				<span>Next</span>
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>
 			
@@ -75,14 +76,14 @@
 		<p ng-if="monatFlexshipCartContainer.context != 'enrollment' && !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping">
 			<i class="fas fa-info-circle"></i>
 			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
-			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | currency }}
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
 			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP2'"></span>
 		</p>
 		
 		<p ng-if="monatFlexshipCartContainer.context == 'enrollment' && ( !monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag || !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping )">
 			<i class="fas fa-info-circle"></i>
 			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP1'"></span>
-			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | currency }}
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
 			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP2'"></span>
 		</p>
 		
@@ -131,7 +132,7 @@
 							>&plus;</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.total | swcurrency }}</span>
+							<span class="price">{{ item.total | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}</span>
 						</div>
 					</div>
 				</li>

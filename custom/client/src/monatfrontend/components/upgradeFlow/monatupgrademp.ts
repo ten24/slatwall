@@ -30,7 +30,9 @@ class UpgradeMPController {
 		this.getStarterPacks();
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		this.publicService.doAction('setUpgradeOrderType', {upgradeType: 'MarketPartner'}).then(response => {
-			console.log(response);
+			if(response.upgradeResponseFailure){
+				this.observerService.notify('CanNotUpgrade')
+			}
 		});
 	};
 	

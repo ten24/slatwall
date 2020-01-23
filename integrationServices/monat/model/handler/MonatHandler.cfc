@@ -6,9 +6,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         param name="arguments.data.emailAddressOrUsername" default="";
         param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
-        if(!arguments.account.getActiveFlag()){
-        	return;
-        }
+		
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
         
@@ -23,21 +21,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
-
+		
         for (var accountAuthentication in accountAuthentications) {
             var accountAuthEntity = getAccountService().getAccountAuthentication(accountAuthentication['accountAuthenticationID']);
-
-            if(!isNull(accountAuthEntity) && 
+			
+            if( !isNull(accountAuthEntity) && 
                 len(accountAuthentication['legacyPassword']) > 29 && 
-                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29))){
-
+                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29)) && 
+                accountAuthEntity.getAccount().getActiveFlag()
+                ){
+				
                 accountAuthEntity.setPassword(getAccountService().getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
                 accountAuthEntity.setLegacyPassword(javacast("null", ""));
                 accountAuthEntity = getAccountService().saveAccountAuthentication(accountAuthEntity);
             } else {
                 continue;
             }
-
+			
             if(!accountAuthEntity.hasErrors()){
                 arguments.slatwallScope.getService("hibachiSessionService").loginAccount( accountAuthEntity.getAccount(), accountAuthEntity );
             }
@@ -54,15 +54,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 
 		var account = arguments.order.getAccount();
 		
-		//snapshot the pricegroups on the order.
+		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
+        // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
 			account.setProductPackPurchasedFlag(true);
         }
     	
+	// Snapshot the account type to the order. This is placed before the upgrade logic
+	// so that we can capture that this account was still another account type at this time.
+	// on the users next order, they will be the upgraded type.
+	if (!isNull(account)){
+		if (!isNull(account.getAccountType())){
+			arguments.order.setAccountType(account.getAccountType());
+		}else{
+			logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
+		}
+	}
+	
+    	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
@@ -74,6 +87,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		}
     	}
     	
+    	
+		
+		// Sets the account status type, activeFlag and accountNumber
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
@@ -129,8 +145,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}
 		
 
-		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
-		//set the initial order flag if needed.
+		//Set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//Set the initial order flag if needed.
 		try{
 			
 			//Commission Date

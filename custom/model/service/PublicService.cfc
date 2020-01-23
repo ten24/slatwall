@@ -546,8 +546,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         }
-      
-        
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
@@ -1025,14 +1023,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
+        var account = cart.getAccount();
         if(!cart.hasErrors() 
-        && !isNull(cart.getAccount()) 
-        && !isNull(cart.getAccount().getAccountStatusType()) 
-        && cart.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+        && !isNull(account) 
+        && !isNull(account.getAccountStatusType()) 
+        && account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
         && isNull(cart.getMonatOrderType())){
-            if(cart.getAccount().getAccountType() == 'marketPartner' ){
+            if(account.getAccountType() == 'marketPartner' ){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
-            }else if(cart.getAccount().getAccountType() == 'vip'){
+            }else if(account.getAccountType() == 'vip'){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motVipEnrollment'));
             }
             
@@ -1054,7 +1053,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		orderTemplateCollectionList.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID, '=');
 		orderTemplateCollectionList.setPageRecordsShow(1);
 		collectionList = orderTemplateCollectionList.getPageRecords();
-		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;q
+		arguments.data['ajaxResponse']['mostRecentOrderTemplate'] = collectionList;
 		arguments.data['ajaxResponse']['daysToEditFlexship'] = daysToEditFlexship;
     }
     
@@ -1092,10 +1091,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var currentRequestSite = getHibachiScope().getCurrentRequestSite();
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
-            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS');
             productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
         }
-
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
@@ -1142,6 +1140,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         
         var pageRecords = productCollectionList.getPageRecords();
+
         if ( len( pageRecords ) ) {
             var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
@@ -1169,8 +1168,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         
-        
-        getHibachiScope().logHibachi("getProductsByCategoryOrContentID: #productCollectionList.getHQL()#", true);
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
@@ -1258,7 +1255,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.calculatedQATS
+                'qats': record.defaultSku_stocks_calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
@@ -1288,9 +1285,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
                 var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
                 return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }else if(account.getAccountType() == 'marketPartner' || arguments.mpUpgrade){
-                var MPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalMPEnrollmentFeeSkuID');
-                return addOrderItem({skuID:MPSkuID, quantity: 1});
             }
             
         }
@@ -1469,6 +1463,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);       
         this.addEnrollmentFee(true);
+        
+        if(!order.hasErrors()) {
+			// Also make sure that this cart gets set in the session as the order
+			getHibachiScope().getSession().setOrder( order );
+			getHibachiSessionService().persistSession();
+		}else{
+		    this.logHibachi('setUpgradeOrderType: order has errors', true);
+		}
     }
     
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
@@ -1568,5 +1570,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
     }
     
+    public void function getCustomerCanCreateFlexship(){
+        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var daysTillCanCreate = site.setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
+        var createdDateTime = getHibachiScope().getAccount().getCreatedDateTime();
+        var now = now();
+        var adjustedDate = dateAdd("d",daysTillCanCreate,createdDateTime);
+        var dateCompare = dateCompare(now, adjustedDate);
+        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = (dateCompare > -1) ? true : false;
+    }
+    
+    public void function getOrderTemplates(required any data){ 
+		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		
+		super.getOrderTemplates(argumentCollection = arguments);
+    }
     
 }

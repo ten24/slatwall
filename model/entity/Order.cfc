@@ -785,23 +785,32 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getFulfillmentChargeAfterDiscountPreTaxTotal() {
 		var fulfillmentChargeAfterDiscountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
+			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscountPreTax());
 		}
 
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
 	public numeric function getFulfillmentChargeNotRefunded() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundTotalOnReferencingOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundPreTaxOnReferencingOrders());
 	}
 	
-	public numeric function getFulfillmentRefundTotalOnReferencingOrders(){
+	public numeric function getFulfillmentRefundPreTaxOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
-			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundTotal();
+			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
 			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
 		}
 		return fulfillmentRefundTotal;
+	}
+	
+	public numeric function getFulfillmentRefundPreTax(){
+		var fulfillmentRefundPreTax = 0;
+		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
+			fulfillmentRefundPreTax = getService('HibachiUtilityService').precisionCalculate(fulfillmentRefundPreTax + getOrderReturns()[i].getFulfillmentRefundPreTax());
+		}
+
+		return fulfillmentRefundPreTax;
 	}
 
 	/**
@@ -2059,7 +2068,7 @@ public numeric function getPersonalVolumeSubtotal(){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
@@ -2078,7 +2087,7 @@ public numeric function getPersonalVolumeSubtotal(){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
@@ -2093,10 +2102,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getAccountType() {
+	    
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
 	    }
-	    
+
 	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
