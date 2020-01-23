@@ -419,19 +419,11 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 
 	
 	public boolean function getCustomerCanCreateFlag(){
-
+		
 		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = true;
-			if( !isNull(getSite()) && 
-				!isNull(getAccount()) && 
-				!isNull(getAccount().getEnrollmentDate()) && 
-				getAccount().getAccountType() == 'MarketPartner'
-			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
-			} 
+			variables.customerCanCreateFlag = this.getAccount().getCanCreateFlexshipFlag();
 		}
-
+		
 		return variables.customerCanCreateFlag; 
 	}
 
