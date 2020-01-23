@@ -159,7 +159,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
-	property name="lastActivityDateTime" hb_populateEnabled="public" ormtype="timestamp";
+	property name="lastActivityDateTime" ormtype="timestamp";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
