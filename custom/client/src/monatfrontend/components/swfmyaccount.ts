@@ -306,6 +306,7 @@ class swfAccountController {
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+ 	     	    that.uploadImageError = false;
 		 	 	console.log("File Uploaded");
 		  	 }else{
     		    that.uploadImageError = true;
