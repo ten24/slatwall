@@ -1481,7 +1481,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){
-		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount') || IsNull(variables.fulfillmentChargeTaxAmount) || variables.fulfillmentChargeTaxAmount == 0 ){
 			var taxTotal = 0;
 			for(var orderFulfillment in this.getOrderFulfillments()) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
