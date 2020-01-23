@@ -80,7 +80,11 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 
 
 	// ============ START: Non-Persistent Property Methods =================
+	//CUSTOM PROPERTIES BEGIN
 
+ property name="BodyMarketPartner" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="bodyvip" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="bodyCustomer" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";//CUSTOM PROPERTIES END
 	public array function getEmailTemplateObjectOptions() {
 		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
 			var emd = getService("hibachiService").getEntitiesMetaData();

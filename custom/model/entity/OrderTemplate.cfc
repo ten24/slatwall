@@ -1,7 +1,6 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="customerCanCreateFlag" persistent="false";
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
@@ -26,17 +25,6 @@ component {
 		}
 		
 		return variables.accountIsNotInFlexshipCancellationGracePeriod;
-	}
-
-
-	
-	public boolean function getCustomerCanCreateFlag(){
-		
-		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = this.getAccount().getCanCreateFlexshipFlag();
-		}
-		
-		return variables.customerCanCreateFlag; 
 	}
 
 	public numeric function getPersonalVolumeTotal(){
