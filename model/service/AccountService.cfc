@@ -141,6 +141,77 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Process Methods ===========================
 	
+	public any function getAllOrdersOnAccount(struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+        param name="arguments.data.orderID" default= false;
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		
+		if(arguments.data.orderID != false){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
+		}
+		
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
+	}
+	
+	/**
+	 * Function to get All Parents on Account
+	 * */
+	public any function getAllParentsOnAccount(struct data={}) {
+		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+		
+		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
+		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												parentAccount.emailAddress, 
+												parentAccount.firstName, 
+												parentAccount.lastName, 
+												parentAccount.username, 
+												parentAccount.accountID');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.data.accountID, '=');
+		parentAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		return parentAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	/**
+	 * Function to get All Childs on Account
+	 * */
+	public any function getAllChildsOnAccount(struct data={}) {
+		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+		
+		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
+		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												childAccount.emailAddress, 
+												childAccount.firstName, 
+												childAccount.lastName, 
+												childAccount.username, 
+												childAccount.accountID');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.data.accountID, '=');
+		childAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		return childAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
 				amount = arguments.accountPayment.getAmount()
