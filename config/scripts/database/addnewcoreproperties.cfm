@@ -6,7 +6,7 @@
         ALTER TABLE SwAccountPaymentMethod 
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN lastExpirationUpdateAttemptDateTime timestamp;
+            ADD COLUMN lastExpirationUpdateAttemptDateTime datetime;
           
 	</cfquery>
     <cfcatch >
