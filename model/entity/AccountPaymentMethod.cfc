@@ -69,8 +69,6 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="calculatedExpirationDate" ormType="timestamp";
 	
 	property name="lastExpirationUpdateAttemptDateTime" hb_populateEnabled="false" ormtype="timestamp";
-
-	property name="lastExpirationUpdateAttemptDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
