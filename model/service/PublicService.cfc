@@ -1824,7 +1824,7 @@ component  accessors="true" output="false"
 			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
 			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
 			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
+			      "skuImagePath"                :       [wishListItem.getSkuImagePath()]?:"",
 			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
 			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
 			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
