@@ -31,7 +31,7 @@ class MonatProductListingController {
     public $onInit = () => {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
-        
+        this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
         this.getWishlistItems();
     }
     
@@ -51,7 +51,10 @@ class MonatProductListingController {
 	public getWishlistItems = () => {
 	    this.monatService.getAccountWishlistItemIDs().then( data => {
             if ( 'undefined' !== typeof data.wishlistItems ) {
-                this.wishlistItems = data.wishlistItems;
+                this.wishlistItems = '';
+                data.wishlistItems.forEach(item=>{
+                    this.wishlistItems += (item.productID += ',');
+                });
                 this.observerService.notify('accountWishlistItemsSuccess');
             }
         });
