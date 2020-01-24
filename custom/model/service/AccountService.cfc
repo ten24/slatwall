@@ -128,6 +128,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	/**
 	 * Function to check card status on Nexio and Update if needed
 	 * This function will be called from WorkFlow
+	 * 
+	 * TODO: make a default-card-updater-integration setting and move this into core
 	 * */
 	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
 		
@@ -135,32 +137,28 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
 	    
 		var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
-		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);//.getCardStatus(requestBean);
+		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);
 		
 		var responseData = paymentIntegration.getCardStatus(requestBean);
 		
         if( !StructIsEmpty(responseData ) )
         {
-        	var updateCardSuccess = false;
         	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
         		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
-        		updateCardSuccess = true;
         	}
         	
         	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
         		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        		updateCardSuccess = true;
         	}
         	
         	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
         		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        		updateCardSuccess = true;
         	}
         	
-        	//Added flag to make sure save doesn't run without any update
-        	if(updateCardSuccess) {
-        		arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
-        	}
+        	//marking the card for the attempt, so that we can prevent the workflow from picking it again, ofcourse for a definate period of time (TODO: this can be a setting as well)
+        	arguments.accountPaymentMethod.setLastExpirationUpdateAttemptDateTime(now());
+        	
+        	arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
         }
         
         return arguments.accountPaymentMethod;
