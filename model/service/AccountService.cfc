@@ -143,9 +143,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getAllOrdersOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        param name="arguments.data.orderID" default= false;
+        param name="arguments.data.orderID" default= "";
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
 
@@ -165,7 +165,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		
-		if(arguments.data.orderID != false){
+		if( len(arguments.data.orderID) ){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
 		}
 		
