@@ -1199,7 +1199,16 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		return 'calculatedFullName';
 	}
 	
-	
+	public boolean function isRestrictedKeyword(){
+		if(structKeyExists(variables, 'accountCode')){
+			var retrictedKeywordsCollection = getService('accountService').getReservedKeywordCollectionList();
+			retrictedKeywordsCollection.setDisplayProperties('keyword');
+			retrictedKeywordsCollection.addFilter('keyword', variables.accountCode);
+		
+			return retrictedKeywordsCollection.getRecordsCount() > 0;
+		}
+		return true;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1264,8 +1273,9 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
@@ -1337,5 +1347,6 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
+	
 	//CUSTOM FUNCTIONS END
 }
