@@ -328,7 +328,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var nextRunDateTime = arguments.workflowTrigger.getSchedule().getNextRunDateTime(argumentCollection=runDateTimeData);
 
 		workflowTrigger.setNextRunDateTime( nextRunDateTime );
-		this.saveWorkflowTrigger(workflowTrigger);
+		this.saveWorkflowTrigger(entity=workflowTrigger, resetCacheFlag=false);
 
 
 		// Flush the DB again to persist all updates
@@ -555,7 +555,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity;
 	}
 	
-	public any function saveWorkflowTrigger(required any entity, struct data={}) {
+	public any function saveWorkflowTrigger(required any entity, struct data={}, resetCacheFlag=true) {
 
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
@@ -567,7 +567,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// If there aren't any errors then flush, and clear cache
-		if(!getHibachiScope().getORMHasErrors()) {
+		if(!getHibachiScope().getORMHasErrors() && arguments.resetCacheFlag) {
 			
 			getHibachiCacheService().updateServerInstanceSettingsCache();
 			
