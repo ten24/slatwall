@@ -211,6 +211,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
+	public any function getAvailablePaymentMethods() {
+
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+
+		return accountPaymentMethodList;
+	}
+	
 	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {

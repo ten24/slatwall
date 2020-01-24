@@ -89,6 +89,189 @@ component  accessors="true" output="false"
 	}
 	
 	/**
+     * Function to delete Account
+     * This is a test method to be used in jMeter for now,
+     * It is not part of core APIs, should be removed.
+     * @return none
+    */
+    public void function deleteJmeterAccount() {
+        param name="data.accountID" default="";
+        
+        var account = getAccountService().getAccount( data.accountID );
+        
+        if(!isNull(account) && account.getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOk = getAccountService().deleteAccount( account );
+            getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
+        } else {
+            getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
+        }
+    }
+    
+    /**
+     * Function to get Types by Type Code
+     * It adds typeList as key in ajaxResponse
+     * @param typeCode required
+     * @return none
+    */
+    public void function getSystemTypesByTypeCode(required struct data){
+        param name="arguments.data.typeCode";
+        
+        var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
+        arguments.data.ajaxResponse['typeList'] = typeList;
+    }
+    
+    /**
+     * Function to get Sku Stock
+     * It adds stock as key in ajaxResponse
+     * @param skuID required
+     * @param locationID required
+     * @return none
+    */
+    public void function getSkuStock(required struct data){
+        param name="arguments.data.skuID";
+        param name="arguments.data.locationID";
+        
+        var sku = getService('skuService').getSku(arguments.data.skuID);
+        var location = getService('locationService').getLocation(arguments.data.locationID);
+        if(!isNull(sku) && !isNull(location)) {
+            var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+            arguments.data.ajaxResponse['stock'] = stock;
+        }
+    }
+    
+    /**
+     * Function to get Product Reviews
+     * It adds relatedProducts as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getProductReviews(required struct data){
+        param name="arguments.data.productID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            var productReviews = product.getAllProductReviews();
+            arguments.data.ajaxResponse['productReviews'] = productReviews;
+        }
+    }
+    
+    /**
+     * Function to get Related Products
+     * It adds relatedProducts as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getRelatedProducts(required struct data){
+        param name="arguments.data.productID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            var relatedProducts = product.getAllRelatedProducts();
+            arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
+        }
+    }
+    
+    /**
+     * Function get Images assigned to product
+     * It adds Images array as key in ajaxResponse
+     * @param productID
+     * @param defaultSkuOnlyFlag
+     * @param resizeSizes ('s,m,l') optional
+     * @return none
+    */
+    public void function getProductImageGallery(required struct data){
+        param name="arguments.data.productID";
+        param name="arguments.data.defaultSkuOnlyFlag" default="false";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(structKeyExists(arguments.data,'resizeSizes')){
+            var sizeArray = [];
+            for(var size in arguments.data.resizeSizes){
+                arrayAppend(sizeArray,{"size"=size});
+            }
+            arguments.data.resizeSizes = sizeArray;
+        }
+        arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
+    }
+    
+     /**
+     * Function get Product Options By Option Group
+     * It adds productOptions as key in ajaxResponse
+     * @param productID
+     * @param optionGroupID
+     * @return none
+    */
+    public void function getProductOptionsByOptionGroup(required struct data){
+        param name="arguments.data.productID";
+        param name="arguments.data.optionGroupID";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(!isNull(product)) {
+            arguments.data.ajaxResponse['productOptions'] = product.getOptionsByOptionGroup(arguments.data.optionGroupID);
+        }
+    }
+    
+    /**
+     * Function to get applied payments on order
+     * adds appliedPayments in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPayments(required any data) {
+        if( getHibachiScope().getCart().hasOrderPayment() ) {
+            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
+            arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
+        }
+    }
+    
+    /**
+     * Function to get applied promotions on order
+     * adds appliedPromotionCodes in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPromotionCodes(required any data) {
+        var promotionCodes = getHibachiScope().getCart().getAllAppliedPromotions();
+        if(arrayLen(promotionCodes)) {
+		    arguments.data['ajaxResponse']['appliedPromotionCodes'] = promotionCodes;
+        }
+    }
+    
+    /**
+     * Function to get all eligible account payment methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAvailablePaymentMethods(required any data) {
+        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
+        if(arrayLen(paymentMethods)) {
+            var accountPaymentMethods = [];
+            accountPaymentMethods = getService("accountService").getAvailablePaymentMethods();
+		    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
+        }
+    }
+    
+    /**
+     * Function to get all available shipping methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAvailableShippingMethods(required any data) {
+        var orderFulfillments = getHibachiScope().getCart().getOrderFulfillments();
+        if(arrayLen(orderFulfillments)) {
+            var shippingMethods = getOrderService().getShippingMethodOptions(orderFulfillments[1]);
+		    arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
+        }
+    }
+    
+    public void function getShippingMethodOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+    }
+	
+	/**
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
@@ -387,10 +570,7 @@ component  accessors="true" output="false"
 
         var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.data.request_token, true );
         sessionEntity.setDeviceID(arguments.data.deviceID);
-        
-        //If this is a request from the api, setup the response header and populate it with data.
-        //any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
-        handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
+          
     }
     
     
@@ -545,7 +725,6 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
-        handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
     
     /** 

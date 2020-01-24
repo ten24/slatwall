@@ -152,7 +152,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-		
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -307,6 +306,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				return skus[i];
 			}
 		}
+	}
+	
+	public any function getAllRelatedProducts() {
+		var relatedProducts = getService("productService").getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews() {
+		var relatedProducts = getService("productService").getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
 	}
 
 	//TODO: unused function
