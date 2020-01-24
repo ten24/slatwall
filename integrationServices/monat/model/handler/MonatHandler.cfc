@@ -71,7 +71,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			if (!isNull(account.getAccountType())){
 				arguments.order.setAccountType(account.getAccountType());
 			}else{
-				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
+				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
 			}
 		}
 	
