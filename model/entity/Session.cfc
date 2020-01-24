@@ -67,7 +67,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
 	property name="accountAuthentication" cfc="AccountAuthentication" fieldtype="many-to-one" fkcolumn="accountAuthenticationID" fetch="join";
 	property name="order" type="any" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	
+	property name="site" type="any" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" fetch="join";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -126,6 +127,24 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 			variables.requestAccount = getService("accountService").newAccount();
 		}
 		return variables.requestAccount;
+	}
+	
+	public any function getSite(){
+		if(structKeyExists(variables, "site")) { 
+			return variables.site;
+		}
+		
+		var requestSite = getHibachiScope().getCurrentRequestSite();
+		if (!isNull(requestSite)){
+			//If no site is set on this site and one exists, use that one.
+			this.setSite( site );
+			return variables.site;
+		}
+	
+	}
+
+	public any function setSite(site){
+		variables.site = arguments.site;
 	}
 	
 	

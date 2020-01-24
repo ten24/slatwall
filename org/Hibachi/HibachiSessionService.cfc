@@ -81,9 +81,19 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var requestHeaders = getHTTPRequestData();
 		
 		this.logHibachi('setProperSession: start', true);
+		var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+		var sessionValue = "sessionID";
+		
+		if (!isNull(currentRequestSite)){
+			sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+		}
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
-		if(!getHibachiScope().hasSessionValue("sessionID")) {
+		if(!getHibachiScope().hasSessionValue(sessionValue)) {
+			getHibachiScope().setSessionValue(sessionValue, '');
+			
+		// Do this logic when we are not on a frontend site.
+		} else if(!getHibachiScope().hasSessionValue("sessionID")) {
 			getHibachiScope().setSessionValue('sessionID', '');
 		}
 		
@@ -93,9 +103,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var foundWithExtendedPSID = false;
 		
 		// Check for non-persistent cookie.
-		if( len(getHibachiScope().getSessionValue('sessionID')) ) {
-			this.logHibachi("setProperSession: sessionID #getHibachiScope().getSessionValue('sessionID')#", true);
-			var sessionEntity = this.getSession( getHibachiScope().getSessionValue('sessionID'), true);
+		if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
+			
+			this.logHibachi("setProperSession: sessionID by site #getHibachiScope().getSessionValue(sessionValue)# #sessionValue#", true);
+			var sessionEntity = this.getSession( getHibachiScope().getSessionValue(sessionValue), true);
+			
 		} else if( (StructKeyExists(request,'context') && StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
 				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
 				//the token we already have.
@@ -114,7 +126,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				var NPSID = rt;
 				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
 				foundWithNPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue(sessionValue, sessionEntity.getSessionID());
 				request.context["foundWithRequestToken"] = true;
 				
 				/*
@@ -146,7 +158,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			} else {
 		
 				foundWithExtendedPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue(sessionValue, sessionEntity.getSessionID());
 		
 			}
 			
@@ -161,7 +173,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			} else {
 		
 				foundWithNPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue(sessionValue, sessionEntity.getSessionID());
 		
 			}
 		
@@ -175,7 +187,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
 			} else {
 				foundWithPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue(sessionValue, sessionEntity.getSessionID());
 			}
 		
 		
@@ -186,6 +198,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		// Populate the hibachi scope with the session
+		if (!isNull(currentRequestSite)){
+			sessionEntity.setSite(currentRequestSite);
+		}
+		
 		getHibachiScope().setSession( sessionEntity );
 		
 		// Let the hibachiScope know how we found the proper sessionID
@@ -267,8 +283,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				this.logHibachi("setProperSession: softLogout=false", true);
 			}
 		}
-		this.logHibachi("setProperSession: Done | Account ID #getHibachiScope().getSession().getAccount().getAccountID()#", true);
-		this.logHibachi("setProperSession: Done | Order ID #getHibachiScope().cart().getOrderID()#", true);
+		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
@@ -294,6 +309,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		this.logHibachi('Persisting Session - #getHibachiScope().getSession().getSessionID()#', true);
 		this.logHibachi('Persisting Session - OrderID: #getHibachiScope().getSession().getOrderID()#', true);
+		
 		if (arguments.updateLoginCookies == true){
 			
 			//Generate new session cookies for every time the session is persisted (on every login);
