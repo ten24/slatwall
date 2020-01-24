@@ -1202,10 +1202,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isRestrictedKeyword(){
 		if(structKeyExists(variables, 'accountCode')){
 			var retrictedKeywordsCollection = getService('accountService').getReservedKeywordCollectionList();
-			retrictedKeywordsCollection.setDisplayProperties('keyword');
+			retrictedKeywordsCollection.setDisplayProperties('reservedKeywordID');
 			retrictedKeywordsCollection.addFilter('keyword', variables.accountCode);
-		
-			return retrictedKeywordsCollection.getRecordsCount() > 0;
+			return retrictedKeywordsCollection.getRecordsCount() == 0;
 		}
 		return true;
 	}
