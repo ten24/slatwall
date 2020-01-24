@@ -732,9 +732,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	}
 	
 	public any function getCardStatus(required any requestBean){
+		
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
-			return;
+			return {};
 		}
 		// Request Data
 		var requestData = {};

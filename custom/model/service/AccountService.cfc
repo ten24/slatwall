@@ -131,37 +131,33 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	 * */
 	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
 		
-		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
-	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
-	    
-		var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
-		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);//.getCardStatus(requestBean);
+		//Checking if provider token exists and not empty
+		if(!IsNull(arguments.accountPaymentMethod.getProviderToken()) && len( arguments.accountPaymentMethod.getProviderToken() )) {
+			var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
+		    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
+		    
+			var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+			var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);
+			
+			var responseData = paymentIntegration.getCardStatus(requestBean);
+			
+	        if( !StructIsEmpty(responseData ) ) {
+	        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
+	        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
+	        	}
+	        	
+	        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
+	        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+	        	}
+	        	
+	        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
+	        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+	        	}
+	        }
+		}
 		
-		var responseData = paymentIntegration.getCardStatus(requestBean);
-		
-        if( !StructIsEmpty(responseData ) )
-        {
-        	var updateCardSuccess = false;
-        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
-        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
-        		updateCardSuccess = true;
-        	}
-        	
-        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
-        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        		updateCardSuccess = true;
-        	}
-        	
-        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
-        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        		updateCardSuccess = true;
-        	}
-        	
-        	//Added flag to make sure save doesn't run without any update
-        	if(updateCardSuccess) {
-        		arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
-        	}
-        }
+        arguments.accountPaymentMethod.setLastExpirationUpdateAttemptDateTime(now());
+        arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
         
         return arguments.accountPaymentMethod;
 	}
