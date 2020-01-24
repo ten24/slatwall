@@ -1338,7 +1338,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
 			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
 		}else{
-			getHibachiScope().addActionResult( "uploadProfileImage", false );
+			getHibachiScope().addActionResult( "uploadProfileImage", true );
 		}
 		//check if the file exists.
 		if (fileExists("#fullFilePath#")){
