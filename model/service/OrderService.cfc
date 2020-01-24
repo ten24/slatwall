@@ -3389,7 +3389,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 	    	if(arguments.order.getPaymentAmountDue() != 0){
 	    		//Enable Fulfillment Tax Recalculation if already calculated
-				arguments.order.setReCalculateFulfillmentCharge(true);
+				arguments.order.setRefreshCalculateFulfillmentChargeFlag(true);
 				
 				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
 	    	}
