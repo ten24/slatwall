@@ -2102,10 +2102,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getAccountType() {
+	    
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
 	    }
-	    
+
 	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{

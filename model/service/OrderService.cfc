@@ -1321,6 +1321,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
 		arguments.transientOrder.setAccount(account); 
+        arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -1572,42 +1573,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
-		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity'); 
-		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-
-		var orderTemplateItems = orderTemplateItemCollection.getRecords(); 
-		for(var orderTemplateItem in orderTemplateItems){ 
-
-			var processOrderAddOrderItem = newOrder.getProcessObject('addOrderItem');
-			var sku = getSkuService().getSku(orderTemplateItem['sku_skuID']);	
-			processOrderAddOrderItem.setSku(sku);
-			processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
-			processOrderAddOrderItem.setQuantity(orderTemplateItem['quantity']);
-			processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
-	
-			if(isNull(orderFulfillment)){
-				processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
-				processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
-			} else { 
-				processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
-			} 	
-
-			newOrder = this.processOrder_addOrderItem(newOrder, processOrderAddOrderItem);
-
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = newOrder.getOrderFulfillments()[1];
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-			} 
-
-			if(newOrder.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
-				newOrder.clearHibachiErrors();
-				arguments.orderTemplate.clearHibachiErrors();
-				//try to place as much of the order as possible should only fail in OFY case
-				continue;
-			}
-		} 	
+		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1758,6 +1724,61 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
+	}
+	
+	public any function createOrderItemsFromOrderTemplateItems(required any order, required any orderTemplate){
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity,temporaryFlag'); 
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+
+		var orderTemplateItems = orderTemplateItemCollection.getRecords();
+		
+		for(var orderTemplateItem in orderTemplateItems){ 
+
+			var args = {
+				'order'=arguments.order,
+				'orderTemplateItemStruct'=orderTemplateItem,
+				'orderTemplate'=arguments.orderTemplate
+			}
+			
+			if(!isNull(orderFulfillment)){
+				args['orderFulfillment'] = orderFulfillment;
+			}
+			
+			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
+			
+			if(isNull(orderFulfillment)){
+				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+			} 
+			if(arguments.order.hasErrors()){
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
+				arguments.order.clearHibachiErrors();
+				arguments.orderTemplate.clearHibachiErrors();
+				//try to place as much of the order as possible should only fail in OFY case
+				continue;
+			}
+		}
+		return arguments.order;
+	}
+	
+	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
+		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
+		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);	
+		processOrderAddOrderItem.setSku(sku);
+		processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
+		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
+		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+
+		if(isNull(arguments.orderFulfillment)){
+			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
+			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
+		} else { 
+			processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
+		} 	
+
+		arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		return arguments.order;
 	}
 
 	public any function processOrderTemplate_removeTemporaryItems(required any orderTemplate, any data={}){
@@ -2051,7 +2072,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
 		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
-
 		displayProperties &= ',' & shippingAddressPropList; 
 		displayProperties &= ',' & billingAddressPropList;  
 	
@@ -2128,6 +2148,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		//Making PropertiesList
+		
+		
 		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
@@ -2144,7 +2166,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
 			response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
 		}
-		
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}

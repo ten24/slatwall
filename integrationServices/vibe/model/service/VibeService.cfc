@@ -155,17 +155,17 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			vibeAccount['statusid'] = swAccountStruct['activeFlag'] ? 1 : 0;
 		}
 		
-		vibeAccount['type'] = 1; //default for customer(Retail) type
+		vibeAccount['typeid'] = 1; //default for customer(Retail) type
 	
 		if( StructKeyExists( swAccountStruct, 'accountType' ) &&  !IsNull(swAccountStruct['accountType']) && Len( Trim(swAccountStruct['accountType'] ) )
 		) {
 
 			swAccountStruct['accountType'] = Lcase(swAccountStruct['accountType']);
 			if( swAccountStruct['accountType'] == 'vip' ) {
-				vibeAccount['type'] = 2; 
+				vibeAccount['typeid'] = 2; 
 			} 
 			else if( swAccountStruct['accountType'] == 'marketpartner' ) {
-				vibeAccount['type'] = 3; 
+				vibeAccount['typeid'] = 3; 
 				vibeAccount['rankid'] = 1; 
 				vibeAccount['lifetimerankid'] = 1; 
 			}
