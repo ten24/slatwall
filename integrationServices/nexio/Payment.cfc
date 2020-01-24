@@ -732,13 +732,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	}
 	
 	public any function getCardStatus(required any requestBean){
-		
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			return {};
 		}
 		// Request Data
 		var requestData = {};
-		var responseBean = getTransient('DataResponseBean');
 		
 		var responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'cardView', requestData);
 		

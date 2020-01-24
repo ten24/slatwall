@@ -128,6 +128,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	/**
 	 * Function to check card status on Nexio and Update if needed
 	 * This function will be called from WorkFlow
+	 * 
+	 * TODO: make a default-card-updater-integration setting and move this into core
 	 * */
 	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
 		
@@ -156,8 +158,10 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	        }
 		}
 		
+		//marking the card for the attempt, so that we can prevent the workflow from picking it again, ofcourse for a definate period of time (TODO: this can be a setting as well)
         arguments.accountPaymentMethod.setLastExpirationUpdateAttemptDateTime(now());
         arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        
         
         return arguments.accountPaymentMethod;
 	}
