@@ -1226,8 +1226,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
     	var imageService = getService('ImageService');
+    	var productURL = '';
         var siteCode = (arguments.siteID == 'default') ? '' : arguments.siteID;
         
+    	if ( len( siteCode ) ) {
+			productURL &= '/#siteCode#';
+		}
+		
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
         } 
@@ -1242,7 +1247,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            
             productMap[record.defaultSku_skuID] = {
                 'productID': record.productID,
                 'skuID': record.defaultSku_skuID,
@@ -1250,12 +1254,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': productService.getProductUrlByUrlTitle( record.urlTitle,  false,  siteCode),
+                'skuProductURL': '#productURL##productService.getProductUrlByUrlTitle( record.urlTitle )#',
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
                 'qats': record.defaultSku_stocks_calculatedQATS
             };
+            
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
         }
