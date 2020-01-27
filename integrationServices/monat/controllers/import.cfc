@@ -244,7 +244,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var apiData = deserializeJson(inventoryJson.fileContent);
 	
 		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
-			fsResponse['Records'] = apiData.Data.Records;
+			inventoryResponse['Records'] = apiData.Data.Records;
 		    return inventoryResponse;
 		}
 		
