@@ -211,11 +211,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
-	public any function getAvailablePaymentMethods() {
-
+	public any function getAvailablePaymentMethods(struct data = {}) {
+		
+		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
+		
 		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
 		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter("account.accountID",arguments.data.accountID);
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);

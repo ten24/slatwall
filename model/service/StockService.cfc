@@ -65,7 +65,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		relatedProducts.addFilter("sku.skuID",arguments.skuID);
 		relatedProducts.addFilter("location.locationID",arguments.locationID);
 		relatedProducts.addFilter("sku.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
 	

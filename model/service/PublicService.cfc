@@ -95,12 +95,8 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function deleteJmeterAccount() {
-        param name="data.accountID" default="";
-        
-        var account = getAccountService().getAccount( data.accountID );
-        
-        if(!isNull(account) && account.getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
-            var deleteOk = getAccountService().deleteAccount( account );
+        if( getHibachiScope().getLoggedInFlag() ) {
+            var deleteOk = getAccountService().deleteAccount(  getHibachiScope().getAccount() );
             getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
         } else {
             getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
@@ -131,28 +127,21 @@ component  accessors="true" output="false"
         param name="arguments.data.skuID";
         param name="arguments.data.locationID";
         
-        var sku = getService('skuService').getSku(arguments.data.skuID);
-        var location = getService('locationService').getLocation(arguments.data.locationID);
-        if(!isNull(sku) && !isNull(location)) {
-            var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
-            arguments.data.ajaxResponse['stock'] = stock;
-        }
+        var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+        arguments.data.ajaxResponse['stock'] = stock;
     }
     
     /**
      * Function to get Product Reviews
-     * It adds relatedProducts as key in ajaxResponse
+     * It adds productReviews as key in ajaxResponse
      * @param productID
      * @return none
     */
     public void function getProductReviews(required struct data){
         param name="arguments.data.productID";
         
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var productReviews = product.getAllProductReviews();
-            arguments.data.ajaxResponse['productReviews'] = productReviews;
-        }
+        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['productReviews'] = productReviews;
     }
     
     /**
@@ -163,12 +152,8 @@ component  accessors="true" output="false"
     */
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var relatedProducts = product.getAllRelatedProducts();
-            arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
-        }
+        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
     
     /**
