@@ -260,11 +260,8 @@ component  accessors="true" output="false"
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllParentsOnAccount();
-            
-            arguments.data['ajaxResponse']['parentAccount'] = parentAccounts;
+        if(getHibachiScope().getAccount().hasChildAccountRelationship()) {
+            arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount();
         }
     }
     
@@ -272,11 +269,8 @@ component  accessors="true" output="false"
      * Function to get the child accounts of user account
      **/
     public void function getChildOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllChildsOnAccount();
-            
-            arguments.data['ajaxResponse']['childAccount'] = parentAccounts;
+        if(getHibachiScope().getAccount().hasChildAccountRelationship()) {
+            arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount();
         }
     }
 	
@@ -288,7 +282,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
-        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( {accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage } );
+        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
     }
 	
@@ -300,7 +294,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
-        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
 	
@@ -312,7 +306,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllOrderDeliveryOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
 	
@@ -324,7 +318,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllOrderFulfillmentsOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
 	
@@ -336,7 +330,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
 	
@@ -348,7 +342,8 @@ component  accessors="true" output="false"
      * @return none
      **/ 
     public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage, orderID: arguments.data.orderID});
+        var accountOrders = getAccountService().getAllOrdersOnAccount(
+            argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
 	
