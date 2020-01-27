@@ -407,7 +407,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(account.getPriceGroups()[i].getActiveFlag()){
 				var thisPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=account.getPriceGroups()[i],currencyCode=arguments.currencyCode);
 
-				if(thisPrice < bestPrice.price) {
+				if(!IsNull(thisPrice) && thisPrice < bestPrice.price) {
 					bestPrice.price = thisPrice;
 					bestPrice.priceGroup = account.getPriceGroups()[i];
 				}
@@ -442,18 +442,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.removeAppliedPriceGroup();
 				
 				if(!isNull(arguments.order.getAccount())){
+					
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
-						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-							orderItem.setPrice( priceGroupDetails.price );
-							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
-						}
-					}else{
+					} else {
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
-						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-							orderItem.setPrice( priceGroupDetails.price );
-							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
-						}
+					}
+					
+					if( StructKeyExists(priceGroupDetails, 'price') && 
+						!IsNUll(priceGroupDetails.price) &&
+						priceGroupDetails.price < orderItem.getPrice() && 
+						isObject(priceGroupDetails.priceGroup)
+					) {
+						orderItem.setPrice( priceGroupDetails.price );
+						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
 					}
 					
 				}
