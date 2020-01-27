@@ -33,7 +33,7 @@
 		<Record updateScriptID="c43eac642f5ae9e44d5e84649ac382ef" scriptPath="database/v5_1_6.cfm" loadOrder="27" maxExecutionCount="1" />
 		<Record updateScriptID="19873747322a1513bf2253677f28b9ff" scriptPath="database/v5_1_7.cfm" loadOrder="28" maxExecutionCount="1" />
 		
-		<Record updateScriptID="9d4ab5h1da9fj4311ea612bf4c8f9d40" scriptPath="database/addnewcoreproperties.cfm" loadOrder="109" maxExecutionCount="1" />
+		<Record updateScriptID="e5f2743b6c7d49b48a6764aa7799d628" scriptPath="database/addnewcoreproperties.cfm" loadOrder="109" maxExecutionCount="1" />
 		
 		
 	</Records> 
