@@ -133,8 +133,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			}else{
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
-			
 			getAccountService().saveAccount(account);
+			
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
