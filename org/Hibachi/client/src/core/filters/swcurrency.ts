@@ -10,6 +10,11 @@ class SWCurrency{
         
         function realFilter(value,currencyCode,decimalPlace,returnStringFlag=true) {
 
+            
+            if(!value || value.toString().trim() == ''){
+                return "--";
+            }
+
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             var currencySymbol = "$";
             if(data != null &&
@@ -18,10 +23,6 @@ class SWCurrency{
                 currencySymbol=data[currencyCode];
             } else {
                  $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-            }
-            
-            if(!value || value.toString().trim() == ''){
-                value = 0;
             }
             
             if(angular.isDefined(value) && angular.isDefined(decimalPlace)){

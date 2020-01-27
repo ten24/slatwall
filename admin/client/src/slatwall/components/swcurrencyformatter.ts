@@ -21,28 +21,28 @@ class SWCurrencyFormatter {
         modelCtrl.$parsers.push((data)=>{
             var currencyFilter:any = this.$filter('swcurrency');
             
-            if(isNaN(data)){
-                data = 0;
+            if(!data || data.toString().trim() == '' || isNaN(data) ){
+                return "--";
+            }
+            
+            if(this._timeoutPromise){
+                this.$timeout.cancel(this._timeoutPromise);
+            }
+
+            this._timeoutPromise = this.$timeout(()=>{
                 modelCtrl.$setViewValue(currencyFilter(data,$scope.currencyCode,2,false));
                 modelCtrl.$render();
-            } else {
-                if(this._timeoutPromise){
-                    this.$timeout.cancel(this._timeoutPromise);
-                }
-
-                this._timeoutPromise = this.$timeout(()=>{
-                    modelCtrl.$setViewValue(currencyFilter(data,$scope.currencyCode,2,false));
-                    modelCtrl.$render();
-                }, 1500);
-            }
+            }, 1500);
+            
 
             return modelCtrl.$viewValue;
         });
          modelCtrl.$formatters.push((data)=>{
             
-            if(isNaN(data)){
-                data = 0;
+            if(!data || data.toString().trim() == '' || isNaN(data) ){
+                return "";
             }
+            
             var currencyFilter:any = this.$filter('swcurrency');
             modelCtrl.$setViewValue(currencyFilter(data,$scope.currencyCode,2,false));
             modelCtrl.$render();

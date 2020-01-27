@@ -8,6 +8,11 @@ class SWCurrency{
     public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
+            
+            if(!value || value.toString().trim() == '' || isNaN(value) ){
+                return "";
+            }
+            
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             if(!angular.isDefined(data)){
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
