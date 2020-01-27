@@ -157,21 +157,32 @@ class SWAddOrderItemsBySkuController{
 	
 	public addOrderItemListener = (payload)=> {
 		//figure out if we need to show this modal or not.
+	
+		this.observerService.notify("addOrderItemStartLoading", {});
 		
+		if(isNaN(payload.priceByCurrencyCode) || payload.priceByCurrencyCode == 0) {
+	       
+	        var alert = this.alertService.newAlert();
+            alert.msg = "This item has no price defined";
+            alert.type = "error";
+            alert.fade = true;
+            this.alertService.addAlert(alert);
+	        
+			this.observerService.notify("addOrderItemStopLoading", {});
+			return;
+		} 
+		 
 		//need to display a modal with the add order item preprocess method.
 		var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
 		var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (this.orderFulfillmentId?this.orderFulfillmentId :"new");
-		var url = `?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.price}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&orderFulfillmentID=${orderFulfilmentID}&processContext=addorderitem&ajaxRequest=1`;
+		var url = `?slatAction=entity.processOrder&skuID=${payload.skuID}&price=${payload.priceByCurrencyCode}&quantity=${payload.quantity}&orderID=${this.order}&orderItemTypeSystemCode=${orderItemTypeSystemCode}&orderFulfillmentID=${orderFulfilmentID}&processContext=addorderitem&ajaxRequest=1`;
 		
 		if (orderFulfilmentID && orderFulfilmentID != "new"){
 			url = url+"&preProcessDisplayedFlag=1";
 		}
 		
-		var data = { orderFulfillmentID: orderFulfilmentID, quantity:payload.quantity, price: payload.price };
-		
-		this.observerService.notify("addOrderItemStartLoading", {});
-		
-		this.postData(url, data)
+
+		this.postData(url)
 		.then(data => {
 			
 			//Item can't be purchased
