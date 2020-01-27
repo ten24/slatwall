@@ -163,6 +163,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					if(!arguments.orderImportBatch.hasErrors()){
 						arguments.orderImportBatch.setItemCount(itemCount);
+						arguments.orderImportBatch.setSite(arguments.processObject.getSite());
 						this.saveOrderImportBatch(arguments.orderImportBatch);
 						if(arrayLen(errors)){
 							arguments.orderImportBatch.addErrors(errors,true);
@@ -187,6 +188,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderImportBatch_Process(required any orderImportBatch, required any processObject, struct data={}){
+		var placedOrders = 0;
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 			//Create Order
 			var order = getOrderService().newOrder();
@@ -215,7 +217,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//Create Order Fulfillment
 			var orderFulfillment = getOrderService().newOrderFulfillment();
 			orderFulfillment.setOrder(order);
-			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodType('shipping'));
+			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodName('Shipping'));
 			
 			if(!isNull(arguments.processObject.getShippingMethod())){
 				orderFulfillment.setShippingMethod(arguments.processObject.getShippingMethod());
@@ -241,11 +243,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			orderImportBatchItem.setOrderItem(orderItem);
 			
-			
 			getHibachiDAO().flushORMSession();
-			getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+			
+			order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+			if(!order.hasErrors()){
+				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistPlaced'));	
+				placedOrders += 1;
+			}
 		}
+		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstProcessed'));
+		arguments.orderImportBatch.setPlacedOrdersCount(placedOrders);
 		
+		return arguments.orderImportBatch;
+	}
+	
+	public any function processOrderImportBatch_deleteOrderImportBatchItems(required any orderImportBatch, required any processObject){
+		var orderImportBatchItems = arguments.processObject.getOrderImportBatchItems();
+		for(var i = arrayLen(orderImportBatchItems); i>0; i--){
+			var orderImportBatchItem = orderImportBatchItems[i];
+			if(orderImportBatchItem.getOrderImportBatchItemStatusType().getSystemCode() == 'oibistNew'){
+				EntityDelete(orderImportBatchItem);
+			}
+		}
+		getHibachiScope().flushOrmSession();
 		return arguments.orderImportBatch;
 	}
 	

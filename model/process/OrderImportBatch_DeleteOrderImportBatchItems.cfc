@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,30 +39,48 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.orderImportBatch" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<hb:HibachiEntityProcessForm entity="#rc.orderImportBatch#" edit="#rc.edit#" enctype="multipart/form-data">
+	// Injected Entities
+	property name="orderImportBatch" hb_rbKey="entity.orderImportBatch" cfc="orderImportBatch";
+    
+	property name="orderImportBatchItems" cfc="OrderImportBatchItem" type="array";
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderImportBatch#">
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderImportBatchName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="batchFile" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="site" edit="#rc.edit#">
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-</hb:HibachiEntityProcessForm>
+	// Data Properties
+	property name="orderImportBatchItemIDList" hb_populateEnabled="public" cfc="OrderItem";
+    
+    
+    
+   	/**
+	 * Turns a list of orderIDs into volumeRebuildBatchOrders and returns those items.
+	 * @returns an array of volumeRebuildBatchOrders
+	 */
+	public array function getOrderImportBatchItemsByOrderImportBatchItemIDList(){
+		//If we have a id list.
+		var OrderImportBatchItems = [];
+		if (structKeyExists(variables, "OrderImportBatchItemIDList") && len(variables.orderImportBatchItemIDList)){
+			for (var orderImportBatchItemID in variables.orderImportBatchItemIDList){
+				var orderImportBatchItem = getService("OrderImportBatchService").getOrderImportBatchItem(orderImportBatchItemID);
+				if (isNull(orderImportBatchItem)){
+					continue;
+				}
 
+				arrayAppend(OrderImportBatchItems, orderImportBatchItem);
+			}
+		}
+		return OrderImportBatchItems;
+	}
+	
+	/**
+	 * Returns either the injected OrderImportBatchItems, or generated ones if orderImportBatchItemIDlist exists.
+	 * @returns array of OrderImportBatchItems
+	 */
+	 public any function getOrderImportBatchItems(){
+	 	if (!structKeyExists(variables, "OrderImportBatchItems")){
+	 		variables.OrderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDList();
+	 	}
+	 	return variables.OrderImportBatchItems;
+	 }
+}

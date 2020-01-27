@@ -33721,7 +33721,13 @@ var OrderService = /** @class */ (function (_super) {
         _this.placeOrderImportBatchOrders = function (processObject) {
             if (processObject) {
                 processObject.data.entityName = "OrderImportBatch";
-                return _this.$hibachi.saveEntity("orderImportBatch", processObject.data.entityID, processObject.data, "process");
+                return _this.$hibachi.saveEntity("orderImportBatch", processObject.data.entityID, {}, "process");
+            }
+        };
+        _this.deleteOrderImportBatchItems = function (processObject) {
+            if (processObject) {
+                processObject.data.entityName = "OrderImportBatchItem";
+                return _this.$hibachi.saveEntity("orderImportBatch", processObject.data.entityID, processObject.data, "deleteOrderImportBatchItems");
             }
         };
         return _this;
@@ -64899,12 +64905,15 @@ var SWBatchOrderListController = /** @class */ (function () {
         this.listingService = listingService;
         this.usingRefresh = false;
         this.addingBatch = false;
+        this.deletingOrders = false;
         this.getBaseCollection = function () {
             var collection = _this.collectionConfigService.newCollectionConfig('OrderImportBatchItem');
             if (_this.customOrderImportBatchItemCollectionConfig) {
                 collection.loadJson(_this.customOrderImportBatchItemCollectionConfig);
             }
             return collection;
+        };
+        this.getShippingMethodOptions = function () {
         };
         /**
          * Implements a listener for the order selections
@@ -64979,7 +64988,12 @@ var SWBatchOrderListController = /** @class */ (function () {
                 _this.orderService.placeOrderImportBatchOrders(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
             }
         };
-        this.deleteOrders = function () {
+        this.deleteSelectedItems = function () {
+            _this.deletingOrders = true;
+            _this.orderService.deleteOrderImportBatchItems(_this.getProcessObject()).then(_this.deleteItemsSuccess, _this.processCreateError);
+        };
+        this.deleteItemsSuccess = function (result) {
+            _this.deletingOrders = false;
         };
         /**
          * Handles a successful post of the processObject
@@ -65041,6 +65055,7 @@ var SWBatchOrderListController = /** @class */ (function () {
         //Setup the processObject
         this.setProcessObject(this.$hibachi.newOrderImportBatch_Process());
         this.orderImportBatchItemCollection = this.refreshCollectionTotal(this.orderImportBatchItemCollection);
+        this.shippingMethodOptions = this.getShippingMethodOptions();
         //Attach our listeners for selections on listing display.
         this.observerService.attach(this.swSelectionToggleSelectionorderImportBatchItemCollectionTableListener, "swSelectionToggleSelectionorderImportBatchItemCollectionTable", "swSelectionToggleSelectionorderImportBatchItemCollectionTableListener");
         this.observerService.attach(this.collectionConfigUpdatedListener, "collectionConfigUpdated", "collectionConfigUpdatedListener");

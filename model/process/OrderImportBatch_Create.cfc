@@ -54,5 +54,28 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
     property name="orderImportBatchName" type="string";
 	property name="batchFile" hb_formFieldType="file";
+	property name="site" hb_formFieldType="select";
+	
+	property name="siteOptions";
+	property name="siteID";
+	
+	public array function getSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
+		
+		return collectionList.getRecords();
+	}
+	
+	public any function getSite(){
+	    if(!structKeyExists(variables,'site') && structKeyExists(variables,'siteID')){
+	        variables.site = getService('siteService').getSite(variables.siteID);
+	    }else if(structKeyExists(variables,'site') && isSimpleValue(variables.site)){
+	        variables.site = getService('siteService').getSite(variables.site);
+	    }
+	    if(structKeyExists(variables,'site')){
+	        return variables.site;
+	    }
+	}
 	
 }

@@ -11,7 +11,8 @@
 			        <div class="col-md-6">
 			            <div class="btn-toolbar">
 							<div class="btn-group btn-group-sm">
-			                    <button class="# btn btn-success" title="Add" ng-click="swBatchOrderListController.process()">Process <i ng-if="swBatchOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
+								<button class="# btn btn-warning" title="Delete Selected Orders" ng-click="swBatchOrderListController.deleteSelectedItems()">Delete Selected Items <i ng-if="swBatchOrderListController.deletingOrders == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
+			                    <button class="# btn btn-success" title="Process Batch" ng-click="swBatchOrderListController.process()">Process Batch<i ng-if="swBatchOrderListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button>
 			                </div>
 			            </div>
 			        </div>
@@ -25,6 +26,16 @@
 			</center>
 		</div>
 		<span ng-init="multislot = true"></span>
+		<div class="row s-detail-content-wrapper">
+			<div class="col-sm-6">
+				<label for="shippingMethod">Shipping Method</label>
+				<select name="shippingMethod.shippingMethodID" ng-options="option.value as option.name for option in swBatchOrderListController.shippingMethodOptions"></select>
+			</div>
+			<div class="col-sm-6">
+				<label for="sendEmailNotificationsFlag">Send Email Notifications?</label>
+				<checkbox name="sendEmailNotificationsFlag" />
+			</div>
+		</div>
 		<div class="row s-detail-content-wrapper">	
 			<div class="col-xs-12">
 				<div class="s-detail-body" ng-init="swBatchOrderListController.refreshFlag = false">
@@ -36,11 +47,12 @@
 						data-is-angular-route="false"
 						data-angular-links="false"
 						data-has-action-bar="false"
-						data-using-personal-collection="true"
+						data-using-personal-collection="false"
 						data-persisted-collection-config="true" 
 						data-multiselect-field-name="orderImportBatchItemID"
 						data-name="orderImportBatchItemCollectionTable"
 						data-collection-config="swBatchOrderListController.orderImportBatchItemCollectionConfig"
+						data-refresh-event="orderImportBatchDeleteOrderImportBatchItemsSuccess"
 						>
 					</sw-listing-display>
 

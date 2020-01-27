@@ -11,6 +11,7 @@ class SWBatchOrderListController {
     private refreshFlag:boolean;
     private usingRefresh:boolean=false;
     public addingBatch=false;
+    public deletingOrders=false;
     public views:any;
     public total:number;
     public formData:{};
@@ -19,6 +20,7 @@ class SWBatchOrderListController {
     public ordersList;
     public customOrderImportBatchItemCollectionConfig:string;
     public orderImportBatchId:string;
+    public shippingMethodOptions;
     private state:any;
 
     // @ngInject
@@ -46,6 +48,8 @@ class SWBatchOrderListController {
         this.setProcessObject(this.$hibachi.newOrderImportBatch_Process());
 
         this.orderImportBatchItemCollection = this.refreshCollectionTotal(this.orderImportBatchItemCollection);
+        
+        this.shippingMethodOptions = this.getShippingMethodOptions();
 
         //Attach our listeners for selections on listing display.
         this.observerService.attach(this.swSelectionToggleSelectionorderImportBatchItemCollectionTableListener, "swSelectionToggleSelectionorderImportBatchItemCollectionTable", "swSelectionToggleSelectionorderImportBatchItemCollectionTableListener");
@@ -60,7 +64,10 @@ class SWBatchOrderListController {
         }
         return collection;
      }
-
+     
+    private getShippingMethodOptions = ()=>{
+        
+    }
 
     /**
      * Implements a listener for the order selections
@@ -161,8 +168,13 @@ class SWBatchOrderListController {
         }
     }
     
-    public deleteOrders = ():void => {
-        
+    public deleteSelectedItems = ():void => {
+        this.deletingOrders = true;
+        this.orderService.deleteOrderImportBatchItems(this.getProcessObject()).then(this.deleteItemsSuccess, this.processCreateError);
+    }
+    
+    public deleteItemsSuccess = (result):void =>{
+        this.deletingOrders = false;
     }
     /**
      * Handles a successful post of the processObject

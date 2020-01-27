@@ -437,7 +437,11 @@ component extends="HibachiService" accessors="true" {
 			standardizedValue['#entityPrimaryIDPropertyName#'] = "";
 			
 			if (!isNull(arguments.propertyValue)) {
-				standardizedValue['#entityPrimaryIDPropertyName#'] = arguments.propertyValue.getPrimaryIDValue();
+				try{
+					standardizedValue['#entityPrimaryIDPropertyName#'] = arguments.propertyValue.getPrimaryIDValue();
+				}catch(any e){
+					writeDump(var=arguments.propertyValue,top=3);abort;
+				}
 				if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
 					try {
 						standardizedValue['title'] = arguments.propertyValue.getSimpleRepresentation();
