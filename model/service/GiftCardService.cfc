@@ -60,10 +60,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getAllGiftCardsOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
 		var giftCardList = this.getGiftCardCollectionList();
-		giftCardList.addFilter( 'ownerAccount.accountID', arguments.data.accountID);
+		giftCardList.addFilter( 'ownerAccount.accountID', getHibachiSCope().getAccount().getAccountID() );
 		giftCardList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		giftCardList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		

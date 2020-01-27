@@ -144,7 +144,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAllOrdersOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         param name="arguments.data.orderID" default= "";
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
@@ -162,7 +161,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			orderFulfillments.shippingAddress.postalCode
 		');
 		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'account.accountID', getHibachiScope().getAccount().getAccountID(), '=');
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		
 		if( len(arguments.data.orderID) ){
@@ -179,8 +178,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * Function to get All Parents on Account
 	 * */
 	public any function getAllParentsOnAccount(struct data={}) {
-		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-		
 		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
 		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
 												parentAccount.emailAddress, 
@@ -188,7 +185,7 @@ component extends="HibachiService" accessors="true" output="false" {
 												parentAccount.lastName, 
 												parentAccount.username, 
 												parentAccount.accountID');
-		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.data.accountID, '=');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', getHibachiScope().getAccount().getAccountID(), '=');
 		parentAccountCollectionList.addFilter( 'activeFlag', 1, '=');
 		return parentAccountCollectionList.getRecords(formatRecord = false);
 	}
@@ -197,7 +194,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * Function to get All Childs on Account
 	 * */
 	public any function getAllChildsOnAccount(struct data={}) {
-		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
 		
 		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
 		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
@@ -206,18 +202,16 @@ component extends="HibachiService" accessors="true" output="false" {
 												childAccount.lastName, 
 												childAccount.username, 
 												childAccount.accountID');
-		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.data.accountID, '=');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', getHibachiScope().getAccount().getAccountID(), '=');
 		childAccountCollectionList.addFilter( 'activeFlag', 1, '=');
 		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
 	public any function getAvailablePaymentMethods(struct data = {}) {
 		
-		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-		
 		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
 		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID",arguments.data.accountID);
+		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID() );
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
