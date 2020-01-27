@@ -216,17 +216,20 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getPreferredLocale(){
-		var localMapping = {
-			'en' : 'en_us',		// English (United States)
-			'gb' : 'gb_en',		// English (United Kingdom)
-			'fr' : 'fr_ca',		// French (Canada)
-			'pl' : 'pl_pl', 	// Polish
-			'ga' : 'ga_ie', 	// Irish (Ireland)
-			'es' : 'es_mx'	 	// Spanish (Mexico)
-		};
+		if(!isNull(getAccountCreatedSite())){
+			var site = getAccountCreatedSite();
+		}else if(!isNull(getHibachiScope().getCurrentRequestSite())){
+			var site = getHibachiScope().getCurrentRequestSite();
+		}
 		
-		if(structKeyExists(variables, 'languagePreference') && structKeyExists(localMapping, variables.languagePreference)){
-			return localMapping[variables.languagePreference];
+		if(!isNull(site)){
+			var siteCode = getService('SiteService').getCountryCodeBySite(site);
+		}else{
+			var siteCode = 'us';
+		}
+		
+		if(structKeyExists(variables, 'languagePreference') && len(siteCode)){
+			return lcase('#variables.languagePreference#_#siteCode#');
 		}else{
 			return '';
 		}
