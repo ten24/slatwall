@@ -365,13 +365,11 @@ component  accessors="true" output="false"
      	var newAddress = getService("AddressService").getAddress(addressID, true);
      	if (!isNull(newAddress) && !newAddress.hasErrors()){
      	    newAddress = getService("AddressService").saveAddress(newAddress, arguments.data, "full");
-      		//save the order.
-          if(!newAddress.hasErrors()){
-  	     	   getService("OrderService").saveOrder(getHibachiScope().getCart());
-           }else{
-            this.addErrors(data, newAddress.getErrors());
-           }
-  	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
+            if(!newAddress.hasErrors()){
+  	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
+            }else{
+                getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
+            }
     	}else{
             getHibachiScope().addActionResult( "public:cart.updateAddress", true );
         }
