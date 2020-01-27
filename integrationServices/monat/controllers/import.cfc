@@ -27,6 +27,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
+	this.secureMethods=listAppend(this.secureMethods,'importInventory');
+	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -217,6 +219,42 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	
+	private any function getInventoryData(pageNumber,pageSize){
+	    var uri = setting('baseImportURL') &  "QueryInventory";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+	
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+	    
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var inventoryJson = httpService.send().getPrefix();
+		
+		inventoryResponse = {hasErrors: false};
+		
+		var apiData = deserializeJson(inventoryJson.fileContent);
+	
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			fsResponse['Records'] = apiData.Data.Records;
+		    return inventoryResponse;
+		}
+		
+		writeDump("Could not import inventory on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		inventoryResponse.hasErrors = true;
+		
+		
+		return inventoryResponse;
+	}
+	
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = setting('baseImportURL') &  "QueryFlexships";
 		var authKeyName = "authkey";
@@ -392,6 +430,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
+	public void function importInventoryUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+	
+		//Use a service instead so that it can be run on a workflow.
+		//getService("MonatDataService").importInventoryUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		
+	}
+	
 	public void function importDailyAccountUpdates(rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 	
@@ -414,6 +460,132 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			datePart("yyyy",date), 
 			datePart("m",date),
 			datePart("d",date));
+	}
+
+	
+	
+	/**
+	 * Usage: ?slataction=monat:import.importInventory&pageNumber=1&pageSize=100&pageMax=1001
+	 * Example response
+	 * {
+     *           "ItemCode": "10012000",
+     *           "ItemName": "Travel Size - Renew Shampoo, 2 oz.",
+     *           "SAPItemCode": "6000000111",
+     *           "WarehouseCode": "Main",
+     *           "WarehouseName": "MONAT GLOBAL",
+     *           "CountryCode": "USA",
+     *           "CountryName": "United States",
+     *           "InventoryId": 281,
+     *           "StockAvailable": 37687,
+     *           "LastUpdate": "2019-10-24T14:06:35.787"
+     * } 
+     * 
+     * Warehouses: Main, CAN, UK
+	 * 
+	 **/
+	public void function importInventory(rc){ 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		// Objects we need to set over and over go here...
+		var warehouseMain = getWarehouseService().getWarehouseByName("usWarehouse");
+		var warehouseCAN = getWarehouseService().getWarehouseByName("caWarehouse");
+		var warehouseUK = getWarehouseService().getWarehouseByName("ukWarehouse");
+		var warehouseIRPOL = getWarehouseService().getWarehouseByName("irePolWarehouse");
+		
+		while (pageNumber < pageMax){
+			
+    		var inventoryResponse = getInventoryData(pageNumber, pageSize);
+    		if (inventoryResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		//writedump(accountsResponse);abort;
+    		var inventoryRecords = inventoryResponse.Data.Records;
+    		
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			
+    			var tx = ormStatelessSession.beginTransaction();
+    			for (var inventory in inventoryRecords){
+    			    index++;
+        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+        		    
+        		    if (isNull(sku)){
+        		    	echo("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#");
+        		    	continue;
+        		    }
+        		    
+        		    var location = warehouseMain;
+        		    
+        		    if (inventory['WarehouseName'] == "Main"){
+        		    	location = warehouseMain;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "CAN"){
+        		    	location = warehouseCAN;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "UK"){
+        		    	
+        		    	location = warehouseUK;	
+        		    
+        		    } else {
+        		    	location = warehouseIRPOL;
+        		    }
+        		    
+        		    
+        		    //Find if we have a stock for this sku and location.
+        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+        		    
+        		    if (isNull(stock)){
+        		    	// Create the stock
+        		    	var stock = new Slatwall.model.entity.stock();
+        		    	stock.setSku(sku);
+        		    	stock.setLocation(location);
+        		    	stock.setRemoteID(inventory['inventoryID']);
+        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    }
+        		    
+        			// Create a new inventory under that stock.
+        			var newInventory = new Slatwall.model.entity.Inventory();
+        			newInventory.setRemoteID(inventory['inventoryID']?:""); //*
+        			newInventory.setStock(stock);
+                	newInventory.setQuantityIn(inventory['StockAvailable']?:0);
+                	newInventory.setCreatedDateTime(getDateFromString(inventory['LastUpdate']));
+                	newInventory.setModifiedDateTime(getDateFromString(inventory['LastUpdate']));
+                	
+                    ormStatelessSession.insert("SlatwallInventory", newInventory);
+
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    		
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Create) Page #pageNumber# for inventory completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
 	}
 	
 	//monat:import.importAccounts&pageNumber=33857&pageSize=50&pageMax=36240
