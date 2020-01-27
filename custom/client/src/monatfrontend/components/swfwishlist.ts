@@ -47,6 +47,11 @@ class SWFWishlistController {
         this.loading = true;
         this.currentList = option;
         
+        if(!option){
+           this.loading = false; 
+           return;
+        }
+        
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
