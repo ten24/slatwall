@@ -10,7 +10,6 @@ export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
-
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
