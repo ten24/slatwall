@@ -240,7 +240,7 @@ class MonatProductCardController {
 			'undefined' !== typeof this.accountWishlistItems 
 			&& this.accountWishlistItems.length
 		) {
-			this.isAccountWishlistItem = this.accountWishlistItems.indexOf(this.product.productID) > -1 ? true : false;
+			this.isAccountWishlistItem = this.accountWishlistItems.indexOf(this.product.productID) > -1;
 		}
 	}
 

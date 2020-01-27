@@ -53,7 +53,7 @@ class MonatProductListingController {
             if ( 'undefined' !== typeof data.wishlistItems ) {
                 this.wishlistItems = '';
                 data.wishlistItems.forEach(item=>{
-                    this.wishlistItems += (item.productID += ',');
+                    this.wishlistItems += item.productID + ',';
                 });
                 this.observerService.notify('accountWishlistItemsSuccess');
             }
