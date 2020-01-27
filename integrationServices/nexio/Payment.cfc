@@ -104,7 +104,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			if(originalTransactionHasSettled){
 				sendRequestToCredit(arguments.requestBean, responseBean);
 			}else {
-				sendRequestToVoid(arguments.requestBean, responseBean);
+				if(!isNull(arguments.requestBean.getOrderPayment()) && !isNull(arguments.requestBean.getOrderPayment().getReferencedOrderPayment())){
+					var originalAmountReceived = arguments.requestBean.getOrderPayment().getReferencedOrderPayment().getAmountReceived();
+					if(originalAmountReceived == arguments.requestBean.getTransactionAmount()){
+						sendRequestToVoid(arguments.requestBean, responseBean);
+					}else{
+						responseBean.addError("Processing Error", rbKey('validate.orderPayment.partialVoid'));
+					}
+				}
 			}
 		} else {
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
@@ -725,13 +732,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	}
 	
 	public any function getCardStatus(required any requestBean){
+		var responseBean = getTransient('DataResponseBean');
+		
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			arguments.responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
+			responseBean.addError("Processing error", "Error attempting to authorize. Review providerToken.");
 			return;
 		}
 		// Request Data
 		var requestData = {};
-		var responseBean = getTransient('DataResponseBean');
 		
 		var responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'cardView', requestData);
 		

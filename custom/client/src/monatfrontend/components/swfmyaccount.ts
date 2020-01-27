@@ -43,6 +43,7 @@ class swfAccountController {
     public profileImageLoading:boolean = false;
     public prouctReviewForm:any;
     public isDefaultImage:boolean = false;
+    public isNotProfileImagesChoosen:boolean = false;
     
     // @ngInject
     constructor(
@@ -287,6 +288,10 @@ class swfAccountController {
     }
 
     public uploadImage = () =>{
+        if(!(<HTMLInputElement>document.getElementById('profileImage')).files[0]) {
+            this.isNotProfileImagesChoosen = true;
+        } else {
+        this.isNotProfileImagesChoosen = false;
         let tempdata = new FormData();
         tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
         tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
@@ -295,25 +300,33 @@ class swfAccountController {
 		let urlArray = url.split("/");
 		let baseURL = urlArray[0] + "//" + urlArray[2];
 		let that = this; 
+		let form = <any>document.getElementById('imageForm');
 		
 		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
 		xhr.onload = function () {
 			var response = JSON.parse(xhr.response);
 		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+ 	     	    that.uploadImageError = false;
 		 	 	console.log("File Uploaded");
-		 	 	that.getUserProfileImage();
 		  	 }else{
     		    that.uploadImageError = true;
     		    that.$scope.$digest();
 		  	 }
+		  	 
+ 	        form.reset();
+  	 	 	that.getUserProfileImage();
 		};
         xhr.send(tempdata);
+        } 
+         
     }     
     
     public deleteProfileImage(){
         this.profileImageLoading = true;
         this.publicService.doAction('deleteProfileImage').then(result=>{
             this.profileImageLoading = false;
+            let form = <any>document.getElementById('imageForm');
+            form.reset();
             this.getUserProfileImage();
         });
     }

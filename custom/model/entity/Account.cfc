@@ -53,17 +53,20 @@ component {
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
-	
+		
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
 		if ( ! len( priceGroups ) ) {
 			return false;
-		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) { 
+			//Retail price-group
 			return false;
 		}
 		
@@ -71,18 +74,23 @@ component {
 			return false;
 		}
 		
-		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-		var enrollmentDate = this.getEnrollmentDate();
+		if( this.getAccountType() == 'marketPartner' ){
 		
-		if ( !isNull( enrollmentDate ) ) {
-			// Add the days after enrollment a user can create flexship to the enrollment date.
-			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			var daysAfterEnrollment = this.getAccountCreatedSite().setting(
+							'integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate'
+						);
+						
+			var enrollmentDate = this.getEnrollmentDate();
 			
-			// If today is a greater date than the date they can create a flexship.
-			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+			if ( !isNull( enrollmentDate ) ) {
+				// Add the days after enrollment a user can create flexship to the enrollment date.
+				var dateAfterCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+				
+				// If today is a greater date than the date they can create a flexship.
+				return ( dateCompare( dateAfterCanCreateFlexship, now() ) == -1 ); // -1, if date1 is earlier than date2
+			}	
 		}
 		
-		// If the user doesn't have an enrollment date, return true.
 		return true;
 	}
 
@@ -119,5 +127,6 @@ component {
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
+	
 	
 } 

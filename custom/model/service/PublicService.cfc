@@ -546,8 +546,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         }
-      
-        
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
@@ -1093,10 +1091,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var currentRequestSite = getHibachiScope().getCurrentRequestSite();
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
-            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS','calculatedQATS');
+            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS');
             productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
         }
-
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier = 'publishedStartDateTime',value=now(), comparisonOperator="<=", filterGroupAlias = 'publishedStartDateTimeFilter');
@@ -1144,6 +1141,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         
         var pageRecords = productCollectionList.getPageRecords();
+
         if ( len( pageRecords ) ) {
             var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode,siteCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
@@ -1256,7 +1254,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.calculatedQATS
+                'qats': record.defaultSku_stocks_calculatedQATS
             };
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
@@ -1339,7 +1337,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
 			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
 		}else{
-			getHibachiScope().addActionResult( "uploadProfileImage", false );
+			getHibachiScope().addActionResult( "uploadProfileImage", true );
 		}
 		//check if the file exists.
 		if (fileExists("#fullFilePath#")){
@@ -1572,13 +1570,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getCustomerCanCreateFlexship(){
-        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
-        var daysTillCanCreate = site.setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-        var createdDateTime = getHibachiScope().getAccount().getCreatedDateTime();
-        var now = now();
-        var adjustedDate = dateAdd("d",daysTillCanCreate,createdDateTime);
-        var dateCompare = dateCompare(now, adjustedDate);
-        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = (dateCompare > -1) ? true : false;
+        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = getHibachiScope().getAccount().getCanCreateFlexshipFlag();
     }
     
     public void function getOrderTemplates(required any data){ 

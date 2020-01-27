@@ -68,16 +68,9 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     
     // =============== START: Custom Validation Methods ====================
     public boolean function orderMinimumDaysToRenewMPFailed(){
-        var productCodesRenewalMP = getService('SettingService').getSettingValue('integrationmonatGlobalProductCodesRenewMP');
-        
-        // If order already has RENEWALFEE and cannot add another a Market Partner renewal
-        var cartCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
-        cartCollectionList.setDisplayProperties('order.orderID');
-        cartCollectionList.addFilter('order.orderID', order.getOrderID());
-        cartCollectionList.addFilter('sku.product.productCode', productCodesRenewalMP, 'IN');
-        var cartCollectionCount = cartCollectionList.getRecordsCount();
-        
-        if(cartCollectionCount > 0){
+        var renewalFeeSystemCode = 'RenewalFee-MP';
+        // If order already has renewal fee and cannot add another a Market Partner renewal
+        if(this.getOrder().hasMPRenewalFee()){
             return false;
         }
         
@@ -88,18 +81,16 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         if(!isNull(getAccount().getRenewalDate())){
             accountRenewalDate = getAccount().getRenewalDate();
         }
-        var renewalDateCheck=DateDiff("d", accountRenewalDate, currentDate);
+        var renewalDateCheck=DateDiff("d", currentDate, accountRenewalDate);
         
-        if( listFindNoCase(productCodesRenewalMP,this.getProduct().getProductCode())){
+        if( this.getProduct().getProductType().getSystemCode() == renewalFeeSystemCode){
             if( this.getAccount().getAccountType() == 'marketPartner' &&
-                renewalDateCheck >= orderMinimumDaysToRenewMPSetting 
+                renewalDateCheck <= orderMinimumDaysToRenewMPSetting 
             ){
                 return true;
             }
-            
             return false;
         }
-        
         return true;
 	}
     
