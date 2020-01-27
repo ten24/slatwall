@@ -15,9 +15,13 @@
 		</li>
 		
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.setAsCurrentFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.addOrRemoveItems'"></span></a>
+		    <a href="##" ng-click="monatFlexshipMenu.goToProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.addOrRemoveItems'"></span></a>
 		</li>
-		
+	
+		<li ng-if="monatFlexshipMenu.orderTemplate.qualifiesForOFYProducts">
+		    <a href="##" ng-click="monatFlexshipMenu.goToOFYProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.selectYourFreeProducts'"></span></a>
+		</li>
+
 		<li>
 		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
 		</li>

@@ -6,28 +6,38 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         param name="arguments.data.emailAddressOrUsername" default="";
         param name="arguments.data.emailAddress" default="";
         param name="arguments.data.password" default="";
-
+		
         var accountAuthCollection = arguments.slatwallScope.getService('AccountService').getAccountAuthenticationCollectionList();
         accountAuthCollection.setDisplayProperties("accountAuthenticationID,password,account.accountID,account.primaryEmailAddress.emailAddress,legacyPassword,activeFlag");
-        accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        
+        if( len(arguments.data.emailAddressOrUsername) && REFind("^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$", arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddressOrUsername);
+        } else if( len(arguments.data.emailAddressOrUsername) ){
+        	accountAuthCollection.addFilter("account.username", arguments.data.emailAddressOrUsername);
+        } else {
+        	accountAuthCollection.addFilter("account.primaryEmailAddress.emailAddress", arguments.data.emailAddress);
+        }
+        
         accountAuthCollection.addFilter("legacyPassword", "NULL", "IS NOT");
         accountAuthCollection.addFilter("activeFlag", "true");
         var accountAuthentications = accountAuthCollection.getRecords();
-
+		
         for (var accountAuthentication in accountAuthentications) {
             var accountAuthEntity = getAccountService().getAccountAuthentication(accountAuthentication['accountAuthenticationID']);
-
-            if(!isNull(accountAuthEntity) && 
+			
+            if( !isNull(accountAuthEntity) && 
                 len(accountAuthentication['legacyPassword']) > 29 && 
-                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29))){
-
+                accountAuthentication['legacyPassword'] == legacyPasswordHashed(arguments.data.password, left(accountAuthentication['legacyPassword'], 29)) && 
+                accountAuthEntity.getAccount().getActiveFlag()
+                ){
+				
                 accountAuthEntity.setPassword(getAccountService().getHashedAndSaltedPassword(arguments.data.password, accountAuthentication['accountAuthenticationID']));
                 accountAuthEntity.setLegacyPassword(javacast("null", ""));
                 accountAuthEntity = getAccountService().saveAccountAuthentication(accountAuthEntity);
             } else {
                 continue;
             }
-
+			
             if(!accountAuthEntity.hasErrors()){
                 arguments.slatwallScope.getService("hibachiSessionService").loginAccount( accountAuthEntity.getAccount(), accountAuthEntity );
             }
@@ -44,15 +54,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 
 		var account = arguments.order.getAccount();
 		
-		//snapshot the pricegroups on the order.
+		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
+        // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
 			account.setProductPackPurchasedFlag(true);
         }
     	
+	// Snapshot the account type to the order. This is placed before the upgrade logic
+	// so that we can capture that this account was still another account type at this time.
+	// on the users next order, they will be the upgraded type.
+	if (!isNull(account)){
+		if (!isNull(account.getAccountType())){
+			arguments.order.setAccountType(account.getAccountType());
+		}else{
+			logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
+		}
+	}
+	
+    	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
@@ -64,6 +87,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		}
     	}
     	
+    	
+		
+		// Sets the account status type, activeFlag and accountNumber
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
@@ -119,8 +145,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}
 		
 
-		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
-		//set the initial order flag if needed.
+		//Set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//Set the initial order flag if needed.
 		try{
 			
 			//Commission Date
@@ -131,18 +157,37 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
-				var shippingMethod = orderFulFillment.getShippingMethod();
-				var shippingAddress = orderFulFillment.getShippingAddress();
+				//NOTE: there's only one shipping method allowed for flexship
+				var shippingMethod = getService('ShippingService').getShippingMethod(
+					ListFirst( orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+				);
+				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
 				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
 				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
+				
 				orderTemplate.setShippingMethod(shippingMethod);
-				orderTemplate.setShippingAddress(shippingAddress);
+				
+				if( !IsNull(orderFulFillment.getAccountAddress() ) ){
+					orderTemplate.setShippingAccountAddress(orderFulFillment.getAccountAddress() );
+				} else {
+					
+					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
+					var newAccountAddress = getAccountService().newAccountAddress();
+					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
+					newAccountAddress.setAccount( orderTemplate.getAccount() );
+					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
+					
+					orderTemplate.setShippingAccountAddress(newAccountAddress);
+				}
+				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
+				
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
+			
 			arguments.order.setCommissionPeriod(commissionDate);
 			
 			//Initial Order Flag

@@ -94,6 +94,7 @@ class SWReturnOrderItemsController{
     public currencySymbol:string;
     public fulfillmentTaxAmount:number;
     public fulfillmentRefundTaxAmount:number=0;
+    public fulfillmentRefundTotal:number;
     public orderDiscountAmount:number;
     
     public setupOrderItemCollectionList = () =>{
@@ -259,7 +260,8 @@ class SWReturnOrderItemsController{
 
         this.refundSubtotal = refundSubtotal;
 
-        this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundAmount - this.allocatedOrderDiscountAmountTotal).toFixed(2));
+        this.fulfillmentRefundTotal = this.fulfillmentRefundAmount + this.fulfillmentRefundTaxAmount;
+        this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundTotal - this.allocatedOrderDiscountAmountTotal).toFixed(2));
         this.refundPVTotal = Number(refundPVTotal.toFixed(2));
         this.refundCVTotal = Number(refundCVTotal.toFixed(2));
     }
@@ -274,7 +276,14 @@ class SWReturnOrderItemsController{
        if(this.fulfillmentRefundAmount > this.maxFulfillmentRefundAmount){
            this.fulfillmentRefundAmount = this.maxFulfillmentRefundAmount;
        }
-        this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount / this.fulfillmentRefundAmount * this.maxFulfillmentRefundAmount;
+       if(this.fulfillmentRefundAmount < 0){
+           this.fulfillmentRefundAmount = 0;
+       }
+       if(this.fulfillmentRefundAmount > 0){
+            this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount / this.fulfillmentRefundAmount * this.maxFulfillmentRefundAmount;
+       }else{
+           this.fulfillmentRefundTaxAmount = 0;
+       }
        this.updateRefundTotals();
    }
    

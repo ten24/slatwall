@@ -292,7 +292,7 @@ Notes:
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
-							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
+							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white"  dropdownclass="pull-right" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:report.deferredRevenueReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedRevenueReport" type="list">

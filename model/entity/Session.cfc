@@ -132,8 +132,10 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	
 	public any function getOrder() {
 		if(structKeyExists(variables, "order")) {
+			this.logHibachi('Session Get Existing Cart - #variables.order.getOrderID()#', true);
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
+			this.logHibachi('Session Get New Cart', true);
 			variables.requestOrder = getService("orderService").newOrder();
 			
 			// Set default stock location based on current request site, uses first location by default

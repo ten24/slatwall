@@ -102,6 +102,7 @@ class SWFPaginationController {
             
             this.pageTracker = pageNumber;
             this.publicService.paginationIsLoading = false;
+            this.observerService.notify('paginationEvent');
         });
     }
 

@@ -89,7 +89,10 @@ class MonatProductModalController {
 			this.quantityToAdd
 		)
 		.then((data) => {
-			this.monatAlertService.success("Product added to Flexship successfully");
+			
+			this.monatAlertService.success(
+				this.rbkeyService.rbKey("alert.flexship.addProductsucessfull")
+			);
 			this.closeModal();
 		})
 		.catch( (error) => {

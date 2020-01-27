@@ -5,7 +5,7 @@
 >
 	<div class="modal-dialog modal-lg">
         <form name="updateBillingForm" 
-        	ng-submit=" updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
+        	ng-submit="updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
          >
 		<div class="modal-content">
 			<!-- Modal Close -->
@@ -26,7 +26,10 @@
 				<div
 					class="custom-radio form-group"
 					ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
-					ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID)"
+					ng-click="
+						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
+						updateBillingForm.$valid = true;
+					"
 				>
 					<input
 						type="radio"
@@ -35,7 +38,7 @@
 					/>
 					<label
 						for="saved_cards"
-						ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : '--- `'"
+						ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : accountPaymentMethod.creditCardType + ' ' + accountPaymentMethod.creditCardLastFour"
 					>
 						<i class="fab fa-cc-visa"></i>
 					</label>
@@ -54,7 +57,9 @@
 						{{ monatFlexshipPaymentMethodModal.translations.addNewCreditCard }}
 					</label>
 				</div>
-				<div ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
+				
+				<!-- new billing -->
+				<div ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
 					<h6 class="title-with-line mb-5">
 						{{ monatFlexshipPaymentMethodModal.translations.billingAddress }}
 					</h6>
@@ -71,7 +76,7 @@
 						/>
 						<label
 							for="accountAddressID"
-							ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : '--- `'"
+							ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : accountAddress.address_streetAddress + ', ' + accountAddress.address_city + ', ' + accountAddress.address_stateCode + ' ' + accountAddress.address_postalCode"
 						></label>
 					</div>
 	
@@ -88,6 +93,8 @@
 							{{ monatFlexshipPaymentMethodModal.translations.addNewBillingAddress }}
 						</label>
 					</div>
+					
+					
 					<!--- Conditional: Add New Shipping Address form --->
 					<div
 						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
@@ -229,7 +236,7 @@
 	
 					<!-- Conditional: Add New Payment method form -->
 					<div
-						ng-show="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
 						class="row"
 					>
 						<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard"></div>

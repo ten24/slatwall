@@ -176,6 +176,7 @@
 			if(structKeyExists(arguments.formatDetails,'locale') 
 				&& structKeyExists(arguments.formatDetails,'propertyName')
 				&& structKeyExists(arguments.formatDetails,'object')
+				&& structKeyExists(arguments.formatDetails.object, 'getPrimaryIDValue')
 			){
 				var translation = getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(
 					baseObject=arguments.formatDetails.object.getClassName(),

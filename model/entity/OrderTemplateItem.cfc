@@ -102,20 +102,7 @@ property name="commissionableVolumeTotal" persistent="false";
 			arrayDeleteAt(arguments.orderTemplate.getOrderTemplateItems(), index);
 		}
 		structDelete(variables, "orderTemplate");
-	}		
-	
-	public boolean function skuHasPriceByCurencyCode(){
-		var skuPriceByCurrencyCode = this.getSku().getPriceByCurrencyCode(
-			currencyCode = this.getOrderTemplate().getCurrencyCode(), 
-			quantity = this.getQuantity(),
-			accountID = this.getOrderTemplate().getAccount().getAccountID()
-		);
-		
-		return !IsNull( skuPriceByCurrencyCode) && IsNumeric(skuPriceByCurrencyCode);
-	}
-
-	
-	//CUSTOM FUNCTIONS BEGIN
+	}		//CUSTOM FUNCTIONS BEGIN
 
 public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();
@@ -144,16 +131,16 @@ public any function getSkuProductURL(){
 			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
 			var mpPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
 			
-			var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
-			var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
-			var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
-			var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
+			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+			// var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+			// var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+			// var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
 			
 			var skuAdjustedPricing = {
-				adjustedPriceForAccount = formattedAccountPricing,
-				vipPrice = formattedVipPricing,
-				retailPrice = formattedRetailPricing,
-				MPPrice = formattedMPPricing,
+				adjustedPriceForAccount = adjustedAccountPrice,
+				vipPrice = adjustedVipPrice,
+				retailPrice = adjustedRetailPrice,
+				MPPrice = adjustedMPPrice,
 				personalVolume = mpPersonalVolume,
 				accountPriceGroup = priceGroupCode
 			};

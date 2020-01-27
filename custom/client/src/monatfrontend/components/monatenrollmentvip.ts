@@ -29,6 +29,8 @@ class VIPController {
 	public flexshipTotal:number = 0;
 	public lastAddedProductName;
 	public addedItemToCart;
+	public defaultTerm;
+	public termMap = {};
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -38,6 +40,13 @@ class VIPController {
 		this.getCountryCodeOptions();
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
+			this.publicService.model = {};
+			for(let term of response.frequencyTermOptions){
+				this.termMap[term.value] = term;
+				if(term.name=='Monthly'){
+					this.publicService.model.term = term;
+				}
+			}
 		})
 		
 		//checks to local storage in case user has refreshed
@@ -180,6 +189,12 @@ class VIPController {
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
 		
+		
+		//TODO: REFACTOR MARKUP TO USE NGOPTIONS
+    	if("string" == typeof(frequencyTerm)){
+			frequencyTerm = this.termMap[frequencyTerm];
+    	}
+
 		if (
 			'undefined' === typeof frequencyTerm
 			|| 'undefined' === typeof dayOfMonth
@@ -193,6 +208,7 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
+		
 		if(this.isNotSafariPrivate){
 			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
 			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
@@ -239,9 +255,12 @@ class VIPController {
 			if ( 'Starter Kit' !== productTypeName && 'Product Pack' !== productTypeName ) {
 				this.lastAddedProductName = orderItem.sku.product.productName;
 				this.addedItemToCart = true;
+			} else {
+			    this.addedItemToCart = false;
 			}
 		})
 	}
+	
 }
 
 class MonatEnrollmentVIP {

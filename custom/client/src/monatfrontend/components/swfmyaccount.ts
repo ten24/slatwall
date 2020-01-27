@@ -36,11 +36,15 @@ class swfAccountController {
     public orderPayments:any;
     public uploadImageError:boolean;
     public accountProfileImage;
+    public orderDelivery:any;
     public orderPromotions:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
+    public prouctReviewForm:any;
     public isDefaultImage:boolean = false;
+    public isNotProfileImagesChoosen:boolean = false;
+    
     // @ngInject
     constructor(
         public publicService,
@@ -49,14 +53,13 @@ class swfAccountController {
         public ModalService, 
         public rbkeyService,
         public monatAlertService,
-    	public $location
+    	public $location,
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
-        
         this.observerService.attach(()=>{
     		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
         },"deleteAccountPaymentMethodFailure");
@@ -92,20 +95,21 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            const url = window.location.pathname;
             
-            switch(window.location.pathname){
-                case '/my-account/':
-                    this.getOrdersOnAccount(1);
-                    this.getMostRecentFlexship(); 
-                    break;
-                case '/my-account/order-history/':
+            switch(true){
+                case (url.indexOf('/my-account/order-history/') > -1):
                     this.getOrdersOnAccount();
                     break;
-                case '/my-account/my-details/profile/':
+                case (url.indexOf('/my-account/my-details/profile/') > -1):
                     this.getUserProfileImage();
                     break;
-                case '/my-account/my-details/':
+                case (url.indexOf('/my-account/my-details/') > -1):
                     this.getMoMoneyBalance();
+                    break;
+                case (url.indexOf('/my-account/') > -1):
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
                     break;
             }
             
@@ -157,6 +161,7 @@ class swfAccountController {
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
                 
                 if(this.orderPayments.length){
                     Object.keys(this.orderPayments[0]).forEach(key => {
@@ -255,6 +260,13 @@ class swfAccountController {
         });
     }
     
+    public deleteAccountAddress = (addressID, index) => {
+        this.loading = true;
+        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+            this.loading = false;
+        });
+    }
+    
     public setRating = (rating) => {
         this.newProductReview.rating = rating;
         this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
@@ -276,6 +288,10 @@ class swfAccountController {
     }
 
     public uploadImage = () =>{
+        if(!(<HTMLInputElement>document.getElementById('profileImage')).files[0]) {
+            this.isNotProfileImagesChoosen = true;
+        } else {
+        this.isNotProfileImagesChoosen = false;
         let tempdata = new FormData();
         tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
         tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
@@ -297,6 +313,8 @@ class swfAccountController {
 		  	 }
 		};
         xhr.send(tempdata);
+        } 
+         
     }     
     
     public deleteProfileImage(){
@@ -366,6 +384,29 @@ class swfAccountController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 address: address
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showProductReviewModal = (item) => {
+		this.ModalService.showModal({
+			component: 'monatProductReview',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                productReview: item,
+                reviewerName: this.accountData.firstName + " " + this.accountData.lastName
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');

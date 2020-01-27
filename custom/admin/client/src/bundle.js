@@ -72951,7 +72951,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
-            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.fulfillmentRefundTotal = _this.fulfillmentRefundAmount + _this.fulfillmentRefundTaxAmount;
+            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundTotal - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
             _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
             _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
@@ -72964,7 +72965,15 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
                 _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
             }
-            _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            if (_this.fulfillmentRefundAmount < 0) {
+                _this.fulfillmentRefundAmount = 0;
+            }
+            if (_this.fulfillmentRefundAmount > 0) {
+                _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            }
+            else {
+                _this.fulfillmentRefundTaxAmount = 0;
+            }
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
@@ -82663,7 +82672,7 @@ var SWRbKey = /** @class */ (function () {
                 var rbKeyValue = scope.swRbkey;
                 var bindRBKey = function () {
                     if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
-                        element.text(rbkeyService.getRBKey(rbKeyValue));
+                        element.text(rbkeyService.getRBKey(rbKeyValue, rbkeyService.appConfig.rbLocale));
                     }
                 };
                 bindRBKey();
@@ -99845,6 +99854,7 @@ var SWWorkflowTriggerHistory = /** @class */ (function () {
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstanceKey");
             }
         };
     }

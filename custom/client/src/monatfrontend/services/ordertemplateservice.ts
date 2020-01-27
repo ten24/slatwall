@@ -102,9 +102,10 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
     }
    
-    public getOrderTemplateDetails = (orderTemplateID:string) => {
+    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="") => {
        var data = {
-           "orderTemplateID" : orderTemplateID
+           "orderTemplateID" : orderTemplateID,
+           "optionalProperties" : optionalProperties
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
@@ -217,13 +218,15 @@ export class OrderTemplateService {
        'orderTemplateID',
        'skuID',
        'quantity'
+       temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false) => {
         let payload = {
 			'orderTemplateID': orderTemplateID,
 			'skuID': skuID,
-			'quantity': quantity
+			'quantity': quantity,
+			'temporaryFlag': temporaryFlag
 		};
 		
        return this.requestService

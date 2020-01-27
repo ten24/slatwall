@@ -35,4 +35,47 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
             account.setAccountCreatedSite(slatwallScope.getService("OrderService").getSiteBySiteCode("mura-default"));
         }
     }
+    
+    public void function afterAccountProcess_loginSuccess(required any slatwallScope, required any account, required any data ={}) {
+        
+        //If the user is logging in and has items in the cart,
+        if (!isNull(slatwallScope.getCurrentRequestSite())){
+            var requestSite = slatwallScope.getCurrentRequestSite();
+            var userSite = slatwallScope.getAccount().getAccountCreatedSite();
+            
+            //Only run this logic if the sites don't match.
+            if (!isNull(userSite) && userSite.getSiteID() != requestSite.getSiteID()){
+                var orderItems = getHibachiScope().getCart().getOrderItems();
+                var hasItems = arrayLen(!isNull(orderItems) ? getHibachiScope().getCart().getOrderItems() : []);
+                
+                var currentSkuCodes = "";
+                for (var orderItem in orderItems){
+                    currentSkuCodes = listAppend(currentSkuCodes, orderItem.getSku().getSkuCode());
+                }
+                
+                if (hasItems && len(currentSkuCodes)){
+                    //Find the products from this cart that belong on this site.
+                    var productsValidOnThisSite = slatwallScope.getService("skuService").getSkuCollectionList();
+                    productsValidOnThisSite.addFilter("product.sites.siteID", "#requestSite.getSiteID()#", "=");
+                    productsValidOnThisSite.addFilter("skuCode", "#currentSkuCodes#", "in");
+                    productsValidOnThisSite.setDisplayProperties("skuCode");
+                    var skus = productsValidOnThisSite.getRecords();
+                    
+                    //if its not in this collection, its not allowed on this site.
+                    var validSkuCodes = "";
+                    arrayEach( skus, function(sku){
+                        validSkuCodes = listAppend(validSkuCodes, sku.skuCode);
+                    });
+                    
+                    
+                    //Check each orderItem to see if its allowed. 
+                    for (var orderItem in orderItems){
+                        if (!listContains(validSkuCodes, orderItem.getSku().getSkuCode())){
+                            slatwallScope.getService("PublicService").removeOrderItem({ orderItemID: orderItem.getOrderItemID(), orderID: getHibachiScope().getCart().getOrderID()});
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

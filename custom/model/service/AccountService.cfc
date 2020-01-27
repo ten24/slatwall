@@ -65,7 +65,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
+			orderFulfillments.shippingAddress.postalCode,
+			orderDeliveries.trackingUrl
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
@@ -122,5 +123,46 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
 		var oneYearFromNow = DateAdd('yyyy', 1, Now());
 		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
+	}
+	
+	/**
+	 * Function to check card status on Nexio and Update if needed
+	 * This function will be called from WorkFlow
+	 * */
+	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
+		
+		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
+	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
+	    
+		var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);//.getCardStatus(requestBean);
+		
+		var responseData = paymentIntegration.getCardStatus(requestBean);
+		
+        if( !StructIsEmpty(responseData ) )
+        {
+        	var updateCardSuccess = false;
+        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
+        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
+        		updateCardSuccess = true;
+        	}
+        	
+        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
+        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+        		updateCardSuccess = true;
+        	}
+        	
+        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
+        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+        		updateCardSuccess = true;
+        	}
+        	
+        	//Added flag to make sure save doesn't run without any update
+        	if(updateCardSuccess) {
+        		arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        	}
+        }
+        
+        return arguments.accountPaymentMethod;
 	}
 }
