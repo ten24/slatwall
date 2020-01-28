@@ -64,16 +64,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			account.setProductPackPurchasedFlag(true);
         }
     	
-	// Snapshot the account type to the order. This is placed before the upgrade logic
-	// so that we can capture that this account was still another account type at this time.
-	// on the users next order, they will be the upgraded type.
-	if (!isNull(account)){
-		if (!isNull(account.getAccountType())){
-			arguments.order.setAccountType(account.getAccountType());
-		}else{
-			logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.");
+		// Snapshot the account type to the order. This is placed before the upgrade logic
+		// so that we can capture that this account was still another account type at this time.
+		// on the users next order, they will be the upgraded type.
+		if (!isNull(account)){
+			if (!isNull(account.getAccountType())){
+				arguments.order.setAccountType(account.getAccountType());
+			}else{
+				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
+			}
 		}
-	}
 	
     	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
@@ -126,15 +126,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				&& arguments.order.hasMPRenewalFee()
 			) {
 				
-				//set renewal-date to one-year-from-OrderOpenDateTime
-				var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
-				var renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
+				//set renewal-date to one year from current renewal date
+				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
+				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
 			}else{
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
-			
 			getAccountService().saveAccount(account);
+			
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',

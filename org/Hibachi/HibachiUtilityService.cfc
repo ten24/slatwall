@@ -184,6 +184,7 @@
 					basePropertyName=arguments.formatDetails.propertyName,
 					locale=arguments.formatDetails.locale
 				);
+
 				if(!isNull(translation)){
 					return translation.getValue();
 				}

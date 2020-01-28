@@ -265,7 +265,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		} else if (!isObject(arguments.fallbackObject)) {
 			arguments.fallbackObject = getBean( arguments.fallbackObject );
 		}
-		
+
 		// If not then execute the function
 		var results = arguments.fallbackObject.invokeMethod(arguments.fallbackFunction, arguments.fallbackArguments);
 		

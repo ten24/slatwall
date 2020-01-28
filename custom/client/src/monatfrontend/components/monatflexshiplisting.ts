@@ -81,7 +81,7 @@ class MonatFlexshipListingController{
 				) {
 				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
 				    this.monatService.redirectToProperSite(
-										`/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`
+										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
 									);
 				} else{
 					throw(data);

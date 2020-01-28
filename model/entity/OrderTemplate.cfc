@@ -119,7 +119,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="customerCanCreateFlag" persistent="false";
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
@@ -414,25 +413,6 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		}
 		
 		return variables.accountIsNotInFlexshipCancellationGracePeriod;
-	}
-
-
-	
-	public boolean function getCustomerCanCreateFlag(){
-
-		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = true;
-			if( !isNull(getSite()) && 
-				!isNull(getAccount()) && 
-				!isNull(getAccount().getEnrollmentDate()) && 
-				getAccount().getAccountType() == 'MarketPartner'
-			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
-			} 
-		}
-
-		return variables.customerCanCreateFlag; 
 	}
 
 	public numeric function getPersonalVolumeTotal(){
