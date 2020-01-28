@@ -183,15 +183,46 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
-			var checkFraund = setting(settingName='checkFraud', requestBean=arguments.requestBean);
+			var orderNumber = "";
+			if (!isNull(arguments.requestBean.getOrderID())) {
+				orderNumber = arguments.requestBean.getOrderID();
+			}
 			
+			var publicKey = getPublicKey(arguments.requestBean);
+			var checkFraund = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			
+			var publicKey = getPublicKey(arguments.requestBean);
+
 			var requestData = {
+				'isAuthOnly'= false,
 				'card' = {
 					'cardHolderName' = arguments.requestBean.getNameOnCreditCard(), 
 					'encryptedNumber' = toBase64(encryptCardNumber(arguments.requestBean.getCreditCardNumber(), getPublicKey(arguments.requestBean))),
 					'expirationMonth' = LSParseNumber(arguments.requestBean.getExpirationMonth()),
-					'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()),  
+					'expirationYear' = LSParseNumber(arguments.requestBean.getExpirationYear()), 
 					'securityCode' = arguments.requestBean.getSecurityCode()
+				},
+				'processingOptions' = {
+					'checkFraud' = checkFraund,
+					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
+					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
+				},
+				'data' = {
+					'paymentMethod' = 'creditCard',
+					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+					'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+					'customer'= {
+						'orderNumber' = orderNumber,
+						'customerRef' = arguments.requestBean.getAccountID(),
+						'firstName' = arguments.requestBean.getAccountFirstName(),
+						'lastName' = arguments.requestBean.getAccountLastName(),
+						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+						'billToCity' = arguments.requestBean.getBillingCity(),
+						'billToState' = arguments.requestBean.getBillingStateCode(),
+						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+						'billToCountry' = arguments.requestBean.getBillingCountryCode()
+					}
 				}
 			};
 			
