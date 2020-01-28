@@ -237,26 +237,26 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			var responseDataAvsCode = "";
 			
 			if (!isNull(responseData.avsResults)
-			and !isNull(responseData.avsResults.matchAddress) 
-			and !isNull(responseData.avsResults.matchPostal)){
-				if (responseData.avsResults.matchAddress==true and responseData.avsResults.matchPostal==true){
+			&& !isNull(responseData.avsResults.matchAddress) 
+			&& !isNull(responseData.avsResults.matchPostal)){
+				if (responseData.avsResults.matchAddress==true && responseData.avsResults.matchPostal==true){
 					responseDataAvsCode = "D";
-				}else if (responseData.avsResults.matchAddress==false and responseData.avsResults.matchPostal==true){
+				}else if (responseData.avsResults.matchAddress==false && responseData.avsResults.matchPostal==true){
 					responseDataAvsCode = "Z";
-				}else if (responseData.avsResults.matchAddress==false and responseData.avsResults.matchPostal==false){
+				}else if (responseData.avsResults.matchAddress==false && responseData.avsResults.matchPostal==false){
 					responseDataAvsCode = "C";
-				}else if (responseData.avsResults.matchAddress==true and responseData.avsResults.matchPostal==false){
+				}else if (responseData.avsResults.matchAddress==true && responseData.avsResults.matchPostal==false){
 					responseDataAvsCode = "A";
 				}
 			}else if (!isNull(responseData.avsResults)
-			and !isNull(responseData.avsResults.matchAddress) 
-			and responseData.avsResults.matchAddress==true
-			and isNull(responseData.avsResults.matchPostal)){
+			&& !isNull(responseData.avsResults.matchAddress) 
+			&& responseData.avsResults.matchAddress==true
+			&& isNull(responseData.avsResults.matchPostal)){
 				responseDataAvsCode = "B";
 			}else if (!isNull(responseData.avsResults)
-			and isNull(responseData.avsResults.matchAddress) 
-			and !isNull(responseData.avsResults.matchPostal)
-			and responseData.avsResults.matchPostal==true){
+			&& isNull(responseData.avsResults.matchAddress) 
+			&& !isNull(responseData.avsResults.matchPostal)
+			&& responseData.avsResults.matchPostal==true){
 				responseDataAvsCode = "P";
 			}else {
 				responseDataAvsCode = "E";
