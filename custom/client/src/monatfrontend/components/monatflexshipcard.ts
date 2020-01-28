@@ -19,7 +19,15 @@ class MonatFlexshipCardController {
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	//@ngInject
-	constructor(public observerService, public orderTemplateService, public $window, public ModalService, public monatAlertService) {}
+	constructor(
+		public observerService, 
+		public orderTemplateService, 
+		public $window, 
+		public ModalService, 
+		public monatAlertService,
+		public rbkeyService,
+		public monatService
+	) {}
 
 	public $onInit = () => {
 		this.urlSitePrefix = ( hibachiConfig.cmsSiteID === 'default' ) ? '' : `${hibachiConfig.cmsSiteID}/`;
@@ -230,7 +238,14 @@ class MonatFlexshipCardController {
 						'orderTemplateUpdated' + data.orderTemplate.orderTemplateID,
 						data.orderTemplate,
 					);
-					this.monatAlertService.success("Your flexship has been Activated successfully");
+					
+					this.monatAlertService.success(
+							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
+						);
+						
+						this.monatService.redirectToProperSite(
+							`/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+							);
 				} else {
 					throw(data);
 				}
@@ -242,11 +257,15 @@ class MonatFlexshipCardController {
 	}
 
 	public goToProductListingPage() {
-		this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+		this.monatService.redirectToProperSite(
+							`/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
 	}
 	
 	public goToOFYProductListingPage() {
-		this.$window.location.href = `/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+		this.monatService.redirectToProperSite(
+							`/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
 	}
 	
 	public showDeleteOrderTemplateModal = () => {

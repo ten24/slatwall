@@ -19,6 +19,7 @@
             class="wishlist"
             ><i 
                 class="fa-heart" 
+                id = "skuID_{{monatProductCard.product.skuID}}"
                 ng-class="{
                     'fas no-hover': monatProductCard.isAccountWishlistItem,
                     'far' : !monatProductCard.isAccountWishlistItem
@@ -40,7 +41,7 @@
             
             <div class="overlay">
                 <div class="overlay-inner">
-                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn ">Quick Shop</a></span>
+                    <span><a ng-click="monatProductCard.launchQuickShopModal()" class="btn prod-btn" sw-rbkey="'frontend.global.quickShop'"></a></span>
                 </div>
             </div>
             
@@ -48,7 +49,7 @@
             <a 
                 class="d-block" 
                 ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined }}"
-                ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
+                ><img image-manager ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
             >
            
         </figure>
@@ -62,15 +63,14 @@
         <div class="price">
             <strong>
                 <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>
-                <span ng-if="monatProductCard.product.upgradedPricing.price != null ">/</span>
+                <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPricing.price > 0">/</span>
             </strong> 
             <span class="vip-price">
-                <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 3">
-                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
+                <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPricing.price > 0">
+                    <span ng-if="monatProductCard.product.upgradedPriceGroupCode == 3" sw-rbKey="'frontend.global.vip'"></span> 
+                    <span ng-if="monatProductCard.product.upgradedPriceGroupCode == 2" sw-rbKey="'frontend.global.retail'"></span>
+                    <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
                 </span> 
-                <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPriceGroupCode == 2">
-                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span> 
-                </span>
                  <span class="personal-volume" ng-if="monatProductCard.product.priceGroupCode == 1"> 
                     <br> 
                     <strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductCard.product.personalVolume}} </strong>
@@ -91,8 +91,8 @@
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" >Add To Cart</span>
-             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'">Add To Flexship</span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" sw-rbkey="'frontend.global.addToCart'"></span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'" sw-rbkey="'frontend.global.addToFlexship'"></span>
          </button>
    </div>
    

@@ -82,7 +82,8 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	}
 	
 	public any function pullData(){
-		getService("MonatDataService").importDailyAccountUpdates(50, 1, 100);
+		getService("MonatDataService").importDailyAccountUpdates(100, 1, 25);
+		getService("MonatDataService").importOrderShipments({pageSize=50, pageNumber=1, pageMax=25});
 	}
 
 }

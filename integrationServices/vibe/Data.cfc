@@ -103,7 +103,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		 * typical successful response: {"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
 		*/
 		
-		if( response.status != 'success') {
+		if( !structKeyExists(response,'status') || response.status != 'success') {
 			response['requestAttributes'] = httpRequest.getAttributes() ;
 			response['requestParams'] = httpRequest.getParams();
 			response['content'] = rawRequest.fileContent;
@@ -126,7 +126,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		//push to remote endpoint
 		var response = createVibeUser(arguments.data.payload);
 		
-		if( response.status != 'success' || 
+		if( !structKeyExists(response,'status') || response.status != 'success' || 
 			!StructKeyExists(response ,'id') || 
 			!len( trim(response.id) ) 
 		) {

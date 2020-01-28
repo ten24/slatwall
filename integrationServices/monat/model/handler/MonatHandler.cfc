@@ -54,15 +54,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 
 		var account = arguments.order.getAccount();
 		
-		//snapshot the pricegroups on the order.
+		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
+        // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
 			account.setProductPackPurchasedFlag(true);
         }
     	
+		// Snapshot the account type to the order. This is placed before the upgrade logic
+		// so that we can capture that this account was still another account type at this time.
+		// on the users next order, they will be the upgraded type.
+		if (!isNull(account)){
+			if (!isNull(account.getAccountType())){
+				arguments.order.setAccountType(account.getAccountType());
+			}else{
+				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
+			}
+		}
+	
+    	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
@@ -74,6 +87,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		}
     	}
     	
+    	
+		
+		// Sets the account status type, activeFlag and accountNumber
 		if( 
 			!isNull(account.getAccountStatusType()) 
 			&& ListContains('astEnrollmentPending,astGoodStanding', account.getAccountStatusType().getSystemCode() ) 
@@ -110,15 +126,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				&& arguments.order.hasMPRenewalFee()
 			) {
 				
-				//set renewal-date to one-year-from-OrderOpenDateTime
-				var orderOpenDateTime = ParseDateTime(arguments.order.getOrderOpenDateTime());
-				var renewalDate = DateAdd('yyyy', 1, orderOpenDateTime);
+				//set renewal-date to one year from current renewal date
+				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
+				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
 			}else{
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
-			
 			getAccountService().saveAccount(account);
+			
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
@@ -129,8 +145,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}
 		
 
-		//set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
-		//set the initial order flag if needed.
+		//Set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
+		//Set the initial order flag if needed.
 		try{
 			
 			//Commission Date

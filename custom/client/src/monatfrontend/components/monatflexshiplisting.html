@@ -1,6 +1,6 @@
 <div ng-if="monatFlexshipListing.initialized" ng-cloak>
     
-    <div ng-if="!monatFlexshipListing.orderTemplates.length && !monatFlexshipListing.loading">
+    <div ng-if="!monatFlexshipListing.orderTemplates.length && !monatFlexshipListing.loading && monatFlexshipListing.customerCanCreateFlexship">
         <h2 sw-rbkey="'frontend.flexship.noFlexships'"></h2>
     </div>
     
@@ -15,7 +15,8 @@
             && 2 != monatFlexshipListing.account.priceGroups[0].priceGroupCode
             && monatFlexshipListing.account.canCreateFlexshipFlag
         "
-    >Create Flexship</button>
+        sw-rbkey="'frontend.flexship.createFlexship'"
+    ></button>
 
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates">
         <monat-flexship-card 

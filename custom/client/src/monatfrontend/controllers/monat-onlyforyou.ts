@@ -11,6 +11,7 @@ export class OnlyForYouController {
 		public orderTemplateService,
 		public monatAlertService,
 		public rbkeyService, 
+		public monatService
 	) {
 		this.getPromotionSkus();
 	}
@@ -49,7 +50,8 @@ export class OnlyForYouController {
 			this.monatAlertService.success(
 				this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')
 			);
-			this.$window.location.href = '/my-account/flexships/';
+			
+			this.monatService.redirectToProperSite('/my-account/flexships/');
 		})
 		.catch( (error) => {
             this.monatAlertService.showErrorsFromResponse(error);

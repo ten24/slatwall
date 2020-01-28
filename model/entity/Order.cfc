@@ -187,6 +187,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
 	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
+	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -802,6 +803,15 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
 		}
 		return fulfillmentRefundTotal;
+	}
+	
+	public numeric function getFulfillmentRefundPreTax(){
+		var fulfillmentRefundPreTax = 0;
+		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
+			fulfillmentRefundPreTax = getService('HibachiUtilityService').precisionCalculate(fulfillmentRefundPreTax + getOrderReturns()[i].getFulfillmentRefundPreTax());
+		}
+
+		return fulfillmentRefundPreTax;
 	}
 
 	/**
@@ -1472,12 +1482,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){
-		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
 			var taxTotal = 0;
 			for(var orderFulfillment in this.getOrderFulfillments()) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
 			}
 			variables.fulfillmentChargeTaxAmount = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
 		}
 		return variables.fulfillmentChargeTaxAmount;
 	}
@@ -2059,7 +2071,7 @@ public numeric function getPersonalVolumeSubtotal(){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
@@ -2078,7 +2090,7 @@ public numeric function getPersonalVolumeSubtotal(){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
     	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
     	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-mp");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
     	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
     	    var records = orderItemCollectionList.getRecords();
     	    if (arrayLen(records)){
@@ -2093,10 +2105,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getAccountType() {
+	    
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
 	    }
-	    
+
 	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{

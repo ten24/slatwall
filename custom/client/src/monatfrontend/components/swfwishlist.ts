@@ -47,6 +47,11 @@ class SWFWishlistController {
         this.loading = true;
         this.currentList = option;
         
+        if(!option){
+           this.loading = false; 
+           return;
+        }
+        
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
@@ -71,11 +76,10 @@ class SWFWishlistController {
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
-
         this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            return result;
+            this.onAddItemSuccess(this.sku);
         });
     }
 
@@ -140,10 +144,10 @@ class SWFWishlistController {
     }
     
     
-    public onAddItemSuccess = () => {
+    public onAddItemSuccess = (skuid) => {
         
         // Set the heart to be filled on the product details page
-        $('.product-template .wishlist .fa-heart').removeClass('far').addClass('fas');
+        $('#skuID_' + skuid).removeClass('far').addClass('fas');
         
         // Close the modal
         if(!this.close) return;
