@@ -69,9 +69,32 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 					// No RB File Found
 				}
 			}
+			structAppend(thisRB, this.getResourceBundleFromDB( argumentCollection = arguments ) );	
 				
 			variables.resourceBundles[ arguments.locale ] = thisRB;
 		}
 		return variables.resourceBundles[ arguments.locale ];
+	}
+	
+	public struct function getResourceBundleFromDB(required string locale="en_us"){
+
+        if(FindNoCase("_",arguments.locale)){
+            arguments.locale = "#listFirst(#arguments.locale#,'_')##ucFirst(listLast(arguments.locale,"_"))#";
+        }
+
+	    var formattedLocal = Replace(arguments.locale, "_", "", "ALL");
+	    var rbkeyCollectionList = this.getResourceBundleCollectionList();
+	    rbkeyCollectionList.setDisplayProperties('resourceBundleKey, #formattedLocal#,en');
+	    rbkeyCollectionList.addFilter("activeFlag","true");
+	    rbkeyCollectionList.addFilter(formattedLocal, "NULL", "IS NOT");
+
+	    var records = rbkeyCollectionList.getRecords(formatRecords=false);
+
+	    var rbkeysStruct =  StructNew();
+	    for(var i = 1; i<= arrayLen(records); i++){
+            rbkeysStruct[records[i]['resourceBundleKey']] = records[i][formattedLocal];
+	    }
+
+	    return rbkeysStruct;
 	}
 }
