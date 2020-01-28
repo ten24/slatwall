@@ -167,7 +167,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if( len(arguments.data.orderID) ){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
 		}
-		//ordersList.addGroupBy('orderID');
+		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
