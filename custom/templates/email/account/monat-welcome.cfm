@@ -90,9 +90,7 @@ Notes:
 		<cfinclude template="../inc/retail-footer.cfm" />
 	<cfelseif account.getAccountType() == 'VIP'>
 		<cfinclude template="../inc/vip-header.cfm" />
-			
-		#emailTemplate.getVipBody()#
-			
+			#emailTemplate.getVipBody()#
 		<cfinclude template="../inc/vip-footer.cfm" />
 	<cfelse>
 	
