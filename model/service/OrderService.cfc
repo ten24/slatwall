@@ -2831,6 +2831,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
 				arguments.order.validate('save');
 				if(!arguments.order.hasErrors()){
+					
 					arguments.order = this.saveOrder(arguments.order, arguments.data);
 
 					// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
@@ -3375,7 +3376,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
  				}
 			}
-
+			
+					
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 
@@ -3386,9 +3388,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 	    	if(arguments.order.getPaymentAmountDue() != 0){
+	    		//Enable Fulfillment Tax Recalculation if already calculated
+				arguments.order.setRefreshCalculateFulfillmentChargeFlag(true);
+				
 				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
 	    	}
-
+			
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
 			this.logHibachi('Order added to modified entities and is being saved.', true);

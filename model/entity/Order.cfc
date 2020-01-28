@@ -187,6 +187,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
 	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
+	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -1481,12 +1482,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){
-		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
 			var taxTotal = 0;
 			for(var orderFulfillment in this.getOrderFulfillments()) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
 			}
 			variables.fulfillmentChargeTaxAmount = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
 		}
 		return variables.fulfillmentChargeTaxAmount;
 	}

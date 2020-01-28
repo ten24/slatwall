@@ -1130,7 +1130,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
-       
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
+        
         if ( len( arguments.data.keyword ) ) {
             productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
         }
@@ -1142,7 +1143,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var pageRecords = productCollectionList.getPageRecords();
 
         if ( len( pageRecords ) ) {
-            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode);
+            var nonPersistentRecords = getCommonNonPersistentProductProperties(pageRecords,priceGroupCode,currencyCode,siteCode);
             arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         } else {
             arguments.data['ajaxResponse']['productList'] = [];
@@ -1163,7 +1164,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
-  
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
         if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
@@ -1171,8 +1172,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-
-        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode);
+        
+        var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
     }
@@ -1217,7 +1218,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
-    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode){
+    public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode, required string siteID = 'default'){
         
         var productService = getProductService();
         var productMap = {};
@@ -1225,10 +1226,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var index = 1;
         var skuCurrencyCode = arguments.currencyCode; 
     	var imageService = getService('ImageService');
-    	
-    	var siteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite()
-    	siteCode = ( siteCode == 'default' ) ? '' : '/' & lcase( siteCode )
-
+    	var productURL = '';
+        var siteCode = (arguments.siteID == 'default') ? '' : arguments.siteID;
+        
+    	if ( len( siteCode ) ) {
+			productURL &= '/#siteCode#';
+		}
+		
         if(isNull(arguments.records) || !arrayLen(arguments.records)){
             return [];
         } 
@@ -1243,7 +1247,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            
             productMap[record.defaultSku_skuID] = {
                 'productID': record.productID,
                 'skuID': record.defaultSku_skuID,
@@ -1251,12 +1254,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'price': record.defaultSku_skuPrices_price,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
-                'skuProductURL': productService.getProductUrlByUrlTitle( record.urlTitle ),
+                'skuProductURL': '#productURL##productService.getProductUrlByUrlTitle( record.urlTitle )#',
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
                 'qats': record.defaultSku_stocks_calculatedQATS
             };
+            
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
         }
@@ -1338,7 +1342,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if (arguments.data.uploadFile != '' && listFindNoCase("jpg,png", right(fileName, 3))){
 			fileMove("#arguments.data.uploadFile#", "#fullFilePath#");
 		}else{
-			getHibachiScope().addActionResult( "uploadProfileImage", false );
+			getHibachiScope().addActionResult( "uploadProfileImage", true );
 		}
 		//check if the file exists.
 		if (fileExists("#fullFilePath#")){
@@ -1571,13 +1575,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getCustomerCanCreateFlexship(){
-        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
-        var daysTillCanCreate = site.setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-        var createdDateTime = getHibachiScope().getAccount().getCreatedDateTime();
-        var now = now();
-        var adjustedDate = dateAdd("d",daysTillCanCreate,createdDateTime);
-        var dateCompare = dateCompare(now, adjustedDate);
-        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = (dateCompare > -1) ? true : false;
+        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = getHibachiScope().getAccount().getCanCreateFlexshipFlag();
     }
     
     public void function getOrderTemplates(required any data){ 
@@ -1585,5 +1583,68 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		super.getOrderTemplates(argumentCollection = arguments);
     }
+    
+	public void function getWishlistItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default=""; 
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
+		arguments.data['ajaxResponse']['orderTotal'] = 0;
+		
+		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
+        
+		if (len(arguments.data.orderTemplateID)){
+		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
+		}
+		
+		var scrollableSession = ormGetSessionFactory().openSession();
+		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
+        var siteCode = (arguments.data.cmsSiteID == 'default') ? '' :  arguments.data.cmsSiteID;
+    	
+		//now iterate over all the objects
+		
+		try{
+		    while(wishlistsItems.next()){
+		    
+			    var wishlistItem = wishlistsItems.get(0);
+			    var pricingStruct = wishListItem.getSkuAdjustedPricing();
+	            var sku = wishListItem.getSku();
+	            var product = sku.getProduct();
+	            
+			    var wishListItemStruct={
+			      "vipPrice"                    :       pricingStruct.vipPrice?:"",
+			      "marketPartnerPrice"          :       pricingStruct.MPPrice?:"",
+			      "price"                       :       pricingStruct.adjustedPriceForAccount?:"",
+			      "retailPrice"                 :       pricingStruct.retailPrice?:"",
+			      "personalVolume"              :       pricingStruct.personalVolume?:"",
+			      "accountPriceGroup"           :       pricingStruct.accountPriceGroup?:"",
+			      "upgradedPricing"             :       {'price':pricingStruct.retailPrice?:""},
+			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
+			      "skuProductURL"               :       siteCode &= product.getProductURL() ?:"",
+			      "productName"                 :       product.getProductName()?:"",
+			      "skuID"                       :       sku.getSkuID()?:"",
+			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
+  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
+  			      "total"                       :       wishListItem.retailPrice?:"",
+                  "qats"                        :       sku.getCalculatedQATS(),
+                  'upgradedPriceGroupCode'      :       2
+			    }
+                
+                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
+
+                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
+                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
+                }
+		    }
+		}catch (e){
+            throw(e)
+		}finally{
+			if (scrollableSession.isOpen()){
+				scrollableSession.close();
+			}
+		}
+	} 
     
 }
