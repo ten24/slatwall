@@ -1253,20 +1253,16 @@ component extends="HibachiService" output="false" accessors="true" {
 					} else {
 						settingDetails.settingValueFormatted = "";
 					}
-				} else {
-					if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
-						var settingObject=this.getSetting(settingDetails.settingID);
-						var formatDetails = arguments.formatDetails;
-						formatDetails.propertyName = 'settingValue';
-						formatDetails.object = settingObject;
-	
-						settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
-					}else{
-						settingDetails.settingValueFormatted = settingDetails.settingValue;
-					}
+				} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
+					var settingObject=this.getSetting(settingDetails.settingID);
+					var formatDetails = arguments.formatDetails;
+					formatDetails.propertyName = 'settingValue';
+					formatDetails.object = settingObject;
+
+					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
 				}
 			// This is the no deffinition case
-			} else {
+			} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
 				var settingObject=this.getSetting(settingDetails.settingID);
 				var formatDetails = arguments.formatDetails;
 				formatDetails.propertyName = 'settingValue';
@@ -1279,7 +1275,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, formatType, formatDetails);
 			}
-		} else {
+		}
+		if(!structKeyExists(settingDetails,'settingValueFormatted')){
 			settingDetails.settingValueFormatted = settingDetails.settingValue;
 		}
 
