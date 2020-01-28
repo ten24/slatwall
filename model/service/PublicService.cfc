@@ -362,16 +362,21 @@ component  accessors="true" output="false"
             addressID = accountAddress.getAddressID();
         }
 
-     	var newAddress = getService("AddressService").getAddress(addressID, true);
-     	if (!isNull(newAddress) && !newAddress.hasErrors()){
+     	var newAddress = getService("AddressService").getAddress(addressID);
+     	if ( !isNull(newAddress) && !newAddress.hasErrors() ) {
+     	    
      	    newAddress = getService("AddressService").saveAddress(newAddress, arguments.data, "full");
-            if(!newAddress.hasErrors()){
+            if(!newAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
-            }else{
+            }else {
                 getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
             }
-    	}else{
-            getHibachiScope().addActionResult( "public:cart.updateAddress", true );
+    	}else {
+    	    if(isNull(newAddress)) {
+                getHibachiScope().addActionResult( "public:cart.updateAddress", false );
+    	    } else {
+    	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.getErrors() );
+    	    }
         }
      }
     
