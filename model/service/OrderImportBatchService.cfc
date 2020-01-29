@@ -194,22 +194,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var order = getOrderService().newOrder();
 			var account = orderImportBatchItem.getAccount();
 			order.setAccount(account);
-			// var site = account.getAccountCreatedSite();
-			// if(!isNull(site)){
-			// 	order.setOrderCreatedSite(account.getAccountCreatedSite());
-			// 	var currencyCode = site.setting('siteEligibleCurrencyCodes')[1];
-			// }
-			
-			/* TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-				Get location from site, get currency code from location - need locations first
-			 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO */
-			 
+			var site = account.getAccountCreatedSite();
+			if(!isNull(site)){
+				order.setOrderCreatedSite(account.getAccountCreatedSite());
+				var currencyCode = site.getCurrencyCode();
+			}
 			if(!structKeyExists(local,'currencyCode')){
 				var currencyCode = 'USD';
 			}
+			
 			order.setCurrencyCode(currencyCode);
 			
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
+			
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
@@ -219,8 +216,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setOrder(order);
 			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodName('Shipping'));
 			
-			if(!isNull(arguments.processObject.getShippingMethod())){
-				orderFulfillment.setShippingMethod(arguments.processObject.getShippingMethod());
+			if(!isNull(arguments.orderImportBatch.getShippingMethod())){
+				orderFulfillment.setShippingMethod(arguments.orderImportBatch.getShippingMethod());
 			}
 			orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
 			orderFulfillment.setFulfillmentCharge(0);

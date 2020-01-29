@@ -3,7 +3,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
     property name="orderImportBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="orderImportBatchName" ormtype="string";
     property name="itemCount" ormtype="integer";
-    property name="placedOrdersCount" ormtype="integer";
+    property name="placedOrdersCount" ormtype="integer" default="0";
     property name="comment" ormtype="text";
     property name="sendEmailNotificationsFlag" ormtype="boolean";
     
@@ -13,7 +13,6 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
     // Related Object Properties (many-to-one)
     property name="orderImportBatchStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderImportBatchStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderImportBatchStatusType";
     property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-    property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 
     // Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -21,7 +20,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	property name="siteOptions" type="array" persistent="false";
+	property name="shippingMethodOptions" type="array" persistent="false";
 
 	public string function getSimpleRepresentationPropertyName(){
 	    return 'orderImportBatchName';
@@ -33,7 +32,34 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 	    }
 	}
 	
-	public array function getSiteOptions(){
-		re
+	public array function getShippingMethodOptions(){
+		if(!structKeyExists(variables,'shippingMethodOptions')){
+			if(arrayLen(getOrderImportBatchItems())){
+				var shippingAddress = getOrderImportBatchItems()[1].getShippingAddress();
+			}
+			
+			var shippingMethodsCollectionList = getService('ShippingService').getShippingMethodCollectionList();
+			if(!isNull(shippingAddress)){
+				if(!isNull(shippingAddress.getPostalCode())){
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.postalCode',value=shippingAddress.getPostalCode());
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.postalCode',value='null',comparisonOperator='IS',logicalOperator='OR');
+				}
+				if(!isNull(shippingAddress.getCity())){
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.city',value=shippingAddress.getCity(),filterGroupAlias='city');
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.city',value='null',comparisonOperator='IS',logicalOperator='OR',filterGroupAlias='city');
+				}
+				if(!isNull(shippingAddress.getStateCode())){
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.stateCode',value=shippingAddress.getStateCode(),filterGroupAlias='stateCode');
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.stateCode',value='null',comparisonOperator='IS',logicalOperator='OR',filterGroupAlias='stateCode');
+				} 
+				if(!isNull(shippingAddress.getCountryCode())){
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.countryCode',value=shippingAddress.getCountryCode(),filterGroupAlias='countryCode');
+					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.countryCode',value='null',comparisonOperator='IS',logicalOperator='OR',filterGroupAlias='countryCode');
+				}
+			}
+			shippingMethodsCollectionList.setDisplayProperties('shippingMethodName|name,shippingMethodID|value');
+			variables.shippingMethodOptions = shippingMethodsCollectionList.getRecords();
+		}
+		return variables.shippingMethodOptions;
 	}
 } 

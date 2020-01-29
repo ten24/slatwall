@@ -63,7 +63,6 @@ Notes:
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderImportBatchName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="batchFile" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="site" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

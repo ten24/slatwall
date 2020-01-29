@@ -49,7 +49,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderImportBatchItems" cfc="OrderImportBatchItem" type="array";
 	
 	// Data Properties
-	property name="orderImportBatchItemIDList" hb_populateEnabled="public" cfc="OrderItem";
+	property name="orderImportBatchItemIDs" hb_populateEnabled="public" cfc="OrderItem";
     
     
     
@@ -57,11 +57,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 * Turns a list of orderIDs into volumeRebuildBatchOrders and returns those items.
 	 * @returns an array of volumeRebuildBatchOrders
 	 */
-	public array function getOrderImportBatchItemsByOrderImportBatchItemIDList(){
+	public array function getOrderImportBatchItemsByOrderImportBatchItemIDs(){
 		//If we have a id list.
 		var OrderImportBatchItems = [];
-		if (structKeyExists(variables, "OrderImportBatchItemIDList") && len(variables.orderImportBatchItemIDList)){
-			for (var orderImportBatchItemID in variables.orderImportBatchItemIDList){
+		if (structKeyExists(variables, "OrderImportBatchItemIDs") && len(variables.orderImportBatchItemIDs)){
+			for (var orderImportBatchItemID in variables.orderImportBatchItemIDs){
 				var orderImportBatchItem = getService("OrderImportBatchService").getOrderImportBatchItem(orderImportBatchItemID);
 				if (isNull(orderImportBatchItem)){
 					continue;
@@ -74,12 +74,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	/**
-	 * Returns either the injected OrderImportBatchItems, or generated ones if orderImportBatchItemIDlist exists.
+	 * Returns either the injected OrderImportBatchItems, or generated ones if orderImportBatchItemIDs exists.
 	 * @returns array of OrderImportBatchItems
 	 */
 	 public any function getOrderImportBatchItems(){
 	 	if (!structKeyExists(variables, "OrderImportBatchItems")){
-	 		variables.OrderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDList();
+	 		variables.OrderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDs();
 	 	}
 	 	return variables.OrderImportBatchItems;
 	 }

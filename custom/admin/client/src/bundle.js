@@ -64879,241 +64879,7 @@ exports.SWAddPromotionOrderItemsBySku = SWAddPromotionOrderItemsBySku;
 
 
 /***/ }),
-/* 649 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Order List Controller
- */
-var SWBatchOrderListController = /** @class */ (function () {
-    // @ngInject
-    function SWBatchOrderListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, orderService, listingService) {
-        var _this = this;
-        this.$hibachi = $hibachi;
-        this.$timeout = $timeout;
-        this.collectionConfigService = collectionConfigService;
-        this.observerService = observerService;
-        this.utilityService = utilityService;
-        this.$location = $location;
-        this.$http = $http;
-        this.$window = $window;
-        this.typeaheadService = typeaheadService;
-        this.orderService = orderService;
-        this.listingService = listingService;
-        this.usingRefresh = false;
-        this.addingBatch = false;
-        this.deletingOrders = false;
-        this.getBaseCollection = function () {
-            var collection = _this.collectionConfigService.newCollectionConfig('OrderImportBatchItem');
-            if (_this.customOrderImportBatchItemCollectionConfig) {
-                collection.loadJson(_this.customOrderImportBatchItemCollectionConfig);
-            }
-            return collection;
-        };
-        this.getShippingMethodOptions = function () {
-        };
-        /**
-         * Implements a listener for the order selections
-         */
-        this.swSelectionToggleSelectionorderImportBatchItemCollectionTableListener = function (callBackData) {
-            var processObject = _this.getProcessObject();
-            if (_this.isSelected(callBackData.action)) {
-                processObject['data']['orderImportBatchItemIDList'] = _this.listAppend(processObject.data['orderImportBatchItemIDList'], callBackData.selection);
-            }
-            else {
-                processObject['data']['orderImportBatchItemIDList'] = _this.listRemove(processObject.data['orderImportBatchItemIDList'], callBackData.selection);
-            }
-            _this.setProcessObject(processObject);
-        };
-        this.collectionConfigUpdatedListener = function (callBackData) {
-            if (_this.usingRefresh == true) {
-                _this.refreshFlag = true;
-            }
-        };
-        this.orderImportBatchItemCollectionTablepageRecordsUpdatedListener = function (callBackData) {
-            if (callBackData) {
-                _this.refreshCollectionTotal(_this.orderImportBatchItemCollection);
-            }
-        };
-        /**
-         * returns true if the action is selected
-         */
-        this.isSelected = function (test) {
-            return test == "check";
-        };
-        /**
-         * Setup the initial orderFulfillment Collection.
-         */
-        this.createOrderImportBatchItemCollection = function () {
-            _this.orderImportBatchItemCollection = _this.getBaseCollection();
-            _this.orderImportBatchItemCollection.setDisplayProperties('orderImportBatchItemStatusType.typeName,originalOrderNumber,accountNumber,skuCode,quantity,name,streetAddress,street2Address,city,stateCode,locality,postalCode,countryCode,phoneNumber');
-            _this.orderImportBatchItemCollection.addDisplayProperty('orderImportBatchItemID', 'orderImportBatchItemID', { isVisible: false });
-            _this.orderImportBatchItemCollection.addFilter("orderImportBatchItemStatusType.systemCode", "oibistNew", "=");
-            _this.orderImportBatchItemCollection.addFilter("orderImportBatch.orderImportBatchID", _this.orderImportBatchId, "=");
-        };
-        /**
-         * Refreshes the view
-         */
-        this.refreshPage = function () {
-            if (_this.utilityService.isMultiPageMode()) {
-                window.location.reload();
-            }
-        };
-        /**
-         * Initialized the collection so that the listingDisplay can you it to display its data.
-         */
-        this.refreshCollectionTotal = function (collection) {
-            if (collection) {
-                collection.getEntity().then(function (response) {
-                    _this.total = response.recordsCount;
-                    _this.refreshFlag = false;
-                });
-                return collection;
-            }
-        };
-        this.getRecordsCount = function (collection) {
-            _this.total = collection.recordsCount;
-            _this.refreshFlag = false;
-        };
-        /**
-         * Saved the batch using the data stored in the processObject. This delegates to the service method.
-         */
-        this.process = function () {
-            _this.addingBatch = true;
-            if (_this.getProcessObject()) {
-                _this.processObject.data.entityID = _this.orderImportBatchId;
-                _this.orderService.placeOrderImportBatchOrders(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
-            }
-        };
-        this.deleteSelectedItems = function () {
-            _this.deletingOrders = true;
-            _this.orderService.deleteOrderImportBatchItems(_this.getProcessObject()).then(_this.deleteItemsSuccess, _this.processCreateError);
-        };
-        this.deleteItemsSuccess = function (result) {
-            _this.deletingOrders = false;
-        };
-        /**
-         * Handles a successful post of the processObject
-         */
-        this.processCreateSuccess = function (result) {
-            //Redirect to the created fulfillmentBatch.
-            _this.addingBatch = false;
-            if (result.data && result.data['orderImportBatchID']) {
-                //if url contains /Slatwall use that
-                var slatwall = "";
-                slatwall = _this.$hibachi.appConfig.baseURL;
-                if (slatwall == "")
-                    slatwall = "/";
-                _this.$window.location.href = slatwall + "?slataction=entity.detailorderimportbatch&orderImportBatchID=" + result.data['orderImportBatchID'];
-            }
-        };
-        /**
-         * Handles a successful post of the processObject
-         */
-        this.processCreateError = function (data) {
-            console.warn("Process Errors", data);
-        };
-        /**
-         * Returns the processObject
-         */
-        this.getProcessObject = function () {
-            return _this.processObject;
-        };
-        /**
-         * Sets the processObject
-         */
-        this.setProcessObject = function (processObject) {
-            _this.processObject = processObject;
-        };
-        /**
-         * Returns the number of selected items
-         */
-        this.getTotalOrdersSelected = function () {
-            var total = 0;
-            if (_this.getProcessObject() && _this.getProcessObject().data) {
-                try {
-                    if (_this.getProcessObject().data.orderImportBatchItemIDList && _this.getProcessObject().data.orderImportBatchItemIDList.split(",").length > 0) {
-                        return _this.getProcessObject().data.orderImportBatchItemIDList.split(",").length;
-                    }
-                    else {
-                        return 0;
-                    }
-                }
-                catch (error) {
-                    return 0; //default
-                }
-            }
-        };
-        //Set the initial state for the filters.
-        this.collections = [];
-        //Some setup for the fulfillments collection.
-        this.createOrderImportBatchItemCollection();
-        this.orderImportBatchItemCollectionConfig = this.orderImportBatchItemCollection;
-        //Setup the processObject
-        this.setProcessObject(this.$hibachi.newOrderImportBatch_Process());
-        this.orderImportBatchItemCollection = this.refreshCollectionTotal(this.orderImportBatchItemCollection);
-        this.shippingMethodOptions = this.getShippingMethodOptions();
-        //Attach our listeners for selections on listing display.
-        this.observerService.attach(this.swSelectionToggleSelectionorderImportBatchItemCollectionTableListener, "swSelectionToggleSelectionorderImportBatchItemCollectionTable", "swSelectionToggleSelectionorderImportBatchItemCollectionTableListener");
-        this.observerService.attach(this.collectionConfigUpdatedListener, "collectionConfigUpdated", "collectionConfigUpdatedListener");
-    }
-    /**
-     * Adds a string to a list.
-     */
-    SWBatchOrderListController.prototype.listAppend = function (str, subStr) {
-        return this.utilityService.listAppend(str, subStr, ",");
-    };
-    /**
-     * Removes a substring from a string.
-     * str: The original string.
-     * subStr: The string to remove.
-     */
-    SWBatchOrderListController.prototype.listRemove = function (str, subStr) {
-        return this.utilityService.listRemove(str, subStr);
-    };
-    return SWBatchOrderListController;
-}());
-exports.SWBatchOrderListController = SWBatchOrderListController;
-/**
- * This is a view helper class that uses the collection helper class.
- */
-var SWBatchOrderList = /** @class */ (function () {
-    function SWBatchOrderList(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
-        this.orderPartialsPath = orderPartialsPath;
-        this.slatwallPathBuilder = slatwallPathBuilder;
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
-        this.restrict = "EA";
-        this.scope = {};
-        this.bindToController = {
-            customOrderImportBatchItemCollectionConfig: '=?',
-            orderImportBatchId: '@'
-        };
-        this.controller = SWBatchOrderListController;
-        this.controllerAs = "swBatchOrderListController";
-        this.link = function ($scope, element, attrs) {
-        };
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/batchorderlist.html";
-    }
-    SWBatchOrderList.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWBatchOrderList(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
-        directive.$inject = [
-            'orderPartialsPath',
-            'slatwallPathBuilder',
-            '$hibachi',
-            'rbkeyService'
-        ];
-        return directive;
-    };
-    return SWBatchOrderList;
-}());
-exports.SWBatchOrderList = SWBatchOrderList;
-
-
-/***/ }),
+/* 649 */,
 /* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -66063,7 +65829,6 @@ var ordertemplateservice_1 = __webpack_require__(662);
 var swaccountpaymentmethodmodal_1 = __webpack_require__(644);
 var swaccountshippingaddresscard_1 = __webpack_require__(645);
 var swaccountshippingmethodmodal_1 = __webpack_require__(646);
-var swbatchorderlist_1 = __webpack_require__(649);
 var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(650);
 var swordertemplateaddpromotionmodal_1 = __webpack_require__(652);
 var swordertemplateaddgiftcardmodal_1 = __webpack_require__(651);
@@ -66089,7 +65854,6 @@ var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .directive('swAccountPaymentMethodModal', swaccountpaymentmethodmodal_1.SWAccountPaymentMethodModal.Factory())
     .directive('swAccountShippingAddressCard', swaccountshippingaddresscard_1.SWAccountShippingAddressCard.Factory())
     .directive('swAccountShippingMethodModal', swaccountshippingmethodmodal_1.SWAccountShippingMethodModal.Factory())
-    .directive('swBatchOrderList', swbatchorderlist_1.SWBatchOrderList.Factory())
     .directive('swCustomerAccountPaymentMethodCard', swcustomeraccountpaymentmethodcard_1.SWCustomerAccountPaymentMethodCard.Factory())
     .directive('swOrderTemplateAddPromotionModal', swordertemplateaddpromotionmodal_1.SWOrderTemplateAddPromotionModal.Factory())
     .directive('swOrderTemplateAddGiftCardModal', swordertemplateaddgiftcardmodal_1.SWOrderTemplateAddGiftCardModal.Factory())
@@ -82687,7 +82451,7 @@ var SWRbKey = /** @class */ (function () {
                 var rbKeyValue = scope.swRbkey;
                 var bindRBKey = function () {
                     if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
-                        element.text(rbkeyService.getRBKey(rbKeyValue, rbkeyService.appConfig.rbLocale));
+                        element.text(rbkeyService.getRBKey(rbKeyValue, hibachiConfig.rbLocale));
                     }
                 };
                 bindRBKey();

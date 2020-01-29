@@ -45,17 +45,16 @@
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderImportBatch#" edit="#rc.edit#">
 			<!--- Place Order --->
 			<cfif rc.orderImportBatch.getOrderImportBatchStatusType().getSystemCode() eq "oibstNew">
-				<hb:HibachiProcessCaller action="admin:entity.preprocessorderimportbatch" entity="#rc.orderImportBatch#" processContext="process" type="list" hideDisabled="true" />
+				<hb:HibachiProcessCaller action="admin:entity.processorderimportbatch" entity="#rc.orderImportBatch#" processContext="process" type="list" hideDisabled="true" />
 			</cfif>
 		</hb:HibachiEntityActionBar>
 
 		<!--- Tabs --->
 		<hb:HibachiEntityDetailGroup object="#rc.orderImportBatch#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderimportbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderimportbatchtabs/orderimportbatchitems" open="true" />
+		    <hb:HibachiEntityDetailItem view="admin:entity/orderimportbatchtabs/orderimportbatchitems" open="true" />
 		</hb:HibachiEntityDetailGroup>
-
-
 	</hb:HibachiEntityDetailForm>
+
 
 </cfoutput>

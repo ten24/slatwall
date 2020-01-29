@@ -8,7 +8,6 @@ import {OrderTemplateService} from "./services/ordertemplateservice";
 import {SWAccountPaymentMethodModal} from "./components/swaccountpaymentmethodmodal";
 import {SWAccountShippingAddressCard} from "./components/swaccountshippingaddresscard";
 import {SWAccountShippingMethodModal} from "./components/swaccountshippingmethodmodal";
-import {SWBatchOrderList} from "./components/swbatchorderlist";
 import {SWCustomerAccountPaymentMethodCard} from "./components/swcustomeraccountpaymentmethodcard";
 import {SWOrderTemplateAddPromotionModal} from "./components/swordertemplateaddpromotionmodal";
 import {SWOrderTemplateAddGiftCardModal} from "./components/swordertemplateaddgiftcardmodal";
@@ -37,7 +36,6 @@ var ordermodule = angular.module('order',[coremodule.name])
 .directive('swAccountPaymentMethodModal', SWAccountPaymentMethodModal.Factory())
 .directive('swAccountShippingAddressCard', SWAccountShippingAddressCard.Factory())
 .directive('swAccountShippingMethodModal', SWAccountShippingMethodModal.Factory())
-.directive('swBatchOrderList', SWBatchOrderList.Factory())
 .directive('swCustomerAccountPaymentMethodCard',SWCustomerAccountPaymentMethodCard.Factory())
 .directive('swOrderTemplateAddPromotionModal', SWOrderTemplateAddPromotionModal.Factory())
 .directive('swOrderTemplateAddGiftCardModal', SWOrderTemplateAddGiftCardModal.Factory())
