@@ -163,7 +163,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					if(!arguments.orderImportBatch.hasErrors()){
 						arguments.orderImportBatch.setItemCount(itemCount);
-						arguments.orderImportBatch.setSite(arguments.processObject.getSite());
 						this.saveOrderImportBatch(arguments.orderImportBatch);
 						if(arrayLen(errors)){
 							arguments.orderImportBatch.addErrors(errors,true);
@@ -204,7 +203,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			order.setCurrencyCode(currencyCode);
-			
+			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
 			
 			//Save Order
