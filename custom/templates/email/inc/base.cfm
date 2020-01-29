@@ -4,7 +4,7 @@
 			var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeID(arguments.emailTemplate.getAttributeValue(arguments.attributeValue));
 			return getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType).getAttributeValue();		
 		}catch(e){
-			return 'THERE WAS AN ERROR: #arguments.attributeValue#';
+			return '';
 		}
 	}
 </cfscript>
