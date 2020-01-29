@@ -23,7 +23,7 @@ class SWFPaginationController {
         }else {
             this.elipsesNum = 10;
         }
-	};
+	}
 	
 	public init = () => {
 	    this.pageTracker = 1;
