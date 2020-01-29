@@ -17,7 +17,7 @@
 		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
 		"price": [ 
 			{"required": true, "dataType": "numeric" }, 
-			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, method:"marketPartnerValidationMaxOrderAmount" }
+			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
 		],
 		"quantity":[
 			{	
