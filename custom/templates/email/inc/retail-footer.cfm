@@ -1,13 +1,6 @@
 <cfoutput>
 	<cfscript>
-		try{
-			var type = getHibachiScope().getService("typeService").getTypeByTypeID(emailTemplate.getAttributeValue('customerEmailFooter'));
-			var content = getHibachiScope().getService("attributeService").getAttributeValueByType(type).getAttributeValue();		
-		}catch(e){
-			var content = '';
-		}
-		
+		var content = getEmailContent('customerEmailFooter');
 	</cfscript>
-	#content#
-
+		#content#
 </cfoutput>
