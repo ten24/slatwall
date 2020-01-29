@@ -86,7 +86,7 @@ component  extends="HibachiService" accessors="true" {
 			return; 
 		}   
 
-		return getSite(cachedSiteID);  
+		return this.getSite(cachedSiteID);  
 	}  
 
 	public string function getSkeletonSitePath(){
