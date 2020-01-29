@@ -53,6 +53,10 @@ export class BaseBootStrapper{
                 .then( () => {
                     if(localStorage.getItem('appConfig') != null) {
                         this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                        // override config
+                        for(var config in hibachiConfig){
+                            this.appConfig[config] = hibachiConfig[config];
+                        }
                     }
                     
                     if( hibachiConfig.instantiationKey
@@ -260,8 +264,9 @@ export class BaseBootStrapper{
             });
         })
         .then( (appConfig: any) => {
-            if(hibachiConfig.baseURL.length) {
-                appConfig.baseURL = urlString;    
+            // override config
+            for(var config in hibachiConfig){
+                appConfig[config] = hibachiConfig[config];
             }
             coremodule.constant('appConfig', appConfig);
             this.appConfig = appConfig;
@@ -301,6 +306,8 @@ export class BaseBootStrapper{
     
     getResourceBundles = () => {
         var rbLocale = this.appConfig.rbLocale;
+        
+        console.log('getResourceBundles',rbLocale );
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
         }
