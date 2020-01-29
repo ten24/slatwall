@@ -208,13 +208,8 @@ component {
 	public any function getMarketPartnerEnrollmentOrderDateTime(){
 	    
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
-    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
-    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
-    	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
-    	    var records = orderItemCollectionList.getRecords();
-    	    if (arrayLen(records)){
+			var value = getService('orderService').getMarketPartnerEnrollmentOrderDateTime()
+    	    if (!isNull(value)){
     	        variables.marketPartnerEnrollmentOrderDateTime = records[1]['order_orderOpenDateTime'];
     	        return records[1]['order_orderOpenDateTime'];
     	    }

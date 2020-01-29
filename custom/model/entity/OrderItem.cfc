@@ -336,4 +336,29 @@ component {
             structDelete(variables,'retailValueVolume');
         }
     }
+    /******
+        Validates if adding the order item will cause the order total to exceed the 
+        limit for market partners in their first 7 days after enrollment
+    
+    *******/
+	 public boolean function MarketPartnerValidationMaxOrderAmount(){
+	 	
+	 	var ordeer = this.getOrder();
+	 	var site = order.getOrderCreatedSite();
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (!isNull(order.getAccount()) && order.getAccount().getAccountType() == "marketPartner" 
+			&& site.getSiteCode() == "mura-uk"
+			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
+			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
+			
+			//If this order is more than 200 pounds, fails.  
+			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			    return false; // they already have too much.
+			}
+	    }
+	    return true;
+	 }
 }

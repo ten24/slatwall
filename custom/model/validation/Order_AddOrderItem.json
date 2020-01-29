@@ -2,6 +2,14 @@
 	"conditions": {
 		"renewalFeeFlag": {
 			"sku.product.productType.systemCode": { "eq": "RenewalFee-MP" }
+		},
+		"isMarketPartnerSalesOrder":{
+			"account.accountType":{
+				"eq":"marketPartner"
+			},
+			"order.orderType.systemCode":{
+				"eq":"otSalesOrder"
+			}
 		}
 	},
 	"properties": {
