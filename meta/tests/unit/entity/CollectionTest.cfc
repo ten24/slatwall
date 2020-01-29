@@ -2807,7 +2807,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				               "displayPropertyIdentifier":"Purchase Start Date Time",
 				               "propertyIdentifier":"_product.purchaseStartDateTime",
 				               "comparisonOperator":"between",
-				               "measureType":"ty",
+				               "measureType":"thisYear",
 				               "measureCriteria":"exactDate",
 				               "criteriaNumberOf":"0",
 				               "value":"0",
@@ -2827,6 +2827,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		writeDump("This Year");
 		writeDump("#collectionEntity.getQuery()#");
+		writeDump("#collectionEntity.getHQLParams()#");
 		
 		//Last N Day
 		collectionEntityData = {

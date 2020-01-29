@@ -3297,7 +3297,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case 'thisYear': //This Year
 				//first day of current year
 				setStartRange = CreateDate(year(now()), 1, 1);
-				setEndRange = DateAdd("y",  1, setStartRange);
+				setEndRange = DateAdd("yyyy",  1, setStartRange);
 				setEndRange = DateAdd("d",  -1, setEndRange); //last day of year
 			break;
 			case 'lastHour': //Last H Hours
