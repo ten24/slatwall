@@ -307,7 +307,6 @@ export class BaseBootStrapper{
     getResourceBundles = () => {
         var rbLocale = this.appConfig.rbLocale;
         
-        console.log('getResourceBundles',rbLocale );
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
         }
