@@ -1467,6 +1467,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
 		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
 		var records = orderItemCollectionList.getRecords();
+		
 		if (arrayLen(records)){
 		    return records[1]['order_orderOpenDateTime'];
 		}
