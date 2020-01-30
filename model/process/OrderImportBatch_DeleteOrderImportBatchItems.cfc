@@ -78,7 +78,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 * @returns array of OrderImportBatchItems
 	 */
 	 public any function getOrderImportBatchItems(){
-	 	if (!structKeyExists(variables, "OrderImportBatchItems")){
+	 	if (!structKeyExists(variables, "orderImportBatchItems")){
 	 		variables.orderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDs();
 	 	}
 	 	return variables.orderImportBatchItems;
