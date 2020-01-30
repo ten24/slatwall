@@ -165,13 +165,13 @@ class MonatProductCardController {
 		this.loading = true;
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
-		console.log(this.type);
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
 			.then( (result) =>{
 			    if(result.successfulActions &&
-					result.successfulActions.indexOf('public:cart.addOrderItem') > -1)
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
 				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+					}
 				 else{
 				     throw (result);
 				 }
@@ -185,8 +185,9 @@ class MonatProductCardController {
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 			    if(result.successfulActions &&
-					result.successfulActions.indexOf('public:cart.addOrderItem') > -1)
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
 				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+			    }
 				else{
 				    throw(result);
 				}
