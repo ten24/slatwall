@@ -1,3 +1,0 @@
-accountNumber,skuCode,quantity,originalOrderNumber
-1993,BFSURPRISE,3,,
-1993,6000000767,2,,

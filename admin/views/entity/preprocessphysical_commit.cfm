@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.physical" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" enctype="multipart/form-data" sRedirectAction="admin:entity.detailphysical">
+<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.detailphysical">
 	
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
 	</hb:HibachiEntityActionBar>
