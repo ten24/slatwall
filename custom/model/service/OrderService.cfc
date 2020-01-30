@@ -1460,10 +1460,10 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
-	public any function getMarketPartnerEnrollmentOrderDateTime(){
+	public any function getMarketPartnerEnrollmentOrderDateTime(required any account){
 		var orderItemCollectionList = this.getOrderItemCollectionList();
 		orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-		orderItemCollectionList.addFilter("order.account.accountID", "#getHibachiScope().getAccount().getAccountID()#");
+		orderItemCollectionList.addFilter("order.account.accountID", arguments.account.getAccountID());
 		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
 		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
 		var records = orderItemCollectionList.getRecords();

@@ -107,7 +107,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 	 	var site = order.getOrderCreatedSite();
 	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
-        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime();
+        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(order.getAccount());
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
 		if (!isNull(order.getAccount()) && order.getAccount().getAccountType() == "marketPartner" 
