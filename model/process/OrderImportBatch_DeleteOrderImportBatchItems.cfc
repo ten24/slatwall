@@ -59,7 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 */
 	public array function getOrderImportBatchItemsByOrderImportBatchItemIDs(){
 		//If we have a id list.
-		var OrderImportBatchItems = [];
+		var orderImportBatchItems = [];
 		if (structKeyExists(variables, "OrderImportBatchItemIDs") && len(variables.orderImportBatchItemIDs)){
 			for (var orderImportBatchItemID in variables.orderImportBatchItemIDs){
 				var orderImportBatchItem = getService("OrderImportBatchService").getOrderImportBatchItem(orderImportBatchItemID);
@@ -67,10 +67,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					continue;
 				}
 
-				arrayAppend(OrderImportBatchItems, orderImportBatchItem);
+				arrayAppend(orderImportBatchItems, orderImportBatchItem);
 			}
 		}
-		return OrderImportBatchItems;
+		return orderImportBatchItems;
 	}
 	
 	/**
@@ -79,8 +79,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	 */
 	 public any function getOrderImportBatchItems(){
 	 	if (!structKeyExists(variables, "OrderImportBatchItems")){
-	 		variables.OrderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDs();
+	 		variables.orderImportBatchItems = getOrderImportBatchItemsByOrderImportBatchItemIDs();
 	 	}
-	 	return variables.OrderImportBatchItems;
+	 	return variables.orderImportBatchItems;
 	 }
 }
