@@ -1466,6 +1466,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemCollectionList.addFilter("order.account.accountID", arguments.account.getAccountID());
 		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
 		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
+		orderItemCollectionList.setPageRecordsShow(1);
 		var records = orderItemCollectionList.getRecords();
 		
 		if (arrayLen(records)){
