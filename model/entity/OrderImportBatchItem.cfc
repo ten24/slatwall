@@ -6,7 +6,8 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
     property name="quantity" ormtype="integer";
     property name="accountNumber" ormtype="integer";
     property name="originalOrderNumber" ormtype="integer";
-
+	property name="processingErrors" ormtype="string" length="1500";
+	
     property name="replacementNumber" ormtype="integer";
     property name="name" ormtype="string";
     property name="streetAddress" ormtype="string";

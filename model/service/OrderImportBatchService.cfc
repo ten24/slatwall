@@ -186,7 +186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderImportBatch;
 	}
 	
-	public any function processOrderImportBatch_Process(required any orderImportBatch, required any processObject, struct data={}){
+	public any function processOrderImportBatch_Process(required any orderImportBatch){
 		var placedOrders = 0;
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 			//Create Order
@@ -222,29 +222,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setFulfillmentCharge(0);
 			orderFulfillment.setManualFulfillmentChargeFlag(true);
 			//Save Order Fulfillment
-			getOrderService().saveOrderFulfillment(orderFulfillment);
-			
-			//Create Order Item
-			var orderItem = getOrderService().newOrderItem();
-			orderItem.setOrder(order);
-			orderItem.setCurrencyCode(currencyCode);
-			orderItem.setOrderFulfillment(orderFulfillment);
-			orderItem.setSku(orderImportBatchItem.getSku());
-			orderItem.setQuantity(orderImportBatchItem.getQuantity());
-			orderItem.setPrice(0);
-			getOrderService().saveOrderItem(orderItem);
-			
-			if(orderItem.hasErrors()){
-				writeDump(orderItem.getErrors());abort;
+			this.saveOrderFulfillment(orderFulfillment);
+			if(orderFulfillment.hasErrors()){
+				order.addErrors(orderFulfillment.getErrors())
+			}else{
+				//Create Order Item
+				var orderItem = getOrderService().newOrderItem();
+				orderItem.setOrder(order);
+				orderItem.setCurrencyCode(currencyCode);
+				orderItem.setOrderFulfillment(orderFulfillment);
+				orderItem.setSku(orderImportBatchItem.getSku());
+				orderItem.setQuantity(orderImportBatchItem.getQuantity());
+				orderItem.setPrice(0);
+				getOrderService().saveOrderItem(orderItem);
+				
+				if(orderItem.hasErrors()){
+					order.addErrors(orderItem.getErrors());
+				}else{
+					orderImportBatchItem.setOrderItem(orderItem);
+					
+					getHibachiDAO().flushORMSession();
+					
+					order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+					if(!order.hasErrors()){
+						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistPlaced'));	
+						placedOrders += 1;
+					}
+				}
 			}
-			orderImportBatchItem.setOrderItem(orderItem);
-			
-			getHibachiDAO().flushORMSession();
-			
-			order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
-			if(!order.hasErrors()){
-				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistPlaced'));	
-				placedOrders += 1;
+			if(order.hasErrors()){
+				orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
+				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistError'))
 			}
 		}
 		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstProcessed'));
