@@ -7,6 +7,9 @@
 			"account.accountType":{
 				"eq":"marketPartner"
 			},
+			"account.accountStatusType.systemCode":{
+				"neq":"astEnrollmentPending"
+			},
 			"order.orderType.systemCode":{
 				"eq":"otSalesOrder"
 			}
